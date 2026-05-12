@@ -1,0 +1,15 @@
+--indent 4
+--linebreaks lf
+--maxwidth 120
+--wraparguments before-first
+--wrapcollections before-first
+--closingparen balanced
+--commas inline
+--ifdef no-indent
+--self remove
+--stripunusedargs closure-only
+--funcattributes prev-line
+--typeattributes prev-line
+--extensionacl on-extension
+--importgrouping alphabetized
+--disable redundantReturn

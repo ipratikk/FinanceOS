@@ -1,0 +1,50 @@
+# macOS
+.DS_Store
+
+# Xcode User Data
+xcuserdata/
+*.xcuserstate
+
+# Build Artifacts
+.build/
+DerivedData/
+
+# Swift Package Manager
+Packages/*/.build
+Packages/*/.swiftpm
+
+# Xcode Workspace User Data
+*.xcworkspace/xcuserdata
+
+# Xcode Project User Data
+*.xcodeproj/xcuserdata
+
+# SwiftLint / SwiftFormat temp files
+.swiftpm/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Logs
+*.log
+
+# SQLite
+*.sqlite-shm
+*.sqlite-wal
+
+# App Sandbox Data
+Library/
+
+# Temporary Files
+*.swp
+*.tmp
+
+# IDE
+.idea/
+.vscode/
+
+# XCTest
+xcresult/
