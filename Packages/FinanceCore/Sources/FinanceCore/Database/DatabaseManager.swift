@@ -31,6 +31,8 @@ public final class DatabaseManager: @unchecked Sendable {
         )
 
         try migrator.migrate(dbQueue)
+
+        try seedDatabase()
     }
 }
 
@@ -68,5 +70,15 @@ private extension DatabaseManager {
         )
 
         return migrator
+    }
+}
+
+private extension DatabaseManager {
+    func seedDatabase() throws {
+        try dbQueue.write { database in
+            try DatabaseSeeder.seedInstitutions(
+                in: database
+            )
+        }
     }
 }

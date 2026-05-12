@@ -11,9 +11,9 @@ enum AppMigration {
     static func registerMigrations(
         in migrator: inout DatabaseMigrator
     ) {
-        FinanceLogger.migration.info("Running migration: v1_initial")
-
         migrator.registerMigration("v1_initial") { database in
+            FinanceLogger.migration.info("Running migration: v1_initial")
+
             try Institution.createTable(
                 in: database
             )

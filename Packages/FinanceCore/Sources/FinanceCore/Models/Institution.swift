@@ -28,8 +28,15 @@ public struct Institution:
     }
 }
 
-extension Institution {
-    public static let databaseTableName = "institutions"
+public extension Institution {
+    enum Columns {
+        static let id = Column(CodingKeys.id)
+        static let name = Column(CodingKeys.name)
+    }
+}
+
+public extension Institution {
+    static let databaseTableName = "institutions"
 
     static func createTable(
         in database: Database
