@@ -1,22 +1,20 @@
-//
-//  FinanceOSMacApp.swift
-//  FinanceOSMac
-//
-//  Created by Pratik Goel on 13/05/26.
-//
-
 import FinanceCore
 import SwiftUI
 
 @main
 struct FinanceOSMacApp: App {
-    init() {
-        _ = DatabaseManager.shared
-    }
+    private let institutionRepository =
+        GRDBInstitutionRepository(
+            dbQueue: DatabaseManager.shared.dbQueue
+        )
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            InstitutionsView(
+                viewModel: InstitutionsViewModel(
+                    repository: institutionRepository
+                )
+            )
         }
     }
 }
