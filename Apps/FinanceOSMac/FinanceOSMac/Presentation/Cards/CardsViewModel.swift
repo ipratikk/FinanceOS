@@ -13,6 +13,7 @@ import Observation
 final class CardsViewModel {
     struct CardRow: Identifiable {
         let id: UUID
+        let card: Card
         let title: String
         let institutionName: String
         let linkedAccountName: String?
@@ -90,6 +91,7 @@ final class CardsViewModel {
         return cards.map { card in
             CardRow(
                 id: card.id,
+                card: card,
                 title: card.name,
                 institutionName: institutionsByID[card.institutionID]?.name ?? "Unknown Institution",
                 linkedAccountName: card.accountID.flatMap { accountID in

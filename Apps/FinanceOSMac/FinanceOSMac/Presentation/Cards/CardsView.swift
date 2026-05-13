@@ -10,6 +10,7 @@ import SwiftUI
 
 struct CardsView: View {
     @State private var viewModel: CardsViewModel
+    private let appContainer = AppContainer.shared
 
     init(
         viewModel: CardsViewModel
@@ -22,11 +23,19 @@ struct CardsView: View {
     var body: some View {
         NavigationStack {
             List(viewModel.cardRows) { cardRow in
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(cardRow.title)
-                    Text(cardRow.subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                NavigationLink(destination: CardTransactionsView(
+                    card: cardRow.card,
+                    viewModel: CardTransactionsViewModel(
+                        transactionRepository: appContainer.transactionRepository,
+                        accountRepository: appContainer.accountRepository
+                    )
+                )) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(cardRow.title)
+                        Text(cardRow.subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .navigationTitle("Cards")
