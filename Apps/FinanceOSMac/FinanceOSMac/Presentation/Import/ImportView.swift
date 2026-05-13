@@ -158,9 +158,7 @@ struct ImportView: View {
             panel.canChooseDirectories = false
             panel.allowsMultipleSelection = true
 
-            if panel.runModal() == .OK,
-               !panel.urls.isEmpty
-            {
+            if panel.runModal() == .OK, !panel.urls.isEmpty {
                 viewModel.setFileURLs(panel.urls)
                 viewModel.parseFiles()
             }
