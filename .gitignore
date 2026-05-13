@@ -53,5 +53,4 @@ xcresult/
 .agents/
 .codex-plugins/
 .graphify_python
-graphify-out/
 skills-lock.json
