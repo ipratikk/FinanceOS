@@ -55,44 +55,39 @@ final class ImportViewModel {
             isLoading = true
             errorMessage = nil
 
-            logger.info("Starting parse of \(self.fileURLs.count, privacy: .public) file(s)")
+            let fileCount = fileURLs.count
+            logger.info("Starting parse of \(fileCount, privacy: .public) file(s)")
 
             var statements: [ParsedStatement] = []
 
             for fileURL in fileURLs {
                 do {
                     let format = fileFormat(for: fileURL)
-                    logger
-                        .debug(
-                            "Parsing \(fileURL.lastPathComponent, privacy: .public) as \(format.rawValue, privacy: .public)"
-                        )
+                    let fileName = fileURL.lastPathComponent
+                    logger.debug("Parsing \(fileName, privacy: .public) as \(format.rawValue, privacy: .public)")
 
                     let statement = try await transactionImporter.parseStatement(
                         from: fileURL,
                         format: format
                     )
 
-                    logger
-                        .info(
-                            "Successfully parsed \(fileURL.lastPathComponent, privacy: .public) with \(statement.transactions.count, privacy: .public) transactions"
-                        )
+                    let txnCount = statement.transactions.count
+                    logger.info("Parsed \(fileName, privacy: .public): \(txnCount, privacy: .public) txns")
 
                     statements.append(statement)
                 } catch let error as TransactionImportError {
-                    logger
-                        .error(
-                            "Import error for \(fileURL.lastPathComponent, privacy: .public): \(self.formatError(error), privacy: .public)"
-                        )
-                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(formatError(error))"
+                    let fileName = fileURL.lastPathComponent
+                    let formattedError = formatError(error)
+                    logger.error("Parse error for \(fileName, privacy: .public): \(formattedError, privacy: .public)")
+                    errorMessage = "Error parsing \(fileName): \(formattedError)"
                     parsedStatements = []
                     isLoading = false
                     return
                 } catch {
-                    logger
-                        .error(
-                            "Unexpected error for \(fileURL.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)"
-                        )
-                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
+                    let fileName = fileURL.lastPathComponent
+                    let desc = error.localizedDescription
+                    logger.error("Parse error for \(fileName, privacy: .public): \(desc, privacy: .public)")
+                    errorMessage = "Error parsing \(fileName): \(error.localizedDescription)"
                     parsedStatements = []
                     isLoading = false
                     return
@@ -113,76 +108,74 @@ final class ImportViewModel {
                   let target = selectedTarget
             else {
                 errorMessage = "Invalid import state"
-                logger
-                    .error(
-                        "Invalid import state: fileURLs=\(!self.fileURLs.isEmpty), statements=\(!self.parsedStatements.isEmpty), target=\(self.selectedTarget != nil)"
-                    )
+                let filesOK = !self.fileURLs.isEmpty
+                let statementsOK = !self.parsedStatements.isEmpty
+                let targetOK = self.selectedTarget != nil
+                let msg = "Invalid state: fileURLs=\(filesOK), stmts=\(statementsOK), target=\(targetOK)"
+                logger.error("\(msg)")
                 return
             }
 
             isLoading = true
             errorMessage = nil
 
-            logger
-                .info(
-                    "Starting import of \(self.fileURLs.count, privacy: .public) file(s) to target: \(String(describing: target), privacy: .public)"
-                )
-
-            var allTransactions: [Transaction] = []
-
-            for (index, fileURL) in fileURLs.enumerated() {
-                do {
-                    let format = fileFormat(for: fileURL)
-                    logger
-                        .debug(
-                            "Importing file \(index + 1)/\(self.fileURLs.count): \(fileURL.lastPathComponent, privacy: .public)"
-                        )
-
-                    let transactions = try await transactionImporter.importTransactions(
-                        from: fileURL,
-                        format: format,
-                        target: target
-                    )
-
-                    logger
-                        .info(
-                            "Got \(transactions.count, privacy: .public) transactions from \(fileURL.lastPathComponent, privacy: .public)"
-                        )
-                    allTransactions.append(contentsOf: transactions)
-                } catch let error as TransactionImportError {
-                    logger
-                        .error(
-                            "Import error for \(fileURL.lastPathComponent, privacy: .public): \(self.formatError(error), privacy: .public)"
-                        )
-                    errorMessage = "Error importing \(fileURL.lastPathComponent): \(formatError(error))"
-                    isLoading = false
-                    return
-                } catch {
-                    logger
-                        .error(
-                            "Unexpected error importing \(fileURL.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)"
-                        )
-                    errorMessage = "Error importing \(fileURL.lastPathComponent): \(error.localizedDescription)"
-                    isLoading = false
-                    return
-                }
-            }
+            let fileCount = self.fileURLs.count
+            let targetDesc = String(describing: target)
+            logger.info("Starting: \(fileCount, privacy: .public) files, target: \(targetDesc, privacy: .public)")
 
             do {
-                logger.info("Saving \(allTransactions.count, privacy: .public) total transactions to DB")
-                try await transactionRepository.insertTransactions(allTransactions)
+                let transactions = try await processImportFiles(target: target)
+                let txnCount = transactions.count
+                logger.info("Saving \(txnCount, privacy: .public) txns to DB")
+                try await transactionRepository.insertTransactions(transactions)
 
-                logger
-                    .info(
-                        "Successfully imported \(allTransactions.count, privacy: .public) transactions from \(self.fileURLs.count, privacy: .public) file(s)"
-                    )
+                logger.info("Imported \(txnCount, privacy: .public) txns from \(fileCount, privacy: .public) files")
                 reset()
             } catch {
-                logger.error("Failed to save transactions: \(error.localizedDescription, privacy: .public)")
-                errorMessage = "Failed to save transactions: \(error.localizedDescription)"
+                logger.error("Import failed: \(error.localizedDescription, privacy: .public)")
+                errorMessage = "Import failed: \(error.localizedDescription)"
                 isLoading = false
             }
         }
+    }
+
+    private func processImportFiles(target: TransactionImportTarget) async throws -> [Transaction] {
+        var allTransactions: [Transaction] = []
+
+        for (index, fileURL) in fileURLs.enumerated() {
+            let format = fileFormat(for: fileURL)
+            let fileName = fileURL.lastPathComponent
+            let fileNumber = index + 1
+            let totalFiles = self.fileURLs.count
+
+            logger.debug("Importing file \(fileNumber)/\(totalFiles): \(fileName, privacy: .public)")
+
+            do {
+                let transactions = try await transactionImporter.importTransactions(
+                    from: fileURL,
+                    format: format,
+                    target: target
+                )
+
+                let txnCount = transactions.count
+                logger.info("Got \(txnCount, privacy: .public) txns from \(fileName, privacy: .public)")
+                allTransactions.append(contentsOf: transactions)
+            } catch let error as TransactionImportError {
+                let formattedError = formatError(error)
+                logger.error("Import error for \(fileName, privacy: .public): \(formattedError, privacy: .public)")
+                errorMessage = "Error importing \(fileName): \(formattedError)"
+                isLoading = false
+                throw error
+            } catch {
+                let desc = error.localizedDescription
+                logger.error("Import error for \(fileName, privacy: .public): \(desc, privacy: .public)")
+                errorMessage = "Error importing \(fileName): \(desc)"
+                isLoading = false
+                throw error
+            }
+        }
+
+        return allTransactions
     }
 
     func loadTargetsOnAppear() async {
@@ -192,13 +185,11 @@ final class ImportViewModel {
             cards = try await cardRepository.fetchCards()
             let accountCount = accounts.count
             let cardCount = cards.count
-            logger
-                .debug(
-                    "Loaded \(accountCount, privacy: .public) accounts and \(cardCount, privacy: .public) cards"
-                )
+            logger.debug("Loaded \(accountCount, privacy: .public) accounts and \(cardCount, privacy: .public) cards")
         } catch {
-            logger.error("Failed to load targets: \(error.localizedDescription, privacy: .public)")
-            errorMessage = error.localizedDescription
+            let errorMsg = error.localizedDescription
+            logger.error("Failed to load targets: \(errorMsg, privacy: .public)")
+            errorMessage = errorMsg
         }
     }
 

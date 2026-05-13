@@ -85,6 +85,20 @@ If uncertain:
 
 ---
 
+# Coding Standards
+
+See [CODING_STANDARDS.md](CODING_STANDARDS.md) for enforceable rules:
+
+* Line length: max 120 characters
+* Function body: max 50 lines
+* Struct/type body: max 250 lines
+* File length: max 400 lines
+* Brace spacing, optional initialization, identifier naming
+
+All files checked via `swiftlint lint`. Fix violations before committing.
+
+---
+
 # Context Loading Rules
 
 ## ALWAYS Read First
