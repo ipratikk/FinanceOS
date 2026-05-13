@@ -22,6 +22,10 @@ struct ImportView: View {
             }
         }
         .onAppear {
+            Task {
+                await viewModel.loadTargetsOnAppear()
+            }
+
             if let target = viewModel.selectedTarget {
                 switch target {
                 case let .account(id):
@@ -63,18 +67,44 @@ struct ImportView: View {
                 .cornerRadius(4)
             }
 
-            if viewModel.isLoading {
-                ProgressView("Parsing files...")
-            } else {
-                dropZoneView
+            targetSelectionSection
 
+            if viewModel.selectedTarget != nil {
                 Divider()
 
-                filePickerButton
+                if viewModel.isLoading {
+                    ProgressView("Parsing files...")
+                } else {
+                    dropZoneView
+
+                    Divider()
+
+                    filePickerButton
+                }
+            } else {
+                Divider()
+
+                VStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 32))
+                        .foregroundColor(.secondary)
+
+                    Text("Select import target first")
+                        .font(.headline)
+
+                    Text("Choose an account or card above to import to")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 120)
+                .foregroundColor(.secondary)
             }
         }
         .padding()
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+            guard viewModel.selectedTarget != nil else { return false }
+
             var urls: [URL] = []
             let group = DispatchGroup()
 
@@ -191,8 +221,9 @@ struct ImportView: View {
                 .font(.headline)
 
             VStack(spacing: 4) {
-                ForEach(viewModel.fileStatementPairs.indices, id: \.self) { index in
-                    let pair = viewModel.fileStatementPairs[index]
+                let pairs = viewModel.fileStatementPairs
+                ForEach(pairs.indices, id: \.self) { index in
+                    let pair = pairs[index]
                     HStack {
                         Image(systemName: "doc.fill")
                             .font(.caption)
@@ -210,7 +241,7 @@ struct ImportView: View {
                     }
                     .padding(.vertical, 4)
 
-                    if index < viewModel.fileStatementPairs.count - 1 {
+                    if index < pairs.count - 1 {
                         Divider()
                     }
                 }
@@ -278,13 +309,13 @@ struct ImportView: View {
 
     private func aggregatedTransactionListSection() -> some View {
         let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
+        let firstFive = Array(allTransactions.prefix(5))
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Transactions (\(allTransactions.count))")
                 .font(.headline)
 
             VStack(spacing: 4) {
-                let firstFive = Array(allTransactions.prefix(5))
                 ForEach(firstFive.indices, id: \.self) { index in
                     let txn = firstFive[index]
                     HStack {
@@ -316,7 +347,7 @@ struct ImportView: View {
                     }
                     .padding(.vertical, 4)
 
-                    if index < min(4, allTransactions.count - 1) {
+                    if index < firstFive.count - 1 {
                         Divider()
                     }
                 }

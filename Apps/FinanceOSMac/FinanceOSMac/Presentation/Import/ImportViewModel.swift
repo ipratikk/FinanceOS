@@ -185,20 +185,26 @@ final class ImportViewModel {
         }
     }
 
+    func loadTargetsOnAppear() async {
+        do {
+            logger.debug("Loading accounts and cards for selection")
+            accounts = try await accountRepository.fetchAccounts()
+            cards = try await cardRepository.fetchCards()
+            let accountCount = accounts.count
+            let cardCount = cards.count
+            logger
+                .debug(
+                    "Loaded \(accountCount, privacy: .public) accounts and \(cardCount, privacy: .public) cards"
+                )
+        } catch {
+            logger.error("Failed to load targets: \(error.localizedDescription, privacy: .public)")
+            errorMessage = error.localizedDescription
+        }
+    }
+
     private func loadTargets() {
         Task {
-            do {
-                logger.debug("Loading accounts and cards for selection")
-                accounts = try await accountRepository.fetchAccounts()
-                cards = try await cardRepository.fetchCards()
-                logger
-                    .debug(
-                        "Loaded \(self.accounts.count, privacy: .public) accounts and \(self.cards.count, privacy: .public) cards"
-                    )
-            } catch {
-                logger.error("Failed to load targets: \(error.localizedDescription, privacy: .public)")
-                errorMessage = error.localizedDescription
-            }
+            await loadTargetsOnAppear()
         }
     }
 
