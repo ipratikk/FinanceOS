@@ -69,7 +69,8 @@ final class CardTransactionsViewModel {
 
         return transactions.map { transaction in
             let sourceName: String = if let accountID = transaction.accountID,
-                                        let account = accountsByID[accountID] {
+                                        let account = accountsByID[accountID]
+            {
                 account.name
             } else {
                 "Unknown Source"

@@ -5,11 +5,6 @@ struct ImportPreviewView: View {
     let viewModel: ImportViewModel
     @Binding var targetChoice: TargetChoice?
 
-    private enum TargetChoice: Hashable {
-        case account(UUID)
-        case card(UUID)
-    }
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {

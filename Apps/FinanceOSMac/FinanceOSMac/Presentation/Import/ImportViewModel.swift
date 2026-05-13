@@ -146,7 +146,7 @@ final class ImportViewModel {
             let format = fileFormat(for: fileURL)
             let fileName = fileURL.lastPathComponent
             let fileNumber = index + 1
-            let totalFiles = self.fileURLs.count
+            let totalFiles = fileURLs.count
 
             logger.debug("Importing file \(fileNumber)/\(totalFiles): \(fileName, privacy: .public)")
 

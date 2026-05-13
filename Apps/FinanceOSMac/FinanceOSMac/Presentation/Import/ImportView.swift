@@ -2,14 +2,13 @@ import FinanceCore
 import SwiftUI
 import UniformTypeIdentifiers
 
+enum TargetChoice: Hashable {
+    case account(UUID)
+    case card(UUID)
+}
+
 struct ImportView: View {
     let viewModel: ImportViewModel
-
-    /// Local, Hashable selection type for Picker to avoid requiring TransactionImportTarget to be Hashable
-    private enum TargetChoice: Hashable {
-        case account(UUID)
-        case card(UUID)
-    }
 
     @State private var targetChoice: TargetChoice?
 
@@ -160,7 +159,8 @@ struct ImportView: View {
             panel.allowsMultipleSelection = true
 
             if panel.runModal() == .OK,
-               !panel.urls.isEmpty {
+               !panel.urls.isEmpty
+            {
                 viewModel.setFileURLs(panel.urls)
                 viewModel.parseFiles()
             }

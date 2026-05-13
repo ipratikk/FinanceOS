@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-13)
 
 ## Corpus Check
-- 53 files · ~10,254 words
+- 56 files · ~10,992 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 343 nodes · 447 edges · 32 communities (18 shown, 14 thin omitted)
+- 391 nodes · 507 edges · 32 communities (20 shown, 12 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d7b77f80`
+- Built from commit: `0f1e88a5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -45,15 +45,15 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `TabularTransactionDecoder` - 19 edges
-2. `ImportViewModel` - 12 edges
-3. `ImportView` - 11 edges
-4. `FinanceOS Current Architecture` - 10 edges
-5. `Transaction` - 10 edges
-6. `GRDBTransactionRepository` - 9 edges
-7. `Institution` - 9 edges
-8. `TransactionImportError` - 8 edges
-9. `WorksheetParserDelegate` - 8 edges
-10. `Card` - 8 edges
+2. `ImportViewModel` - 14 edges
+3. `ImportView` - 12 edges
+4. `FinanceOS Coding Standards` - 11 edges
+5. `FinanceOS Current Architecture` - 10 edges
+6. `Transaction` - 10 edges
+7. `GRDBTransactionRepository` - 9 edges
+8. `Institution` - 9 edges
+9. `TransactionImportError` - 8 edges
+10. `WorksheetParserDelegate` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `InstitutionsViewModel` --references--> `InstitutionRepository Protocol`  [EXTRACTED]
@@ -72,19 +72,19 @@
 - **Database Lifecycle Flow** — databasemanager_shared, databasemanager_migrator, appmigration_registermigrations, databasemanager_seed_database, databaseseeder_seedinstitutions [EXTRACTED 1.00]
 - **Architecture Rules To Code** — architecture_layered_flow, architecture_database_lifecycle_rule, architecture_dependency_composition_rule, architecture_repository_abstraction_rule, architecture_ui_database_boundary_rule, architecture_persistence_encapsulation_rule [EXTRACTED 1.00]
 
-## Communities (32 total, 14 thin omitted)
+## Communities (32 total, 12 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.08
-Nodes (17): Codable, FetchableRecord, Identifiable, Account, Columns, Card, Columns, Columns (+9 more)
+Cohesion: 0.06
+Nodes (20): AccountTransactionsViewModel, TransactionRow, CardRow, CardsViewModel, Codable, FetchableRecord, Identifiable, Account (+12 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.07
-Nodes (16): AccountRepository, AppContainer, CardRepository, Hashable, MockAccountRepository, MockCardRepository, TargetChoice, account (+8 more)
+Cohesion: 0.06
+Nodes (14): AppContainer, DatabaseManager, ParsedStatement, StatementParser, TransactionImporting, InstitutionRepository, AccountRepository, CardRepository (+6 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.08
-Nodes (11): DatabaseManager, DefaultTransactionImporter, ParsedStatement, StatementParser, TransactionImporting, AccountRepository, CardRepository, InstitutionRepository (+3 more)
+Cohesion: 0.12
+Nodes (10): AccountRepository, CardRepository, ImportView, MockAccountRepository, MockCardRepository, TargetChoice, account, card (+2 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.16
@@ -95,56 +95,64 @@ Cohesion: 0.12
 Nodes (9): CSVStatementParser, ParsedWorkbook, SharedStringsParserDelegate, WorksheetParserDelegate, XLSXStatementParser, XLSXWorkbookReader, NSObject, StatementParser (+1 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.11
-Nodes (19): ALWAYS Read First, Architecture Rules, Build & Test Workflow, Change Scope Rules, code:bash (git rev-parse HEAD), code:bash (graphify update .), code:bash (git status), Context Loading Rules (+11 more)
+Cohesion: 0.1
+Nodes (20): ALWAYS Read First, Architecture Rules, Build & Test Workflow, Change Scope Rules, code:bash (git rev-parse HEAD), code:bash (graphify update .), code:bash (git status), Coding Standards (+12 more)
 
 ### Community 6 - "Community 6"
+Cohesion: 0.1
+Nodes (20): Architecture Alignment, Brace Spacing, code:swift (// ❌ Too long), code:swift (// ❌ Single large function), code:swift (// ❌ Single 300+ line View struct), code:swift (// ❌ Wrong), code:swift (// ❌ Wrong), code:swift (// ❌ Wrong) (+12 more)
+
+### Community 7 - "Community 7"
 Cohesion: 0.11
 Nodes (7): AccountsView, AccountTransactionsView, CardsView, CardTransactionsView, InstitutionsView, TransactionsView, View
 
-### Community 7 - "Community 7"
+### Community 8 - "Community 8"
+Cohesion: 0.11
+Nodes (4): MockTransactionRepository, MockTransactionRepository, GRDBTransactionRepository, TransactionRepository
+
+### Community 9 - "Community 9"
 Cohesion: 0.18
 Nodes (18): AppContainer Shared Composition Root, AppMigration registerMigrations, DatabaseManager makeDatabaseURL, DatabaseManager migrator, DatabaseManager seedDatabase, DatabaseManager shared lifecycle, DatabaseSeeder seedInstitutions, FinanceLogger (+10 more)
 
-### Community 8 - "Community 8"
+### Community 10 - "Community 10"
 Cohesion: 0.14
 Nodes (16): Architecture, Composition Root, Concrete Implementations, Core Rules, CSV, Current Modules, Database Handle, FinanceOS Architecture Rules (+8 more)
 
-### Community 9 - "Community 9"
+### Community 12 - "Community 12"
+Cohesion: 0.17
+Nodes (8): CaseIterable, StatementFileFormat, csv, pdf, xlsx, String, TransactionRow, TransactionsViewModel
+
+### Community 13 - "Community 13"
+Cohesion: 0.16
+Nodes (8): Hashable, ImportPreviewView, TargetChoice, account, card, TransactionImportTarget, account, card
+
+### Community 14 - "Community 14"
 Cohesion: 0.23
 Nodes (13): Current Architectural Constraints, Current Completed Features, Current Naming, Current Repositories, Current Risks, Current UI Flow, Database, Dependency Composition (+5 more)
 
-### Community 10 - "Community 10"
-Cohesion: 0.15
-Nodes (3): MockTransactionRepository, GRDBTransactionRepository, TransactionRepository
-
-### Community 12 - "Community 12"
-Cohesion: 0.2
-Nodes (7): CaseIterable, StatementFileFormat, csv, pdf, xlsx, String, TransactionsViewModel
-
-### Community 14 - "Community 14"
+### Community 15 - "Community 15"
 Cohesion: 0.22
 Nodes (8): Error, TransactionImportError, invalidAmount, invalidDate, malformedFile, missingRequiredColumn, platformUnavailable, unsupportedFormat
 
 ## Knowledge Gaps
-- **53 isolated node(s):** `account`, `card`, `Stack`, `Core Rules`, `Protocols` (+48 more)
+- **67 isolated node(s):** `account`, `card`, `account`, `card`, `Primary Goal` (+62 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ImportView` connect `Community 13` to `Community 1`, `Community 6`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
-- **Why does `GRDBTransactionRepository` connect `Community 10` to `Community 1`, `Community 2`?**
-  _High betweenness centrality (0.059) - this node is a cross-community bridge._
-- **Why does `XLSXStatementParser` connect `Community 4` to `Community 2`?**
-  _High betweenness centrality (0.054) - this node is a cross-community bridge._
-- **What connects `account`, `card`, `Stack` to the rest of the system?**
-  _53 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `ImportView` connect `Community 2` to `Community 7`?**
+  _High betweenness centrality (0.074) - this node is a cross-community bridge._
+- **Why does `TransactionImportTarget` connect `Community 13` to `Community 1`, `Community 3`?**
+  _High betweenness centrality (0.072) - this node is a cross-community bridge._
+- **Why does `GRDBTransactionRepository` connect `Community 8` to `Community 1`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **What connects `account`, `card`, `account` to the rest of the system?**
+  _67 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.07 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12 - nodes in this community are weakly interconnected._
