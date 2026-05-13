@@ -15,7 +15,7 @@ struct ImportView: View {
 
     var body: some View {
         Group {
-            if viewModel.parsedStatement == nil {
+            if viewModel.parsedStatements.isEmpty {
                 fileSelectionView
             } else {
                 previewView
@@ -64,7 +64,7 @@ struct ImportView: View {
             }
 
             if viewModel.isLoading {
-                ProgressView("Parsing file...")
+                ProgressView("Parsing files...")
             } else {
                 dropZoneView
 
@@ -74,6 +74,28 @@ struct ImportView: View {
             }
         }
         .padding()
+        .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+            var urls: [URL] = []
+            let group = DispatchGroup()
+
+            for provider in providers {
+                group.enter()
+                _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                    if let url {
+                        urls.append(url)
+                    }
+                    group.leave()
+                }
+            }
+
+            group.notify(queue: .main) {
+                if !urls.isEmpty {
+                    viewModel.setFileURLs(urls)
+                    viewModel.parseFiles()
+                }
+            }
+            return true
+        }
     }
 
     private var dropZoneView: some View {
@@ -82,7 +104,7 @@ struct ImportView: View {
                 .font(.system(size: 32))
                 .foregroundColor(.secondary)
 
-            Text("Drag CSV or XLSX file here")
+            Text("Drag CSV or XLSX files here")
                 .font(.headline)
 
             Text("Or click to browse")
@@ -93,23 +115,10 @@ struct ImportView: View {
         .frame(height: 120)
         .background(Color.gray.opacity(0.1))
         .cornerRadius(8)
-        .onDrop(of: [.fileURL], isTargeted: nil) { providers in
-            for provider in providers {
-                _ = provider.loadObject(ofClass: URL.self) { url, _ in
-                    if let url {
-                        DispatchQueue.main.async {
-                            viewModel.setFileURL(url)
-                            viewModel.parseFile()
-                        }
-                    }
-                }
-            }
-            return true
-        }
     }
 
     private var filePickerButton: some View {
-        Button("Select File") {
+        Button("Select Files") {
             let panel = NSOpenPanel()
             var types: [UTType] = [.commaSeparatedText]
             if let xlsx = UTType(filenameExtension: "xlsx") {
@@ -118,13 +127,13 @@ struct ImportView: View {
             panel.allowedContentTypes = types
             panel.canChooseFiles = true
             panel.canChooseDirectories = false
-            panel.allowsMultipleSelection = false
+            panel.allowsMultipleSelection = true
 
             if panel.runModal() == .OK,
-               let url = panel.url
+               !panel.urls.isEmpty
             {
-                viewModel.setFileURL(url)
-                viewModel.parseFile()
+                viewModel.setFileURLs(panel.urls)
+                viewModel.parseFiles()
             }
         }
         .controlSize(.large)
@@ -132,16 +141,16 @@ struct ImportView: View {
 
     private var previewView: some View {
         VStack(spacing: 0) {
-            if let statement = viewModel.parsedStatement {
-                importPreviewView(statement)
+            if !viewModel.parsedStatements.isEmpty {
+                importPreviewView()
             }
 
             Divider()
 
             HStack(spacing: 12) {
                 Button("Cancel") {
-                    viewModel.fileURL = nil
-                    viewModel.parsedStatement = nil
+                    viewModel.fileURLs = []
+                    viewModel.parsedStatements = []
                     viewModel.selectedTarget = nil
                 }
 
@@ -155,16 +164,14 @@ struct ImportView: View {
         }
     }
 
-    private func importPreviewView(
-        _ statement: ParsedStatement
-    ) -> some View {
+    private func importPreviewView() -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                statementHeaderSection(statement)
+                fileListSection()
 
                 Divider()
 
-                summarySection(statement)
+                aggregatedSummarySection()
 
                 Divider()
 
@@ -172,62 +179,64 @@ struct ImportView: View {
 
                 Divider()
 
-                transactionListSection(statement)
+                aggregatedTransactionListSection()
             }
             .padding()
         }
     }
 
-    private func statementHeaderSection(
-        _ statement: ParsedStatement
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(statement.institution)
+    private func fileListSection() -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Files")
                 .font(.headline)
 
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(statement.accountName)
-                        .font(.subheadline)
-
-                    if let last4 = statement.cardLast4 {
-                        Text("Card ending in \(last4)")
+            VStack(spacing: 4) {
+                ForEach(viewModel.fileURLs.indices, id: \.self) { index in
+                    HStack {
+                        Image(systemName: "doc.fill")
                             .font(.caption)
                             .foregroundColor(.secondary)
+
+                        Text(viewModel.fileURLs[index].lastPathComponent)
+                            .font(.body)
+                            .lineLimit(1)
+
+                        Spacer()
+
+                        if index < viewModel.parsedStatements.count {
+                            Text("\(viewModel.parsedStatements[index].transactions.count) txns")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
+
+                    if index < viewModel.fileURLs.count - 1 {
+                        Divider()
                     }
                 }
-
-                Spacer()
-
-                Text("INR")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
             }
+            .padding(.vertical, 8)
         }
     }
 
-    private func summarySection(
-        _ statement: ParsedStatement
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Statement Summary")
+    private func aggregatedSummarySection() -> some View {
+        let totalTransactions = viewModel.parsedStatements.reduce(0) { $0 + $1.transactions.count }
+        let totalDebit = viewModel.parsedStatements.reduce(0) { $0 + $1.totalDebit }
+        let totalCredit = viewModel.parsedStatements.reduce(0) { $0 + $1.totalCredit }
+
+        return VStack(alignment: .leading, spacing: 8) {
+            Text("Import Summary")
                 .font(.headline)
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading) {
-                    Text("Period")
+                    Text("Total Files")
                         .font(.caption)
                         .foregroundColor(.secondary)
 
-                    if let start = statement.statementPeriodStart,
-                       let end = statement.statementPeriodEnd
-                    {
-                        Text("\(formatDate(start)) - \(formatDate(end))")
-                            .font(.body)
-                    } else {
-                        Text("—")
-                            .font(.body)
-                    }
+                    Text("\(viewModel.parsedStatements.count)")
+                        .font(.body)
                 }
 
                 Spacer()
@@ -237,18 +246,18 @@ struct ImportView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
 
-                    Text("\(statement.transactions.count)")
+                    Text("\(totalTransactions)")
                         .font(.body)
                 }
             }
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading) {
-                    Text("Debits")
+                    Text("Total Debits")
                         .font(.caption)
                         .foregroundColor(.secondary)
 
-                    Text(formatAmount(statement.totalDebit))
+                    Text(formatAmount(totalDebit))
                         .font(.body)
                         .foregroundColor(.red)
                 }
@@ -256,17 +265,75 @@ struct ImportView: View {
                 Spacer()
 
                 VStack(alignment: .trailing) {
-                    Text("Credits")
+                    Text("Total Credits")
                         .font(.caption)
                         .foregroundColor(.secondary)
 
-                    Text(formatAmount(statement.totalCredit))
+                    Text(formatAmount(totalCredit))
                         .font(.body)
                         .foregroundColor(.green)
                 }
             }
         }
     }
+
+    private func aggregatedTransactionListSection() -> some View {
+        let allTransactions = viewModel.parsedStatements.flatMap { $0.transactions }
+
+        return VStack(alignment: .leading, spacing: 8) {
+            Text("Transactions (\(allTransactions.count))")
+                .font(.headline)
+
+            VStack(spacing: 4) {
+                let firstFive = Array(allTransactions.prefix(5))
+                ForEach(firstFive.indices, id: \.self) { index in
+                    let txn = firstFive[index]
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(txn.description)
+                                .font(.body)
+                                .lineLimit(1)
+
+                            HStack(spacing: 8) {
+                                Text(formatDate(txn.postedAt))
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+
+                                if let points = txn.rewardPoints, points > 0 {
+                                    Text("+\(points) pts")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                        }
+
+                        Spacer()
+
+                        Text(formatAmount(txn.amountMinorUnits))
+                            .font(.body)
+                            .foregroundColor(
+                                txn.amountMinorUnits < 0 ? .red : .green
+                            )
+                    }
+                    .padding(.vertical, 4)
+
+                    if index < min(4, allTransactions.count - 1) {
+                        Divider()
+                    }
+                }
+            }
+            .padding(.vertical, 8)
+
+            if allTransactions.count > 5 {
+                Text(
+                    "... and \(allTransactions.count - 5) more transactions"
+                )
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
+        }
+    }
+
 
     private var targetSelectionSection: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -299,62 +366,6 @@ struct ImportView: View {
         }
     }
 
-    private func transactionListSection(
-        _ statement: ParsedStatement
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Transactions (\(statement.transactions.count))")
-                .font(.headline)
-
-            VStack(spacing: 4) {
-                let firstFive = Array(statement.transactions.prefix(5))
-                ForEach(firstFive.indices, id: \.self) { index in
-                    let txn = firstFive[index]
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(txn.description)
-                                .font(.body)
-                                .lineLimit(1)
-
-                            HStack(spacing: 8) {
-                                Text(formatDate(txn.postedAt))
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-
-                                if let points = txn.rewardPoints, points > 0 {
-                                    Text("+\(points) pts")
-                                        .font(.caption)
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                        }
-
-                        Spacer()
-
-                        Text(formatAmount(txn.amountMinorUnits))
-                            .font(.body)
-                            .foregroundColor(
-                                txn.amountMinorUnits < 0 ? .red : .green
-                            )
-                    }
-                    .padding(.vertical, 4)
-
-                    if index < min(4, statement.transactions.count - 1) {
-                        Divider()
-                    }
-                }
-            }
-            .padding(.vertical, 8)
-
-            if statement.transactions.count > 5 {
-                Text(
-                    "... and \(statement.transactions.count - 5) more transactions"
-                )
-                .font(.caption)
-                .foregroundColor(.secondary)
-            }
-        }
-    }
 
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
