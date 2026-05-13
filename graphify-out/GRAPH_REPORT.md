@@ -1,7 +1,7 @@
 # Graph Report - FinanceOS  (2026-05-13)
 
 ## Corpus Check
-- 56 files · ~11,037 words
+- 56 files · ~11,005 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1e1798e9`
+- Built from commit: `fe8fc3b2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

@@ -57,198 +57,198 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L1",
-      "id": "coding_standards_md",
       "community": 5,
-      "norm_label": "coding_standards.md"
+      "norm_label": "coding_standards.md",
+      "id": "coding_standards_md"
     },
     {
       "label": "FinanceOS Coding Standards",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L1",
-      "id": "financeos_coding_standards_financeos_coding_standards",
       "community": 5,
-      "norm_label": "financeos coding standards"
+      "norm_label": "financeos coding standards",
+      "id": "financeos_coding_standards_financeos_coding_standards"
     },
     {
       "label": "Line Length",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L5",
-      "id": "financeos_coding_standards_line_length",
       "community": 5,
-      "norm_label": "line length"
+      "norm_label": "line length",
+      "id": "financeos_coding_standards_line_length"
     },
     {
       "label": "code:swift (// \u274c Too long)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L11",
-      "id": "financeos_coding_standards_codeblock_1",
       "community": 5,
-      "norm_label": "code:swift (// \u274c too long)"
+      "norm_label": "code:swift (// \u274c too long)",
+      "id": "financeos_coding_standards_codeblock_1"
     },
     {
       "label": "Function Body Length",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L20",
-      "id": "financeos_coding_standards_function_body_length",
       "community": 5,
-      "norm_label": "function body length"
+      "norm_label": "function body length",
+      "id": "financeos_coding_standards_function_body_length"
     },
     {
       "label": "code:swift (// \u274c Single large function)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L26",
-      "id": "financeos_coding_standards_codeblock_2",
       "community": 5,
-      "norm_label": "code:swift (// \u274c single large function)"
+      "norm_label": "code:swift (// \u274c single large function)",
+      "id": "financeos_coding_standards_codeblock_2"
     },
     {
       "label": "Struct/Type Body Length",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L43",
-      "id": "financeos_coding_standards_struct_type_body_length",
       "community": 5,
-      "norm_label": "struct/type body length"
+      "norm_label": "struct/type body length",
+      "id": "financeos_coding_standards_struct_type_body_length"
     },
     {
       "label": "code:swift (// \u274c Single 300+ line View struct)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L49",
-      "id": "financeos_coding_standards_codeblock_3",
       "community": 5,
-      "norm_label": "code:swift (// \u274c single 300+ line view struct)"
+      "norm_label": "code:swift (// \u274c single 300+ line view struct)",
+      "id": "financeos_coding_standards_codeblock_3"
     },
     {
       "label": "File Length",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L71",
-      "id": "financeos_coding_standards_file_length",
       "community": 5,
-      "norm_label": "file length"
+      "norm_label": "file length",
+      "id": "financeos_coding_standards_file_length"
     },
     {
       "label": "Brace Spacing",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L81",
-      "id": "financeos_coding_standards_brace_spacing",
       "community": 5,
-      "norm_label": "brace spacing"
+      "norm_label": "brace spacing",
+      "id": "financeos_coding_standards_brace_spacing"
     },
     {
       "label": "code:swift (// \u274c Wrong)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L85",
-      "id": "financeos_coding_standards_codeblock_4",
       "community": 5,
-      "norm_label": "code:swift (// \u274c wrong)"
+      "norm_label": "code:swift (// \u274c wrong)",
+      "id": "financeos_coding_standards_codeblock_4"
     },
     {
       "label": "code:swift (// \u274c Wrong)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L100",
-      "id": "financeos_coding_standards_codeblock_5",
       "community": 5,
-      "norm_label": "code:swift (// \u274c wrong)"
+      "norm_label": "code:swift (// \u274c wrong)",
+      "id": "financeos_coding_standards_codeblock_5"
     },
     {
       "label": "Optional Initialization",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L115",
-      "id": "financeos_coding_standards_optional_initialization",
       "community": 5,
-      "norm_label": "optional initialization"
+      "norm_label": "optional initialization",
+      "id": "financeos_coding_standards_optional_initialization"
     },
     {
       "label": "code:swift (// \u274c Wrong)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L119",
-      "id": "financeos_coding_standards_codeblock_6",
       "community": 5,
-      "norm_label": "code:swift (// \u274c wrong)"
+      "norm_label": "code:swift (// \u274c wrong)",
+      "id": "financeos_coding_standards_codeblock_6"
     },
     {
       "label": "Identifier Naming",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L127",
-      "id": "financeos_coding_standards_identifier_naming",
       "community": 5,
-      "norm_label": "identifier naming"
+      "norm_label": "identifier naming",
+      "id": "financeos_coding_standards_identifier_naming"
     },
     {
       "label": "code:swift (// \u274c Wrong)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L131",
-      "id": "financeos_coding_standards_codeblock_7",
       "community": 5,
-      "norm_label": "code:swift (// \u274c wrong)"
+      "norm_label": "code:swift (// \u274c wrong)",
+      "id": "financeos_coding_standards_codeblock_7"
     },
     {
       "label": "Logging Best Practices",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L141",
-      "id": "financeos_coding_standards_logging_best_practices",
       "community": 5,
-      "norm_label": "logging best practices"
+      "norm_label": "logging best practices",
+      "id": "financeos_coding_standards_logging_best_practices"
     },
     {
       "label": "code:swift (// \u274c Too long)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L145",
-      "id": "financeos_coding_standards_codeblock_8",
       "community": 5,
-      "norm_label": "code:swift (// \u274c too long)"
+      "norm_label": "code:swift (// \u274c too long)",
+      "id": "financeos_coding_standards_codeblock_8"
     },
     {
       "label": "Enforcement",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L159",
-      "id": "financeos_coding_standards_enforcement",
       "community": 5,
-      "norm_label": "enforcement"
+      "norm_label": "enforcement",
+      "id": "financeos_coding_standards_enforcement"
     },
     {
       "label": "code:bash (swiftlint lint                    # Check all files)",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L163",
-      "id": "financeos_coding_standards_codeblock_9",
       "community": 5,
-      "norm_label": "code:bash (swiftlint lint                    # check all files)"
+      "norm_label": "code:bash (swiftlint lint                    # check all files)",
+      "id": "financeos_coding_standards_codeblock_9"
     },
     {
       "label": "SwiftFormat / SwiftLint Conflict",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L169",
-      "id": "financeos_coding_standards_swiftformat_swiftlint_conflict",
       "community": 5,
-      "norm_label": "swiftformat / swiftlint conflict"
+      "norm_label": "swiftformat / swiftlint conflict",
+      "id": "financeos_coding_standards_swiftformat_swiftlint_conflict"
     },
     {
       "label": "Architecture Alignment",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L179",
-      "id": "financeos_coding_standards_architecture_alignment",
       "community": 5,
-      "norm_label": "architecture alignment"
+      "norm_label": "architecture alignment",
+      "id": "financeos_coding_standards_architecture_alignment"
     },
     {
       "label": "AccountTransactionsViewModel.swift",
@@ -3872,9 +3872,9 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "financeos_coding_standards_enforcement",
-      "target": "financeos_coding_standards_swiftformat_swiftlint_conflict",
-      "confidence_score": 1.0
+      "target": "financeos_coding_standards_swiftformat_swiftlint_conflict"
     },
     {
       "relation": "contains",
@@ -8885,5 +8885,5 @@
       "source_file": "AGENTS.md"
     }
   ],
-  "built_at_commit": "1e1798e948893bb6d48ffe10065d0b44d16aa1b8"
+  "built_at_commit": "fe8fc3b28157190ae64f83bd3fa7d511caff2904"
 }
