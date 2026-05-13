@@ -16,6 +16,7 @@ final class TransactionsViewModel {
         let title: String
         let subtitle: String
         let amountText: String
+        let transactionType: TransactionType
     }
 
     private let transactionRepository: TransactionRepository
@@ -98,20 +99,22 @@ final class TransactionsViewModel {
                 subtitle: sourceName,
                 amountText: amountText(
                     minorUnits: transaction.amountMinorUnits,
-                    currencyCode: transaction.currencyCode
-                )
+                    currencyCode: transaction.currencyCode,
+                    transactionType: transaction.transactionType
+                ),
+                transactionType: transaction.transactionType
             )
         }
     }
 
     private func amountText(
         minorUnits: Int64,
-        currencyCode: String
+        currencyCode: String,
+        transactionType: TransactionType
     ) -> String {
-        let absoluteMinorUnits = abs(minorUnits)
-        let wholeUnits = absoluteMinorUnits / 100
-        let fractionalUnits = absoluteMinorUnits % 100
-        let sign = minorUnits < 0 ? "-" : ""
+        let wholeUnits = minorUnits / 100
+        let fractionalUnits = minorUnits % 100
+        let sign = transactionType == .debit ? "-" : "+"
 
         return "\(sign)\(currencyCode) \(wholeUnits).\(String(format: "%02d", fractionalUnits))"
     }

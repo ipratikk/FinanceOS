@@ -5,6 +5,7 @@
 //  Created by Pratik Goel on 13/05/26.
 //
 
+import FinanceCore
 import SwiftUI
 
 struct TransactionsView: View {
@@ -21,9 +22,15 @@ struct TransactionsView: View {
     var body: some View {
         NavigationStack {
             List(viewModel.transactionRows) { transactionRow in
-                HStack(alignment: .top) {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: transactionRow
+                        .transactionType == .debit ? "arrow.up.left.circle.fill" : "arrow.down.right.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(transactionRow.transactionType == .debit ? .red : .green)
+
                     VStack(alignment: .leading, spacing: 4) {
                         Text(transactionRow.title)
+                            .lineLimit(1)
                         Text(transactionRow.subtitle)
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -33,6 +40,7 @@ struct TransactionsView: View {
 
                     Text(transactionRow.amountText)
                         .font(.subheadline.monospacedDigit())
+                        .foregroundColor(transactionRow.transactionType == .debit ? .red : .green)
                 }
             }
             .navigationTitle("Transactions")
