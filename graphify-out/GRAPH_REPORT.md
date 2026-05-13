@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-13)
 
 ## Corpus Check
-- 56 files · ~10,992 words
+- 56 files · ~11,037 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 391 nodes · 507 edges · 32 communities (20 shown, 12 thin omitted)
+- 392 nodes · 508 edges · 32 communities (20 shown, 12 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0f1e88a5`
+- Built from commit: `1e1798e9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -95,12 +95,12 @@ Cohesion: 0.12
 Nodes (9): CSVStatementParser, ParsedWorkbook, SharedStringsParserDelegate, WorksheetParserDelegate, XLSXStatementParser, XLSXWorkbookReader, NSObject, StatementParser (+1 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.1
-Nodes (20): ALWAYS Read First, Architecture Rules, Build & Test Workflow, Change Scope Rules, code:bash (git rev-parse HEAD), code:bash (graphify update .), code:bash (git status), Coding Standards (+12 more)
+Cohesion: 0.09
+Nodes (21): Architecture Alignment, Brace Spacing, code:swift (// ❌ Too long), code:swift (// ❌ Single large function), code:swift (// ❌ Single 300+ line View struct), code:swift (// ❌ Wrong), code:swift (// ❌ Wrong), code:swift (// ❌ Wrong) (+13 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.1
-Nodes (20): Architecture Alignment, Brace Spacing, code:swift (// ❌ Too long), code:swift (// ❌ Single large function), code:swift (// ❌ Single 300+ line View struct), code:swift (// ❌ Wrong), code:swift (// ❌ Wrong), code:swift (// ❌ Wrong) (+12 more)
+Nodes (20): ALWAYS Read First, Architecture Rules, Build & Test Workflow, Change Scope Rules, code:bash (git rev-parse HEAD), code:bash (graphify update .), code:bash (git status), Coding Standards (+12 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.11
@@ -135,7 +135,7 @@ Cohesion: 0.22
 Nodes (8): Error, TransactionImportError, invalidAmount, invalidDate, malformedFile, missingRequiredColumn, platformUnavailable, unsupportedFormat
 
 ## Knowledge Gaps
-- **67 isolated node(s):** `account`, `card`, `account`, `card`, `Primary Goal` (+62 more)
+- **68 isolated node(s):** `code:swift (// ❌ Too long)`, `code:swift (// ❌ Single large function)`, `code:swift (// ❌ Single 300+ line View struct)`, `File Length`, `code:swift (// ❌ Wrong)` (+63 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -145,11 +145,11 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `ImportView` connect `Community 2` to `Community 7`?**
   _High betweenness centrality (0.074) - this node is a cross-community bridge._
 - **Why does `TransactionImportTarget` connect `Community 13` to `Community 1`, `Community 3`?**
-  _High betweenness centrality (0.072) - this node is a cross-community bridge._
+  _High betweenness centrality (0.071) - this node is a cross-community bridge._
 - **Why does `GRDBTransactionRepository` connect `Community 8` to `Community 1`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
-- **What connects `account`, `card`, `account` to the rest of the system?**
-  _67 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.055) - this node is a cross-community bridge._
+- **What connects `code:swift (// ❌ Too long)`, `code:swift (// ❌ Single large function)`, `code:swift (// ❌ Single 300+ line View struct)` to the rest of the system?**
+  _68 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.06 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**

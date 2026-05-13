@@ -53,777 +53,12 @@
   },
   "nodes": [
     {
-      "label": "AccountTransactionsViewModel.swift",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
-      "source_location": "L1",
-      "id": "apps_financeosmac_financeosmac_presentation_accounts_accounttransactionsviewmodel_swift",
-      "community": 0,
-      "norm_label": "accounttransactionsviewmodel.swift"
-    },
-    {
-      "label": "AccountTransactionsViewModel",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
-      "source_location": "L12",
-      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel",
-      "community": 0,
-      "norm_label": "accounttransactionsviewmodel"
-    },
-    {
-      "label": "TransactionRow",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
-      "source_location": "L14",
-      "id": "accounts_accounttransactionsviewmodel_transactionrow",
-      "community": 0,
-      "norm_label": "transactionrow"
-    },
-    {
-      "label": "Identifiable",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "identifiable",
-      "community": 0,
-      "norm_label": "identifiable"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
-      "source_location": "L29",
-      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_init",
-      "community": 0,
-      "norm_label": ".init()"
-    },
-    {
-      "label": ".loadTransactions()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
-      "source_location": "L37",
-      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_loadtransactions",
-      "community": 0,
-      "norm_label": ".loadtransactions()"
-    },
-    {
-      "label": ".makeTransactionRows()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
-      "source_location": "L60",
-      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_maketransactionrows",
-      "community": 0,
-      "norm_label": ".maketransactionrows()"
-    },
-    {
-      "label": ".amountText()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
-      "source_location": "L92",
-      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_amounttext",
-      "community": 0,
-      "norm_label": ".amounttext()"
-    },
-    {
-      "label": "CardTransactionsViewModel.swift",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
-      "source_location": "L1",
-      "id": "apps_financeosmac_financeosmac_presentation_cards_cardtransactionsviewmodel_swift",
-      "community": 16,
-      "norm_label": "cardtransactionsviewmodel.swift"
-    },
-    {
-      "label": "CardTransactionsViewModel",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
-      "source_location": "L12",
-      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel",
-      "community": 16,
-      "norm_label": "cardtransactionsviewmodel"
-    },
-    {
-      "label": "TransactionRow",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
-      "source_location": "L14",
-      "id": "cards_cardtransactionsviewmodel_transactionrow",
-      "community": 16,
-      "norm_label": "transactionrow"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
-      "source_location": "L29",
-      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_init",
-      "community": 16,
-      "norm_label": ".init()"
-    },
-    {
-      "label": ".loadTransactions()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
-      "source_location": "L37",
-      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_loadtransactions",
-      "community": 16,
-      "norm_label": ".loadtransactions()"
-    },
-    {
-      "label": ".makeTransactionRows()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
-      "source_location": "L60",
-      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_maketransactionrows",
-      "community": 16,
-      "norm_label": ".maketransactionrows()"
-    },
-    {
-      "label": ".amountText()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
-      "source_location": "L92",
-      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_amounttext",
-      "community": 16,
-      "norm_label": ".amounttext()"
-    },
-    {
-      "label": "ImportPreviewView.swift",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L1",
-      "id": "apps_financeosmac_financeosmac_presentation_import_importpreviewview_swift",
-      "community": 13,
-      "norm_label": "importpreviewview.swift"
-    },
-    {
-      "label": "ImportPreviewView",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L4",
-      "id": "import_importpreviewview_importpreviewview",
-      "community": 13,
-      "norm_label": "importpreviewview"
-    },
-    {
-      "label": "View",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "view",
-      "community": 7,
-      "norm_label": "view"
-    },
-    {
-      "label": "TargetChoice",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L8",
-      "id": "import_importpreviewview_targetchoice",
-      "community": 13,
-      "norm_label": "targetchoice"
-    },
-    {
-      "label": "Hashable",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "hashable",
-      "community": 13,
-      "norm_label": "hashable"
-    },
-    {
-      "label": "account",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L9",
-      "id": "import_importpreviewview_targetchoice_account",
-      "community": 13,
-      "norm_label": "account"
-    },
-    {
-      "label": "card",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L10",
-      "id": "import_importpreviewview_targetchoice_card",
-      "community": 13,
-      "norm_label": "card"
-    },
-    {
-      "label": ".fileListSection()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L65",
-      "id": "import_importpreviewview_importpreviewview_filelistsection",
-      "community": 13,
-      "norm_label": ".filelistsection()"
-    },
-    {
-      "label": ".aggregatedSummarySection()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L100",
-      "id": "import_importpreviewview_importpreviewview_aggregatedsummarysection",
-      "community": 13,
-      "norm_label": ".aggregatedsummarysection()"
-    },
-    {
-      "label": ".aggregatedTransactionListSection()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L157",
-      "id": "import_importpreviewview_importpreviewview_aggregatedtransactionlistsection",
-      "community": 13,
-      "norm_label": ".aggregatedtransactionlistsection()"
-    },
-    {
-      "label": ".formatDate()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L214",
-      "id": "import_importpreviewview_importpreviewview_formatdate",
-      "community": 13,
-      "norm_label": ".formatdate()"
-    },
-    {
-      "label": ".formatAmount()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
-      "source_location": "L220",
-      "id": "import_importpreviewview_importpreviewview_formatamount",
-      "community": 13,
-      "norm_label": ".formatamount()"
-    },
-    {
-      "label": "ImportView.swift",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
-      "source_location": "L1",
-      "id": "apps_financeosmac_financeosmac_presentation_import_importview_swift",
-      "community": 2,
-      "norm_label": "importview.swift"
-    },
-    {
-      "label": "ImportView",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
-      "source_location": "L5",
-      "id": "import_importview_importview",
-      "community": 2,
-      "norm_label": "importview"
-    },
-    {
-      "label": "TargetChoice",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
-      "source_location": "L9",
-      "id": "import_importview_targetchoice",
-      "community": 2,
-      "norm_label": "targetchoice"
-    },
-    {
-      "label": "account",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
-      "source_location": "L10",
-      "id": "import_importview_targetchoice_account",
-      "community": 2,
-      "norm_label": "account"
-    },
-    {
-      "label": "card",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
-      "source_location": "L11",
-      "id": "import_importview_targetchoice_card",
-      "community": 2,
-      "norm_label": "card"
-    },
-    {
-      "label": "ImportViewMocks.swift",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L1",
-      "id": "apps_financeosmac_financeosmac_presentation_import_importviewmocks_swift",
-      "community": 2,
-      "norm_label": "importviewmocks.swift"
-    },
-    {
-      "label": "MockTransactionRepository",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L4",
-      "id": "import_importviewmocks_mocktransactionrepository",
-      "community": 8,
-      "norm_label": "mocktransactionrepository"
-    },
-    {
-      "label": "TransactionRepository",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "transactionrepository",
-      "community": 8,
-      "norm_label": "transactionrepository"
-    },
-    {
-      "label": ".fetchTransactionsForAccount()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L5",
-      "id": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforaccount",
-      "community": 8,
-      "norm_label": ".fetchtransactionsforaccount()"
-    },
-    {
-      "label": ".fetchTransactionsForCard()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L9",
-      "id": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforcard",
-      "community": 8,
-      "norm_label": ".fetchtransactionsforcard()"
-    },
-    {
-      "label": ".fetchTransactions()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L13",
-      "id": "import_importviewmocks_mocktransactionrepository_fetchtransactions",
-      "community": 8,
-      "norm_label": ".fetchtransactions()"
-    },
-    {
-      "label": ".insertTransactions()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L17",
-      "id": "import_importviewmocks_mocktransactionrepository_inserttransactions",
-      "community": 8,
-      "norm_label": ".inserttransactions()"
-    },
-    {
-      "label": "MockAccountRepository",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L20",
-      "id": "import_importviewmocks_mockaccountrepository",
-      "community": 2,
-      "norm_label": "mockaccountrepository"
-    },
-    {
-      "label": "AccountRepository",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "accountrepository",
-      "community": 2,
-      "norm_label": "accountrepository"
-    },
-    {
-      "label": ".fetchAccounts()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L21",
-      "id": "import_importviewmocks_mockaccountrepository_fetchaccounts",
-      "community": 2,
-      "norm_label": ".fetchaccounts()"
-    },
-    {
-      "label": "MockCardRepository",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L26",
-      "id": "import_importviewmocks_mockcardrepository",
-      "community": 2,
-      "norm_label": "mockcardrepository"
-    },
-    {
-      "label": "CardRepository",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "cardrepository",
-      "community": 2,
-      "norm_label": "cardrepository"
-    },
-    {
-      "label": ".fetchCards()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
-      "source_location": "L27",
-      "id": "import_importviewmocks_mockcardrepository_fetchcards",
-      "community": 2,
-      "norm_label": ".fetchcards()"
-    },
-    {
-      "label": "ImportViewModel.swift",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L1",
-      "id": "apps_financeosmac_financeosmac_presentation_import_importviewmodel_swift",
-      "community": 11,
-      "norm_label": "importviewmodel.swift"
-    },
-    {
-      "label": "ImportViewModel",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L8",
-      "id": "import_importviewmodel_importviewmodel",
-      "community": 11,
-      "norm_label": "importviewmodel"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L30",
-      "id": "import_importviewmodel_importviewmodel_init",
-      "community": 11,
-      "norm_label": ".init()"
-    },
-    {
-      "label": ".setFileURLs()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L42",
-      "id": "import_importviewmodel_importviewmodel_setfileurls",
-      "community": 11,
-      "norm_label": ".setfileurls()"
-    },
-    {
-      "label": ".parseFiles()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L47",
-      "id": "import_importviewmodel_importviewmodel_parsefiles",
-      "community": 11,
-      "norm_label": ".parsefiles()"
-    },
-    {
-      "label": ".importTransactions()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L104",
-      "id": "import_importviewmodel_importviewmodel_importtransactions",
-      "community": 11,
-      "norm_label": ".importtransactions()"
-    },
-    {
-      "label": ".processImportFiles()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L142",
-      "id": "import_importviewmodel_importviewmodel_processimportfiles",
-      "community": 11,
-      "norm_label": ".processimportfiles()"
-    },
-    {
-      "label": ".loadTargetsOnAppear()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L181",
-      "id": "import_importviewmodel_importviewmodel_loadtargetsonappear",
-      "community": 11,
-      "norm_label": ".loadtargetsonappear()"
-    },
-    {
-      "label": ".loadTargets()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L196",
-      "id": "import_importviewmodel_importviewmodel_loadtargets",
-      "community": 11,
-      "norm_label": ".loadtargets()"
-    },
-    {
-      "label": ".fileFormat()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L202",
-      "id": "import_importviewmodel_importviewmodel_fileformat",
-      "community": 11,
-      "norm_label": ".fileformat()"
-    },
-    {
-      "label": ".formatError()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L217",
-      "id": "import_importviewmodel_importviewmodel_formaterror",
-      "community": 11,
-      "norm_label": ".formaterror()"
-    },
-    {
-      "label": ".reset()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
-      "source_location": "L234",
-      "id": "import_importviewmodel_importviewmodel_reset",
-      "community": 11,
-      "norm_label": ".reset()"
-    },
-    {
-      "label": "TransactionsViewModel.swift",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
-      "source_location": "L1",
-      "id": "apps_financeosmac_financeosmac_presentation_transactions_transactionsviewmodel_swift",
-      "community": 12,
-      "norm_label": "transactionsviewmodel.swift"
-    },
-    {
-      "label": "TransactionsViewModel",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
-      "source_location": "L12",
-      "id": "transactions_transactionsviewmodel_transactionsviewmodel",
-      "community": 12,
-      "norm_label": "transactionsviewmodel"
-    },
-    {
-      "label": "TransactionRow",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
-      "source_location": "L14",
-      "id": "transactions_transactionsviewmodel_transactionrow",
-      "community": 12,
-      "norm_label": "transactionrow"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
-      "source_location": "L30",
-      "id": "transactions_transactionsviewmodel_transactionsviewmodel_init",
-      "community": 12,
-      "norm_label": ".init()"
-    },
-    {
-      "label": ".loadTransactions()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
-      "source_location": "L40",
-      "id": "transactions_transactionsviewmodel_transactionsviewmodel_loadtransactions",
-      "community": 12,
-      "norm_label": ".loadtransactions()"
-    },
-    {
-      "label": ".makeTransactionRows()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
-      "source_location": "L66",
-      "id": "transactions_transactionsviewmodel_transactionsviewmodel_maketransactionrows",
-      "community": 12,
-      "norm_label": ".maketransactionrows()"
-    },
-    {
-      "label": ".amountText()",
-      "file_type": "code",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
-      "source_location": "L108",
-      "id": "transactions_transactionsviewmodel_transactionsviewmodel_amounttext",
-      "community": 12,
-      "norm_label": ".amounttext()"
-    },
-    {
-      "label": "CLAUDE.md",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L1",
-      "id": "claude_md",
-      "community": 5,
-      "norm_label": "claude.md"
-    },
-    {
-      "label": "FinanceOS Claude Code Instructions",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L1",
-      "id": "financeos_claude_financeos_claude_code_instructions",
-      "community": 5,
-      "norm_label": "financeos claude code instructions"
-    },
-    {
-      "label": "Primary Goal",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L3",
-      "id": "financeos_claude_primary_goal",
-      "community": 5,
-      "norm_label": "primary goal"
-    },
-    {
-      "label": "Engineering Expectations",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L24",
-      "id": "financeos_claude_engineering_expectations",
-      "community": 5,
-      "norm_label": "engineering expectations"
-    },
-    {
-      "label": "Coding Standards",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L88",
-      "id": "financeos_claude_coding_standards",
-      "community": 5,
-      "norm_label": "coding standards"
-    },
-    {
-      "label": "Context Loading Rules",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L102",
-      "id": "financeos_claude_context_loading_rules",
-      "community": 5,
-      "norm_label": "context loading rules"
-    },
-    {
-      "label": "ALWAYS Read First",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L104",
-      "id": "financeos_claude_always_read_first",
-      "community": 5,
-      "norm_label": "always read first"
-    },
-    {
-      "label": "Repository Navigation Rules",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L115",
-      "id": "financeos_claude_repository_navigation_rules",
-      "community": 5,
-      "norm_label": "repository navigation rules"
-    },
-    {
-      "label": "graphify",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L117",
-      "id": "financeos_claude_graphify",
-      "community": 5,
-      "norm_label": "graphify"
-    },
-    {
-      "label": "Graph Freshness Rules",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L159",
-      "id": "financeos_claude_graph_freshness_rules",
-      "community": 5,
-      "norm_label": "graph freshness rules"
-    },
-    {
-      "label": "code:bash (git rev-parse HEAD)",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L163",
-      "id": "financeos_claude_codeblock_1",
-      "community": 5,
-      "norm_label": "code:bash (git rev-parse head)"
-    },
-    {
-      "label": "code:bash (graphify update .)",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L173",
-      "id": "financeos_claude_codeblock_2",
-      "community": 5,
-      "norm_label": "code:bash (graphify update .)"
-    },
-    {
-      "label": "Token Efficiency Rules",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L181",
-      "id": "financeos_claude_token_efficiency_rules",
-      "community": 5,
-      "norm_label": "token efficiency rules"
-    },
-    {
-      "label": "Git Workflow Rules",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L207",
-      "id": "financeos_claude_git_workflow_rules",
-      "community": 5,
-      "norm_label": "git workflow rules"
-    },
-    {
-      "label": "code:bash (git status)",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L211",
-      "id": "financeos_claude_codeblock_3",
-      "community": 5,
-      "norm_label": "code:bash (git status)"
-    },
-    {
-      "label": "Architecture Rules",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L231",
-      "id": "financeos_claude_architecture_rules",
-      "community": 5,
-      "norm_label": "architecture rules"
-    },
-    {
-      "label": "Parsing Strategy",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L251",
-      "id": "financeos_claude_parsing_strategy",
-      "community": 5,
-      "norm_label": "parsing strategy"
-    },
-    {
-      "label": "Change Scope Rules",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L271",
-      "id": "financeos_claude_change_scope_rules",
-      "community": 5,
-      "norm_label": "change scope rules"
-    },
-    {
-      "label": "Current Project Focus",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L286",
-      "id": "financeos_claude_current_project_focus",
-      "community": 5,
-      "norm_label": "current project focus"
-    },
-    {
-      "label": "Build & Test Workflow",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L308",
-      "id": "financeos_claude_build_test_workflow",
-      "community": 5,
-      "norm_label": "build & test workflow"
-    },
-    {
-      "label": "Response Strategy",
-      "file_type": "document",
-      "source_file": "CLAUDE.md",
-      "source_location": "L325",
-      "id": "financeos_claude_response_strategy",
-      "community": 5,
-      "norm_label": "response strategy"
-    },
-    {
       "label": "CODING_STANDARDS.md",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L1",
       "id": "coding_standards_md",
-      "community": 6,
+      "community": 5,
       "norm_label": "coding_standards.md"
     },
     {
@@ -832,7 +67,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L1",
       "id": "financeos_coding_standards_financeos_coding_standards",
-      "community": 6,
+      "community": 5,
       "norm_label": "financeos coding standards"
     },
     {
@@ -841,7 +76,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L5",
       "id": "financeos_coding_standards_line_length",
-      "community": 6,
+      "community": 5,
       "norm_label": "line length"
     },
     {
@@ -850,7 +85,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L11",
       "id": "financeos_coding_standards_codeblock_1",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c too long)"
     },
     {
@@ -859,7 +94,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L20",
       "id": "financeos_coding_standards_function_body_length",
-      "community": 6,
+      "community": 5,
       "norm_label": "function body length"
     },
     {
@@ -868,7 +103,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L26",
       "id": "financeos_coding_standards_codeblock_2",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c single large function)"
     },
     {
@@ -877,7 +112,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L43",
       "id": "financeos_coding_standards_struct_type_body_length",
-      "community": 6,
+      "community": 5,
       "norm_label": "struct/type body length"
     },
     {
@@ -886,7 +121,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L49",
       "id": "financeos_coding_standards_codeblock_3",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c single 300+ line view struct)"
     },
     {
@@ -895,7 +130,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L71",
       "id": "financeos_coding_standards_file_length",
-      "community": 6,
+      "community": 5,
       "norm_label": "file length"
     },
     {
@@ -904,7 +139,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L81",
       "id": "financeos_coding_standards_brace_spacing",
-      "community": 6,
+      "community": 5,
       "norm_label": "brace spacing"
     },
     {
@@ -913,7 +148,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L85",
       "id": "financeos_coding_standards_codeblock_4",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c wrong)"
     },
     {
@@ -922,7 +157,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L100",
       "id": "financeos_coding_standards_codeblock_5",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c wrong)"
     },
     {
@@ -931,7 +166,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L115",
       "id": "financeos_coding_standards_optional_initialization",
-      "community": 6,
+      "community": 5,
       "norm_label": "optional initialization"
     },
     {
@@ -940,7 +175,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L119",
       "id": "financeos_coding_standards_codeblock_6",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c wrong)"
     },
     {
@@ -949,7 +184,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L127",
       "id": "financeos_coding_standards_identifier_naming",
-      "community": 6,
+      "community": 5,
       "norm_label": "identifier naming"
     },
     {
@@ -958,7 +193,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L131",
       "id": "financeos_coding_standards_codeblock_7",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c wrong)"
     },
     {
@@ -967,7 +202,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L141",
       "id": "financeos_coding_standards_logging_best_practices",
-      "community": 6,
+      "community": 5,
       "norm_label": "logging best practices"
     },
     {
@@ -976,7 +211,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L145",
       "id": "financeos_coding_standards_codeblock_8",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:swift (// \u274c too long)"
     },
     {
@@ -985,7 +220,7 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L159",
       "id": "financeos_coding_standards_enforcement",
-      "community": 6,
+      "community": 5,
       "norm_label": "enforcement"
     },
     {
@@ -994,17 +229,791 @@
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L163",
       "id": "financeos_coding_standards_codeblock_9",
-      "community": 6,
+      "community": 5,
       "norm_label": "code:bash (swiftlint lint                    # check all files)"
+    },
+    {
+      "label": "SwiftFormat / SwiftLint Conflict",
+      "file_type": "document",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L169",
+      "id": "financeos_coding_standards_swiftformat_swiftlint_conflict",
+      "community": 5,
+      "norm_label": "swiftformat / swiftlint conflict"
     },
     {
       "label": "Architecture Alignment",
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
-      "source_location": "L169",
+      "source_location": "L179",
       "id": "financeos_coding_standards_architecture_alignment",
-      "community": 6,
+      "community": 5,
       "norm_label": "architecture alignment"
+    },
+    {
+      "label": "AccountTransactionsViewModel.swift",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
+      "source_location": "L1",
+      "community": 0,
+      "norm_label": "accounttransactionsviewmodel.swift",
+      "id": "apps_financeosmac_financeosmac_presentation_accounts_accounttransactionsviewmodel_swift"
+    },
+    {
+      "label": "AccountTransactionsViewModel",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
+      "source_location": "L12",
+      "community": 0,
+      "norm_label": "accounttransactionsviewmodel",
+      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel"
+    },
+    {
+      "label": "TransactionRow",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
+      "source_location": "L14",
+      "community": 0,
+      "norm_label": "transactionrow",
+      "id": "accounts_accounttransactionsviewmodel_transactionrow"
+    },
+    {
+      "label": "Identifiable",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "community": 0,
+      "norm_label": "identifiable",
+      "id": "identifiable"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
+      "source_location": "L29",
+      "community": 0,
+      "norm_label": ".init()",
+      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_init"
+    },
+    {
+      "label": ".loadTransactions()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
+      "source_location": "L37",
+      "community": 0,
+      "norm_label": ".loadtransactions()",
+      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_loadtransactions"
+    },
+    {
+      "label": ".makeTransactionRows()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
+      "source_location": "L60",
+      "community": 0,
+      "norm_label": ".maketransactionrows()",
+      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_maketransactionrows"
+    },
+    {
+      "label": ".amountText()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
+      "source_location": "L92",
+      "community": 0,
+      "norm_label": ".amounttext()",
+      "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_amounttext"
+    },
+    {
+      "label": "CardTransactionsViewModel.swift",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
+      "source_location": "L1",
+      "community": 16,
+      "norm_label": "cardtransactionsviewmodel.swift",
+      "id": "apps_financeosmac_financeosmac_presentation_cards_cardtransactionsviewmodel_swift"
+    },
+    {
+      "label": "CardTransactionsViewModel",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
+      "source_location": "L12",
+      "community": 16,
+      "norm_label": "cardtransactionsviewmodel",
+      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel"
+    },
+    {
+      "label": "TransactionRow",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
+      "source_location": "L14",
+      "community": 16,
+      "norm_label": "transactionrow",
+      "id": "cards_cardtransactionsviewmodel_transactionrow"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
+      "source_location": "L29",
+      "community": 16,
+      "norm_label": ".init()",
+      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_init"
+    },
+    {
+      "label": ".loadTransactions()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
+      "source_location": "L37",
+      "community": 16,
+      "norm_label": ".loadtransactions()",
+      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_loadtransactions"
+    },
+    {
+      "label": ".makeTransactionRows()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
+      "source_location": "L60",
+      "community": 16,
+      "norm_label": ".maketransactionrows()",
+      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_maketransactionrows"
+    },
+    {
+      "label": ".amountText()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
+      "source_location": "L92",
+      "community": 16,
+      "norm_label": ".amounttext()",
+      "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_amounttext"
+    },
+    {
+      "label": "ImportPreviewView.swift",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L1",
+      "community": 13,
+      "norm_label": "importpreviewview.swift",
+      "id": "apps_financeosmac_financeosmac_presentation_import_importpreviewview_swift"
+    },
+    {
+      "label": "ImportPreviewView",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L4",
+      "community": 13,
+      "norm_label": "importpreviewview",
+      "id": "import_importpreviewview_importpreviewview"
+    },
+    {
+      "label": "View",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "community": 7,
+      "norm_label": "view",
+      "id": "view"
+    },
+    {
+      "label": "TargetChoice",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L8",
+      "community": 13,
+      "norm_label": "targetchoice",
+      "id": "import_importpreviewview_targetchoice"
+    },
+    {
+      "label": "Hashable",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "community": 13,
+      "norm_label": "hashable",
+      "id": "hashable"
+    },
+    {
+      "label": "account",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L9",
+      "community": 13,
+      "norm_label": "account",
+      "id": "import_importpreviewview_targetchoice_account"
+    },
+    {
+      "label": "card",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L10",
+      "community": 13,
+      "norm_label": "card",
+      "id": "import_importpreviewview_targetchoice_card"
+    },
+    {
+      "label": ".fileListSection()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L65",
+      "community": 13,
+      "norm_label": ".filelistsection()",
+      "id": "import_importpreviewview_importpreviewview_filelistsection"
+    },
+    {
+      "label": ".aggregatedSummarySection()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L100",
+      "community": 13,
+      "norm_label": ".aggregatedsummarysection()",
+      "id": "import_importpreviewview_importpreviewview_aggregatedsummarysection"
+    },
+    {
+      "label": ".aggregatedTransactionListSection()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L157",
+      "community": 13,
+      "norm_label": ".aggregatedtransactionlistsection()",
+      "id": "import_importpreviewview_importpreviewview_aggregatedtransactionlistsection"
+    },
+    {
+      "label": ".formatDate()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L214",
+      "community": 13,
+      "norm_label": ".formatdate()",
+      "id": "import_importpreviewview_importpreviewview_formatdate"
+    },
+    {
+      "label": ".formatAmount()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
+      "source_location": "L220",
+      "community": 13,
+      "norm_label": ".formatamount()",
+      "id": "import_importpreviewview_importpreviewview_formatamount"
+    },
+    {
+      "label": "ImportView.swift",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
+      "source_location": "L1",
+      "community": 2,
+      "norm_label": "importview.swift",
+      "id": "apps_financeosmac_financeosmac_presentation_import_importview_swift"
+    },
+    {
+      "label": "ImportView",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
+      "source_location": "L5",
+      "community": 2,
+      "norm_label": "importview",
+      "id": "import_importview_importview"
+    },
+    {
+      "label": "TargetChoice",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
+      "source_location": "L9",
+      "community": 2,
+      "norm_label": "targetchoice",
+      "id": "import_importview_targetchoice"
+    },
+    {
+      "label": "account",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
+      "source_location": "L10",
+      "community": 2,
+      "norm_label": "account",
+      "id": "import_importview_targetchoice_account"
+    },
+    {
+      "label": "card",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
+      "source_location": "L11",
+      "community": 2,
+      "norm_label": "card",
+      "id": "import_importview_targetchoice_card"
+    },
+    {
+      "label": "ImportViewMocks.swift",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L1",
+      "community": 2,
+      "norm_label": "importviewmocks.swift",
+      "id": "apps_financeosmac_financeosmac_presentation_import_importviewmocks_swift"
+    },
+    {
+      "label": "MockTransactionRepository",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L4",
+      "community": 8,
+      "norm_label": "mocktransactionrepository",
+      "id": "import_importviewmocks_mocktransactionrepository"
+    },
+    {
+      "label": "TransactionRepository",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "community": 8,
+      "norm_label": "transactionrepository",
+      "id": "transactionrepository"
+    },
+    {
+      "label": ".fetchTransactionsForAccount()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L5",
+      "community": 8,
+      "norm_label": ".fetchtransactionsforaccount()",
+      "id": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforaccount"
+    },
+    {
+      "label": ".fetchTransactionsForCard()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L9",
+      "community": 8,
+      "norm_label": ".fetchtransactionsforcard()",
+      "id": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforcard"
+    },
+    {
+      "label": ".fetchTransactions()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L13",
+      "community": 8,
+      "norm_label": ".fetchtransactions()",
+      "id": "import_importviewmocks_mocktransactionrepository_fetchtransactions"
+    },
+    {
+      "label": ".insertTransactions()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L17",
+      "community": 8,
+      "norm_label": ".inserttransactions()",
+      "id": "import_importviewmocks_mocktransactionrepository_inserttransactions"
+    },
+    {
+      "label": "MockAccountRepository",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L20",
+      "community": 2,
+      "norm_label": "mockaccountrepository",
+      "id": "import_importviewmocks_mockaccountrepository"
+    },
+    {
+      "label": "AccountRepository",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "community": 2,
+      "norm_label": "accountrepository",
+      "id": "accountrepository"
+    },
+    {
+      "label": ".fetchAccounts()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L21",
+      "community": 2,
+      "norm_label": ".fetchaccounts()",
+      "id": "import_importviewmocks_mockaccountrepository_fetchaccounts"
+    },
+    {
+      "label": "MockCardRepository",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L26",
+      "community": 2,
+      "norm_label": "mockcardrepository",
+      "id": "import_importviewmocks_mockcardrepository"
+    },
+    {
+      "label": "CardRepository",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "community": 2,
+      "norm_label": "cardrepository",
+      "id": "cardrepository"
+    },
+    {
+      "label": ".fetchCards()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
+      "source_location": "L27",
+      "community": 2,
+      "norm_label": ".fetchcards()",
+      "id": "import_importviewmocks_mockcardrepository_fetchcards"
+    },
+    {
+      "label": "ImportViewModel.swift",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "importviewmodel.swift",
+      "id": "apps_financeosmac_financeosmac_presentation_import_importviewmodel_swift"
+    },
+    {
+      "label": "ImportViewModel",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L8",
+      "community": 11,
+      "norm_label": "importviewmodel",
+      "id": "import_importviewmodel_importviewmodel"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L30",
+      "community": 11,
+      "norm_label": ".init()",
+      "id": "import_importviewmodel_importviewmodel_init"
+    },
+    {
+      "label": ".setFileURLs()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L42",
+      "community": 11,
+      "norm_label": ".setfileurls()",
+      "id": "import_importviewmodel_importviewmodel_setfileurls"
+    },
+    {
+      "label": ".parseFiles()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L47",
+      "community": 11,
+      "norm_label": ".parsefiles()",
+      "id": "import_importviewmodel_importviewmodel_parsefiles"
+    },
+    {
+      "label": ".importTransactions()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L104",
+      "community": 11,
+      "norm_label": ".importtransactions()",
+      "id": "import_importviewmodel_importviewmodel_importtransactions"
+    },
+    {
+      "label": ".processImportFiles()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L142",
+      "community": 11,
+      "norm_label": ".processimportfiles()",
+      "id": "import_importviewmodel_importviewmodel_processimportfiles"
+    },
+    {
+      "label": ".loadTargetsOnAppear()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L181",
+      "community": 11,
+      "norm_label": ".loadtargetsonappear()",
+      "id": "import_importviewmodel_importviewmodel_loadtargetsonappear"
+    },
+    {
+      "label": ".loadTargets()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L196",
+      "community": 11,
+      "norm_label": ".loadtargets()",
+      "id": "import_importviewmodel_importviewmodel_loadtargets"
+    },
+    {
+      "label": ".fileFormat()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L202",
+      "community": 11,
+      "norm_label": ".fileformat()",
+      "id": "import_importviewmodel_importviewmodel_fileformat"
+    },
+    {
+      "label": ".formatError()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L217",
+      "community": 11,
+      "norm_label": ".formaterror()",
+      "id": "import_importviewmodel_importviewmodel_formaterror"
+    },
+    {
+      "label": ".reset()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
+      "source_location": "L234",
+      "community": 11,
+      "norm_label": ".reset()",
+      "id": "import_importviewmodel_importviewmodel_reset"
+    },
+    {
+      "label": "TransactionsViewModel.swift",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
+      "source_location": "L1",
+      "community": 12,
+      "norm_label": "transactionsviewmodel.swift",
+      "id": "apps_financeosmac_financeosmac_presentation_transactions_transactionsviewmodel_swift"
+    },
+    {
+      "label": "TransactionsViewModel",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
+      "source_location": "L12",
+      "community": 12,
+      "norm_label": "transactionsviewmodel",
+      "id": "transactions_transactionsviewmodel_transactionsviewmodel"
+    },
+    {
+      "label": "TransactionRow",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
+      "source_location": "L14",
+      "community": 12,
+      "norm_label": "transactionrow",
+      "id": "transactions_transactionsviewmodel_transactionrow"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
+      "source_location": "L30",
+      "community": 12,
+      "norm_label": ".init()",
+      "id": "transactions_transactionsviewmodel_transactionsviewmodel_init"
+    },
+    {
+      "label": ".loadTransactions()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
+      "source_location": "L40",
+      "community": 12,
+      "norm_label": ".loadtransactions()",
+      "id": "transactions_transactionsviewmodel_transactionsviewmodel_loadtransactions"
+    },
+    {
+      "label": ".makeTransactionRows()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
+      "source_location": "L66",
+      "community": 12,
+      "norm_label": ".maketransactionrows()",
+      "id": "transactions_transactionsviewmodel_transactionsviewmodel_maketransactionrows"
+    },
+    {
+      "label": ".amountText()",
+      "file_type": "code",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
+      "source_location": "L108",
+      "community": 12,
+      "norm_label": ".amounttext()",
+      "id": "transactions_transactionsviewmodel_transactionsviewmodel_amounttext"
+    },
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "community": 6,
+      "norm_label": "claude.md",
+      "id": "claude_md"
+    },
+    {
+      "label": "FinanceOS Claude Code Instructions",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "community": 6,
+      "norm_label": "financeos claude code instructions",
+      "id": "financeos_claude_financeos_claude_code_instructions"
+    },
+    {
+      "label": "Primary Goal",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L3",
+      "community": 6,
+      "norm_label": "primary goal",
+      "id": "financeos_claude_primary_goal"
+    },
+    {
+      "label": "Engineering Expectations",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L24",
+      "community": 6,
+      "norm_label": "engineering expectations",
+      "id": "financeos_claude_engineering_expectations"
+    },
+    {
+      "label": "Coding Standards",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L88",
+      "community": 6,
+      "norm_label": "coding standards",
+      "id": "financeos_claude_coding_standards"
+    },
+    {
+      "label": "Context Loading Rules",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L102",
+      "community": 6,
+      "norm_label": "context loading rules",
+      "id": "financeos_claude_context_loading_rules"
+    },
+    {
+      "label": "ALWAYS Read First",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L104",
+      "community": 6,
+      "norm_label": "always read first",
+      "id": "financeos_claude_always_read_first"
+    },
+    {
+      "label": "Repository Navigation Rules",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L115",
+      "community": 6,
+      "norm_label": "repository navigation rules",
+      "id": "financeos_claude_repository_navigation_rules"
+    },
+    {
+      "label": "graphify",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L117",
+      "community": 6,
+      "norm_label": "graphify",
+      "id": "financeos_claude_graphify"
+    },
+    {
+      "label": "Graph Freshness Rules",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L159",
+      "community": 6,
+      "norm_label": "graph freshness rules",
+      "id": "financeos_claude_graph_freshness_rules"
+    },
+    {
+      "label": "code:bash (git rev-parse HEAD)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L163",
+      "community": 6,
+      "norm_label": "code:bash (git rev-parse head)",
+      "id": "financeos_claude_codeblock_1"
+    },
+    {
+      "label": "code:bash (graphify update .)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L173",
+      "community": 6,
+      "norm_label": "code:bash (graphify update .)",
+      "id": "financeos_claude_codeblock_2"
+    },
+    {
+      "label": "Token Efficiency Rules",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L181",
+      "community": 6,
+      "norm_label": "token efficiency rules",
+      "id": "financeos_claude_token_efficiency_rules"
+    },
+    {
+      "label": "Git Workflow Rules",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L207",
+      "community": 6,
+      "norm_label": "git workflow rules",
+      "id": "financeos_claude_git_workflow_rules"
+    },
+    {
+      "label": "code:bash (git status)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L211",
+      "community": 6,
+      "norm_label": "code:bash (git status)",
+      "id": "financeos_claude_codeblock_3"
+    },
+    {
+      "label": "Architecture Rules",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L231",
+      "community": 6,
+      "norm_label": "architecture rules",
+      "id": "financeos_claude_architecture_rules"
+    },
+    {
+      "label": "Parsing Strategy",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L251",
+      "community": 6,
+      "norm_label": "parsing strategy",
+      "id": "financeos_claude_parsing_strategy"
+    },
+    {
+      "label": "Change Scope Rules",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L271",
+      "community": 6,
+      "norm_label": "change scope rules",
+      "id": "financeos_claude_change_scope_rules"
+    },
+    {
+      "label": "Current Project Focus",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L286",
+      "community": 6,
+      "norm_label": "current project focus",
+      "id": "financeos_claude_current_project_focus"
+    },
+    {
+      "label": "Build & Test Workflow",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L308",
+      "community": 6,
+      "norm_label": "build & test workflow",
+      "id": "financeos_claude_build_test_workflow"
+    },
+    {
+      "label": "Response Strategy",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L325",
+      "community": 6,
+      "norm_label": "response strategy",
+      "id": "financeos_claude_response_strategy"
     },
     {
       "label": "ImportView.swift",
@@ -3660,12 +3669,222 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "coding_standards_md",
+      "target": "financeos_coding_standards_financeos_coding_standards"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_line_length"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_function_body_length"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_struct_type_body_length"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_file_length"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L81",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_brace_spacing"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L115",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_optional_initialization"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_identifier_naming"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L141",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_logging_best_practices"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L159",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_enforcement"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L169",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_financeos_coding_standards",
+      "target": "financeos_coding_standards_architecture_alignment"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_line_length",
+      "target": "financeos_coding_standards_codeblock_1"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_function_body_length",
+      "target": "financeos_coding_standards_codeblock_2"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_struct_type_body_length",
+      "target": "financeos_coding_standards_codeblock_3"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L85",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_brace_spacing",
+      "target": "financeos_coding_standards_codeblock_4"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L100",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_brace_spacing",
+      "target": "financeos_coding_standards_codeblock_5"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L119",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_optional_initialization",
+      "target": "financeos_coding_standards_codeblock_6"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L131",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_identifier_naming",
+      "target": "financeos_coding_standards_codeblock_7"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L145",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_logging_best_practices",
+      "target": "financeos_coding_standards_codeblock_8"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L163",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeos_coding_standards_enforcement",
+      "target": "financeos_coding_standards_codeblock_9"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODING_STANDARDS.md",
+      "source_location": "L169",
+      "weight": 1.0,
+      "source": "financeos_coding_standards_enforcement",
+      "target": "financeos_coding_standards_swiftformat_swiftlint_conflict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_accounts_accounttransactionsviewmodel_swift",
-      "target": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel",
-      "confidence_score": 1.0
+      "target": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel"
     },
     {
       "relation": "contains",
@@ -3673,9 +3892,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_accounts_accounttransactionsviewmodel_swift",
-      "target": "accounts_accounttransactionsviewmodel_transactionrow",
-      "confidence_score": 1.0
+      "target": "accounts_accounttransactionsviewmodel_transactionrow"
     },
     {
       "relation": "method",
@@ -3856,9 +4075,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_cards_cardtransactionsviewmodel_swift",
-      "target": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel",
-      "confidence_score": 1.0
+      "target": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel"
     },
     {
       "relation": "contains",
@@ -3866,9 +4085,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsViewModel.swift",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_cards_cardtransactionsviewmodel_swift",
-      "target": "cards_cardtransactionsviewmodel_transactionrow",
-      "confidence_score": 1.0
+      "target": "cards_cardtransactionsviewmodel_transactionrow"
     },
     {
       "relation": "method",
@@ -3969,9 +4188,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importpreviewview_swift",
-      "target": "import_importpreviewview_importpreviewview",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview"
     },
     {
       "relation": "contains",
@@ -3979,9 +4198,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importpreviewview_swift",
-      "target": "import_importpreviewview_targetchoice",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_targetchoice"
     },
     {
       "relation": "inherits",
@@ -3989,9 +4208,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview",
-      "target": "view",
-      "confidence_score": 1.0
+      "target": "view"
     },
     {
       "relation": "method",
@@ -3999,9 +4218,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview",
-      "target": "import_importpreviewview_importpreviewview_filelistsection",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_filelistsection"
     },
     {
       "relation": "method",
@@ -4009,9 +4228,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L100",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview",
-      "target": "import_importpreviewview_importpreviewview_aggregatedsummarysection",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_aggregatedsummarysection"
     },
     {
       "relation": "method",
@@ -4019,9 +4238,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L157",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview",
-      "target": "import_importpreviewview_importpreviewview_aggregatedtransactionlistsection",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_aggregatedtransactionlistsection"
     },
     {
       "relation": "method",
@@ -4029,9 +4248,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L214",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview",
-      "target": "import_importpreviewview_importpreviewview_formatdate",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_formatdate"
     },
     {
       "relation": "method",
@@ -4039,9 +4258,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L220",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview",
-      "target": "import_importpreviewview_importpreviewview_formatamount",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_formatamount"
     },
     {
       "relation": "inherits",
@@ -4119,9 +4338,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_targetchoice",
-      "target": "hashable",
-      "confidence_score": 1.0
+      "target": "hashable"
     },
     {
       "relation": "case_of",
@@ -4129,9 +4348,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_targetchoice",
-      "target": "import_importpreviewview_targetchoice_account",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_targetchoice_account"
     },
     {
       "relation": "case_of",
@@ -4139,9 +4358,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_targetchoice",
-      "target": "import_importpreviewview_targetchoice_card",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_targetchoice_card"
     },
     {
       "relation": "inherits",
@@ -4170,9 +4389,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L137",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview_aggregatedsummarysection",
-      "target": "import_importpreviewview_importpreviewview_formatamount",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_formatamount"
     },
     {
       "relation": "calls",
@@ -4181,9 +4400,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L175",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview_aggregatedtransactionlistsection",
-      "target": "import_importpreviewview_importpreviewview_formatdate",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_formatdate"
     },
     {
       "relation": "calls",
@@ -4192,9 +4411,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importpreviewview_importpreviewview_aggregatedtransactionlistsection",
-      "target": "import_importpreviewview_importpreviewview_formatamount",
-      "confidence_score": 1.0
+      "target": "import_importpreviewview_importpreviewview_formatamount"
     },
     {
       "relation": "contains",
@@ -4202,9 +4421,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importview_swift",
-      "target": "import_importview_importview",
-      "confidence_score": 1.0
+      "target": "import_importview_importview"
     },
     {
       "relation": "contains",
@@ -4212,9 +4431,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importview_swift",
-      "target": "import_importview_targetchoice",
-      "confidence_score": 1.0
+      "target": "import_importview_targetchoice"
     },
     {
       "relation": "contains",
@@ -4352,9 +4571,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importviewmocks_swift",
-      "target": "import_importviewmocks_mocktransactionrepository",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mocktransactionrepository"
     },
     {
       "relation": "contains",
@@ -4362,9 +4581,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importviewmocks_swift",
-      "target": "import_importviewmocks_mockaccountrepository",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mockaccountrepository"
     },
     {
       "relation": "contains",
@@ -4372,9 +4591,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importviewmocks_swift",
-      "target": "import_importviewmocks_mockcardrepository",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mockcardrepository"
     },
     {
       "relation": "inherits",
@@ -4382,9 +4601,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mocktransactionrepository",
-      "target": "transactionrepository",
-      "confidence_score": 1.0
+      "target": "transactionrepository"
     },
     {
       "relation": "method",
@@ -4392,9 +4611,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mocktransactionrepository",
-      "target": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforaccount",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforaccount"
     },
     {
       "relation": "method",
@@ -4402,9 +4621,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mocktransactionrepository",
-      "target": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforcard",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforcard"
     },
     {
       "relation": "method",
@@ -4412,9 +4631,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mocktransactionrepository",
-      "target": "import_importviewmocks_mocktransactionrepository_fetchtransactions",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mocktransactionrepository_fetchtransactions"
     },
     {
       "relation": "method",
@@ -4422,9 +4641,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mocktransactionrepository",
-      "target": "import_importviewmocks_mocktransactionrepository_inserttransactions",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mocktransactionrepository_inserttransactions"
     },
     {
       "relation": "inherits",
@@ -4452,9 +4671,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mockaccountrepository",
-      "target": "accountrepository",
-      "confidence_score": 1.0
+      "target": "accountrepository"
     },
     {
       "relation": "method",
@@ -4462,9 +4681,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mockaccountrepository",
-      "target": "import_importviewmocks_mockaccountrepository_fetchaccounts",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mockaccountrepository_fetchaccounts"
     },
     {
       "relation": "inherits",
@@ -4492,9 +4711,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mockcardrepository",
-      "target": "cardrepository",
-      "confidence_score": 1.0
+      "target": "cardrepository"
     },
     {
       "relation": "method",
@@ -4502,9 +4721,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewMocks.swift",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmocks_mockcardrepository",
-      "target": "import_importviewmocks_mockcardrepository_fetchcards",
-      "confidence_score": 1.0
+      "target": "import_importviewmocks_mockcardrepository_fetchcards"
     },
     {
       "relation": "inherits",
@@ -4532,9 +4751,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_import_importviewmodel_swift",
-      "target": "import_importviewmodel_importviewmodel",
-      "confidence_score": 1.0
+      "target": "import_importviewmodel_importviewmodel"
     },
     {
       "relation": "method",
@@ -4582,9 +4801,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
       "source_location": "L142",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel",
-      "target": "import_importviewmodel_importviewmodel_processimportfiles",
-      "confidence_score": 1.0
+      "target": "import_importviewmodel_importviewmodel_processimportfiles"
     },
     {
       "relation": "method",
@@ -4706,9 +4925,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
       "source_location": "L154",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel_processimportfiles",
-      "target": "import_importviewmodel_importviewmodel_importtransactions",
-      "confidence_score": 1.0
+      "target": "import_importviewmodel_importviewmodel_importtransactions"
     },
     {
       "relation": "calls",
@@ -4750,9 +4969,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
       "source_location": "L146",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel_processimportfiles",
-      "target": "import_importviewmodel_importviewmodel_fileformat",
-      "confidence_score": 1.0
+      "target": "import_importviewmodel_importviewmodel_fileformat"
     },
     {
       "relation": "calls",
@@ -4761,9 +4980,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift",
       "source_location": "L164",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel_processimportfiles",
-      "target": "import_importviewmodel_importviewmodel_formaterror",
-      "confidence_score": 1.0
+      "target": "import_importviewmodel_importviewmodel_formaterror"
     },
     {
       "relation": "calls",
@@ -4815,9 +5034,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_transactions_transactionsviewmodel_swift",
-      "target": "transactions_transactionsviewmodel_transactionsviewmodel",
-      "confidence_score": 1.0
+      "target": "transactions_transactionsviewmodel_transactionsviewmodel"
     },
     {
       "relation": "contains",
@@ -4825,9 +5044,9 @@
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsViewModel.swift",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "apps_financeosmac_financeosmac_presentation_transactions_transactionsviewmodel_swift",
-      "target": "transactions_transactionsviewmodel_transactionrow",
-      "confidence_score": 1.0
+      "target": "transactions_transactionsviewmodel_transactionrow"
     },
     {
       "relation": "method",
@@ -4959,9 +5178,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L88",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude_md",
-      "target": "financeos_claude_coding_standards",
-      "confidence_score": 1.0
+      "target": "financeos_claude_coding_standards"
     },
     {
       "relation": "contains",
@@ -5142,206 +5361,6 @@
       "confidence_score": 1.0,
       "source": "financeos_claude_git_workflow_rules",
       "target": "financeos_claude_codeblock_3"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "coding_standards_md",
-      "target": "financeos_coding_standards_financeos_coding_standards",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_line_length",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L20",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_function_body_length",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L43",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_struct_type_body_length",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L71",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_file_length",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L81",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_brace_spacing",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L115",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_optional_initialization",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L127",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_identifier_naming",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L141",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_logging_best_practices",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L159",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_enforcement",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L169",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_financeos_coding_standards",
-      "target": "financeos_coding_standards_architecture_alignment",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_line_length",
-      "target": "financeos_coding_standards_codeblock_1",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L26",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_function_body_length",
-      "target": "financeos_coding_standards_codeblock_2",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L49",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_struct_type_body_length",
-      "target": "financeos_coding_standards_codeblock_3",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L85",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_brace_spacing",
-      "target": "financeos_coding_standards_codeblock_4",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L100",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_brace_spacing",
-      "target": "financeos_coding_standards_codeblock_5",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L119",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_optional_initialization",
-      "target": "financeos_coding_standards_codeblock_6",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L131",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_identifier_naming",
-      "target": "financeos_coding_standards_codeblock_7",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L145",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_logging_best_practices",
-      "target": "financeos_coding_standards_codeblock_8",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CODING_STANDARDS.md",
-      "source_location": "L163",
-      "weight": 1.0,
-      "source": "financeos_coding_standards_enforcement",
-      "target": "financeos_coding_standards_codeblock_9",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -8866,5 +8885,5 @@
       "source_file": "AGENTS.md"
     }
   ],
-  "built_at_commit": "0f1e88a56fc219c295482a49f85fcde4c1d50c58"
+  "built_at_commit": "1e1798e948893bb6d48ffe10065d0b44d16aa1b8"
 }
