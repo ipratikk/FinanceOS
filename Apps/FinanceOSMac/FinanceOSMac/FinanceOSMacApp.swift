@@ -8,6 +8,18 @@ struct FinanceOSMacApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
+                ImportView(
+                    viewModel: ImportViewModel(
+                        transactionImporter: appContainer.transactionImporter,
+                        transactionRepository: appContainer.transactionRepository,
+                        accountRepository: appContainer.accountRepository,
+                        cardRepository: appContainer.cardRepository
+                    )
+                )
+                .tabItem {
+                    Label("Import", systemImage: "arrow.down.doc")
+                }
+
                 InstitutionsView(
                     viewModel: InstitutionsViewModel(
                         repository: appContainer.institutionRepository
