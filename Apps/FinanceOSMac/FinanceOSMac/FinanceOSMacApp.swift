@@ -3,16 +3,13 @@ import SwiftUI
 
 @main
 struct FinanceOSMacApp: App {
-    private let institutionRepository =
-        GRDBInstitutionRepository(
-            dbQueue: DatabaseManager.shared.dbQueue
-        )
+    private let appContainer = AppContainer.shared
 
     var body: some Scene {
         WindowGroup {
             InstitutionsView(
                 viewModel: InstitutionsViewModel(
-                    repository: institutionRepository
+                    repository: appContainer.institutionRepository
                 )
             )
         }
