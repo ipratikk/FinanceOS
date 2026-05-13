@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-13)
 
 ## Corpus Check
-- 53 files · ~10,013 words
+- 53 files · ~10,144 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 337 nodes · 431 edges · 31 communities (17 shown, 14 thin omitted)
+- 342 nodes · 445 edges · 31 communities (17 shown, 14 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `57616571`
+- Built from commit: `5d56b5f9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -44,12 +44,12 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `TabularTransactionDecoder` - 19 edges
-2. `FinanceOS Current Architecture` - 10 edges
-3. `Transaction` - 10 edges
-4. `ImportViewModel` - 9 edges
-5. `GRDBTransactionRepository` - 9 edges
-6. `Institution` - 9 edges
-7. `ImportView` - 8 edges
+2. `ImportView` - 11 edges
+3. `ImportViewModel` - 11 edges
+4. `FinanceOS Current Architecture` - 10 edges
+5. `Transaction` - 10 edges
+6. `GRDBTransactionRepository` - 9 edges
+7. `Institution` - 9 edges
 8. `TransactionImportError` - 8 edges
 9. `WorksheetParserDelegate` - 8 edges
 10. `Card` - 8 edges
@@ -113,11 +113,11 @@ Nodes (16): Architecture, Composition Root, Concrete Implementations, Core Rules
 Cohesion: 0.23
 Nodes (13): Current Architectural Constraints, Current Completed Features, Current Naming, Current Repositories, Current Risks, Current UI Flow, Database, Dependency Composition (+5 more)
 
-### Community 11 - "Community 11"
+### Community 12 - "Community 12"
 Cohesion: 0.22
 Nodes (8): Error, TransactionImportError, invalidAmount, invalidDate, malformedFile, missingRequiredColumn, platformUnavailable, unsupportedFormat
 
-### Community 12 - "Community 12"
+### Community 13 - "Community 13"
 Cohesion: 0.25
 Nodes (7): Hashable, TargetChoice, account, card, TransactionImportTarget, account, card
 
@@ -129,17 +129,17 @@ Nodes (7): Hashable, TargetChoice, account, card, TransactionImportTarget, accou
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ImportView` connect `Community 15` to `Community 1`, `Community 6`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
+- **Why does `ImportView` connect `Community 11` to `Community 1`, `Community 6`?**
+  _High betweenness centrality (0.093) - this node is a cross-community bridge._
 - **Why does `GRDBTransactionRepository` connect `Community 1` to `Community 3`?**
   _High betweenness centrality (0.059) - this node is a cross-community bridge._
 - **Why does `XLSXStatementParser` connect `Community 2` to `Community 3`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Are the 2 inferred relationships involving `Transaction` (e.g. with `.importTransactions()` and `.seedTransactions()`) actually correct?**
-  _`Transaction` has 2 INFERRED edges - model-reasoned connections that need verification._
+  _High betweenness centrality (0.054) - this node is a cross-community bridge._
 - **What connects `account`, `card`, `Stack` to the rest of the system?**
   _53 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.07 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.06 - nodes in this community are weakly interconnected._
+- **Should `Community 2` be split into smaller, more focused modules?**
+  _Cohesion score 0.09 - nodes in this community are weakly interconnected._

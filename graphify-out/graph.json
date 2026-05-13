@@ -57,79 +57,322 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L1",
+      "id": "importview_swift",
       "community": 1,
-      "norm_label": "importview.swift",
-      "id": "importview_swift"
+      "norm_label": "importview.swift"
     },
     {
       "label": "ImportView",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L5",
-      "community": 15,
-      "norm_label": "importview",
-      "id": "import_importview_importview"
+      "id": "import_importview_importview",
+      "community": 11,
+      "norm_label": "importview"
     },
     {
       "label": "View",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
+      "id": "view",
       "community": 6,
-      "norm_label": "view",
-      "id": "view"
+      "norm_label": "view"
     },
     {
       "label": "TargetChoice",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L9",
-      "community": 12,
-      "norm_label": "targetchoice",
-      "id": "import_importview_targetchoice"
+      "id": "import_importview_targetchoice",
+      "community": 13,
+      "norm_label": "targetchoice"
     },
     {
       "label": "Hashable",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 12,
-      "norm_label": "hashable",
-      "id": "hashable"
+      "id": "hashable",
+      "community": 13,
+      "norm_label": "hashable"
     },
     {
       "label": "account",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L10",
-      "community": 12,
-      "norm_label": "account",
-      "id": "import_importview_targetchoice_account"
+      "id": "import_importview_targetchoice_account",
+      "community": 13,
+      "norm_label": "account"
     },
     {
       "label": "card",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L11",
-      "community": 12,
-      "norm_label": "card",
-      "id": "import_importview_targetchoice_card"
+      "id": "import_importview_targetchoice_card",
+      "community": 13,
+      "norm_label": "card"
     },
     {
       "label": ".importPreviewView()",
       "file_type": "code",
       "source_file": "ImportView.swift",
-      "source_location": "L158",
-      "community": 15,
-      "norm_label": ".importpreviewview()",
-      "id": "import_importview_importview_importpreviewview"
+      "source_location": "L167",
+      "id": "import_importview_importview_importpreviewview",
+      "community": 11,
+      "norm_label": ".importpreviewview()"
+    },
+    {
+      "label": ".fileListSection()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L188",
+      "id": "import_importview_importview_filelistsection",
+      "community": 11,
+      "norm_label": ".filelistsection()"
+    },
+    {
+      "label": ".aggregatedSummarySection()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L223",
+      "id": "import_importview_importview_aggregatedsummarysection",
+      "community": 11,
+      "norm_label": ".aggregatedsummarysection()"
+    },
+    {
+      "label": ".aggregatedTransactionListSection()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L280",
+      "id": "import_importview_importview_aggregatedtransactionlistsection",
+      "community": 11,
+      "norm_label": ".aggregatedtransactionlistsection()"
+    },
+    {
+      "label": ".formatDate()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L370",
+      "id": "import_importview_importview_formatdate",
+      "community": 11,
+      "norm_label": ".formatdate()"
+    },
+    {
+      "label": ".formatAmount()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L376",
+      "id": "import_importview_importview_formatamount",
+      "community": 11,
+      "norm_label": ".formatamount()"
+    },
+    {
+      "label": "MockTransactionRepository",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L396",
+      "id": "import_importview_mocktransactionrepository",
+      "community": 1,
+      "norm_label": "mocktransactionrepository"
+    },
+    {
+      "label": "TransactionRepository",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "transactionrepository",
+      "community": 1,
+      "norm_label": "transactionrepository"
+    },
+    {
+      "label": ".fetchTransactionsForAccount()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L397",
+      "id": "import_importview_mocktransactionrepository_fetchtransactionsforaccount",
+      "community": 1,
+      "norm_label": ".fetchtransactionsforaccount()"
+    },
+    {
+      "label": ".fetchTransactionsForCard()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L401",
+      "id": "import_importview_mocktransactionrepository_fetchtransactionsforcard",
+      "community": 1,
+      "norm_label": ".fetchtransactionsforcard()"
+    },
+    {
+      "label": ".fetchTransactions()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L405",
+      "id": "import_importview_mocktransactionrepository_fetchtransactions",
+      "community": 1,
+      "norm_label": ".fetchtransactions()"
+    },
+    {
+      "label": ".insertTransactions()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L409",
+      "id": "import_importview_mocktransactionrepository_inserttransactions",
+      "community": 1,
+      "norm_label": ".inserttransactions()"
+    },
+    {
+      "label": "MockAccountRepository",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L412",
+      "id": "import_importview_mockaccountrepository",
+      "community": 1,
+      "norm_label": "mockaccountrepository"
+    },
+    {
+      "label": "AccountRepository",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "accountrepository",
+      "community": 1,
+      "norm_label": "accountrepository"
+    },
+    {
+      "label": ".fetchAccounts()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L413",
+      "id": "import_importview_mockaccountrepository_fetchaccounts",
+      "community": 1,
+      "norm_label": ".fetchaccounts()"
+    },
+    {
+      "label": "MockCardRepository",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L418",
+      "id": "import_importview_mockcardrepository",
+      "community": 1,
+      "norm_label": "mockcardrepository"
+    },
+    {
+      "label": "CardRepository",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "cardrepository",
+      "community": 1,
+      "norm_label": "cardrepository"
+    },
+    {
+      "label": ".fetchCards()",
+      "file_type": "code",
+      "source_file": "ImportView.swift",
+      "source_location": "L419",
+      "id": "import_importview_mockcardrepository_fetchcards",
+      "community": 1,
+      "norm_label": ".fetchcards()"
+    },
+    {
+      "label": "ImportViewModel.swift",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L1",
+      "id": "importviewmodel_swift",
+      "community": 10,
+      "norm_label": "importviewmodel.swift"
+    },
+    {
+      "label": "ImportViewModel",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L8",
+      "id": "import_importviewmodel_importviewmodel",
+      "community": 10,
+      "norm_label": "importviewmodel"
+    },
+    {
+      "label": ".init()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L26",
+      "id": "import_importviewmodel_importviewmodel_init",
+      "community": 10,
+      "norm_label": ".init()"
+    },
+    {
+      "label": ".setFileURLs()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L38",
+      "id": "import_importviewmodel_importviewmodel_setfileurls",
+      "community": 10,
+      "norm_label": ".setfileurls()"
+    },
+    {
+      "label": ".parseFiles()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L43",
+      "id": "import_importviewmodel_importviewmodel_parsefiles",
+      "community": 10,
+      "norm_label": ".parsefiles()"
+    },
+    {
+      "label": ".importTransactions()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L96",
+      "id": "import_importviewmodel_importviewmodel_importtransactions",
+      "community": 10,
+      "norm_label": ".importtransactions()"
+    },
+    {
+      "label": ".loadTargets()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L157",
+      "id": "import_importviewmodel_importviewmodel_loadtargets",
+      "community": 10,
+      "norm_label": ".loadtargets()"
+    },
+    {
+      "label": ".fileFormat()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L174",
+      "id": "import_importviewmodel_importviewmodel_fileformat",
+      "community": 10,
+      "norm_label": ".fileformat()"
+    },
+    {
+      "label": ".formatError()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L189",
+      "id": "import_importviewmodel_importviewmodel_formaterror",
+      "community": 10,
+      "norm_label": ".formaterror()"
+    },
+    {
+      "label": ".reset()",
+      "file_type": "code",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L206",
+      "id": "import_importviewmodel_importviewmodel_reset",
+      "community": 10,
+      "norm_label": ".reset()"
     },
     {
       "label": ".statementHeaderSection()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L181",
-      "community": 15,
+      "community": 11,
       "norm_label": ".statementheadersection()",
       "id": "import_importview_importview_statementheadersection"
     },
@@ -138,7 +381,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L209",
-      "community": 15,
+      "community": 11,
       "norm_label": ".summarysection()",
       "id": "import_importview_importview_summarysection"
     },
@@ -147,162 +390,9 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L302",
-      "community": 15,
+      "community": 11,
       "norm_label": ".transactionlistsection()",
       "id": "import_importview_importview_transactionlistsection"
-    },
-    {
-      "label": ".formatDate()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L359",
-      "community": 15,
-      "norm_label": ".formatdate()",
-      "id": "import_importview_importview_formatdate"
-    },
-    {
-      "label": ".formatAmount()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L365",
-      "community": 15,
-      "norm_label": ".formatamount()",
-      "id": "import_importview_importview_formatamount"
-    },
-    {
-      "label": "MockTransactionRepository",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L385",
-      "community": 1,
-      "norm_label": "mocktransactionrepository",
-      "id": "import_importview_mocktransactionrepository"
-    },
-    {
-      "label": "TransactionRepository",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "community": 1,
-      "norm_label": "transactionrepository",
-      "id": "transactionrepository"
-    },
-    {
-      "label": ".fetchTransactionsForAccount()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L386",
-      "community": 1,
-      "norm_label": ".fetchtransactionsforaccount()",
-      "id": "import_importview_mocktransactionrepository_fetchtransactionsforaccount"
-    },
-    {
-      "label": ".fetchTransactionsForCard()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L390",
-      "community": 1,
-      "norm_label": ".fetchtransactionsforcard()",
-      "id": "import_importview_mocktransactionrepository_fetchtransactionsforcard"
-    },
-    {
-      "label": ".fetchTransactions()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L394",
-      "community": 1,
-      "norm_label": ".fetchtransactions()",
-      "id": "import_importview_mocktransactionrepository_fetchtransactions"
-    },
-    {
-      "label": ".insertTransactions()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L398",
-      "community": 1,
-      "norm_label": ".inserttransactions()",
-      "id": "import_importview_mocktransactionrepository_inserttransactions"
-    },
-    {
-      "label": "MockAccountRepository",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L401",
-      "community": 1,
-      "norm_label": "mockaccountrepository",
-      "id": "import_importview_mockaccountrepository"
-    },
-    {
-      "label": "AccountRepository",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "community": 1,
-      "norm_label": "accountrepository",
-      "id": "accountrepository"
-    },
-    {
-      "label": ".fetchAccounts()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L402",
-      "community": 1,
-      "norm_label": ".fetchaccounts()",
-      "id": "import_importview_mockaccountrepository_fetchaccounts"
-    },
-    {
-      "label": "MockCardRepository",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L407",
-      "community": 1,
-      "norm_label": "mockcardrepository",
-      "id": "import_importview_mockcardrepository"
-    },
-    {
-      "label": "CardRepository",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "community": 1,
-      "norm_label": "cardrepository",
-      "id": "cardrepository"
-    },
-    {
-      "label": ".fetchCards()",
-      "file_type": "code",
-      "source_file": "ImportView.swift",
-      "source_location": "L408",
-      "community": 1,
-      "norm_label": ".fetchcards()",
-      "id": "import_importview_mockcardrepository_fetchcards"
-    },
-    {
-      "label": "ImportViewModel.swift",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L1",
-      "community": 10,
-      "norm_label": "importviewmodel.swift",
-      "id": "importviewmodel_swift"
-    },
-    {
-      "label": "ImportViewModel",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L8",
-      "community": 10,
-      "norm_label": "importviewmodel",
-      "id": "import_importviewmodel_importviewmodel"
-    },
-    {
-      "label": ".init()",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L26",
-      "community": 10,
-      "norm_label": ".init()",
-      "id": "import_importviewmodel_importviewmodel_init"
     },
     {
       "label": ".setFileURL()",
@@ -321,51 +411,6 @@
       "community": 10,
       "norm_label": ".parsefile()",
       "id": "import_importviewmodel_importviewmodel_parsefile"
-    },
-    {
-      "label": ".importTransactions()",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L90",
-      "community": 10,
-      "norm_label": ".importtransactions()",
-      "id": "import_importviewmodel_importviewmodel_importtransactions"
-    },
-    {
-      "label": ".loadTargets()",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L136",
-      "community": 10,
-      "norm_label": ".loadtargets()",
-      "id": "import_importviewmodel_importviewmodel_loadtargets"
-    },
-    {
-      "label": ".fileFormat()",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L153",
-      "community": 10,
-      "norm_label": ".fileformat()",
-      "id": "import_importviewmodel_importviewmodel_fileformat"
-    },
-    {
-      "label": ".formatError()",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L168",
-      "community": 10,
-      "norm_label": ".formaterror()",
-      "id": "import_importviewmodel_importviewmodel_formaterror"
-    },
-    {
-      "label": ".reset()",
-      "file_type": "code",
-      "source_file": "ImportViewModel.swift",
-      "source_location": "L185",
-      "community": 10,
-      "norm_label": ".reset()",
-      "id": "import_importviewmodel_importviewmodel_reset"
     },
     {
       "label": "StatementMetadata.swift",
@@ -984,7 +1029,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L1",
-      "community": 13,
+      "community": 14,
       "norm_label": "accounttransactionsviewmodel.swift",
       "id": "accounts_accounttransactionsviewmodel_swift"
     },
@@ -993,7 +1038,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L12",
-      "community": 13,
+      "community": 14,
       "norm_label": "accounttransactionsviewmodel",
       "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel"
     },
@@ -1002,7 +1047,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L14",
-      "community": 13,
+      "community": 14,
       "norm_label": "transactionrow",
       "id": "accounts_accounttransactionsviewmodel_transactionrow"
     },
@@ -1011,7 +1056,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L29",
-      "community": 13,
+      "community": 14,
       "norm_label": ".init()",
       "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_init"
     },
@@ -1020,7 +1065,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L37",
-      "community": 13,
+      "community": 14,
       "norm_label": ".loadtransactions()",
       "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_loadtransactions"
     },
@@ -1029,7 +1074,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L60",
-      "community": 13,
+      "community": 14,
       "norm_label": ".maketransactionrows()",
       "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_maketransactionrows"
     },
@@ -1038,7 +1083,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsViewModel.swift",
       "source_location": "L93",
-      "community": 13,
+      "community": 14,
       "norm_label": ".amounttext()",
       "id": "accounts_accounttransactionsviewmodel_accounttransactionsviewmodel_amounttext"
     },
@@ -1101,7 +1146,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsViewModel.swift",
       "source_location": "L1",
-      "community": 14,
+      "community": 15,
       "norm_label": "cardtransactionsviewmodel.swift",
       "id": "cards_cardtransactionsviewmodel_swift"
     },
@@ -1110,7 +1155,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsViewModel.swift",
       "source_location": "L12",
-      "community": 14,
+      "community": 15,
       "norm_label": "cardtransactionsviewmodel",
       "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel"
     },
@@ -1119,7 +1164,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsViewModel.swift",
       "source_location": "L14",
-      "community": 14,
+      "community": 15,
       "norm_label": "transactionrow",
       "id": "cards_cardtransactionsviewmodel_transactionrow"
     },
@@ -1128,7 +1173,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsViewModel.swift",
       "source_location": "L29",
-      "community": 14,
+      "community": 15,
       "norm_label": ".init()",
       "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_init"
     },
@@ -1137,7 +1182,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsViewModel.swift",
       "source_location": "L37",
-      "community": 14,
+      "community": 15,
       "norm_label": ".loadtransactions()",
       "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_loadtransactions"
     },
@@ -1146,7 +1191,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsViewModel.swift",
       "source_location": "L60",
-      "community": 14,
+      "community": 15,
       "norm_label": ".maketransactionrows()",
       "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_maketransactionrows"
     },
@@ -1155,7 +1200,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsViewModel.swift",
       "source_location": "L93",
-      "community": 14,
+      "community": 15,
       "norm_label": ".amounttext()",
       "id": "cards_cardtransactionsviewmodel_cardtransactionsviewmodel_amounttext"
     },
@@ -1632,7 +1677,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L1",
-      "community": 11,
+      "community": 12,
       "norm_label": "transactionimporterror.swift",
       "id": "sources_financecore_importing_transactionimporterror_swift"
     },
@@ -1641,7 +1686,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L10",
-      "community": 11,
+      "community": 12,
       "norm_label": "transactionimporterror",
       "id": "importing_transactionimporterror_transactionimporterror"
     },
@@ -1650,7 +1695,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 11,
+      "community": 12,
       "norm_label": "error",
       "id": "error"
     },
@@ -1659,7 +1704,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L11",
-      "community": 11,
+      "community": 12,
       "norm_label": "unsupportedformat",
       "id": "importing_transactionimporterror_transactionimporterror_unsupportedformat"
     },
@@ -1668,7 +1713,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L12",
-      "community": 11,
+      "community": 12,
       "norm_label": "missingrequiredcolumn",
       "id": "importing_transactionimporterror_transactionimporterror_missingrequiredcolumn"
     },
@@ -1677,7 +1722,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L13",
-      "community": 11,
+      "community": 12,
       "norm_label": "invaliddate",
       "id": "importing_transactionimporterror_transactionimporterror_invaliddate"
     },
@@ -1686,7 +1731,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L14",
-      "community": 11,
+      "community": 12,
       "norm_label": "invalidamount",
       "id": "importing_transactionimporterror_transactionimporterror_invalidamount"
     },
@@ -1695,7 +1740,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L15",
-      "community": 11,
+      "community": 12,
       "norm_label": "malformedfile",
       "id": "importing_transactionimporterror_transactionimporterror_malformedfile"
     },
@@ -1704,7 +1749,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L16",
-      "community": 11,
+      "community": 12,
       "norm_label": "platformunavailable",
       "id": "importing_transactionimporterror_transactionimporterror_platformunavailable"
     },
@@ -1713,7 +1758,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L1",
-      "community": 12,
+      "community": 13,
       "norm_label": "transactionimporttarget.swift",
       "id": "sources_financecore_importing_transactionimporttarget_swift"
     },
@@ -1722,7 +1767,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L10",
-      "community": 12,
+      "community": 13,
       "norm_label": "transactionimporttarget",
       "id": "importing_transactionimporttarget_transactionimporttarget"
     },
@@ -1731,7 +1776,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L15",
-      "community": 12,
+      "community": 13,
       "norm_label": "account",
       "id": "importing_transactionimporttarget_transactionimporttarget_account"
     },
@@ -1740,7 +1785,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L16",
-      "community": 12,
+      "community": 13,
       "norm_label": "card",
       "id": "importing_transactionimporttarget_transactionimporttarget_card"
     },
@@ -3245,6 +3290,56 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ImportView.swift",
+      "source_location": "L188",
+      "weight": 1.0,
+      "source": "import_importview_importview",
+      "target": "import_importview_importview_filelistsection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L223",
+      "weight": 1.0,
+      "source": "import_importview_importview",
+      "target": "import_importview_importview_aggregatedsummarysection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L280",
+      "weight": 1.0,
+      "source": "import_importview_importview",
+      "target": "import_importview_importview_aggregatedtransactionlistsection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L359",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importview_importview",
+      "target": "import_importview_importview_formatdate"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L365",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importview_importview",
+      "target": "import_importview_importview_formatamount"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
       "source_location": "L181",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3270,26 +3365,6 @@
       "confidence_score": 1.0,
       "source": "import_importview_importview",
       "target": "import_importview_importview_transactionlistsection"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "ImportView.swift",
-      "source_location": "L359",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "import_importview_importview",
-      "target": "import_importview_importview_formatdate"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "ImportView.swift",
-      "source_location": "L365",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "import_importview_importview",
-      "target": "import_importview_importview_formatamount"
     },
     {
       "relation": "inherits",
@@ -3396,6 +3471,39 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ImportView.swift",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "import_importview_importview_importpreviewview",
+      "target": "import_importview_importview_filelistsection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "import_importview_importview_importpreviewview",
+      "target": "import_importview_importview_aggregatedsummarysection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L182",
+      "weight": 1.0,
+      "source": "import_importview_importview_importpreviewview",
+      "target": "import_importview_importview_aggregatedtransactionlistsection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
       "source_location": "L163",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3429,10 +3537,54 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ImportView.swift",
+      "source_location": "L260",
+      "weight": 1.0,
+      "source": "import_importview_importview_aggregatedsummarysection",
+      "target": "import_importview_importview_formatamount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L298",
+      "weight": 1.0,
+      "source": "import_importview_importview_aggregatedtransactionlistsection",
+      "target": "import_importview_importview_formatdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L312",
+      "weight": 1.0,
+      "source": "import_importview_importview_aggregatedtransactionlistsection",
+      "target": "import_importview_importview_formatamount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
       "source_location": "L225",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "import_importview_importview_summarysection",
+      "target": "import_importview_importview_formatdate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportView.swift",
+      "source_location": "L320",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importview_importview_transactionlistsection",
       "target": "import_importview_importview_formatdate"
     },
     {
@@ -3445,17 +3597,6 @@
       "confidence_score": 1.0,
       "source": "import_importview_importview_summarysection",
       "target": "import_importview_importview_formatamount"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "ImportView.swift",
-      "source_location": "L320",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "import_importview_importview_transactionlistsection",
-      "target": "import_importview_importview_formatdate"
     },
     {
       "relation": "calls",
@@ -3614,9 +3755,9 @@
       "source_file": "ImportViewModel.swift",
       "source_location": "L38",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel",
-      "target": "import_importviewmodel_importviewmodel_setfileurl"
+      "target": "import_importviewmodel_importviewmodel_setfileurls",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -3624,9 +3765,9 @@
       "source_file": "ImportViewModel.swift",
       "source_location": "L43",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel",
-      "target": "import_importviewmodel_importviewmodel_parsefile"
+      "target": "import_importviewmodel_importviewmodel_parsefiles",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -3679,15 +3820,35 @@
       "target": "import_importviewmodel_importviewmodel_reset"
     },
     {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L38",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importviewmodel_importviewmodel",
+      "target": "import_importviewmodel_importviewmodel_setfileurl"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L43",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importviewmodel_importviewmodel",
+      "target": "import_importviewmodel_importviewmodel_parsefile"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ImportViewModel.swift",
-      "source_location": "L57",
+      "source_location": "L60",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "import_importviewmodel_importviewmodel_parsefile",
-      "target": "import_importviewmodel_importviewmodel_fileformat"
+      "source": "import_importviewmodel_importviewmodel_parsefiles",
+      "target": "import_importviewmodel_importviewmodel_fileformat",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -3696,20 +3857,20 @@
       "source_file": "ImportViewModel.swift",
       "source_location": "L75",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "import_importviewmodel_importviewmodel_parsefile",
-      "target": "import_importviewmodel_importviewmodel_loadtargets"
+      "source": "import_importviewmodel_importviewmodel_parsefiles",
+      "target": "import_importviewmodel_importviewmodel_formaterror",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ImportViewModel.swift",
-      "source_location": "L77",
+      "source_location": "L90",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "import_importviewmodel_importviewmodel_parsefile",
-      "target": "import_importviewmodel_importviewmodel_formaterror"
+      "source": "import_importviewmodel_importviewmodel_parsefiles",
+      "target": "import_importviewmodel_importviewmodel_loadtargets",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -3727,6 +3888,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ImportViewModel.swift",
+      "source_location": "L125",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importviewmodel_importviewmodel_importtransactions",
+      "target": "import_importviewmodel_importviewmodel_formaterror"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportViewModel.swift",
       "source_location": "L123",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3738,10 +3910,32 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ImportViewModel.swift",
-      "source_location": "L125",
+      "source_location": "L75",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "import_importviewmodel_importviewmodel_importtransactions",
+      "source": "import_importviewmodel_importviewmodel_parsefile",
+      "target": "import_importviewmodel_importviewmodel_loadtargets"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L57",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importviewmodel_importviewmodel_parsefile",
+      "target": "import_importviewmodel_importviewmodel_fileformat"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ImportViewModel.swift",
+      "source_location": "L77",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "import_importviewmodel_importviewmodel_parsefile",
       "target": "import_importviewmodel_importviewmodel_formaterror"
     },
     {
@@ -7604,5 +7798,5 @@
       "source_file": "AGENTS.md"
     }
   ],
-  "built_at_commit": "57616571e6df0a5591473174eb1b4207ae834582"
+  "built_at_commit": "5d56b5f90ff965cb9ac953e51b95da052d1e930a"
 }
