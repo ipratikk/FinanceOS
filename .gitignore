@@ -51,6 +51,9 @@ xcresult/
 
 # Local agent / Codex tooling
 .agents/
+.codex/
 .codex-plugins/
+.claude/
 .graphify_python
+graphify-out/
 skills-lock.json
