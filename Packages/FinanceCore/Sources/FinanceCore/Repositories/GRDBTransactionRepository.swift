@@ -28,6 +28,28 @@ public final class GRDBTransactionRepository:
         }
     }
 
+    public func fetchTransactionsForAccount(
+        _ accountID: UUID
+    ) async throws -> [Transaction] {
+        try await dbQueue.read { database in
+            try Transaction
+                .filter(Transaction.Columns.accountID == accountID)
+                .order(Transaction.Columns.postedAt.desc)
+                .fetchAll(database)
+        }
+    }
+
+    public func fetchTransactionsForCard(
+        _ cardID: UUID
+    ) async throws -> [Transaction] {
+        try await dbQueue.read { database in
+            try Transaction
+                .filter(Transaction.Columns.cardID == cardID)
+                .order(Transaction.Columns.postedAt.desc)
+                .fetchAll(database)
+        }
+    }
+
     public func insertTransactions(
         _ transactions: [Transaction]
     ) async throws {

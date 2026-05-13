@@ -8,6 +8,11 @@
 import Foundation
 import GRDB
 
+public enum TransactionType: String, Sendable, Codable {
+    case debit
+    case credit
+}
+
 public struct Transaction:
     Identifiable,
     Codable,
@@ -22,6 +27,7 @@ public struct Transaction:
     public let description: String
     public let amountMinorUnits: Int64
     public let currencyCode: String
+    public let transactionType: TransactionType
     public let sourceFingerprint: String?
 
     public init(
@@ -32,6 +38,7 @@ public struct Transaction:
         description: String,
         amountMinorUnits: Int64,
         currencyCode: String,
+        transactionType: TransactionType = .debit,
         sourceFingerprint: String? = nil
     ) {
         self.id = id
@@ -41,6 +48,7 @@ public struct Transaction:
         self.description = description
         self.amountMinorUnits = amountMinorUnits
         self.currencyCode = currencyCode
+        self.transactionType = transactionType
         self.sourceFingerprint = sourceFingerprint
     }
 }
@@ -54,6 +62,7 @@ public extension Transaction {
         static let description = Column(CodingKeys.description)
         static let amountMinorUnits = Column(CodingKeys.amountMinorUnits)
         static let currencyCode = Column(CodingKeys.currencyCode)
+        static let transactionType = Column(CodingKeys.transactionType)
         static let sourceFingerprint = Column(CodingKeys.sourceFingerprint)
     }
 }
@@ -99,8 +108,11 @@ public extension Transaction {
             table.column("currencyCode", .text)
                 .notNull()
 
+            table.column("transactionType", .text)
+                .notNull()
+                .defaults(to: "debit")
+
             table.column("sourceFingerprint", .text)
-                .unique(onConflict: .ignore)
 
             table.check(
                 sql: """
