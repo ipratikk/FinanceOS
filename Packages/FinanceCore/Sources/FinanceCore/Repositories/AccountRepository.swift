@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol AccountRepository {
+public protocol AccountRepository: Sendable {
     func fetchAccounts() async throws -> [Account]
 }

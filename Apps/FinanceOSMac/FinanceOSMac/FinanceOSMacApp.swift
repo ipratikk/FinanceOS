@@ -36,6 +36,17 @@ struct FinanceOSMacApp: App {
                 .tabItem {
                     Label("Cards", systemImage: "creditcard")
                 }
+
+                TransactionsView(
+                    viewModel: TransactionsViewModel(
+                        transactionRepository: appContainer.transactionRepository,
+                        accountRepository: appContainer.accountRepository,
+                        cardRepository: appContainer.cardRepository
+                    )
+                )
+                .tabItem {
+                    Label("Transactions", systemImage: "list.bullet.rectangle")
+                }
             }
         }
     }

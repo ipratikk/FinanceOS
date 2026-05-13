@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol InstitutionRepository {
+public protocol InstitutionRepository: Sendable {
     func fetchInstitutions() async throws -> [Institution]
 }

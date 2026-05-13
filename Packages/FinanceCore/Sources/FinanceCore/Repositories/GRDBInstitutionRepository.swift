@@ -9,6 +9,7 @@ import Foundation
 import GRDB
 
 public final class GRDBInstitutionRepository:
+    @unchecked Sendable,
     InstitutionRepository
 {
     private let dbQueue: DatabaseQueue

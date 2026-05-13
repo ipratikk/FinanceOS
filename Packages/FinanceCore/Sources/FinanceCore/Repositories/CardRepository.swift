@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol CardRepository {
+public protocol CardRepository: Sendable {
     func fetchCards() async throws -> [Card]
 }

@@ -13,6 +13,7 @@ public final class AppContainer {
 
     public let accountRepository: any AccountRepository
     public let cardRepository: any CardRepository
+    public let transactionRepository: any TransactionRepository
 
     public let institutionRepository: any InstitutionRepository
 
@@ -24,6 +25,10 @@ public final class AppContainer {
         )
 
         cardRepository = GRDBCardRepository(
+            dbQueue: databaseManager.dbQueue
+        )
+
+        transactionRepository = GRDBTransactionRepository(
             dbQueue: databaseManager.dbQueue
         )
 

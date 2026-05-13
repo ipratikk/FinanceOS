@@ -72,6 +72,14 @@ enum AppMigration {
                 try card.insert(database)
             }
         }
+
+        migrator.registerMigration("v4_transactions") { database in
+            FinanceLogger.migration.info("Running migration: v4_transactions")
+
+            try Transaction.createTable(
+                in: database
+            )
+        }
     }
 }
 

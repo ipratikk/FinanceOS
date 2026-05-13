@@ -9,6 +9,7 @@ import Foundation
 import GRDB
 
 public final class GRDBCardRepository:
+    @unchecked Sendable,
     CardRepository
 {
     private let dbQueue: DatabaseQueue

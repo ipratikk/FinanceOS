@@ -9,6 +9,7 @@ import Foundation
 import GRDB
 
 public final class GRDBAccountRepository:
+    @unchecked Sendable,
     AccountRepository
 {
     private let dbQueue: DatabaseQueue
