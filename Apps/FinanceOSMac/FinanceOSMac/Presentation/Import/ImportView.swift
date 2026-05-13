@@ -191,27 +191,26 @@ struct ImportView: View {
                 .font(.headline)
 
             VStack(spacing: 4) {
-                ForEach(viewModel.fileURLs.indices, id: \.self) { index in
+                ForEach(viewModel.fileStatementPairs.indices, id: \.self) { index in
+                    let pair = viewModel.fileStatementPairs[index]
                     HStack {
                         Image(systemName: "doc.fill")
                             .font(.caption)
                             .foregroundColor(.secondary)
 
-                        Text(viewModel.fileURLs[index].lastPathComponent)
+                        Text(pair.url.lastPathComponent)
                             .font(.body)
                             .lineLimit(1)
 
                         Spacer()
 
-                        if index < viewModel.parsedStatements.count {
-                            Text("\(viewModel.parsedStatements[index].transactions.count) txns")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        Text("\(pair.statement.transactions.count) txns")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                     .padding(.vertical, 4)
 
-                    if index < viewModel.fileURLs.count - 1 {
+                    if index < viewModel.fileStatementPairs.count - 1 {
                         Divider()
                     }
                 }
@@ -278,7 +277,7 @@ struct ImportView: View {
     }
 
     private func aggregatedTransactionListSection() -> some View {
-        let allTransactions = viewModel.parsedStatements.flatMap { $0.transactions }
+        let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("Transactions (\(allTransactions.count))")
@@ -334,7 +333,6 @@ struct ImportView: View {
         }
     }
 
-
     private var targetSelectionSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Import To")
@@ -365,7 +363,6 @@ struct ImportView: View {
             }
         }
     }
-
 
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()

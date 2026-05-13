@@ -18,6 +18,10 @@ final class ImportViewModel {
     var accounts: [Account] = []
     var cards: [Card] = []
 
+    var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
+        zip(fileURLs, parsedStatements).map { ($0, $1) }
+    }
+
     private let transactionImporter: any TransactionImporting
     private let transactionRepository: any TransactionRepository
     private let accountRepository: any AccountRepository
@@ -58,7 +62,10 @@ final class ImportViewModel {
             for fileURL in fileURLs {
                 do {
                     let format = fileFormat(for: fileURL)
-                    logger.debug("Parsing \(fileURL.lastPathComponent, privacy: .public) as \(format.rawValue, privacy: .public)")
+                    logger
+                        .debug(
+                            "Parsing \(fileURL.lastPathComponent, privacy: .public) as \(format.rawValue, privacy: .public)"
+                        )
 
                     let statement = try await transactionImporter.parseStatement(
                         from: fileURL,
@@ -72,13 +79,19 @@ final class ImportViewModel {
 
                     statements.append(statement)
                 } catch let error as TransactionImportError {
-                    logger.error("Import error for \(fileURL.lastPathComponent, privacy: .public): \(self.formatError(error), privacy: .public)")
+                    logger
+                        .error(
+                            "Import error for \(fileURL.lastPathComponent, privacy: .public): \(self.formatError(error), privacy: .public)"
+                        )
                     errorMessage = "Error parsing \(fileURL.lastPathComponent): \(formatError(error))"
                     parsedStatements = []
                     isLoading = false
                     return
                 } catch {
-                    logger.error("Unexpected error for \(fileURL.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)")
+                    logger
+                        .error(
+                            "Unexpected error for \(fileURL.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)"
+                        )
                     errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
                     parsedStatements = []
                     isLoading = false
@@ -110,14 +123,20 @@ final class ImportViewModel {
             isLoading = true
             errorMessage = nil
 
-            logger.info("Starting import of \(self.fileURLs.count, privacy: .public) file(s) to target: \(String(describing: target), privacy: .public)")
+            logger
+                .info(
+                    "Starting import of \(self.fileURLs.count, privacy: .public) file(s) to target: \(String(describing: target), privacy: .public)"
+                )
 
             var allTransactions: [Transaction] = []
 
             for (index, fileURL) in fileURLs.enumerated() {
                 do {
                     let format = fileFormat(for: fileURL)
-                    logger.debug("Importing file \(index + 1)/\(self.fileURLs.count): \(fileURL.lastPathComponent, privacy: .public)")
+                    logger
+                        .debug(
+                            "Importing file \(index + 1)/\(self.fileURLs.count): \(fileURL.lastPathComponent, privacy: .public)"
+                        )
 
                     let transactions = try await transactionImporter.importTransactions(
                         from: fileURL,
@@ -125,15 +144,24 @@ final class ImportViewModel {
                         target: target
                     )
 
-                    logger.info("Got \(transactions.count, privacy: .public) transactions from \(fileURL.lastPathComponent, privacy: .public)")
+                    logger
+                        .info(
+                            "Got \(transactions.count, privacy: .public) transactions from \(fileURL.lastPathComponent, privacy: .public)"
+                        )
                     allTransactions.append(contentsOf: transactions)
                 } catch let error as TransactionImportError {
-                    logger.error("Import error for \(fileURL.lastPathComponent, privacy: .public): \(self.formatError(error), privacy: .public)")
+                    logger
+                        .error(
+                            "Import error for \(fileURL.lastPathComponent, privacy: .public): \(self.formatError(error), privacy: .public)"
+                        )
                     errorMessage = "Error importing \(fileURL.lastPathComponent): \(formatError(error))"
                     isLoading = false
                     return
                 } catch {
-                    logger.error("Unexpected error importing \(fileURL.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)")
+                    logger
+                        .error(
+                            "Unexpected error importing \(fileURL.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)"
+                        )
                     errorMessage = "Error importing \(fileURL.lastPathComponent): \(error.localizedDescription)"
                     isLoading = false
                     return
@@ -144,7 +172,10 @@ final class ImportViewModel {
                 logger.info("Saving \(allTransactions.count, privacy: .public) total transactions to DB")
                 try await transactionRepository.insertTransactions(allTransactions)
 
-                logger.info("Successfully imported \(allTransactions.count, privacy: .public) transactions from \(self.fileURLs.count, privacy: .public) file(s)")
+                logger
+                    .info(
+                        "Successfully imported \(allTransactions.count, privacy: .public) transactions from \(self.fileURLs.count, privacy: .public) file(s)"
+                    )
                 reset()
             } catch {
                 logger.error("Failed to save transactions: \(error.localizedDescription, privacy: .public)")
