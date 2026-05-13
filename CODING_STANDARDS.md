@@ -166,6 +166,16 @@ swiftlint lint --path <file>     # Check specific file
 swiftlint --fix --path <file>    # Auto-fix where possible
 ```
 
+### SwiftFormat / SwiftLint Conflict
+
+If `swiftformat` runs during build and reformats braces to new lines (conflicting with swiftlint's `opening_brace` rule):
+
+1. **Prevent auto-formatting**: Disable swiftformat build phase or configure it to skip these patterns
+2. **Manual format**: Format code with braces on same line before commit
+3. **Pragmas**: Use `// swiftformat:disable all` / `// swiftformat:enable all` to prevent reformatting specific blocks
+
+Ensure `.swiftformat` and `.swiftlint.yml` configurations are in sync.
+
 ## Architecture Alignment
 
 These standards support the core architecture patterns:
