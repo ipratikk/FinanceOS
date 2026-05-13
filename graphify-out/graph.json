@@ -57,324 +57,324 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L1",
-      "id": "importview_swift",
       "community": 1,
-      "norm_label": "importview.swift"
+      "norm_label": "importview.swift",
+      "id": "importview_swift"
     },
     {
       "label": "ImportView",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L5",
-      "id": "import_importview_importview",
       "community": 13,
-      "norm_label": "importview"
+      "norm_label": "importview",
+      "id": "import_importview_importview"
     },
     {
       "label": "View",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "view",
       "community": 6,
-      "norm_label": "view"
+      "norm_label": "view",
+      "id": "view"
     },
     {
       "label": "TargetChoice",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L9",
-      "id": "import_importview_targetchoice",
       "community": 1,
-      "norm_label": "targetchoice"
+      "norm_label": "targetchoice",
+      "id": "import_importview_targetchoice"
     },
     {
       "label": "Hashable",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "hashable",
       "community": 1,
-      "norm_label": "hashable"
+      "norm_label": "hashable",
+      "id": "hashable"
     },
     {
       "label": "account",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L10",
-      "id": "import_importview_targetchoice_account",
       "community": 1,
-      "norm_label": "account"
+      "norm_label": "account",
+      "id": "import_importview_targetchoice_account"
     },
     {
       "label": "card",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L11",
-      "id": "import_importview_targetchoice_card",
       "community": 1,
-      "norm_label": "card"
+      "norm_label": "card",
+      "id": "import_importview_targetchoice_card"
     },
     {
       "label": ".importPreviewView()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L197",
-      "id": "import_importview_importview_importpreviewview",
       "community": 13,
-      "norm_label": ".importpreviewview()"
+      "norm_label": ".importpreviewview()",
+      "id": "import_importview_importview_importpreviewview"
     },
     {
       "label": ".fileListSection()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L218",
-      "id": "import_importview_importview_filelistsection",
       "community": 13,
-      "norm_label": ".filelistsection()"
+      "norm_label": ".filelistsection()",
+      "id": "import_importview_importview_filelistsection"
     },
     {
       "label": ".aggregatedSummarySection()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L253",
-      "id": "import_importview_importview_aggregatedsummarysection",
       "community": 13,
-      "norm_label": ".aggregatedsummarysection()"
+      "norm_label": ".aggregatedsummarysection()",
+      "id": "import_importview_importview_aggregatedsummarysection"
     },
     {
       "label": ".aggregatedTransactionListSection()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L310",
-      "id": "import_importview_importview_aggregatedtransactionlistsection",
       "community": 13,
-      "norm_label": ".aggregatedtransactionlistsection()"
+      "norm_label": ".aggregatedtransactionlistsection()",
+      "id": "import_importview_importview_aggregatedtransactionlistsection"
     },
     {
       "label": ".formatDate()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L398",
-      "id": "import_importview_importview_formatdate",
       "community": 13,
-      "norm_label": ".formatdate()"
+      "norm_label": ".formatdate()",
+      "id": "import_importview_importview_formatdate"
     },
     {
       "label": ".formatAmount()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L404",
-      "id": "import_importview_importview_formatamount",
       "community": 13,
-      "norm_label": ".formatamount()"
+      "norm_label": ".formatamount()",
+      "id": "import_importview_importview_formatamount"
     },
     {
       "label": "MockTransactionRepository",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L424",
-      "id": "import_importview_mocktransactionrepository",
       "community": 10,
-      "norm_label": "mocktransactionrepository"
+      "norm_label": "mocktransactionrepository",
+      "id": "import_importview_mocktransactionrepository"
     },
     {
       "label": "TransactionRepository",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "transactionrepository",
       "community": 10,
-      "norm_label": "transactionrepository"
+      "norm_label": "transactionrepository",
+      "id": "transactionrepository"
     },
     {
       "label": ".fetchTransactionsForAccount()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L425",
-      "id": "import_importview_mocktransactionrepository_fetchtransactionsforaccount",
       "community": 10,
-      "norm_label": ".fetchtransactionsforaccount()"
+      "norm_label": ".fetchtransactionsforaccount()",
+      "id": "import_importview_mocktransactionrepository_fetchtransactionsforaccount"
     },
     {
       "label": ".fetchTransactionsForCard()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L429",
-      "id": "import_importview_mocktransactionrepository_fetchtransactionsforcard",
       "community": 10,
-      "norm_label": ".fetchtransactionsforcard()"
+      "norm_label": ".fetchtransactionsforcard()",
+      "id": "import_importview_mocktransactionrepository_fetchtransactionsforcard"
     },
     {
       "label": ".fetchTransactions()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L433",
-      "id": "import_importview_mocktransactionrepository_fetchtransactions",
       "community": 10,
-      "norm_label": ".fetchtransactions()"
+      "norm_label": ".fetchtransactions()",
+      "id": "import_importview_mocktransactionrepository_fetchtransactions"
     },
     {
       "label": ".insertTransactions()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L437",
-      "id": "import_importview_mocktransactionrepository_inserttransactions",
       "community": 10,
-      "norm_label": ".inserttransactions()"
+      "norm_label": ".inserttransactions()",
+      "id": "import_importview_mocktransactionrepository_inserttransactions"
     },
     {
       "label": "MockAccountRepository",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L440",
-      "id": "import_importview_mockaccountrepository",
       "community": 1,
-      "norm_label": "mockaccountrepository"
+      "norm_label": "mockaccountrepository",
+      "id": "import_importview_mockaccountrepository"
     },
     {
       "label": "AccountRepository",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "accountrepository",
       "community": 1,
-      "norm_label": "accountrepository"
+      "norm_label": "accountrepository",
+      "id": "accountrepository"
     },
     {
       "label": ".fetchAccounts()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L441",
-      "id": "import_importview_mockaccountrepository_fetchaccounts",
       "community": 1,
-      "norm_label": ".fetchaccounts()"
+      "norm_label": ".fetchaccounts()",
+      "id": "import_importview_mockaccountrepository_fetchaccounts"
     },
     {
       "label": "MockCardRepository",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L446",
-      "id": "import_importview_mockcardrepository",
       "community": 1,
-      "norm_label": "mockcardrepository"
+      "norm_label": "mockcardrepository",
+      "id": "import_importview_mockcardrepository"
     },
     {
       "label": "CardRepository",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "cardrepository",
       "community": 1,
-      "norm_label": "cardrepository"
+      "norm_label": "cardrepository",
+      "id": "cardrepository"
     },
     {
       "label": ".fetchCards()",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L447",
-      "id": "import_importview_mockcardrepository_fetchcards",
       "community": 1,
-      "norm_label": ".fetchcards()"
+      "norm_label": ".fetchcards()",
+      "id": "import_importview_mockcardrepository_fetchcards"
     },
     {
       "label": "ImportViewModel.swift",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L1",
-      "id": "importviewmodel_swift",
       "community": 11,
-      "norm_label": "importviewmodel.swift"
+      "norm_label": "importviewmodel.swift",
+      "id": "importviewmodel_swift"
     },
     {
       "label": "ImportViewModel",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L8",
-      "id": "import_importviewmodel_importviewmodel",
       "community": 11,
-      "norm_label": "importviewmodel"
+      "norm_label": "importviewmodel",
+      "id": "import_importviewmodel_importviewmodel"
     },
     {
       "label": ".init()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L30",
-      "id": "import_importviewmodel_importviewmodel_init",
       "community": 11,
-      "norm_label": ".init()"
+      "norm_label": ".init()",
+      "id": "import_importviewmodel_importviewmodel_init"
     },
     {
       "label": ".setFileURLs()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L42",
-      "id": "import_importviewmodel_importviewmodel_setfileurls",
       "community": 11,
-      "norm_label": ".setfileurls()"
+      "norm_label": ".setfileurls()",
+      "id": "import_importviewmodel_importviewmodel_setfileurls"
     },
     {
       "label": ".parseFiles()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L47",
-      "id": "import_importviewmodel_importviewmodel_parsefiles",
       "community": 11,
-      "norm_label": ".parsefiles()"
+      "norm_label": ".parsefiles()",
+      "id": "import_importviewmodel_importviewmodel_parsefiles"
     },
     {
       "label": ".importTransactions()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L109",
-      "id": "import_importviewmodel_importviewmodel_importtransactions",
       "community": 11,
-      "norm_label": ".importtransactions()"
+      "norm_label": ".importtransactions()",
+      "id": "import_importviewmodel_importviewmodel_importtransactions"
     },
     {
       "label": ".loadTargetsOnAppear()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L188",
-      "id": "import_importviewmodel_importviewmodel_loadtargetsonappear",
       "community": 11,
-      "norm_label": ".loadtargetsonappear()"
+      "norm_label": ".loadtargetsonappear()",
+      "id": "import_importviewmodel_importviewmodel_loadtargetsonappear"
     },
     {
       "label": ".loadTargets()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L205",
-      "id": "import_importviewmodel_importviewmodel_loadtargets",
       "community": 11,
-      "norm_label": ".loadtargets()"
+      "norm_label": ".loadtargets()",
+      "id": "import_importviewmodel_importviewmodel_loadtargets"
     },
     {
       "label": ".fileFormat()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L211",
-      "id": "import_importviewmodel_importviewmodel_fileformat",
       "community": 11,
-      "norm_label": ".fileformat()"
+      "norm_label": ".fileformat()",
+      "id": "import_importviewmodel_importviewmodel_fileformat"
     },
     {
       "label": ".formatError()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L226",
-      "id": "import_importviewmodel_importviewmodel_formaterror",
       "community": 11,
-      "norm_label": ".formaterror()"
+      "norm_label": ".formaterror()",
+      "id": "import_importviewmodel_importviewmodel_formaterror"
     },
     {
       "label": ".reset()",
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L243",
-      "id": "import_importviewmodel_importviewmodel_reset",
       "community": 11,
-      "norm_label": ".reset()"
+      "norm_label": ".reset()",
+      "id": "import_importviewmodel_importviewmodel_reset"
     },
     {
       "label": ".statementHeaderSection()",
@@ -3794,9 +3794,9 @@
       "source_file": "ImportViewModel.swift",
       "source_location": "L188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel",
-      "target": "import_importviewmodel_importviewmodel_loadtargetsonappear",
-      "confidence_score": 1.0
+      "target": "import_importviewmodel_importviewmodel_loadtargetsonappear"
     },
     {
       "relation": "method",
@@ -3931,9 +3931,9 @@
       "source_file": "ImportViewModel.swift",
       "source_location": "L207",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "import_importviewmodel_importviewmodel_loadtargets",
-      "target": "import_importviewmodel_importviewmodel_loadtargetsonappear",
-      "confidence_score": 1.0
+      "target": "import_importviewmodel_importviewmodel_loadtargetsonappear"
     },
     {
       "relation": "calls",
@@ -7828,5 +7828,5 @@
       "source_file": "AGENTS.md"
     }
   ],
-  "built_at_commit": "0e49e99bb89172160647a2fcb0e18fe1360aca73"
+  "built_at_commit": "959f13fa25519c0acd787e20208edc43709ba767"
 }
