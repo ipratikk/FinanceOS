@@ -13,3 +13,4 @@
 --extensionacl on-extension
 --importgrouping alphabetized
 --disable redundantReturn
+--disable redundantType
