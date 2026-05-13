@@ -7,10 +7,10 @@
 
 import Foundation
 
-public protocol StatementParser {
+public protocol StatementParser: Sendable {
     var supportedFormat: StatementFileFormat { get }
 
-    func parseTransactions(
+    func parseStatement(
         from fileURL: URL
-    ) async throws -> [ParsedTransaction]
+    ) async throws -> ParsedStatement
 }

@@ -18,6 +18,10 @@ let package = Package(
         .package(
             url: "https://github.com/groue/GRDB.swift",
             from: "7.0.0"
+        ),
+        .package(
+            url: "https://github.com/swiftcsv/SwiftCSV",
+            from: "0.10.0"
         )
     ],
     targets: [
@@ -27,6 +31,10 @@ let package = Package(
                 .product(
                     name: "GRDB",
                     package: "GRDB.swift"
+                ),
+                .product(
+                    name: "SwiftCSV",
+                    package: "SwiftCSV"
                 )
             ]
         ),
@@ -37,6 +45,10 @@ let package = Package(
                 .product(
                     name: "GRDB",
                     package: "GRDB.swift"
+                ),
+                .product(
+                    name: "SwiftCSV",
+                    package: "SwiftCSV"
                 )
             ]
         )

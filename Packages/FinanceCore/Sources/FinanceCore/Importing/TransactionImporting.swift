@@ -7,9 +7,15 @@
 
 import Foundation
 
-public protocol TransactionImporting {
-    func importTransactions(
+public protocol TransactionImporting: Sendable {
+    func parseStatement(
         from fileURL: URL,
         format: StatementFileFormat
+    ) async throws -> ParsedStatement
+
+    func importTransactions(
+        from fileURL: URL,
+        format: StatementFileFormat,
+        target: TransactionImportTarget
     ) async throws -> [Transaction]
 }
