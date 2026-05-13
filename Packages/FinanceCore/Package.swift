@@ -32,7 +32,13 @@ let package = Package(
         ),
         .testTarget(
             name: "FinanceCoreTests",
-            dependencies: ["FinanceCore"]
+            dependencies: [
+                "FinanceCore",
+                .product(
+                    name: "GRDB",
+                    package: "GRDB.swift"
+                )
+            ]
         )
     ],
     swiftLanguageModes: [.v6]

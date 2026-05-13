@@ -79,6 +79,14 @@ private extension DatabaseManager {
             try DatabaseSeeder.seedInstitutions(
                 in: database
             )
+
+            try DatabaseSeeder.seedAccounts(
+                in: database
+            )
+
+            try DatabaseSeeder.seedCards(
+                in: database
+            )
         }
     }
 }

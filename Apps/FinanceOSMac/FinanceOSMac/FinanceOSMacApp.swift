@@ -7,11 +7,36 @@ struct FinanceOSMacApp: App {
 
     var body: some Scene {
         WindowGroup {
-            InstitutionsView(
-                viewModel: InstitutionsViewModel(
-                    repository: appContainer.institutionRepository
+            TabView {
+                InstitutionsView(
+                    viewModel: InstitutionsViewModel(
+                        repository: appContainer.institutionRepository
+                    )
                 )
-            )
+                .tabItem {
+                    Label("Institutions", systemImage: "building.columns")
+                }
+
+                AccountsView(
+                    viewModel: AccountsViewModel(
+                        repository: appContainer.accountRepository
+                    )
+                )
+                .tabItem {
+                    Label("Accounts", systemImage: "building.columns.circle")
+                }
+
+                CardsView(
+                    viewModel: CardsViewModel(
+                        cardRepository: appContainer.cardRepository,
+                        accountRepository: appContainer.accountRepository,
+                        institutionRepository: appContainer.institutionRepository
+                    )
+                )
+                .tabItem {
+                    Label("Cards", systemImage: "creditcard")
+                }
+            }
         }
     }
 }
