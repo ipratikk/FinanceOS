@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-13)
 
 ## Corpus Check
-- 53 files · ~10,180 words
+- 53 files · ~10,254 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 342 nodes · 445 edges · 31 communities (17 shown, 14 thin omitted)
+- 343 nodes · 447 edges · 32 communities (18 shown, 14 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f97fe533`
+- Built from commit: `0e49e99b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -36,16 +36,17 @@
 - [[_COMMUNITY_Community 18|Community 18]]
 - [[_COMMUNITY_Community 19|Community 19]]
 - [[_COMMUNITY_Community 20|Community 20]]
-- [[_COMMUNITY_Community 23|Community 23]]
-- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 21|Community 21]]
+- [[_COMMUNITY_Community 24|Community 24]]
 - [[_COMMUNITY_Community 26|Community 26]]
 - [[_COMMUNITY_Community 27|Community 27]]
-- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 31|Community 31]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `TabularTransactionDecoder` - 19 edges
-2. `ImportView` - 11 edges
-3. `ImportViewModel` - 11 edges
+2. `ImportViewModel` - 12 edges
+3. `ImportView` - 11 edges
 4. `FinanceOS Current Architecture` - 10 edges
 5. `Transaction` - 10 edges
 6. `GRDBTransactionRepository` - 9 edges
@@ -71,27 +72,27 @@
 - **Database Lifecycle Flow** — databasemanager_shared, databasemanager_migrator, appmigration_registermigrations, databasemanager_seed_database, databaseseeder_seedinstitutions [EXTRACTED 1.00]
 - **Architecture Rules To Code** — architecture_layered_flow, architecture_database_lifecycle_rule, architecture_dependency_composition_rule, architecture_repository_abstraction_rule, architecture_ui_database_boundary_rule, architecture_persistence_encapsulation_rule [EXTRACTED 1.00]
 
-## Communities (31 total, 14 thin omitted)
+## Communities (32 total, 14 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.07
-Nodes (18): Codable, FetchableRecord, Identifiable, Account, Columns, Card, Columns, Columns (+10 more)
+Cohesion: 0.08
+Nodes (17): Codable, FetchableRecord, Identifiable, Account, Columns, Card, Columns, Columns (+9 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.06
-Nodes (12): AccountRepository, AppContainer, CardRepository, MockAccountRepository, MockCardRepository, MockTransactionRepository, InstitutionRepository, GRDBAccountRepository (+4 more)
+Cohesion: 0.07
+Nodes (16): AccountRepository, AppContainer, CardRepository, Hashable, MockAccountRepository, MockCardRepository, TargetChoice, account (+8 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.09
-Nodes (15): CaseIterable, CSVStatementParser, StatementFileFormat, csv, pdf, xlsx, ParsedWorkbook, SharedStringsParserDelegate (+7 more)
-
-### Community 3 - "Community 3"
 Cohesion: 0.08
 Nodes (11): DatabaseManager, DefaultTransactionImporter, ParsedStatement, StatementParser, TransactionImporting, AccountRepository, CardRepository, InstitutionRepository (+3 more)
 
-### Community 4 - "Community 4"
+### Community 3 - "Community 3"
 Cohesion: 0.16
 Nodes (4): Equatable, ParsedTransaction, StatementMetadata, TabularTransactionDecoder
+
+### Community 4 - "Community 4"
+Cohesion: 0.12
+Nodes (9): CSVStatementParser, ParsedWorkbook, SharedStringsParserDelegate, WorksheetParserDelegate, XLSXStatementParser, XLSXWorkbookReader, NSObject, StatementParser (+1 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.11
@@ -113,13 +114,17 @@ Nodes (16): Architecture, Composition Root, Concrete Implementations, Core Rules
 Cohesion: 0.23
 Nodes (13): Current Architectural Constraints, Current Completed Features, Current Naming, Current Repositories, Current Risks, Current UI Flow, Database, Dependency Composition (+5 more)
 
+### Community 10 - "Community 10"
+Cohesion: 0.15
+Nodes (3): MockTransactionRepository, GRDBTransactionRepository, TransactionRepository
+
 ### Community 12 - "Community 12"
+Cohesion: 0.2
+Nodes (7): CaseIterable, StatementFileFormat, csv, pdf, xlsx, String, TransactionsViewModel
+
+### Community 14 - "Community 14"
 Cohesion: 0.22
 Nodes (8): Error, TransactionImportError, invalidAmount, invalidDate, malformedFile, missingRequiredColumn, platformUnavailable, unsupportedFormat
-
-### Community 13 - "Community 13"
-Cohesion: 0.25
-Nodes (7): Hashable, TargetChoice, account, card, TransactionImportTarget, account, card
 
 ## Knowledge Gaps
 - **53 isolated node(s):** `account`, `card`, `Stack`, `Core Rules`, `Protocols` (+48 more)
@@ -129,17 +134,17 @@ Nodes (7): Hashable, TargetChoice, account, card, TransactionImportTarget, accou
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ImportView` connect `Community 11` to `Community 1`, `Community 6`?**
+- **Why does `ImportView` connect `Community 13` to `Community 1`, `Community 6`?**
   _High betweenness centrality (0.093) - this node is a cross-community bridge._
-- **Why does `GRDBTransactionRepository` connect `Community 1` to `Community 3`?**
+- **Why does `GRDBTransactionRepository` connect `Community 10` to `Community 1`, `Community 2`?**
   _High betweenness centrality (0.059) - this node is a cross-community bridge._
-- **Why does `XLSXStatementParser` connect `Community 2` to `Community 3`?**
+- **Why does `XLSXStatementParser` connect `Community 4` to `Community 2`?**
   _High betweenness centrality (0.054) - this node is a cross-community bridge._
 - **What connects `account`, `card`, `Stack` to the rest of the system?**
   _53 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.07 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.09 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
