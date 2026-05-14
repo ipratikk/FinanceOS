@@ -1,7 +1,7 @@
-# Graph Report - FinanceOS  (2026-05-14)
+# Graph Report - FinanceOS  (2026-05-15)
 
 ## Corpus Check
-- 74 files · ~14,699 words
+- 74 files · ~14,657 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `32a4fdb2`
+- Built from commit: `cb61c0eb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -149,17 +149,17 @@ Nodes (3): MockTransactionImporter, DefaultTransactionImporter, TransactionImpor
 Cohesion: 0.18
 Nodes (9): Error, TransactionImportError, invalidAmount, invalidDate, malformedFile, missingRequiredColumn, platformUnavailable, unsupportedFormat (+1 more)
 
-### Community 22 - "Community 22"
+### Community 21 - "Community 21"
 Cohesion: 0.25
 Nodes (3): CardRepository, MockCardRepository, GRDBCardRepository
 
-### Community 23 - "Community 23"
+### Community 22 - "Community 22"
 Cohesion: 0.25
 Nodes (3): MockInstitutionRepository, InstitutionRepository, GRDBInstitutionRepository
 
-### Community 24 - "Community 24"
-Cohesion: 0.29
-Nodes (3): AccountRepository, MockAccountRepository, GRDBAccountRepository
+### Community 25 - "Community 25"
+Cohesion: 0.33
+Nodes (3): AccountRepository, MockAccountRepository, MockCardRepository
 
 ## Knowledge Gaps
 - **74 isolated node(s):** `code:swift (// ❌ Too long)`, `code:swift (// ❌ Single large function)`, `code:swift (// ❌ Single 300+ line View struct)`, `File Length`, `code:swift (// ❌ Wrong)` (+69 more)
@@ -169,7 +169,7 @@ Nodes (3): AccountRepository, MockAccountRepository, GRDBAccountRepository
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ImportView` connect `Community 18` to `Community 12`, `Community 20`, `Community 4`?**
+- **Why does `ImportView` connect `Community 18` to `Community 25`, `Community 4`, `Community 12`?**
   _High betweenness centrality (0.085) - this node is a cross-community bridge._
 - **Why does `TransactionImportTarget` connect `Community 0` to `Community 12`?**
   _High betweenness centrality (0.069) - this node is a cross-community bridge._
