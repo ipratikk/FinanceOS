@@ -69,10 +69,7 @@ struct AccountEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Convert", role: .destructive) {
                 Task {
-                    var updated = account
-                    updated.name = name
-                    updated.institutionID = institutionID
-                    await viewModel.convertToCard(updated)
+                    await viewModel.convertToCard(account)
                     dismiss()
                 }
             }
