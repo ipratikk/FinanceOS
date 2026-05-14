@@ -66,8 +66,30 @@ public enum DependencyChecker {
         return nil
     }
 
+    private static func isBrewInstalled() -> Bool {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/bash")
+        process.arguments = ["-c", "which brew"]
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+            return process.terminationStatus == 0
+        } catch {
+            return false
+        }
+    }
+
     private static func installSSConvert() async {
         #if os(macOS)
+        guard isBrewInstalled() else {
+            return
+        }
+
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/bash")
         process.arguments = ["-c", "brew install gnumeric"]

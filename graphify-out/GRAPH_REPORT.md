@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-15)
 
 ## Corpus Check
-- 74 files · ~14,657 words
+- 74 files · ~14,715 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 526 nodes · 673 edges · 44 communities (25 shown, 19 thin omitted)
+- 526 nodes · 673 edges · 45 communities (25 shown, 20 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 32 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cb61c0eb`
+- Built from commit: `372018f7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -49,10 +49,11 @@
 - [[_COMMUNITY_Community 31|Community 31]]
 - [[_COMMUNITY_Community 32|Community 32]]
 - [[_COMMUNITY_Community 33|Community 33]]
-- [[_COMMUNITY_Community 37|Community 37]]
+- [[_COMMUNITY_Community 34|Community 34]]
 - [[_COMMUNITY_Community 38|Community 38]]
 - [[_COMMUNITY_Community 39|Community 39]]
-- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 40|Community 40]]
+- [[_COMMUNITY_Community 44|Community 44]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `TabularTransactionDecoder` - 20 edges
@@ -83,7 +84,7 @@
 - **Database Lifecycle Flow** — databasemanager_shared, databasemanager_migrator, appmigration_registermigrations, databasemanager_seed_database, databaseseeder_seedinstitutions [EXTRACTED 1.00]
 - **Architecture Rules To Code** — architecture_layered_flow, architecture_database_lifecycle_rule, architecture_dependency_composition_rule, architecture_repository_abstraction_rule, architecture_ui_database_boundary_rule, architecture_persistence_encapsulation_rule [EXTRACTED 1.00]
 
-## Communities (44 total, 19 thin omitted)
+## Communities (45 total, 20 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06
@@ -149,27 +150,27 @@ Nodes (3): MockTransactionImporter, DefaultTransactionImporter, TransactionImpor
 Cohesion: 0.18
 Nodes (9): Error, TransactionImportError, invalidAmount, invalidDate, malformedFile, missingRequiredColumn, platformUnavailable, unsupportedFormat (+1 more)
 
-### Community 21 - "Community 21"
-Cohesion: 0.25
-Nodes (3): CardRepository, MockCardRepository, GRDBCardRepository
-
-### Community 22 - "Community 22"
+### Community 19 - "Community 19"
 Cohesion: 0.25
 Nodes (3): MockInstitutionRepository, InstitutionRepository, GRDBInstitutionRepository
 
-### Community 25 - "Community 25"
-Cohesion: 0.33
-Nodes (3): AccountRepository, MockAccountRepository, MockCardRepository
+### Community 22 - "Community 22"
+Cohesion: 0.29
+Nodes (3): CardRepository, MockCardRepository, MockCardRepository
+
+### Community 23 - "Community 23"
+Cohesion: 0.29
+Nodes (3): AccountRepository, MockAccountRepository, GRDBAccountRepository
 
 ## Knowledge Gaps
 - **74 isolated node(s):** `code:swift (// ❌ Too long)`, `code:swift (// ❌ Single large function)`, `code:swift (// ❌ Single 300+ line View struct)`, `File Length`, `code:swift (// ❌ Wrong)` (+69 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **19 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **20 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ImportView` connect `Community 18` to `Community 25`, `Community 4`, `Community 12`?**
+- **Why does `ImportView` connect `Community 18` to `Community 4`, `Community 12`, `Community 22`?**
   _High betweenness centrality (0.085) - this node is a cross-community bridge._
 - **Why does `TransactionImportTarget` connect `Community 0` to `Community 12`?**
   _High betweenness centrality (0.069) - this node is a cross-community bridge._
