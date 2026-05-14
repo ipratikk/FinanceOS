@@ -57,14 +57,13 @@ enum AppMigration {
             let legacyAccountRows = try Row.fetchAll(database, sql: "SELECT id, name, institutionID FROM accounts")
             let institutionRows = try Row.fetchAll(database, sql: "SELECT id, name FROM institutions")
 
-            let institutionIDsByName = Dictionary(
-                uniqueKeysWithValues: institutionRows.compactMap { row in
-                    guard let name: String = row["name"], let id: String = row["id"] else {
-                        return nil
-                    }
-                    return (name, UUID(uuidString: id) ?? UUID())
+            var institutionIDsByName: [String: UUID] = [:]
+            for row in institutionRows {
+                guard let name: String = row["name"], let id: String = row["id"] else {
+                    continue
                 }
-            )
+                institutionIDsByName[name] = UUID(uuidString: id) ?? UUID()
+            }
 
             let preservedAccounts = legacyAccountRows.filter { row in
                 guard let name: String = row["name"] else { return false }
