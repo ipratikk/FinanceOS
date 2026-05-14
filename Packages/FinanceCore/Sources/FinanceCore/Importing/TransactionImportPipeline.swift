@@ -17,18 +17,30 @@ public struct TransactionImportPipeline: Sendable {
         format: StatementFileFormat,
         target: TransactionImportTarget
     ) async throws -> ImportResult {
-        let parsed = try importer.importTransactions(from: fileURL, format: format)
+        let parsed = try await importer.parseStatement(from: fileURL, format: format)
 
         let transactions = parsed.transactions.map { parsedTxn in
-            Transaction(
+            let accountID: UUID?
+            let cardID: UUID?
+
+            switch target {
+            case let .account(id):
+                accountID = id
+                cardID = nil
+            case let .card(id):
+                accountID = nil
+                cardID = id
+            }
+
+            return Transaction(
+                accountID: accountID,
+                cardID: cardID,
                 postedAt: parsedTxn.postedAt,
                 description: parsedTxn.description,
-                amountMinorUnits: parsedTxn.amountMinorUnits,
+                amountMinorUnits: abs(parsedTxn.amountMinorUnits),
                 currencyCode: parsedTxn.currencyCode,
                 transactionType: parsedTxn.amountMinorUnits < 0 ? .debit : .credit,
-                sourceFingerprint: parsedTxn.sourceFingerprint,
-                accountID: target.accountID,
-                cardID: target.cardID
+                sourceFingerprint: parsedTxn.sourceFingerprint
             )
         }
 
