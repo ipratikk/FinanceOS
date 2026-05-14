@@ -258,18 +258,18 @@ final class ImportViewModel {
         }
     }
 
-    private func fuzzyMatch(_ a: String, _ b: String) -> Bool {
-        let aLower = a.lowercased()
-        let bLower = b.lowercased()
+    private func fuzzyMatch(_ stored: String, _ parsed: String) -> Bool {
+        let storedLower = stored.lowercased()
+        let parsedLower = parsed.lowercased()
 
-        if aLower == bLower { return true }
-        if aLower.contains(bLower) || bLower.contains(aLower) { return true }
+        if storedLower == parsedLower { return true }
+        if storedLower.contains(parsedLower) || parsedLower.contains(storedLower) { return true }
 
-        let aWords = aLower.split(separator: " ").map(String.init)
-        let bWords = bLower.split(separator: " ").map(String.init)
+        let storedWords = storedLower.split(separator: " ").map(String.init)
+        let parsedWords = parsedLower.split(separator: " ").map(String.init)
 
-        let commonWords = Set(aWords).intersection(Set(bWords))
-        return !commonWords.isEmpty && commonWords.count >= min(aWords.count, bWords.count) / 2
+        let commonWords = Set(storedWords).intersection(Set(parsedWords))
+        return !commonWords.isEmpty && commonWords.count >= min(storedWords.count, parsedWords.count) / 2
     }
 
     private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
