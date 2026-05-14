@@ -21,14 +21,18 @@ public struct Account:
 
     public let name: String
 
+    public let nickname: String
+
     public init(
         id: UUID = UUID(),
         institutionID: UUID,
-        name: String
+        name: String,
+        nickname: String = ""
     ) {
         self.id = id
         self.institutionID = institutionID
         self.name = name
+        self.nickname = nickname
     }
 }
 
@@ -37,6 +41,7 @@ public extension Account {
         static let id = Column(CodingKeys.id)
         static let institutionID = Column(CodingKeys.institutionID)
         static let name = Column(CodingKeys.name)
+        static let nickname = Column(CodingKeys.nickname)
     }
 }
 
@@ -63,6 +68,10 @@ public extension Account {
 
             table.column("name", .text)
                 .notNull()
+
+            table.column("nickname", .text)
+                .notNull()
+                .defaults(to: "")
         }
     }
 }

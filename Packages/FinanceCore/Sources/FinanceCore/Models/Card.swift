@@ -23,16 +23,24 @@ public struct Card:
 
     public let name: String
 
+    public let nickname: String
+
+    public let last4: String
+
     public init(
         id: UUID = UUID(),
         institutionID: UUID,
         accountID: UUID? = nil,
-        name: String
+        name: String,
+        nickname: String = "",
+        last4: String = ""
     ) {
         self.id = id
         self.institutionID = institutionID
         self.accountID = accountID
         self.name = name
+        self.nickname = nickname
+        self.last4 = last4
     }
 }
 
@@ -42,6 +50,8 @@ public extension Card {
         static let institutionID = Column(CodingKeys.institutionID)
         static let accountID = Column(CodingKeys.accountID)
         static let name = Column(CodingKeys.name)
+        static let nickname = Column(CodingKeys.nickname)
+        static let last4 = Column(CodingKeys.last4)
     }
 }
 
@@ -76,6 +86,14 @@ public extension Card {
 
             table.column("name", .text)
                 .notNull()
+
+            table.column("nickname", .text)
+                .notNull()
+                .defaults(to: "")
+
+            table.column("last4", .text)
+                .notNull()
+                .defaults(to: "")
         }
     }
 }
