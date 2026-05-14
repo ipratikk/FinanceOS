@@ -15,61 +15,99 @@ enum AppMigration {
         migrator.registerMigration("v1_initial") { database in
             FinanceLogger.migration.info("Running migration: v1_initial")
 
-            try Institution.createTable(
-                in: database
-            )
+            try database.execute(sql: """
+                CREATE TABLE institutions (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL
+                )
+            """)
         }
 
         migrator.registerMigration("v2_accounts") { database in
             FinanceLogger.migration.info("Running migration: v2_accounts")
 
-            try Account.createTable(
-                in: database
-            )
+            try database.execute(sql: """
+                CREATE TABLE accounts (
+                    id TEXT PRIMARY KEY,
+                    institutionID TEXT NOT NULL REFERENCES institutions(id) ON DELETE CASCADE,
+                    name TEXT NOT NULL,
+                    nickname TEXT NOT NULL DEFAULT ''
+                )
+            """)
+            try database.execute(sql: "CREATE INDEX idx_accounts_institutionID ON accounts(institutionID)")
         }
 
         migrator.registerMigration("v3_cards_split") { database in
             FinanceLogger.migration.info("Running migration: v3_cards_split")
 
-            try Card.createTable(
-                in: database
-            )
+            try database.execute(sql: """
+                CREATE TABLE cards (
+                    id TEXT PRIMARY KEY,
+                    institutionID TEXT NOT NULL REFERENCES institutions(id) ON DELETE CASCADE,
+                    accountID TEXT REFERENCES accounts(id) ON DELETE SET NULL,
+                    name TEXT NOT NULL,
+                    nickname TEXT NOT NULL DEFAULT '',
+                    last4 TEXT NOT NULL DEFAULT ''
+                )
+            """)
+            try database.execute(sql: "CREATE INDEX idx_cards_institutionID ON cards(institutionID)")
+            try database.execute(sql: "CREATE INDEX idx_cards_accountID ON cards(accountID)")
 
-            let legacyAccounts = try Account
-                .fetchAll(database)
-
-            let institutions = try Institution
-                .fetchAll(database)
+            // Fetch legacy accounts and institutions using raw SQL
+            let legacyAccountRows = try database.fetch(Row.self, sql: "SELECT id, name FROM accounts")
+            let institutionRows = try database.fetch(Row.self, sql: "SELECT id, name FROM institutions")
 
             let institutionIDsByName = Dictionary(
-                uniqueKeysWithValues: institutions.map { institution in
-                    (institution.name, institution.id)
+                uniqueKeysWithValues: institutionRows.compactMap { row in
+                    guard let name: String = row["name"], let id: String = row["id"] else {
+                        return nil
+                    }
+                    return (name, UUID(uuidString: id) ?? UUID())
                 }
             )
 
-            let preservedAccounts = legacyAccounts.filter { account in
-                !legacyCardNameMappings.keys.contains(account.name)
+            let preservedAccounts = legacyAccountRows.filter { row in
+                guard let name: String = row["name"] else { return false }
+                return !legacyCardNameMappings.keys.contains(name)
             }
 
-            try Account.deleteAll(database)
+            try database.execute(sql: "DELETE FROM accounts")
 
-            for account in preservedAccounts {
-                try account.insert(database)
+            for row in preservedAccounts {
+                guard let id: String = row["id"], let name: String = row["name"], let institutionID: String = row["institutionID"] else {
+                    continue
+                }
+                try database.execute(sql:
+                    "INSERT INTO accounts (id, institutionID, name, nickname) VALUES (?, ?, ?, '')",
+                    arguments: [id, institutionID, name]
+                )
             }
 
-            let seededAccounts = try seedDefaultAccounts(
+            let seededAccountRows = try seedDefaultAccounts(
                 in: database,
                 institutionIDsByName: institutionIDsByName
             )
 
-            let legacyCards = legacyAccounts.compactMap { account in
-                legacyCard(from: account, seededAccounts: seededAccounts)
+            let legacyCardRows = legacyAccountRows.compactMap { row in
+                guard let name: String = row["name"], let mapping = legacyCardNameMappings[name] else {
+                    return nil
+                }
+                return (id: row["id"] as? String, institutionID: row["institutionID"] as? String, mapping: mapping)
             }
 
-            try Card.deleteAll(database)
+            try database.execute(sql: "DELETE FROM cards")
 
-            for card in legacyCards {
-                try card.insert(database)
+            for row in legacyCardRows {
+                guard let id = row.id, let institutionID = row.institutionID else { continue }
+
+                let linkedAccountID = row.mapping.linkedAccountInstitutionName
+                    .flatMap { seededAccountRows[$0]?.id.uuidString }
+
+                let linkedAccountIDParam: String? = linkedAccountID
+                try database.execute(sql:
+                    "INSERT INTO cards (id, institutionID, accountID, name, nickname, last4) VALUES (?, ?, ?, ?, '', '')",
+                    arguments: [id, institutionID, linkedAccountIDParam as Any, row.mapping.canonicalName]
+                )
             }
         }
 
@@ -89,6 +127,55 @@ enum AppMigration {
                 ON transactions(sourceFingerprint)
                 WHERE sourceFingerprint IS NOT NULL
             """)
+        }
+
+        migrator.registerMigration("v6_bank_model_update") { database in
+            FinanceLogger.migration.info("Running migration: v6_bank_model_update")
+
+            // 1. Create banks table (from institutions)
+            try database.create(table: "banks") { t in
+                t.column("id", .text).primaryKey()
+                t.column("name", .text).notNull()
+                t.column("providerType", .text).notNull().defaults(to: "bank")
+            }
+            try database.execute(sql: "INSERT INTO banks (id, name, providerType) SELECT id, name, 'bank' FROM institutions")
+
+            // 2. Recreate accounts with new columns
+            try database.create(table: "accounts_new") { t in
+                t.column("id", .text).primaryKey()
+                t.column("bankId", .text).notNull().indexed().references("banks", column: "id", onDelete: .cascade)
+                t.column("accountName", .text).notNull()
+                t.column("accountLast4", .text).notNull().defaults(to: "")
+                t.column("ownerName", .text).notNull().defaults(to: "")
+                t.column("accountType", .text).notNull().defaults(to: "savings")
+                t.column("nickname", .text).notNull().defaults(to: "")
+            }
+            try database.execute(sql: """
+                INSERT INTO accounts_new (id, bankId, accountName, accountLast4, ownerName, accountType, nickname)
+                SELECT id, institutionID, name, '', '', 'savings', nickname FROM accounts
+            """)
+            try database.drop(table: "accounts")
+            try database.rename(table: "accounts_new", to: "accounts")
+
+            // 3. Recreate cards with new columns
+            try database.create(table: "cards_new") { t in
+                t.column("id", .text).primaryKey()
+                t.column("bankId", .text).notNull().indexed().references("banks", column: "id", onDelete: .cascade)
+                t.column("linkedAccountId", .text).indexed().references("accounts", column: "id", onDelete: .setNull)
+                t.column("cardName", .text).notNull()
+                t.column("cardLast4", .text).notNull().defaults(to: "")
+                t.column("cardType", .text).notNull().defaults(to: "other")
+                t.column("nickname", .text).notNull().defaults(to: "")
+            }
+            try database.execute(sql: """
+                INSERT INTO cards_new (id, bankId, linkedAccountId, cardName, cardLast4, cardType, nickname)
+                SELECT id, institutionID, accountID, name, last4, 'other', nickname FROM cards
+            """)
+            try database.drop(table: "cards")
+            try database.rename(table: "cards_new", to: "cards")
+
+            // 4. Drop institutions (data already in banks)
+            try database.drop(table: "institutions")
         }
     }
 }
@@ -114,48 +201,27 @@ private extension AppMigration {
     static func seedDefaultAccounts(
         in database: Database,
         institutionIDsByName: [String: UUID]
-    ) throws -> [String: Account] {
+    ) throws -> [String: (id: UUID, name: String)] {
         let definitions = [
             ("HDFC", "HDFC Bank Account"),
             ("ICICI", "ICICI Bank Account")
         ]
 
-        var seededAccounts: [String: Account] = [:]
+        var seededAccounts: [String: (id: UUID, name: String)] = [:]
 
         for (institutionName, accountName) in definitions {
             guard let institutionID = institutionIDsByName[institutionName] else {
                 continue
             }
 
-            let account = Account(
-                institutionID: institutionID,
-                name: accountName
+            let accountID = UUID()
+            try database.execute(sql:
+                "INSERT INTO accounts (id, institutionID, name, nickname) VALUES (?, ?, ?, '')",
+                arguments: [accountID.uuidString, institutionID.uuidString, accountName]
             )
-
-            try account.insert(database)
-            seededAccounts[institutionName] = account
+            seededAccounts[institutionName] = (id: accountID, name: accountName)
         }
 
         return seededAccounts
-    }
-
-    static func legacyCard(
-        from account: Account,
-        seededAccounts: [String: Account]
-    ) -> Card? {
-        guard let mapping = legacyCardNameMappings[account.name] else {
-            return nil
-        }
-
-        let linkedAccountID = mapping.linkedAccountInstitutionName.flatMap { institutionName in
-            seededAccounts[institutionName]?.id
-        }
-
-        return Card(
-            id: account.id,
-            institutionID: account.institutionID,
-            accountID: linkedAccountID,
-            name: mapping.canonicalName
-        )
     }
 }
