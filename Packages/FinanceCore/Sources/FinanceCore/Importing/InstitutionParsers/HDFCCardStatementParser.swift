@@ -9,8 +9,8 @@ public struct HDFCCardStatementParser: InstitutionStatementParser {
     public func canParse(rows: [[String]]) -> Bool {
         guard rows.count > 25 else { return false }
 
-        let rawLine = rows.joined(separator: "\n").joined(separator: "")
-        return rawLine.contains("~|~") && rawLine.contains("Card No:") && rawLine.contains("DATE")
+        let rawText = rows.map { $0.joined(separator: "") }.joined(separator: "\n")
+        return rawText.contains("~|~") && rawText.contains("Card No:") && rawText.contains("DATE")
     }
 
     public func parse(rows: [[String]]) throws -> ParsedStatement {
