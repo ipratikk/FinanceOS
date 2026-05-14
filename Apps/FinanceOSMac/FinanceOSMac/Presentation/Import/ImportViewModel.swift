@@ -111,7 +111,7 @@ final class ImportViewModel {
             }
 
             self.parsedStatements = statements
-            loadTargets()
+            await loadTargetsOnAppear()
             await autoSelectMatchingTarget()
 
             isLoading = false
@@ -199,12 +199,6 @@ final class ImportViewModel {
             let errorMsg = error.localizedDescription
             logger.error("Failed to load targets: \(errorMsg, privacy: .public)")
             errorMessage = errorMsg
-        }
-    }
-
-    private func loadTargets() {
-        Task {
-            await loadTargetsOnAppear()
         }
     }
 
