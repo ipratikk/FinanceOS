@@ -254,20 +254,28 @@ enum TabularTransactionDecoder {
                 let dateString = value(at: dateIndex, in: row)
                 let description = value(at: descriptionIndex, in: row)
 
-                let postedAt = try parseDate(dateString)
-                let amountMinorUnits: Int64 = if let amountIndex {
-                    try parseAmountWithSign(
+                guard let postedAt = try? parseDate(dateString) else {
+                    return nil
+                }
+
+                let amountMinorUnits: Int64?
+                if let amountIndex {
+                    amountMinorUnits = try? parseAmountWithSign(
                         row: row,
                         amountIndex: amountIndex,
                         billingSignIndex: billingSignIndex
                     )
                 } else {
-                    try parseAmountMinorUnits(
+                    amountMinorUnits = try? parseAmountMinorUnits(
                         row: row,
                         amountIndex: nil,
                         debitIndex: debitIndex,
                         creditIndex: creditIndex
                     )
+                }
+
+                guard let amountMinorUnits else {
+                    return nil
                 }
 
                 let rewardPoints: Int? = rewardPointsIndex.flatMap { idx in

@@ -19,15 +19,7 @@ public struct ICICIBankStatementParser: InstitutionStatementParser {
 
         let accountName = rows.count > 1 ? extractValue(rows[1]) : "Unknown"
         let cardLast4 = rows.count > 7 ? extractCardLast4(rows[7]) : nil
-
-        var transactionRows = Array(rows.dropFirst(6))
-
-        // Remove EMI Details and other non-transaction sections
-        if let emiIndex = transactionRows.firstIndex(where: { row in
-            row.first?.lowercased().contains("emi") ?? false
-        }) {
-            transactionRows = Array(transactionRows.prefix(upTo: emiIndex))
-        }
+        let transactionRows = Array(rows.dropFirst(6))
 
         let currency = transactionRows.first.map(extractCurrencyFromHeaders) ?? "INR"
         let transactions = try TabularTransactionDecoder.decodeTransactions(transactionRows)

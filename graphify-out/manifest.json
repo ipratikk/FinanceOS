@@ -84,8 +84,8 @@
     "hash": "f1f170a37bc85749f331c3eadc159b44"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift": {
-    "mtime": 1778783761.1478999,
-    "hash": "e5a75574097b0b6f69db32d87443fe4d"
+    "mtime": 1778783883.9272006,
+    "hash": "d1c32725600ce358a526c13b6ce6f356"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/AppContainer/AppContainer.swift": {
     "mtime": 1778781362.9939265,
@@ -152,16 +152,16 @@
     "hash": "9321221a90c07011d4b62a082cc15512"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/ICICIBankStatementParser.swift": {
-    "mtime": 1778781280.2331285,
-    "hash": "5576e4e6bf8a5bc91ce800a8ba2fdb75"
+    "mtime": 1778784775.3686616,
+    "hash": "2dcf97792cfeca48269c7286e444547d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/ICICICardStatementParser.swift": {
     "mtime": 1778782706.040215,
     "hash": "325044f55204440b379ddd8fdb4b0e51"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift": {
-    "mtime": 1778782706.0539355,
-    "hash": "9b1c76067b1bb8648afdd83120997e3f"
+    "mtime": 1778784311.00764,
+    "hash": "3226f7e47fac22e45014257afc158789"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/StatementParserRegistry.swift": {
     "mtime": 1778781258.4454553,
@@ -184,8 +184,8 @@
     "hash": "461c8a011892ad2837f919e738ba0969"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift": {
-    "mtime": 1778783749.5605783,
-    "hash": "eff4fa1617ff312540dc7a5f7ed61383"
+    "mtime": 1778783843.4736178,
+    "hash": "de1fd9c53c516e548292d1e7e0a6658e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsView.swift": {
     "mtime": 1778616401.7127962,
@@ -260,8 +260,8 @@
     "hash": "213456a829ddee4a42d3d29934f11ea9"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift": {
-    "mtime": 1778783147.3503735,
-    "hash": "9854ef4364ae58f3f8c518d8e23e45cc"
+    "mtime": 1778784601.613327,
+    "hash": "200566693f71afc932f3974880b0a7e8"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift": {
     "mtime": 1778783154.325548,
@@ -276,8 +276,8 @@
     "hash": "5effd2e86ee3b174f426eadb3e332ce5"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift": {
-    "mtime": 1778783226.090696,
-    "hash": "4e3a7a003046af460e533963cae236be"
+    "mtime": 1778784064.6301231,
+    "hash": "014f748fcb30203caf3f3fd6a38ff6d6"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/ARCHITECTURE.md": {
     "mtime": 1778667474.854436,
