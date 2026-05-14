@@ -91,7 +91,7 @@ public struct HDFCCardStatementParser: InstitutionStatementParser {
 
             let sign = row.count > 5 ? row[5].trimmingCharacters(in: .whitespacesAndNewlines).uppercased() : ""
 
-            let minorUnits = (amount * 100).rounded().int64Value
+            let minorUnits = Int64(truncating: NSDecimalNumber(decimal: amount * 100))
             let signedAmount = (sign == "CR") ? abs(minorUnits) : -abs(minorUnits)
 
             let fingerprint = [
