@@ -53,7 +53,7 @@ struct CreateNewTargetSheet: View {
                     Button("Create") {
                         onCreate()
                     }
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || institutionID == nil)
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }
