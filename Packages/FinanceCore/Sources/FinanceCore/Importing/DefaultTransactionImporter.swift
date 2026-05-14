@@ -12,12 +12,22 @@ public struct DefaultTransactionImporter:
     Sendable
 {
     private let parsersByFormat: [StatementFileFormat: any StatementParser]
+    private let registry: StatementParserRegistry
 
     public init(
         parsers: [any StatementParser] = [
             CSVStatementParser(),
             XLSXStatementParser()
-        ]
+        ],
+        registry: StatementParserRegistry = StatementParserRegistry(
+            parsers: [
+                ICICIBankStatementParser(),
+                ICICICardStatementParser(),
+                HDFCBankStatementParser(),
+                HDFCCardStatementParser(),
+                AmexCardStatementParser()
+            ]
+        )
     ) {
         var parsersByFormat: [StatementFileFormat: any StatementParser] = [:]
 
@@ -26,17 +36,35 @@ public struct DefaultTransactionImporter:
         }
 
         self.parsersByFormat = parsersByFormat
+        self.registry = registry
     }
 
     public func parseStatement(
         from fileURL: URL,
         format: StatementFileFormat
     ) async throws -> ParsedStatement {
-        guard let parser = parsersByFormat[format] else {
+        guard let formatParser = parsersByFormat[format] else {
             throw TransactionImportError.unsupportedFormat(format)
         }
 
-        return try await parser.parseStatement(from: fileURL)
+        // Extract rows using format parser
+        let rows: [[String]]
+
+        if let csvParser = formatParser as? CSVStatementParser {
+            rows = try await csvParser.extractRows(from: fileURL)
+        } else if let xlsxParser = formatParser as? XLSXStatementParser {
+            rows = try await xlsxParser.extractRows(from: fileURL)
+        } else {
+            return try await formatParser.parseStatement(from: fileURL)
+        }
+
+        // Try institution parsers first
+        if let institutionParser = registry.parser(for: rows) {
+            return try institutionParser.parse(rows: rows)
+        }
+
+        // Fallback to generic decoder
+        return try TabularTransactionDecoder.decodeStatement(rows)
     }
 
     public func importTransactions(
