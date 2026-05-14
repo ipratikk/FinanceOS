@@ -254,8 +254,8 @@ final class ImportViewModel {
                     return
                 }
 
-                if statement.cardLast4 != nil {
-                    let cardName = statement.accountName.isEmpty ? "\(institutionName) Card" : statement.accountName
+                if let cardLast4 = statement.cardLast4 {
+                    let cardName = "\(institutionName) Card - \(cardLast4)"
                     let card = Card(
                         institutionID: institution.id,
                         accountID: nil,
