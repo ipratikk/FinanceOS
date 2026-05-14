@@ -62,6 +62,9 @@ struct FinanceOSMacApp: App {
                     Label("Transactions", systemImage: "list.bullet.rectangle")
                 }
             }
+            .task {
+                await DependencyChecker.ensureSSConvertAvailable()
+            }
         }
     }
 }
