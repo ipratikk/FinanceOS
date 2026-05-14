@@ -80,6 +80,16 @@ enum AppMigration {
                 in: database
             )
         }
+
+        migrator.registerMigration("v5_transaction_sourceFingerprint_unique") { database in
+            FinanceLogger.migration.info("Running migration: v5_transaction_sourceFingerprint_unique")
+
+            try database.execute(sql: """
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_transactions_sourceFingerprint
+                ON transactions(sourceFingerprint)
+                WHERE sourceFingerprint IS NOT NULL
+            """)
+        }
     }
 }
 
