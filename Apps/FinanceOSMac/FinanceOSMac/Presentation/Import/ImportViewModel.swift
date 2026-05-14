@@ -167,6 +167,7 @@ final class ImportViewModel {
                         "Import complete: \(totalInserted, privacy: .public) inserted, \(totalSkipped, privacy: .public) skipped"
                     )
                 reset()
+                isLoading = false
             } catch {
                 logger.error("Import failed: \(error.localizedDescription, privacy: .public)")
                 errorMessage = "Import failed: \(error.localizedDescription)"
