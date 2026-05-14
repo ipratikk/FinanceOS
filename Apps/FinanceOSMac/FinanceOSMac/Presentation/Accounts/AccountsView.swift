@@ -25,7 +25,9 @@ struct AccountsView: View {
         NavigationStack {
             List(viewModel.accounts) { account in
                 NavigationLink(value: account.id) {
-                    Text(account.name)
+                    let displayName = account.nickname.isEmpty ? account.name : account.nickname
+                    let institutionName = viewModel.institutions.first { $0.id == account.institutionID }?.name ?? "Unknown"
+                    Text("\(institutionName) \(displayName)")
                 }
                 .contextMenu {
                     Button("Edit") {

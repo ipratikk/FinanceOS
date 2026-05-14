@@ -132,11 +132,16 @@ final class CardsViewModel {
         )
 
         return cards.map { card in
-            CardRow(
+            let institutionName = institutionsByID[card.institutionID]?.name ?? "Unknown Institution"
+            let displayName = card.nickname.isEmpty ? card.name : card.nickname
+            let maskLast4 = card.last4.isEmpty ? "" : " ••••\(card.last4)"
+            let title = "\(institutionName) \(displayName)\(maskLast4)"
+
+            return CardRow(
                 id: card.id,
                 card: card,
-                title: card.name,
-                institutionName: institutionsByID[card.institutionID]?.name ?? "Unknown Institution",
+                title: title,
+                institutionName: institutionName,
                 linkedAccountName: card.accountID.flatMap { accountID in
                     accountsByID[accountID]?.name
                 }
