@@ -273,15 +273,26 @@ final class ImportViewModel {
     }
 
     private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
-        let sameDateAmount = Calendar.current.isDate(parsed.postedAt, inSameDayAs: existing.postedAt) &&
-            parsed.amountMinorUnits == existing.amountMinorUnits
+        let parsedDate = Calendar.current.startOfDay(for: parsed.postedAt)
+        let existingDate = Calendar.current.startOfDay(for: existing.postedAt)
 
-        if !sameDateAmount { return false }
+        let sameAmount = abs(parsed.amountMinorUnits - existing.amountMinorUnits) <= 1
+        let dateWithinDay = abs(Calendar.current.dateComponents([.day], from: parsedDate, to: existingDate).day ?? 0) <= 1
+
+        if !(sameAmount && dateWithinDay) { return false }
 
         let parsedDesc = parsed.description.trimmingCharacters(in: .whitespaces).lowercased()
         let existingDesc = existing.description.trimmingCharacters(in: .whitespaces).lowercased()
 
-        return parsedDesc == existingDesc || parsedDesc.contains(existingDesc) || existingDesc.contains(parsedDesc)
+        if parsedDesc == existingDesc { return true }
+
+        let parsedWords = Set(parsedDesc.split(separator: " ").map(String.init))
+        let existingWords = Set(existingDesc.split(separator: " ").map(String.init))
+
+        let commonWords = parsedWords.intersection(existingWords)
+        let minWords = min(parsedWords.count, existingWords.count)
+
+        return !commonWords.isEmpty && Double(commonWords.count) / Double(minWords) > 0.5
     }
 
     private func fileFormat(for url: URL) -> StatementFileFormat {
