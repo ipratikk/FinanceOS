@@ -5,6 +5,8 @@ struct CardEditView: View {
     let card: Card
     let viewModel: CardsViewModel
     @State private var name: String
+    @State private var nickname: String
+    @State private var last4: String
     @State private var institutionID: UUID
     @State private var accountID: UUID?
     @Environment(\.dismiss) var dismiss
@@ -16,6 +18,8 @@ struct CardEditView: View {
         self.card = card
         self.viewModel = viewModel
         _name = State(initialValue: card.name)
+        _nickname = State(initialValue: card.nickname)
+        _last4 = State(initialValue: card.last4)
         _institutionID = State(initialValue: card.institutionID)
         _accountID = State(initialValue: card.accountID)
     }
@@ -25,6 +29,13 @@ struct CardEditView: View {
             Form {
                 Section("Card Details") {
                     TextField("Name", text: $name)
+                    TextField("Nickname", text: $nickname)
+                    TextField("Last 4 Digits", text: $last4)
+                        .onChange(of: last4) { _, newValue in
+                            if newValue.count > 4 {
+                                last4 = String(newValue.prefix(4))
+                            }
+                        }
                 }
 
                 Section("Institution") {
@@ -70,8 +81,10 @@ struct CardEditView: View {
                             let updated = Card(
                                 id: card.id,
                                 institutionID: institutionID,
+                                accountID: accountID,
                                 name: name,
-                                accountID: accountID
+                                nickname: nickname,
+                                last4: last4
                             )
                             await viewModel.updateCard(updated)
                         }

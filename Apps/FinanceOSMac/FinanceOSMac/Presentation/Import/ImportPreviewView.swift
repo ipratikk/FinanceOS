@@ -7,6 +7,8 @@ struct ImportPreviewView: View {
 
     @State private var showCreateSheet = false
     @State private var newEntityName = ""
+    @State private var newEntityNickname = ""
+    @State private var newEntityLast4 = ""
     @State private var newEntityInstitutionID: UUID?
     @State private var isCard = false
 
@@ -32,6 +34,8 @@ struct ImportPreviewView: View {
         .sheet(isPresented: $showCreateSheet) {
             CreateNewTargetSheet(
                 name: $newEntityName,
+                nickname: $newEntityNickname,
+                last4: $newEntityLast4,
                 institutionID: $newEntityInstitutionID,
                 isCard: isCard,
                 institutions: viewModel.institutions,
@@ -41,6 +45,8 @@ struct ImportPreviewView: View {
                 onCreate: {
                     viewModel.createTargetFromDetected(
                         customName: newEntityName,
+                        nickname: newEntityNickname,
+                        last4: newEntityLast4,
                         institutionID: newEntityInstitutionID,
                         isCard: isCard
                     )
@@ -114,10 +120,14 @@ struct ImportPreviewView: View {
         self.isCard = isCard
 
         if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
-            newEntityName = "\(detectedInstitution) Card - \(cardLast4)"
+            newEntityName = "\(detectedInstitution) Card"
+            newEntityNickname = ""
+            newEntityLast4 = cardLast4
         } else {
             let accountName = viewModel.parsedStatements.first?.accountName ?? ""
             newEntityName = accountName.isEmpty ? "\(detectedInstitution) Account" : accountName
+            newEntityNickname = ""
+            newEntityLast4 = ""
         }
 
         newEntityInstitutionID = nil

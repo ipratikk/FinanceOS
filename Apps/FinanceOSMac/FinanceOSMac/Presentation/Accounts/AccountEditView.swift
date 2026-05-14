@@ -5,6 +5,7 @@ struct AccountEditView: View {
     let account: Account
     let viewModel: AccountsViewModel
     @State private var name: String
+    @State private var nickname: String
     @State private var institutionID: UUID
     @Environment(\.dismiss) var dismiss
 
@@ -15,6 +16,7 @@ struct AccountEditView: View {
         self.account = account
         self.viewModel = viewModel
         _name = State(initialValue: account.name)
+        _nickname = State(initialValue: account.nickname)
         _institutionID = State(initialValue: account.institutionID)
     }
 
@@ -23,6 +25,7 @@ struct AccountEditView: View {
             Form {
                 Section("Account Details") {
                     TextField("Name", text: $name)
+                    TextField("Nickname", text: $nickname)
                 }
 
                 Section("Institution") {
@@ -59,7 +62,8 @@ struct AccountEditView: View {
                             let updated = Account(
                                 id: account.id,
                                 institutionID: institutionID,
-                                name: name
+                                name: name,
+                                nickname: nickname
                             )
                             await viewModel.updateAccount(updated)
                         }

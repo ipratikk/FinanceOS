@@ -328,6 +328,8 @@ final class ImportViewModel {
 
     func createTargetFromDetected(
         customName: String? = nil,
+        nickname: String = "",
+        last4: String = "",
         institutionID: UUID? = nil,
         isCard: Bool? = nil
     ) {
@@ -372,7 +374,9 @@ final class ImportViewModel {
                     let card = Card(
                         institutionID: institution.id,
                         accountID: nil,
-                        name: cardName
+                        name: cardName,
+                        nickname: nickname,
+                        last4: last4
                     )
 
                     try await cardRepository.insert(card)

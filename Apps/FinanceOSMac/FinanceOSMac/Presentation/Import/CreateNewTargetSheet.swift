@@ -3,6 +3,8 @@ import SwiftUI
 
 struct CreateNewTargetSheet: View {
     @Binding var name: String
+    @Binding var nickname: String
+    @Binding var last4: String
     @Binding var institutionID: UUID?
     let isCard: Bool
     let institutions: [Institution]
@@ -14,6 +16,18 @@ struct CreateNewTargetSheet: View {
             Form {
                 Section("Name") {
                     TextField("Name", text: $name)
+                }
+
+                if isCard {
+                    Section("Card Details") {
+                        TextField("Nickname", text: $nickname)
+                        TextField("Last 4 Digits", text: $last4)
+                            .onChange(of: last4) { _, newValue in
+                                if newValue.count > 4 {
+                                    last4 = String(newValue.prefix(4))
+                                }
+                            }
+                    }
                 }
 
                 if !institutions.isEmpty {
