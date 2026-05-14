@@ -208,7 +208,9 @@ final class ImportViewModel {
         let isCard = statement.cardLast4 != nil
         let institutionName = statement.institution
 
-        let matchingInstitution = institutions.first { $0.name == institutionName }
+        let matchingInstitution = institutions.first { inst in
+            fuzzyMatch(inst.name, institutionName)
+        }
         guard let institution = matchingInstitution else { return }
 
         if isCard {
@@ -254,6 +256,20 @@ final class ImportViewModel {
         } catch {
             logger.error("Failed to detect duplicates: \(error.localizedDescription, privacy: .public)")
         }
+    }
+
+    private func fuzzyMatch(_ a: String, _ b: String) -> Bool {
+        let aLower = a.lowercased()
+        let bLower = b.lowercased()
+
+        if aLower == bLower { return true }
+        if aLower.contains(bLower) || bLower.contains(aLower) { return true }
+
+        let aWords = aLower.split(separator: " ").map(String.init)
+        let bWords = bLower.split(separator: " ").map(String.init)
+
+        let commonWords = Set(aWords).intersection(Set(bWords))
+        return !commonWords.isEmpty && commonWords.count >= min(aWords.count, bWords.count) / 2
     }
 
     private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
