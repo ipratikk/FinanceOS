@@ -13,6 +13,7 @@ struct ImportView: View {
     let viewModel: ImportViewModel
 
     @State private var targetChoice: TargetChoice?
+    @State private var isTargeted = false
 
     var body: some View {
         Group {
@@ -51,45 +52,71 @@ struct ImportView: View {
     }
 
     private var fileSelectionView: some View {
-        VStack(spacing: 16) {
-            if let error = viewModel.errorMessage {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Error")
-                        .font(.caption)
-                        .fontWeight(.semibold)
+        ZStack {
+            VStack(spacing: 0) {
+                if isTargeted {
+                    VStack(spacing: 16) {
+                        Image(systemName: "arrow.down.doc.fill")
+                            .font(.system(size: 48))
+                            .foregroundColor(.blue)
 
-                    Text(error)
-                        .font(.caption)
-                        .lineLimit(5)
+                        VStack(spacing: 4) {
+                            Text("Drop Files Here")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+
+                            Text("CSV, XLS, or XLSX files")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.blue.opacity(0.05))
+                } else {
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            if let error = viewModel.errorMessage {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Error")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+
+                                    Text(error)
+                                        .font(.caption)
+                                        .lineLimit(5)
+                                }
+                                .foregroundColor(.red)
+                                .padding()
+                                .background(Color.red.opacity(0.1))
+                                .cornerRadius(4)
+                            }
+
+                            supportedSourcesView
+
+                            Divider()
+
+                            if viewModel.isLoading {
+                                ProgressView("Parsing files...")
+                            } else {
+                                dropZoneView
+
+                                Divider()
+
+                                filePickerButton
+                            }
+
+                            if !viewModel.parsedStatements.isEmpty {
+                                Divider()
+
+                                targetSelectionSection
+                            }
+                        }
+                        .padding()
+                    }
                 }
-                .foregroundColor(.red)
-                .padding()
-                .background(Color.red.opacity(0.1))
-                .cornerRadius(4)
-            }
-
-            supportedSourcesView
-
-            Divider()
-
-            if viewModel.isLoading {
-                ProgressView("Parsing files...")
-            } else {
-                dropZoneView
-
-                Divider()
-
-                filePickerButton
-            }
-
-            if !viewModel.parsedStatements.isEmpty {
-                Divider()
-
-                targetSelectionSection
             }
         }
-        .padding()
-        .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+        .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
             var urls: [URL] = []
             let group = DispatchGroup()
 
@@ -116,20 +143,22 @@ struct ImportView: View {
     private var dropZoneView: some View {
         VStack(spacing: 12) {
             Image(systemName: "arrow.down.doc.fill")
-                .font(.system(size: 32))
+                .font(.system(size: 40))
                 .foregroundColor(.secondary)
 
-            Text("Drag CSV, XLS, or XLSX files here")
-                .font(.headline)
+            VStack(spacing: 4) {
+                Text("Drag files here or click button below")
+                    .font(.headline)
 
-            Text("Or click to browse")
-                .font(.caption)
-                .foregroundColor(.secondary)
+                Text("CSV, XLS, or XLSX formats supported")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 120)
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(8)
+        .frame(height: 140)
+        .background(Color.gray.opacity(0.08))
+        .cornerRadius(12)
     }
 
     private var filePickerButton: some View {
