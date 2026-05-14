@@ -39,14 +39,12 @@ struct ImportPreviewView: View {
                     showCreateSheet = false
                 },
                 onCreate: {
-                    Task {
-                        await viewModel.createTargetFromDetected(
-                            customName: newEntityName,
-                            institutionID: newEntityInstitutionID,
-                            isCard: isCard
-                        )
-                        showCreateSheet = false
-                    }
+                    viewModel.createTargetFromDetected(
+                        customName: newEntityName,
+                        institutionID: newEntityInstitutionID,
+                        isCard: isCard
+                    )
+                    showCreateSheet = false
                 }
             )
         }
@@ -86,7 +84,7 @@ struct ImportPreviewView: View {
                         .tag(TargetChoice.createCard as TargetChoice?)
                 }
 
-                if viewModel.accounts.isEmpty && viewModel.cards.isEmpty {
+                if viewModel.accounts.isEmpty, viewModel.cards.isEmpty {
                     Divider()
                     Text("Create New Account...")
                         .tag(TargetChoice.createAccount as TargetChoice?)
@@ -94,7 +92,7 @@ struct ImportPreviewView: View {
                         .tag(TargetChoice.createCard as TargetChoice?)
                 }
             }
-            .onChange(of: targetChoice) { oldValue, newValue in
+            .onChange(of: targetChoice) { _, newValue in
                 handleTargetSelection(newValue)
             }
         }
@@ -116,15 +114,15 @@ struct ImportPreviewView: View {
         self.isCard = isCard
 
         if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
-            self.newEntityName = "\(detectedInstitution) Card - \(cardLast4)"
+            newEntityName = "\(detectedInstitution) Card - \(cardLast4)"
         } else {
             let accountName = viewModel.parsedStatements.first?.accountName ?? ""
-            self.newEntityName = accountName.isEmpty ? "\(detectedInstitution) Account" : accountName
+            newEntityName = accountName.isEmpty ? "\(detectedInstitution) Account" : accountName
         }
 
-        self.newEntityInstitutionID = nil
-        self.showCreateSheet = true
-        self.targetChoice = nil
+        newEntityInstitutionID = nil
+        showCreateSheet = true
+        targetChoice = nil
     }
 
     private func fileListSection() -> some View {
