@@ -69,7 +69,6 @@ public enum DependencyChecker {
     private static func installSSConvert() async {
         #if os(macOS)
         guard let brewPath = findBrewExecutable() else {
-            FinanceLogger.database.warning("Homebrew not found. Install from https://brew.sh")
             return
         }
 
@@ -85,16 +84,8 @@ public enum DependencyChecker {
         do {
             try process.run()
             process.waitUntilExit()
-
-            if process.terminationStatus == 0 {
-                FinanceLogger.database.info("ssconvert installed successfully")
-            } else {
-                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                let errorMsg = String(data: errorData, encoding: .utf8) ?? "Unknown error"
-                FinanceLogger.database.error("Failed to install gnumeric: \(errorMsg)")
-            }
         } catch {
-            FinanceLogger.database.error("Failed to run brew install: \(error)")
+            return
         }
         #endif
     }
