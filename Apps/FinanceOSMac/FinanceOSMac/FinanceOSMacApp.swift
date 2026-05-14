@@ -5,6 +5,9 @@ import SwiftUI
 struct FinanceOSMacApp: App {
     private let appContainer = AppContainer.shared
     @State private var isCheckingDependencies = true
+    @State private var showDependencyAlert = false
+    @State private var dependencyMessage = ""
+    @State private var permissionGranted = false
 
     var body: some Scene {
         WindowGroup {
@@ -88,8 +91,30 @@ struct FinanceOSMacApp: App {
                 }
             }
             .task {
+                await DependencyChecker.ensureSSConvertAvailable { message in
+                    dependencyMessage = message
+                    showDependencyAlert = true
+
+                    while !permissionGranted && showDependencyAlert {
+                        try? await Task.sleep(nanoseconds: 100_000_000)
+                    }
+
+                    return permissionGranted
+                }
+
                 defer { isCheckingDependencies = false }
-                await DependencyChecker.ensureSSConvertAvailable()
+            }
+            .alert("Install Dependencies", isPresented: $showDependencyAlert) {
+                Button("Cancel") {
+                    showDependencyAlert = false
+                    permissionGranted = false
+                }
+                Button("Install", action: {
+                    permissionGranted = true
+                    showDependencyAlert = false
+                })
+            } message: {
+                Text(dependencyMessage)
             }
         }
     }

@@ -2,14 +2,21 @@ import Foundation
 
 public enum DependencyChecker {
     private static let ssconvertAvailableKey = "com.financeOS.ssconvertAvailable"
+    private static let dependencyInstallApprovedKey = "com.financeOS.dependencyInstallApproved"
 
-    public static func ensureSSConvertAvailable() async {
+    public static func ensureSSConvertAvailable(permissionHandler: (String) async -> Bool = { _ in true }) async {
         #if os(macOS)
         if isSSConvertAvailable() {
             return
         }
 
-        await installSSConvert()
+        let approved = await permissionHandler(
+            "FinanceOS needs to install ssconvert to parse Excel files. This requires Homebrew installation. Proceed?"
+        )
+
+        if approved {
+            await installSSConvert()
+        }
         #endif
     }
 
@@ -84,10 +91,28 @@ public enum DependencyChecker {
         }
     }
 
+    private static func installBrew() async {
+        #if os(macOS)
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/bash")
+        process.arguments = [
+            "-c",
+            "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+        ]
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+        } catch {
+            return
+        }
+        #endif
+    }
+
     private static func installSSConvert() async {
         #if os(macOS)
-        guard isBrewInstalled() else {
-            return
+        if !isBrewInstalled() {
+            await installBrew()
         }
 
         let process = Process()
