@@ -19,7 +19,8 @@ enum TabularTransactionDecoder {
             )
         }
 
-        let (metadata, transactionRows) = try extractMetadata(rows)
+        let transactionRows = rows
+        let currency = transactionRows.first.map(extractCurrencyFromHeaders) ?? "INR"
         let transactions = try decodeTransactions(transactionRows)
 
         let (periodStart, periodEnd) = extractPeriod(from: transactions)
@@ -35,12 +36,12 @@ enum TabularTransactionDecoder {
         }
 
         return ParsedStatement(
-            institution: metadata.institution,
-            accountName: metadata.accountName,
-            cardLast4: metadata.cardLast4,
+            institution: "Unknown",
+            accountName: "Unknown",
+            cardLast4: nil,
             statementPeriodStart: periodStart,
             statementPeriodEnd: periodEnd,
-            currency: metadata.currency,
+            currency: currency,
             totalDebit: totalDebit,
             totalCredit: totalCredit,
             transactions: transactions
@@ -182,51 +183,8 @@ enum TabularTransactionDecoder {
         return formatter.string(from: date)
     }
 
-    private struct StatementMetadata {
-        let institution: String
-        let accountName: String
-        let cardLast4: String?
-        let currency: String
-    }
 
-    private static func extractMetadata(
-        _ rows: [[String]]
-    ) throws -> (StatementMetadata, [[String]]) {
-        let detectors: [StatementDetector] = [
-            ICICIStatementDetector(),
-            HDFCStatementDetector(),
-            AmexStatementDetector()
-        ]
-
-        var detected: DetectedStatementMetadata?
-        for detector in detectors {
-            if let metadata = detector.detect(from: rows) {
-                detected = metadata
-                break
-            }
-        }
-
-        let institution = detected?.institution ?? "Unknown"
-        let accountName = detected?.accountName ?? "Unknown"
-        let cardLast4 = detected?.cardLast4
-        let transactionStartIndex = detected?.transactionStartIndex ?? 0
-
-        let transactionRows = Array(rows.dropFirst(transactionStartIndex))
-        let currency = transactionRows.first.map(extractCurrencyFromHeaders) ?? "INR"
-
-        return (
-            StatementMetadata(
-                institution: institution,
-                accountName: accountName,
-                cardLast4: cardLast4,
-                currency: currency
-            ),
-            transactionRows
-        )
-    }
-
-
-    private static func decodeTransactions(
+    static func decodeTransactions(
         _ rows: [[String]]
     ) throws -> [ParsedTransaction] {
         guard !rows.isEmpty else { return [] }
@@ -359,7 +317,7 @@ enum TabularTransactionDecoder {
         return amount
     }
 
-    private static func extractPeriod(
+    static func extractPeriod(
         from transactions: [ParsedTransaction]
     ) -> (Date?, Date?) {
         guard !transactions.isEmpty else { return (nil, nil) }
@@ -367,7 +325,7 @@ enum TabularTransactionDecoder {
         return (dates.first, dates.last)
     }
 
-    private static func extractCurrencyFromHeaders(
+    static func extractCurrencyFromHeaders(
         _ headers: [String]
     ) -> String {
         for header in headers {

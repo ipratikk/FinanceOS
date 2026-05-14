@@ -19,12 +19,15 @@ public struct CSVStatementParser:
     public func parseStatement(
         from fileURL: URL
     ) async throws -> ParsedStatement {
+        let rows = try await extractRows(from: fileURL)
+        return try TabularTransactionDecoder.decodeStatement(rows)
+    }
+
+    func extractRows(from fileURL: URL) async throws -> [[String]] {
         let csv = try EnumeratedCSV(
             url: fileURL,
             loadColumns: false
         )
-
-        let rows = [csv.header] + csv.rows
-        return try TabularTransactionDecoder.decodeStatement(rows)
+        return [csv.header] + csv.rows
     }
 }

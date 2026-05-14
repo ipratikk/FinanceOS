@@ -22,11 +22,16 @@ public struct XLSXStatementParser:
     public func parseStatement(
         from fileURL: URL
     ) async throws -> ParsedStatement {
+        let rows = try await extractRows(from: fileURL)
+        return try TabularTransactionDecoder.decodeStatement(rows)
+    }
+
+    func extractRows(from fileURL: URL) async throws -> [[String]] {
         #if os(macOS)
         let workbook = try XLSXWorkbookReader.readWorkbook(
             at: fileURL
         )
-        return try TabularTransactionDecoder.decodeStatement(workbook.rows)
+        return workbook.rows
         #else
         throw TransactionImportError.platformUnavailable(
             "XLSX parsing currently supported on macOS only."
