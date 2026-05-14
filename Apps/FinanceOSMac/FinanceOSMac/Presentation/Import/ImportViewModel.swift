@@ -332,14 +332,13 @@ final class ImportViewModel {
         last4: String = "",
         institutionID: UUID? = nil,
         isCard: Bool? = nil
-    ) {
+    ) async {
         guard let statement = parsedStatements.first else {
             errorMessage = "No parsed statements available"
             return
         }
 
-        Task {
-            do {
+        do {
                 let institution: Institution
                 let detectedInstitutionName = statement.institution
 
@@ -398,11 +397,10 @@ final class ImportViewModel {
 
                     logger.info("Created account: \(accountName)")
                 }
-            } catch {
-                let errorDesc = error.localizedDescription
-                logger.error("Failed to create target: \(errorDesc)")
-                errorMessage = "Failed to create target: \(errorDesc)"
-            }
+        } catch {
+            let errorDesc = error.localizedDescription
+            logger.error("Failed to create target: \(errorDesc)")
+            errorMessage = "Failed to create target: \(errorDesc)"
         }
     }
 

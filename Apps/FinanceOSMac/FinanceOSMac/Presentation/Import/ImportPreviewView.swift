@@ -10,6 +10,7 @@ struct ImportPreviewView: View {
     @State private var newEntityNickname = ""
     @State private var newEntityLast4 = ""
     @State private var newEntityInstitutionID: UUID?
+    @State private var detectedInstitution = ""
     @State private var isCard = false
 
     var body: some View {
@@ -39,18 +40,21 @@ struct ImportPreviewView: View {
                 institutionID: $newEntityInstitutionID,
                 isCard: isCard,
                 institutions: viewModel.institutions,
+                detectedInstitution: detectedInstitution,
                 onCancel: {
                     showCreateSheet = false
                 },
                 onCreate: {
-                    viewModel.createTargetFromDetected(
-                        customName: newEntityName,
-                        nickname: newEntityNickname,
-                        last4: newEntityLast4,
-                        institutionID: newEntityInstitutionID,
-                        isCard: isCard
-                    )
-                    showCreateSheet = false
+                    Task {
+                        await viewModel.createTargetFromDetected(
+                            customName: newEntityName,
+                            nickname: newEntityNickname,
+                            last4: newEntityLast4,
+                            institutionID: newEntityInstitutionID,
+                            isCard: isCard
+                        )
+                        showCreateSheet = false
+                    }
                 }
             )
         }
@@ -116,22 +120,23 @@ struct ImportPreviewView: View {
     }
 
     private func initializeCreateSheet(isCard: Bool) {
-        let detectedInstitution = viewModel.parsedStatements.first?.institution ?? "Unknown"
+        let detected = viewModel.parsedStatements.first?.institution ?? "Unknown"
+        self.detectedInstitution = detected
         self.isCard = isCard
 
         if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
-            newEntityName = "\(detectedInstitution) Card"
+            newEntityName = "\(detected) Card"
             newEntityNickname = ""
             newEntityLast4 = cardLast4
         } else {
             let accountName = viewModel.parsedStatements.first?.accountName ?? ""
-            newEntityName = accountName.isEmpty ? "\(detectedInstitution) Account" : accountName
+            newEntityName = accountName.isEmpty ? "\(detected) Account" : accountName
             newEntityNickname = ""
             newEntityLast4 = ""
         }
 
         let matchingInstitution = viewModel.institutions.first { inst in
-            fuzzyMatch(inst.name, detectedInstitution)
+            fuzzyMatch(inst.name, detected)
         }
         newEntityInstitutionID = matchingInstitution?.id
         showCreateSheet = true

@@ -8,6 +8,7 @@ struct CreateNewTargetSheet: View {
     @Binding var institutionID: UUID?
     let isCard: Bool
     let institutions: [Institution]
+    let detectedInstitution: String
     let onCancel: () -> Void
     let onCreate: () -> Void
 
@@ -23,9 +24,12 @@ struct CreateNewTargetSheet: View {
                     TextField("Name", text: $name)
                 }
 
-                if let institution = selectedInstitution {
-                    Section("Institution") {
+                Section("Institution") {
+                    if let institution = selectedInstitution {
                         Text(institution.name)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(detectedInstitution)
                             .foregroundStyle(.secondary)
                     }
                 }
