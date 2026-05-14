@@ -9,25 +9,29 @@ public struct HDFCCardStatementParser: InstitutionStatementParser {
     public func canParse(rows: [[String]]) -> Bool {
         guard rows.count > 25 else { return false }
 
-        let hasCardNo = rows.count > 17 && (rows[17].first?.contains("Card No") ?? false)
-        let hasAAN = rows.count > 19 && (rows[19].first?.contains("AAN") ?? false)
-        let hasTransactionHeader = rows.count > 25 && (rows[25].first?.contains("Transactions") ?? false)
-
-        return (hasCardNo || hasAAN) && hasTransactionHeader
+        let rawLine = rows.joined(separator: "\n").joined(separator: "")
+        return rawLine.contains("~|~") && rawLine.contains("Card No:") && rawLine.contains("DATE")
     }
 
     public func parse(rows: [[String]]) throws -> ParsedStatement {
-        guard rows.count > 26 else {
+        let rawText = rows.map { $0.joined(separator: "") }.joined(separator: "\n")
+        let lines = rawText.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+
+        guard lines.count > 26 else {
             throw TransactionImportError.malformedFile("HDFC card statement too short")
         }
 
-        let accountName = extractAccountName(from: rows)
-        let cardLast4 = extractCardLast4(from: rows)
+        let accountName = extractAccountName(from: lines)
+        let cardLast4 = extractCardLast4(from: lines)
 
-        let transactionRows = Array(rows.dropFirst(27))
+        guard let transactionStartIdx = lines.firstIndex(where: { $0.contains("Domestic / International") }) else {
+            throw TransactionImportError.malformedFile("Could not find transaction section")
+        }
+
+        let transactionLines = Array(lines.dropFirst(transactionStartIdx + 2))
         let currency = "INR"
 
-        let transactions = try parseCardTransactions(transactionRows)
+        let transactions = try parseCardTransactions(transactionLines)
         let (periodStart, periodEnd) = extractPeriod(from: transactions)
 
         var totalDebit: Int64 = 0
@@ -54,45 +58,50 @@ public struct HDFCCardStatementParser: InstitutionStatementParser {
         )
     }
 
-    private func extractAccountName(from rows: [[String]]) -> String {
-        guard rows.count > 1, let firstRow = rows.first else { return "Unknown" }
-        guard firstRow.count > 1 else { return "Unknown" }
-
-        return firstRow[1].trimmingCharacters(in: .whitespacesAndNewlines)
+    private func extractAccountName(from lines: [String]) -> String {
+        for line in lines.prefix(15) {
+            if line.contains("Name~|~") {
+                let parts = line.split(separator: "~|~")
+                if parts.count > 1 {
+                    return String(parts[1]).trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+            }
+        }
+        return "Unknown"
     }
 
-    private func extractCardLast4(from rows: [[String]]) -> String? {
-        guard rows.count > 17 else { return nil }
-        guard let cardLine = rows[17].first else { return nil }
-
-        let digits = String(cardLine.filter(\.isNumber))
-        guard digits.count >= 4 else { return nil }
-        return String(digits.suffix(4))
+    private func extractCardLast4(from lines: [String]) -> String? {
+        for line in lines.prefix(25) {
+            if line.contains("Card No:") {
+                let digits = String(line.filter(\.isNumber))
+                guard digits.count >= 4 else { continue }
+                return String(digits.suffix(4))
+            }
+        }
+        return nil
     }
 
-    private func parseCardTransactions(_ rows: [[String]]) throws -> [ParsedTransaction] {
+    private func parseCardTransactions(_ lines: [String]) throws -> [ParsedTransaction] {
         var transactions: [ParsedTransaction] = []
 
-        for row in rows {
-            guard row.count >= 6 else { continue }
+        for line in lines {
+            let fields = line.split(separator: "~|~").map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            guard fields.count >= 6 else { continue }
 
-            let trimmedFirst = row.first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            if trimmedFirst.isEmpty || trimmedFirst.contains("Reward Points") {
+            let trimmedFirst = fields[0]
+            if trimmedFirst.isEmpty || trimmedFirst.contains("Reward") || trimmedFirst.contains("Points") {
                 continue
             }
 
-            guard let dateString = parseDate(row[2]) else { continue }
+            guard let dateString = parseDate(fields[2]) else { continue }
 
-            let description = row[3].trimmingCharacters(in: .whitespacesAndNewlines)
+            let description = fields[3]
             guard !description.isEmpty else { continue }
 
-            let amountStr = row[4].trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(
-                of: ",",
-                with: ""
-            )
+            let amountStr = fields[4].replacingOccurrences(of: ",", with: "")
             guard let amount = Decimal(string: amountStr) else { continue }
 
-            let sign = row.count > 5 ? row[5].trimmingCharacters(in: .whitespacesAndNewlines).uppercased() : ""
+            let sign = fields.count > 5 ? fields[5].uppercased() : ""
 
             let minorUnits = Int64(truncating: NSDecimalNumber(decimal: amount * 100))
             let signedAmount = (sign == "CR") ? abs(minorUnits) : -abs(minorUnits)
