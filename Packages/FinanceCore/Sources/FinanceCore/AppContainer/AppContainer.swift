@@ -19,6 +19,7 @@ public final class AppContainer {
 
     public let transactionImporter: any TransactionImporting
     public let transactionImportPipeline: TransactionImportPipeline
+    public let parserRegistry: StatementParserRegistry
 
     private init() {
         let databaseManager = DatabaseManager.shared
@@ -39,7 +40,17 @@ public final class AppContainer {
             dbQueue: databaseManager.dbQueue
         )
 
-        transactionImporter = DefaultTransactionImporter()
+        parserRegistry = StatementParserRegistry(
+            parsers: [
+                ICICIBankStatementParser(),
+                ICICICardStatementParser(),
+                HDFCBankStatementParser(),
+                HDFCCardStatementParser(),
+                AmexCardStatementParser()
+            ]
+        )
+
+        transactionImporter = DefaultTransactionImporter(registry: parserRegistry)
 
         transactionImportPipeline = TransactionImportPipeline(
             importer: transactionImporter,
