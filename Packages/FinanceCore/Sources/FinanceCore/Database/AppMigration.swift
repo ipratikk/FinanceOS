@@ -54,8 +54,8 @@ enum AppMigration {
             try database.execute(sql: "CREATE INDEX idx_cards_accountID ON cards(accountID)")
 
             // Fetch legacy accounts and institutions using raw SQL
-            let legacyAccountRows = try database.fetch(Row.self, sql: "SELECT id, name FROM accounts")
-            let institutionRows = try database.fetch(Row.self, sql: "SELECT id, name FROM institutions")
+            let legacyAccountRows = try Row.fetchAll(database, sql: "SELECT id, name, institutionID FROM accounts")
+            let institutionRows = try Row.fetchAll(database, sql: "SELECT id, name FROM institutions")
 
             let institutionIDsByName = Dictionary(
                 uniqueKeysWithValues: institutionRows.compactMap { row in
