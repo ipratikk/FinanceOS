@@ -234,12 +234,11 @@ final class ImportViewModel {
 
     private func detectDuplicates(for target: TransactionImportTarget) async {
         do {
-            let existingTransactions: [Transaction]
-            switch target {
+            let existingTransactions: [Transaction] = switch target {
             case let .account(id):
-                existingTransactions = try await transactionRepository.fetchTransactionsForAccount(id)
+                try await transactionRepository.fetchTransactionsForAccount(id)
             case let .card(id):
-                existingTransactions = try await transactionRepository.fetchTransactionsForCard(id)
+                try await transactionRepository.fetchTransactionsForCard(id)
             }
 
             duplicateTransactionIndices = []
@@ -248,7 +247,8 @@ final class ImportViewModel {
                 for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
                     for existingTxn in existingTransactions {
                         if isSameTransaction(parsed: parsedTxn, existing: existingTxn) {
-                            let flatIndex = parsedStatements[..<index].reduce(0) { $0 + $1.transactions.count } + txnIndex
+                            let flatIndex = parsedStatements[..<index]
+                                .reduce(0) { $0 + $1.transactions.count } + txnIndex
                             duplicateTransactionIndices.insert(flatIndex)
                         }
                     }
@@ -262,9 +262,9 @@ final class ImportViewModel {
         }
     }
 
-    private func isSameTransaction(parsed: Transaction, existing: Transaction) -> Bool {
-        let sameDateAmount = Calendar.current.isDate(parsed.date, inSameDayAs: existing.date) &&
-            parsed.amount == existing.amount
+    private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
+        let sameDateAmount = Calendar.current.isDate(parsed.postedAt, inSameDayAs: existing.postedAt) &&
+            parsed.amountMinorUnits == existing.amountMinorUnits
 
         if !sameDateAmount { return false }
 
