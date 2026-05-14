@@ -254,7 +254,7 @@ final class ImportViewModel {
                     return
                 }
 
-                if statement.sourceType == .creditCard {
+                if statement.cardLast4 != nil {
                     let cardName = statement.accountName.isEmpty ? "\(institutionName) Card" : statement.accountName
                     let card = Card(
                         institutionID: institution.id,

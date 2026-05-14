@@ -24,8 +24,7 @@ struct MockInstitutionRepository: InstitutionRepository {
         []
     }
 
-    func insert(_ institution: Institution) async throws {
-    }
+    func insert(_ institution: Institution) async throws {}
 }
 
 struct MockAccountRepository: AccountRepository {
@@ -33,8 +32,7 @@ struct MockAccountRepository: AccountRepository {
         []
     }
 
-    func insert(_ account: Account) async throws {
-    }
+    func insert(_ account: Account) async throws {}
 }
 
 struct MockCardRepository: CardRepository {
@@ -42,8 +40,7 @@ struct MockCardRepository: CardRepository {
         []
     }
 
-    func insert(_ card: Card) async throws {
-    }
+    func insert(_ card: Card) async throws {}
 }
 
 struct MockTransactionImporter: TransactionImporting {

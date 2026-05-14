@@ -32,7 +32,7 @@ struct ImportPreviewView: View {
 
     private func detectedTargetSection() -> some View {
         let detectedInstitution = viewModel.parsedStatements.first?.institution ?? "Unknown"
-        let isCard = viewModel.parsedStatements.first?.sourceType == .creditCard
+        let isCard = viewModel.parsedStatements.first?.cardLast4 != nil
 
         return VStack(alignment: .leading, spacing: 12) {
             Text("Detected Target")
