@@ -67,10 +67,12 @@ struct CardEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            var updated = card
-                            updated.name = name
-                            updated.institutionID = institutionID
-                            updated.accountID = accountID
+                            let updated = Card(
+                                id: card.id,
+                                institutionID: institutionID,
+                                name: name,
+                                accountID: accountID
+                            )
                             await viewModel.updateCard(updated)
                         }
                     }

@@ -39,8 +39,7 @@ struct InstitutionEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            var updated = institution
-                            updated.name = name
+                            let updated = Institution(id: institution.id, name: name)
                             await viewModel.updateInstitution(updated)
                         }
                     }

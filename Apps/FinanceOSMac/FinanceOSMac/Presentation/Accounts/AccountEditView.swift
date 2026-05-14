@@ -56,9 +56,11 @@ struct AccountEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            var updated = account
-                            updated.name = name
-                            updated.institutionID = institutionID
+                            let updated = Account(
+                                id: account.id,
+                                institutionID: institutionID,
+                                name: name
+                            )
                             await viewModel.updateAccount(updated)
                         }
                     }
