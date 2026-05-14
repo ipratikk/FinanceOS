@@ -95,7 +95,7 @@ struct FinanceOSMacApp: App {
                     dependencyMessage = message
                     showDependencyAlert = true
 
-                    while !permissionGranted && showDependencyAlert {
+                    while !permissionGranted, showDependencyAlert {
                         try? await Task.sleep(nanoseconds: 100_000_000)
                     }
 

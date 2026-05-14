@@ -186,7 +186,7 @@ struct ImportView: View {
                 .foregroundColor(.secondary)
 
             VStack(alignment: .leading, spacing: 4) {
-                ForEach(viewModel.supportedSources, id: \.institution) { source in
+                ForEach(viewModel.supportedSources, id: { "\($0.institution)-\($0.sourceType.rawValue)" }) { source in
                     let status = (source.institution == "ICICI" && source.sourceType == .bankAccount) ? "" : " (coming soon)"
                     Text("• \(source.institution) \(source.sourceType.rawValue)\(status)")
                         .font(.caption)

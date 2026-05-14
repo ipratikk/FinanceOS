@@ -103,6 +103,9 @@ public enum DependencyChecker {
         do {
             try process.run()
             process.waitUntilExit()
+            if process.terminationStatus != 0 {
+                return
+            }
         } catch {
             return
         }

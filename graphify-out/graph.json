@@ -53,101 +53,119 @@
   },
   "nodes": [
     {
-      "label": "DependencyChecker.swift",
-      "file_type": "code",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L1",
-      "id": "dependencychecker_swift",
-      "community": 20,
-      "norm_label": "dependencychecker.swift"
-    },
-    {
-      "label": "DependencyChecker",
-      "file_type": "code",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L3",
-      "id": "utilities_dependencychecker_dependencychecker",
-      "community": 20,
-      "norm_label": "dependencychecker"
-    },
-    {
-      "label": ".ensureSSConvertAvailable()",
-      "file_type": "code",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L6",
-      "id": "utilities_dependencychecker_dependencychecker_ensuressconvertavailable",
-      "community": 20,
-      "norm_label": ".ensuressconvertavailable()"
-    },
-    {
-      "label": ".isSSConvertAvailable()",
-      "file_type": "code",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L16",
-      "id": "utilities_dependencychecker_dependencychecker_isssconvertavailable",
-      "community": 20,
-      "norm_label": ".isssconvertavailable()"
-    },
-    {
-      "label": ".findBrewExecutable()",
-      "file_type": "code",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L34",
-      "id": "utilities_dependencychecker_dependencychecker_findbrewexecutable",
-      "community": 20,
-      "norm_label": ".findbrewexecutable()"
-    },
-    {
-      "label": ".isBrewInstalled()",
-      "file_type": "code",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L69",
-      "id": "utilities_dependencychecker_dependencychecker_isbrewinstalled",
-      "community": 20,
-      "norm_label": ".isbrewinstalled()"
-    },
-    {
-      "label": ".installSSConvert()",
-      "file_type": "code",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L87",
-      "id": "utilities_dependencychecker_dependencychecker_installssconvert",
-      "community": 20,
-      "norm_label": ".installssconvert()"
-    },
-    {
       "label": "FinanceOSMacApp.swift",
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift",
       "source_location": "L1",
-      "community": 24,
-      "norm_label": "financeosmacapp.swift",
-      "id": "apps_financeosmac_financeosmac_financeosmacapp_swift"
+      "id": "apps_financeosmac_financeosmac_financeosmacapp_swift",
+      "community": 30,
+      "norm_label": "financeosmacapp.swift"
     },
     {
       "label": "FinanceOSMacApp",
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift",
       "source_location": "L4",
-      "community": 24,
-      "norm_label": "financeosmacapp",
-      "id": "financeosmac_financeosmacapp_financeosmacapp"
+      "id": "financeosmac_financeosmacapp_financeosmacapp",
+      "community": 30,
+      "norm_label": "financeosmacapp"
     },
     {
       "label": "App",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 24,
-      "norm_label": "app",
-      "id": "app"
+      "id": "app",
+      "community": 30,
+      "norm_label": "app"
+    },
+    {
+      "label": "DependencyChecker.swift",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L1",
+      "id": "packages_financecore_sources_financecore_utilities_dependencychecker_swift",
+      "community": 19,
+      "norm_label": "dependencychecker.swift"
+    },
+    {
+      "label": "DependencyChecker",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L3",
+      "id": "utilities_dependencychecker_dependencychecker",
+      "community": 19,
+      "norm_label": "dependencychecker"
+    },
+    {
+      "label": ".ensureSSConvertAvailable()",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L7",
+      "id": "utilities_dependencychecker_dependencychecker_ensuressconvertavailable",
+      "community": 19,
+      "norm_label": ".ensuressconvertavailable()"
+    },
+    {
+      "label": ".isSSConvertAvailable()",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L23",
+      "id": "utilities_dependencychecker_dependencychecker_isssconvertavailable",
+      "community": 19,
+      "norm_label": ".isssconvertavailable()"
+    },
+    {
+      "label": ".findBrewExecutable()",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L41",
+      "id": "utilities_dependencychecker_dependencychecker_findbrewexecutable",
+      "community": 19,
+      "norm_label": ".findbrewexecutable()"
+    },
+    {
+      "label": ".isBrewInstalled()",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L76",
+      "id": "utilities_dependencychecker_dependencychecker_isbrewinstalled",
+      "community": 19,
+      "norm_label": ".isbrewinstalled()"
+    },
+    {
+      "label": ".installBrew()",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L94",
+      "id": "utilities_dependencychecker_dependencychecker_installbrew",
+      "community": 19,
+      "norm_label": ".installbrew()"
+    },
+    {
+      "label": ".installSSConvert()",
+      "file_type": "code",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L112",
+      "id": "utilities_dependencychecker_dependencychecker_installssconvert",
+      "community": 19,
+      "norm_label": ".installssconvert()"
+    },
+    {
+      "label": "DependencyChecker.swift",
+      "file_type": "code",
+      "source_file": "DependencyChecker.swift",
+      "source_location": "L1",
+      "community": 19,
+      "norm_label": "dependencychecker.swift",
+      "id": "dependencychecker_swift"
     },
     {
       "label": "ImportView.swift",
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L1",
-      "community": 12,
+      "community": 10,
       "norm_label": "importview.swift",
       "id": "importview_swift"
     },
@@ -156,7 +174,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L5",
-      "community": 12,
+      "community": 10,
       "norm_label": "targetchoice",
       "id": "import_importview_targetchoice"
     },
@@ -165,7 +183,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 14,
+      "community": 12,
       "norm_label": "hashable",
       "id": "hashable"
     },
@@ -174,7 +192,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L6",
-      "community": 12,
+      "community": 10,
       "norm_label": "account",
       "id": "import_importview_targetchoice_account"
     },
@@ -183,7 +201,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L7",
-      "community": 12,
+      "community": 10,
       "norm_label": "card",
       "id": "import_importview_targetchoice_card"
     },
@@ -192,7 +210,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L10",
-      "community": 12,
+      "community": 10,
       "norm_label": "importview",
       "id": "import_importview_importview"
     },
@@ -201,7 +219,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 6,
+      "community": 4,
       "norm_label": "view",
       "id": "view"
     },
@@ -210,7 +228,7 @@
       "file_type": "code",
       "source_file": "FinanceOSMacApp.swift",
       "source_location": "L1",
-      "community": 24,
+      "community": 30,
       "norm_label": "financeosmacapp.swift",
       "id": "financeosmacapp_swift"
     },
@@ -219,7 +237,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportView.swift",
       "source_location": "L1",
-      "community": 12,
+      "community": 10,
       "norm_label": "importview.swift",
       "id": "presentation_import_importview_swift"
     },
@@ -228,7 +246,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L1",
-      "community": 3,
+      "community": 20,
       "norm_label": "importviewmocks.swift",
       "id": "presentation_import_importviewmocks_swift"
     },
@@ -237,7 +255,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L4",
-      "community": 3,
+      "community": 27,
       "norm_label": "mocktransactionrepository",
       "id": "import_importviewmocks_mocktransactionrepository"
     },
@@ -246,7 +264,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 3,
+      "community": 25,
       "norm_label": "transactionrepository",
       "id": "transactionrepository"
     },
@@ -255,7 +273,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L5",
-      "community": 3,
+      "community": 27,
       "norm_label": ".fetchtransactionsforaccount()",
       "id": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforaccount"
     },
@@ -264,7 +282,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L9",
-      "community": 3,
+      "community": 27,
       "norm_label": ".fetchtransactionsforcard()",
       "id": "import_importviewmocks_mocktransactionrepository_fetchtransactionsforcard"
     },
@@ -273,7 +291,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L13",
-      "community": 3,
+      "community": 27,
       "norm_label": ".fetchtransactions()",
       "id": "import_importviewmocks_mocktransactionrepository_fetchtransactions"
     },
@@ -282,7 +300,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L17",
-      "community": 3,
+      "community": 27,
       "norm_label": ".inserttransactions()",
       "id": "import_importviewmocks_mocktransactionrepository_inserttransactions"
     },
@@ -291,7 +309,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L22",
-      "community": 4,
+      "community": 23,
       "norm_label": "mockinstitutionrepository",
       "id": "import_importviewmocks_mockinstitutionrepository"
     },
@@ -300,7 +318,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 4,
+      "community": 23,
       "norm_label": "institutionrepository",
       "id": "institutionrepository"
     },
@@ -309,7 +327,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L23",
-      "community": 4,
+      "community": 23,
       "norm_label": ".fetchinstitutions()",
       "id": "import_importviewmocks_mockinstitutionrepository_fetchinstitutions"
     },
@@ -318,7 +336,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L27",
-      "community": 4,
+      "community": 23,
       "norm_label": ".insert()",
       "id": "import_importviewmocks_mockinstitutionrepository_insert"
     },
@@ -327,7 +345,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L31",
-      "community": 3,
+      "community": 20,
       "norm_label": "mockaccountrepository",
       "id": "import_importviewmocks_mockaccountrepository"
     },
@@ -336,7 +354,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 12,
+      "community": 20,
       "norm_label": "accountrepository",
       "id": "accountrepository"
     },
@@ -345,7 +363,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L32",
-      "community": 3,
+      "community": 20,
       "norm_label": ".fetchaccounts()",
       "id": "import_importviewmocks_mockaccountrepository_fetchaccounts"
     },
@@ -354,7 +372,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L36",
-      "community": 3,
+      "community": 20,
       "norm_label": ".insert()",
       "id": "import_importviewmocks_mockaccountrepository_insert"
     },
@@ -363,7 +381,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L40",
-      "community": 4,
+      "community": 24,
       "norm_label": "mockcardrepository",
       "id": "import_importviewmocks_mockcardrepository"
     },
@@ -372,7 +390,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 4,
+      "community": 24,
       "norm_label": "cardrepository",
       "id": "cardrepository"
     },
@@ -381,7 +399,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L41",
-      "community": 4,
+      "community": 24,
       "norm_label": ".fetchcards()",
       "id": "import_importviewmocks_mockcardrepository_fetchcards"
     },
@@ -390,7 +408,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L45",
-      "community": 4,
+      "community": 24,
       "norm_label": ".insert()",
       "id": "import_importviewmocks_mockcardrepository_insert"
     },
@@ -399,7 +417,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L49",
-      "community": 3,
+      "community": 17,
       "norm_label": "mocktransactionimporter",
       "id": "import_importviewmocks_mocktransactionimporter"
     },
@@ -408,7 +426,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 3,
+      "community": 17,
       "norm_label": "transactionimporting",
       "id": "transactionimporting"
     },
@@ -417,7 +435,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L50",
-      "community": 3,
+      "community": 17,
       "norm_label": ".parsestatement()",
       "id": "import_importviewmocks_mocktransactionimporter_parsestatement"
     },
@@ -426,7 +444,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewMocks.swift",
       "source_location": "L54",
-      "community": 3,
+      "community": 17,
       "norm_label": ".importtransactions()",
       "id": "import_importviewmocks_mocktransactionimporter_importtransactions"
     },
@@ -435,7 +453,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L1",
-      "community": 16,
+      "community": 14,
       "norm_label": "importviewmodel.swift",
       "id": "presentation_import_importviewmodel_swift"
     },
@@ -444,7 +462,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L8",
-      "community": 16,
+      "community": 14,
       "norm_label": "importviewmodel",
       "id": "import_importviewmodel_importviewmodel"
     },
@@ -453,7 +471,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L37",
-      "community": 16,
+      "community": 14,
       "norm_label": ".init()",
       "id": "import_importviewmodel_importviewmodel_init"
     },
@@ -462,7 +480,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L53",
-      "community": 16,
+      "community": 14,
       "norm_label": ".setfileurls()",
       "id": "import_importviewmodel_importviewmodel_setfileurls"
     },
@@ -471,7 +489,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L58",
-      "community": 16,
+      "community": 14,
       "norm_label": ".parsefiles()",
       "id": "import_importviewmodel_importviewmodel_parsefiles"
     },
@@ -480,7 +498,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L115",
-      "community": 16,
+      "community": 14,
       "norm_label": ".importtransactions()",
       "id": "import_importviewmodel_importviewmodel_importtransactions"
     },
@@ -489,7 +507,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L178",
-      "community": 16,
+      "community": 14,
       "norm_label": ".loadtargetsonappear()",
       "id": "import_importviewmodel_importviewmodel_loadtargetsonappear"
     },
@@ -498,7 +516,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L193",
-      "community": 16,
+      "community": 14,
       "norm_label": ".loadtargets()",
       "id": "import_importviewmodel_importviewmodel_loadtargets"
     },
@@ -507,7 +525,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L199",
-      "community": 16,
+      "community": 14,
       "norm_label": ".fileformat()",
       "id": "import_importviewmodel_importviewmodel_fileformat"
     },
@@ -516,7 +534,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L216",
-      "community": 16,
+      "community": 14,
       "norm_label": ".formaterror()",
       "id": "import_importviewmodel_importviewmodel_formaterror"
     },
@@ -525,7 +543,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L233",
-      "community": 12,
+      "community": 10,
       "norm_label": ".createtargetfromdetected()",
       "id": "import_importviewmodel_importviewmodel_createtargetfromdetected"
     },
@@ -534,7 +552,7 @@
       "file_type": "code",
       "source_file": "Presentation/Import/ImportViewModel.swift",
       "source_location": "L292",
-      "community": 16,
+      "community": 14,
       "norm_label": ".reset()",
       "id": "import_importviewmodel_importviewmodel_reset"
     },
@@ -543,7 +561,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "accounttransactionsview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_accounts_accounttransactionsview_swift"
     },
@@ -552,7 +570,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsView.swift",
       "source_location": "L4",
-      "community": 6,
+      "community": 4,
       "norm_label": "accounttransactionsview",
       "id": "accounts_accounttransactionsview_accounttransactionsview"
     },
@@ -561,7 +579,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountTransactionsView.swift",
       "source_location": "L8",
-      "community": 6,
+      "community": 4,
       "norm_label": ".init()",
       "id": "accounts_accounttransactionsview_accounttransactionsview_init"
     },
@@ -624,7 +642,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "accountsview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_accounts_accountsview_swift"
     },
@@ -633,7 +651,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsView.swift",
       "source_location": "L11",
-      "community": 6,
+      "community": 4,
       "norm_label": "accountsview",
       "id": "accounts_accountsview_accountsview"
     },
@@ -642,7 +660,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsView.swift",
       "source_location": "L16",
-      "community": 6,
+      "community": 4,
       "norm_label": ".init()",
       "id": "accounts_accountsview_accountsview_init"
     },
@@ -651,7 +669,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "cardtransactionsview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_cards_cardtransactionsview_swift"
     },
@@ -660,7 +678,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsView.swift",
       "source_location": "L4",
-      "community": 6,
+      "community": 4,
       "norm_label": "cardtransactionsview",
       "id": "cards_cardtransactionsview_cardtransactionsview"
     },
@@ -669,7 +687,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsView.swift",
       "source_location": "L8",
-      "community": 6,
+      "community": 4,
       "norm_label": ".init()",
       "id": "cards_cardtransactionsview_cardtransactionsview_init"
     },
@@ -732,7 +750,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "cardsview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_cards_cardsview_swift"
     },
@@ -741,7 +759,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift",
       "source_location": "L11",
-      "community": 6,
+      "community": 4,
       "norm_label": "cardsview",
       "id": "cards_cardsview_cardsview"
     },
@@ -750,7 +768,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift",
       "source_location": "L16",
-      "community": 6,
+      "community": 4,
       "norm_label": ".init()",
       "id": "cards_cardsview_cardsview_init"
     },
@@ -759,7 +777,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionListState.swift",
       "source_location": "L1",
-      "community": 22,
+      "community": 0,
       "norm_label": "transactionliststate.swift",
       "id": "apps_financeosmac_financeosmac_presentation_shared_models_transactionliststate_swift"
     },
@@ -768,7 +786,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionListState.swift",
       "source_location": "L5",
-      "community": 22,
+      "community": 0,
       "norm_label": "transactionliststate",
       "id": "models_transactionliststate_transactionliststate"
     },
@@ -777,7 +795,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionListState.swift",
       "source_location": "L16",
-      "community": 22,
+      "community": 0,
       "norm_label": ".sections()",
       "id": "models_transactionliststate_transactionliststate_sections"
     },
@@ -786,7 +804,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionListState.swift",
       "source_location": "L53",
-      "community": 22,
+      "community": 0,
       "norm_label": ".reset()",
       "id": "models_transactionliststate_transactionliststate_reset"
     },
@@ -795,7 +813,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionListState.swift",
       "source_location": "L60",
-      "community": 22,
+      "community": 0,
       "norm_label": ".datefrommonthkey()",
       "id": "models_transactionliststate_transactionliststate_datefrommonthkey"
     },
@@ -804,7 +822,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionListState.swift",
       "source_location": "L69",
-      "community": 22,
+      "community": 0,
       "norm_label": ".formatmonthtitle()",
       "id": "models_transactionliststate_transactionliststate_formatmonthtitle"
     },
@@ -813,7 +831,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionModels.swift",
       "source_location": "L1",
-      "community": 34,
+      "community": 40,
       "norm_label": "transactionmodels.swift",
       "id": "apps_financeosmac_financeosmac_presentation_shared_models_transactionmodels_swift"
     },
@@ -840,7 +858,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 1,
+      "community": 0,
       "norm_label": "identifiable",
       "id": "identifiable"
     },
@@ -849,7 +867,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionSection.swift",
       "source_location": "L1",
-      "community": 1,
+      "community": 0,
       "norm_label": "transactionsection.swift",
       "id": "apps_financeosmac_financeosmac_presentation_shared_models_transactionsection_swift"
     },
@@ -858,7 +876,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionSection.swift",
       "source_location": "L3",
-      "community": 1,
+      "community": 0,
       "norm_label": "transactionsection",
       "id": "models_transactionsection_transactionsection"
     },
@@ -867,7 +885,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Views/TransactionFilterView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "transactionfilterview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_shared_views_transactionfilterview_swift"
     },
@@ -876,7 +894,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Views/TransactionFilterView.swift",
       "source_location": "L4",
-      "community": 6,
+      "community": 4,
       "norm_label": "transactionfilterview",
       "id": "views_transactionfilterview_transactionfilterview"
     },
@@ -885,7 +903,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Views/TransactionListContentView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "transactionlistcontentview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_shared_views_transactionlistcontentview_swift"
     },
@@ -894,7 +912,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Views/TransactionListContentView.swift",
       "source_location": "L4",
-      "community": 6,
+      "community": 4,
       "norm_label": "transactionlistcontentview",
       "id": "views_transactionlistcontentview_transactionlistcontentview"
     },
@@ -903,7 +921,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "transactionsview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_transactions_transactionsview_swift"
     },
@@ -912,7 +930,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsView.swift",
       "source_location": "L11",
-      "community": 6,
+      "community": 4,
       "norm_label": "transactionsview",
       "id": "transactions_transactionsview_transactionsview"
     },
@@ -921,7 +939,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Transactions/TransactionsView.swift",
       "source_location": "L14",
-      "community": 6,
+      "community": 4,
       "norm_label": ".init()",
       "id": "transactions_transactionsview_transactionsview_init"
     },
@@ -984,7 +1002,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L1",
-      "community": 8,
+      "community": 6,
       "norm_label": "coding_standards.md",
       "id": "coding_standards_md"
     },
@@ -993,7 +1011,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L1",
-      "community": 8,
+      "community": 6,
       "norm_label": "financeos coding standards",
       "id": "financeos_coding_standards_financeos_coding_standards"
     },
@@ -1002,7 +1020,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L5",
-      "community": 8,
+      "community": 6,
       "norm_label": "line length",
       "id": "financeos_coding_standards_line_length"
     },
@@ -1011,7 +1029,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L11",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c too long)",
       "id": "financeos_coding_standards_codeblock_1"
     },
@@ -1020,7 +1038,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L20",
-      "community": 8,
+      "community": 6,
       "norm_label": "function body length",
       "id": "financeos_coding_standards_function_body_length"
     },
@@ -1029,7 +1047,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L26",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c single large function)",
       "id": "financeos_coding_standards_codeblock_2"
     },
@@ -1038,7 +1056,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L43",
-      "community": 8,
+      "community": 6,
       "norm_label": "struct/type body length",
       "id": "financeos_coding_standards_struct_type_body_length"
     },
@@ -1047,7 +1065,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L49",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c single 300+ line view struct)",
       "id": "financeos_coding_standards_codeblock_3"
     },
@@ -1056,7 +1074,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L71",
-      "community": 8,
+      "community": 6,
       "norm_label": "file length",
       "id": "financeos_coding_standards_file_length"
     },
@@ -1065,7 +1083,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L81",
-      "community": 8,
+      "community": 6,
       "norm_label": "brace spacing",
       "id": "financeos_coding_standards_brace_spacing"
     },
@@ -1074,7 +1092,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L85",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c wrong)",
       "id": "financeos_coding_standards_codeblock_4"
     },
@@ -1083,7 +1101,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L100",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c wrong)",
       "id": "financeos_coding_standards_codeblock_5"
     },
@@ -1092,7 +1110,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L115",
-      "community": 8,
+      "community": 6,
       "norm_label": "optional initialization",
       "id": "financeos_coding_standards_optional_initialization"
     },
@@ -1101,7 +1119,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L119",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c wrong)",
       "id": "financeos_coding_standards_codeblock_6"
     },
@@ -1110,7 +1128,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L127",
-      "community": 8,
+      "community": 6,
       "norm_label": "identifier naming",
       "id": "financeos_coding_standards_identifier_naming"
     },
@@ -1119,7 +1137,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L131",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c wrong)",
       "id": "financeos_coding_standards_codeblock_7"
     },
@@ -1128,7 +1146,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L141",
-      "community": 8,
+      "community": 6,
       "norm_label": "logging best practices",
       "id": "financeos_coding_standards_logging_best_practices"
     },
@@ -1137,7 +1155,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L145",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:swift (// \u274c too long)",
       "id": "financeos_coding_standards_codeblock_8"
     },
@@ -1146,7 +1164,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L159",
-      "community": 8,
+      "community": 6,
       "norm_label": "enforcement",
       "id": "financeos_coding_standards_enforcement"
     },
@@ -1155,7 +1173,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L163",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:bash (swiftlint lint                    # check all files)",
       "id": "financeos_coding_standards_codeblock_9"
     },
@@ -1164,7 +1182,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L169",
-      "community": 8,
+      "community": 6,
       "norm_label": "swiftformat / swiftlint conflict",
       "id": "financeos_coding_standards_swiftformat_swiftlint_conflict"
     },
@@ -1173,7 +1191,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L179",
-      "community": 8,
+      "community": 6,
       "norm_label": "folder structure & solid principles",
       "id": "financeos_coding_standards_folder_structure_solid_principles"
     },
@@ -1182,7 +1200,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L181",
-      "community": 8,
+      "community": 6,
       "norm_label": "presentation layer organization",
       "id": "financeos_coding_standards_presentation_layer_organization"
     },
@@ -1191,7 +1209,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L183",
-      "community": 8,
+      "community": 6,
       "norm_label": "code:block10 (presentation/)",
       "id": "financeos_coding_standards_codeblock_10"
     },
@@ -1200,7 +1218,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L205",
-      "community": 8,
+      "community": 6,
       "norm_label": "guidelines",
       "id": "financeos_coding_standards_guidelines"
     },
@@ -1209,7 +1227,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L225",
-      "community": 8,
+      "community": 6,
       "norm_label": "solid principles applied",
       "id": "financeos_coding_standards_solid_principles_applied"
     },
@@ -1218,7 +1236,7 @@
       "file_type": "document",
       "source_file": "CODING_STANDARDS.md",
       "source_location": "L233",
-      "community": 8,
+      "community": 6,
       "norm_label": "architecture alignment",
       "id": "financeos_coding_standards_architecture_alignment"
     },
@@ -1227,7 +1245,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/DefaultTransactionImporter.swift",
       "source_location": "L1",
-      "community": 3,
+      "community": 17,
       "norm_label": "defaulttransactionimporter.swift",
       "id": "packages_financecore_sources_financecore_importing_defaulttransactionimporter_swift"
     },
@@ -1236,7 +1254,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/DefaultTransactionImporter.swift",
       "source_location": "L10",
-      "community": 3,
+      "community": 17,
       "norm_label": "defaulttransactionimporter",
       "id": "importing_defaulttransactionimporter_defaulttransactionimporter"
     },
@@ -1245,7 +1263,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 0,
+      "community": 1,
       "norm_label": "sendable",
       "id": "sendable"
     },
@@ -1254,7 +1272,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/DefaultTransactionImporter.swift",
       "source_location": "L17",
-      "community": 3,
+      "community": 17,
       "norm_label": ".init()",
       "id": "importing_defaulttransactionimporter_defaulttransactionimporter_init"
     },
@@ -1263,7 +1281,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/DefaultTransactionImporter.swift",
       "source_location": "L43",
-      "community": 3,
+      "community": 17,
       "norm_label": ".parsestatement()",
       "id": "importing_defaulttransactionimporter_defaulttransactionimporter_parsestatement"
     },
@@ -1272,7 +1290,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/DefaultTransactionImporter.swift",
       "source_location": "L73",
-      "community": 3,
+      "community": 17,
       "norm_label": ".importtransactions()",
       "id": "importing_defaulttransactionimporter_defaulttransactionimporter_importtransactions"
     },
@@ -1281,7 +1299,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L1",
-      "community": 18,
+      "community": 16,
       "norm_label": "hdfccardstatementparser.swift",
       "id": "packages_financecore_sources_financecore_importing_institutionparsers_hdfccardstatementparser_swift"
     },
@@ -1290,7 +1308,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L3",
-      "community": 18,
+      "community": 16,
       "norm_label": "hdfccardstatementparser",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser"
     },
@@ -1299,7 +1317,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 5,
+      "community": 3,
       "norm_label": "institutionstatementparser",
       "id": "institutionstatementparser"
     },
@@ -1308,7 +1326,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L7",
-      "community": 18,
+      "community": 16,
       "norm_label": ".init()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_init"
     },
@@ -1317,7 +1335,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L9",
-      "community": 18,
+      "community": 16,
       "norm_label": ".canparse()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_canparse"
     },
@@ -1326,7 +1344,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L19",
-      "community": 18,
+      "community": 16,
       "norm_label": ".parse()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_parse"
     },
@@ -1335,7 +1353,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L57",
-      "community": 18,
+      "community": 16,
       "norm_label": ".extractaccountname()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_extractaccountname"
     },
@@ -1344,7 +1362,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L64",
-      "community": 18,
+      "community": 16,
       "norm_label": ".extractcardlast4()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_extractcardlast4"
     },
@@ -1353,7 +1371,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L73",
-      "community": 18,
+      "community": 16,
       "norm_label": ".parsecardtransactions()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_parsecardtransactions"
     },
@@ -1362,7 +1380,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L119",
-      "community": 18,
+      "community": 16,
       "norm_label": ".parsedate()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_parsedate"
     },
@@ -1371,7 +1389,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L141",
-      "community": 18,
+      "community": 16,
       "norm_label": ".isodatestring()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_isodatestring"
     },
@@ -1380,7 +1398,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift",
       "source_location": "L147",
-      "community": 18,
+      "community": 16,
       "norm_label": ".extractperiod()",
       "id": "institutionparsers_hdfccardstatementparser_hdfccardstatementparser_extractperiod"
     },
@@ -1389,7 +1407,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/StatementFileFormat.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "statementfileformat.swift",
       "id": "packages_financecore_sources_financecore_importing_statementfileformat_swift"
     },
@@ -1398,7 +1416,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/StatementFileFormat.swift",
       "source_location": "L10",
-      "community": 0,
+      "community": 1,
       "norm_label": "statementfileformat",
       "id": "importing_statementfileformat_statementfileformat"
     },
@@ -1416,7 +1434,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 0,
+      "community": 1,
       "norm_label": "caseiterable",
       "id": "caseiterable"
     },
@@ -1425,7 +1443,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/StatementFileFormat.swift",
       "source_location": "L15",
-      "community": 0,
+      "community": 1,
       "norm_label": "csv",
       "id": "importing_statementfileformat_statementfileformat_csv"
     },
@@ -1434,7 +1452,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/StatementFileFormat.swift",
       "source_location": "L16",
-      "community": 0,
+      "community": 1,
       "norm_label": "xls",
       "id": "importing_statementfileformat_statementfileformat_xls"
     },
@@ -1443,7 +1461,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/StatementFileFormat.swift",
       "source_location": "L17",
-      "community": 0,
+      "community": 1,
       "norm_label": "xlsx",
       "id": "importing_statementfileformat_statementfileformat_xlsx"
     },
@@ -1452,7 +1470,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/StatementFileFormat.swift",
       "source_location": "L18",
-      "community": 0,
+      "community": 1,
       "norm_label": "pdf",
       "id": "importing_statementfileformat_statementfileformat_pdf"
     },
@@ -1515,7 +1533,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L1",
-      "community": 5,
+      "community": 3,
       "norm_label": "amexcardstatementparser.swift",
       "id": "amexcardstatementparser_swift"
     },
@@ -1524,7 +1542,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L3",
-      "community": 5,
+      "community": 3,
       "norm_label": "amexcardstatementparser",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser"
     },
@@ -1533,7 +1551,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L7",
-      "community": 5,
+      "community": 3,
       "norm_label": ".init()",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser_init"
     },
@@ -1542,7 +1560,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L9",
-      "community": 5,
+      "community": 3,
       "norm_label": ".canparse()",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser_canparse"
     },
@@ -1551,7 +1569,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L21",
-      "community": 5,
+      "community": 3,
       "norm_label": ".parse()",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser_parse"
     },
@@ -1560,7 +1578,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L54",
-      "community": 5,
+      "community": 3,
       "norm_label": ".parseamextransactions()",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser_parseamextransactions"
     },
@@ -1569,7 +1587,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L92",
-      "community": 5,
+      "community": 3,
       "norm_label": ".parsedate()",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser_parsedate"
     },
@@ -1578,7 +1596,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L112",
-      "community": 5,
+      "community": 3,
       "norm_label": ".isodatestring()",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser_isodatestring"
     },
@@ -1587,7 +1605,7 @@
       "file_type": "code",
       "source_file": "AmexCardStatementParser.swift",
       "source_location": "L118",
-      "community": 5,
+      "community": 3,
       "norm_label": ".extractperiod()",
       "id": "institutionparsers_amexcardstatementparser_amexcardstatementparser_extractperiod"
     },
@@ -1596,7 +1614,7 @@
       "file_type": "code",
       "source_file": "HDFCBankStatementParser.swift",
       "source_location": "L1",
-      "community": 5,
+      "community": 3,
       "norm_label": "hdfcbankstatementparser.swift",
       "id": "hdfcbankstatementparser_swift"
     },
@@ -1605,7 +1623,7 @@
       "file_type": "code",
       "source_file": "HDFCBankStatementParser.swift",
       "source_location": "L3",
-      "community": 5,
+      "community": 3,
       "norm_label": "hdfcbankstatementparser",
       "id": "institutionparsers_hdfcbankstatementparser_hdfcbankstatementparser"
     },
@@ -1614,7 +1632,7 @@
       "file_type": "code",
       "source_file": "HDFCBankStatementParser.swift",
       "source_location": "L7",
-      "community": 5,
+      "community": 3,
       "norm_label": ".init()",
       "id": "institutionparsers_hdfcbankstatementparser_hdfcbankstatementparser_init"
     },
@@ -1623,7 +1641,7 @@
       "file_type": "code",
       "source_file": "HDFCBankStatementParser.swift",
       "source_location": "L9",
-      "community": 5,
+      "community": 3,
       "norm_label": ".canparse()",
       "id": "institutionparsers_hdfcbankstatementparser_hdfcbankstatementparser_canparse"
     },
@@ -1632,7 +1650,7 @@
       "file_type": "code",
       "source_file": "HDFCBankStatementParser.swift",
       "source_location": "L21",
-      "community": 5,
+      "community": 3,
       "norm_label": ".parse()",
       "id": "institutionparsers_hdfcbankstatementparser_hdfcbankstatementparser_parse"
     },
@@ -1641,7 +1659,7 @@
       "file_type": "code",
       "source_file": "HDFCBankStatementParser.swift",
       "source_location": "L59",
-      "community": 5,
+      "community": 3,
       "norm_label": ".normalizeheader()",
       "id": "institutionparsers_hdfcbankstatementparser_hdfcbankstatementparser_normalizeheader"
     },
@@ -1650,7 +1668,7 @@
       "file_type": "code",
       "source_file": "ICICICardStatementParser.swift",
       "source_location": "L1",
-      "community": 5,
+      "community": 3,
       "norm_label": "icicicardstatementparser.swift",
       "id": "icicicardstatementparser_swift"
     },
@@ -1659,7 +1677,7 @@
       "file_type": "code",
       "source_file": "ICICICardStatementParser.swift",
       "source_location": "L3",
-      "community": 5,
+      "community": 3,
       "norm_label": "icicicardstatementparser",
       "id": "institutionparsers_icicicardstatementparser_icicicardstatementparser"
     },
@@ -1668,7 +1686,7 @@
       "file_type": "code",
       "source_file": "ICICICardStatementParser.swift",
       "source_location": "L7",
-      "community": 5,
+      "community": 3,
       "norm_label": ".init()",
       "id": "institutionparsers_icicicardstatementparser_icicicardstatementparser_init"
     },
@@ -1677,7 +1695,7 @@
       "file_type": "code",
       "source_file": "ICICICardStatementParser.swift",
       "source_location": "L9",
-      "community": 5,
+      "community": 3,
       "norm_label": ".canparse()",
       "id": "institutionparsers_icicicardstatementparser_icicicardstatementparser_canparse"
     },
@@ -1686,7 +1704,7 @@
       "file_type": "code",
       "source_file": "ICICICardStatementParser.swift",
       "source_location": "L19",
-      "community": 5,
+      "community": 3,
       "norm_label": ".parse()",
       "id": "institutionparsers_icicicardstatementparser_icicicardstatementparser_parse"
     },
@@ -1695,7 +1713,7 @@
       "file_type": "code",
       "source_file": "ICICICardStatementParser.swift",
       "source_location": "L57",
-      "community": 5,
+      "community": 3,
       "norm_label": ".extractcardlast4()",
       "id": "institutionparsers_icicicardstatementparser_icicicardstatementparser_extractcardlast4"
     },
@@ -1704,7 +1722,7 @@
       "file_type": "code",
       "source_file": "AppContainer.swift",
       "source_location": "L1",
-      "community": 4,
+      "community": 22,
       "norm_label": "appcontainer.swift",
       "id": "appcontainer_swift"
     },
@@ -1713,7 +1731,7 @@
       "file_type": "code",
       "source_file": "AppContainer.swift",
       "source_location": "L10",
-      "community": 4,
+      "community": 22,
       "norm_label": "appcontainer",
       "id": "appcontainer_appcontainer_appcontainer"
     },
@@ -1722,7 +1740,7 @@
       "file_type": "code",
       "source_file": "AppContainer.swift",
       "source_location": "L24",
-      "community": 4,
+      "community": 22,
       "norm_label": ".init()",
       "id": "appcontainer_appcontainer_appcontainer_init"
     },
@@ -1731,7 +1749,7 @@
       "file_type": "code",
       "source_file": "TransactionImportPipeline.swift",
       "source_location": "L1",
-      "community": 4,
+      "community": 28,
       "norm_label": "transactionimportpipeline.swift",
       "id": "transactionimportpipeline_swift"
     },
@@ -1740,7 +1758,7 @@
       "file_type": "code",
       "source_file": "TransactionImportPipeline.swift",
       "source_location": "L3",
-      "community": 4,
+      "community": 28,
       "norm_label": "transactionimportpipeline",
       "id": "importing_transactionimportpipeline_transactionimportpipeline"
     },
@@ -1749,7 +1767,7 @@
       "file_type": "code",
       "source_file": "TransactionImportPipeline.swift",
       "source_location": "L7",
-      "community": 4,
+      "community": 28,
       "norm_label": ".init()",
       "id": "importing_transactionimportpipeline_transactionimportpipeline_init"
     },
@@ -1758,7 +1776,7 @@
       "file_type": "code",
       "source_file": "TransactionImportPipeline.swift",
       "source_location": "L15",
-      "community": 4,
+      "community": 28,
       "norm_label": ".execute()",
       "id": "importing_transactionimportpipeline_transactionimportpipeline_execute"
     },
@@ -1767,7 +1785,7 @@
       "file_type": "code",
       "source_file": "DefaultTransactionImporter.swift",
       "source_location": "L1",
-      "community": 3,
+      "community": 17,
       "norm_label": "defaulttransactionimporter.swift",
       "id": "defaulttransactionimporter_swift"
     },
@@ -1776,7 +1794,7 @@
       "file_type": "code",
       "source_file": "CSVStatementParser.swift",
       "source_location": "L1",
-      "community": 7,
+      "community": 5,
       "norm_label": "csvstatementparser.swift",
       "id": "csvstatementparser_swift"
     },
@@ -1785,7 +1803,7 @@
       "file_type": "code",
       "source_file": "CSVStatementParser.swift",
       "source_location": "L11",
-      "community": 7,
+      "community": 5,
       "norm_label": "csvstatementparser",
       "id": "importing_csvstatementparser_csvstatementparser"
     },
@@ -1794,7 +1812,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 7,
+      "community": 5,
       "norm_label": "statementparser",
       "id": "statementparser"
     },
@@ -1803,7 +1821,7 @@
       "file_type": "code",
       "source_file": "CSVStatementParser.swift",
       "source_location": "L17",
-      "community": 7,
+      "community": 5,
       "norm_label": ".init()",
       "id": "importing_csvstatementparser_csvstatementparser_init"
     },
@@ -1812,7 +1830,7 @@
       "file_type": "code",
       "source_file": "CSVStatementParser.swift",
       "source_location": "L19",
-      "community": 7,
+      "community": 5,
       "norm_label": ".parsestatement()",
       "id": "importing_csvstatementparser_csvstatementparser_parsestatement"
     },
@@ -1821,7 +1839,7 @@
       "file_type": "code",
       "source_file": "CSVStatementParser.swift",
       "source_location": "L26",
-      "community": 7,
+      "community": 5,
       "norm_label": ".extractrows()",
       "id": "importing_csvstatementparser_csvstatementparser_extractrows"
     },
@@ -1830,7 +1848,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L1",
-      "community": 9,
+      "community": 7,
       "norm_label": "tabulartransactiondecoder.swift",
       "id": "tabulartransactiondecoder_swift"
     },
@@ -1839,7 +1857,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L10",
-      "community": 9,
+      "community": 7,
       "norm_label": "tabulartransactiondecoder",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder"
     },
@@ -1848,7 +1866,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L11",
-      "community": 9,
+      "community": 7,
       "norm_label": ".decodestatement()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_decodestatement"
     },
@@ -1857,7 +1875,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L52",
-      "community": 9,
+      "community": 7,
       "norm_label": ".index()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_index"
     },
@@ -1866,7 +1884,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L61",
-      "community": 9,
+      "community": 7,
       "norm_label": ".value()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_value"
     },
@@ -1875,7 +1893,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L73",
-      "community": 9,
+      "community": 7,
       "norm_label": ".nonemptyvalue()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_nonemptyvalue"
     },
@@ -1884,7 +1902,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L80",
-      "community": 9,
+      "community": 7,
       "norm_label": ".normalizeheader()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_normalizeheader"
     },
@@ -1893,7 +1911,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L92",
-      "community": 9,
+      "community": 7,
       "norm_label": ".parseamountminorunits()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_parseamountminorunits"
     },
@@ -1902,7 +1920,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L124",
-      "community": 9,
+      "community": 7,
       "norm_label": ".parsedate()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_parsedate"
     },
@@ -1911,7 +1929,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L167",
-      "community": 9,
+      "community": 7,
       "norm_label": ".makedateformatter()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_makedateformatter"
     },
@@ -1920,7 +1938,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L178",
-      "community": 9,
+      "community": 7,
       "norm_label": ".isodatestring()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_isodatestring"
     },
@@ -1929,7 +1947,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L187",
-      "community": 9,
+      "community": 7,
       "norm_label": ".decodetransactions()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_decodetransactions"
     },
@@ -1938,7 +1956,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L300",
-      "community": 9,
+      "community": 7,
       "norm_label": ".parseamountwithsign()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_parseamountwithsign"
     },
@@ -1947,7 +1965,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L320",
-      "community": 9,
+      "community": 7,
       "norm_label": ".extractperiod()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_extractperiod"
     },
@@ -1956,7 +1974,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L328",
-      "community": 9,
+      "community": 7,
       "norm_label": ".extractcurrencyfromheaders()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_extractcurrencyfromheaders"
     },
@@ -1965,7 +1983,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L346",
-      "community": 9,
+      "community": 7,
       "norm_label": ".iscardnumberrow()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_iscardnumberrow"
     },
@@ -1974,7 +1992,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L1",
-      "community": 7,
+      "community": 5,
       "norm_label": "xlsxstatementparser.swift",
       "id": "xlsxstatementparser_swift"
     },
@@ -1983,7 +2001,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L14",
-      "community": 7,
+      "community": 5,
       "norm_label": "xlsxstatementparser",
       "id": "importing_xlsxstatementparser_xlsxstatementparser"
     },
@@ -1992,7 +2010,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L20",
-      "community": 7,
+      "community": 5,
       "norm_label": ".init()",
       "id": "importing_xlsxstatementparser_xlsxstatementparser_init"
     },
@@ -2001,7 +2019,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L22",
-      "community": 7,
+      "community": 5,
       "norm_label": ".parsestatement()",
       "id": "importing_xlsxstatementparser_xlsxstatementparser_parsestatement"
     },
@@ -2010,7 +2028,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L29",
-      "community": 7,
+      "community": 5,
       "norm_label": ".extractrows()",
       "id": "importing_xlsxstatementparser_xlsxstatementparser_extractrows"
     },
@@ -2019,7 +2037,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L44",
-      "community": 7,
+      "community": 5,
       "norm_label": "xlsxworkbookreader",
       "id": "importing_xlsxstatementparser_xlsxworkbookreader"
     },
@@ -2028,7 +2046,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L45",
-      "community": 7,
+      "community": 5,
       "norm_label": ".readworkbook()",
       "id": "importing_xlsxstatementparser_xlsxworkbookreader_readworkbook"
     },
@@ -2037,7 +2055,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L66",
-      "community": 7,
+      "community": 5,
       "norm_label": ".unzipentry()",
       "id": "importing_xlsxstatementparser_xlsxworkbookreader_unzipentry"
     },
@@ -2046,7 +2064,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L98",
-      "community": 7,
+      "community": 5,
       "norm_label": ".parsesharedstrings()",
       "id": "importing_xlsxstatementparser_xlsxworkbookreader_parsesharedstrings"
     },
@@ -2055,7 +2073,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L114",
-      "community": 7,
+      "community": 5,
       "norm_label": ".parseworksheetrows()",
       "id": "importing_xlsxstatementparser_xlsxworkbookreader_parseworksheetrows"
     },
@@ -2064,7 +2082,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L140",
-      "community": 7,
+      "community": 5,
       "norm_label": "parsedworkbook",
       "id": "importing_xlsxstatementparser_parsedworkbook"
     },
@@ -2073,7 +2091,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L144",
-      "community": 7,
+      "community": 5,
       "norm_label": "sharedstringsparserdelegate",
       "id": "importing_xlsxstatementparser_sharedstringsparserdelegate"
     },
@@ -2082,7 +2100,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 7,
+      "community": 5,
       "norm_label": "nsobject",
       "id": "nsobject"
     },
@@ -2091,7 +2109,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 7,
+      "community": 5,
       "norm_label": "xmlparserdelegate",
       "id": "xmlparserdelegate"
     },
@@ -2100,7 +2118,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L153",
-      "community": 7,
+      "community": 5,
       "norm_label": ".parser()",
       "id": "importing_xlsxstatementparser_sharedstringsparserdelegate_parser"
     },
@@ -2109,7 +2127,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L188",
-      "community": 7,
+      "community": 5,
       "norm_label": "worksheetparserdelegate",
       "id": "importing_xlsxstatementparser_worksheetparserdelegate"
     },
@@ -2118,7 +2136,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L202",
-      "community": 7,
+      "community": 5,
       "norm_label": ".init()",
       "id": "importing_xlsxstatementparser_worksheetparserdelegate_init"
     },
@@ -2127,7 +2145,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L208",
-      "community": 7,
+      "community": 5,
       "norm_label": ".parser()",
       "id": "importing_xlsxstatementparser_worksheetparserdelegate_parser"
     },
@@ -2136,7 +2154,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L270",
-      "community": 7,
+      "community": 5,
       "norm_label": ".decodedcellvalue()",
       "id": "importing_xlsxstatementparser_worksheetparserdelegate_decodedcellvalue"
     },
@@ -2145,7 +2163,7 @@
       "file_type": "code",
       "source_file": "XLSXStatementParser.swift",
       "source_location": "L281",
-      "community": 7,
+      "community": 5,
       "norm_label": ".columnindex()",
       "id": "importing_xlsxstatementparser_worksheetparserdelegate_columnindex"
     },
@@ -2154,7 +2172,7 @@
       "file_type": "code",
       "source_file": "HDFCCardStatementParser.swift",
       "source_location": "L1",
-      "community": 18,
+      "community": 16,
       "norm_label": "hdfccardstatementparser.swift",
       "id": "hdfccardstatementparser_swift"
     },
@@ -2163,7 +2181,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L1",
-      "community": 5,
+      "community": 3,
       "norm_label": "icicibankstatementparser.swift",
       "id": "icicibankstatementparser_swift"
     },
@@ -2172,7 +2190,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L3",
-      "community": 5,
+      "community": 3,
       "norm_label": "icicibankstatementparser",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser"
     },
@@ -2181,7 +2199,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L7",
-      "community": 5,
+      "community": 3,
       "norm_label": ".init()",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser_init"
     },
@@ -2190,7 +2208,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L9",
-      "community": 5,
+      "community": 3,
       "norm_label": ".canparse()",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser_canparse"
     },
@@ -2199,7 +2217,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L15",
-      "community": 5,
+      "community": 3,
       "norm_label": ".parse()",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser_parse"
     },
@@ -2208,7 +2226,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L53",
-      "community": 5,
+      "community": 3,
       "norm_label": ".extractvalue()",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser_extractvalue"
     },
@@ -2217,7 +2235,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L58",
-      "community": 5,
+      "community": 3,
       "norm_label": ".extractcardlast4()",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser_extractcardlast4"
     },
@@ -2226,7 +2244,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L65",
-      "community": 5,
+      "community": 3,
       "norm_label": ".value()",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser_value"
     },
@@ -2235,7 +2253,7 @@
       "file_type": "code",
       "source_file": "ICICIBankStatementParser.swift",
       "source_location": "L72",
-      "community": 5,
+      "community": 3,
       "norm_label": ".extractcurrencyfromheaders()",
       "id": "institutionparsers_icicibankstatementparser_icicibankstatementparser_extractcurrencyfromheaders"
     },
@@ -2244,7 +2262,7 @@
       "file_type": "code",
       "source_file": "InstitutionStatementParser.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "institutionstatementparser.swift",
       "id": "institutionstatementparser_swift"
     },
@@ -2253,7 +2271,7 @@
       "file_type": "code",
       "source_file": "InstitutionStatementParser.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "institutionstatementparser",
       "id": "institutionparsers_institutionstatementparser_institutionstatementparser"
     },
@@ -2262,7 +2280,7 @@
       "file_type": "code",
       "source_file": "StatementParserRegistry.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "statementparserregistry.swift",
       "id": "statementparserregistry_swift"
     },
@@ -2271,7 +2289,7 @@
       "file_type": "code",
       "source_file": "StatementParserRegistry.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "statementparserregistry",
       "id": "institutionparsers_statementparserregistry_statementparserregistry"
     },
@@ -2280,7 +2298,7 @@
       "file_type": "code",
       "source_file": "StatementParserRegistry.swift",
       "source_location": "L4",
-      "community": 0,
+      "community": 1,
       "norm_label": ".init()",
       "id": "institutionparsers_statementparserregistry_statementparserregistry_init"
     },
@@ -2289,7 +2307,7 @@
       "file_type": "code",
       "source_file": "StatementParserRegistry.swift",
       "source_location": "L12",
-      "community": 0,
+      "community": 1,
       "norm_label": ".parser()",
       "id": "institutionparsers_statementparserregistry_statementparserregistry_parser"
     },
@@ -2334,7 +2352,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L1",
-      "community": 19,
+      "community": 18,
       "norm_label": "transactionimporterror.swift",
       "id": "packages_financecore_sources_financecore_importing_transactionimporterror_swift"
     },
@@ -2343,7 +2361,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L10",
-      "community": 19,
+      "community": 18,
       "norm_label": "transactionimporterror",
       "id": "importing_transactionimporterror_transactionimporterror"
     },
@@ -2352,7 +2370,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 19,
+      "community": 18,
       "norm_label": "error",
       "id": "error"
     },
@@ -2361,7 +2379,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 19,
+      "community": 18,
       "norm_label": "localizederror",
       "id": "localizederror"
     },
@@ -2370,7 +2388,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L11",
-      "community": 19,
+      "community": 18,
       "norm_label": "unsupportedformat",
       "id": "importing_transactionimporterror_transactionimporterror_unsupportedformat"
     },
@@ -2379,7 +2397,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L12",
-      "community": 19,
+      "community": 18,
       "norm_label": "missingrequiredcolumn",
       "id": "importing_transactionimporterror_transactionimporterror_missingrequiredcolumn"
     },
@@ -2388,7 +2406,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L13",
-      "community": 19,
+      "community": 18,
       "norm_label": "invaliddate",
       "id": "importing_transactionimporterror_transactionimporterror_invaliddate"
     },
@@ -2397,7 +2415,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L14",
-      "community": 19,
+      "community": 18,
       "norm_label": "invalidamount",
       "id": "importing_transactionimporterror_transactionimporterror_invalidamount"
     },
@@ -2406,7 +2424,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L15",
-      "community": 19,
+      "community": 18,
       "norm_label": "malformedfile",
       "id": "importing_transactionimporterror_transactionimporterror_malformedfile"
     },
@@ -2415,7 +2433,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L16",
-      "community": 19,
+      "community": 18,
       "norm_label": "platformunavailable",
       "id": "importing_transactionimporterror_transactionimporterror_platformunavailable"
     },
@@ -2424,7 +2442,7 @@
       "file_type": "code",
       "source_file": "AppContainer/AppContainer.swift",
       "source_location": "L1",
-      "community": 4,
+      "community": 22,
       "norm_label": "appcontainer.swift",
       "id": "appcontainer_appcontainer_swift"
     },
@@ -2433,7 +2451,7 @@
       "file_type": "code",
       "source_file": "Importing/TransactionImportPipeline.swift",
       "source_location": "L1",
-      "community": 4,
+      "community": 28,
       "norm_label": "transactionimportpipeline.swift",
       "id": "importing_transactionimportpipeline_swift"
     },
@@ -2442,7 +2460,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L185",
-      "community": 9,
+      "community": 7,
       "norm_label": "statementmetadata",
       "id": "importing_tabulartransactiondecoder_statementmetadata"
     },
@@ -2451,7 +2469,7 @@
       "file_type": "code",
       "source_file": "TabularTransactionDecoder.swift",
       "source_location": "L192",
-      "community": 9,
+      "community": 7,
       "norm_label": ".extractmetadata()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_extractmetadata"
     },
@@ -2460,7 +2478,7 @@
       "file_type": "code",
       "source_file": "AmexStatementDetector.swift",
       "source_location": "L1",
-      "community": 11,
+      "community": 9,
       "norm_label": "amexstatementdetector.swift",
       "id": "amexstatementdetector_swift"
     },
@@ -2469,7 +2487,7 @@
       "file_type": "code",
       "source_file": "AmexStatementDetector.swift",
       "source_location": "L3",
-      "community": 11,
+      "community": 9,
       "norm_label": "amexstatementdetector",
       "id": "detectors_amexstatementdetector_amexstatementdetector"
     },
@@ -2478,7 +2496,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 11,
+      "community": 9,
       "norm_label": "statementdetector",
       "id": "statementdetector"
     },
@@ -2487,7 +2505,7 @@
       "file_type": "code",
       "source_file": "AmexStatementDetector.swift",
       "source_location": "L4",
-      "community": 11,
+      "community": 9,
       "norm_label": ".init()",
       "id": "detectors_amexstatementdetector_amexstatementdetector_init"
     },
@@ -2496,7 +2514,7 @@
       "file_type": "code",
       "source_file": "AmexStatementDetector.swift",
       "source_location": "L6",
-      "community": 11,
+      "community": 9,
       "norm_label": ".detect()",
       "id": "detectors_amexstatementdetector_amexstatementdetector_detect"
     },
@@ -2505,7 +2523,7 @@
       "file_type": "code",
       "source_file": "HDFCStatementDetector.swift",
       "source_location": "L1",
-      "community": 11,
+      "community": 9,
       "norm_label": "hdfcstatementdetector.swift",
       "id": "hdfcstatementdetector_swift"
     },
@@ -2514,7 +2532,7 @@
       "file_type": "code",
       "source_file": "HDFCStatementDetector.swift",
       "source_location": "L3",
-      "community": 11,
+      "community": 9,
       "norm_label": "hdfcstatementdetector",
       "id": "detectors_hdfcstatementdetector_hdfcstatementdetector"
     },
@@ -2523,7 +2541,7 @@
       "file_type": "code",
       "source_file": "HDFCStatementDetector.swift",
       "source_location": "L4",
-      "community": 11,
+      "community": 9,
       "norm_label": ".init()",
       "id": "detectors_hdfcstatementdetector_hdfcstatementdetector_init"
     },
@@ -2532,7 +2550,7 @@
       "file_type": "code",
       "source_file": "HDFCStatementDetector.swift",
       "source_location": "L6",
-      "community": 11,
+      "community": 9,
       "norm_label": ".detect()",
       "id": "detectors_hdfcstatementdetector_hdfcstatementdetector_detect"
     },
@@ -2541,7 +2559,7 @@
       "file_type": "code",
       "source_file": "ICICIStatementDetector.swift",
       "source_location": "L1",
-      "community": 11,
+      "community": 9,
       "norm_label": "icicistatementdetector.swift",
       "id": "icicistatementdetector_swift"
     },
@@ -2550,7 +2568,7 @@
       "file_type": "code",
       "source_file": "ICICIStatementDetector.swift",
       "source_location": "L3",
-      "community": 11,
+      "community": 9,
       "norm_label": "icicistatementdetector",
       "id": "detectors_icicistatementdetector_icicistatementdetector"
     },
@@ -2559,7 +2577,7 @@
       "file_type": "code",
       "source_file": "ICICIStatementDetector.swift",
       "source_location": "L4",
-      "community": 11,
+      "community": 9,
       "norm_label": ".init()",
       "id": "detectors_icicistatementdetector_icicistatementdetector_init"
     },
@@ -2568,7 +2586,7 @@
       "file_type": "code",
       "source_file": "ICICIStatementDetector.swift",
       "source_location": "L6",
-      "community": 11,
+      "community": 9,
       "norm_label": ".detect()",
       "id": "detectors_icicistatementdetector_icicistatementdetector_detect"
     },
@@ -2577,7 +2595,7 @@
       "file_type": "code",
       "source_file": "ICICIStatementDetector.swift",
       "source_location": "L24",
-      "community": 11,
+      "community": 9,
       "norm_label": ".extractvalue()",
       "id": "detectors_icicistatementdetector_icicistatementdetector_extractvalue"
     },
@@ -2586,7 +2604,7 @@
       "file_type": "code",
       "source_file": "ICICIStatementDetector.swift",
       "source_location": "L29",
-      "community": 11,
+      "community": 9,
       "norm_label": ".extractcardlast4()",
       "id": "detectors_icicistatementdetector_icicistatementdetector_extractcardlast4"
     },
@@ -2595,7 +2613,7 @@
       "file_type": "code",
       "source_file": "ICICIStatementDetector.swift",
       "source_location": "L36",
-      "community": 11,
+      "community": 9,
       "norm_label": ".value()",
       "id": "detectors_icicistatementdetector_icicistatementdetector_value"
     },
@@ -2604,7 +2622,7 @@
       "file_type": "code",
       "source_file": "StatementDetector.swift",
       "source_location": "L1",
-      "community": 11,
+      "community": 9,
       "norm_label": "statementdetector.swift",
       "id": "statementdetector_swift"
     },
@@ -2613,7 +2631,7 @@
       "file_type": "code",
       "source_file": "StatementDetector.swift",
       "source_location": "L1",
-      "community": 11,
+      "community": 9,
       "norm_label": "statementdetector",
       "id": "detectors_statementdetector_statementdetector"
     },
@@ -2622,7 +2640,7 @@
       "file_type": "code",
       "source_file": "StatementDetector.swift",
       "source_location": "L5",
-      "community": 11,
+      "community": 9,
       "norm_label": "detectedstatementmetadata",
       "id": "detectors_statementdetector_detectedstatementmetadata"
     },
@@ -2631,7 +2649,7 @@
       "file_type": "code",
       "source_file": "StatementDetector.swift",
       "source_location": "L11",
-      "community": 11,
+      "community": 9,
       "norm_label": ".init()",
       "id": "detectors_statementdetector_detectedstatementmetadata_init"
     },
@@ -2640,7 +2658,7 @@
       "file_type": "code",
       "source_file": "GRDBTransactionRepository.swift",
       "source_location": "L1",
-      "community": 3,
+      "community": 21,
       "norm_label": "grdbtransactionrepository.swift",
       "id": "grdbtransactionrepository_swift"
     },
@@ -2649,7 +2667,7 @@
       "file_type": "code",
       "source_file": "GRDBTransactionRepository.swift",
       "source_location": "L11",
-      "community": 3,
+      "community": 21,
       "norm_label": "grdbtransactionrepository",
       "id": "repositories_grdbtransactionrepository_grdbtransactionrepository"
     },
@@ -2658,7 +2676,7 @@
       "file_type": "code",
       "source_file": "GRDBTransactionRepository.swift",
       "source_location": "L17",
-      "community": 3,
+      "community": 21,
       "norm_label": ".init()",
       "id": "repositories_grdbtransactionrepository_grdbtransactionrepository_init"
     },
@@ -2667,7 +2685,7 @@
       "file_type": "code",
       "source_file": "GRDBTransactionRepository.swift",
       "source_location": "L23",
-      "community": 3,
+      "community": 21,
       "norm_label": ".fetchtransactions()",
       "id": "repositories_grdbtransactionrepository_grdbtransactionrepository_fetchtransactions"
     },
@@ -2676,7 +2694,7 @@
       "file_type": "code",
       "source_file": "GRDBTransactionRepository.swift",
       "source_location": "L31",
-      "community": 3,
+      "community": 21,
       "norm_label": ".fetchtransactionsforaccount()",
       "id": "repositories_grdbtransactionrepository_grdbtransactionrepository_fetchtransactionsforaccount"
     },
@@ -2685,7 +2703,7 @@
       "file_type": "code",
       "source_file": "GRDBTransactionRepository.swift",
       "source_location": "L42",
-      "community": 3,
+      "community": 21,
       "norm_label": ".fetchtransactionsforcard()",
       "id": "repositories_grdbtransactionrepository_grdbtransactionrepository_fetchtransactionsforcard"
     },
@@ -2694,7 +2712,7 @@
       "file_type": "code",
       "source_file": "GRDBTransactionRepository.swift",
       "source_location": "L53",
-      "community": 3,
+      "community": 21,
       "norm_label": ".inserttransactions()",
       "id": "repositories_grdbtransactionrepository_grdbtransactionrepository_inserttransactions"
     },
@@ -2703,7 +2721,7 @@
       "file_type": "code",
       "source_file": "TransactionRepository.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "transactionrepository.swift",
       "id": "transactionrepository_swift"
     },
@@ -2712,7 +2730,7 @@
       "file_type": "code",
       "source_file": "TransactionRepository.swift",
       "source_location": "L10",
-      "community": 0,
+      "community": 1,
       "norm_label": "transactionrepository",
       "id": "repositories_transactionrepository_transactionrepository"
     },
@@ -2721,7 +2739,7 @@
       "file_type": "code",
       "source_file": "Database/AppMigration.swift",
       "source_location": "L1",
-      "community": 23,
+      "community": 29,
       "norm_label": "appmigration.swift",
       "id": "database_appmigration_swift"
     },
@@ -2730,7 +2748,7 @@
       "file_type": "code",
       "source_file": "Database/AppMigration.swift",
       "source_location": "L11",
-      "community": 23,
+      "community": 29,
       "norm_label": "appmigration",
       "id": "database_appmigration_appmigration"
     },
@@ -2739,7 +2757,7 @@
       "file_type": "code",
       "source_file": "Database/AppMigration.swift",
       "source_location": "L12",
-      "community": 23,
+      "community": 29,
       "norm_label": ".registermigrations()",
       "id": "database_appmigration_appmigration_registermigrations"
     },
@@ -2748,7 +2766,7 @@
       "file_type": "code",
       "source_file": "Database/AppMigration.swift",
       "source_location": "L114",
-      "community": 23,
+      "community": 29,
       "norm_label": ".seeddefaultaccounts()",
       "id": "database_appmigration_appmigration_seeddefaultaccounts"
     },
@@ -2757,7 +2775,7 @@
       "file_type": "code",
       "source_file": "Database/AppMigration.swift",
       "source_location": "L142",
-      "community": 23,
+      "community": 29,
       "norm_label": ".legacycard()",
       "id": "database_appmigration_appmigration_legacycard"
     },
@@ -2766,7 +2784,7 @@
       "file_type": "code",
       "source_file": "Importing/ImportResult.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "importresult.swift",
       "id": "importing_importresult_swift"
     },
@@ -2775,7 +2793,7 @@
       "file_type": "code",
       "source_file": "Importing/ImportResult.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "importresult",
       "id": "importing_importresult_importresult"
     },
@@ -2784,7 +2802,7 @@
       "file_type": "code",
       "source_file": "Importing/ImportResult.swift",
       "source_location": "L5",
-      "community": 0,
+      "community": 1,
       "norm_label": ".init()",
       "id": "importing_importresult_importresult_init"
     },
@@ -2793,7 +2811,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L1",
-      "community": 14,
+      "community": 12,
       "norm_label": "importpreviewview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_import_importpreviewview_swift"
     },
@@ -2802,7 +2820,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L4",
-      "community": 14,
+      "community": 12,
       "norm_label": "importpreviewview",
       "id": "import_importpreviewview_importpreviewview"
     },
@@ -2811,7 +2829,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L8",
-      "community": 14,
+      "community": 12,
       "norm_label": "targetchoice",
       "id": "import_importpreviewview_targetchoice"
     },
@@ -2820,7 +2838,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L9",
-      "community": 14,
+      "community": 12,
       "norm_label": "account",
       "id": "import_importpreviewview_targetchoice_account"
     },
@@ -2829,7 +2847,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L10",
-      "community": 14,
+      "community": 12,
       "norm_label": "card",
       "id": "import_importpreviewview_targetchoice_card"
     },
@@ -2838,7 +2856,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L65",
-      "community": 14,
+      "community": 12,
       "norm_label": ".filelistsection()",
       "id": "import_importpreviewview_importpreviewview_filelistsection"
     },
@@ -2847,7 +2865,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L100",
-      "community": 14,
+      "community": 12,
       "norm_label": ".aggregatedsummarysection()",
       "id": "import_importpreviewview_importpreviewview_aggregatedsummarysection"
     },
@@ -2856,7 +2874,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L157",
-      "community": 14,
+      "community": 12,
       "norm_label": ".aggregatedtransactionlistsection()",
       "id": "import_importpreviewview_importpreviewview_aggregatedtransactionlistsection"
     },
@@ -2865,7 +2883,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L214",
-      "community": 14,
+      "community": 12,
       "norm_label": ".formatdate()",
       "id": "import_importpreviewview_importpreviewview_formatdate"
     },
@@ -2874,7 +2892,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift",
       "source_location": "L220",
-      "community": 14,
+      "community": 12,
       "norm_label": ".formatamount()",
       "id": "import_importpreviewview_importpreviewview_formatamount"
     },
@@ -2883,7 +2901,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L1",
-      "community": 10,
+      "community": 8,
       "norm_label": "claude.md",
       "id": "claude_md"
     },
@@ -2892,7 +2910,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L1",
-      "community": 10,
+      "community": 8,
       "norm_label": "financeos claude code instructions",
       "id": "financeos_claude_financeos_claude_code_instructions"
     },
@@ -2901,7 +2919,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L3",
-      "community": 10,
+      "community": 8,
       "norm_label": "primary goal",
       "id": "financeos_claude_primary_goal"
     },
@@ -2910,7 +2928,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L24",
-      "community": 10,
+      "community": 8,
       "norm_label": "engineering expectations",
       "id": "financeos_claude_engineering_expectations"
     },
@@ -2919,7 +2937,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L88",
-      "community": 10,
+      "community": 8,
       "norm_label": "coding standards",
       "id": "financeos_claude_coding_standards"
     },
@@ -2928,7 +2946,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L102",
-      "community": 10,
+      "community": 8,
       "norm_label": "context loading rules",
       "id": "financeos_claude_context_loading_rules"
     },
@@ -2937,7 +2955,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L104",
-      "community": 10,
+      "community": 8,
       "norm_label": "always read first",
       "id": "financeos_claude_always_read_first"
     },
@@ -2946,7 +2964,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L115",
-      "community": 10,
+      "community": 8,
       "norm_label": "repository navigation rules",
       "id": "financeos_claude_repository_navigation_rules"
     },
@@ -2955,7 +2973,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L117",
-      "community": 10,
+      "community": 8,
       "norm_label": "graphify",
       "id": "financeos_claude_graphify"
     },
@@ -2964,7 +2982,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L159",
-      "community": 10,
+      "community": 8,
       "norm_label": "graph freshness rules",
       "id": "financeos_claude_graph_freshness_rules"
     },
@@ -2973,7 +2991,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L163",
-      "community": 10,
+      "community": 8,
       "norm_label": "code:bash (git rev-parse head)",
       "id": "financeos_claude_codeblock_1"
     },
@@ -2982,7 +3000,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L173",
-      "community": 10,
+      "community": 8,
       "norm_label": "code:bash (graphify update .)",
       "id": "financeos_claude_codeblock_2"
     },
@@ -2991,7 +3009,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L181",
-      "community": 10,
+      "community": 8,
       "norm_label": "token efficiency rules",
       "id": "financeos_claude_token_efficiency_rules"
     },
@@ -3000,7 +3018,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L207",
-      "community": 10,
+      "community": 8,
       "norm_label": "git workflow rules",
       "id": "financeos_claude_git_workflow_rules"
     },
@@ -3009,7 +3027,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L211",
-      "community": 10,
+      "community": 8,
       "norm_label": "code:bash (git status)",
       "id": "financeos_claude_codeblock_3"
     },
@@ -3018,7 +3036,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L231",
-      "community": 10,
+      "community": 8,
       "norm_label": "architecture rules",
       "id": "financeos_claude_architecture_rules"
     },
@@ -3027,7 +3045,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L251",
-      "community": 10,
+      "community": 8,
       "norm_label": "parsing strategy",
       "id": "financeos_claude_parsing_strategy"
     },
@@ -3036,7 +3054,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L271",
-      "community": 10,
+      "community": 8,
       "norm_label": "change scope rules",
       "id": "financeos_claude_change_scope_rules"
     },
@@ -3045,7 +3063,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L286",
-      "community": 10,
+      "community": 8,
       "norm_label": "current project focus",
       "id": "financeos_claude_current_project_focus"
     },
@@ -3054,7 +3072,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L308",
-      "community": 10,
+      "community": 8,
       "norm_label": "build & test workflow",
       "id": "financeos_claude_build_test_workflow"
     },
@@ -3063,7 +3081,7 @@
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L325",
-      "community": 10,
+      "community": 8,
       "norm_label": "response strategy",
       "id": "financeos_claude_response_strategy"
     },
@@ -3072,7 +3090,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L197",
-      "community": 12,
+      "community": 10,
       "norm_label": ".importpreviewview()",
       "id": "import_importview_importview_importpreviewview"
     },
@@ -3081,7 +3099,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L218",
-      "community": 12,
+      "community": 10,
       "norm_label": ".filelistsection()",
       "id": "import_importview_importview_filelistsection"
     },
@@ -3090,7 +3108,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L253",
-      "community": 12,
+      "community": 10,
       "norm_label": ".aggregatedsummarysection()",
       "id": "import_importview_importview_aggregatedsummarysection"
     },
@@ -3099,7 +3117,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L310",
-      "community": 12,
+      "community": 10,
       "norm_label": ".aggregatedtransactionlistsection()",
       "id": "import_importview_importview_aggregatedtransactionlistsection"
     },
@@ -3108,7 +3126,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L398",
-      "community": 12,
+      "community": 10,
       "norm_label": ".formatdate()",
       "id": "import_importview_importview_formatdate"
     },
@@ -3117,7 +3135,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L404",
-      "community": 12,
+      "community": 10,
       "norm_label": ".formatamount()",
       "id": "import_importview_importview_formatamount"
     },
@@ -3126,7 +3144,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L424",
-      "community": 3,
+      "community": 25,
       "norm_label": "mocktransactionrepository",
       "id": "import_importview_mocktransactionrepository"
     },
@@ -3135,7 +3153,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L425",
-      "community": 3,
+      "community": 25,
       "norm_label": ".fetchtransactionsforaccount()",
       "id": "import_importview_mocktransactionrepository_fetchtransactionsforaccount"
     },
@@ -3144,7 +3162,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L429",
-      "community": 3,
+      "community": 25,
       "norm_label": ".fetchtransactionsforcard()",
       "id": "import_importview_mocktransactionrepository_fetchtransactionsforcard"
     },
@@ -3153,7 +3171,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L433",
-      "community": 3,
+      "community": 25,
       "norm_label": ".fetchtransactions()",
       "id": "import_importview_mocktransactionrepository_fetchtransactions"
     },
@@ -3162,7 +3180,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L437",
-      "community": 3,
+      "community": 25,
       "norm_label": ".inserttransactions()",
       "id": "import_importview_mocktransactionrepository_inserttransactions"
     },
@@ -3171,7 +3189,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L440",
-      "community": 12,
+      "community": 10,
       "norm_label": "mockaccountrepository",
       "id": "import_importview_mockaccountrepository"
     },
@@ -3180,7 +3198,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L441",
-      "community": 12,
+      "community": 10,
       "norm_label": ".fetchaccounts()",
       "id": "import_importview_mockaccountrepository_fetchaccounts"
     },
@@ -3189,7 +3207,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L446",
-      "community": 4,
+      "community": 24,
       "norm_label": "mockcardrepository",
       "id": "import_importview_mockcardrepository"
     },
@@ -3198,7 +3216,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L447",
-      "community": 4,
+      "community": 24,
       "norm_label": ".fetchcards()",
       "id": "import_importview_mockcardrepository_fetchcards"
     },
@@ -3207,7 +3225,7 @@
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L1",
-      "community": 16,
+      "community": 14,
       "norm_label": "importviewmodel.swift",
       "id": "importviewmodel_swift"
     },
@@ -3216,7 +3234,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L181",
-      "community": 12,
+      "community": 10,
       "norm_label": ".statementheadersection()",
       "id": "import_importview_importview_statementheadersection"
     },
@@ -3225,7 +3243,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L209",
-      "community": 12,
+      "community": 10,
       "norm_label": ".summarysection()",
       "id": "import_importview_importview_summarysection"
     },
@@ -3234,7 +3252,7 @@
       "file_type": "code",
       "source_file": "ImportView.swift",
       "source_location": "L302",
-      "community": 12,
+      "community": 10,
       "norm_label": ".transactionlistsection()",
       "id": "import_importview_importview_transactionlistsection"
     },
@@ -3243,7 +3261,7 @@
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L38",
-      "community": 16,
+      "community": 14,
       "norm_label": ".setfileurl()",
       "id": "import_importviewmodel_importviewmodel_setfileurl"
     },
@@ -3252,7 +3270,7 @@
       "file_type": "code",
       "source_file": "ImportViewModel.swift",
       "source_location": "L43",
-      "community": 16,
+      "community": 14,
       "norm_label": ".parsefile()",
       "id": "import_importviewmodel_importviewmodel_parsefile"
     },
@@ -3261,7 +3279,7 @@
       "file_type": "code",
       "source_file": "StatementMetadata.swift",
       "source_location": "L1",
-      "community": 27,
+      "community": 33,
       "norm_label": "statementmetadata.swift",
       "id": "statementmetadata_swift"
     },
@@ -3270,7 +3288,7 @@
       "file_type": "code",
       "source_file": "StatementMetadata.swift",
       "source_location": "L4",
-      "community": 27,
+      "community": 33,
       "norm_label": "statementmetadata",
       "id": "import_statementmetadata_statementmetadata"
     },
@@ -3279,7 +3297,7 @@
       "file_type": "code",
       "source_file": "StatementMetadata.swift",
       "source_location": "L11",
-      "community": 27,
+      "community": 33,
       "norm_label": ".init()",
       "id": "import_statementmetadata_statementmetadata_init"
     },
@@ -3288,7 +3306,7 @@
       "file_type": "code",
       "source_file": "TransactionsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "transactionsview.swift",
       "id": "transactionsview_swift"
     },
@@ -3306,7 +3324,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L1",
-      "community": 13,
+      "community": 11,
       "norm_label": "agents.md",
       "id": "agents_md"
     },
@@ -3315,7 +3333,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L1",
-      "community": 13,
+      "community": 11,
       "norm_label": "financeos architecture rules",
       "id": "financeos_agents_financeos_architecture_rules"
     },
@@ -3324,7 +3342,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L3",
-      "community": 13,
+      "community": 11,
       "norm_label": "stack",
       "id": "financeos_agents_stack"
     },
@@ -3333,7 +3351,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L13",
-      "community": 13,
+      "community": 11,
       "norm_label": "architecture",
       "id": "financeos_agents_architecture"
     },
@@ -3342,7 +3360,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L23",
-      "community": 13,
+      "community": 11,
       "norm_label": "core rules",
       "id": "financeos_agents_core_rules"
     },
@@ -3351,7 +3369,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L36",
-      "community": 13,
+      "community": 11,
       "norm_label": "naming conventions",
       "id": "financeos_agents_naming_conventions"
     },
@@ -3360,7 +3378,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L38",
-      "community": 13,
+      "community": 11,
       "norm_label": "protocols",
       "id": "financeos_agents_protocols"
     },
@@ -3369,7 +3387,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L44",
-      "community": 13,
+      "community": 11,
       "norm_label": "concrete implementations",
       "id": "financeos_agents_concrete_implementations"
     },
@@ -3378,7 +3396,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L50",
-      "community": 13,
+      "community": 11,
       "norm_label": "database handle",
       "id": "financeos_agents_database_handle"
     },
@@ -3387,7 +3405,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L54",
-      "community": 13,
+      "community": 11,
       "norm_label": "composition root",
       "id": "financeos_agents_composition_root"
     },
@@ -3396,7 +3414,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L60",
-      "community": 13,
+      "community": 11,
       "norm_label": "project goals",
       "id": "financeos_agents_project_goals"
     },
@@ -3405,7 +3423,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L79",
-      "community": 13,
+      "community": 11,
       "norm_label": "parsing strategy",
       "id": "financeos_agents_parsing_strategy"
     },
@@ -3414,7 +3432,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L81",
-      "community": 13,
+      "community": 11,
       "norm_label": "csv",
       "id": "financeos_agents_csv"
     },
@@ -3423,7 +3441,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L85",
-      "community": 13,
+      "community": 11,
       "norm_label": "xlsx",
       "id": "financeos_agents_xlsx"
     },
@@ -3432,7 +3450,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L89",
-      "community": 13,
+      "community": 11,
       "norm_label": "pdf",
       "id": "financeos_agents_pdf"
     },
@@ -3441,7 +3459,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L104",
-      "community": 13,
+      "community": 11,
       "norm_label": "current modules",
       "id": "financeos_agents_current_modules"
     },
@@ -3450,7 +3468,7 @@
       "file_type": "document",
       "source_file": "AGENTS.md",
       "source_location": "L114",
-      "community": 13,
+      "community": 11,
       "norm_label": "near-term targets",
       "id": "financeos_agents_near_term_targets"
     },
@@ -3459,7 +3477,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L1",
-      "community": 17,
+      "community": 15,
       "norm_label": "architecture.md",
       "id": "architecture_md"
     },
@@ -3468,7 +3486,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L1",
-      "community": 17,
+      "community": 15,
       "norm_label": "financeos current architecture",
       "id": "financeos_architecture_financeos_current_architecture"
     },
@@ -3477,7 +3495,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L3",
-      "community": 17,
+      "community": 15,
       "norm_label": "repo structure",
       "id": "financeos_architecture_repo_structure"
     },
@@ -3486,7 +3504,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L10",
-      "community": 17,
+      "community": 15,
       "norm_label": "financecore modules",
       "id": "financeos_architecture_financecore_modules"
     },
@@ -3495,7 +3513,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L20",
-      "community": 17,
+      "community": 15,
       "norm_label": "database",
       "id": "financeos_architecture_database"
     },
@@ -3504,7 +3522,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L30",
-      "community": 17,
+      "community": 15,
       "norm_label": "current repositories",
       "id": "financeos_architecture_current_repositories"
     },
@@ -3513,7 +3531,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L37",
-      "community": 17,
+      "community": 15,
       "norm_label": "dependency composition",
       "id": "financeos_architecture_dependency_composition"
     },
@@ -3522,7 +3540,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L45",
-      "community": 17,
+      "community": 15,
       "norm_label": "current ui flow",
       "id": "financeos_architecture_current_ui_flow"
     },
@@ -3531,7 +3549,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L55",
-      "community": 17,
+      "community": 15,
       "norm_label": "current completed features",
       "id": "financeos_architecture_current_completed_features"
     },
@@ -3540,7 +3558,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L66",
-      "community": 17,
+      "community": 15,
       "norm_label": "current naming",
       "id": "financeos_architecture_current_naming"
     },
@@ -3549,7 +3567,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L74",
-      "community": 17,
+      "community": 15,
       "norm_label": "planned package evolution",
       "id": "financeos_architecture_planned_package_evolution"
     },
@@ -3558,7 +3576,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L88",
-      "community": 17,
+      "community": 15,
       "norm_label": "next steps",
       "id": "financeos_architecture_next_steps"
     },
@@ -3567,7 +3585,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L100",
-      "community": 17,
+      "community": 15,
       "norm_label": "current architectural constraints",
       "id": "financeos_architecture_current_architectural_constraints"
     },
@@ -3576,7 +3594,7 @@
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L110",
-      "community": 17,
+      "community": 15,
       "norm_label": "current risks",
       "id": "financeos_architecture_current_risks"
     },
@@ -3585,7 +3603,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountTransactionsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "accounttransactionsview.swift",
       "id": "accounts_accounttransactionsview_swift"
     },
@@ -3603,7 +3621,7 @@
       "file_type": "code",
       "source_file": "Accounts/AccountsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "accountsview.swift",
       "id": "accounts_accountsview_swift"
     },
@@ -3612,7 +3630,7 @@
       "file_type": "code",
       "source_file": "Cards/CardTransactionsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "cardtransactionsview.swift",
       "id": "cards_cardtransactionsview_swift"
     },
@@ -3630,7 +3648,7 @@
       "file_type": "code",
       "source_file": "Cards/CardsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "cardsview.swift",
       "id": "cards_cardsview_swift"
     },
@@ -3639,7 +3657,7 @@
       "file_type": "code",
       "source_file": "Cards/CardsViewModel.swift",
       "source_location": "L1",
-      "community": 21,
+      "community": 26,
       "norm_label": "cardsviewmodel.swift",
       "id": "cards_cardsviewmodel_swift"
     },
@@ -3648,7 +3666,7 @@
       "file_type": "code",
       "source_file": "Cards/CardsViewModel.swift",
       "source_location": "L12",
-      "community": 21,
+      "community": 26,
       "norm_label": "cardsviewmodel",
       "id": "cards_cardsviewmodel_cardsviewmodel"
     },
@@ -3657,7 +3675,7 @@
       "file_type": "code",
       "source_file": "Cards/CardsViewModel.swift",
       "source_location": "L14",
-      "community": 21,
+      "community": 26,
       "norm_label": "cardrow",
       "id": "cards_cardsviewmodel_cardrow"
     },
@@ -3666,7 +3684,7 @@
       "file_type": "code",
       "source_file": "Cards/CardsViewModel.swift",
       "source_location": "L38",
-      "community": 21,
+      "community": 26,
       "norm_label": ".init()",
       "id": "cards_cardsviewmodel_cardsviewmodel_init"
     },
@@ -3675,7 +3693,7 @@
       "file_type": "code",
       "source_file": "Cards/CardsViewModel.swift",
       "source_location": "L48",
-      "community": 21,
+      "community": 26,
       "norm_label": ".loadcards()",
       "id": "cards_cardsviewmodel_cardsviewmodel_loadcards"
     },
@@ -3684,7 +3702,7 @@
       "file_type": "code",
       "source_file": "Cards/CardsViewModel.swift",
       "source_location": "L74",
-      "community": 21,
+      "community": 26,
       "norm_label": ".makecardrows()",
       "id": "cards_cardsviewmodel_cardsviewmodel_makecardrows"
     },
@@ -3693,7 +3711,7 @@
       "file_type": "code",
       "source_file": "Package.swift",
       "source_location": "L1",
-      "community": 35,
+      "community": 41,
       "norm_label": "package.swift",
       "id": "package_swift"
     },
@@ -3702,7 +3720,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/CSVStatementParser.swift",
       "source_location": "L1",
-      "community": 7,
+      "community": 5,
       "norm_label": "csvstatementparser.swift",
       "id": "sources_financecore_importing_csvstatementparser_swift"
     },
@@ -3711,7 +3729,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/DefaultTransactionImporter.swift",
       "source_location": "L1",
-      "community": 3,
+      "community": 17,
       "norm_label": "defaulttransactionimporter.swift",
       "id": "sources_financecore_importing_defaulttransactionimporter_swift"
     },
@@ -3720,7 +3738,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/ParsedStatement.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "parsedstatement.swift",
       "id": "sources_financecore_importing_parsedstatement_swift"
     },
@@ -3729,7 +3747,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/ParsedStatement.swift",
       "source_location": "L3",
-      "community": 0,
+      "community": 1,
       "norm_label": "parsedstatement",
       "id": "importing_parsedstatement_parsedstatement"
     },
@@ -3738,7 +3756,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/ParsedStatement.swift",
       "source_location": "L14",
-      "community": 0,
+      "community": 1,
       "norm_label": ".init()",
       "id": "importing_parsedstatement_parsedstatement_init"
     },
@@ -3747,7 +3765,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/ParsedTransaction.swift",
       "source_location": "L1",
-      "community": 9,
+      "community": 7,
       "norm_label": "parsedtransaction.swift",
       "id": "sources_financecore_importing_parsedtransaction_swift"
     },
@@ -3756,7 +3774,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/ParsedTransaction.swift",
       "source_location": "L10",
-      "community": 9,
+      "community": 7,
       "norm_label": "parsedtransaction",
       "id": "importing_parsedtransaction_parsedtransaction"
     },
@@ -3765,7 +3783,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 9,
+      "community": 7,
       "norm_label": "equatable",
       "id": "equatable"
     },
@@ -3774,7 +3792,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/ParsedTransaction.swift",
       "source_location": "L21",
-      "community": 9,
+      "community": 7,
       "norm_label": ".init()",
       "id": "importing_parsedtransaction_parsedtransaction_init"
     },
@@ -3783,7 +3801,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/StatementParser.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "statementparser.swift",
       "id": "sources_financecore_importing_statementparser_swift"
     },
@@ -3792,7 +3810,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/StatementParser.swift",
       "source_location": "L10",
-      "community": 0,
+      "community": 1,
       "norm_label": "statementparser",
       "id": "importing_statementparser_statementparser"
     },
@@ -3801,7 +3819,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TabularTransactionDecoder.swift",
       "source_location": "L1",
-      "community": 9,
+      "community": 7,
       "norm_label": "tabulartransactiondecoder.swift",
       "id": "sources_financecore_importing_tabulartransactiondecoder_swift"
     },
@@ -3810,7 +3828,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TabularTransactionDecoder.swift",
       "source_location": "L50",
-      "community": 9,
+      "community": 7,
       "norm_label": ".decoderows()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_decoderows"
     },
@@ -3819,7 +3837,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TabularTransactionDecoder.swift",
       "source_location": "L312",
-      "community": 9,
+      "community": 7,
       "norm_label": ".extractvalue()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_extractvalue"
     },
@@ -3828,7 +3846,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TabularTransactionDecoder.swift",
       "source_location": "L317",
-      "community": 9,
+      "community": 7,
       "norm_label": ".extractcardlast4()",
       "id": "importing_tabulartransactiondecoder_tabulartransactiondecoder_extractcardlast4"
     },
@@ -3837,7 +3855,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportError.swift",
       "source_location": "L1",
-      "community": 19,
+      "community": 18,
       "norm_label": "transactionimporterror.swift",
       "id": "sources_financecore_importing_transactionimporterror_swift"
     },
@@ -3846,7 +3864,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L1",
-      "community": 14,
+      "community": 12,
       "norm_label": "transactionimporttarget.swift",
       "id": "sources_financecore_importing_transactionimporttarget_swift"
     },
@@ -3855,7 +3873,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L10",
-      "community": 14,
+      "community": 12,
       "norm_label": "transactionimporttarget",
       "id": "importing_transactionimporttarget_transactionimporttarget"
     },
@@ -3864,7 +3882,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L15",
-      "community": 14,
+      "community": 12,
       "norm_label": "account",
       "id": "importing_transactionimporttarget_transactionimporttarget_account"
     },
@@ -3873,7 +3891,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImportTarget.swift",
       "source_location": "L16",
-      "community": 14,
+      "community": 12,
       "norm_label": "card",
       "id": "importing_transactionimporttarget_transactionimporttarget_card"
     },
@@ -3882,7 +3900,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImporting.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "transactionimporting.swift",
       "id": "sources_financecore_importing_transactionimporting_swift"
     },
@@ -3891,7 +3909,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/TransactionImporting.swift",
       "source_location": "L10",
-      "community": 0,
+      "community": 1,
       "norm_label": "transactionimporting",
       "id": "importing_transactionimporting_transactionimporting"
     },
@@ -3900,7 +3918,7 @@
       "file_type": "code",
       "source_file": "Sources/FinanceCore/Importing/XLSXStatementParser.swift",
       "source_location": "L1",
-      "community": 7,
+      "community": 5,
       "norm_label": "xlsxstatementparser.swift",
       "id": "sources_financecore_importing_xlsxstatementparser_swift"
     },
@@ -3909,7 +3927,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L1",
-      "community": 1,
+      "community": 0,
       "norm_label": "transaction.swift",
       "id": "models_transaction_swift"
     },
@@ -3918,7 +3936,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L11",
-      "community": 1,
+      "community": 0,
       "norm_label": "transactiontype",
       "id": "models_transaction_transactiontype"
     },
@@ -3927,7 +3945,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 1,
+      "community": 0,
       "norm_label": "codable",
       "id": "codable"
     },
@@ -3936,7 +3954,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L12",
-      "community": 1,
+      "community": 0,
       "norm_label": "debit",
       "id": "models_transaction_transactiontype_debit"
     },
@@ -3945,7 +3963,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L13",
-      "community": 1,
+      "community": 0,
       "norm_label": "credit",
       "id": "models_transaction_transactiontype_credit"
     },
@@ -3954,7 +3972,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L16",
-      "community": 1,
+      "community": 0,
       "norm_label": "transaction",
       "id": "models_transaction_transaction"
     },
@@ -3963,7 +3981,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 1,
+      "community": 0,
       "norm_label": "fetchablerecord",
       "id": "fetchablerecord"
     },
@@ -3972,7 +3990,7 @@
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "community": 1,
+      "community": 0,
       "norm_label": "persistablerecord",
       "id": "persistablerecord"
     },
@@ -3981,7 +3999,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L33",
-      "community": 1,
+      "community": 0,
       "norm_label": ".init()",
       "id": "models_transaction_transaction_init"
     },
@@ -3990,7 +4008,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L57",
-      "community": 1,
+      "community": 0,
       "norm_label": "columns",
       "id": "models_transaction_columns"
     },
@@ -3999,7 +4017,7 @@
       "file_type": "code",
       "source_file": "Models/Transaction.swift",
       "source_location": "L73",
-      "community": 1,
+      "community": 0,
       "norm_label": ".createtable()",
       "id": "models_transaction_transaction_createtable"
     },
@@ -4008,7 +4026,7 @@
       "file_type": "code",
       "source_file": "Repositories/GRDBTransactionRepository.swift",
       "source_location": "L1",
-      "community": 3,
+      "community": 21,
       "norm_label": "grdbtransactionrepository.swift",
       "id": "repositories_grdbtransactionrepository_swift"
     },
@@ -4017,7 +4035,7 @@
       "file_type": "code",
       "source_file": "Repositories/TransactionRepository.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "transactionrepository.swift",
       "id": "repositories_transactionrepository_swift"
     },
@@ -4026,7 +4044,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/TransactionsDomainTests.swift",
       "source_location": "L1",
-      "community": 28,
+      "community": 34,
       "norm_label": "transactionsdomaintests.swift",
       "id": "packages_financecore_tests_financecoretests_transactionsdomaintests_swift"
     },
@@ -4035,7 +4053,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/TransactionsDomainTests.swift",
       "source_location": "L5",
-      "community": 28,
+      "community": 34,
       "norm_label": "migrationandseedingcreatetransactions()",
       "id": "financecoretests_transactionsdomaintests_migrationandseedingcreatetransactions"
     },
@@ -4044,7 +4062,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/TransactionsDomainTests.swift",
       "source_location": "L43",
-      "community": 28,
+      "community": 34,
       "norm_label": "transactionseedingisidempotent()",
       "id": "financecoretests_transactionsdomaintests_transactionseedingisidempotent"
     },
@@ -4053,7 +4071,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/FinanceCoreTests.swift",
       "source_location": "L1",
-      "community": 30,
+      "community": 36,
       "norm_label": "financecoretests.swift",
       "id": "packages_financecore_tests_financecoretests_financecoretests_swift"
     },
@@ -4062,7 +4080,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/FinanceCoreTests.swift",
       "source_location": "L4",
-      "community": 30,
+      "community": 36,
       "norm_label": "example()",
       "id": "financecoretests_financecoretests_example"
     },
@@ -4071,7 +4089,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/AccountsDomainTests.swift",
       "source_location": "L1",
-      "community": 29,
+      "community": 35,
       "norm_label": "accountsdomaintests.swift",
       "id": "packages_financecore_tests_financecoretests_accountsdomaintests_swift"
     },
@@ -4080,7 +4098,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/AccountsDomainTests.swift",
       "source_location": "L5",
-      "community": 29,
+      "community": 35,
       "norm_label": "migrationandseedingcreatelinkedaccountsandcards()",
       "id": "financecoretests_accountsdomaintests_migrationandseedingcreatelinkedaccountsandcards"
     },
@@ -4089,7 +4107,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Tests/FinanceCoreTests/AccountsDomainTests.swift",
       "source_location": "L101",
-      "community": 29,
+      "community": 35,
       "norm_label": "accountandcardseedingisidempotent()",
       "id": "financecoretests_accountsdomaintests_accountandcardseedingisidempotent"
     },
@@ -4098,7 +4116,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/FinanceCore.swift",
       "source_location": "L1",
-      "community": 36,
+      "community": 42,
       "norm_label": "financecore.swift",
       "id": "packages_financecore_sources_financecore_financecore_swift"
     },
@@ -4107,7 +4125,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/TestValue.swift",
       "source_location": "L1",
-      "community": 31,
+      "community": 37,
       "norm_label": "testvalue.swift",
       "id": "packages_financecore_sources_financecore_testvalue_swift"
     },
@@ -4116,7 +4134,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/TestValue.swift",
       "source_location": "L8",
-      "community": 31,
+      "community": 37,
       "norm_label": "testvalue",
       "id": "financecore_testvalue_testvalue"
     },
@@ -4125,7 +4143,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/DatabaseManager.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "databasemanager.swift",
       "id": "packages_financecore_sources_financecore_database_databasemanager_swift"
     },
@@ -4134,7 +4152,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/DatabaseManager.swift",
       "source_location": "L11",
-      "community": 0,
+      "community": 1,
       "norm_label": "databasemanager",
       "id": "database_databasemanager_databasemanager"
     },
@@ -4143,7 +4161,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/DatabaseManager.swift",
       "source_location": "L22",
-      "community": 0,
+      "community": 1,
       "norm_label": ".init()",
       "id": "database_databasemanager_databasemanager_init"
     },
@@ -4152,7 +4170,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/DatabaseManager.swift",
       "source_location": "L40",
-      "community": 0,
+      "community": 1,
       "norm_label": ".makedatabaseurl()",
       "id": "database_databasemanager_databasemanager_makedatabaseurl"
     },
@@ -4161,7 +4179,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/DatabaseManager.swift",
       "source_location": "L77",
-      "community": 0,
+      "community": 1,
       "norm_label": ".seeddatabase()",
       "id": "database_databasemanager_databasemanager_seeddatabase"
     },
@@ -4170,7 +4188,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/Seed/DatabaseSeeder.swift",
       "source_location": "L1",
-      "community": 1,
+      "community": 0,
       "norm_label": "databaseseeder.swift",
       "id": "packages_financecore_sources_financecore_database_seed_databaseseeder_swift"
     },
@@ -4179,7 +4197,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/Seed/DatabaseSeeder.swift",
       "source_location": "L11",
-      "community": 1,
+      "community": 0,
       "norm_label": "databaseseeder",
       "id": "seed_databaseseeder_databaseseeder"
     },
@@ -4188,7 +4206,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/Seed/DatabaseSeeder.swift",
       "source_location": "L38",
-      "community": 1,
+      "community": 0,
       "norm_label": ".seedinstitutions()",
       "id": "seed_databaseseeder_databaseseeder_seedinstitutions"
     },
@@ -4197,7 +4215,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/Seed/DatabaseSeeder.swift",
       "source_location": "L64",
-      "community": 1,
+      "community": 0,
       "norm_label": ".seedaccounts()",
       "id": "seed_databaseseeder_databaseseeder_seedaccounts"
     },
@@ -4206,7 +4224,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/Seed/DatabaseSeeder.swift",
       "source_location": "L101",
-      "community": 1,
+      "community": 0,
       "norm_label": ".seedcards()",
       "id": "seed_databaseseeder_databaseseeder_seedcards"
     },
@@ -4215,7 +4233,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Database/Seed/DatabaseSeeder.swift",
       "source_location": "L155",
-      "community": 1,
+      "community": 0,
       "norm_label": ".seedtransactions()",
       "id": "seed_databaseseeder_databaseseeder_seedtransactions"
     },
@@ -4224,7 +4242,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBAccountRepository.swift",
       "source_location": "L1",
-      "community": 4,
+      "community": 20,
       "norm_label": "grdbaccountrepository.swift",
       "id": "packages_financecore_sources_financecore_repositories_grdbaccountrepository_swift"
     },
@@ -4233,7 +4251,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBAccountRepository.swift",
       "source_location": "L11",
-      "community": 4,
+      "community": 20,
       "norm_label": "grdbaccountrepository",
       "id": "repositories_grdbaccountrepository_grdbaccountrepository"
     },
@@ -4242,7 +4260,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBAccountRepository.swift",
       "source_location": "L17",
-      "community": 4,
+      "community": 20,
       "norm_label": ".init()",
       "id": "repositories_grdbaccountrepository_grdbaccountrepository_init"
     },
@@ -4251,7 +4269,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBAccountRepository.swift",
       "source_location": "L23",
-      "community": 4,
+      "community": 20,
       "norm_label": ".fetchaccounts()",
       "id": "repositories_grdbaccountrepository_grdbaccountrepository_fetchaccounts"
     },
@@ -4260,7 +4278,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/CardRepository.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "cardrepository.swift",
       "id": "packages_financecore_sources_financecore_repositories_cardrepository_swift"
     },
@@ -4269,7 +4287,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/CardRepository.swift",
       "source_location": "L10",
-      "community": 0,
+      "community": 1,
       "norm_label": "cardrepository",
       "id": "repositories_cardrepository_cardrepository"
     },
@@ -4278,7 +4296,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/AccountRepository.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "accountrepository.swift",
       "id": "packages_financecore_sources_financecore_repositories_accountrepository_swift"
     },
@@ -4287,7 +4305,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/AccountRepository.swift",
       "source_location": "L10",
-      "community": 0,
+      "community": 1,
       "norm_label": "accountrepository",
       "id": "repositories_accountrepository_accountrepository"
     },
@@ -4296,7 +4314,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/InstitutionRepository.swift",
       "source_location": "L1",
-      "community": 0,
+      "community": 1,
       "norm_label": "institutionrepository.swift",
       "id": "packages_financecore_sources_financecore_repositories_institutionrepository_swift"
     },
@@ -4305,7 +4323,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/InstitutionRepository.swift",
       "source_location": "L10",
-      "community": 0,
+      "community": 1,
       "norm_label": "institutionrepository",
       "id": "repositories_institutionrepository_institutionrepository"
     },
@@ -4314,7 +4332,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBCardRepository.swift",
       "source_location": "L1",
-      "community": 4,
+      "community": 22,
       "norm_label": "grdbcardrepository.swift",
       "id": "packages_financecore_sources_financecore_repositories_grdbcardrepository_swift"
     },
@@ -4323,7 +4341,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBCardRepository.swift",
       "source_location": "L11",
-      "community": 4,
+      "community": 22,
       "norm_label": "grdbcardrepository",
       "id": "repositories_grdbcardrepository_grdbcardrepository"
     },
@@ -4332,7 +4350,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBCardRepository.swift",
       "source_location": "L17",
-      "community": 4,
+      "community": 22,
       "norm_label": ".init()",
       "id": "repositories_grdbcardrepository_grdbcardrepository_init"
     },
@@ -4341,7 +4359,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBCardRepository.swift",
       "source_location": "L23",
-      "community": 4,
+      "community": 22,
       "norm_label": ".fetchcards()",
       "id": "repositories_grdbcardrepository_grdbcardrepository_fetchcards"
     },
@@ -4350,7 +4368,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBInstitutionRepository.swift",
       "source_location": "L1",
-      "community": 4,
+      "community": 23,
       "norm_label": "grdbinstitutionrepository.swift",
       "id": "packages_financecore_sources_financecore_repositories_grdbinstitutionrepository_swift"
     },
@@ -4359,7 +4377,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBInstitutionRepository.swift",
       "source_location": "L11",
-      "community": 4,
+      "community": 23,
       "norm_label": "grdbinstitutionrepository",
       "id": "repositories_grdbinstitutionrepository_grdbinstitutionrepository"
     },
@@ -4368,7 +4386,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBInstitutionRepository.swift",
       "source_location": "L17",
-      "community": 4,
+      "community": 23,
       "norm_label": ".init()",
       "id": "repositories_grdbinstitutionrepository_grdbinstitutionrepository_init"
     },
@@ -4377,7 +4395,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBInstitutionRepository.swift",
       "source_location": "L23",
-      "community": 4,
+      "community": 23,
       "norm_label": ".fetchinstitutions()",
       "id": "repositories_grdbinstitutionrepository_grdbinstitutionrepository_fetchinstitutions"
     },
@@ -4386,7 +4404,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Card.swift",
       "source_location": "L1",
-      "community": 1,
+      "community": 0,
       "norm_label": "card.swift",
       "id": "packages_financecore_sources_financecore_models_card_swift"
     },
@@ -4395,7 +4413,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Card.swift",
       "source_location": "L11",
-      "community": 1,
+      "community": 0,
       "norm_label": "card",
       "id": "models_card_card"
     },
@@ -4404,7 +4422,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Card.swift",
       "source_location": "L26",
-      "community": 1,
+      "community": 0,
       "norm_label": ".init()",
       "id": "models_card_card_init"
     },
@@ -4413,7 +4431,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Card.swift",
       "source_location": "L40",
-      "community": 1,
+      "community": 0,
       "norm_label": "columns",
       "id": "models_card_columns"
     },
@@ -4422,7 +4440,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Card.swift",
       "source_location": "L51",
-      "community": 1,
+      "community": 0,
       "norm_label": ".createtable()",
       "id": "models_card_card_createtable"
     },
@@ -4431,7 +4449,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Institution.swift",
       "source_location": "L1",
-      "community": 1,
+      "community": 0,
       "norm_label": "institution.swift",
       "id": "packages_financecore_sources_financecore_models_institution_swift"
     },
@@ -4440,7 +4458,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Institution.swift",
       "source_location": "L11",
-      "community": 1,
+      "community": 0,
       "norm_label": "institution",
       "id": "models_institution_institution"
     },
@@ -4449,7 +4467,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Institution.swift",
       "source_location": "L22",
-      "community": 1,
+      "community": 0,
       "norm_label": ".init()",
       "id": "models_institution_institution_init"
     },
@@ -4458,7 +4476,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Institution.swift",
       "source_location": "L32",
-      "community": 1,
+      "community": 0,
       "norm_label": "columns",
       "id": "models_institution_columns"
     },
@@ -4467,7 +4485,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Institution.swift",
       "source_location": "L41",
-      "community": 1,
+      "community": 0,
       "norm_label": ".createtable()",
       "id": "models_institution_institution_createtable"
     },
@@ -4476,7 +4494,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Account.swift",
       "source_location": "L1",
-      "community": 1,
+      "community": 0,
       "norm_label": "account.swift",
       "id": "packages_financecore_sources_financecore_models_account_swift"
     },
@@ -4485,7 +4503,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Account.swift",
       "source_location": "L11",
-      "community": 1,
+      "community": 0,
       "norm_label": "account",
       "id": "models_account_account"
     },
@@ -4494,7 +4512,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Account.swift",
       "source_location": "L24",
-      "community": 1,
+      "community": 0,
       "norm_label": ".init()",
       "id": "models_account_account_init"
     },
@@ -4503,7 +4521,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Account.swift",
       "source_location": "L36",
-      "community": 1,
+      "community": 0,
       "norm_label": "columns",
       "id": "models_account_columns"
     },
@@ -4512,7 +4530,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Models/Account.swift",
       "source_location": "L46",
-      "community": 1,
+      "community": 0,
       "norm_label": ".createtable()",
       "id": "models_account_account_createtable"
     },
@@ -4521,7 +4539,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Logging/FinanceLogger.swift",
       "source_location": "L1",
-      "community": 32,
+      "community": 38,
       "norm_label": "financelogger.swift",
       "id": "packages_financecore_sources_financecore_logging_financelogger_swift"
     },
@@ -4530,7 +4548,7 @@
       "file_type": "code",
       "source_file": "Packages/FinanceCore/Sources/FinanceCore/Logging/FinanceLogger.swift",
       "source_location": "L10",
-      "community": 32,
+      "community": 38,
       "norm_label": "financelogger",
       "id": "logging_financelogger_financelogger"
     },
@@ -4539,7 +4557,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsView.swift",
       "source_location": "L1",
-      "community": 6,
+      "community": 4,
       "norm_label": "institutionsview.swift",
       "id": "apps_financeosmac_financeosmac_presentation_institutions_institutionsview_swift"
     },
@@ -4548,7 +4566,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsView.swift",
       "source_location": "L11",
-      "community": 6,
+      "community": 4,
       "norm_label": "institutionsview",
       "id": "institutions_institutionsview_institutionsview"
     },
@@ -4557,7 +4575,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsView.swift",
       "source_location": "L14",
-      "community": 6,
+      "community": 4,
       "norm_label": ".init()",
       "id": "institutions_institutionsview_institutionsview_init"
     },
@@ -4566,7 +4584,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsViewModel.swift",
       "source_location": "L1",
-      "community": 25,
+      "community": 31,
       "norm_label": "institutionsviewmodel.swift",
       "id": "apps_financeosmac_financeosmac_presentation_institutions_institutionsviewmodel_swift"
     },
@@ -4575,7 +4593,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsViewModel.swift",
       "source_location": "L12",
-      "community": 25,
+      "community": 31,
       "norm_label": "institutionsviewmodel",
       "id": "institutions_institutionsviewmodel_institutionsviewmodel"
     },
@@ -4584,7 +4602,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsViewModel.swift",
       "source_location": "L20",
-      "community": 25,
+      "community": 31,
       "norm_label": ".init()",
       "id": "institutions_institutionsviewmodel_institutionsviewmodel_init"
     },
@@ -4593,7 +4611,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsViewModel.swift",
       "source_location": "L26",
-      "community": 25,
+      "community": 31,
       "norm_label": ".loadinstitutions()",
       "id": "institutions_institutionsviewmodel_institutionsviewmodel_loadinstitutions"
     },
@@ -4602,7 +4620,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsViewModel.swift",
       "source_location": "L1",
-      "community": 26,
+      "community": 32,
       "norm_label": "accountsviewmodel.swift",
       "id": "apps_financeosmac_financeosmac_presentation_accounts_accountsviewmodel_swift"
     },
@@ -4611,7 +4629,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsViewModel.swift",
       "source_location": "L12",
-      "community": 26,
+      "community": 32,
       "norm_label": "accountsviewmodel",
       "id": "accounts_accountsviewmodel_accountsviewmodel"
     },
@@ -4620,7 +4638,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsViewModel.swift",
       "source_location": "L20",
-      "community": 26,
+      "community": 32,
       "norm_label": ".init()",
       "id": "accounts_accountsviewmodel_accountsviewmodel_init"
     },
@@ -4629,7 +4647,7 @@
       "file_type": "code",
       "source_file": "Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsViewModel.swift",
       "source_location": "L26",
-      "community": 26,
+      "community": 32,
       "norm_label": ".loadaccounts()",
       "id": "accounts_accountsviewmodel_accountsviewmodel_loadaccounts"
     },
@@ -4642,7 +4660,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 33,
+      "community": 39,
       "norm_label": "financecore example test",
       "id": "test_financecore_example"
     },
@@ -4655,7 +4673,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 33,
+      "community": 39,
       "norm_label": "financecore module marker",
       "id": "financecore_module_marker"
     },
@@ -4668,7 +4686,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 37,
+      "community": 43,
       "norm_label": "testvalue message",
       "id": "testvalue_message"
     },
@@ -4681,7 +4699,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "databasemanager shared lifecycle",
       "id": "databasemanager_shared"
     },
@@ -4694,7 +4712,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "databasemanager makedatabaseurl",
       "id": "databasemanager_make_database_url"
     },
@@ -4707,7 +4725,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "databasemanager migrator",
       "id": "databasemanager_migrator"
     },
@@ -4720,7 +4738,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "databasemanager seeddatabase",
       "id": "databasemanager_seed_database"
     },
@@ -4733,7 +4751,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "databaseseeder seedinstitutions",
       "id": "databaseseeder_seedinstitutions"
     },
@@ -4746,7 +4764,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "institutionrepository protocol",
       "id": "institutionrepository_protocol"
     },
@@ -4759,7 +4777,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "grdbinstitutionrepository",
       "id": "grdbinstitutionrepository"
     },
@@ -4772,7 +4790,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "grdbinstitutionrepository fetchinstitutions",
       "id": "grdbinstitutionrepository_fetchinstitutions"
     },
@@ -4785,7 +4803,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "institution model",
       "id": "institution_model"
     },
@@ -4798,7 +4816,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "institution createtable",
       "id": "institution_create_table"
     },
@@ -4811,7 +4829,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "institutions sqlite table",
       "id": "institution_table"
     },
@@ -4824,7 +4842,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "financelogger",
       "id": "financelogger"
     },
@@ -4837,7 +4855,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "institutionsview",
       "id": "institutions_view"
     },
@@ -4850,7 +4868,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "institutionsviewmodel",
       "id": "institutions_viewmodel"
     },
@@ -4863,7 +4881,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 15,
+      "community": 13,
       "norm_label": "institutionsviewmodel loadinstitutions",
       "id": "institutions_viewmodel_loadinstitutions"
     }
@@ -4872,12 +4890,42 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "DependencyChecker.swift",
-      "source_location": "L3",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift",
+      "source_location": "L4",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "dependencychecker_swift",
-      "target": "utilities_dependencychecker_dependencychecker"
+      "source": "apps_financeosmac_financeosmac_financeosmacapp_swift",
+      "target": "financeosmac_financeosmacapp_financeosmacapp"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeosmac_financeosmacapp_financeosmacapp",
+      "target": "app"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "FinanceOSMacApp.swift",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "financeosmacapp_swift",
+      "target": "financeosmac_financeosmacapp_financeosmacapp"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "packages_financecore_sources_financecore_utilities_dependencychecker_swift",
+      "target": "utilities_dependencychecker_dependencychecker",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -4915,8 +4963,18 @@
       "source_file": "DependencyChecker.swift",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utilities_dependencychecker_dependencychecker",
-      "target": "utilities_dependencychecker_dependencychecker_isbrewinstalled",
+      "target": "utilities_dependencychecker_dependencychecker_isbrewinstalled"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "utilities_dependencychecker_dependencychecker",
+      "target": "utilities_dependencychecker_dependencychecker_installbrew",
       "confidence_score": 1.0
     },
     {
@@ -4928,6 +4986,16 @@
       "confidence_score": 1.0,
       "source": "utilities_dependencychecker_dependencychecker",
       "target": "utilities_dependencychecker_dependencychecker_installssconvert"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "DependencyChecker.swift",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "dependencychecker_swift",
+      "target": "utilities_dependencychecker_dependencychecker"
     },
     {
       "relation": "calls",
@@ -4969,39 +5037,20 @@
       "source_file": "DependencyChecker.swift",
       "source_location": "L89",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utilities_dependencychecker_dependencychecker_installssconvert",
-      "target": "utilities_dependencychecker_dependencychecker_isbrewinstalled",
+      "target": "utilities_dependencychecker_dependencychecker_isbrewinstalled"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "utilities_dependencychecker_dependencychecker_installssconvert",
+      "target": "utilities_dependencychecker_dependencychecker_installbrew",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_financeosmac_financeosmac_financeosmacapp_swift",
-      "target": "financeosmac_financeosmacapp_financeosmacapp"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "financeosmac_financeosmacapp_financeosmacapp",
-      "target": "app"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "FinanceOSMacApp.swift",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "financeosmacapp_swift",
-      "target": "financeosmac_financeosmacapp_financeosmacapp"
     },
     {
       "relation": "contains",
@@ -11799,5 +11848,5 @@
       "source_file": "AGENTS.md"
     }
   ],
-  "built_at_commit": "a858adfda96f72501ffa56006e39387b66a5c077"
+  "built_at_commit": "3bfaa896f350cfec2d710b157f2c0a7d26ce9f08"
 }
