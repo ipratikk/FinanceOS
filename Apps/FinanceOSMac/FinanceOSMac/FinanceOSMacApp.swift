@@ -13,7 +13,8 @@ struct FinanceOSMacApp: App {
                         transactionImporter: appContainer.transactionImporter,
                         transactionImportPipeline: appContainer.transactionImportPipeline,
                         accountRepository: appContainer.accountRepository,
-                        cardRepository: appContainer.cardRepository
+                        cardRepository: appContainer.cardRepository,
+                        parserRegistry: appContainer.parserRegistry
                     )
                 )
                 .tabItem {

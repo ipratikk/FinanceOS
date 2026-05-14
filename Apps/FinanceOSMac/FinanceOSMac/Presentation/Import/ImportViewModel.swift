@@ -23,21 +23,28 @@ final class ImportViewModel {
         zip(fileURLs, parsedStatements).map { ($0, $1) }
     }
 
+    var supportedSources: [(institution: String, sourceType: StatementSourceType)] {
+        parserRegistry.supportedSources
+    }
+
     private let transactionImporter: any TransactionImporting
     private let transactionImportPipeline: TransactionImportPipeline
     private let accountRepository: any AccountRepository
     private let cardRepository: any CardRepository
+    private let parserRegistry: StatementParserRegistry
 
     init(
         transactionImporter: any TransactionImporting,
         transactionImportPipeline: TransactionImportPipeline,
         accountRepository: any AccountRepository,
-        cardRepository: any CardRepository
+        cardRepository: any CardRepository,
+        parserRegistry: StatementParserRegistry
     ) {
         self.transactionImporter = transactionImporter
         self.transactionImportPipeline = transactionImportPipeline
         self.accountRepository = accountRepository
         self.cardRepository = cardRepository
+        self.parserRegistry = parserRegistry
     }
 
     func setFileURLs(_ urls: [URL]) {

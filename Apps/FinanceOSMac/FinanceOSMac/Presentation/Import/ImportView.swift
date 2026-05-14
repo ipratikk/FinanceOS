@@ -66,6 +66,8 @@ struct ImportView: View {
                 .cornerRadius(4)
             }
 
+            supportedSourcesView
+
             targetSelectionSection
 
             if viewModel.selectedTarget != nil {
@@ -191,6 +193,38 @@ struct ImportView: View {
         }
     }
 
+    private var supportedSourcesView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Supported Statements")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.secondary)
+
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(viewModel.supportedSources, id: \.institution) { source in
+                    let status = (source.institution == "ICICI" && source.sourceType == .bankAccount) ? "" : " (coming soon)"
+                    Text("• \(source.institution) \(source.sourceType.rawValue)\(status)")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("💡 Use CSV or XLSX for best results.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text("PDF support coming soon.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding()
+        .background(Color.gray.opacity(0.05))
+        .cornerRadius(4)
+    }
+
     private var targetSelectionSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Import To")
@@ -226,6 +260,15 @@ struct ImportView: View {
 #Preview {
     let mockImporter = MockTransactionImporter()
     let mockRepository = MockTransactionRepository()
+    let mockRegistry = StatementParserRegistry(
+        parsers: [
+            ICICIBankStatementParser(),
+            ICICICardStatementParser(),
+            HDFCBankStatementParser(),
+            HDFCCardStatementParser(),
+            AmexCardStatementParser()
+        ]
+    )
     let mockPipeline = TransactionImportPipeline(
         importer: mockImporter,
         repository: mockRepository
@@ -236,7 +279,8 @@ struct ImportView: View {
             transactionImporter: mockImporter,
             transactionImportPipeline: mockPipeline,
             accountRepository: MockAccountRepository(),
-            cardRepository: MockCardRepository()
+            cardRepository: MockCardRepository(),
+            parserRegistry: mockRegistry
         )
     )
 }
