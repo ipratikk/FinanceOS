@@ -8,6 +8,10 @@
 import Foundation
 import GRDB
 
+public enum AccountType: String, Codable, Sendable, CaseIterable {
+    case savings, current, credit
+}
+
 public struct Account:
     Identifiable,
     Codable,
@@ -17,21 +21,33 @@ public struct Account:
 {
     public let id: UUID
 
-    public let institutionID: UUID
+    public let bankId: UUID
 
-    public let name: String
+    public let accountName: String
+
+    public let accountLast4: String
+
+    public let ownerName: String
+
+    public let accountType: AccountType
 
     public let nickname: String
 
     public init(
         id: UUID = UUID(),
-        institutionID: UUID,
-        name: String,
+        bankId: UUID,
+        accountName: String,
+        accountLast4: String = "",
+        ownerName: String = "",
+        accountType: AccountType = .savings,
         nickname: String = ""
     ) {
         self.id = id
-        self.institutionID = institutionID
-        self.name = name
+        self.bankId = bankId
+        self.accountName = accountName
+        self.accountLast4 = accountLast4
+        self.ownerName = ownerName
+        self.accountType = accountType
         self.nickname = nickname
     }
 }
@@ -39,8 +55,11 @@ public struct Account:
 public extension Account {
     enum Columns {
         static let id = Column(CodingKeys.id)
-        static let institutionID = Column(CodingKeys.institutionID)
-        static let name = Column(CodingKeys.name)
+        static let bankId = Column(CodingKeys.bankId)
+        static let accountName = Column(CodingKeys.accountName)
+        static let accountLast4 = Column(CodingKeys.accountLast4)
+        static let ownerName = Column(CodingKeys.ownerName)
+        static let accountType = Column(CodingKeys.accountType)
         static let nickname = Column(CodingKeys.nickname)
     }
 }
@@ -57,17 +76,29 @@ public extension Account {
             table.column("id", .text)
                 .primaryKey()
 
-            table.column("institutionID", .text)
+            table.column("bankId", .text)
                 .notNull()
                 .indexed()
                 .references(
-                    Institution.databaseTableName,
+                    "banks",
                     column: "id",
                     onDelete: .cascade
                 )
 
-            table.column("name", .text)
+            table.column("accountName", .text)
                 .notNull()
+
+            table.column("accountLast4", .text)
+                .notNull()
+                .defaults(to: "")
+
+            table.column("ownerName", .text)
+                .notNull()
+                .defaults(to: "")
+
+            table.column("accountType", .text)
+                .notNull()
+                .defaults(to: "savings")
 
             table.column("nickname", .text)
                 .notNull()

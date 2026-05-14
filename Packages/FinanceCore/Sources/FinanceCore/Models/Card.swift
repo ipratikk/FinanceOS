@@ -8,6 +8,10 @@
 import Foundation
 import GRDB
 
+public enum CardType: String, Codable, Sendable, CaseIterable {
+    case visa, mastercard, amex, rupay, other
+}
+
 public struct Card:
     Identifiable,
     Codable,
@@ -17,41 +21,46 @@ public struct Card:
 {
     public let id: UUID
 
-    public let institutionID: UUID
+    public let bankId: UUID
 
-    public let accountID: UUID?
+    public let linkedAccountId: UUID?
 
-    public let name: String
+    public let cardName: String
+
+    public let cardLast4: String
+
+    public let cardType: CardType
 
     public let nickname: String
 
-    public let last4: String
-
     public init(
         id: UUID = UUID(),
-        institutionID: UUID,
-        accountID: UUID? = nil,
-        name: String,
-        nickname: String = "",
-        last4: String = ""
+        bankId: UUID,
+        linkedAccountId: UUID? = nil,
+        cardName: String,
+        cardLast4: String = "",
+        cardType: CardType = .other,
+        nickname: String = ""
     ) {
         self.id = id
-        self.institutionID = institutionID
-        self.accountID = accountID
-        self.name = name
+        self.bankId = bankId
+        self.linkedAccountId = linkedAccountId
+        self.cardName = cardName
+        self.cardLast4 = cardLast4
+        self.cardType = cardType
         self.nickname = nickname
-        self.last4 = last4
     }
 }
 
 public extension Card {
     enum Columns {
         static let id = Column(CodingKeys.id)
-        static let institutionID = Column(CodingKeys.institutionID)
-        static let accountID = Column(CodingKeys.accountID)
-        static let name = Column(CodingKeys.name)
+        static let bankId = Column(CodingKeys.bankId)
+        static let linkedAccountId = Column(CodingKeys.linkedAccountId)
+        static let cardName = Column(CodingKeys.cardName)
+        static let cardLast4 = Column(CodingKeys.cardLast4)
+        static let cardType = Column(CodingKeys.cardType)
         static let nickname = Column(CodingKeys.nickname)
-        static let last4 = Column(CodingKeys.last4)
     }
 }
 
@@ -67,16 +76,16 @@ public extension Card {
             table.column("id", .text)
                 .primaryKey()
 
-            table.column("institutionID", .text)
+            table.column("bankId", .text)
                 .notNull()
                 .indexed()
                 .references(
-                    Institution.databaseTableName,
+                    "banks",
                     column: "id",
                     onDelete: .cascade
                 )
 
-            table.column("accountID", .text)
+            table.column("linkedAccountId", .text)
                 .indexed()
                 .references(
                     Account.databaseTableName,
@@ -84,14 +93,18 @@ public extension Card {
                     onDelete: .setNull
                 )
 
-            table.column("name", .text)
+            table.column("cardName", .text)
                 .notNull()
 
-            table.column("nickname", .text)
+            table.column("cardLast4", .text)
                 .notNull()
                 .defaults(to: "")
 
-            table.column("last4", .text)
+            table.column("cardType", .text)
+                .notNull()
+                .defaults(to: "other")
+
+            table.column("nickname", .text)
                 .notNull()
                 .defaults(to: "")
         }
