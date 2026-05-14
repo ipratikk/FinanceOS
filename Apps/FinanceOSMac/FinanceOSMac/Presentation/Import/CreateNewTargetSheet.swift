@@ -11,11 +11,23 @@ struct CreateNewTargetSheet: View {
     let onCancel: () -> Void
     let onCreate: () -> Void
 
+    var selectedInstitution: Institution? {
+        guard let id = institutionID else { return nil }
+        return institutions.first { $0.id == id }
+    }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section("Name") {
                     TextField("Name", text: $name)
+                }
+
+                if let institution = selectedInstitution {
+                    Section("Institution") {
+                        Text(institution.name)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 if isCard {
@@ -31,7 +43,7 @@ struct CreateNewTargetSheet: View {
                 }
 
                 if !institutions.isEmpty {
-                    Section("Institution") {
+                    Section(selectedInstitution == nil ? "Select Institution" : "Change Institution") {
                         Picker("Institution", selection: $institutionID) {
                             Text("Select Institution").tag(UUID?.none)
                             ForEach(institutions) { institution in
