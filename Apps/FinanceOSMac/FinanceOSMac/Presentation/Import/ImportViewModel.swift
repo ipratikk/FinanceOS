@@ -18,6 +18,7 @@ final class ImportViewModel {
 
     var accounts: [Account] = []
     var cards: [Card] = []
+    var institutions: [Institution] = []
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(fileURLs, parsedStatements).map { ($0, $1) }
@@ -178,12 +179,14 @@ final class ImportViewModel {
 
     func loadTargetsOnAppear() async {
         do {
-            logger.debug("Loading accounts and cards for selection")
+            logger.debug("Loading accounts, cards, and institutions")
             accounts = try await accountRepository.fetchAccounts()
             cards = try await cardRepository.fetchCards()
+            institutions = try await institutionRepository.fetchInstitutions()
             let accountCount = accounts.count
             let cardCount = cards.count
-            logger.debug("Loaded \(accountCount, privacy: .public) accounts and \(cardCount, privacy: .public) cards")
+            let institutionCount = institutions.count
+            logger.debug("Loaded \(accountCount, privacy: .public) accounts, \(cardCount, privacy: .public) cards, and \(institutionCount, privacy: .public) institutions")
         } catch {
             let errorMsg = error.localizedDescription
             logger.error("Failed to load targets: \(errorMsg, privacy: .public)")
@@ -231,7 +234,11 @@ final class ImportViewModel {
         }
     }
 
-    func createTargetFromDetected() {
+    func createTargetFromDetected(
+        customName: String? = nil,
+        institutionID: UUID? = nil,
+        isCard: Bool? = nil
+    ) {
         guard let statement = parsedStatements.first else {
             errorMessage = "No parsed statements available"
             return
@@ -239,24 +246,33 @@ final class ImportViewModel {
 
         Task {
             do {
-                let institutionName = statement.institution
-                var institution: Institution?
+                let institution: Institution
+                let detectedInstitutionName = statement.institution
 
-                let existingInstitutions = try await institutionRepository.fetchInstitutions()
-                institution = existingInstitutions.first { $0.name == institutionName }
+                if let providedInstitutionID = institutionID,
+                   let found = (try await institutionRepository.fetchInstitutions()).first(where: { $0.id == providedInstitutionID }) {
+                    institution = found
+                } else {
+                    var existingInstitution: Institution?
+                    let existingInstitutions = try await institutionRepository.fetchInstitutions()
+                    existingInstitution = existingInstitutions.first { $0.name == detectedInstitutionName }
 
-                if institution == nil {
-                    institution = Institution(name: institutionName)
-                    try await institutionRepository.insert(institution!)
+                    if existingInstitution == nil {
+                        existingInstitution = Institution(name: detectedInstitutionName)
+                        try await institutionRepository.insert(existingInstitution!)
+                    }
+
+                    guard let foundInstitution = existingInstitution else {
+                        errorMessage = "Failed to create institution"
+                        return
+                    }
+                    institution = foundInstitution
                 }
 
-                guard let institution else {
-                    errorMessage = "Failed to create institution"
-                    return
-                }
+                let isCardTarget = isCard ?? (statement.cardLast4 != nil)
 
-                if let cardLast4 = statement.cardLast4 {
-                    let cardName = "\(institutionName) Card - \(cardLast4)"
+                if isCardTarget {
+                    let cardName = customName ?? (statement.cardLast4.map { "\(detectedInstitutionName) Card - \($0)" } ?? "\(detectedInstitutionName) Card")
                     let card = Card(
                         institutionID: institution.id,
                         accountID: nil,
@@ -269,8 +285,7 @@ final class ImportViewModel {
 
                     logger.info("Created card: \(cardName)")
                 } else {
-                    let accountName = statement.accountName.isEmpty ? "\(institutionName) Account" : statement
-                        .accountName
+                    let accountName = customName ?? (statement.accountName.isEmpty ? "\(detectedInstitutionName) Account" : statement.accountName)
                     let account = Account(
                         institutionID: institution.id,
                         name: accountName

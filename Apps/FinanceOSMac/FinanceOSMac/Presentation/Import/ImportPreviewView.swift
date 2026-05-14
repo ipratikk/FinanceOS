@@ -5,6 +5,11 @@ struct ImportPreviewView: View {
     let viewModel: ImportViewModel
     @Binding var targetChoice: TargetChoice?
 
+    @State private var showCreateSheet = false
+    @State private var newEntityName = ""
+    @State private var newEntityInstitutionID: UUID?
+    @State private var isCard = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -27,6 +32,27 @@ struct ImportPreviewView: View {
                 aggregatedTransactionListSection()
             }
             .padding()
+        }
+        .sheet(isPresented: $showCreateSheet) {
+            CreateNewTargetSheet(
+                name: $newEntityName,
+                institutionID: $newEntityInstitutionID,
+                isCard: isCard,
+                institutions: viewModel.institutions,
+                onCancel: {
+                    showCreateSheet = false
+                },
+                onCreate: {
+                    Task {
+                        await viewModel.createTargetFromDetected(
+                            customName: newEntityName,
+                            institutionID: newEntityInstitutionID,
+                            isCard: isCard
+                        )
+                        showCreateSheet = false
+                    }
+                }
+            )
         }
     }
 
@@ -70,7 +96,18 @@ struct ImportPreviewView: View {
 
             HStack(spacing: 12) {
                 Button("Create as New") {
-                    viewModel.createTargetFromDetected()
+                    let isCardTarget = viewModel.parsedStatements.first?.cardLast4 != nil
+                    self.isCard = isCardTarget
+
+                    if isCardTarget, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
+                        self.newEntityName = "\(detectedInstitution) Card - \(cardLast4)"
+                    } else {
+                        let accountName = viewModel.parsedStatements.first?.accountName ?? ""
+                        self.newEntityName = accountName.isEmpty ? "\(detectedInstitution) Account" : accountName
+                    }
+
+                    self.newEntityInstitutionID = nil
+                    self.showCreateSheet = true
                 }
                 .buttonStyle(.bordered)
 
