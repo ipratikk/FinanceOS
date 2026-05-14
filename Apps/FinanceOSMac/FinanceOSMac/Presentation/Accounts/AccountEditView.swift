@@ -2,22 +2,29 @@ import FinanceCore
 import SwiftUI
 
 struct AccountEditView: View {
-    @Bindable var account: Account
+    let account: Account
     let viewModel: AccountsViewModel
+    @State private var editedAccount: Account
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
     @State private var showConvertConfirm = false
 
+    init(account: Account, viewModel: AccountsViewModel) {
+        self.account = account
+        self.viewModel = viewModel
+        _editedAccount = State(initialValue: account)
+    }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section("Account Details") {
-                    TextField("Name", text: $account.name)
+                    TextField("Name", text: $editedAccount.name)
                 }
 
                 Section("Institution") {
-                    Picker("Institution", selection: $account.institutionID) {
+                    Picker("Institution", selection: $editedAccount.institutionID) {
                         ForEach(viewModel.institutions) { institution in
                             Text(institution.name).tag(institution.id)
                         }
@@ -47,7 +54,7 @@ struct AccountEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            await viewModel.updateAccount(account)
+                            await viewModel.updateAccount(editedAccount)
                         }
                     }
                 }
@@ -57,7 +64,8 @@ struct AccountEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Convert", role: .destructive) {
                 Task {
-                    await viewModel.convertToCard(account)
+                    await viewModel.convertToCard(editedAccount)
+                    dismiss()
                 }
             }
         } message: {
@@ -67,7 +75,8 @@ struct AccountEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    await viewModel.deleteAccount(id: account.id)
+                    await viewModel.deleteAccount(id: editedAccount.id)
+                    dismiss()
                 }
             }
         } message: {

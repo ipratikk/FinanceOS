@@ -2,17 +2,24 @@ import FinanceCore
 import SwiftUI
 
 struct InstitutionEditView: View {
-    @Bindable var institution: Institution
+    let institution: Institution
     let viewModel: InstitutionsViewModel
+    @State private var editedInstitution: Institution
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
+
+    init(institution: Institution, viewModel: InstitutionsViewModel) {
+        self.institution = institution
+        self.viewModel = viewModel
+        _editedInstitution = State(initialValue: institution)
+    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Institution Details") {
-                    TextField("Name", text: $institution.name)
+                    TextField("Name", text: $editedInstitution.name)
                 }
 
                 Section {
@@ -32,7 +39,7 @@ struct InstitutionEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            await viewModel.updateInstitution(institution)
+                            await viewModel.updateInstitution(editedInstitution)
                         }
                     }
                 }
@@ -42,11 +49,14 @@ struct InstitutionEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    await viewModel.deleteInstitution(id: institution.id)
+                    await viewModel.deleteInstitution(id: editedInstitution.id)
+                    dismiss()
                 }
             }
         } message: {
-            Text("This will permanently delete this institution and all associated cards, accounts, and transactions. This cannot be undone.")
+            Text(
+                "This will permanently delete this institution and all associated cards, accounts, and transactions. This cannot be undone."
+            )
         }
     }
 }
