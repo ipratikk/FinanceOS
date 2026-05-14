@@ -91,18 +91,22 @@ struct FinanceOSMacApp: App {
                 }
             }
             .task {
-                await DependencyChecker.ensureSSConvertAvailable { message in
-                    dependencyMessage = message
-                    showDependencyAlert = true
+                do {
+                    await DependencyChecker.ensureSSConvertAvailable { message in
+                        dependencyMessage = message
+                        showDependencyAlert = true
 
-                    while !permissionGranted && showDependencyAlert {
-                        try? await Task.sleep(nanoseconds: 100_000_000)
+                        while !permissionGranted && showDependencyAlert {
+                            try? await Task.sleep(nanoseconds: 100_000_000)
+                        }
+
+                        return permissionGranted
                     }
-
-                    return permissionGranted
+                } catch {
+                    // Dependency check failed
                 }
 
-                defer { isCheckingDependencies = false }
+                isCheckingDependencies = false
             }
             .alert("Install Dependencies", isPresented: $showDependencyAlert) {
                 Button("Cancel") {
