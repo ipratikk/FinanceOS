@@ -68,18 +68,20 @@ public enum DependencyChecker {
 
     private static func installSSConvert() async {
         #if os(macOS)
-        guard let brewPath = findBrewExecutable() else {
-            return
-        }
-
         let process = Process()
-        process.executableURL = brewPath
-        process.arguments = ["install", "gnumeric"]
+        process.executableURL = URL(fileURLWithPath: "/bin/bash")
+        process.arguments = ["-c", "brew install gnumeric"]
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
         process.standardOutput = outputPipe
         process.standardError = errorPipe
+
+        let environment = ProcessInfo.processInfo.environment
+        var processEnv = environment
+        processEnv["PATH"] = "\(environment["PATH"] ?? "")"
+
+        process.environment = processEnv
 
         do {
             try process.run()
