@@ -27,4 +27,10 @@ public final class GRDBAccountRepository:
                 .fetchAll(database)
         }
     }
+
+    public func insert(_ account: Account) async throws {
+        try await dbQueue.write { database in
+            try account.insert(database)
+        }
+    }
 }

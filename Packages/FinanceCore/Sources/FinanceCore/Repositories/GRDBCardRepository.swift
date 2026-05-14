@@ -27,4 +27,10 @@ public final class GRDBCardRepository:
                 .fetchAll(database)
         }
     }
+
+    public func insert(_ card: Card) async throws {
+        try await dbQueue.write { database in
+            try card.insert(database)
+        }
+    }
 }

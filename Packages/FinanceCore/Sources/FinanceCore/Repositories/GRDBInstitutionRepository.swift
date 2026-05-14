@@ -25,4 +25,10 @@ public final class GRDBInstitutionRepository:
             try Institution.fetchAll(database)
         }
     }
+
+    public func insert(_ institution: Institution) async throws {
+        try await dbQueue.write { database in
+            try institution.insert(database)
+        }
+    }
 }

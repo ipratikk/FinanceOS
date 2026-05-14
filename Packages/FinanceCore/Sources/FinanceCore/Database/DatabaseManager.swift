@@ -75,7 +75,7 @@ private extension DatabaseManager {
 
 private extension DatabaseManager {
     func seedDatabase() throws {
-        try dbQueue.write { database in
+        try dbQueue.write { _ in
             // Seeding disabled - user will create institutions/accounts/cards/transactions manually
             // try DatabaseSeeder.seedInstitutions(in: database)
             // try DatabaseSeeder.seedAccounts(in: database)

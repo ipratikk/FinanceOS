@@ -9,4 +9,5 @@ import Foundation
 
 public protocol InstitutionRepository: Sendable {
     func fetchInstitutions() async throws -> [Institution]
+    func insert(_ institution: Institution) async throws
 }

@@ -227,6 +227,64 @@ final class ImportViewModel {
         }
     }
 
+    func createTargetFromDetected() {
+        guard let statement = parsedStatements.first else {
+            errorMessage = "No parsed statements available"
+            return
+        }
+
+        Task {
+            do {
+                let institutionName = statement.institution
+                var institution: Institution?
+
+                let existingInstitutions = try await institutionRepository.fetchInstitutions()
+                institution = existingInstitutions.first { $0.name == institutionName }
+
+                if institution == nil {
+                    institution = Institution(name: institutionName)
+                    try await institutionRepository.insert(institution!)
+                }
+
+                guard let institution = institution else {
+                    errorMessage = "Failed to create institution"
+                    return
+                }
+
+                if statement.sourceType == .creditCard {
+                    let cardName = statement.accountName.isEmpty ? "\(institutionName) Card" : statement.accountName
+                    let card = Card(
+                        institutionID: institution.id,
+                        accountID: nil,
+                        name: cardName
+                    )
+
+                    try await cardRepository.insert(card)
+                    selectedTarget = .card(card.id)
+                    cards.append(card)
+
+                    logger.info("Created card: \(cardName)")
+                } else {
+                    let accountName = statement.accountName.isEmpty ? "\(institutionName) Account" : statement.accountName
+                    let account = Account(
+                        institutionID: institution.id,
+                        name: accountName
+                    )
+
+                    try await accountRepository.insert(account)
+                    selectedTarget = .account(account.id)
+                    accounts.append(account)
+
+                    logger.info("Created account: \(accountName)")
+                }
+            } catch {
+                let errorDesc = error.localizedDescription
+                logger.error("Failed to create target: \(errorDesc)")
+                errorMessage = "Failed to create target: \(errorDesc)"
+            }
+        }
+    }
+
     private func reset() {
         fileURLs = []
         parsedStatements = []

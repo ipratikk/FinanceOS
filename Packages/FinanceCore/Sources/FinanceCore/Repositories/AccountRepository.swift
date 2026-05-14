@@ -9,4 +9,5 @@ import Foundation
 
 public protocol AccountRepository: Sendable {
     func fetchAccounts() async throws -> [Account]
+    func insert(_ account: Account) async throws
 }

@@ -16,6 +16,10 @@ struct ImportPreviewView: View {
 
                 Divider()
 
+                detectedTargetSection()
+
+                Divider()
+
                 targetSelectionSection
 
                 Divider()
@@ -23,6 +27,59 @@ struct ImportPreviewView: View {
                 aggregatedTransactionListSection()
             }
             .padding()
+        }
+    }
+
+    private func detectedTargetSection() -> some View {
+        let detectedInstitution = viewModel.parsedStatements.first?.institution ?? "Unknown"
+        let isCard = viewModel.parsedStatements.first?.sourceType == .creditCard
+
+        return VStack(alignment: .leading, spacing: 12) {
+            Text("Detected Target")
+                .font(.headline)
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Institution:")
+                        .fontWeight(.semibold)
+                    Text(detectedInstitution)
+                        .foregroundColor(.secondary)
+                }
+
+                if isCard {
+                    if let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
+                        HStack {
+                            Text("Card Last 4:")
+                                .fontWeight(.semibold)
+                            Text(cardLast4)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                } else {
+                    if let accountName = viewModel.parsedStatements.first?.accountName {
+                        HStack {
+                            Text("Account:")
+                                .fontWeight(.semibold)
+                            Text(accountName)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
+            .padding(.vertical, 8)
+
+            HStack(spacing: 12) {
+                Button("Create as New") {
+                    viewModel.createTargetFromDetected()
+                }
+                .buttonStyle(.bordered)
+
+                Spacer()
+
+                Text("or select below →")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 
