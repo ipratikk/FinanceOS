@@ -1,16 +1,19 @@
 import Foundation
 
 public enum DependencyChecker {
-    private static let ssconvertCheckedKey = "com.financeOS.ssconvertChecked"
+    private static let ssconvertAvailableKey = "com.financeOS.ssconvertAvailable"
 
     public static func ensureSSConvertAvailable() async {
         #if os(macOS)
-        let defaults = UserDefaults.standard
-
-        guard !defaults.bool(forKey: ssconvertCheckedKey) else {
+        if isSSConvertAvailable() {
             return
         }
 
+        await installSSConvert()
+        #endif
+    }
+
+    private static func isSSConvertAvailable() -> Bool {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
         process.arguments = ["ssconvert"]
@@ -22,35 +25,76 @@ public enum DependencyChecker {
         do {
             try process.run()
             process.waitUntilExit()
-
-            if process.terminationStatus == 0 {
-                defaults.set(true, forKey: ssconvertCheckedKey)
-                return
-            }
+            return process.terminationStatus == 0
         } catch {
-            return
+            return false
         }
-
-        installSSConvert()
-        defaults.set(true, forKey: ssconvertCheckedKey)
-        #endif
     }
 
-    private static func installSSConvert() {
-        #if os(macOS)
+    private static func findBrewExecutable() -> URL? {
+        let brewPaths = [
+            "/opt/homebrew/bin/brew",
+            "/usr/local/bin/brew",
+            "/opt/local/bin/brew"
+        ]
+
+        for path in brewPaths {
+            if FileManager.default.fileExists(atPath: path) {
+                return URL(fileURLWithPath: path)
+            }
+        }
+
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/brew")
-        process.arguments = ["install", "gnumeric"]
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
+        process.arguments = ["brew"]
 
         let pipe = Pipe()
         process.standardOutput = pipe
-        process.standardError = Pipe()
 
         do {
             try process.run()
             process.waitUntilExit()
+
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
+            if let path = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) {
+                return URL(fileURLWithPath: path)
+            }
         } catch {
+            return nil
+        }
+
+        return nil
+    }
+
+    private static func installSSConvert() async {
+        #if os(macOS)
+        guard let brewPath = findBrewExecutable() else {
+            FinanceLogger.database.warning("Homebrew not found. Install from https://brew.sh")
             return
+        }
+
+        let process = Process()
+        process.executableURL = brewPath
+        process.arguments = ["install", "gnumeric"]
+
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        process.standardOutput = outputPipe
+        process.standardError = errorPipe
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+
+            if process.terminationStatus == 0 {
+                FinanceLogger.database.info("ssconvert installed successfully")
+            } else {
+                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                let errorMsg = String(data: errorData, encoding: .utf8) ?? "Unknown error"
+                FinanceLogger.database.error("Failed to install gnumeric: \(errorMsg)")
+            }
+        } catch {
+            FinanceLogger.database.error("Failed to run brew install: \(error)")
         }
         #endif
     }

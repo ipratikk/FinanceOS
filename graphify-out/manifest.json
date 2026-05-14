@@ -83,6 +83,10 @@
     "mtime": 1778658365.4010046,
     "hash": "f1f170a37bc85749f331c3eadc159b44"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift": {
+    "mtime": 1778783308.7508883,
+    "hash": "b5c7f10941e339fa89c56919bfdfeb02"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/AppContainer/AppContainer.swift": {
     "mtime": 1778781362.9939265,
     "hash": "225148ce3e4c3cc1ff003f02408aa0cb"
@@ -180,8 +184,8 @@
     "hash": "461c8a011892ad2837f919e738ba0969"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift": {
-    "mtime": 1778783098.502919,
-    "hash": "56348a087c851b36a30f22838ddb13e7"
+    "mtime": 1778783314.8943548,
+    "hash": "5fcd942c4e6abf19b871605c452b82dc"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Institutions/InstitutionsView.swift": {
     "mtime": 1778616401.7127962,
