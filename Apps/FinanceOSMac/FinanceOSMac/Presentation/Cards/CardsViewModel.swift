@@ -30,19 +30,22 @@ final class CardsViewModel {
     private let cardRepository: CardRepository
     private let accountRepository: AccountRepository
     private let institutionRepository: InstitutionRepository
+    private let transactionRepository: TransactionRepository
 
     var cardRows: [CardRow] = []
-
     var isLoading = false
+    var editingCard: Card?
 
     init(
         cardRepository: CardRepository,
         accountRepository: AccountRepository,
-        institutionRepository: InstitutionRepository
+        institutionRepository: InstitutionRepository,
+        transactionRepository: TransactionRepository
     ) {
         self.cardRepository = cardRepository
         self.accountRepository = accountRepository
         self.institutionRepository = institutionRepository
+        self.transactionRepository = transactionRepository
     }
 
     func loadCards() async {
@@ -66,6 +69,41 @@ final class CardsViewModel {
                 institutions: institutions
             )
 
+        } catch {
+            print(error)
+        }
+    }
+
+    func updateCard(_ card: Card) async {
+        do {
+            try await cardRepository.update(card)
+            await loadCards()
+            editingCard = nil
+        } catch {
+            print(error)
+        }
+    }
+
+    func deleteCard(id: UUID) async {
+        do {
+            try await cardRepository.delete(id: id)
+            await loadCards()
+        } catch {
+            print(error)
+        }
+    }
+
+    func convertToAccount(_ card: Card) async {
+        do {
+            let account = Account(
+                institutionID: card.institutionID,
+                name: card.name
+            )
+            try await accountRepository.insert(account)
+            try await transactionRepository.migrateTransactions(fromCard: card.id, toAccount: account.id)
+            try await cardRepository.delete(id: card.id)
+            await loadCards()
+            editingCard = nil
         } catch {
             print(error)
         }

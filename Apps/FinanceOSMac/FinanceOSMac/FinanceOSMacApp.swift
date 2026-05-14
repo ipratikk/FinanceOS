@@ -38,7 +38,10 @@ struct FinanceOSMacApp: App {
 
                     AccountsView(
                         viewModel: AccountsViewModel(
-                            repository: appContainer.accountRepository
+                            repository: appContainer.accountRepository,
+                            institutionRepository: appContainer.institutionRepository,
+                            cardRepository: appContainer.cardRepository,
+                            transactionRepository: appContainer.transactionRepository
                         )
                     )
                     .tabItem {
@@ -49,7 +52,8 @@ struct FinanceOSMacApp: App {
                         viewModel: CardsViewModel(
                             cardRepository: appContainer.cardRepository,
                             accountRepository: appContainer.accountRepository,
-                            institutionRepository: appContainer.institutionRepository
+                            institutionRepository: appContainer.institutionRepository,
+                            transactionRepository: appContainer.transactionRepository
                         )
                     )
                     .tabItem {
