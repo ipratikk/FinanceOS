@@ -68,44 +68,26 @@ struct ImportView: View {
 
             supportedSourcesView
 
-            targetSelectionSection
+            Divider()
 
-            if viewModel.selectedTarget != nil {
-                Divider()
-
-                if viewModel.isLoading {
-                    ProgressView("Parsing files...")
-                } else {
-                    dropZoneView
-
-                    Divider()
-
-                    filePickerButton
-                }
+            if viewModel.isLoading {
+                ProgressView("Parsing files...")
             } else {
+                dropZoneView
+
                 Divider()
 
-                VStack(spacing: 8) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.secondary)
+                filePickerButton
+            }
 
-                    Text("Select import target first")
-                        .font(.headline)
+            if !viewModel.parsedStatements.isEmpty {
+                Divider()
 
-                    Text("Choose an account or card above to import to")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: 120)
-                .foregroundColor(.secondary)
+                targetSelectionSection
             }
         }
         .padding()
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
-            guard viewModel.selectedTarget != nil else { return false }
-
             var urls: [URL] = []
             let group = DispatchGroup()
 
@@ -135,7 +117,7 @@ struct ImportView: View {
                 .font(.system(size: 32))
                 .foregroundColor(.secondary)
 
-            Text("Drag CSV or XLSX files here")
+            Text("Drag CSV, XLS, or XLSX files here")
                 .font(.headline)
 
             Text("Or click to browse")
