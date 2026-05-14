@@ -17,6 +17,10 @@ struct MockTransactionRepository: TransactionRepository {
     func insertTransactions(_ transactions: [FinanceCore.Transaction]) async throws -> ImportResult {
         ImportResult(inserted: transactions.count, skipped: 0)
     }
+
+    func migrateTransactions(fromCard cardID: UUID, toAccount accountID: UUID) async throws {}
+
+    func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {}
 }
 
 struct MockInstitutionRepository: InstitutionRepository {
@@ -25,6 +29,10 @@ struct MockInstitutionRepository: InstitutionRepository {
     }
 
     func insert(_ institution: Institution) async throws {}
+
+    func update(_ institution: Institution) async throws {}
+
+    func delete(id: UUID) async throws {}
 }
 
 struct MockAccountRepository: AccountRepository {
@@ -33,6 +41,10 @@ struct MockAccountRepository: AccountRepository {
     }
 
     func insert(_ account: Account) async throws {}
+
+    func update(_ account: Account) async throws {}
+
+    func delete(id: UUID) async throws {}
 }
 
 struct MockCardRepository: CardRepository {
@@ -41,6 +53,10 @@ struct MockCardRepository: CardRepository {
     }
 
     func insert(_ card: Card) async throws {}
+
+    func update(_ card: Card) async throws {}
+
+    func delete(id: UUID) async throws {}
 }
 
 struct MockTransactionImporter: TransactionImporting {
