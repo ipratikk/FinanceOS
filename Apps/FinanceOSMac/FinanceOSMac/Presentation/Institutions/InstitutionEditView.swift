@@ -4,7 +4,7 @@ import SwiftUI
 struct InstitutionEditView: View {
     let institution: Institution
     let viewModel: InstitutionsViewModel
-    @State private var editedInstitution: Institution
+    @State private var name: String
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
@@ -12,14 +12,14 @@ struct InstitutionEditView: View {
     init(institution: Institution, viewModel: InstitutionsViewModel) {
         self.institution = institution
         self.viewModel = viewModel
-        _editedInstitution = State(initialValue: institution)
+        _name = State(initialValue: institution.name)
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Institution Details") {
-                    TextField("Name", text: $editedInstitution.name)
+                    TextField("Name", text: $name)
                 }
 
                 Section {
@@ -39,7 +39,9 @@ struct InstitutionEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            await viewModel.updateInstitution(editedInstitution)
+                            var updated = institution
+                            updated.name = name
+                            await viewModel.updateInstitution(updated)
                         }
                     }
                 }
@@ -49,7 +51,7 @@ struct InstitutionEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    await viewModel.deleteInstitution(id: editedInstitution.id)
+                    await viewModel.deleteInstitution(id: institution.id)
                     dismiss()
                 }
             }

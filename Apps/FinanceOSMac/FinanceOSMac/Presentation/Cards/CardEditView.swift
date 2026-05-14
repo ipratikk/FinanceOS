@@ -4,7 +4,9 @@ import SwiftUI
 struct CardEditView: View {
     let card: Card
     let viewModel: CardsViewModel
-    @State private var editedCard: Card
+    @State private var name: String
+    @State private var institutionID: UUID
+    @State private var accountID: UUID?
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
@@ -13,18 +15,20 @@ struct CardEditView: View {
     init(card: Card, viewModel: CardsViewModel) {
         self.card = card
         self.viewModel = viewModel
-        _editedCard = State(initialValue: card)
+        _name = State(initialValue: card.name)
+        _institutionID = State(initialValue: card.institutionID)
+        _accountID = State(initialValue: card.accountID)
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Card Details") {
-                    TextField("Name", text: $editedCard.name)
+                    TextField("Name", text: $name)
                 }
 
                 Section("Institution") {
-                    Picker("Institution", selection: $editedCard.institutionID) {
+                    Picker("Institution", selection: $institutionID) {
                         ForEach(viewModel.institutions) { institution in
                             Text(institution.name).tag(institution.id)
                         }
@@ -32,7 +36,7 @@ struct CardEditView: View {
                 }
 
                 Section("Linked Account") {
-                    Picker("Account", selection: $editedCard.accountID) {
+                    Picker("Account", selection: $accountID) {
                         Text("None").tag(UUID?.none)
                         ForEach(viewModel.accounts) { account in
                             Text(account.name).tag(UUID?(account.id))
@@ -63,7 +67,11 @@ struct CardEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         Task {
-                            await viewModel.updateCard(editedCard)
+                            var updated = card
+                            updated.name = name
+                            updated.institutionID = institutionID
+                            updated.accountID = accountID
+                            await viewModel.updateCard(updated)
                         }
                     }
                 }
@@ -73,7 +81,11 @@ struct CardEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Convert", role: .destructive) {
                 Task {
-                    await viewModel.convertToAccount(editedCard)
+                    var updated = card
+                    updated.name = name
+                    updated.institutionID = institutionID
+                    updated.accountID = accountID
+                    await viewModel.convertToAccount(updated)
                     dismiss()
                 }
             }
@@ -84,7 +96,7 @@ struct CardEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    await viewModel.deleteCard(id: editedCard.id)
+                    await viewModel.deleteCard(id: card.id)
                     dismiss()
                 }
             }
