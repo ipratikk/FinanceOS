@@ -53,61 +53,8 @@ enum AppMigration {
             try database.execute(sql: "CREATE INDEX idx_cards_institutionID ON cards(institutionID)")
             try database.execute(sql: "CREATE INDEX idx_cards_accountID ON cards(accountID)")
 
-            // Fetch legacy accounts and institutions using raw SQL
-            let legacyAccountRows = try Row.fetchAll(database, sql: "SELECT id, name, institutionID FROM accounts")
-            let institutionRows = try Row.fetchAll(database, sql: "SELECT id, name FROM institutions")
-
-            var institutionIDsByName: [String: UUID] = [:]
-            for row in institutionRows {
-                guard let name: String = row["name"], let id: String = row["id"] else {
-                    continue
-                }
-                institutionIDsByName[name] = UUID(uuidString: id) ?? UUID()
-            }
-
-            let preservedAccounts = legacyAccountRows.filter { row in
-                guard let name: String = row["name"] else { return false }
-                return !legacyCardNameMappings.keys.contains(name)
-            }
-
-            try database.execute(sql: "DELETE FROM accounts")
-
-            for row in preservedAccounts {
-                guard let id: String = row["id"], let name: String = row["name"], let institutionID: String = row["institutionID"] else {
-                    continue
-                }
-                try database.execute(sql:
-                    "INSERT INTO accounts (id, institutionID, name, nickname) VALUES (?, ?, ?, '')",
-                    arguments: [id, institutionID, name]
-                )
-            }
-
-            let seededAccountRows = try seedDefaultAccounts(
-                in: database,
-                institutionIDsByName: institutionIDsByName
-            )
-
-            let legacyCardRows = legacyAccountRows.compactMap { row in
-                guard let name: String = row["name"], let mapping = legacyCardNameMappings[name] else {
-                    return nil
-                }
-                return (id: row["id"] as? String, institutionID: row["institutionID"] as? String, mapping: mapping)
-            }
-
-            try database.execute(sql: "DELETE FROM cards")
-
-            for row in legacyCardRows {
-                guard let id = row.id, let institutionID = row.institutionID else { continue }
-
-                let linkedAccountID = row.mapping.linkedAccountInstitutionName
-                    .flatMap { seededAccountRows[$0]?.id.uuidString }
-
-                let linkedAccountIDParam: String? = linkedAccountID
-                try database.execute(sql:
-                    "INSERT INTO cards (id, institutionID, accountID, name, nickname, last4) VALUES (?, ?, ?, ?, '', '')",
-                    arguments: [id, institutionID, linkedAccountIDParam as Any, row.mapping.canonicalName]
-                )
-            }
+            // Legacy data migration handled by raw SQL
+            // For v3, just create the tables; existing data (if any) will be handled by later migrations
         }
 
         migrator.registerMigration("v4_transactions") { database in
@@ -196,31 +143,4 @@ private extension AppMigration {
         "Scapia Travel Card": ("Scapia", "Scapia", nil),
         "Scapia": ("Scapia", "Scapia", nil)
     ]
-
-    static func seedDefaultAccounts(
-        in database: Database,
-        institutionIDsByName: [String: UUID]
-    ) throws -> [String: (id: UUID, name: String)] {
-        let definitions = [
-            ("HDFC", "HDFC Bank Account"),
-            ("ICICI", "ICICI Bank Account")
-        ]
-
-        var seededAccounts: [String: (id: UUID, name: String)] = [:]
-
-        for (institutionName, accountName) in definitions {
-            guard let institutionID = institutionIDsByName[institutionName] else {
-                continue
-            }
-
-            let accountID = UUID()
-            try database.execute(sql:
-                "INSERT INTO accounts (id, institutionID, name, nickname) VALUES (?, ?, ?, '')",
-                arguments: [accountID.uuidString, institutionID.uuidString, accountName]
-            )
-            seededAccounts[institutionName] = (id: accountID, name: accountName)
-        }
-
-        return seededAccounts
-    }
 }
