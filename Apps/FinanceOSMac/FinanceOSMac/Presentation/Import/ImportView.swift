@@ -49,6 +49,16 @@ struct ImportView: View {
                 break
             }
         }
+        .onChange(of: viewModel.selectedTarget) { _, newValue in
+            switch newValue {
+            case let .account(id):
+                targetChoice = .account(id)
+            case let .card(id):
+                targetChoice = .card(id)
+            case nil:
+                targetChoice = nil
+            }
+        }
     }
 
     private var fileSelectionView: some View {
