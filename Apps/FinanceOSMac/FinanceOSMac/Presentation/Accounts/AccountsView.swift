@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AccountsView: View {
     @State private var viewModel: AccountsViewModel
+    @State private var selectedAccountId: UUID?
     private let appContainer = AppContainer.shared
 
     init(
@@ -23,18 +24,27 @@ struct AccountsView: View {
     var body: some View {
         NavigationStack {
             List(viewModel.accounts) { account in
-                NavigationLink(destination: AccountTransactionsView(
-                    account: account,
-                    viewModel: AccountTransactionsViewModel(
-                        transactionRepository: appContainer.transactionRepository,
-                        cardRepository: appContainer.cardRepository
-                    )
-                )) {
+                NavigationLink(value: account.id) {
                     Text(account.name)
                 }
             }
-            .navigationTitle("Accounts")
+            .navigationDestination(for: UUID.self) { accountId in
+                if let account = viewModel.accounts.first(where: { $0.id == accountId }) {
+                    AccountTransactionsView(
+                        account: account,
+                        viewModel: AccountTransactionsViewModel(
+                            transactionRepository: appContainer.transactionRepository,
+                            cardRepository: appContainer.cardRepository
+                        )
+                    )
+                    .navigationTitle(account.name)
+                    .onAppear {
+                        selectedAccountId = accountId
+                    }
+                }
+            }
         }
+        .navigationTitle("Accounts")
         .task {
             await viewModel.loadAccounts()
         }

@@ -152,6 +152,9 @@ struct ImportView: View {
         Button("Select Files") {
             let panel = NSOpenPanel()
             var types: [UTType] = [.commaSeparatedText]
+            if let xls = UTType(filenameExtension: "xls") {
+                types.append(xls)
+            }
             if let xlsx = UTType(filenameExtension: "xlsx") {
                 types.append(xlsx)
             }
@@ -212,7 +215,7 @@ struct ImportView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("💡 Use CSV or XLSX for best results.")
+                Text("💡 Use CSV, XLS, or XLSX for best results.")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Text("PDF support coming soon.")

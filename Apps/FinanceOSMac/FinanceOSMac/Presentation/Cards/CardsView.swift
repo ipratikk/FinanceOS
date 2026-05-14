@@ -10,6 +10,7 @@ import SwiftUI
 
 struct CardsView: View {
     @State private var viewModel: CardsViewModel
+    @State private var selectedCardId: UUID?
     private let appContainer = AppContainer.shared
 
     init(
@@ -23,13 +24,7 @@ struct CardsView: View {
     var body: some View {
         NavigationStack {
             List(viewModel.cardRows) { cardRow in
-                NavigationLink(destination: CardTransactionsView(
-                    card: cardRow.card,
-                    viewModel: CardTransactionsViewModel(
-                        transactionRepository: appContainer.transactionRepository,
-                        accountRepository: appContainer.accountRepository
-                    )
-                )) {
+                NavigationLink(value: cardRow.card.id) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(cardRow.title)
                         Text(cardRow.subtitle)
@@ -38,8 +33,23 @@ struct CardsView: View {
                     }
                 }
             }
-            .navigationTitle("Cards")
+            .navigationDestination(for: UUID.self) { cardId in
+                if let card = viewModel.cardRows.first(where: { $0.card.id == cardId })?.card {
+                    CardTransactionsView(
+                        card: card,
+                        viewModel: CardTransactionsViewModel(
+                            transactionRepository: appContainer.transactionRepository,
+                            accountRepository: appContainer.accountRepository
+                        )
+                    )
+                    .navigationTitle(card.name)
+                    .onAppear {
+                        selectedCardId = cardId
+                    }
+                }
+            }
         }
+        .navigationTitle("Cards")
         .task {
             await viewModel.loadCards()
         }

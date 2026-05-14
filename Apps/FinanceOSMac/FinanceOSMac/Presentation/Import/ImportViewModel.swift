@@ -195,6 +195,8 @@ final class ImportViewModel {
         switch pathExtension {
         case "csv":
             return .csv
+        case "xls":
+            return .xls
         case "xlsx":
             return .xlsx
         default:

@@ -152,16 +152,16 @@
     "hash": "13d6d620ab237cf86675404c0ec23bb9"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift": {
-    "mtime": 1778781274.3900285,
-    "hash": "3877aaf8c0fefa4b7a01b580d9db2c3d"
+    "mtime": 1778782029.6960785,
+    "hash": "e84893739ca6632b928e0ea5ddca51bb"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/StatementParserRegistry.swift": {
     "mtime": 1778781258.4454553,
     "hash": "2ec61b3106ec0f4cdbd2a8c0581e2eb1"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/AmexCardStatementParser.swift": {
-    "mtime": 1778781277.4945488,
-    "hash": "65c590e3d17e5b925e712877bfbcdb56"
+    "mtime": 1778782216.3492317,
+    "hash": "dcf99329ed24e47b50bedfce198a5b74"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/InstitutionStatementParser.swift": {
     "mtime": 1778781255.3218672,

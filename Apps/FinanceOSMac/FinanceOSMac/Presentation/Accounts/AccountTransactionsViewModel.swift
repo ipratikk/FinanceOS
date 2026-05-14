@@ -11,20 +11,17 @@ import Observation
 
 @Observable
 final class AccountTransactionsViewModel {
-    struct TransactionRow: Identifiable {
-        let id: UUID
-        let title: String
-        let subtitle: String
-        let amountText: String
-        let transactionType: TransactionType
-    }
-
     private let transactionRepository: TransactionRepository
     private let cardRepository: CardRepository
 
     var transactionRows: [TransactionRow] = []
+    var listState = TransactionListState()
 
     var isLoading = false
+
+    var sections: [TransactionSection] {
+        listState.sections(from: transactionRows)
+    }
 
     init(
         transactionRepository: TransactionRepository,
@@ -82,7 +79,8 @@ final class AccountTransactionsViewModel {
                     currencyCode: transaction.currencyCode,
                     transactionType: transaction.transactionType
                 ),
-                transactionType: transaction.transactionType
+                transactionType: transaction.transactionType,
+                postedAt: transaction.postedAt
             )
         }
     }

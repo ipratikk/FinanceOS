@@ -11,20 +11,17 @@ import Observation
 
 @Observable
 final class CardTransactionsViewModel {
-    struct TransactionRow: Identifiable {
-        let id: UUID
-        let title: String
-        let subtitle: String
-        let amountText: String
-        let transactionType: TransactionType
-    }
-
     private let transactionRepository: TransactionRepository
     private let accountRepository: AccountRepository
 
     var transactionRows: [TransactionRow] = []
+    var listState = TransactionListState()
 
     var isLoading = false
+
+    var sections: [TransactionSection] {
+        listState.sections(from: transactionRows)
+    }
 
     init(
         transactionRepository: TransactionRepository,
@@ -61,28 +58,18 @@ final class CardTransactionsViewModel {
         transactions: [Transaction],
         accounts: [Account]
     ) -> [TransactionRow] {
-        let accountsByID = Dictionary(
-            uniqueKeysWithValues: accounts.map { account in
-                (account.id, account)
-            }
-        )
-
-        return transactions.map { transaction in
-            let sourceName: String = (
-                transaction.accountID.flatMap { accountsByID[$0] }?.name ??
-                    "Unknown Source"
-            )
-
-            return TransactionRow(
+        transactions.map { transaction in
+            TransactionRow(
                 id: transaction.id,
                 title: transaction.description,
-                subtitle: sourceName,
+                subtitle: "",
                 amountText: amountText(
                     minorUnits: transaction.amountMinorUnits,
                     currencyCode: transaction.currencyCode,
                     transactionType: transaction.transactionType
                 ),
-                transactionType: transaction.transactionType
+                transactionType: transaction.transactionType,
+                postedAt: transaction.postedAt
             )
         }
     }

@@ -176,6 +176,60 @@ If `swiftformat` runs during build and reformats braces to new lines (conflictin
 
 Ensure `.swiftformat` and `.swiftlint.yml` configurations are in sync.
 
+## Folder Structure & SOLID Principles
+
+### Presentation Layer Organization
+
+```
+Presentation/
+├── Shared/
+│   ├── Models/
+│   │   ├── TransactionRow.swift
+│   │   ├── TransactionSection.swift
+│   │   ├── TransactionListState.swift
+│   │   └── TransactionModels.swift (index)
+│   └── Views/
+│       ├── TransactionListContentView.swift
+│       └── TransactionFilterView.swift
+├── Transactions/
+│   ├── TransactionsView.swift
+│   └── TransactionsViewModel.swift
+├── Accounts/
+│   ├── AccountTransactionsView.swift
+│   └── AccountTransactionsViewModel.swift
+└── Cards/
+    ├── CardTransactionsView.swift
+    └── CardTransactionsViewModel.swift
+```
+
+### Guidelines
+
+**Shared Models** (Shared/Models/):
+- Types used across multiple features (TransactionRow, TransactionSection)
+- Observable state containers shared by ViewModels (TransactionListState)
+- Index file documents the purpose and usage
+
+**Shared Views** (Shared/Views/):
+- View components used by multiple features (TransactionListContentView, TransactionFilterView)
+- Keep reusable, feature-agnostic
+
+**Feature Folders** (Transactions/, Accounts/, Cards/):
+- Feature-specific Views and ViewModels
+- Import shared models/views as needed
+
+**Extension Files** (when applicable):
+- Use `+<Category>.swift` for large files approaching size limits
+- Example: `TransactionListState+Filtering.swift` for complex filter logic
+- Only when it improves clarity and reduces cognitive load per file
+
+### SOLID Principles Applied
+
+- **Single Responsibility**: Models, Views, ViewModels in separate files
+- **Open/Closed**: Easy to extend without modifying existing feature folders
+- **Liskov Substitution**: Clear, predictable contracts between layers
+- **Interface Segregation**: Focused, single-purpose types
+- **Dependency Inversion**: ViewModels depend on repositories (not directly on persistence)
+
 ## Architecture Alignment
 
 These standards support the core architecture patterns:
@@ -184,3 +238,4 @@ These standards support the core architecture patterns:
 - **Short files** force logical separation (View ↔ ViewModel ↔ Repository)
 - **Line length limits** improve readability and reduce cognitive load
 - **Clear naming** (no underscores) maintains consistency with Swift conventions
+- **Folder structure** enforces separation of concerns and reusability
