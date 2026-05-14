@@ -20,5 +20,5 @@ public protocol TransactionRepository: Sendable {
 
     func insertTransactions(
         _ transactions: [Transaction]
-    ) async throws
+    ) async throws -> ImportResult
 }

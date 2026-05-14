@@ -52,11 +52,21 @@ public final class GRDBTransactionRepository:
 
     public func insertTransactions(
         _ transactions: [Transaction]
-    ) async throws {
+    ) async throws -> ImportResult {
         try await dbQueue.write { database in
+            var inserted = 0
+            var skipped = 0
+
             for transaction in transactions {
-                try transaction.insert(database)
+                do {
+                    try transaction.insert(database)
+                    inserted += 1
+                } catch let error as DatabaseError where error.resultCode == .SQLITE_CONSTRAINT {
+                    skipped += 1
+                }
             }
+
+            return ImportResult(inserted: inserted, skipped: skipped)
         }
     }
 }
