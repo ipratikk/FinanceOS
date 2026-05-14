@@ -14,6 +14,7 @@ final class ImportViewModel {
 
     var isLoading = false
     var errorMessage: String?
+    var importResult: ImportResult?
 
     var accounts: [Account] = []
     var cards: [Card] = []
@@ -23,18 +24,18 @@ final class ImportViewModel {
     }
 
     private let transactionImporter: any TransactionImporting
-    private let transactionRepository: any TransactionRepository
+    private let transactionImportPipeline: TransactionImportPipeline
     private let accountRepository: any AccountRepository
     private let cardRepository: any CardRepository
 
     init(
         transactionImporter: any TransactionImporting,
-        transactionRepository: any TransactionRepository,
+        transactionImportPipeline: TransactionImportPipeline,
         accountRepository: any AccountRepository,
         cardRepository: any CardRepository
     ) {
         self.transactionImporter = transactionImporter
-        self.transactionRepository = transactionRepository
+        self.transactionImportPipeline = transactionImportPipeline
         self.accountRepository = accountRepository
         self.cardRepository = cardRepository
     }
@@ -118,18 +119,37 @@ final class ImportViewModel {
 
             isLoading = true
             errorMessage = nil
+            importResult = nil
 
             let fileCount = self.fileURLs.count
             let targetDesc = String(describing: target)
             logger.info("Starting: \(fileCount, privacy: .public) files, target: \(targetDesc, privacy: .public)")
 
             do {
-                let transactions = try await processImportFiles(target: target)
-                let txnCount = transactions.count
-                logger.info("Saving \(txnCount, privacy: .public) txns to DB")
-                try await transactionRepository.insertTransactions(transactions)
+                var totalInserted = 0
+                var totalSkipped = 0
 
-                logger.info("Imported \(txnCount, privacy: .public) txns from \(fileCount, privacy: .public) files")
+                for (index, fileURL) in fileURLs.enumerated() {
+                    let format = fileFormat(for: fileURL)
+                    let fileName = fileURL.lastPathComponent
+                    let fileNumber = index + 1
+
+                    logger.debug("Importing file \(fileNumber)/\(fileCount): \(fileName, privacy: .public)")
+
+                    let result = try await transactionImportPipeline.execute(
+                        fileURL: fileURL,
+                        format: format,
+                        target: target
+                    )
+
+                    totalInserted += result.inserted
+                    totalSkipped += result.skipped
+
+                    logger.info("File \(fileName, privacy: .public): \(result.inserted, privacy: .public) inserted, \(result.skipped, privacy: .public) skipped")
+                }
+
+                importResult = ImportResult(inserted: totalInserted, skipped: totalSkipped)
+                logger.info("Import complete: \(totalInserted, privacy: .public) inserted, \(totalSkipped, privacy: .public) skipped")
                 reset()
             } catch {
                 logger.error("Import failed: \(error.localizedDescription, privacy: .public)")
@@ -139,44 +159,6 @@ final class ImportViewModel {
         }
     }
 
-    private func processImportFiles(target: TransactionImportTarget) async throws -> [Transaction] {
-        var allTransactions: [Transaction] = []
-
-        for (index, fileURL) in fileURLs.enumerated() {
-            let format = fileFormat(for: fileURL)
-            let fileName = fileURL.lastPathComponent
-            let fileNumber = index + 1
-            let totalFiles = fileURLs.count
-
-            logger.debug("Importing file \(fileNumber)/\(totalFiles): \(fileName, privacy: .public)")
-
-            do {
-                let transactions = try await transactionImporter.importTransactions(
-                    from: fileURL,
-                    format: format,
-                    target: target
-                )
-
-                let txnCount = transactions.count
-                logger.info("Got \(txnCount, privacy: .public) txns from \(fileName, privacy: .public)")
-                allTransactions.append(contentsOf: transactions)
-            } catch let error as TransactionImportError {
-                let formattedError = formatError(error)
-                logger.error("Import error for \(fileName, privacy: .public): \(formattedError, privacy: .public)")
-                errorMessage = "Error importing \(fileName): \(formattedError)"
-                isLoading = false
-                throw error
-            } catch {
-                let desc = error.localizedDescription
-                logger.error("Import error for \(fileName, privacy: .public): \(desc, privacy: .public)")
-                errorMessage = "Error importing \(fileName): \(desc)"
-                isLoading = false
-                throw error
-            }
-        }
-
-        return allTransactions
-    }
 
     func loadTargetsOnAppear() async {
         do {
@@ -235,6 +217,7 @@ final class ImportViewModel {
         fileURLs = []
         parsedStatements = []
         selectedTarget = nil
+        importResult = nil
         accounts = []
         cards = []
     }
