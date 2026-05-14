@@ -297,6 +297,7 @@ struct ImportView: View {
             institutionRepository: MockInstitutionRepository(),
             accountRepository: MockAccountRepository(),
             cardRepository: MockCardRepository(),
+            transactionRepository: mockRepository,
             parserRegistry: mockRegistry
         )
     )
