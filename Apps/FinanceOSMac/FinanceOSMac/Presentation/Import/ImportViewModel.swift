@@ -339,64 +339,65 @@ final class ImportViewModel {
         }
 
         do {
-                let institution: Institution
-                let detectedInstitutionName = statement.institution
+            let institution: Institution
+            let detectedInstitutionName = statement.institution
 
-                if let providedInstitutionID = institutionID,
-                   let found = try await (institutionRepository.fetchInstitutions())
-                   .first(where: { $0.id == providedInstitutionID })
-                {
-                    institution = found
-                } else {
-                    var existingInstitution: Institution?
-                    let existingInstitutions = try await institutionRepository.fetchInstitutions()
-                    existingInstitution = existingInstitutions.first { $0.name == detectedInstitutionName }
+            if let providedInstitutionID = institutionID,
+               let found = try await (institutionRepository.fetchInstitutions())
+               .first(where: { $0.id == providedInstitutionID })
+            {
+                institution = found
+            } else {
+                var existingInstitution: Institution?
+                let existingInstitutions = try await institutionRepository.fetchInstitutions()
+                existingInstitution = existingInstitutions.first { $0.name == detectedInstitutionName }
 
-                    if existingInstitution == nil {
-                        existingInstitution = Institution(name: detectedInstitutionName)
-                        try await institutionRepository.insert(existingInstitution!)
-                    }
-
-                    guard let foundInstitution = existingInstitution else {
-                        errorMessage = "Failed to create institution"
-                        return
-                    }
-                    institution = foundInstitution
+                if existingInstitution == nil {
+                    existingInstitution = Institution(name: detectedInstitutionName)
+                    try await institutionRepository.insert(existingInstitution!)
                 }
 
-                let isCardTarget = isCard ?? (statement.cardLast4 != nil)
-
-                if isCardTarget {
-                    let cardName = customName ??
-                        (statement.cardLast4
-                            .map { "\(detectedInstitutionName) Card - \($0)" } ?? "\(detectedInstitutionName) Card")
-                    let card = Card(
-                        institutionID: institution.id,
-                        accountID: nil,
-                        name: cardName,
-                        nickname: nickname,
-                        last4: last4
-                    )
-
-                    try await cardRepository.insert(card)
-                    selectedTarget = .card(card.id)
-                    cards.append(card)
-
-                    logger.info("Created card: \(cardName)")
-                } else {
-                    let accountName = customName ??
-                        (statement.accountName.isEmpty ? "\(detectedInstitutionName) Account" : statement.accountName)
-                    let account = Account(
-                        institutionID: institution.id,
-                        name: accountName
-                    )
-
-                    try await accountRepository.insert(account)
-                    selectedTarget = .account(account.id)
-                    accounts.append(account)
-
-                    logger.info("Created account: \(accountName)")
+                guard let foundInstitution = existingInstitution else {
+                    errorMessage = "Failed to create institution"
+                    return
                 }
+                institution = foundInstitution
+            }
+
+            let isCardTarget = isCard ?? (statement.cardLast4 != nil)
+
+            if isCardTarget {
+                let cardName = customName ??
+                    (statement.cardLast4
+                        .map { "\(detectedInstitutionName) Card - \($0)" } ?? "\(detectedInstitutionName) Card")
+                let card = Card(
+                    institutionID: institution.id,
+                    accountID: nil,
+                    name: cardName,
+                    nickname: nickname,
+                    last4: last4
+                )
+
+                try await cardRepository.insert(card)
+                selectedTarget = .card(card.id)
+                cards.append(card)
+
+                logger.info("Created card: \(cardName)")
+            } else {
+                let accountName = customName ??
+                    (statement.accountName.isEmpty ? "\(detectedInstitutionName) Account" : statement.accountName)
+                let account = Account(
+                    institutionID: institution.id,
+                    name: accountName,
+                    nickname: nickname
+                )
+
+                try await accountRepository.insert(account)
+                selectedTarget = .account(account.id)
+                accounts.append(account)
+
+                logger.info("Created account: \(accountName)")
+            }
         } catch {
             let errorDesc = error.localizedDescription
             logger.error("Failed to create target: \(errorDesc)")
