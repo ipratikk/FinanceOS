@@ -23,8 +23,22 @@ struct InstitutionsView: View {
         NavigationStack {
             List(viewModel.institutions) { institution in
                 Text(institution.name)
+                    .contextMenu {
+                        Button("Edit") {
+                            viewModel.editingInstitution = institution
+                        }
+                        Button("Delete", role: .destructive) {
+                            viewModel.editingInstitution = institution
+                        }
+                    }
             }
             .navigationTitle("Institutions")
+        }
+        .sheet(item: $viewModel.editingInstitution) { institution in
+            InstitutionEditView(
+                institution: institution,
+                viewModel: viewModel
+            )
         }
         .task {
             await viewModel.loadInstitutions()

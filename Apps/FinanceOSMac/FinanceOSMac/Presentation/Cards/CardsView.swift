@@ -32,6 +32,14 @@ struct CardsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .contextMenu {
+                    Button("Edit") {
+                        viewModel.editingCard = cardRow.card
+                    }
+                    Button("Delete", role: .destructive) {
+                        viewModel.editingCard = cardRow.card
+                    }
+                }
             }
             .navigationDestination(for: UUID.self) { cardId in
                 if let card = viewModel.cardRows.first(where: { $0.card.id == cardId })?.card {
@@ -50,6 +58,12 @@ struct CardsView: View {
             }
         }
         .navigationTitle("Cards")
+        .sheet(item: $viewModel.editingCard) { card in
+            CardEditView(
+                card: card,
+                viewModel: viewModel
+            )
+        }
         .task {
             await viewModel.loadCards()
         }

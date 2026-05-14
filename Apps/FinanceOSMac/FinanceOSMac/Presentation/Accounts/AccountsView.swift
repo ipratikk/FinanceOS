@@ -27,6 +27,14 @@ struct AccountsView: View {
                 NavigationLink(value: account.id) {
                     Text(account.name)
                 }
+                .contextMenu {
+                    Button("Edit") {
+                        viewModel.editingAccount = account
+                    }
+                    Button("Delete", role: .destructive) {
+                        viewModel.editingAccount = account
+                    }
+                }
             }
             .navigationDestination(for: UUID.self) { accountId in
                 if let account = viewModel.accounts.first(where: { $0.id == accountId }) {
@@ -45,6 +53,12 @@ struct AccountsView: View {
             }
         }
         .navigationTitle("Accounts")
+        .sheet(item: $viewModel.editingAccount) { account in
+            AccountEditView(
+                account: account,
+                viewModel: viewModel
+            )
+        }
         .task {
             await viewModel.loadAccounts()
         }
