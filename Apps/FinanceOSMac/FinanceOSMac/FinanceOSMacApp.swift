@@ -12,6 +12,7 @@ struct FinanceOSMacApp: App {
                     viewModel: ImportViewModel(
                         transactionImporter: appContainer.transactionImporter,
                         transactionImportPipeline: appContainer.transactionImportPipeline,
+                        institutionRepository: appContainer.institutionRepository,
                         accountRepository: appContainer.accountRepository,
                         cardRepository: appContainer.cardRepository,
                         parserRegistry: appContainer.parserRegistry

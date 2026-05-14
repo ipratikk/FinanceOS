@@ -281,6 +281,7 @@ struct ImportView: View {
         viewModel: ImportViewModel(
             transactionImporter: mockImporter,
             transactionImportPipeline: mockPipeline,
+            institutionRepository: MockInstitutionRepository(),
             accountRepository: MockAccountRepository(),
             cardRepository: MockCardRepository(),
             parserRegistry: mockRegistry

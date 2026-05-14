@@ -19,15 +19,30 @@ struct MockTransactionRepository: TransactionRepository {
     }
 }
 
+struct MockInstitutionRepository: InstitutionRepository {
+    func fetchInstitutions() async throws -> [Institution] {
+        []
+    }
+
+    func insert(_ institution: Institution) async throws {
+    }
+}
+
 struct MockAccountRepository: AccountRepository {
     func fetchAccounts() async throws -> [Account] {
         []
+    }
+
+    func insert(_ account: Account) async throws {
     }
 }
 
 struct MockCardRepository: CardRepository {
     func fetchCards() async throws -> [Card] {
         []
+    }
+
+    func insert(_ card: Card) async throws {
     }
 }
 

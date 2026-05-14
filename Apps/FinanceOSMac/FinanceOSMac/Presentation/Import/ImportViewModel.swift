@@ -29,6 +29,7 @@ final class ImportViewModel {
 
     private let transactionImporter: any TransactionImporting
     private let transactionImportPipeline: TransactionImportPipeline
+    private let institutionRepository: any InstitutionRepository
     private let accountRepository: any AccountRepository
     private let cardRepository: any CardRepository
     private let parserRegistry: StatementParserRegistry
@@ -36,12 +37,14 @@ final class ImportViewModel {
     init(
         transactionImporter: any TransactionImporting,
         transactionImportPipeline: TransactionImportPipeline,
+        institutionRepository: any InstitutionRepository,
         accountRepository: any AccountRepository,
         cardRepository: any CardRepository,
         parserRegistry: StatementParserRegistry
     ) {
         self.transactionImporter = transactionImporter
         self.transactionImportPipeline = transactionImportPipeline
+        self.institutionRepository = institutionRepository
         self.accountRepository = accountRepository
         self.cardRepository = cardRepository
         self.parserRegistry = parserRegistry
@@ -246,7 +249,7 @@ final class ImportViewModel {
                     try await institutionRepository.insert(institution!)
                 }
 
-                guard let institution = institution else {
+                guard let institution else {
                     errorMessage = "Failed to create institution"
                     return
                 }
@@ -265,7 +268,8 @@ final class ImportViewModel {
 
                     logger.info("Created card: \(cardName)")
                 } else {
-                    let accountName = statement.accountName.isEmpty ? "\(institutionName) Account" : statement.accountName
+                    let accountName = statement.accountName.isEmpty ? "\(institutionName) Account" : statement
+                        .accountName
                     let account = Account(
                         institutionID: institution.id,
                         name: accountName
