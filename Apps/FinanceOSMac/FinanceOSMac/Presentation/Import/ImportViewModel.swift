@@ -272,11 +272,24 @@ final class ImportViewModel {
         return !commonWords.isEmpty && commonWords.count >= min(storedWords.count, parsedWords.count) / 2
     }
 
-    private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
-        let parsedDate = Calendar.current.startOfDay(for: parsed.postedAt)
-        let existingDate = Calendar.current.startOfDay(for: existing.postedAt)
+    private func transactionHash(_ txn: ParsedTransaction) -> String {
+        let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
+        let amountStr = String(txn.amountMinorUnits)
+        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
+        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
+        return String(combined.hashValue)
+    }
 
-        return parsedDate == existingDate && parsed.amountMinorUnits == existing.amountMinorUnits
+    private func transactionHash(_ txn: Transaction) -> String {
+        let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
+        let amountStr = String(txn.amountMinorUnits)
+        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
+        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
+        return String(combined.hashValue)
+    }
+
+    private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
+        transactionHash(parsed) == transactionHash(existing)
     }
 
     private func fileFormat(for url: URL) -> StatementFileFormat {
