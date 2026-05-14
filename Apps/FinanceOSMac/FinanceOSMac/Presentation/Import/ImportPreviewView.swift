@@ -219,25 +219,61 @@ struct ImportPreviewView: View {
 
     private func aggregatedTransactionListSection() -> some View {
         let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
+        let newTransactions = allTransactions.count - viewModel.duplicateTransactionIndices.count
         let firstFive = Array(allTransactions.prefix(5))
 
         return VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 16) {
+                VStack(alignment: .leading) {
+                    Text("New Transactions")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text("\(newTransactions)")
+                        .font(.body)
+                        .fontWeight(.semibold)
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing) {
+                    Text("Already Imported")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text("\(viewModel.duplicateTransactionIndices.count)")
+                        .font(.body)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.orange)
+                }
+            }
+            .padding(.vertical, 8)
+
+            Divider()
+
             Text("Transactions (\(allTransactions.count))")
                 .font(.headline)
 
             VStack(spacing: 4) {
                 ForEach(firstFive.indices, id: \.self) { index in
                     let txn = firstFive[index]
+                    let isDuplicate = viewModel.duplicateTransactionIndices.contains(index)
+
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(txn.description)
                                 .font(.body)
                                 .lineLimit(1)
+                                .opacity(isDuplicate ? 0.5 : 1.0)
 
                             HStack(spacing: 8) {
                                 Text(formatDate(txn.postedAt))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
+
+                                if isDuplicate {
+                                    Text("Already imported")
+                                        .font(.caption)
+                                        .foregroundColor(.orange)
+                                }
 
                                 if let points = txn.rewardPoints, points > 0 {
                                     Text("+\(points) pts")
@@ -254,6 +290,7 @@ struct ImportPreviewView: View {
                             .foregroundColor(
                                 txn.amountMinorUnits < 0 ? .red : .green
                             )
+                            .opacity(isDuplicate ? 0.5 : 1.0)
                     }
                     .padding(.vertical, 4)
 

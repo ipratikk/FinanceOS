@@ -20,6 +20,7 @@ struct FinanceOSMacApp: App {
                             institutionRepository: appContainer.institutionRepository,
                             accountRepository: appContainer.accountRepository,
                             cardRepository: appContainer.cardRepository,
+                            transactionRepository: appContainer.transactionRepository,
                             parserRegistry: appContainer.parserRegistry
                         )
                     )

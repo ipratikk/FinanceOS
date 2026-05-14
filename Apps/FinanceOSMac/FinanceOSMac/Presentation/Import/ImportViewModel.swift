@@ -19,6 +19,7 @@ final class ImportViewModel {
     var accounts: [Account] = []
     var cards: [Card] = []
     var institutions: [Institution] = []
+    var duplicateTransactionIndices: Set<Int> = []
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(fileURLs, parsedStatements).map { ($0, $1) }
@@ -33,6 +34,7 @@ final class ImportViewModel {
     private let institutionRepository: any InstitutionRepository
     private let accountRepository: any AccountRepository
     private let cardRepository: any CardRepository
+    private let transactionRepository: any TransactionRepository
     private let parserRegistry: StatementParserRegistry
 
     init(
@@ -41,6 +43,7 @@ final class ImportViewModel {
         institutionRepository: any InstitutionRepository,
         accountRepository: any AccountRepository,
         cardRepository: any CardRepository,
+        transactionRepository: any TransactionRepository,
         parserRegistry: StatementParserRegistry
     ) {
         self.transactionImporter = transactionImporter
@@ -48,6 +51,7 @@ final class ImportViewModel {
         self.institutionRepository = institutionRepository
         self.accountRepository = accountRepository
         self.cardRepository = cardRepository
+        self.transactionRepository = transactionRepository
         self.parserRegistry = parserRegistry
     }
 
@@ -108,6 +112,7 @@ final class ImportViewModel {
 
             self.parsedStatements = statements
             loadTargets()
+            await autoSelectMatchingTarget()
 
             isLoading = false
         }
@@ -186,7 +191,10 @@ final class ImportViewModel {
             let accountCount = accounts.count
             let cardCount = cards.count
             let institutionCount = institutions.count
-            logger.debug("Loaded \(accountCount, privacy: .public) accounts, \(cardCount, privacy: .public) cards, and \(institutionCount, privacy: .public) institutions")
+            logger
+                .debug(
+                    "Loaded \(accountCount, privacy: .public) accounts, \(cardCount, privacy: .public) cards, and \(institutionCount, privacy: .public) institutions"
+                )
         } catch {
             let errorMsg = error.localizedDescription
             logger.error("Failed to load targets: \(errorMsg, privacy: .public)")
@@ -198,6 +206,72 @@ final class ImportViewModel {
         Task {
             await loadTargetsOnAppear()
         }
+    }
+
+    private func autoSelectMatchingTarget() async {
+        guard let statement = parsedStatements.first else { return }
+
+        let isCard = statement.cardLast4 != nil
+        let institutionName = statement.institution
+
+        let matchingInstitution = institutions.first { $0.name == institutionName }
+        guard let institution = matchingInstitution else { return }
+
+        if isCard {
+            if let matchingCard = cards.first(where: { $0.institutionID == institution.id }) {
+                selectedTarget = .card(matchingCard.id)
+                logger.info("Auto-selected card: \(matchingCard.name, privacy: .public)")
+                await detectDuplicates(for: .card(matchingCard.id))
+            }
+        } else {
+            if let matchingAccount = accounts.first(where: { $0.institutionID == institution.id }) {
+                selectedTarget = .account(matchingAccount.id)
+                logger.info("Auto-selected account: \(matchingAccount.name, privacy: .public)")
+                await detectDuplicates(for: .account(matchingAccount.id))
+            }
+        }
+    }
+
+    private func detectDuplicates(for target: TransactionImportTarget) async {
+        do {
+            let existingTransactions: [Transaction]
+            switch target {
+            case let .account(id):
+                existingTransactions = try await transactionRepository.fetchTransactionsForAccount(id)
+            case let .card(id):
+                existingTransactions = try await transactionRepository.fetchTransactionsForCard(id)
+            }
+
+            duplicateTransactionIndices = []
+
+            for (index, statement) in parsedStatements.enumerated() {
+                for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
+                    for existingTxn in existingTransactions {
+                        if isSameTransaction(parsed: parsedTxn, existing: existingTxn) {
+                            let flatIndex = parsedStatements[..<index].reduce(0) { $0 + $1.transactions.count } + txnIndex
+                            duplicateTransactionIndices.insert(flatIndex)
+                        }
+                    }
+                }
+            }
+
+            let dupCount = duplicateTransactionIndices.count
+            logger.info("Found \(dupCount, privacy: .public) duplicate transactions")
+        } catch {
+            logger.error("Failed to detect duplicates: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
+    private func isSameTransaction(parsed: Transaction, existing: Transaction) -> Bool {
+        let sameDateAmount = Calendar.current.isDate(parsed.date, inSameDayAs: existing.date) &&
+            parsed.amount == existing.amount
+
+        if !sameDateAmount { return false }
+
+        let parsedDesc = parsed.description.trimmingCharacters(in: .whitespaces).lowercased()
+        let existingDesc = existing.description.trimmingCharacters(in: .whitespaces).lowercased()
+
+        return parsedDesc == existingDesc || parsedDesc.contains(existingDesc) || existingDesc.contains(parsedDesc)
     }
 
     private func fileFormat(for url: URL) -> StatementFileFormat {
@@ -250,7 +324,9 @@ final class ImportViewModel {
                 let detectedInstitutionName = statement.institution
 
                 if let providedInstitutionID = institutionID,
-                   let found = (try await institutionRepository.fetchInstitutions()).first(where: { $0.id == providedInstitutionID }) {
+                   let found = try await (institutionRepository.fetchInstitutions())
+                   .first(where: { $0.id == providedInstitutionID })
+                {
                     institution = found
                 } else {
                     var existingInstitution: Institution?
@@ -272,7 +348,9 @@ final class ImportViewModel {
                 let isCardTarget = isCard ?? (statement.cardLast4 != nil)
 
                 if isCardTarget {
-                    let cardName = customName ?? (statement.cardLast4.map { "\(detectedInstitutionName) Card - \($0)" } ?? "\(detectedInstitutionName) Card")
+                    let cardName = customName ??
+                        (statement.cardLast4
+                            .map { "\(detectedInstitutionName) Card - \($0)" } ?? "\(detectedInstitutionName) Card")
                     let card = Card(
                         institutionID: institution.id,
                         accountID: nil,
@@ -285,7 +363,8 @@ final class ImportViewModel {
 
                     logger.info("Created card: \(cardName)")
                 } else {
-                    let accountName = customName ?? (statement.accountName.isEmpty ? "\(detectedInstitutionName) Account" : statement.accountName)
+                    let accountName = customName ??
+                        (statement.accountName.isEmpty ? "\(detectedInstitutionName) Account" : statement.accountName)
                     let account = Account(
                         institutionID: institution.id,
                         name: accountName
