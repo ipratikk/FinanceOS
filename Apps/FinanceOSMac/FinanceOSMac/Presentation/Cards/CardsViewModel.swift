@@ -35,6 +35,8 @@ final class CardsViewModel {
     var cardRows: [CardRow] = []
     var isLoading = false
     var editingCard: Card?
+    var institutions: [Institution] = []
+    var accounts: [Account] = []
 
     init(
         cardRepository: CardRepository,
@@ -62,6 +64,9 @@ final class CardsViewModel {
                 .fetchAccounts()
             let institutions = try await institutionRepository
                 .fetchInstitutions()
+
+            self.accounts = accounts
+            self.institutions = institutions
 
             cardRows = makeCardRows(
                 cards: cards,
