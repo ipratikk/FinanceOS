@@ -224,10 +224,17 @@ struct ImportView: View {
 }
 
 #Preview {
+    let mockImporter = MockTransactionImporter()
+    let mockRepository = MockTransactionRepository()
+    let mockPipeline = TransactionImportPipeline(
+        importer: mockImporter,
+        repository: mockRepository
+    )
+
     ImportView(
         viewModel: ImportViewModel(
-            transactionImporter: DefaultTransactionImporter(),
-            transactionRepository: MockTransactionRepository(),
+            transactionImporter: mockImporter,
+            transactionImportPipeline: mockPipeline,
             accountRepository: MockAccountRepository(),
             cardRepository: MockCardRepository()
         )
