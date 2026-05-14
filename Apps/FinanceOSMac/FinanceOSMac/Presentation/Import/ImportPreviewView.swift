@@ -21,10 +21,6 @@ struct ImportPreviewView: View {
 
                 Divider()
 
-                detectedTargetSection()
-
-                Divider()
-
                 targetSelectionSection
 
                 Divider()
@@ -56,70 +52,6 @@ struct ImportPreviewView: View {
         }
     }
 
-    private func detectedTargetSection() -> some View {
-        let detectedInstitution = viewModel.parsedStatements.first?.institution ?? "Unknown"
-        let isCard = viewModel.parsedStatements.first?.cardLast4 != nil
-
-        return VStack(alignment: .leading, spacing: 12) {
-            Text("Detected Target")
-                .font(.headline)
-
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("Institution:")
-                        .fontWeight(.semibold)
-                    Text(detectedInstitution)
-                        .foregroundColor(.secondary)
-                }
-
-                if isCard {
-                    if let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
-                        HStack {
-                            Text("Card Last 4:")
-                                .fontWeight(.semibold)
-                            Text(cardLast4)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                } else {
-                    if let accountName = viewModel.parsedStatements.first?.accountName {
-                        HStack {
-                            Text("Account:")
-                                .fontWeight(.semibold)
-                            Text(accountName)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-            }
-            .padding(.vertical, 8)
-
-            HStack(spacing: 12) {
-                Button("Create as New") {
-                    let isCardTarget = viewModel.parsedStatements.first?.cardLast4 != nil
-                    self.isCard = isCardTarget
-
-                    if isCardTarget, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
-                        self.newEntityName = "\(detectedInstitution) Card - \(cardLast4)"
-                    } else {
-                        let accountName = viewModel.parsedStatements.first?.accountName ?? ""
-                        self.newEntityName = accountName.isEmpty ? "\(detectedInstitution) Account" : accountName
-                    }
-
-                    self.newEntityInstitutionID = nil
-                    self.showCreateSheet = true
-                }
-                .buttonStyle(.bordered)
-
-                Spacer()
-
-                Text("or select below →")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-        }
-    }
-
     private var targetSelectionSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Import To")
@@ -136,6 +68,9 @@ struct ImportPreviewView: View {
                         Text(account.name)
                             .tag(TargetChoice.account(account.id) as TargetChoice?)
                     }
+
+                    Text("Create New Account...")
+                        .tag(TargetChoice.createAccount as TargetChoice?)
                 }
 
                 if !viewModel.cards.isEmpty {
@@ -146,9 +81,50 @@ struct ImportPreviewView: View {
                         Text(card.name)
                             .tag(TargetChoice.card(card.id) as TargetChoice?)
                     }
+
+                    Text("Create New Card...")
+                        .tag(TargetChoice.createCard as TargetChoice?)
+                }
+
+                if viewModel.accounts.isEmpty && viewModel.cards.isEmpty {
+                    Divider()
+                    Text("Create New Account...")
+                        .tag(TargetChoice.createAccount as TargetChoice?)
+                    Text("Create New Card...")
+                        .tag(TargetChoice.createCard as TargetChoice?)
                 }
             }
+            .onChange(of: targetChoice) { oldValue, newValue in
+                handleTargetSelection(newValue)
+            }
         }
+    }
+
+    private func handleTargetSelection(_ choice: TargetChoice?) {
+        switch choice {
+        case .createAccount:
+            initializeCreateSheet(isCard: false)
+        case .createCard:
+            initializeCreateSheet(isCard: true)
+        case .account, .card, .none:
+            break
+        }
+    }
+
+    private func initializeCreateSheet(isCard: Bool) {
+        let detectedInstitution = viewModel.parsedStatements.first?.institution ?? "Unknown"
+        self.isCard = isCard
+
+        if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
+            self.newEntityName = "\(detectedInstitution) Card - \(cardLast4)"
+        } else {
+            let accountName = viewModel.parsedStatements.first?.accountName ?? ""
+            self.newEntityName = accountName.isEmpty ? "\(detectedInstitution) Account" : accountName
+        }
+
+        self.newEntityInstitutionID = nil
+        self.showCreateSheet = true
+        self.targetChoice = nil
     }
 
     private func fileListSection() -> some View {

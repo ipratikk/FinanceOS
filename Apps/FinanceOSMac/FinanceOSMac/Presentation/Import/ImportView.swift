@@ -5,6 +5,8 @@ import UniformTypeIdentifiers
 enum TargetChoice: Hashable {
     case account(UUID)
     case card(UUID)
+    case createAccount
+    case createCard
 }
 
 struct ImportView: View {
@@ -42,8 +44,8 @@ struct ImportView: View {
                 viewModel.selectedTarget = .account(id)
             case let .card(id):
                 viewModel.selectedTarget = .card(id)
-            case nil:
-                viewModel.selectedTarget = nil
+            case .createAccount, .createCard, nil:
+                break
             }
         }
     }
