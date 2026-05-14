@@ -48,7 +48,6 @@ enum TabularTransactionDecoder {
         )
     }
 
-
     private static func index(
         in headers: [String],
         matchingAnyOf candidates: [String]
@@ -183,7 +182,6 @@ enum TabularTransactionDecoder {
         return formatter.string(from: date)
     }
 
-
     static func decodeTransactions(
         _ rows: [[String]]
     ) throws -> [ParsedTransaction] {
@@ -257,16 +255,14 @@ enum TabularTransactionDecoder {
                 let description = value(at: descriptionIndex, in: row)
 
                 let postedAt = try parseDate(dateString)
-                let amountMinorUnits: Int64
-
-                if let amountIndex {
-                    amountMinorUnits = try parseAmountWithSign(
+                let amountMinorUnits: Int64 = if let amountIndex {
+                    try parseAmountWithSign(
                         row: row,
                         amountIndex: amountIndex,
                         billingSignIndex: billingSignIndex
                     )
                 } else {
-                    amountMinorUnits = try parseAmountMinorUnits(
+                    try parseAmountMinorUnits(
                         row: row,
                         amountIndex: nil,
                         debitIndex: debitIndex,

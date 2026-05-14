@@ -86,7 +86,10 @@ public struct HDFCCardStatementParser: InstitutionStatementParser {
             let description = row[3].trimmingCharacters(in: .whitespacesAndNewlines)
             guard !description.isEmpty else { continue }
 
-            let amountStr = row[4].trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: ",", with: "")
+            let amountStr = row[4].trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(
+                of: ",",
+                with: ""
+            )
             guard let amount = Decimal(string: amountStr) else { continue }
 
             let sign = row.count > 5 ? row[5].trimmingCharacters(in: .whitespacesAndNewlines).uppercased() : ""

@@ -36,7 +36,11 @@ struct MockTransactionImporter: TransactionImporting {
         ParsedStatement(institution: "Mock", accountName: "Mock Account", transactions: [])
     }
 
-    func importTransactions(from fileURL: URL, format: StatementFileFormat, target: TransactionImportTarget) async throws -> [Transaction] {
+    func importTransactions(
+        from fileURL: URL,
+        format: StatementFileFormat,
+        target: TransactionImportTarget
+    ) async throws -> [Transaction] {
         []
     }
 }

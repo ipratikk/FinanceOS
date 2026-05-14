@@ -152,11 +152,17 @@ final class ImportViewModel {
                     totalInserted += result.inserted
                     totalSkipped += result.skipped
 
-                    logger.info("File \(fileName, privacy: .public): \(result.inserted, privacy: .public) inserted, \(result.skipped, privacy: .public) skipped")
+                    logger
+                        .info(
+                            "File \(fileName, privacy: .public): \(result.inserted, privacy: .public) inserted, \(result.skipped, privacy: .public) skipped"
+                        )
                 }
 
                 importResult = ImportResult(inserted: totalInserted, skipped: totalSkipped)
-                logger.info("Import complete: \(totalInserted, privacy: .public) inserted, \(totalSkipped, privacy: .public) skipped")
+                logger
+                    .info(
+                        "Import complete: \(totalInserted, privacy: .public) inserted, \(totalSkipped, privacy: .public) skipped"
+                    )
                 reset()
             } catch {
                 logger.error("Import failed: \(error.localizedDescription, privacy: .public)")
@@ -165,7 +171,6 @@ final class ImportViewModel {
             }
         }
     }
-
 
     func loadTargetsOnAppear() async {
         do {

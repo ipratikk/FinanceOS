@@ -21,7 +21,8 @@ public struct ICICICardStatementParser: InstitutionStatementParser {
             throw TransactionImportError.malformedFile("ICICI card statement too short")
         }
 
-        let accountName = rows.count > 2 && rows[2].count > 1 ? rows[2][1].trimmingCharacters(in: .whitespacesAndNewlines) : "Unknown"
+        let accountName = rows.count > 2 && rows[2].count > 1 ? rows[2][1]
+            .trimmingCharacters(in: .whitespacesAndNewlines) : "Unknown"
         let cardLast4 = rows.count > 8 && !rows[8].isEmpty ? extractCardLast4(rows[8][0]) : nil
         let transactionRows = Array(rows.dropFirst(9))
 

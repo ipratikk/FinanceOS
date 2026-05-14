@@ -14,8 +14,8 @@ public struct AmexCardStatementParser: InstitutionStatementParser {
 
         let normalized = headerRow.map { $0.lowercased() }
         return normalized.contains(where: { $0.contains("date") }) &&
-               normalized.contains(where: { $0.contains("description") }) &&
-               normalized.contains(where: { $0.contains("amount") })
+            normalized.contains(where: { $0.contains("description") }) &&
+            normalized.contains(where: { $0.contains("amount") })
     }
 
     public func parse(rows: [[String]]) throws -> ParsedStatement {
