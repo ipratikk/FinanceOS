@@ -18,6 +18,7 @@ public final class AppContainer {
     public let institutionRepository: any InstitutionRepository
 
     public let transactionImporter: any TransactionImporting
+    public let transactionImportPipeline: TransactionImportPipeline
 
     private init() {
         let databaseManager = DatabaseManager.shared
@@ -39,5 +40,10 @@ public final class AppContainer {
         )
 
         transactionImporter = DefaultTransactionImporter()
+
+        transactionImportPipeline = TransactionImportPipeline(
+            importer: transactionImporter,
+            repository: transactionRepository
+        )
     }
 }
