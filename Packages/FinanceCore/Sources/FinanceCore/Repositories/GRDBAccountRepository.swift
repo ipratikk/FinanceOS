@@ -33,4 +33,16 @@ public final class GRDBAccountRepository:
             try account.insert(database)
         }
     }
+
+    public func update(_ account: Account) async throws {
+        try await dbQueue.write { database in
+            try account.update(database)
+        }
+    }
+
+    public func delete(id: UUID) async throws {
+        try await dbQueue.write { database in
+            try Account.deleteOne(database, key: id)
+        }
+    }
 }

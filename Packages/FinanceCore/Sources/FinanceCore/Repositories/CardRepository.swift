@@ -10,4 +10,6 @@ import Foundation
 public protocol CardRepository: Sendable {
     func fetchCards() async throws -> [Card]
     func insert(_ card: Card) async throws
+    func update(_ card: Card) async throws
+    func delete(id: UUID) async throws
 }

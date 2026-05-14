@@ -21,4 +21,8 @@ public protocol TransactionRepository: Sendable {
     func insertTransactions(
         _ transactions: [Transaction]
     ) async throws -> ImportResult
+
+    func migrateTransactions(fromCard cardID: UUID, toAccount accountID: UUID) async throws
+
+    func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws
 }

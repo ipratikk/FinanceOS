@@ -136,8 +136,8 @@
     "hash": "b7f65e8b3ed0dbc7ab3e7ab84d640149"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TabularTransactionDecoder.swift": {
-    "mtime": 1778782706.0674255,
-    "hash": "f5daa9340d0784784ca437c0fb1a3631"
+    "mtime": 1778784831.8299,
+    "hash": "c18f28794a773e23498167904352ce25"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ParsedStatement.swift": {
     "mtime": 1778669264.336627,
@@ -152,8 +152,8 @@
     "hash": "9321221a90c07011d4b62a082cc15512"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/ICICIBankStatementParser.swift": {
-    "mtime": 1778784775.3686616,
-    "hash": "2dcf97792cfeca48269c7286e444547d"
+    "mtime": 1778784815.386832,
+    "hash": "5576e4e6bf8a5bc91ce800a8ba2fdb75"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/ICICICardStatementParser.swift": {
     "mtime": 1778782706.040215,

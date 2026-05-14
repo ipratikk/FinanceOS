@@ -69,4 +69,24 @@ public final class GRDBTransactionRepository:
             return ImportResult(inserted: inserted, skipped: skipped)
         }
     }
+
+    public func migrateTransactions(fromCard cardID: UUID, toAccount accountID: UUID) async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: """
+                UPDATE transactions
+                SET "accountID" = ?, "cardID" = NULL
+                WHERE "cardID" = ?
+            """, arguments: [accountID.uuidString, cardID.uuidString])
+        }
+    }
+
+    public func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: """
+                UPDATE transactions
+                SET "cardID" = ?, "accountID" = NULL
+                WHERE "accountID" = ?
+            """, arguments: [cardID.uuidString, accountID.uuidString])
+        }
+    }
 }

@@ -10,4 +10,6 @@ import Foundation
 public protocol AccountRepository: Sendable {
     func fetchAccounts() async throws -> [Account]
     func insert(_ account: Account) async throws
+    func update(_ account: Account) async throws
+    func delete(id: UUID) async throws
 }

@@ -31,4 +31,16 @@ public final class GRDBInstitutionRepository:
             try institution.insert(database)
         }
     }
+
+    public func update(_ institution: Institution) async throws {
+        try await dbQueue.write { database in
+            try institution.update(database)
+        }
+    }
+
+    public func delete(id: UUID) async throws {
+        try await dbQueue.write { database in
+            try Institution.deleteOne(database, key: id)
+        }
+    }
 }

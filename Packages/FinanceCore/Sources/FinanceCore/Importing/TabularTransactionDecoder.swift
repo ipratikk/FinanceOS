@@ -258,15 +258,14 @@ enum TabularTransactionDecoder {
                     return nil
                 }
 
-                let amountMinorUnits: Int64?
-                if let amountIndex {
-                    amountMinorUnits = try? parseAmountWithSign(
+                let amountMinorUnits: Int64? = if let amountIndex {
+                    try? parseAmountWithSign(
                         row: row,
                         amountIndex: amountIndex,
                         billingSignIndex: billingSignIndex
                     )
                 } else {
-                    amountMinorUnits = try? parseAmountMinorUnits(
+                    try? parseAmountMinorUnits(
                         row: row,
                         amountIndex: nil,
                         debitIndex: debitIndex,

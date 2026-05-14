@@ -10,4 +10,6 @@ import Foundation
 public protocol InstitutionRepository: Sendable {
     func fetchInstitutions() async throws -> [Institution]
     func insert(_ institution: Institution) async throws
+    func update(_ institution: Institution) async throws
+    func delete(id: UUID) async throws
 }
