@@ -47,89 +47,6 @@ enum TabularTransactionDecoder {
         )
     }
 
-    static func decodeRows(
-        _ rows: [[String]]
-    ) throws -> [ParsedTransaction] {
-        guard let headerRow = rows.first else {
-            return []
-        }
-
-        let normalizedHeaders = headerRow.map(normalizeHeader)
-
-        guard let dateIndex = index(
-            in: normalizedHeaders,
-            matchingAnyOf: ["date", "posteddate", "transactiondate", "txn date", "txn_date"]
-        ) else {
-            throw TransactionImportError.missingRequiredColumn("date")
-        }
-
-        guard let descriptionIndex = index(
-            in: normalizedHeaders,
-            matchingAnyOf: ["description", "details", "narration", "merchant", "transaction"]
-        ) else {
-            throw TransactionImportError.missingRequiredColumn("description")
-        }
-
-        let amountIndex = index(
-            in: normalizedHeaders,
-            matchingAnyOf: ["amount", "transactionamount"]
-        )
-
-        let debitIndex = index(
-            in: normalizedHeaders,
-            matchingAnyOf: ["debit", "withdrawal", "debitamount"]
-        )
-
-        let creditIndex = index(
-            in: normalizedHeaders,
-            matchingAnyOf: ["credit", "deposit", "creditamount"]
-        )
-
-        guard amountIndex != nil || debitIndex != nil || creditIndex != nil else {
-            throw TransactionImportError.missingRequiredColumn("amount")
-        }
-
-        let currencyIndex = index(
-            in: normalizedHeaders,
-            matchingAnyOf: ["currency", "currencycode", "ccy"]
-        )
-
-        return try rows
-            .dropFirst()
-            .compactMap { row in
-                if row.allSatisfy({ $0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) {
-                    return nil
-                }
-
-                let dateString = value(at: dateIndex, in: row)
-                let description = value(at: descriptionIndex, in: row)
-                let currencyCode = currencyIndex.map { value(at: $0, in: row) }
-                    .flatMap(nonEmptyValue(_:)) ?? "INR"
-
-                let postedAt = try parseDate(dateString)
-                let amountMinorUnits = try parseAmountMinorUnits(
-                    row: row,
-                    amountIndex: amountIndex,
-                    debitIndex: debitIndex,
-                    creditIndex: creditIndex
-                )
-                let fingerprint = [
-                    isoDateString(from: postedAt),
-                    description,
-                    String(amountMinorUnits),
-                    currencyCode
-                ].joined(separator: "|")
-
-                return ParsedTransaction(
-                    postedAt: postedAt,
-                    description: description,
-                    amountMinorUnits: amountMinorUnits,
-                    currencyCode: currencyCode,
-                    sourceFingerprint: fingerprint,
-                    rewardPoints: nil
-                )
-            }
-    }
 
     private static func index(
         in headers: [String],
@@ -275,25 +192,24 @@ enum TabularTransactionDecoder {
     private static func extractMetadata(
         _ rows: [[String]]
     ) throws -> (StatementMetadata, [[String]]) {
-        var institution = "Unknown"
-        var accountName = "Unknown"
-        var cardLast4: String?
-        var transactionStartIndex = 0
+        let detectors: [StatementDetector] = [
+            ICICIStatementDetector(),
+            HDFCStatementDetector(),
+            AmexStatementDetector()
+        ]
 
-        let isICICI = rows.first?.first?.lowercased().contains("accountno") ?? false
-
-        if isICICI {
-            institution = "ICICI"
-            if rows.count > 1 {
-                accountName = extractValue(rows[1])
+        var detected: DetectedStatementMetadata?
+        for detector in detectors {
+            if let metadata = detector.detect(from: rows) {
+                detected = metadata
+                break
             }
-            if rows.count > 7 {
-                cardLast4 = extractCardLast4(rows[7])
-            }
-            transactionStartIndex = 6
-        } else {
-            transactionStartIndex = 0
         }
+
+        let institution = detected?.institution ?? "Unknown"
+        let accountName = detected?.accountName ?? "Unknown"
+        let cardLast4 = detected?.cardLast4
+        let transactionStartIndex = detected?.transactionStartIndex ?? 0
 
         let transactionRows = Array(rows.dropFirst(transactionStartIndex))
         let currency = transactionRows.first.map(extractCurrencyFromHeaders) ?? "INR"
@@ -309,17 +225,6 @@ enum TabularTransactionDecoder {
         )
     }
 
-    private static func extractValue(_ row: [String]) -> String {
-        guard row.count >= 2 else { return "Unknown" }
-        return value(at: 1, in: row)
-    }
-
-    private static func extractCardLast4(_ row: [String]) -> String? {
-        guard let cardString = row.first else { return nil }
-        let digits = String(cardString.filter(\.isNumber))
-        guard digits.count >= 4 else { return nil }
-        return String(digits.suffix(4))
-    }
 
     private static func decodeTransactions(
         _ rows: [[String]]
@@ -349,6 +254,16 @@ enum TabularTransactionDecoder {
             matchingAnyOf: ["amountinrs", "amount", "transactionamount"]
         )
 
+        let debitIndex = index(
+            in: normalizedHeaders,
+            matchingAnyOf: ["debit", "withdrawal", "debitamount"]
+        )
+
+        let creditIndex = index(
+            in: normalizedHeaders,
+            matchingAnyOf: ["credit", "deposit", "creditamount"]
+        )
+
         let billingSignIndex = index(
             in: normalizedHeaders,
             matchingAnyOf: ["billingamountsign"]
@@ -359,7 +274,7 @@ enum TabularTransactionDecoder {
             matchingAnyOf: ["rewardpointheader", "rewardpoints", "points"]
         )
 
-        guard amountIndex != nil else {
+        guard amountIndex != nil || debitIndex != nil || creditIndex != nil else {
             throw TransactionImportError.missingRequiredColumn("amount")
         }
 
@@ -384,11 +299,22 @@ enum TabularTransactionDecoder {
                 let description = value(at: descriptionIndex, in: row)
 
                 let postedAt = try parseDate(dateString)
-                let amountMinorUnits = try parseAmountWithSign(
-                    row: row,
-                    amountIndex: amountIndex!,
-                    billingSignIndex: billingSignIndex
-                )
+                let amountMinorUnits: Int64
+
+                if let amountIndex {
+                    amountMinorUnits = try parseAmountWithSign(
+                        row: row,
+                        amountIndex: amountIndex,
+                        billingSignIndex: billingSignIndex
+                    )
+                } else {
+                    amountMinorUnits = try parseAmountMinorUnits(
+                        row: row,
+                        amountIndex: nil,
+                        debitIndex: debitIndex,
+                        creditIndex: creditIndex
+                    )
+                }
 
                 let rewardPoints: Int? = rewardPointsIndex.flatMap { idx in
                     let pointsStr = value(at: idx, in: row)
