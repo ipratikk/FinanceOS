@@ -62,8 +62,6 @@ private func fileFormat(for url: URL) -> StatementFileFormat {
     switch pathExtension {
     case "csv":
         return .csv
-    case "xls":
-        return .xls
     case "xlsx":
         return .xlsx
     default:

@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-15)
 
 ## Corpus Check
-- 80 files · ~18,717 words
+- 80 files · ~18,704 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 658 nodes · 874 edges · 58 communities (30 shown, 28 thin omitted)
+- 658 nodes · 874 edges · 59 communities (30 shown, 29 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 37 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ac5bd5bb`
+- Built from commit: `a34b81b9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -63,10 +63,11 @@
 - [[_COMMUNITY_Community 45|Community 45]]
 - [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
-- [[_COMMUNITY_Community 51|Community 51]]
+- [[_COMMUNITY_Community 48|Community 48]]
 - [[_COMMUNITY_Community 52|Community 52]]
 - [[_COMMUNITY_Community 53|Community 53]]
-- [[_COMMUNITY_Community 57|Community 57]]
+- [[_COMMUNITY_Community 54|Community 54]]
+- [[_COMMUNITY_Community 58|Community 58]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `ImportViewModel` - 23 edges
@@ -97,7 +98,7 @@
 - **Database Lifecycle Flow** — databasemanager_shared, databasemanager_migrator, appmigration_registermigrations, databasemanager_seed_database, databaseseeder_seedinstitutions [EXTRACTED 1.00]
 - **Architecture Rules To Code** — architecture_layered_flow, architecture_database_lifecycle_rule, architecture_dependency_composition_rule, architecture_repository_abstraction_rule, architecture_ui_database_boundary_rule, architecture_persistence_encapsulation_rule [EXTRACTED 1.00]
 
-## Communities (58 total, 28 thin omitted)
+## Communities (59 total, 29 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.05
@@ -156,16 +157,16 @@ Cohesion: 0.2
 Nodes (7): DependencyChecker, DependencyStep, StepStatus, done, failed, pending, running
 
 ### Community 14 - "Community 14"
-Cohesion: 0.12
-Nodes (8): StatementParser, TransactionImporting, AccountRepository, BankRepository, CardRepository, InstitutionRepository, TransactionRepository, Sendable
-
-### Community 15 - "Community 15"
 Cohesion: 0.13
 Nodes (3): MockTransactionRepository, GRDBTransactionRepository, TransactionRepository
 
-### Community 17 - "Community 17"
+### Community 16 - "Community 16"
 Cohesion: 0.23
 Nodes (13): Current Architectural Constraints, Current Completed Features, Current Naming, Current Repositories, Current Risks, Current UI Flow, Database, Dependency Composition (+5 more)
+
+### Community 17 - "Community 17"
+Cohesion: 0.15
+Nodes (7): StatementParser, TransactionImporting, AccountRepository, BankRepository, CardRepository, InstitutionRepository, Sendable
 
 ### Community 19 - "Community 19"
 Cohesion: 0.18
@@ -196,20 +197,20 @@ Cohesion: 0.5
 Nodes (3): StatementSourceType, bankAccount, creditCard
 
 ## Knowledge Gaps
-- **89 isolated node(s):** `createAccount`, `createCard`, `pending`, `running`, `done` (+84 more)
+- **89 isolated node(s):** `pending`, `running`, `done`, `failed`, `createAccount` (+84 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **28 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **29 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ImportView` connect `Community 9` to `Community 30`?**
   _High betweenness centrality (0.150) - this node is a cross-community bridge._
-- **Why does `ParsedStatement` connect `Community 0` to `Community 14`, `Community 7`?**
+- **Why does `ParsedStatement` connect `Community 0` to `Community 17`, `Community 7`?**
   _High betweenness centrality (0.092) - this node is a cross-community bridge._
 - **Are the 12 inferred relationships involving `String` (e.g. with `extractRows()` and `convertXLSToCSV()`) actually correct?**
   _`String` has 12 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `createAccount`, `createCard`, `pending` to the rest of the system?**
+- **What connects `pending`, `running`, `done` to the rest of the system?**
   _89 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._

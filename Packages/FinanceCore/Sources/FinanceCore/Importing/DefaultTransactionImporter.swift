@@ -17,7 +17,6 @@ public struct DefaultTransactionImporter:
     public init(
         parsers: [any StatementParser] = [
             CSVStatementParser(),
-            XLSStatementParser(),
             XLSXStatementParser()
         ],
         registry: StatementParserRegistry = StatementParserRegistry(
@@ -53,8 +52,6 @@ public struct DefaultTransactionImporter:
 
         if let csvParser = formatParser as? CSVStatementParser {
             rows = try await csvParser.extractRows(from: fileURL)
-        } else if let xlsParser = formatParser as? XLSStatementParser {
-            rows = try await xlsParser.extractRows(from: fileURL)
         } else if let xlsxParser = formatParser as? XLSXStatementParser {
             rows = try await xlsxParser.extractRows(from: fileURL)
         } else {
