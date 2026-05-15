@@ -1,7 +1,16 @@
 import FinanceCore
 import Foundation
+import OSLog
 
 extension ImportViewModel {
+    private struct TargetParams {
+        let bank: Bank
+        let statement: ParsedStatement
+        let customName: String?
+        let last4: String
+        let nickname: String
+    }
+
     func createTargetFromDetected(
         customName: String? = nil,
         nickname: String = "",
@@ -21,11 +30,18 @@ extension ImportViewModel {
                 for: statement,
                 providedBankID: bankID
             )
+            let params = TargetParams(
+                bank: bank,
+                statement: statement,
+                customName: customName,
+                last4: last4,
+                nickname: nickname
+            )
             let isCardTarget = isCard ?? (statement.cardLast4 != nil)
             if isCardTarget {
-                try await createCard(bank, statement, customName, last4, cardType, nickname)
+                try await createCard(params, cardType: cardType)
             } else {
-                try await createAccount(bank, statement, customName, last4, accountType, nickname)
+                try await createAccount(params, accountType: accountType)
             }
         } catch {
             let errorDesc = error.localizedDescription
@@ -39,12 +55,13 @@ extension ImportViewModel {
         providedBankID: UUID?
     ) async throws -> Bank {
         let detectedBankName = statement.bankName
+        // swiftformat:disable all
         if let providedBankID,
            let found = try await bankRepository.fetchBanks()
-           .first(where: { $0.id == providedBankID })
-        {
+           .first(where: { $0.id == providedBankID }) {
             return found
         }
+        // swiftformat:enable all
         let existingBanks = try await bankRepository.fetchBanks()
         if let existingBank = existingBanks.first(where: { $0.name == detectedBankName }) {
             return existingBank
@@ -55,24 +72,20 @@ extension ImportViewModel {
     }
 
     private func createCard(
-        _ bank: Bank,
-        _ statement: ParsedStatement,
-        _ customName: String?,
-        _ last4: String,
-        _ cardType: CardType,
-        _ nickname: String
+        _ params: TargetParams,
+        cardType: CardType
     ) async throws {
-        let cardName = customName ??
-            (statement.cardLast4
-                .map { "\(statement.bankName) Card - \($0)" } ??
-                "\(statement.bankName) Card")
+        let cardName = params.customName ??
+            (params.statement.cardLast4
+                .map { "\(params.statement.bankName) Card - \($0)" } ??
+                "\(params.statement.bankName) Card")
         let card = Card(
-            bankId: bank.id,
+            bankId: params.bank.id,
             linkedAccountId: nil,
             cardName: cardName,
-            cardLast4: last4,
+            cardLast4: params.last4,
             cardType: cardType,
-            nickname: nickname
+            nickname: params.nickname
         )
         try await cardRepository.insert(card)
         selectedTarget = .card(card.id)
@@ -81,23 +94,19 @@ extension ImportViewModel {
     }
 
     private func createAccount(
-        _ bank: Bank,
-        _ statement: ParsedStatement,
-        _ customName: String?,
-        _ last4: String,
-        _ accountType: AccountType,
-        _ nickname: String
+        _ params: TargetParams,
+        accountType: AccountType
     ) async throws {
-        let accountName = customName ??
-            (statement.accountName.isEmpty ?
-                "\(statement.bankName) Account" :
-                statement.accountName)
+        let accountName = params.customName ??
+            (params.statement.accountName.isEmpty ?
+                "\(params.statement.bankName) Account" :
+                params.statement.accountName)
         let account = Account(
-            bankId: bank.id,
+            bankId: params.bank.id,
             accountName: accountName,
-            accountLast4: last4,
+            accountLast4: params.last4,
             accountType: accountType,
-            nickname: nickname
+            nickname: params.nickname
         )
         try await accountRepository.insert(account)
         selectedTarget = .account(account.id)
