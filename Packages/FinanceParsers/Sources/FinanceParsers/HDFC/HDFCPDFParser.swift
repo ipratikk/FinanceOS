@@ -31,24 +31,15 @@ public struct HDFCPDFParser: StatementParser {
             }
 
             let trimmedPwd = pwd.trimmingCharacters(in: .whitespaces)
-            print(
-                "[HDFCPDFParser] PDF locked, attempting unlock with password (length: \(pwd.count), trimmed: \(trimmedPwd.count))"
-            )
-
-            let unlockTrimmed = doc.unlock(withPassword: trimmedPwd)
-            print("[HDFCPDFParser] Unlock with trimmed password returned: \(unlockTrimmed), isLocked: \(doc.isLocked)")
-
-            if doc.isLocked, trimmedPwd != pwd {
-                let unlockRaw = doc.unlock(withPassword: pwd)
-                print("[HDFCPDFParser] Unlock with raw password returned: \(unlockRaw), isLocked: \(doc.isLocked)")
+            _ = doc.unlock(withPassword: trimmedPwd)
+            if doc.isLocked {
+                _ = doc.unlock(withPassword: pwd)
             }
 
             if doc.isLocked {
                 let filename = fileURL.lastPathComponent
-                print("[HDFCPDFParser] Still locked after unlock attempts, throwing passwordProtected error")
                 throw TransactionImportError.passwordProtected(filename)
             }
-            print("[HDFCPDFParser] Successfully unlocked PDF")
         }
 
         var lines: [String] = []
@@ -57,8 +48,12 @@ public struct HDFCPDFParser: StatementParser {
             lines.append(contentsOf: extractLines(from: page))
         }
 
-        guard let headerIdx = lines.firstIndex(where: {
-            $0.lowercased().contains("date") && $0.lowercased().contains("narration")
+        guard let headerIdx = lines.firstIndex(where: { line in
+            let lower = line.lowercased()
+            let hasDate = lower.contains("date")
+            let hasNarration = lower.contains("narration")
+            let hasDelimiter = line.contains("|") || lower.contains("debit") || lower.contains("credit")
+            return hasDate && hasNarration && hasDelimiter
         }) else {
             throw TransactionImportError.malformedFile("No transaction table found in PDF")
         }
