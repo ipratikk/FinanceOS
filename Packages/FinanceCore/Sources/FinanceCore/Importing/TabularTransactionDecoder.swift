@@ -223,12 +223,12 @@ enum TabularTransactionDecoder {
 
         let debitIndex = index(
             in: normalizedHeaders,
-            matchingAnyOf: ["debit", "withdrawal", "debitamount"]
+            matchingAnyOf: ["debit", "withdrawal", "withdrawals", "debitamount"]
         )
 
         let creditIndex = index(
             in: normalizedHeaders,
-            matchingAnyOf: ["credit", "deposit", "creditamount"]
+            matchingAnyOf: ["credit", "deposit", "deposits", "creditamount"]
         )
 
         let billingSignIndex = index(
