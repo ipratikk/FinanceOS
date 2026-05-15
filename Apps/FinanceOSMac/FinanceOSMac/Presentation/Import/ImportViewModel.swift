@@ -3,7 +3,7 @@ import Foundation
 import Observation
 import OSLog
 
-private let logger = FinanceLogger.importPipeline
+let logger = FinanceLogger.importPipeline
 
 private func logInfo(_ staticMsg: StaticString, _ attrs: [String: CustomStringConvertible]) {
     var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
