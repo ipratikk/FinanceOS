@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceParsers
 import Foundation
 
 struct MockTransactionRepository: TransactionRepository {

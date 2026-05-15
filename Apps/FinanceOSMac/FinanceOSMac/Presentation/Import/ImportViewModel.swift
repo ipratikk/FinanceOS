@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceParsers
 import Foundation
 import Observation
 import OSLog
@@ -58,7 +59,7 @@ func fileFormat(for url: URL) -> StatementFileFormat {
     }
 }
 
-private func formatError(_ error: TransactionImportError) -> String {
+private func formatError(_ error: FinanceCore.TransactionImportError) -> String {
     switch error {
     case let .unsupportedFormat(format):
         return "Unsupported file format: \(format.rawValue)"
@@ -111,7 +112,7 @@ final class ImportViewModel {
     let accountRepository: any AccountRepository
     let cardRepository: any CardRepository
     let transactionRepository: any TransactionRepository
-    let parserRegistry: StatementParserRegistry
+    let parserRegistry: FinanceCore.StatementParserRegistry
 
     init(
         transactionImporter: any TransactionImporting,
@@ -120,7 +121,7 @@ final class ImportViewModel {
         accountRepository: any AccountRepository,
         cardRepository: any CardRepository,
         transactionRepository: any TransactionRepository,
-        parserRegistry: StatementParserRegistry
+        parserRegistry: FinanceCore.StatementParserRegistry
     ) {
         self.transactionImporter = transactionImporter
         self.transactionImportPipeline = transactionImportPipeline
@@ -179,7 +180,7 @@ final class ImportViewModel {
             }
             logger.info("Parsed \(fileName, privacy: .public): \(statement.transactions.count, privacy: .public) txns")
             return (statement, false)
-        } catch let error as TransactionImportError {
+        } catch let error as FinanceCore.TransactionImportError {
             if case .passwordProtected = error {
                 passwordPromptFilename = fileURL.lastPathComponent
                 isLoading = false

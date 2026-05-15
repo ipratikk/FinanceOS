@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceParsers
 import Foundation
 import OSLog
 
@@ -38,7 +39,7 @@ extension ImportViewModel {
             let result: ImportResult
             if format == .pdf {
                 guard index < parsedStatements.count else {
-                    throw TransactionImportError.malformedFile("Parsed statement not available")
+                    throw FinanceCore.TransactionImportError.malformedFile("Parsed statement not available")
                 }
                 result = try await importStatement(parsedStatements[index], target: target)
             } else {
