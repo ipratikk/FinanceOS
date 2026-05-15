@@ -78,7 +78,6 @@ class HDFCTextBasedParser {
         return transactions
     }
 
-
     func parseToNormalizedTransactions(_ reconstructed: [ReconstructedTransaction]) -> [ParsedTransaction] {
         var transactions: [ParsedTransaction] = []
 
