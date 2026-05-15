@@ -33,13 +33,10 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
 
     public func extractLines(from page: PDFPage) -> [String] {
         guard let cgImage = renderPage(page) else {
-            print("VisionPDFTextExtractor: renderPage failed")
             return []
         }
         let observations = recognizeText(in: cgImage)
-        print("VisionPDFTextExtractor: recognized \(observations.count) text observations")
         let lines = groupIntoRows(observations)
-        print("VisionPDFTextExtractor: grouped into \(lines.count) rows")
         return lines
     }
 
@@ -82,12 +79,10 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
         do {
             try handler.perform([request])
         } catch {
-            print("VisionPDFTextExtractor: Vision request failed: \(error)")
             return []
         }
 
         guard let results = request.results else {
-            print("VisionPDFTextExtractor: no results from Vision")
             return []
         }
         var out: [Observation] = []
@@ -116,7 +111,23 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
         lines.reserveCapacity(buckets.count)
         for bucket in buckets {
             let sorted = bucket.items.sorted { $0.x < $1.x }
-            let joined = sorted.map(\.text).joined(separator: " ")
+
+            // Preserve rough column structure by using tab separators.
+            // Observations close in X position belong to the same column group.
+            let columnTolerance: CGFloat = 0.05
+            var columnGroups: [(x: CGFloat, texts: [String])] = []
+
+            for obs in sorted {
+                // Check if this obs belongs to an existing column group
+                if let idx = columnGroups.firstIndex(where: { abs($0.x - obs.x) < columnTolerance }) {
+                    columnGroups[idx].texts.append(obs.text)
+                } else {
+                    // New column group
+                    columnGroups.append((x: obs.x, texts: [obs.text]))
+                }
+            }
+
+            let joined = columnGroups.map { $0.texts.joined(separator: " ") }.joined(separator: "\t")
             let trimmed = joined.trimmingCharacters(in: .whitespaces)
             if !trimmed.isEmpty {
                 lines.append(trimmed)

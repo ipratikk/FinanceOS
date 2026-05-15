@@ -21,6 +21,7 @@ class HDFCTextBasedParser {
         var currentDate: String?
         var currentNarration: [String] = []
         var currentAmounts: [Double] = []
+        var currentColumns: [(withdrawal: Double?, deposit: Double?)] = []
 
         for line in lines {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
@@ -44,9 +45,11 @@ class HDFCTextBasedParser {
                 currentDate = date
                 currentNarration = []
                 currentAmounts = []
+                currentColumns = []
 
-                // Extract amounts from this line
+                // Extract amounts from this line using column structure
                 currentAmounts = extractAmounts(from: trimmed)
+                currentColumns = extractColumnAmounts(from: trimmed)
             } else {
                 // Continuation of narration for current transaction
                 if currentDate != nil {
@@ -70,11 +73,42 @@ class HDFCTextBasedParser {
         return transactions
     }
 
+    private func extractColumnAmounts(from line: String) -> [(withdrawal: Double?, deposit: Double?)] {
+        // Parse tab-separated columns to extract withdrawal/deposit amounts
+        let columns = line.split(separator: "\t", omittingEmptySubsequences: true).map(String.init)
+        guard columns.count >= 5 else {
+            return []
+        }
+
+        // HDFC column order: Date | Narration | Chq/Ref | Value Date | Withdrawal | Deposit | Closing Balance
+        // After grouping, columns might shift, so look for amount patterns
+        var result: [(withdrawal: Double?, deposit: Double?)] = []
+
+        // Try to parse withdrawal (column 4 in typical layout) and deposit (column 5)
+        if columns.count >= 6 {
+            let withdrawalText = columns[4]
+            let depositText = columns[5]
+
+            let withdrawal = withdrawalText.split(separator: " ").compactMap { s in
+                parseAmount(String(s))
+            }.first
+
+            let deposit = depositText.split(separator: " ").compactMap { s in
+                parseAmount(String(s))
+            }.first
+
+            result.append((withdrawal: withdrawal, deposit: deposit))
+        }
+
+        return result
+    }
+
     func parseToNormalizedTransactions(_ reconstructed: [ReconstructedTransaction]) -> [ParsedTransaction] {
         var transactions: [ParsedTransaction] = []
 
         for txn in reconstructed {
-            let narration = txn.narrationLines.joined(separator: " ").trimmingCharacters(in: .whitespaces)
+            let narration = txn.narrationLines.joined(separator: "\t").trimmingCharacters(in: .whitespaces)
+                .replacingOccurrences(of: "\t", with: " ")
 
             // Determine debit/credit from amounts
             let (debit, credit) = extractDebitCredit(from: txn.amounts)
@@ -85,18 +119,10 @@ class HDFCTextBasedParser {
 
             // Calculate amount
             let amount: Int64
-            if let debit, let credit {
-                if debit > 0, credit == 0 {
-                    amount = Int64(-debit * 100)
-                } else if credit > 0, debit == 0 {
-                    amount = Int64(credit * 100)
-                } else {
-                    amount = Int64((credit - debit) * 100)
-                }
+            if let debit {
+                amount = Int64(-debit * 100)
             } else if let credit {
                 amount = Int64(credit * 100)
-            } else if let debit {
-                amount = Int64(-debit * 100)
             } else {
                 continue
             }
@@ -133,10 +159,14 @@ class HDFCTextBasedParser {
     private func extractAmounts(from line: String) -> [Double] {
         var amounts: [Double] = []
 
-        let parts = line.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
-        for part in parts {
-            if let amount = parseAmount(part) {
-                amounts.append(amount)
+        // Split by tabs (column separator) and spaces (within column)
+        let columns = line.split(separator: "\t", omittingEmptySubsequences: true).map(String.init)
+        for column in columns {
+            let parts = column.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
+            for part in parts {
+                if let amount = parseAmount(part) {
+                    amounts.append(amount)
+                }
             }
         }
 
@@ -145,25 +175,43 @@ class HDFCTextBasedParser {
 
     private func parseAmount(_ text: String) -> Double? {
         let cleaned = text.replacingOccurrences(of: ",", with: "").trimmingCharacters(in: .whitespaces)
-        return Double(cleaned)
+        guard let value = Double(cleaned) else { return nil }
+
+        // Filter out likely dates (DDMMYY = 6 digits) and reference numbers
+        if cleaned.count == 6, Int(cleaned) != nil {
+            return nil
+        }
+
+        return value
     }
 
     private func extractDebitCredit(from amounts: [Double]) -> (debit: Double?, credit: Double?) {
-        // HDFC format: [withdrawal_amt, deposit_amt, closing_balance, ...]
-        // Only use the first 3 amounts; ignore any beyond (they're from narration)
-        let significantAmounts = amounts.prefix(3)
+        // HDFC format: Withdrawal Amt | Deposit Amt | Closing Balance
+        // Challenge: without preserving column position through parsing, can't distinguish
+        // withdrawal vs deposit reliably. Filter to reasonable transaction size.
+        let txnAmounts = amounts.filter { $0 >= 100 && $0 < 1_000_000 }
 
-        guard significantAmounts.count >= 2 else {
+        guard txnAmounts.count >= 1 else {
             return (nil, nil)
         }
 
-        let withdrawal = significantAmounts[0]
-        let deposit = significantAmounts[1]
-        // closing_balance (significantAmounts[2]) is ignored
+        // Take the smallest amount as the transaction (likely < closing balance)
+        let amount = txnAmounts.min() ?? txnAmounts[0]
 
-        // In HDFC format, withdrawal and deposit are mutually exclusive
-        let debit = withdrawal > 0 ? withdrawal : nil
-        let credit = deposit > 0 ? deposit : nil
+        // Without column position info, use amount heuristic:
+        // Deposits are typically large (salary, transfers in)
+        // Withdrawals are typically smaller (payments, transfers out)
+        // Threshold: 100K separates typical payments from deposits
+        let debit: Double?
+        let credit: Double?
+
+        if amount >= 100_000 {
+            debit = nil
+            credit = amount
+        } else {
+            debit = amount
+            credit = nil
+        }
 
         return (debit, credit)
     }

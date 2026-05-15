@@ -12,10 +12,8 @@ public struct HDFCPDFParser: StatementParser {
         self.password = password
         #if canImport(Vision) && canImport(AppKit)
         visionExtractor = VisionPDFTextExtractor()
-        print("HDFCPDFParser: Vision available, created VisionPDFTextExtractor")
         #else
         visionExtractor = nil
-        print("HDFCPDFParser: Vision NOT available, will use PDFKit fallback")
         #endif
     }
 
