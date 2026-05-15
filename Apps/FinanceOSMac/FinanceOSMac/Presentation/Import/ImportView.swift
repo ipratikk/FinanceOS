@@ -14,6 +14,9 @@ struct ImportView: View {
 
     @State private var targetChoice: TargetChoice?
     @State private var isTargeted = false
+    @State private var ssconvertMissing = false
+    @State private var showInstallerSheet = false
+    @State private var installerSteps: [DependencyStep] = []
 
     var body: some View {
         Group {
@@ -24,6 +27,7 @@ struct ImportView: View {
             }
         }
         .onAppear {
+            ssconvertMissing = !DependencyChecker.isSSConvertAvailable()
             Task {
                 await viewModel.loadTargetsOnAppear()
             }
@@ -37,6 +41,12 @@ struct ImportView: View {
                 }
             } else {
                 targetChoice = nil
+            }
+        }
+        .sheet(isPresented: $showInstallerSheet) {
+            DependencyInstallerView(steps: $installerSteps) {
+                showInstallerSheet = false
+                ssconvertMissing = !DependencyChecker.isSSConvertAvailable()
             }
         }
         .onChange(of: targetChoice) { _, newValue in
@@ -221,6 +231,40 @@ struct ImportView: View {
 
     private var supportedSourcesView: some View {
         VStack(alignment: .leading, spacing: 8) {
+            if ssconvertMissing {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                        Text("XLS/XLSX require gnumeric")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                    }
+
+                    Button("Install Dependencies") {
+                        showInstallerSheet = true
+                        installerSteps = []
+                        Task {
+                            await DependencyChecker.ensureSSConvertAvailable { step in
+                                DispatchQueue.main.async {
+                                    if let index = installerSteps.firstIndex(where: { $0.id == step.id }) {
+                                        installerSteps[index] = step
+                                    } else {
+                                        installerSteps.append(step)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .controlSize(.small)
+                }
+                .padding()
+                .background(Color.orange.opacity(0.1))
+                .cornerRadius(4)
+
+                Divider()
+            }
+
             Text("Supported Statements")
                 .font(.caption)
                 .fontWeight(.semibold)
