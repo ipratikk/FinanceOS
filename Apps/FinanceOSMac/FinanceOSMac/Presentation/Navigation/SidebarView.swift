@@ -53,7 +53,7 @@ struct SidebarView: View {
     var mainNavigation: some View {
         VStack(alignment: .leading, spacing: 4) {
             ForEach(NavigationItem.allCases, id: \.self) { item in
-                NavigationLink(value: item) {
+                Button(action: { selection = item }, label: {
                     HStack(spacing: 12) {
                         Image(systemName: item.icon)
                             .font(.system(size: 16, weight: .semibold))
@@ -70,7 +70,7 @@ struct SidebarView: View {
                     .background(selection == item ? Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.2) : Color
                         .clear)
                     .cornerRadius(8)
-                }
+                })
             }
         }
     }
