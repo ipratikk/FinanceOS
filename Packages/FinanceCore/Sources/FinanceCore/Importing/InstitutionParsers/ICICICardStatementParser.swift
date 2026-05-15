@@ -17,14 +17,25 @@ public struct ICICICardStatementParser: InstitutionStatementParser {
     }
 
     public func parse(rows: [[String]]) throws -> ParsedStatement {
-        guard rows.count > 9 else {
+        guard rows.count > 4 else {
             throw TransactionImportError.malformedFile("ICICI card statement too short")
         }
 
         let accountName = rows.count > 2 && rows[2].count > 1 ? rows[2][1]
             .trimmingCharacters(in: .whitespacesAndNewlines) : "Unknown"
-        let cardLast4 = rows.count > 8 && !rows[8].isEmpty ? extractCardLast4(rows[8][0]) : nil
-        let transactionRows = Array(rows.dropFirst(9))
+
+        var cardLast4: String? = nil
+        for row in rows {
+            if !row.isEmpty, row[0].count >= 10 {
+                let digits = String(row[0].filter(\.isNumber))
+                if digits.count == 16 {
+                    cardLast4 = String(digits.suffix(4))
+                    break
+                }
+            }
+        }
+
+        let transactionRows = Array(rows.dropFirst(4))
 
         let currency = "INR"
         let transactions = try TabularTransactionDecoder.decodeTransactions(transactionRows)
