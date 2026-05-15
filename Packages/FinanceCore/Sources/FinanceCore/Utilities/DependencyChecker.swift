@@ -120,7 +120,7 @@ public enum DependencyChecker {
 
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/bash")
-        process.arguments = ["-c", "brew install gnumeric"]
+        process.arguments = ["-c", "eval \"$(/opt/homebrew/bin/brew shellenv)\" && brew install gnumeric"]
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
@@ -129,7 +129,11 @@ public enum DependencyChecker {
 
         let environment = ProcessInfo.processInfo.environment
         var processEnv = environment
-        processEnv["PATH"] = "\(environment["PATH"] ?? "")"
+        // Add common Homebrew paths to ensure brew is found
+        let brewPaths = ["/opt/homebrew/bin", "/usr/local/bin"]
+        let currentPath = environment["PATH"] ?? ""
+        let newPath = brewPaths.filter { !currentPath.contains($0) }.joined(separator: ":") + ":" + currentPath
+        processEnv["PATH"] = newPath
 
         process.environment = processEnv
 
