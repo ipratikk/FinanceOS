@@ -87,6 +87,7 @@ enum TabularTransactionDecoder {
         _ header: String
     ) -> String {
         header
+            .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
             .lowercased()
             .replacingOccurrences(of: "_", with: "")
             .replacingOccurrences(of: "-", with: "")
