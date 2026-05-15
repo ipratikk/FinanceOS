@@ -94,7 +94,7 @@ final class ImportViewModel {
     var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
 
-    private var pdfPassword: String?
+    var pdfPassword: String?
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(fileURLs, parsedStatements).map { ($0, $1) }

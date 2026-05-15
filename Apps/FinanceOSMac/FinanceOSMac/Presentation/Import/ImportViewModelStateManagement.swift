@@ -35,11 +35,19 @@ extension ImportViewModel {
 
             logger.debug("Importing file \(fileNumber)/\(fileCount): \(fileName, privacy: .public)")
 
-            let result = try await transactionImportPipeline.execute(
-                fileURL: fileURL,
-                format: format,
-                target: target
-            )
+            let result: ImportResult
+            if format == .pdf {
+                guard index < parsedStatements.count else {
+                    throw TransactionImportError.malformedFile("Parsed statement not available")
+                }
+                result = try await importStatement(parsedStatements[index], target: target)
+            } else {
+                result = try await transactionImportPipeline.execute(
+                    fileURL: fileURL,
+                    format: format,
+                    target: target
+                )
+            }
 
             totalInserted += result.inserted
             totalSkipped += result.skipped
@@ -55,6 +63,38 @@ extension ImportViewModel {
             "skipped": totalSkipped
         ])
         return ImportResult(inserted: totalInserted, skipped: totalSkipped)
+    }
+
+    private func importStatement(
+        _ statement: ParsedStatement,
+        target: TransactionImportTarget
+    ) async throws -> ImportResult {
+        let transactions = statement.transactions.map { parsedTxn in
+            let accountID: UUID?
+            let cardID: UUID?
+
+            switch target {
+            case let .account(id):
+                accountID = id
+                cardID = nil
+            case let .card(id):
+                accountID = nil
+                cardID = id
+            }
+
+            return Transaction(
+                accountID: accountID,
+                cardID: cardID,
+                postedAt: parsedTxn.postedAt,
+                description: parsedTxn.description,
+                amountMinorUnits: abs(parsedTxn.amountMinorUnits),
+                currencyCode: parsedTxn.currencyCode,
+                transactionType: parsedTxn.amountMinorUnits < 0 ? .debit : .credit,
+                sourceFingerprint: parsedTxn.sourceFingerprint
+            )
+        }
+
+        return try await transactionRepository.insertTransactions(transactions)
     }
 
     func autoSelectMatchingTarget() async {
