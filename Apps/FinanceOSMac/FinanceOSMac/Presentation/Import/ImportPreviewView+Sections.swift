@@ -73,19 +73,12 @@ extension ImportPreviewView {
         self.isCard = isCard
 
         if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
-            newEntityName = "\(detected) •••• \(cardLast4)"
+            newEntityName = ""
             newEntityNickname = ""
             newEntityLast4 = cardLast4
         } else {
             let accountLast4 = viewModel.parsedStatements.first?.accountLast4 ?? ""
-            let accountName = viewModel.parsedStatements.first?.accountName ?? ""
-            if !accountLast4.isEmpty {
-                newEntityName = "\(detected) •••• \(accountLast4)"
-            } else if !accountName.isEmpty {
-                newEntityName = accountName
-            } else {
-                newEntityName = "\(detected) Account"
-            }
+            newEntityName = ""
             newEntityNickname = ""
             newEntityLast4 = accountLast4
         }

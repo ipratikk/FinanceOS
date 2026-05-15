@@ -21,7 +21,7 @@ struct CreateNewTargetSheet: View {
         NavigationStack {
             Form {
                 Section("Name") {
-                    TextField("Name", text: $name)
+                    TextField("Name (optional)", text: $name)
                 }
 
                 Section("Bank") {
@@ -34,16 +34,16 @@ struct CreateNewTargetSheet: View {
                     }
                 }
 
-                if isCard {
-                    Section("Card Details") {
+                Section(isCard ? "Card Details" : "Account Details") {
+                    if isCard {
                         TextField("Nickname", text: $nickname)
-                        TextField("Last 4 Digits", text: $last4)
-                            .onChange(of: last4) { _, newValue in
-                                if newValue.count > 4 {
-                                    last4 = String(newValue.prefix(4))
-                                }
-                            }
                     }
+                    TextField("Last 4 Digits", text: $last4)
+                        .onChange(of: last4) { _, newValue in
+                            if newValue.count > 4 {
+                                last4 = String(newValue.prefix(4))
+                            }
+                        }
                 }
 
                 if !banks.isEmpty {
@@ -69,7 +69,7 @@ struct CreateNewTargetSheet: View {
                     Button("Create") {
                         onCreate()
                     }
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(last4.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }
