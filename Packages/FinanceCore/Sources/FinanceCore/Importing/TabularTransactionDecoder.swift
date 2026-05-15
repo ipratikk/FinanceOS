@@ -76,6 +76,13 @@ enum TabularTransactionDecoder {
         return trimmed.isEmpty ? nil : trimmed
     }
 
+    private static func isEffectivelyZero(_ value: String) -> Bool {
+        let cleaned = value
+            .replacingOccurrences(of: ",", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return Decimal(string: cleaned) == 0
+    }
+
     private static func normalizeHeader(
         _ header: String
     ) -> String {
@@ -102,8 +109,10 @@ enum TabularTransactionDecoder {
 
         let debitValue = debitIndex.map { value(at: $0, in: row) }
             .flatMap(nonEmptyValue(_:))
+            .flatMap { isEffectivelyZero($0) ? nil : $0 }
         let creditValue = creditIndex.map { value(at: $0, in: row) }
             .flatMap(nonEmptyValue(_:))
+            .flatMap { isEffectivelyZero($0) ? nil : $0 }
 
         if let debitValue {
             return try -abs(
@@ -126,6 +135,7 @@ enum TabularTransactionDecoder {
         let formatters = [
             "yyyy-MM-dd",
             "dd/MM/yyyy",
+            "dd/MM/yy",
             "MM/dd/yyyy",
             "dd-MM-yyyy",
             "dd MMM yyyy",
