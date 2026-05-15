@@ -53,6 +53,13 @@ xcresult/
 .agents/
 .codex/
 .codex-plugins/
-.claude/
+.claude/settings.local.json
 .graphify_python
 skills-lock.json
+
+# Claude Code session artifacts
+.claude/session-status.md
+.claude/session-*.jsonl
+.claude/logs/
+.claude/plans/
+.claude/worktrees/
