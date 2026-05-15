@@ -13,6 +13,7 @@ public enum StatementFileFormat:
     CaseIterable
 {
     case csv
+    case txt
     case xlsx
     case pdf
 }
