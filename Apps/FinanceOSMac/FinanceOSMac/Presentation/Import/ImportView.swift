@@ -14,6 +14,8 @@ struct ImportView: View {
 
     @State private var targetChoice: TargetChoice?
     @State private var isTargeted = false
+    @State private var showPasswordPrompt = false
+    @State private var passwordPromptFilename = ""
 
     var body: some View {
         Group {
@@ -148,6 +150,27 @@ struct ImportView: View {
             }
             return true
         }
+        .onChange(of: viewModel.passwordPromptFilename) { _, newValue in
+            if newValue != nil {
+                showPasswordPrompt = true
+                passwordPromptFilename = newValue ?? ""
+            }
+        }
+        .sheet(isPresented: $showPasswordPrompt) {
+            PasswordPromptSheet(
+                filename: passwordPromptFilename,
+                onCancel: {
+                    showPasswordPrompt = false
+                    viewModel.passwordPromptFilename = nil
+                },
+                onSubmit: { password, saveToKeychain in
+                    Task {
+                        await viewModel.retryParseFilesWithPassword(password, saveToKeychain: saveToKeychain)
+                    }
+                    showPasswordPrompt = false
+                }
+            )
+        }
     }
 
     private var dropZoneView: some View {
@@ -236,9 +259,11 @@ struct ImportView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("💡 CSV and XLSX formats for CSV-based statements, TXT for delimited text (HDFC), PDF for scanned statements.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                Text(
+                    "💡 CSV and XLSX formats for CSV-based statements, TXT for delimited text (HDFC), PDF for scanned statements."
+                )
+                .font(.caption)
+                .foregroundColor(.secondary)
             }
         }
         .padding()
