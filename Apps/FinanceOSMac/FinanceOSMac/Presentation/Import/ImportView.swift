@@ -75,7 +75,7 @@ struct ImportView: View {
                                 .font(.title2)
                                 .fontWeight(.semibold)
 
-                            Text("CSV, XLS, or XLSX files")
+                            Text("CSV, TXT, XLSX, or PDF files")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -160,7 +160,7 @@ struct ImportView: View {
                 Text("Drag files here or click button below")
                     .font(.headline)
 
-                Text("CSV or XLSX formats supported")
+                Text("CSV, TXT, XLSX, or PDF formats supported")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -174,7 +174,7 @@ struct ImportView: View {
     private var filePickerButton: some View {
         Button("Select Files") {
             let panel = NSOpenPanel()
-            var types: [UTType] = [.commaSeparatedText]
+            var types: [UTType] = [.commaSeparatedText, .plainText, .pdf]
             if let xlsx = UTType(filenameExtension: "xlsx") {
                 types.append(xlsx)
             }
@@ -236,10 +236,7 @@ struct ImportView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("💡 Use CSV or XLSX for best results.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Text("PDF and delimited text support coming soon.")
+                Text("💡 CSV and XLSX formats for CSV-based statements, TXT for delimited text (HDFC), PDF for scanned statements.")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
