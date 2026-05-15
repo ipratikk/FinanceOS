@@ -6,78 +6,6 @@ import OSLog
 
 let logger = FinanceLogger.importPipeline
 
-func fuzzyMatch(_ stored: String, _ parsed: String) -> Bool {
-    let storedLower = stored.lowercased()
-    let parsedLower = parsed.lowercased()
-
-    if storedLower == parsedLower { return true }
-    if storedLower.contains(parsedLower) || parsedLower.contains(storedLower) { return true }
-
-    let storedWords = storedLower.split(separator: " ").map(String.init)
-    let parsedWords = parsedLower.split(separator: " ").map(String.init)
-
-    let commonWords = Set(storedWords).intersection(Set(parsedWords))
-    return !commonWords.isEmpty && commonWords.count >= min(storedWords.count, parsedWords.count) / 2
-}
-
-private func transactionHash(_ txn: ParsedTransaction) -> String {
-    let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
-    let amountStr = String(txn.amountMinorUnits)
-    let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-    let combined = "\(dateStr)|\(amountStr)|\(descStr)"
-    return String(combined.hashValue)
-}
-
-private func transactionHash(_ txn: Transaction) -> String {
-    let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
-    let amountStr = String(txn.amountMinorUnits)
-    let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-    let combined = "\(dateStr)|\(amountStr)|\(descStr)"
-    return String(combined.hashValue)
-}
-
-func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
-    transactionHash(parsed) == transactionHash(existing)
-}
-
-func fileFormat(for url: URL) -> StatementFileFormat {
-    let pathExtension = url.pathExtension.lowercased()
-    logger.debug("File extension: '\(pathExtension, privacy: .public)'")
-
-    switch pathExtension {
-    case "csv":
-        return .csv
-    case "txt":
-        return .txt
-    case "xlsx":
-        return .xlsx
-    case "pdf":
-        return .pdf
-    default:
-        logger.warning("Unknown extension '\(pathExtension, privacy: .public)', defaulting to CSV")
-        return .csv
-    }
-}
-
-private func formatError(_ error: FinanceCore.TransactionImportError) -> String {
-    switch error {
-    case let .unsupportedFormat(format):
-        return "Unsupported file format: \(format.rawValue)"
-    case let .missingRequiredColumn(column):
-        return "Missing required column: \(column)"
-    case let .invalidDate(value):
-        return "Invalid date format: \(value)"
-    case let .invalidAmount(value):
-        return "Invalid amount: \(value)"
-    case let .malformedFile(description):
-        return "File is malformed: \(description)"
-    case let .platformUnavailable(description):
-        return description
-    case let .passwordProtected(filename):
-        return "Password required for: \(filename)"
-    }
-}
-
 @MainActor
 @Observable
 final class ImportViewModel {
@@ -162,7 +90,7 @@ final class ImportViewModel {
                     let statement = try await parseFile(fileURL)
                     statements.append(statement)
                 } catch let error as FinanceCore.TransactionImportError {
-                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(formatError(error))"
+                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.userMessage)"
                     parsedStatements = []
                     isLoading = false
                     return
@@ -182,7 +110,7 @@ final class ImportViewModel {
     }
 
     private func parseFile(_ fileURL: URL) async throws -> ParsedStatement {
-        let format = fileFormat(for: fileURL)
+        let format = StatementFileFormat.detect(from: fileURL)
         let fileName = fileURL.lastPathComponent
 
         guard let source = selectedSource, [.csv, .txt].contains(format) else {
