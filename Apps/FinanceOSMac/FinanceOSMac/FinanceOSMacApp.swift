@@ -4,127 +4,69 @@ import SwiftUI
 @main
 struct FinanceOSMacApp: App {
     private let appContainer = AppContainer.shared
-    @State private var isCheckingDependencies = true
-    @State private var showDependencyAlert = false
-    @State private var dependencyMessage = ""
-    @State private var dependencyPermissionResponse: Bool?
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                TabView {
-                    ImportView(
-                        viewModel: ImportViewModel(
-                            transactionImporter: appContainer.transactionImporter,
-                            transactionImportPipeline: appContainer.transactionImportPipeline,
-                            bankRepository: appContainer.bankRepository,
-                            accountRepository: appContainer.accountRepository,
-                            cardRepository: appContainer.cardRepository,
-                            transactionRepository: appContainer.transactionRepository,
-                            parserRegistry: appContainer.parserRegistry
-                        )
+            TabView {
+                ImportView(
+                    viewModel: ImportViewModel(
+                        transactionImporter: appContainer.transactionImporter,
+                        transactionImportPipeline: appContainer.transactionImportPipeline,
+                        bankRepository: appContainer.bankRepository,
+                        accountRepository: appContainer.accountRepository,
+                        cardRepository: appContainer.cardRepository,
+                        transactionRepository: appContainer.transactionRepository,
+                        parserRegistry: appContainer.parserRegistry
                     )
-                    .tabItem {
-                        Label("Import", systemImage: "arrow.down.doc")
-                    }
-
-                    BanksView(
-                        viewModel: BanksViewModel(
-                            repository: appContainer.bankRepository
-                        )
-                    )
-                    .tabItem {
-                        Label("Banks", systemImage: "building.columns")
-                    }
-
-                    AccountsView(
-                        viewModel: AccountsViewModel(
-                            repository: appContainer.accountRepository,
-                            bankRepository: appContainer.bankRepository,
-                            cardRepository: appContainer.cardRepository,
-                            transactionRepository: appContainer.transactionRepository
-                        )
-                    )
-                    .tabItem {
-                        Label("Accounts", systemImage: "building.columns.circle")
-                    }
-
-                    CardsView(
-                        viewModel: CardsViewModel(
-                            cardRepository: appContainer.cardRepository,
-                            accountRepository: appContainer.accountRepository,
-                            bankRepository: appContainer.bankRepository,
-                            transactionRepository: appContainer.transactionRepository
-                        )
-                    )
-                    .tabItem {
-                        Label("Cards", systemImage: "creditcard")
-                    }
-
-                    TransactionsView(
-                        viewModel: TransactionsViewModel(
-                            transactionRepository: appContainer.transactionRepository,
-                            accountRepository: appContainer.accountRepository,
-                            cardRepository: appContainer.cardRepository
-                        )
-                    )
-                    .tabItem {
-                        Label("Transactions", systemImage: "list.bullet.rectangle")
-                    }
+                )
+                .tabItem {
+                    Label("Import", systemImage: "arrow.down.doc")
                 }
-                .disabled(isCheckingDependencies)
-                .opacity(isCheckingDependencies ? 0.5 : 1)
 
-                if isCheckingDependencies {
-                    VStack(spacing: 16) {
-                        ProgressView()
-                            .scaleEffect(1.5)
+                BanksView(
+                    viewModel: BanksViewModel(
+                        repository: appContainer.bankRepository
+                    )
+                )
+                .tabItem {
+                    Label("Banks", systemImage: "building.columns")
+                }
 
-                        VStack(spacing: 4) {
-                            Text("Setting up")
-                                .font(.headline)
+                AccountsView(
+                    viewModel: AccountsViewModel(
+                        repository: appContainer.accountRepository,
+                        bankRepository: appContainer.bankRepository,
+                        cardRepository: appContainer.cardRepository,
+                        transactionRepository: appContainer.transactionRepository
+                    )
+                )
+                .tabItem {
+                    Label("Accounts", systemImage: "building.columns.circle")
+                }
 
-                            Text("Installing dependencies...")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    .padding()
-                    .background(Color(nsColor: .controlBackgroundColor))
-                    .cornerRadius(12)
-                    .shadow(radius: 4)
+                CardsView(
+                    viewModel: CardsViewModel(
+                        cardRepository: appContainer.cardRepository,
+                        accountRepository: appContainer.accountRepository,
+                        bankRepository: appContainer.bankRepository,
+                        transactionRepository: appContainer.transactionRepository
+                    )
+                )
+                .tabItem {
+                    Label("Cards", systemImage: "creditcard")
+                }
+
+                TransactionsView(
+                    viewModel: TransactionsViewModel(
+                        transactionRepository: appContainer.transactionRepository,
+                        accountRepository: appContainer.accountRepository,
+                        cardRepository: appContainer.cardRepository
+                    )
+                )
+                .tabItem {
+                    Label("Transactions", systemImage: "list.bullet.rectangle")
                 }
             }
-            .task {
-                await ensureDependencies()
-                isCheckingDependencies = false
-            }
-            .alert("Install Dependencies", isPresented: $showDependencyAlert) {
-                Button("Cancel") {
-                    showDependencyAlert = false
-                    dependencyPermissionResponse = false
-                }
-                Button("Install", action: {
-                    dependencyPermissionResponse = true
-                    showDependencyAlert = false
-                })
-            } message: {
-                Text(dependencyMessage)
-            }
-        }
-    }
-
-    private func ensureDependencies() async {
-        dependencyPermissionResponse = nil
-        await DependencyChecker.ensureSSConvertAvailable { message in
-            dependencyMessage = message
-            showDependencyAlert = true
-
-            while dependencyPermissionResponse == nil {
-                try? await Task.sleep(nanoseconds: 100_000_000)
-            }
-
-            return dependencyPermissionResponse ?? false
         }
     }
 }
