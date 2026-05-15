@@ -94,7 +94,13 @@ struct DashboardView: View {
                 Text("Recent Transactions")
                     .font(.system(size: 16, weight: .semibold))
                 Spacer()
-                NavigationLink(destination: TransactionsView()) {
+                NavigationLink(destination: TransactionsView(
+                    viewModel: TransactionsViewModel(
+                        transactionRepository: appContainer.transactionRepository,
+                        accountRepository: appContainer.accountRepository,
+                        cardRepository: appContainer.cardRepository
+                    )
+                )) {
                     Text("View All")
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.blue)

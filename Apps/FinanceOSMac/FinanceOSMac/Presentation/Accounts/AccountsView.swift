@@ -19,7 +19,7 @@ struct AccountsView: View {
 
     var body: some View {
         NavigationStack {
-            if viewModel.accounts.isEmpty && !viewModel.isLoading {
+            if viewModel.accounts.isEmpty, !viewModel.isLoading {
                 emptyState
             } else if viewModel.isLoading {
                 loadingState
@@ -36,10 +36,16 @@ struct AccountsView: View {
         }
     }
 
+    private var groupedAccountsByBank: [String: [Account]] {
+        Dictionary(grouping: viewModel.accounts) { account in
+            viewModel.banks.first { $0.id == account.bankId }?.name ?? "Unknown"
+        }
+    }
+
     var accountsList: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(Dictionary(grouping: viewModel.accounts) { viewModel.banks.first { $0.id == $1.bankId }?.name ?? "Unknown" }, id: \.key) { bankName, accounts in
+                ForEach(groupedAccountsByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bankName, accounts in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(bankName)
                             .font(.system(size: 13, weight: .semibold))

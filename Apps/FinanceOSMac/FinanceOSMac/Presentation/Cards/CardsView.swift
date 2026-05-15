@@ -19,7 +19,7 @@ struct CardsView: View {
 
     var body: some View {
         NavigationStack {
-            if viewModel.cardRows.isEmpty && !viewModel.isLoading {
+            if viewModel.cardRows.isEmpty, !viewModel.isLoading {
                 emptyState
             } else if viewModel.isLoading {
                 loadingState
@@ -36,10 +36,16 @@ struct CardsView: View {
         }
     }
 
+    private var groupedCardsByBank: [String: [CardsViewModel.CardRow]] {
+        Dictionary(grouping: viewModel.cardRows) { cardRow in
+            viewModel.banks.first { $0.id == cardRow.card.bankId }?.name ?? "Unknown"
+        }
+    }
+
     var cardsList: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(Dictionary(grouping: viewModel.cardRows) { viewModel.banks.first { $0.id == $1.card.bankId }?.name ?? "Unknown" }, id: \.key) { bankName, cardRows in
+                ForEach(groupedCardsByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bankName, cardRows in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(bankName)
                             .font(.system(size: 13, weight: .semibold))
@@ -47,13 +53,13 @@ struct CardsView: View {
                             .padding(.horizontal, 16)
 
                         VStack(spacing: 8) {
-                            ForEach(cardRows, id: \.card.id) { cardRow in
-                                NavigationLink(value: cardRow.card.id) {
-                                    cardRow(cardRow)
+                            ForEach(cardRows, id: \.card.id) { cardRowData in
+                                NavigationLink(value: cardRowData.card.id) {
+                                    cardRowView(cardRowData)
                                 }
                                 .contextMenu {
-                                    Button("Edit") { viewModel.editingCard = cardRow.card }
-                                    Button("Delete", role: .destructive) { viewModel.editingCard = cardRow.card }
+                                    Button("Edit") { viewModel.editingCard = cardRowData.card }
+                                    Button("Delete", role: .destructive) { viewModel.editingCard = cardRowData.card }
                                 }
                             }
                         }
@@ -78,7 +84,7 @@ struct CardsView: View {
         }
     }
 
-    func cardRow(_ cardRow: CardsViewModel.CardRow) -> some View {
+    func cardRowView(_ cardRow: CardsViewModel.CardRow) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(cardRow.card.nickname.isEmpty ? cardRow.card.cardName : cardRow.card.nickname)
