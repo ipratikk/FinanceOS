@@ -60,12 +60,15 @@ struct TransactionListContentView: View {
         )
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button(action: { showFilterSheet = true }) {
-                    Image(systemName: listState.isFilterActive
-                        ? "line.3.horizontal.decrease.circle.fill"
-                        : "line.3.horizontal.decrease.circle"
-                    )
-                }
+                Button(
+                    action: { showFilterSheet = true },
+                    label: {
+                        Image(systemName: listState.isFilterActive
+                            ? "line.3.horizontal.decrease.circle.fill"
+                            : "line.3.horizontal.decrease.circle"
+                        )
+                    }
+                )
             }
         }
         .sheet(isPresented: $showFilterSheet) {

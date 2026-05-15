@@ -256,12 +256,16 @@
     "hash": "55a004fae55d14120f42cf9d0d19d0c0"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift": {
-    "mtime": 1778822437.134174,
-    "hash": "387f153b42306d8cca78f5ec0f25430a"
+    "mtime": 1778822519.7710922,
+    "hash": "ee239451939a7055b7c9aa1c558c6580"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/CreateNewTargetSheet.swift": {
     "mtime": 1778820515.6873765,
     "hash": "fd907fcae05ae0c2dc81620dc0862d95"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelTargetCreation.swift": {
+    "mtime": 1778822513.1806962,
+    "hash": "0f00a009a19e92fc0435a39b19469ead"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift": {
     "mtime": 1778820484.0537043,

@@ -207,11 +207,8 @@ final class ImportViewModel {
                   let target = selectedTarget
             else {
                 errorMessage = "Invalid import state"
-                let filesOK = !self.fileURLs.isEmpty
-                let statementsOK = !self.parsedStatements.isEmpty
-                let targetOK = self.selectedTarget != nil
-                let msg = "Invalid state: fileURLs=\(filesOK), stmts=\(statementsOK), target=\(targetOK)"
-                logger.error("\(msg)")
+                let state = "files=\(!fileURLs.isEmpty), stmts=\(!parsedStatements.isEmpty), target=\(selectedTarget != nil)"
+                logger.error("Invalid state: \(state)")
                 return
             }
 
@@ -337,12 +334,12 @@ final class ImportViewModel {
 
             for (index, statement) in parsedStatements.enumerated() {
                 for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
-                    for existingTxn in existingTransactions {
-                        if isSameTransaction(parsed: parsedTxn, existing: existingTxn) {
-                            let flatIndex = parsedStatements[..<index]
-                                .reduce(0) { $0 + $1.transactions.count } + txnIndex
-                            duplicateTransactionIndices.insert(flatIndex)
-                        }
+                    for existingTxn in existingTransactions
+                        where isSameTransaction(parsed: parsedTxn, existing: existingTxn)
+                    {
+                        let flatIndex = parsedStatements[..<index]
+                            .reduce(0) { $0 + $1.transactions.count } + txnIndex
+                        duplicateTransactionIndices.insert(flatIndex)
                     }
                 }
             }
