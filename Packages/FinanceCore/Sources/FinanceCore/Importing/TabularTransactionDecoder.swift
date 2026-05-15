@@ -13,7 +13,7 @@ enum TabularTransactionDecoder {
     ) throws -> ParsedStatement {
         guard !rows.isEmpty else {
             return ParsedStatement(
-                institution: "Unknown",
+                bankName: "Unknown",
                 accountName: "Unknown",
                 transactions: []
             )
@@ -36,7 +36,7 @@ enum TabularTransactionDecoder {
         }
 
         return ParsedStatement(
-            institution: "Unknown",
+            bankName: "Unknown",
             accountName: "Unknown",
             cardLast4: nil,
             statementPeriodStart: periodStart,

@@ -35,29 +35,29 @@ enum DatabaseSeeder {
         ("card", "ICICI Amazon Pay", "Online Shopping", -349_900, "INR", "seed_icici_amazon_pay_shopping")
     ]
 
-    static func seedInstitutions(
+    static func seedBanks(
         in database: Database
     ) throws {
-        let existingInstitutionCount = try Institution
+        let existingBankCount = try Bank
             .fetchCount(database)
 
-        guard existingInstitutionCount == 0 else {
+        guard existingBankCount == 0 else {
             return
         }
 
-        let institutions = [
-            Institution(name: "HDFC"),
-            Institution(name: "ICICI"),
-            Institution(name: "Amex"),
-            Institution(name: "Scapia")
+        let banks = [
+            Bank(name: "HDFC", providerType: .bank),
+            Bank(name: "ICICI", providerType: .bank),
+            Bank(name: "Amex", providerType: .credit),
+            Bank(name: "Scapia", providerType: .bank)
         ]
 
-        for institution in institutions {
-            try institution.insert(database)
+        for bank in banks {
+            try bank.insert(database)
         }
 
         FinanceLogger.database.info(
-            "Seeded default institutions"
+            "Seeded default banks"
         )
     }
 
@@ -71,23 +71,23 @@ enum DatabaseSeeder {
             return
         }
 
-        let institutions = try Institution
+        let banks = try Bank
             .fetchAll(database)
 
-        let institutionIDsByName = Dictionary(
-            uniqueKeysWithValues: institutions.map { institution in
-                (institution.name, institution.id)
+        let bankIDsByName = Dictionary(
+            uniqueKeysWithValues: banks.map { bank in
+                (bank.name, bank.id)
             }
         )
 
-        for (institutionName, accountName) in defaultAccountDefinitions {
-            guard let institutionID = institutionIDsByName[institutionName] else {
+        for (bankName, accountName) in defaultAccountDefinitions {
+            guard let bankID = bankIDsByName[bankName] else {
                 continue
             }
 
             let account = Account(
-                institutionID: institutionID,
-                name: accountName
+                bankId: bankID,
+                accountName: accountName
             )
 
             try account.insert(database)
@@ -108,40 +108,40 @@ enum DatabaseSeeder {
             return
         }
 
-        let institutions = try Institution
+        let banks = try Bank
             .fetchAll(database)
         let accounts = try Account
             .fetchAll(database)
 
-        let institutionIDsByName = Dictionary(
-            uniqueKeysWithValues: institutions.map { institution in
-                (institution.name, institution.id)
+        let bankIDsByName = Dictionary(
+            uniqueKeysWithValues: banks.map { bank in
+                (bank.name, bank.id)
             }
         )
 
-        let accountIDsByInstitutionName = Dictionary(
+        let accountIDsByBankName = Dictionary(
             uniqueKeysWithValues: accounts.compactMap { account in
-                institutions
-                    .first { institution in
-                        institution.id == account.institutionID
+                banks
+                    .first { bank in
+                        bank.id == account.bankId
                     }
-                    .map { institution in
-                        (institution.name, account.id)
+                    .map { bank in
+                        (bank.name, account.id)
                     }
             }
         )
 
-        for (institutionName, linkedAccountInstitutionName, cardName) in defaultCardDefinitions {
-            guard let institutionID = institutionIDsByName[institutionName] else {
+        for (bankName, linkedAccountBankName, cardName) in defaultCardDefinitions {
+            guard let bankID = bankIDsByName[bankName] else {
                 continue
             }
 
             let card = Card(
-                institutionID: institutionID,
-                accountID: linkedAccountInstitutionName.flatMap { institutionName in
-                    accountIDsByInstitutionName[institutionName]
+                bankId: bankID,
+                linkedAccountId: linkedAccountBankName.flatMap { bankName in
+                    accountIDsByBankName[bankName]
                 },
-                name: cardName
+                cardName: cardName
             )
 
             try card.insert(database)
@@ -169,13 +169,13 @@ enum DatabaseSeeder {
 
         let accountsByName = Dictionary(
             uniqueKeysWithValues: accounts.map { account in
-                (account.name, account)
+                (account.accountName, account)
             }
         )
 
         let cardsByName = Dictionary(
             uniqueKeysWithValues: cards.map { card in
-                (card.name, card)
+                (card.cardName, card)
             }
         )
 
