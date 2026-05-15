@@ -31,12 +31,24 @@ public struct HDFCPDFParser: StatementParser {
             }
 
             let trimmedPwd = pwd.trimmingCharacters(in: .whitespaces)
-            let unlocked = doc.unlock(withPassword: trimmedPwd) || doc.unlock(withPassword: pwd)
+            print(
+                "[HDFCPDFParser] PDF locked, attempting unlock with password (length: \(pwd.count), trimmed: \(trimmedPwd.count))"
+            )
 
-            if !unlocked, doc.isLocked {
+            let unlockTrimmed = doc.unlock(withPassword: trimmedPwd)
+            print("[HDFCPDFParser] Unlock with trimmed password returned: \(unlockTrimmed), isLocked: \(doc.isLocked)")
+
+            if doc.isLocked, trimmedPwd != pwd {
+                let unlockRaw = doc.unlock(withPassword: pwd)
+                print("[HDFCPDFParser] Unlock with raw password returned: \(unlockRaw), isLocked: \(doc.isLocked)")
+            }
+
+            if doc.isLocked {
                 let filename = fileURL.lastPathComponent
+                print("[HDFCPDFParser] Still locked after unlock attempts, throwing passwordProtected error")
                 throw TransactionImportError.passwordProtected(filename)
             }
+            print("[HDFCPDFParser] Successfully unlocked PDF")
         }
 
         var lines: [String] = []

@@ -190,6 +190,11 @@ final class ImportViewModel {
                 } else {
                     statement = try await transactionImporter.parseStatement(from: fileURL, format: format)
                 }
+            } else if format == .pdf, let source = selectedSource, source == .hdfcBank || source == .hdfcCard,
+                      let pwd = password
+            {
+                let pdfParser = FinanceParsers.HDFCPDFParser(password: pwd)
+                statement = try await pdfParser.parseStatement(from: fileURL)
             } else {
                 statement = try await transactionImporter.parseStatement(from: fileURL, format: format)
             }
