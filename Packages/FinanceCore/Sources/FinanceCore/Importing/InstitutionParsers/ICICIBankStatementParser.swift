@@ -13,13 +13,28 @@ public struct ICICIBankStatementParser: InstitutionStatementParser {
     }
 
     public func parse(rows: [[String]]) throws -> ParsedStatement {
-        guard rows.count > 6 else {
+        guard rows.count > 1 else {
             throw TransactionImportError.malformedFile("ICICI statement too short")
         }
 
         let accountName = rows.count > 1 ? extractValue(rows[1]) : "Unknown"
-        let cardLast4 = rows.count > 7 ? extractCardLast4(rows[7]) : nil
-        let transactionRows = Array(rows.dropFirst(6))
+
+        // Find header row dynamically by looking for "date" column
+        var headerIndex = 0
+        for (index, row) in rows.enumerated() {
+            let normalized = row.map { $0.lowercased() }
+            if normalized.contains(where: { $0.contains("date") }) {
+                headerIndex = index
+                break
+            }
+        }
+
+        guard headerIndex < rows.count - 1 else {
+            throw TransactionImportError.missingRequiredColumn("date")
+        }
+
+        let cardLast4: String? = nil
+        let transactionRows = Array(rows.dropFirst(headerIndex))
 
         let currency = transactionRows.first.map(extractCurrencyFromHeaders) ?? "INR"
         let transactions = try TabularTransactionDecoder.decodeTransactions(transactionRows)
