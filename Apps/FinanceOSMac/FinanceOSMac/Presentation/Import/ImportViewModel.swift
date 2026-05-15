@@ -72,6 +72,8 @@ private func formatError(_ error: TransactionImportError) -> String {
         return "File is malformed: \(description)"
     case let .platformUnavailable(description):
         return description
+    case let .passwordProtected(filename):
+        return "Password required for: \(filename)"
     }
 }
 
@@ -243,7 +245,7 @@ final class ImportViewModel {
             }
         }
 
-        self.parsedStatements = statements
+        parsedStatements = statements
         passwordPromptFilename = nil
         await loadTargetsOnAppear()
         await autoSelectMatchingTarget()
