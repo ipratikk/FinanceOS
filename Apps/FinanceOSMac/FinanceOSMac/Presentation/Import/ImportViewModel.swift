@@ -18,7 +18,7 @@ final class ImportViewModel {
 
     var accounts: [Account] = []
     var cards: [Card] = []
-    var institutions: [Institution] = []
+    var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
@@ -31,7 +31,7 @@ final class ImportViewModel {
 
     private let transactionImporter: any TransactionImporting
     private let transactionImportPipeline: TransactionImportPipeline
-    private let institutionRepository: any InstitutionRepository
+    private let bankRepository: any BankRepository
     private let accountRepository: any AccountRepository
     private let cardRepository: any CardRepository
     private let transactionRepository: any TransactionRepository
@@ -40,7 +40,7 @@ final class ImportViewModel {
     init(
         transactionImporter: any TransactionImporting,
         transactionImportPipeline: TransactionImportPipeline,
-        institutionRepository: any InstitutionRepository,
+        bankRepository: any BankRepository,
         accountRepository: any AccountRepository,
         cardRepository: any CardRepository,
         transactionRepository: any TransactionRepository,
@@ -48,7 +48,7 @@ final class ImportViewModel {
     ) {
         self.transactionImporter = transactionImporter
         self.transactionImportPipeline = transactionImportPipeline
-        self.institutionRepository = institutionRepository
+        self.bankRepository = bankRepository
         self.accountRepository = accountRepository
         self.cardRepository = cardRepository
         self.transactionRepository = transactionRepository
@@ -184,16 +184,16 @@ final class ImportViewModel {
 
     func loadTargetsOnAppear() async {
         do {
-            logger.debug("Loading accounts, cards, and institutions")
+            logger.debug("Loading accounts, cards, and banks")
             accounts = try await accountRepository.fetchAccounts()
             cards = try await cardRepository.fetchCards()
-            institutions = try await institutionRepository.fetchInstitutions()
+            banks = try await bankRepository.fetchBanks()
             let accountCount = accounts.count
             let cardCount = cards.count
-            let institutionCount = institutions.count
+            let bankCount = banks.count
             logger
                 .debug(
-                    "Loaded \(accountCount, privacy: .public) accounts, \(cardCount, privacy: .public) cards, and \(institutionCount, privacy: .public) institutions"
+                    "Loaded \(accountCount, privacy: .public) accounts, \(cardCount, privacy: .public) cards, and \(bankCount, privacy: .public) banks"
                 )
         } catch {
             let errorMsg = error.localizedDescription
@@ -206,23 +206,37 @@ final class ImportViewModel {
         guard let statement = parsedStatements.first else { return }
 
         let isCard = statement.cardLast4 != nil
-        let institutionName = statement.institution
+        let bankName = statement.bankName
 
-        let matchingInstitution = institutions.first { inst in
-            fuzzyMatch(inst.name, institutionName)
+        let matchingBank = banks.first { bank in
+            fuzzyMatch(bank.name, bankName)
         }
-        guard let institution = matchingInstitution else { return }
+        guard let bank = matchingBank else { return }
 
-        if isCard {
-            if let matchingCard = cards.first(where: { $0.institutionID == institution.id }) {
+        if isCard, let cardLast4 = statement.cardLast4 {
+            if let matchingCard = cards.first(where: { $0.bankId == bank.id && $0.cardLast4 == cardLast4 }) {
                 selectedTarget = .card(matchingCard.id)
-                logger.info("Auto-selected card: \(matchingCard.name, privacy: .public)")
+                logger.info("Auto-selected card: \(matchingCard.cardName, privacy: .public)")
+                await detectDuplicates(for: .card(matchingCard.id))
+            } else if let matchingCard = cards.first(where: { $0.bankId == bank.id }) {
+                selectedTarget = .card(matchingCard.id)
+                logger.info("Auto-selected card: \(matchingCard.cardName, privacy: .public)")
                 await detectDuplicates(for: .card(matchingCard.id))
             }
-        } else {
-            if let matchingAccount = accounts.first(where: { $0.institutionID == institution.id }) {
+        } else if !isCard, let accountLast4 = statement.accountLast4 {
+            if let matchingAccount = accounts.first(where: { $0.bankId == bank.id && $0.accountLast4 == accountLast4 }) {
                 selectedTarget = .account(matchingAccount.id)
-                logger.info("Auto-selected account: \(matchingAccount.name, privacy: .public)")
+                logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
+                await detectDuplicates(for: .account(matchingAccount.id))
+            } else if let matchingAccount = accounts.first(where: { $0.bankId == bank.id }) {
+                selectedTarget = .account(matchingAccount.id)
+                logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
+                await detectDuplicates(for: .account(matchingAccount.id))
+            }
+        } else if !isCard {
+            if let matchingAccount = accounts.first(where: { $0.bankId == bank.id }) {
+                selectedTarget = .account(matchingAccount.id)
+                logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
                 await detectDuplicates(for: .account(matchingAccount.id))
             }
         }
@@ -330,7 +344,9 @@ final class ImportViewModel {
         customName: String? = nil,
         nickname: String = "",
         last4: String = "",
-        institutionID: UUID? = nil,
+        bankID: UUID? = nil,
+        accountType: AccountType = .savings,
+        cardType: CardType = .other,
         isCard: Bool? = nil
     ) async {
         guard let statement = parsedStatements.first else {
@@ -339,29 +355,29 @@ final class ImportViewModel {
         }
 
         do {
-            let institution: Institution
-            let detectedInstitutionName = statement.institution
+            let bank: Bank
+            let detectedBankName = statement.bankName
 
-            if let providedInstitutionID = institutionID,
-               let found = try await (institutionRepository.fetchInstitutions())
-               .first(where: { $0.id == providedInstitutionID })
+            if let providedBankID = bankID,
+               let found = try await (bankRepository.fetchBanks())
+               .first(where: { $0.id == providedBankID })
             {
-                institution = found
+                bank = found
             } else {
-                var existingInstitution: Institution?
-                let existingInstitutions = try await institutionRepository.fetchInstitutions()
-                existingInstitution = existingInstitutions.first { $0.name == detectedInstitutionName }
+                var existingBank: Bank?
+                let existingBanks = try await bankRepository.fetchBanks()
+                existingBank = existingBanks.first { $0.name == detectedBankName }
 
-                if existingInstitution == nil {
-                    existingInstitution = Institution(name: detectedInstitutionName)
-                    try await institutionRepository.insert(existingInstitution!)
+                if existingBank == nil {
+                    existingBank = Bank(name: detectedBankName, providerType: .bank)
+                    try await bankRepository.insert(existingBank!)
                 }
 
-                guard let foundInstitution = existingInstitution else {
-                    errorMessage = "Failed to create institution"
+                guard let foundBank = existingBank else {
+                    errorMessage = "Failed to create bank"
                     return
                 }
-                institution = foundInstitution
+                bank = foundBank
             }
 
             let isCardTarget = isCard ?? (statement.cardLast4 != nil)
@@ -369,13 +385,14 @@ final class ImportViewModel {
             if isCardTarget {
                 let cardName = customName ??
                     (statement.cardLast4
-                        .map { "\(detectedInstitutionName) Card - \($0)" } ?? "\(detectedInstitutionName) Card")
+                        .map { "\(detectedBankName) Card - \($0)" } ?? "\(detectedBankName) Card")
                 let card = Card(
-                    institutionID: institution.id,
-                    accountID: nil,
-                    name: cardName,
-                    nickname: nickname,
-                    last4: last4
+                    bankId: bank.id,
+                    linkedAccountId: nil,
+                    cardName: cardName,
+                    cardLast4: last4,
+                    cardType: cardType,
+                    nickname: nickname
                 )
 
                 try await cardRepository.insert(card)
@@ -385,10 +402,12 @@ final class ImportViewModel {
                 logger.info("Created card: \(cardName)")
             } else {
                 let accountName = customName ??
-                    (statement.accountName.isEmpty ? "\(detectedInstitutionName) Account" : statement.accountName)
+                    (statement.accountName.isEmpty ? "\(detectedBankName) Account" : statement.accountName)
                 let account = Account(
-                    institutionID: institution.id,
-                    name: accountName,
+                    bankId: bank.id,
+                    accountName: accountName,
+                    accountLast4: last4,
+                    accountType: accountType,
                     nickname: nickname
                 )
 
@@ -412,5 +431,6 @@ final class ImportViewModel {
         importResult = nil
         accounts = []
         cards = []
+        banks = []
     }
 }
