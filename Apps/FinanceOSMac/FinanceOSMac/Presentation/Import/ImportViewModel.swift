@@ -5,6 +5,90 @@ import OSLog
 
 private let logger = FinanceLogger.importPipeline
 
+private func logInfo(_ staticMsg: StaticString, _ attrs: [String: CustomStringConvertible]) {
+    var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
+    for (key, value) in attrs {
+        msg = msg.replacingOccurrences(of: "{\(key)}", with: String(describing: value))
+    }
+    logger.info("\(msg, privacy: .public)")
+}
+
+private func logDebug(_ staticMsg: StaticString, _ attrs: [String: CustomStringConvertible]) {
+    var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
+    for (key, value) in attrs {
+        msg = msg.replacingOccurrences(of: "{\(key)}", with: String(describing: value))
+    }
+    logger.debug("\(msg, privacy: .public)")
+}
+
+private func fuzzyMatch(_ stored: String, _ parsed: String) -> Bool {
+    let storedLower = stored.lowercased()
+    let parsedLower = parsed.lowercased()
+
+    if storedLower == parsedLower { return true }
+    if storedLower.contains(parsedLower) || parsedLower.contains(storedLower) { return true }
+
+    let storedWords = storedLower.split(separator: " ").map(String.init)
+    let parsedWords = parsedLower.split(separator: " ").map(String.init)
+
+    let commonWords = Set(storedWords).intersection(Set(parsedWords))
+    return !commonWords.isEmpty && commonWords.count >= min(storedWords.count, parsedWords.count) / 2
+}
+
+private func transactionHash(_ txn: ParsedTransaction) -> String {
+    let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
+    let amountStr = String(txn.amountMinorUnits)
+    let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
+    let combined = "\(dateStr)|\(amountStr)|\(descStr)"
+    return String(combined.hashValue)
+}
+
+private func transactionHash(_ txn: Transaction) -> String {
+    let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
+    let amountStr = String(txn.amountMinorUnits)
+    let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
+    let combined = "\(dateStr)|\(amountStr)|\(descStr)"
+    return String(combined.hashValue)
+}
+
+private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
+    transactionHash(parsed) == transactionHash(existing)
+}
+
+private func fileFormat(for url: URL) -> StatementFileFormat {
+    let pathExtension = url.pathExtension.lowercased()
+    logger.debug("File extension: '\(pathExtension, privacy: .public)'")
+
+    switch pathExtension {
+    case "csv":
+        return .csv
+    case "xls":
+        return .xls
+    case "xlsx":
+        return .xlsx
+    default:
+        logger.warning("Unknown extension '\(pathExtension, privacy: .public)', defaulting to CSV")
+        return .csv
+    }
+}
+
+private func formatError(_ error: TransactionImportError) -> String {
+    switch error {
+    case let .unsupportedFormat(format):
+        return "Unsupported file format: \(format.rawValue)"
+    case let .missingRequiredColumn(column):
+        return "Missing required column: \(column)"
+    case let .invalidDate(value):
+        return "Invalid date format: \(value)"
+    case let .invalidAmount(value):
+        return "Invalid amount: \(value)"
+    case let .malformedFile(description):
+        return "File is malformed: \(description)"
+    case let .platformUnavailable(description):
+        return description
+    }
+}
+
 @MainActor
 @Observable
 final class ImportViewModel {
@@ -25,7 +109,7 @@ final class ImportViewModel {
         zip(fileURLs, parsedStatements).map { ($0, $1) }
     }
 
-    var supportedSources: [(institution: String, sourceType: StatementSourceType)] {
+    var supportedSources: [(bankName: String, sourceType: StatementSourceType)] {
         parserRegistry.supportedSources
     }
 
@@ -160,18 +244,18 @@ final class ImportViewModel {
 
                     totalInserted += result.inserted
                     totalSkipped += result.skipped
-
-                    logger
-                        .info(
-                            "File \(fileName, privacy: .public): \(result.inserted, privacy: .public) inserted, \(result.skipped, privacy: .public) skipped"
-                        )
+                    logInfo("File {file}: {inserted} inserted, {skipped} skipped", [
+                        "file": fileName,
+                        "inserted": result.inserted,
+                        "skipped": result.skipped
+                    ])
                 }
 
                 importResult = ImportResult(inserted: totalInserted, skipped: totalSkipped)
-                logger
-                    .info(
-                        "Import complete: \(totalInserted, privacy: .public) inserted, \(totalSkipped, privacy: .public) skipped"
-                    )
+                logInfo("Import complete: {inserted} inserted, {skipped} skipped", [
+                    "inserted": totalInserted,
+                    "skipped": totalSkipped
+                ])
                 reset()
                 isLoading = false
             } catch {
@@ -188,13 +272,11 @@ final class ImportViewModel {
             accounts = try await accountRepository.fetchAccounts()
             cards = try await cardRepository.fetchCards()
             banks = try await bankRepository.fetchBanks()
-            let accountCount = accounts.count
-            let cardCount = cards.count
-            let bankCount = banks.count
-            logger
-                .debug(
-                    "Loaded \(accountCount, privacy: .public) accounts, \(cardCount, privacy: .public) cards, and \(bankCount, privacy: .public) banks"
-                )
+            logDebug("Loaded {accounts} accounts, {cards} cards, and {banks} banks", [
+                "accounts": accounts.count,
+                "cards": cards.count,
+                "banks": banks.count
+            ])
         } catch {
             let errorMsg = error.localizedDescription
             logger.error("Failed to load targets: \(errorMsg, privacy: .public)")
@@ -224,7 +306,9 @@ final class ImportViewModel {
                 await detectDuplicates(for: .card(matchingCard.id))
             }
         } else if !isCard, let accountLast4 = statement.accountLast4 {
-            if let matchingAccount = accounts.first(where: { $0.bankId == bank.id && $0.accountLast4 == accountLast4 }) {
+            if let matchingAccount = accounts
+                .first(where: { $0.bankId == bank.id && $0.accountLast4 == accountLast4 })
+            {
                 selectedTarget = .account(matchingAccount.id)
                 logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
                 await detectDuplicates(for: .account(matchingAccount.id))
@@ -272,74 +356,6 @@ final class ImportViewModel {
         }
     }
 
-    private func fuzzyMatch(_ stored: String, _ parsed: String) -> Bool {
-        let storedLower = stored.lowercased()
-        let parsedLower = parsed.lowercased()
-
-        if storedLower == parsedLower { return true }
-        if storedLower.contains(parsedLower) || parsedLower.contains(storedLower) { return true }
-
-        let storedWords = storedLower.split(separator: " ").map(String.init)
-        let parsedWords = parsedLower.split(separator: " ").map(String.init)
-
-        let commonWords = Set(storedWords).intersection(Set(parsedWords))
-        return !commonWords.isEmpty && commonWords.count >= min(storedWords.count, parsedWords.count) / 2
-    }
-
-    private func transactionHash(_ txn: ParsedTransaction) -> String {
-        let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
-        let amountStr = String(txn.amountMinorUnits)
-        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
-        return String(combined.hashValue)
-    }
-
-    private func transactionHash(_ txn: Transaction) -> String {
-        let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
-        let amountStr = String(txn.amountMinorUnits)
-        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
-        return String(combined.hashValue)
-    }
-
-    private func isSameTransaction(parsed: ParsedTransaction, existing: Transaction) -> Bool {
-        transactionHash(parsed) == transactionHash(existing)
-    }
-
-    private func fileFormat(for url: URL) -> StatementFileFormat {
-        let pathExtension = url.pathExtension.lowercased()
-        logger.debug("File extension: '\(pathExtension, privacy: .public)'")
-
-        switch pathExtension {
-        case "csv":
-            return .csv
-        case "xls":
-            return .xls
-        case "xlsx":
-            return .xlsx
-        default:
-            logger.warning("Unknown extension '\(pathExtension, privacy: .public)', defaulting to CSV")
-            return .csv
-        }
-    }
-
-    private func formatError(_ error: TransactionImportError) -> String {
-        switch error {
-        case let .unsupportedFormat(format):
-            return "Unsupported file format: \(format.rawValue)"
-        case let .missingRequiredColumn(column):
-            return "Missing required column: \(column)"
-        case let .invalidDate(value):
-            return "Invalid date format: \(value)"
-        case let .invalidAmount(value):
-            return "Invalid amount: \(value)"
-        case let .malformedFile(description):
-            return "File is malformed: \(description)"
-        case let .platformUnavailable(description):
-            return description
-        }
-    }
-
     func createTargetFromDetected(
         customName: String? = nil,
         nickname: String = "",
@@ -355,73 +371,92 @@ final class ImportViewModel {
         }
 
         do {
-            let bank: Bank
-            let detectedBankName = statement.bankName
-
-            if let providedBankID = bankID,
-               let found = try await (bankRepository.fetchBanks())
-               .first(where: { $0.id == providedBankID })
-            {
-                bank = found
-            } else {
-                var existingBank: Bank?
-                let existingBanks = try await bankRepository.fetchBanks()
-                existingBank = existingBanks.first { $0.name == detectedBankName }
-
-                if existingBank == nil {
-                    existingBank = Bank(name: detectedBankName, providerType: .bank)
-                    try await bankRepository.insert(existingBank!)
-                }
-
-                guard let foundBank = existingBank else {
-                    errorMessage = "Failed to create bank"
-                    return
-                }
-                bank = foundBank
-            }
-
+            let bank = try await resolveOrCreateBank(
+                for: statement,
+                providedBankID: bankID
+            )
             let isCardTarget = isCard ?? (statement.cardLast4 != nil)
-
             if isCardTarget {
-                let cardName = customName ??
-                    (statement.cardLast4
-                        .map { "\(detectedBankName) Card - \($0)" } ?? "\(detectedBankName) Card")
-                let card = Card(
-                    bankId: bank.id,
-                    linkedAccountId: nil,
-                    cardName: cardName,
-                    cardLast4: last4,
-                    cardType: cardType,
-                    nickname: nickname
-                )
-
-                try await cardRepository.insert(card)
-                selectedTarget = .card(card.id)
-                cards.append(card)
-
-                logger.info("Created card: \(cardName)")
+                try await createCard(bank, statement, customName, last4, cardType, nickname)
             } else {
-                let accountName = customName ??
-                    (statement.accountName.isEmpty ? "\(detectedBankName) Account" : statement.accountName)
-                let account = Account(
-                    bankId: bank.id,
-                    accountName: accountName,
-                    accountLast4: last4,
-                    accountType: accountType,
-                    nickname: nickname
-                )
-
-                try await accountRepository.insert(account)
-                selectedTarget = .account(account.id)
-                accounts.append(account)
-
-                logger.info("Created account: \(accountName)")
+                try await createAccount(bank, statement, customName, last4, accountType, nickname)
             }
         } catch {
             let errorDesc = error.localizedDescription
             logger.error("Failed to create target: \(errorDesc)")
             errorMessage = "Failed to create target: \(errorDesc)"
         }
+    }
+
+    private func resolveOrCreateBank(
+        for statement: ParsedStatement,
+        providedBankID: UUID?
+    ) async throws -> Bank {
+        let detectedBankName = statement.bankName
+        if let providedBankID,
+           let found = try await bankRepository.fetchBanks()
+           .first(where: { $0.id == providedBankID })
+        {
+            return found
+        }
+        let existingBanks = try await bankRepository.fetchBanks()
+        if let existingBank = existingBanks.first(where: { $0.name == detectedBankName }) {
+            return existingBank
+        }
+        let newBank = Bank(name: detectedBankName, providerType: .bank)
+        try await bankRepository.insert(newBank)
+        return newBank
+    }
+
+    private func createCard(
+        _ bank: Bank,
+        _ statement: ParsedStatement,
+        _ customName: String?,
+        _ last4: String,
+        _ cardType: CardType,
+        _ nickname: String
+    ) async throws {
+        let cardName = customName ??
+            (statement.cardLast4
+                .map { "\(statement.bankName) Card - \($0)" } ??
+                "\(statement.bankName) Card")
+        let card = Card(
+            bankId: bank.id,
+            linkedAccountId: nil,
+            cardName: cardName,
+            cardLast4: last4,
+            cardType: cardType,
+            nickname: nickname
+        )
+        try await cardRepository.insert(card)
+        selectedTarget = .card(card.id)
+        cards.append(card)
+        logger.info("Created card: \(cardName)")
+    }
+
+    private func createAccount(
+        _ bank: Bank,
+        _ statement: ParsedStatement,
+        _ customName: String?,
+        _ last4: String,
+        _ accountType: AccountType,
+        _ nickname: String
+    ) async throws {
+        let accountName = customName ??
+            (statement.accountName.isEmpty ?
+                "\(statement.bankName) Account" :
+                statement.accountName)
+        let account = Account(
+            bankId: bank.id,
+            accountName: accountName,
+            accountLast4: last4,
+            accountType: accountType,
+            nickname: nickname
+        )
+        try await accountRepository.insert(account)
+        selectedTarget = .account(account.id)
+        accounts.append(account)
+        logger.info("Created account: \(accountName)")
     }
 
     private func reset() {
