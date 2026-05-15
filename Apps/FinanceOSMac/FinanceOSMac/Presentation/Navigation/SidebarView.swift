@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 struct SidebarView: View {
@@ -66,7 +67,8 @@ struct SidebarView: View {
                     .foregroundColor(selection == item ? .white : .gray)
                     .padding(.vertical, 8)
                     .padding(.horizontal, 12)
-                    .background(selection == item ? Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.2) : Color.clear)
+                    .background(selection == item ? Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.2) : Color
+                        .clear)
                     .cornerRadius(8)
                 }
             }
@@ -152,6 +154,6 @@ struct SidebarView: View {
 }
 
 #Preview {
-    @State var selection: NavigationItem? = .dashboard
+    @Previewable @State var selection: NavigationItem? = .dashboard
     return SidebarView(selection: $selection)
 }

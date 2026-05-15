@@ -152,6 +152,6 @@ struct DetailRouter: View {
 }
 
 #Preview {
-    @State var selection: NavigationItem? = .dashboard
+    @Previewable @State var selection: NavigationItem? = .dashboard
     return AdaptiveNavigation(selection: $selection)
 }
