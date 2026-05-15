@@ -182,26 +182,22 @@ public enum DependencyChecker {
             try process.run()
 
             let fileHandle = outputPipe.fileHandleForReading
-            let poller = Task {
-                while process.isRunning {
-                    let data = fileHandle.availableData
-                    if !data.isEmpty, let chunk = String(data: data, encoding: .utf8) {
-                        for line in chunk.split(separator: "\n") {
-                            let trimmed = line.trimmingCharacters(in: .whitespaces)
-                            if !trimmed.isEmpty {
-                                lines.append(trimmed)
-                                let step = DependencyStep(label: "Installing gnumeric", status: .running, logLines: lines)
-                                await progressHandler(step)
-                            }
+            while process.isRunning {
+                let data = fileHandle.availableData
+                if !data.isEmpty, let chunk = String(data: data, encoding: .utf8) {
+                    for line in chunk.split(separator: "\n") {
+                        let trimmed = line.trimmingCharacters(in: .whitespaces)
+                        if !trimmed.isEmpty {
+                            lines.append(trimmed)
+                            let step = DependencyStep(label: "Installing gnumeric", status: .running, logLines: lines)
+                            await progressHandler(step)
                         }
                     }
-                    try? await Task.sleep(nanoseconds: 100_000_000)
                 }
+                try? await Task.sleep(nanoseconds: 100_000_000)
             }
 
             process.waitUntilExit()
-            poller.cancel()
-
             return process.terminationStatus == 0
         } catch {
             let failedStep = DependencyStep(label: "Installing gnumeric", status: .failed("Process error"))
