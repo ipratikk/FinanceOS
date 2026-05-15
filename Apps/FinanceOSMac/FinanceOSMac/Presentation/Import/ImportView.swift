@@ -228,8 +228,9 @@ struct ImportView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(viewModel.supportedSources.enumerated()), id: \.offset) { _, source in
-                    let status = (source.institution == "ICICI" && source.sourceType == .bankAccount) ? "" : " (coming soon)"
-                    Text("• \(source.institution) \(source.sourceType.rawValue)\(status)")
+                    let isFullySupported = source.bankName == "ICICI" && source.sourceType == .bankAccount
+                    let status = isFullySupported ? "" : " (coming soon)"
+                    Text("• \(source.bankName) \(source.sourceType.rawValue)\(status)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -264,7 +265,7 @@ struct ImportView: View {
                     Text("Accounts").font(.caption).tag(nil as TargetChoice?)
 
                     ForEach(viewModel.accounts) { account in
-                        Text(account.name)
+                        Text(account.accountName)
                             .tag(TargetChoice.account(account.id) as TargetChoice?)
                     }
                 }
@@ -274,7 +275,7 @@ struct ImportView: View {
                     Text("Cards").font(.caption).tag(nil as TargetChoice?)
 
                     ForEach(viewModel.cards) { card in
-                        Text(card.name)
+                        Text(card.cardName)
                             .tag(TargetChoice.card(card.id) as TargetChoice?)
                     }
                 }
@@ -304,7 +305,7 @@ struct ImportView: View {
         viewModel: ImportViewModel(
             transactionImporter: mockImporter,
             transactionImportPipeline: mockPipeline,
-            institutionRepository: MockInstitutionRepository(),
+            bankRepository: MockBankRepository(),
             accountRepository: MockAccountRepository(),
             cardRepository: MockCardRepository(),
             transactionRepository: mockRepository,

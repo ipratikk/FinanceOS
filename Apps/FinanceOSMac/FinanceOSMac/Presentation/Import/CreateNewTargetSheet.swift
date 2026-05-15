@@ -5,16 +5,16 @@ struct CreateNewTargetSheet: View {
     @Binding var name: String
     @Binding var nickname: String
     @Binding var last4: String
-    @Binding var institutionID: UUID?
+    @Binding var bankID: UUID?
     let isCard: Bool
-    let institutions: [Institution]
-    let detectedInstitution: String
+    let banks: [Bank]
+    let detectedBank: String
     let onCancel: () -> Void
     let onCreate: () -> Void
 
-    var selectedInstitution: Institution? {
-        guard let id = institutionID else { return nil }
-        return institutions.first { $0.id == id }
+    var selectedBank: Bank? {
+        guard let id = bankID else { return nil }
+        return banks.first { $0.id == id }
     }
 
     var body: some View {
@@ -24,12 +24,12 @@ struct CreateNewTargetSheet: View {
                     TextField("Name", text: $name)
                 }
 
-                Section("Institution") {
-                    if let institution = selectedInstitution {
-                        Text(institution.name)
+                Section("Bank") {
+                    if let bank = selectedBank {
+                        Text(bank.name)
                             .foregroundStyle(.secondary)
                     } else {
-                        Text(detectedInstitution)
+                        Text(detectedBank)
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -46,12 +46,12 @@ struct CreateNewTargetSheet: View {
                     }
                 }
 
-                if !institutions.isEmpty {
-                    Section(selectedInstitution == nil ? "Select Institution" : "Change Institution") {
-                        Picker("Institution", selection: $institutionID) {
-                            Text("Select Institution").tag(UUID?.none)
-                            ForEach(institutions) { institution in
-                                Text(institution.name).tag(UUID?(institution.id))
+                if !banks.isEmpty {
+                    Section(selectedBank == nil ? "Select Bank" : "Change Bank") {
+                        Picker("Bank", selection: $bankID) {
+                            Text("Select Bank").tag(UUID?.none)
+                            ForEach(banks) { bank in
+                                Text(bank.name).tag(UUID?(bank.id))
                             }
                         }
                     }

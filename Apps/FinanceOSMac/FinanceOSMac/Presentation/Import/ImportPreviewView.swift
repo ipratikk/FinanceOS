@@ -9,8 +9,8 @@ struct ImportPreviewView: View {
     @State private var newEntityName = ""
     @State private var newEntityNickname = ""
     @State private var newEntityLast4 = ""
-    @State private var newEntityInstitutionID: UUID?
-    @State private var detectedInstitution = ""
+    @State private var newEntityBankID: UUID?
+    @State private var detectedBank = ""
     @State private var isCard = false
 
     var body: some View {
@@ -37,10 +37,10 @@ struct ImportPreviewView: View {
                 name: $newEntityName,
                 nickname: $newEntityNickname,
                 last4: $newEntityLast4,
-                institutionID: $newEntityInstitutionID,
+                bankID: $newEntityBankID,
                 isCard: isCard,
-                institutions: viewModel.institutions,
-                detectedInstitution: detectedInstitution,
+                banks: viewModel.banks,
+                detectedBank: detectedBank,
                 onCancel: {
                     showCreateSheet = false
                 },
@@ -50,7 +50,7 @@ struct ImportPreviewView: View {
                             customName: newEntityName,
                             nickname: newEntityNickname,
                             last4: newEntityLast4,
-                            institutionID: newEntityInstitutionID,
+                            bankID: newEntityBankID,
                             isCard: isCard
                         )
                         showCreateSheet = false
@@ -73,7 +73,7 @@ struct ImportPreviewView: View {
                     Text("Accounts").font(.caption).tag(nil as TargetChoice?)
 
                     ForEach(viewModel.accounts) { account in
-                        Text(account.name)
+                        Text(account.accountName)
                             .tag(TargetChoice.account(account.id) as TargetChoice?)
                     }
 
@@ -86,7 +86,7 @@ struct ImportPreviewView: View {
                     Text("Cards").font(.caption).tag(nil as TargetChoice?)
 
                     ForEach(viewModel.cards) { card in
-                        Text(card.name)
+                        Text(card.cardName)
                             .tag(TargetChoice.card(card.id) as TargetChoice?)
                     }
 
@@ -120,8 +120,8 @@ struct ImportPreviewView: View {
     }
 
     private func initializeCreateSheet(isCard: Bool) {
-        let detected = viewModel.parsedStatements.first?.institution ?? "Unknown"
-        detectedInstitution = detected
+        let detected = viewModel.parsedStatements.first?.bankName ?? "Unknown"
+        detectedBank = detected
         self.isCard = isCard
 
         if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
@@ -135,10 +135,10 @@ struct ImportPreviewView: View {
             newEntityLast4 = ""
         }
 
-        let matchingInstitution = viewModel.institutions.first { inst in
-            fuzzyMatch(inst.name, detected)
+        let matchingBank = viewModel.banks.first { bank in
+            fuzzyMatch(bank.name, detected)
         }
-        newEntityInstitutionID = matchingInstitution?.id
+        newEntityBankID = matchingBank?.id
         showCreateSheet = true
         targetChoice = nil
     }
