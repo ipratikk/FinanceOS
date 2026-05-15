@@ -85,6 +85,17 @@ class HDFCTextBasedParser {
             let narration = txn.narrationLines.joined(separator: "\t").trimmingCharacters(in: .whitespaces)
                 .replacingOccurrences(of: "\t", with: " ")
 
+            // Skip footer lines (metadata keywords or unusually long descriptions)
+            let lower = narration.lowercased()
+            if lower.contains("statement summary") || lower.contains("page no") ||
+                lower.contains("contents of this statement") || lower.contains("hdfc bank limited") ||
+                lower.contains("closing balance includes") || lower.contains("registered office") ||
+                lower.contains("gstin") || lower.contains("nominated") ||
+                lower.contains("we understand your world") || narration.count > 500
+            {
+                continue
+            }
+
             // Determine debit/credit from amounts using heuristic
             let (debit, credit) = extractDebitCredit(from: txn.amounts)
 
@@ -134,12 +145,24 @@ class HDFCTextBasedParser {
     private func extractAmounts(from line: String) -> [Double] {
         var amounts: [Double] = []
 
-        // Split by tabs (column separator) and spaces (within column)
+        // Check if line uses tab-separated columns (from Vision column detection)
         let columns = line.split(separator: "\t", omittingEmptySubsequences: true).map(String.init)
-        for column in columns {
-            let parts = column.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
+
+        // If tab-separated, preserve column order for debit/credit detection
+        if columns.count > 1 {
+            for column in columns {
+                let parts = column.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
+                for part in parts {
+                    if let amount = parseAmount(String(part)) {
+                        amounts.append(amount)
+                    }
+                }
+            }
+        } else {
+            // Fallback: split by spaces (non-tab format)
+            let parts = line.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
             for part in parts {
-                if let amount = parseAmount(part) {
+                if let amount = parseAmount(String(part)) {
                     amounts.append(amount)
                 }
             }
@@ -162,24 +185,36 @@ class HDFCTextBasedParser {
 
     private func extractDebitCredit(from amounts: [Double]) -> (debit: Double?, credit: Double?) {
         // HDFC format: Debit Amt | Credit Amt | Closing Balance
-        // Challenge: Vision OCR extracts all amounts without column position info.
-        // Strategy: Pick smallest amount in transaction range (exclude largest, likely balance).
-        let txnAmounts = amounts.filter { $0 >= 100 && $0 < 1_000_000 }
+        // With Vision column detection, amounts are in column order:
+        // [date_parts..., debit, credit, ref_number, closing_balance]
+        // Heuristic: first two non-zero amounts in range 100-1M are debit/credit
 
+        let filtered = amounts.filter { $0 >= 0 && $0 < 1_000_000 }
+        guard filtered.count >= 2 else {
+            return (nil, nil)
+        }
+
+        // Look for debit/credit pair: one is zero, one is non-zero in first few amounts
+        for i in 0 ..< min(4, filtered.count - 1) {
+            let amt0 = filtered[i]
+            let amt1 = filtered[i + 1]
+
+            // Check for [debit, 0] or [0, credit] pattern
+            if amt0 > 100, amt0 < 1_000_000, amt1 == 0 {
+                return (amt0, nil) // Debit only
+            }
+            if amt0 == 0, amt1 > 100, amt1 < 1_000_000 {
+                return (nil, amt1) // Credit only
+            }
+        }
+
+        // Fallback: pick smallest valid amount (usually transaction, not balance)
+        let txnAmounts = filtered.filter { $0 >= 100 && $0 < 1_000_000 }
         guard !txnAmounts.isEmpty else {
             return (nil, nil)
         }
 
-        let amount: Double
-        if txnAmounts.count >= 2 {
-            // Exclude largest amount (likely closing balance), pick smallest
-            let sorted = txnAmounts.sorted()
-            amount = sorted[0] // Smallest is usually the transaction
-        } else {
-            amount = txnAmounts[0]
-        }
-
-        // Classify: < 100K = debit (payments), >= 100K = credit (salary/transfers)
+        let amount = txnAmounts.min()!
         if amount >= 100_000 {
             return (nil, amount)
         } else {

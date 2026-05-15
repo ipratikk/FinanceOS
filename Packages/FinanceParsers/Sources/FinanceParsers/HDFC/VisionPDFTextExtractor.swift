@@ -39,6 +39,17 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
         return groupIntoRows(observations)
     }
 
+    /// Extract text with column information preserved.
+    /// Each line is formatted as tab-separated columns: "col1\tcol2\tcol3..."
+    /// This allows downstream parsers to distinguish columns (debit/credit/balance).
+    public func extractLinesWithColumns(from page: PDFPage) -> [String] {
+        guard let cgImage = renderPage(page) else {
+            return []
+        }
+        let observations = recognizeText(in: cgImage)
+        return groupIntoRowsWithColumns(observations)
+    }
+
     private func renderPage(_ page: PDFPage) -> CGImage? {
         let pageRect = page.bounds(for: .mediaBox)
         let width = Int(pageRect.width * renderScale)
@@ -118,6 +129,79 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
             }
         }
         return lines
+    }
+
+    private func groupIntoRowsWithColumns(_ observations: [Observation]) -> [String] {
+        // Group by Y-coordinate (rows)
+        var rowBuckets: [(y: CGFloat, items: [Observation])] = []
+        for obs in observations {
+            if let idx = rowBuckets.firstIndex(where: { abs($0.y - obs.y) <= yTolerance }) {
+                rowBuckets[idx].items.append(obs)
+            } else {
+                rowBuckets.append((y: obs.y, items: [obs]))
+            }
+        }
+        rowBuckets.sort { $0.y > $1.y }
+
+        // Detect column boundaries from X-coordinates across entire page
+        var xPositions: [CGFloat] = []
+        for bucket in rowBuckets {
+            for obs in bucket.items {
+                xPositions.append(obs.x)
+            }
+        }
+        let columnBoundaries = detectColumnBoundaries(from: xPositions)
+
+        var lines: [String] = []
+        lines.reserveCapacity(rowBuckets.count)
+
+        for bucket in rowBuckets {
+            let sorted = bucket.items.sorted { $0.x < $1.x }
+            // Group observations into columns based on detected boundaries
+            var columns: [[String]] = Array(repeating: [], count: columnBoundaries.count + 1)
+
+            for obs in sorted {
+                var colIdx = 0
+                for (idx, boundary) in columnBoundaries.enumerated() {
+                    if obs.x < boundary {
+                        colIdx = idx
+                        break
+                    }
+                    colIdx = idx + 1
+                }
+                if colIdx < columns.count {
+                    columns[colIdx].append(obs.text)
+                }
+            }
+
+            // Join columns with tab separator, rows within columns with space
+            let columnTexts = columns.map { $0.joined(separator: " ") }
+            let line = columnTexts.joined(separator: "\t")
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if !trimmed.isEmpty {
+                lines.append(trimmed)
+            }
+        }
+        return lines
+    }
+
+    /// Detect column boundaries by finding gaps in X-coordinate distribution.
+    private func detectColumnBoundaries(from xPositions: [CGFloat]) -> [CGFloat] {
+        guard xPositions.count > 1 else { return [] }
+
+        let sorted = xPositions.sorted()
+        var gaps: [(position: CGFloat, gap: CGFloat)] = []
+
+        for i in 1 ..< sorted.count {
+            let gap = sorted[i] - sorted[i - 1]
+            if gap > 0.02 { // Significant gap (2% of normalized page width)
+                gaps.append((position: sorted[i - 1], gap: gap))
+            }
+        }
+
+        // Use largest gaps as column boundaries
+        let topGaps = gaps.sorted { $0.gap > $1.gap }.prefix(6).sorted { $0.position < $1.position }
+        return topGaps.map { $0.position + (sorted[1] - sorted[0]) / 2 }
     }
 
     private struct Observation {
