@@ -17,7 +17,9 @@ public struct DefaultTransactionImporter:
     public init(
         parsers: [any StatementParser] = [
             CSVStatementParser(),
-            XLSXStatementParser()
+            XLSXStatementParser(),
+            TXTStatementParser(),
+            PDFStatementParser()
         ],
         registry: StatementParserRegistry = StatementParserRegistry(
             parsers: [
