@@ -35,6 +35,10 @@ public enum TransactionImportError: Error, CustomStringConvertible {
             return "Password required for: \(filename)"
         }
     }
+
+    public var userMessage: String {
+        description
+    }
 }
 
 public struct ParsedTransaction: Codable, Identifiable, Sendable {
@@ -168,28 +172,6 @@ public protocol StatementParser: Sendable {
     func parseStatement(from fileURL: URL) async throws -> ParsedStatement
 }
 
-public struct StatementParserRegistry {
-    private let parsers: [StatementParser]
-
-    public init(parsers: [StatementParser]) {
-        self.parsers = parsers
-    }
-
-    public var supportedSources: [(bankName: String, sourceType: String)] {
-        [
-            ("HDFC", "Bank Account"),
-            ("HDFC", "Credit Card"),
-            ("ICICI", "Bank Account"),
-            ("ICICI", "Credit Card"),
-            ("Amex", "Credit Card")
-        ]
-    }
-
-    public func parser(for format: StatementFileFormat) -> StatementParser? {
-        parsers.first { $0.supportedFormat == format }
-    }
-}
-
 public struct CSVStatementParser: StatementParser, Sendable {
     public let supportedFormat: StatementFileFormat = .csv
 
@@ -284,8 +266,7 @@ public struct DefaultTransactionImporter: Sendable {
     private let parsersByFormat: [StatementFileFormat: any StatementParser]
 
     public init(
-        parsers: [any StatementParser]? = nil,
-        registry: StatementParserRegistry? = nil
+        parsers: [any StatementParser]? = nil
     ) {
         var parsersByFormat: [StatementFileFormat: any StatementParser] = [:]
 
@@ -301,7 +282,6 @@ public struct DefaultTransactionImporter: Sendable {
         }
 
         self.parsersByFormat = parsersByFormat
-        _ = registry
     }
 
     public func parseStatement(

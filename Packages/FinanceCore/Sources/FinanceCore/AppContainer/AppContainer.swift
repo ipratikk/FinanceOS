@@ -50,10 +50,9 @@ public final class AppContainer {
             ]
         )
 
-        transactionImporter = DefaultTransactionImporter(registry: parserRegistry)
+        transactionImporter = DefaultTransactionImporter()
 
         transactionImportPipeline = TransactionImportPipeline(
-            importer: transactionImporter,
             repository: transactionRepository
         )
     }
