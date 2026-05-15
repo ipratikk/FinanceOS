@@ -19,13 +19,13 @@ public struct HDFCBankStatementParser: InstitutionStatementParser {
     }
 
     public func parse(rows: [[String]]) throws -> ParsedStatement {
-        guard rows.count > 2 else {
+        guard rows.count > 1 else {
             throw TransactionImportError.malformedFile("HDFC statement too short")
         }
 
         let accountName = "Unknown"
         let cardLast4: String? = nil
-        let transactionRows = Array(rows.dropFirst(2))
+        let transactionRows = rows
 
         let currency = "INR"
         let transactions = try TabularTransactionDecoder.decodeTransactions(transactionRows)
