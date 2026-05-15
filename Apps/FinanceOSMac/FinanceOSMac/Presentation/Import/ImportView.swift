@@ -178,7 +178,6 @@ struct ImportView: View {
             Image(systemName: "arrow.down.doc.fill")
                 .font(.system(size: 40))
                 .foregroundColor(.secondary)
-
             VStack(spacing: 4) {
                 Text("Drag files here or click button below")
                     .font(.headline)
@@ -219,9 +218,7 @@ struct ImportView: View {
             if !viewModel.parsedStatements.isEmpty {
                 ImportPreviewView(viewModel: viewModel, targetChoice: $targetChoice)
             }
-
             Divider()
-
             HStack(spacing: 12) {
                 Button("Cancel") {
                     viewModel.fileURLs = []
@@ -245,7 +242,6 @@ struct ImportView: View {
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
-
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(viewModel.supportedSources.enumerated()), id: \.offset) { _, source in
                     let isFullySupported = source.bankName == "ICICI" && source.sourceType == .bankAccount
@@ -255,16 +251,10 @@ struct ImportView: View {
                         .foregroundColor(.secondary)
                 }
             }
-
             Divider()
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(
-                    "💡 CSV and XLSX formats for CSV-based statements, TXT for delimited text (HDFC), PDF for scanned statements."
-                )
+            Text("💡 CSV and XLSX for CSV-based statements; TXT for delimited text (HDFC); PDF for scanned statements.")
                 .font(.caption)
                 .foregroundColor(.secondary)
-            }
         }
         .padding()
         .background(Color.gray.opacity(0.05))
