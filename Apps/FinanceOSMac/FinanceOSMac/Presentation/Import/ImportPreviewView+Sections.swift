@@ -18,9 +18,6 @@ extension ImportPreviewView {
                         Text(account.accountName)
                             .tag(TargetChoice.account(account.id) as TargetChoice?)
                     }
-
-                    Text("Create New Account...")
-                        .tag(TargetChoice.createAccount as TargetChoice?)
                 }
 
                 if !viewModel.cards.isEmpty {
@@ -31,18 +28,16 @@ extension ImportPreviewView {
                         Text(card.cardName)
                             .tag(TargetChoice.card(card.id) as TargetChoice?)
                     }
-
-                    Text("Create New Card...")
-                        .tag(TargetChoice.createCard as TargetChoice?)
                 }
 
-                if viewModel.accounts.isEmpty, viewModel.cards.isEmpty {
+                if !viewModel.accounts.isEmpty || !viewModel.cards.isEmpty {
                     Divider()
-                    Text("Create New Account...")
-                        .tag(TargetChoice.createAccount as TargetChoice?)
-                    Text("Create New Card...")
-                        .tag(TargetChoice.createCard as TargetChoice?)
                 }
+
+                Text("Create New Account...")
+                    .tag(TargetChoice.createAccount as TargetChoice?)
+                Text("Create New Card...")
+                    .tag(TargetChoice.createCard as TargetChoice?)
             }
             .onChange(of: targetChoice) { _, newValue in
                 handleTargetSelection(newValue)
