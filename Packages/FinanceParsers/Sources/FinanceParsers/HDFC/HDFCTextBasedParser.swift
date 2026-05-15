@@ -162,27 +162,39 @@ class HDFCTextBasedParser {
 
     private func extractDebitCredit(from amounts: [Double]) -> (debit: Double?, credit: Double?) {
         // HDFC format: Withdrawal Amt | Deposit Amt | Closing Balance
-        // Challenge: without preserving column position through parsing, can't distinguish
-        // withdrawal vs deposit reliably. Filter to reasonable transaction size.
+        // Challenge: Vision OCR extracts all amounts (including closing balance) without column info.
+        // Strategy: Identify transaction amount by excluding balance.
         let txnAmounts = amounts.filter { $0 >= 100 && $0 < 1_000_000 }
 
-        guard txnAmounts.count >= 1 else {
+        guard !txnAmounts.isEmpty else {
             return (nil, nil)
         }
 
-        // Take the smallest amount as the transaction (likely < closing balance)
-        let amount = txnAmounts.min() ?? txnAmounts[0]
+        // If we have 2+ amounts, exclude the largest (likely closing balance)
+        // and use the smaller amount(s) as transaction candidate(s).
+        let amount: Double
+        if txnAmounts.count >= 2 {
+            let sorted = txnAmounts.sorted()
+            // Check if there's a clear pair like [2500, 0] or [0, 8679]
+            if sorted.count >= 2, sorted[0] == 0 || sorted[1] == 0 {
+                // Prefer the non-zero amount as transaction
+                amount = sorted.first(where: { $0 > 0 }) ?? sorted[0]
+            } else {
+                // Take median or second-smallest (exclude the largest balance)
+                amount = sorted.count > 2 ? sorted[1] : sorted[0]
+            }
+        } else {
+            amount = txnAmounts[0]
+        }
 
-        // Without column position info, use amount heuristic:
-        // Deposits are typically large (salary, transfers in)
-        // Withdrawals are typically smaller (payments, transfers out)
-        // Threshold: 100K separates typical payments from deposits
+        // Classify: most transactions are < 100K (payments), larger ones > 100K (deposits/salary)
+        // This heuristic fails for large withdrawals, but works for most cases.
         let debit: Double?
         let credit: Double?
 
         if amount >= 100_000 {
-            debit = nil
             credit = amount
+            debit = nil
         } else {
             debit = amount
             credit = nil

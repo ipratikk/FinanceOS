@@ -44,8 +44,8 @@ struct ParseCommand: AsyncParsableCommand {
             switch format {
             case .pdf:
                 return HDFCPDFParser(password: password)
-            default:
-                fatalError("Format not yet supported: \(format)")
+            case .csv, .txt, .xlsx:
+                fatalError("CSV/TXT/XLSX formats require source selection - use app UI instead")
             }
         }()
 
