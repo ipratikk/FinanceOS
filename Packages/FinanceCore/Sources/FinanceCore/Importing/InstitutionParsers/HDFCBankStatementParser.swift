@@ -1,7 +1,7 @@
 import Foundation
 
 public struct HDFCBankStatementParser: InstitutionStatementParser {
-    public let institution = "HDFC"
+    public let bankName = "HDFC"
     public let sourceType = StatementSourceType.bankAccount
 
     public init() {}
@@ -44,7 +44,7 @@ public struct HDFCBankStatementParser: InstitutionStatementParser {
         }
 
         return ParsedStatement(
-            institution: institution,
+            bankName: bankName,
             accountName: accountName,
             cardLast4: cardLast4,
             statementPeriodStart: periodStart,

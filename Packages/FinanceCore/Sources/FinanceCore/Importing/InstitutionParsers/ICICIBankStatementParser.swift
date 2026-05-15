@@ -1,7 +1,7 @@
 import Foundation
 
 public struct ICICIBankStatementParser: InstitutionStatementParser {
-    public let institution = "ICICI"
+    public let bankName = "ICICI"
     public let sourceType = StatementSourceType.bankAccount
 
     public init() {}
@@ -38,7 +38,7 @@ public struct ICICIBankStatementParser: InstitutionStatementParser {
         }
 
         return ParsedStatement(
-            institution: institution,
+            bankName: bankName,
             accountName: accountName,
             cardLast4: cardLast4,
             statementPeriodStart: periodStart,

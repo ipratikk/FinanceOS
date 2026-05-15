@@ -1,8 +1,9 @@
 import Foundation
 
 public struct ParsedStatement: Sendable {
-    public let institution: String
+    public let bankName: String
     public let accountName: String
+    public let accountLast4: String?
     public let cardLast4: String?
     public let statementPeriodStart: Date?
     public let statementPeriodEnd: Date?
@@ -12,8 +13,9 @@ public struct ParsedStatement: Sendable {
     public let transactions: [ParsedTransaction]
 
     public init(
-        institution: String,
+        bankName: String,
         accountName: String,
+        accountLast4: String? = nil,
         cardLast4: String? = nil,
         statementPeriodStart: Date? = nil,
         statementPeriodEnd: Date? = nil,
@@ -22,8 +24,9 @@ public struct ParsedStatement: Sendable {
         totalCredit: Int64 = 0,
         transactions: [ParsedTransaction] = []
     ) {
-        self.institution = institution
+        self.bankName = bankName
         self.accountName = accountName
+        self.accountLast4 = accountLast4
         self.cardLast4 = cardLast4
         self.statementPeriodStart = statementPeriodStart
         self.statementPeriodEnd = statementPeriodEnd

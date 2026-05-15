@@ -5,8 +5,8 @@ public struct StatementParserRegistry: Sendable {
         self.parsers = parsers
     }
 
-    public var supportedSources: [(institution: String, sourceType: StatementSourceType)] {
-        parsers.map { ($0.institution, $0.sourceType) }
+    public var supportedSources: [(bankName: String, sourceType: StatementSourceType)] {
+        parsers.map { ($0.bankName, $0.sourceType) }
     }
 
     func parser(for rows: [[String]]) -> (any InstitutionStatementParser)? {

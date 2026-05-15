@@ -1,7 +1,7 @@
 import Foundation
 
 public struct AmexCardStatementParser: InstitutionStatementParser {
-    public let institution = "Amex"
+    public let bankName = "Amex"
     public let sourceType = StatementSourceType.creditCard
 
     public init() {}
@@ -39,7 +39,7 @@ public struct AmexCardStatementParser: InstitutionStatementParser {
         }
 
         return ParsedStatement(
-            institution: institution,
+            bankName: bankName,
             accountName: "Unknown",
             cardLast4: nil,
             statementPeriodStart: periodStart,

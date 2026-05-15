@@ -121,7 +121,7 @@ struct ImportPreviewView: View {
 
     private func initializeCreateSheet(isCard: Bool) {
         let detected = viewModel.parsedStatements.first?.institution ?? "Unknown"
-        self.detectedInstitution = detected
+        detectedInstitution = detected
         self.isCard = isCard
 
         if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
