@@ -12,23 +12,23 @@ import Observation
 @Observable
 final class AccountsViewModel {
     private let repository: AccountRepository
-    private let institutionRepository: InstitutionRepository
+    private let bankRepository: BankRepository
     private let cardRepository: CardRepository
     private let transactionRepository: TransactionRepository
 
     var accounts: [Account] = []
-    var institutions: [Institution] = []
+    var banks: [Bank] = []
     var isLoading = false
     var editingAccount: Account?
 
     init(
         repository: AccountRepository,
-        institutionRepository: InstitutionRepository,
+        bankRepository: BankRepository,
         cardRepository: CardRepository,
         transactionRepository: TransactionRepository
     ) {
         self.repository = repository
-        self.institutionRepository = institutionRepository
+        self.bankRepository = bankRepository
         self.cardRepository = cardRepository
         self.transactionRepository = transactionRepository
     }
@@ -42,9 +42,9 @@ final class AccountsViewModel {
 
         do {
             async let accounts = repository.fetchAccounts()
-            async let institutions = institutionRepository.fetchInstitutions()
+            async let banks = bankRepository.fetchBanks()
             self.accounts = try await accounts
-            self.institutions = try await institutions
+            self.banks = try await banks
         } catch {
             print(error)
         }
@@ -72,9 +72,9 @@ final class AccountsViewModel {
     func convertToCard(_ account: Account) async {
         do {
             let card = Card(
-                institutionID: account.institutionID,
-                accountID: nil,
-                name: account.name
+                bankId: account.bankId,
+                linkedAccountId: nil,
+                cardName: account.accountName
             )
             try await cardRepository.insert(card)
             try await transactionRepository.migrateTransactions(fromAccount: account.id, toCard: card.id)

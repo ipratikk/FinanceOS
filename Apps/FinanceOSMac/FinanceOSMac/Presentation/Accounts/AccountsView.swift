@@ -25,9 +25,9 @@ struct AccountsView: View {
         NavigationStack {
             List(viewModel.accounts) { account in
                 NavigationLink(value: account.id) {
-                    let displayName = account.nickname.isEmpty ? account.name : account.nickname
-                    let institutionName = viewModel.institutions.first { $0.id == account.institutionID }?.name ?? "Unknown"
-                    Text("\(institutionName) \(displayName)")
+                    let displayName = account.nickname.isEmpty ? account.accountName : account.nickname
+                    let bankName = viewModel.banks.first { $0.id == account.bankId }?.name ?? "Unknown"
+                    Text("\(bankName) \(displayName)")
                 }
                 .contextMenu {
                     Button("Edit") {
@@ -47,7 +47,7 @@ struct AccountsView: View {
                             cardRepository: appContainer.cardRepository
                         )
                     )
-                    .navigationTitle(account.name)
+                    .navigationTitle(account.accountName)
                     .onAppear {
                         selectedAccountId = accountId
                     }

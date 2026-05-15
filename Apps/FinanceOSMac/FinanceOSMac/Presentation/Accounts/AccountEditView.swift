@@ -4,9 +4,12 @@ import SwiftUI
 struct AccountEditView: View {
     let account: Account
     let viewModel: AccountsViewModel
-    @State private var name: String
+    @State private var accountName: String
+    @State private var accountLast4: String
+    @State private var ownerName: String
+    @State private var accountType: AccountType
     @State private var nickname: String
-    @State private var institutionID: UUID
+    @State private var bankId: UUID
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
@@ -15,23 +18,33 @@ struct AccountEditView: View {
     init(account: Account, viewModel: AccountsViewModel) {
         self.account = account
         self.viewModel = viewModel
-        _name = State(initialValue: account.name)
+        _accountName = State(initialValue: account.accountName)
+        _accountLast4 = State(initialValue: account.accountLast4)
+        _ownerName = State(initialValue: account.ownerName)
+        _accountType = State(initialValue: account.accountType)
         _nickname = State(initialValue: account.nickname)
-        _institutionID = State(initialValue: account.institutionID)
+        _bankId = State(initialValue: account.bankId)
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Account Details") {
-                    TextField("Name", text: $name)
+                    TextField("Account Name", text: $accountName)
+                    TextField("Last 4 Digits", text: $accountLast4)
+                    TextField("Owner Name", text: $ownerName)
+                    Picker("Account Type", selection: $accountType) {
+                        ForEach(AccountType.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
+                    }
                     TextField("Nickname", text: $nickname)
                 }
 
-                Section("Institution") {
-                    Picker("Institution", selection: $institutionID) {
-                        ForEach(viewModel.institutions) { institution in
-                            Text(institution.name).tag(institution.id)
+                Section("Bank") {
+                    Picker("Bank", selection: $bankId) {
+                        ForEach(viewModel.banks) { bank in
+                            Text(bank.name).tag(bank.id)
                         }
                     }
                 }
@@ -61,8 +74,11 @@ struct AccountEditView: View {
                         Task {
                             let updated = Account(
                                 id: account.id,
-                                institutionID: institutionID,
-                                name: name,
+                                bankId: bankId,
+                                accountName: accountName,
+                                accountLast4: accountLast4,
+                                ownerName: ownerName,
+                                accountType: accountType,
                                 nickname: nickname
                             )
                             await viewModel.updateAccount(updated)
