@@ -26,7 +26,7 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
     private let renderScale: CGFloat
     private let yTolerance: CGFloat
 
-    public init(renderScale: CGFloat = 3.0, yTolerance: CGFloat = 0.001) {
+    public init(renderScale: CGFloat = 3.0, yTolerance: CGFloat = 0.015) {
         self.renderScale = renderScale
         self.yTolerance = yTolerance
     }
@@ -36,8 +36,7 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
             return []
         }
         let observations = recognizeText(in: cgImage)
-        let lines = groupIntoRows(observations)
-        return lines
+        return groupIntoRows(observations)
     }
 
     private func renderPage(_ page: PDFPage) -> CGImage? {
@@ -110,24 +109,9 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
         var lines: [String] = []
         lines.reserveCapacity(buckets.count)
         for bucket in buckets {
+            // Sort observations left-to-right within row, preserving reading order
             let sorted = bucket.items.sorted { $0.x < $1.x }
-
-            // Preserve rough column structure by using tab separators.
-            // Observations close in X position belong to the same column group.
-            let columnTolerance: CGFloat = 0.05
-            var columnGroups: [(x: CGFloat, texts: [String])] = []
-
-            for obs in sorted {
-                // Check if this obs belongs to an existing column group
-                if let idx = columnGroups.firstIndex(where: { abs($0.x - obs.x) < columnTolerance }) {
-                    columnGroups[idx].texts.append(obs.text)
-                } else {
-                    // New column group
-                    columnGroups.append((x: obs.x, texts: [obs.text]))
-                }
-            }
-
-            let joined = columnGroups.map { $0.texts.joined(separator: " ") }.joined(separator: "\t")
+            let joined = sorted.map(\.text).joined(separator: " ")
             let trimmed = joined.trimmingCharacters(in: .whitespaces)
             if !trimmed.isEmpty {
                 lines.append(trimmed)

@@ -14,6 +14,8 @@ class HDFCTextBasedParser {
         let date: String
         let narrationLines: [String]
         let amounts: [Double]
+        let withdrawal: Double?
+        let deposit: Double?
     }
 
     func reconstructTransactions(from lines: [String]) -> [ReconstructedTransaction] {
@@ -21,7 +23,8 @@ class HDFCTextBasedParser {
         var currentDate: String?
         var currentNarration: [String] = []
         var currentAmounts: [Double] = []
-        var currentColumns: [(withdrawal: Double?, deposit: Double?)] = []
+        var currentWithdrawal: Double?
+        var currentDeposit: Double?
 
         for line in lines {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
@@ -37,7 +40,9 @@ class HDFCTextBasedParser {
                     transactions.append(ReconstructedTransaction(
                         date: date,
                         narrationLines: currentNarration,
-                        amounts: currentAmounts
+                        amounts: currentAmounts,
+                        withdrawal: currentWithdrawal,
+                        deposit: currentDeposit
                     ))
                 }
 
@@ -45,17 +50,15 @@ class HDFCTextBasedParser {
                 currentDate = date
                 currentNarration = []
                 currentAmounts = []
-                currentColumns = []
+                currentWithdrawal = nil
+                currentDeposit = nil
 
-                // Extract amounts from this line using column structure
+                // Extract amounts from this line
                 currentAmounts = extractAmounts(from: trimmed)
-                currentColumns = extractColumnAmounts(from: trimmed)
             } else {
                 // Continuation of narration for current transaction
                 if currentDate != nil {
                     currentNarration.append(trimmed)
-
-                    // Extract amounts from narration continuation
                     currentAmounts.append(contentsOf: extractAmounts(from: trimmed))
                 }
             }
@@ -66,42 +69,15 @@ class HDFCTextBasedParser {
             transactions.append(ReconstructedTransaction(
                 date: date,
                 narrationLines: currentNarration,
-                amounts: currentAmounts
+                amounts: currentAmounts,
+                withdrawal: currentWithdrawal,
+                deposit: currentDeposit
             ))
         }
 
         return transactions
     }
 
-    private func extractColumnAmounts(from line: String) -> [(withdrawal: Double?, deposit: Double?)] {
-        // Parse tab-separated columns to extract withdrawal/deposit amounts
-        let columns = line.split(separator: "\t", omittingEmptySubsequences: true).map(String.init)
-        guard columns.count >= 5 else {
-            return []
-        }
-
-        // HDFC column order: Date | Narration | Chq/Ref | Value Date | Withdrawal | Deposit | Closing Balance
-        // After grouping, columns might shift, so look for amount patterns
-        var result: [(withdrawal: Double?, deposit: Double?)] = []
-
-        // Try to parse withdrawal (column 4 in typical layout) and deposit (column 5)
-        if columns.count >= 6 {
-            let withdrawalText = columns[4]
-            let depositText = columns[5]
-
-            let withdrawal = withdrawalText.split(separator: " ").compactMap { s in
-                parseAmount(String(s))
-            }.first
-
-            let deposit = depositText.split(separator: " ").compactMap { s in
-                parseAmount(String(s))
-            }.first
-
-            result.append((withdrawal: withdrawal, deposit: deposit))
-        }
-
-        return result
-    }
 
     func parseToNormalizedTransactions(_ reconstructed: [ReconstructedTransaction]) -> [ParsedTransaction] {
         var transactions: [ParsedTransaction] = []
@@ -110,7 +86,7 @@ class HDFCTextBasedParser {
             let narration = txn.narrationLines.joined(separator: "\t").trimmingCharacters(in: .whitespaces)
                 .replacingOccurrences(of: "\t", with: " ")
 
-            // Determine debit/credit from amounts
+            // Determine debit/credit from amounts using heuristic
             let (debit, credit) = extractDebitCredit(from: txn.amounts)
 
             guard debit != nil || credit != nil else {
