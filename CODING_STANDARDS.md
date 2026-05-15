@@ -78,6 +78,63 @@ When approaching this limit, extract:
 - Helper structs/enums
 - Complex view sections into dedicated View types
 
+## For-Where Clauses
+
+Prefer `where` clauses over nested `if` statements in `for` loops:
+
+```swift
+// ❌ Wrong
+for item in items {
+    if item.isValid {
+        process(item)
+    }
+}
+
+// ✅ Correct
+for item in items where item.isValid {
+    process(item)
+}
+```
+
+## Multiple Closures
+
+When a function takes multiple closures, do NOT use trailing closure syntax. Explicitly label all closure parameters:
+
+```swift
+// ❌ Wrong
+Button(action: { showSheet = true }) {
+    Label("Add", systemImage: "plus")
+}
+
+// ✅ Correct
+Button(
+    action: { showSheet = true },
+    label: {
+        Label("Add", systemImage: "plus")
+    }
+)
+```
+
+## Function Parameter Count
+
+**Max 5 parameters.** For functions with 6+ parameters, group related parameters into a struct or use builder pattern:
+
+```swift
+// ❌ Wrong
+func createCard(bank: Bank, statement: ParsedStatement, customName: String?, last4: String, cardType: CardType, nickname: String) async throws
+
+// ✅ Correct - Extract parameters
+struct CardCreationParams {
+    let bank: Bank
+    let statement: ParsedStatement
+    let customName: String?
+    let last4: String
+    let cardType: CardType
+    let nickname: String
+}
+func createCard(params: CardCreationParams) async throws
+```
+
 ## Brace Spacing
 
 Opening braces must have a space before them and be on the same line:
@@ -110,6 +167,23 @@ if let foo = bar,
    let baz = qux {
     // code
 }
+```
+
+## String Conversion from Data
+
+Use the failable initializer `String(bytes:encoding:)`:
+
+```swift
+// ❌ Wrong
+let str = String(data: data, encoding: .utf8) ?? ""
+
+// ✅ Correct - Use failable initializer when appropriate
+if let str = String(bytes: data, encoding: .utf8) {
+    // handle valid string
+}
+
+// Or with default if needed
+let str = String(bytes: data, encoding: .utf8) ?? ""
 ```
 
 ## Optional Initialization
