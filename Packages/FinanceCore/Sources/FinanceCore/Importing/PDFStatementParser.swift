@@ -10,18 +10,31 @@ import PDFKit
 
 public struct PDFStatementParser: StatementParser, Sendable {
     public let supportedFormat: StatementFileFormat = .pdf
+    private let password: String?
 
-    public init() {}
+    public init(password: String? = nil) {
+        self.password = password
+    }
 
     public func parseStatement(from fileURL: URL) async throws -> ParsedStatement {
         guard let doc = PDFDocument(url: fileURL) else {
             throw TransactionImportError.malformedFile("Cannot open PDF")
         }
 
+        if doc.isEncrypted && !doc.isUnlocked {
+            if let pwd = password {
+                doc.unlock(withPassword: pwd)
+            }
+            if !doc.isUnlocked {
+                throw TransactionImportError.passwordProtected(fileURL.lastPathComponent)
+            }
+        }
+
         var allLines: [String] = []
-        for i in 0..<doc.pageCount {
+        for i in 0 ..< doc.pageCount {
             guard let page = doc.page(at: i),
-                  let text = page.string else {
+                  let text = page.string
+            else {
                 continue
             }
             allLines += text.components(separatedBy: .newlines)

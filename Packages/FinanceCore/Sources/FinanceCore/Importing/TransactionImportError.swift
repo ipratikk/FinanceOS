@@ -14,6 +14,7 @@ public enum TransactionImportError: Error, LocalizedError {
     case invalidAmount(String)
     case malformedFile(String)
     case platformUnavailable(String)
+    case passwordProtected(String)
 
     public var errorDescription: String? {
         switch self {
@@ -29,6 +30,8 @@ public enum TransactionImportError: Error, LocalizedError {
             return "The file appears to be corrupted or malformed: \(description)"
         case let .platformUnavailable(description):
             return description
+        case let .passwordProtected(filename):
+            return "The PDF file \"\(filename)\" is password-protected. Please enter the password to continue."
         }
     }
 
@@ -46,6 +49,8 @@ public enum TransactionImportError: Error, LocalizedError {
             return "File is malformed"
         case .platformUnavailable:
             return "Feature unavailable on this platform"
+        case .passwordProtected:
+            return "PDF file is password-protected"
         }
     }
 
@@ -63,6 +68,8 @@ public enum TransactionImportError: Error, LocalizedError {
             return "Try exporting the file again or download the latest version."
         case .platformUnavailable:
             return "Try using a different file format or import method."
+        case .passwordProtected:
+            return "Enter the password for the PDF file. You can save it to Keychain for future use."
         }
     }
 }
