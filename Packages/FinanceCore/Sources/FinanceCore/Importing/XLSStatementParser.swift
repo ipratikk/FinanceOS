@@ -29,25 +29,14 @@ public struct XLSStatementParser:
 
     #if os(macOS)
     private func convertXLSToCSV(_ fileURL: URL) throws -> Data {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
-        process.arguments = ["ssconvert"]
-
-        let outputPipe = Pipe()
-        process.standardOutput = outputPipe
-        process.standardError = Pipe()
-
-        try process.run()
-        process.waitUntilExit()
-
-        guard process.terminationStatus == 0 else {
+        guard let ssconvertPath = findSSConvert() else {
             throw TransactionImportError.malformedFile(
                 "ssconvert not found. Install gnumeric: brew install gnumeric"
             )
         }
 
         let converter = Process()
-        converter.executableURL = URL(fileURLWithPath: "/usr/local/bin/ssconvert")
+        converter.executableURL = ssconvertPath
         converter.arguments = [
             "-S",
             fileURL.path,
@@ -83,6 +72,44 @@ public struct XLSStatementParser:
                 line.components(separatedBy: ",")
                     .map { $0.trimmingCharacters(in: .whitespaces) }
             }
+    }
+
+    private func findSSConvert() -> URL? {
+        let commonPaths = [
+            "/opt/homebrew/bin/ssconvert",
+            "/usr/local/bin/ssconvert",
+            "/opt/local/bin/ssconvert"
+        ]
+
+        for path in commonPaths {
+            if FileManager.default.fileExists(atPath: path) {
+                return URL(fileURLWithPath: path)
+            }
+        }
+
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
+        process.arguments = ["ssconvert"]
+
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+
+            if process.terminationStatus == 0 {
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                if let path = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) {
+                    return URL(fileURLWithPath: path)
+                }
+            }
+        } catch {
+            return nil
+        }
+
+        return nil
     }
     #endif
 }
