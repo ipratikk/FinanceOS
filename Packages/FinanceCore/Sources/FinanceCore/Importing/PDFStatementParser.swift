@@ -6,7 +6,10 @@
 //
 
 import Foundation
+import OSLog
 import PDFKit
+
+private let logger = Logger(subsystem: "FinanceCore", category: "PDFParser")
 
 public struct PDFStatementParser: StatementParser, Sendable {
     public let supportedFormat: StatementFileFormat = .pdf
@@ -49,6 +52,14 @@ public struct PDFStatementParser: StatementParser, Sendable {
         }
 
         let transactions = try parseHDFCPDFTransactions(Array(lines[headerIdx...]))
+        logger.debug("Parsed \(transactions.count) transactions from PDF")
+        for (i, txn) in transactions.enumerated() {
+            logger
+                .debug(
+                    "[\(i)] \(txn.postedAt, privacy: .public) | \(txn.description, privacy: .public) | \(txn.amountMinorUnits)"
+                )
+        }
+
         let (periodStart, periodEnd) = TabularTransactionDecoder.extractPeriod(from: transactions)
         var totalDebit: Int64 = 0
         var totalCredit: Int64 = 0
@@ -72,106 +83,60 @@ public struct PDFStatementParser: StatementParser, Sendable {
     }
 
     private func parseHDFCPDFTransactions(_ lines: [String]) throws -> [ParsedTransaction] {
+        let classifier = HDFCLineClassifier()
+        let reconstructor = HDFCTransactionReconstructor()
+        let parser = HDFCTransactionParser()
+
+        let classifiedLines = lines.map { classifier.classify($0) }
+        let blocks = reconstructor.reconstructTransactionBlocks(from: classifiedLines)
+
         var transactions: [ParsedTransaction] = []
-        var currentBlock: [String] = []
 
-        for line in lines.dropFirst() {
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            guard !trimmed.isEmpty else { continue }
+        for block in blocks {
+            guard let rawTransaction = parser.parseTransactionBlock(block) else { continue }
 
-            let datePattern = "^\\d{2}/\\d{2}/\\d{2}"
-            let isDateLine = trimmed.range(of: datePattern, options: .regularExpression) != nil
+            guard let postedAt = parser.validateDate(rawTransaction.dateString) else { continue }
 
-            if isDateLine, !currentBlock.isEmpty {
-                if let txn = try parseTransactionBlock(currentBlock) {
-                    transactions.append(txn)
+            let description = rawTransaction.description.isEmpty ? "HDFC Transaction" : rawTransaction.description
+
+            let amount: Int64
+            if let debitStr = rawTransaction.debitAmount, let creditStr = rawTransaction.creditAmount {
+                let debit = try parseAmountMinorUnits(debitStr)
+                let credit = try parseAmountMinorUnits(creditStr)
+
+                if debit > 0, credit == 0 {
+                    amount = -debit
+                } else if credit > 0, debit == 0 {
+                    amount = credit
+                } else {
+                    amount = credit - debit
                 }
-                currentBlock = [trimmed]
-            } else if isDateLine {
-                currentBlock = [trimmed]
-            } else if !currentBlock.isEmpty {
-                currentBlock.append(trimmed)
+            } else if let creditStr = rawTransaction.creditAmount {
+                amount = try parseAmountMinorUnits(creditStr)
+            } else if let debitStr = rawTransaction.debitAmount {
+                amount = try -parseAmountMinorUnits(debitStr)
+            } else {
+                continue
             }
-        }
 
-        if !currentBlock.isEmpty {
-            if let txn = try parseTransactionBlock(currentBlock) {
-                transactions.append(txn)
-            }
+            let fingerprint = [rawTransaction.dateString, description, String(amount)].joined(separator: "|")
+
+            let transaction = ParsedTransaction(
+                postedAt: postedAt,
+                description: description,
+                amountMinorUnits: amount,
+                currencyCode: "INR",
+                sourceFingerprint: fingerprint,
+                rewardPoints: nil
+            )
+            transactions.append(transaction)
+
+            logger.debug(
+                "Parsed [confidence: \(rawTransaction.confidence.overallConfidence, privacy: .public)] \(description, privacy: .public)"
+            )
         }
 
         return transactions
-    }
-
-    private func parseTransactionBlock(_ block: [String]) throws -> ParsedTransaction? {
-        guard !block.isEmpty else { return nil }
-
-        let fullText = block.joined(separator: " ")
-        let datePattern = "^\\d{2}/\\d{2}/\\d{2}"
-        guard let dateRange = fullText.range(of: datePattern, options: .regularExpression) else {
-            return nil
-        }
-
-        let dateStr = String(fullText[dateRange])
-        guard let postedAt = try? parseDate(dateStr) else { return nil }
-
-        let afterDate = String(fullText[dateRange.upperBound...]).trimmingCharacters(in: .whitespaces)
-
-        let amountPattern = "\\d{1,3}(,\\d{3})*\\.\\d{2}"
-        var amounts: [String] = []
-
-        if let regex = try? NSRegularExpression(pattern: amountPattern) {
-            let nsRange = NSRange(afterDate.startIndex..., in: afterDate)
-            let matches = regex.matches(in: afterDate, range: nsRange)
-            for match in matches {
-                if let range = Range(match.range, in: afterDate) {
-                    amounts.append(String(afterDate[range]))
-                }
-            }
-        }
-
-        let descriptionText = amounts.isEmpty
-            ? afterDate
-            : {
-                if let firstAmountRange = afterDate.range(of: amounts.first ?? "", options: .backwards) {
-                    return String(afterDate[..<firstAmountRange.lowerBound]).trimmingCharacters(in: .whitespaces)
-                }
-                return afterDate
-            }()
-
-        let description = descriptionText.isEmpty ? "HDFC Transaction" : descriptionText
-
-        let amount: Int64
-        if amounts.count >= 2 {
-            let debitStr = amounts[amounts.count - 2]
-            let creditStr = amounts[amounts.count - 1]
-            let debit = try parseAmountMinorUnits(debitStr)
-            let credit = try parseAmountMinorUnits(creditStr)
-
-            if debit > 0, credit == 0 {
-                amount = -debit
-            } else if credit > 0, debit == 0 {
-                amount = credit
-            } else {
-                amount = credit - debit
-            }
-        } else if amounts.count == 1 {
-            let amountVal = try parseAmountMinorUnits(amounts[0])
-            amount = amountVal
-        } else {
-            return nil
-        }
-
-        let fingerprint = [dateStr, description, String(amount)].joined(separator: "|")
-
-        return ParsedTransaction(
-            postedAt: postedAt,
-            description: description,
-            amountMinorUnits: amount,
-            currencyCode: "INR",
-            sourceFingerprint: fingerprint,
-            rewardPoints: nil
-        )
     }
 
     private func parseDate(_ value: String) throws -> Date {
