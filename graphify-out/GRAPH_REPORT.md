@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6121b7c3`
+- Built from commit: `ddbd7efd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -211,12 +211,12 @@ Cohesion: 0.13
 Nodes (3): MockTransactionRepository, GRDBTransactionRepository, TransactionRepository
 
 ### Community 22 - "Community 22"
-Cohesion: 0.23
-Nodes (5): HDFCLineClassifier, StatementSourceType, bankAccount, creditCard, String
+Cohesion: 0.14
+Nodes (12): CaseIterable, StatementSource, amex, hdfcBank, hdfcCard, iciciBank, iciciCard, AccountType (+4 more)
 
 ### Community 23 - "Community 23"
-Cohesion: 0.14
-Nodes (12): CaseIterable, StatementSource, amex, hdfcBank, hdfcCard, iciciBank, iciciCard, BankProviderType (+4 more)
+Cohesion: 0.23
+Nodes (5): HDFCLineClassifier, StatementSourceType, bankAccount, creditCard, String
 
 ### Community 24 - "Community 24"
 Cohesion: 0.23
@@ -272,7 +272,7 @@ Nodes (5): StatementFileFormat, csv, pdf, txt, xlsx
 
 ### Community 50 - "Community 50"
 Cohesion: 0.33
-Nodes (5): AccountType, credit, current, savings, Columns
+Nodes (5): BankProviderType, bank, credit, neobank, Columns
 
 ## Knowledge Gaps
 - **153 isolated node(s):** `createAccount`, `createCard`, `StatementFileFormat`, `hdfcBank`, `hdfcCard` (+148 more)
@@ -284,7 +284,7 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ImportView` connect `Community 7` to `Community 27`?**
   _High betweenness centrality (0.090) - this node is a cross-community bridge._
-- **Why does `StatementSource` connect `Community 23` to `Community 13`, `Community 22`, `Community 7`?**
+- **Why does `StatementSource` connect `Community 22` to `Community 23`, `Community 13`, `Community 7`?**
   _High betweenness centrality (0.087) - this node is a cross-community bridge._
 - **Are the 23 inferred relationships involving `String` (e.g. with `.run()` and `transactionHash()`) actually correct?**
   _`String` has 23 INFERRED edges - model-reasoned connections that need verification._

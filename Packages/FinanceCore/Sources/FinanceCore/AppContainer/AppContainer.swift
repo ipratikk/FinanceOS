@@ -21,6 +21,8 @@ public final class AppContainer {
     public let transactionImportPipeline: TransactionImportPipeline
     public let parserRegistry: StatementParserRegistry
 
+    public let spendingService: any SpendingServiceProtocol
+
     private init() {
         let databaseManager = DatabaseManager.shared
 
@@ -54,6 +56,11 @@ public final class AppContainer {
 
         transactionImportPipeline = TransactionImportPipeline(
             repository: transactionRepository
+        )
+
+        spendingService = GRDBSpendingService(
+            dbQueue: databaseManager.dbQueue,
+            transactionRepository: transactionRepository
         )
     }
 }
