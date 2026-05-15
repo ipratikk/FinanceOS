@@ -66,9 +66,10 @@ struct BankEditView: View {
                 }
             }
         } message: {
-            Text(
-                "This will permanently delete this bank and all associated cards, accounts, and transactions. This cannot be undone."
-            )
+            let deleteMsg = "This will permanently delete this bank and all " +
+                "associated cards, accounts, and transactions. " +
+                "This cannot be undone."
+            Text(deleteMsg)
         }
     }
 }

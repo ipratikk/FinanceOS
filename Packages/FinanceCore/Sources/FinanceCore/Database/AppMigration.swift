@@ -84,7 +84,8 @@ enum AppMigration {
                 t.column("name", .text).notNull()
                 t.column("providerType", .text).notNull().defaults(to: "bank")
             }
-            try database.execute(sql: "INSERT INTO banks (id, name, providerType) SELECT id, name, 'bank' FROM institutions")
+            try database
+                .execute(sql: "INSERT INTO banks (id, name, providerType) SELECT id, name, 'bank' FROM institutions")
 
             // 2. Recreate accounts with new columns
             try database.create(table: "accounts_new") { t in
