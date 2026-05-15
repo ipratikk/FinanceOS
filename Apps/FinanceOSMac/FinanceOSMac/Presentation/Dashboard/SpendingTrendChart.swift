@@ -5,9 +5,15 @@ import SwiftUI
 struct SpendingTrendChart: View {
     let monthlySummaries: [MonthlySpendingSummary]
 
-    private var chartData: [(date: Date, debit: Double, credit: Double)] {
+    private struct ChartDataPoint {
+        let date: Date
+        let debit: Double
+        let credit: Double
+    }
+
+    private var chartData: [ChartDataPoint] {
         monthlySummaries.map { summary in
-            (
+            ChartDataPoint(
                 date: summary.id,
                 debit: Double(summary.totalDebit) / 100.0,
                 credit: Double(summary.totalCredit) / 100.0

@@ -60,7 +60,7 @@ final class TransactionListState {
     private func dateFromMonthKey(_ key: String) -> Date {
         let components = key.split(separator: "-").map { Int($0) ?? 0 }
         var dateComponents = DateComponents()
-        dateComponents.year = components.count > 0 ? components[0] : Calendar.current.component(.year, from: Date())
+        dateComponents.year = !components.isEmpty ? components[0] : Calendar.current.component(.year, from: Date())
         dateComponents.month = components.count > 1 ? components[1] : 1
         dateComponents.day = 1
         return Calendar.current.date(from: dateComponents) ?? Date()

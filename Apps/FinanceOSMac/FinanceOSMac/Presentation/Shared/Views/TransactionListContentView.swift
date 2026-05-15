@@ -18,10 +18,10 @@ struct TransactionListContentView: View {
                         .textFieldStyle(.plain)
 
                     if !listState.searchQuery.isEmpty {
-                        Button(action: { listState.searchQuery = "" }) {
+                        Button(action: { listState.searchQuery = "" }, label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
-                        }
+                        })
                     }
                 }
                 .padding(8)
@@ -30,7 +30,7 @@ struct TransactionListContentView: View {
 
                 HStack(spacing: 8) {
                     if listState.isFilterActive {
-                        Button(action: { listState.reset() }) {
+                        Button(action: { listState.reset() }, label: {
                             HStack(spacing: 4) {
                                 Image(systemName: "xmark.circle.fill")
                                     .font(.system(size: 12))
@@ -41,7 +41,7 @@ struct TransactionListContentView: View {
                             .padding(.horizontal, 8)
                             .background(Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.2))
                             .cornerRadius(6)
-                        }
+                        })
                     }
 
                     Spacer()
@@ -120,7 +120,8 @@ struct TransactionListContentView: View {
                                                     .font(.system(size: 11, weight: .medium))
                                                     .padding(.vertical, 2)
                                                     .padding(.horizontal, 6)
-                                                    .background(row.transactionType == .debit ? Color.red.opacity(0.15) : Color.green.opacity(0.15))
+                                                    .background(row.transactionType == .debit ? Color.red
+                                                        .opacity(0.15) : Color.green.opacity(0.15))
                                                     .foregroundColor(row.transactionType == .debit ? .red : .green)
                                                     .cornerRadius(4)
                                             }

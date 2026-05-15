@@ -124,7 +124,7 @@ struct SidebarView: View {
     }
 
     var footer: some View {
-        Button(action: { selection = .importStatement }) {
+        Button(action: { selection = .importStatement }, label: {
             HStack(spacing: 12) {
                 Image(systemName: "arrow.down.doc.fill")
                     .font(.system(size: 16, weight: .semibold))
@@ -139,7 +139,7 @@ struct SidebarView: View {
             .padding(.horizontal, 12)
             .background(Color(red: 0.231, green: 0.510, blue: 0.980))
             .cornerRadius(8)
-        }
+        })
         .padding(16)
     }
 
