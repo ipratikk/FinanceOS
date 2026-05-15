@@ -50,7 +50,7 @@ struct CardsView: View {
                             accountRepository: appContainer.accountRepository
                         )
                     )
-                    .navigationTitle(card.name)
+                    .navigationTitle(card.cardName)
                     .onAppear {
                         selectedCardId = cardId
                     }

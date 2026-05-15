@@ -4,11 +4,12 @@ import SwiftUI
 struct CardEditView: View {
     let card: Card
     let viewModel: CardsViewModel
-    @State private var name: String
+    @State private var cardName: String
+    @State private var cardLast4: String
+    @State private var cardType: CardType
     @State private var nickname: String
-    @State private var last4: String
-    @State private var institutionID: UUID
-    @State private var accountID: UUID?
+    @State private var bankId: UUID
+    @State private var linkedAccountId: UUID?
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
@@ -17,40 +18,46 @@ struct CardEditView: View {
     init(card: Card, viewModel: CardsViewModel) {
         self.card = card
         self.viewModel = viewModel
-        _name = State(initialValue: card.name)
+        _cardName = State(initialValue: card.cardName)
+        _cardLast4 = State(initialValue: card.cardLast4)
+        _cardType = State(initialValue: card.cardType)
         _nickname = State(initialValue: card.nickname)
-        _last4 = State(initialValue: card.last4)
-        _institutionID = State(initialValue: card.institutionID)
-        _accountID = State(initialValue: card.accountID)
+        _bankId = State(initialValue: card.bankId)
+        _linkedAccountId = State(initialValue: card.linkedAccountId)
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Card Details") {
-                    TextField("Name", text: $name)
-                    TextField("Nickname", text: $nickname)
-                    TextField("Last 4 Digits", text: $last4)
-                        .onChange(of: last4) { _, newValue in
+                    TextField("Card Name", text: $cardName)
+                    TextField("Last 4 Digits", text: $cardLast4)
+                        .onChange(of: cardLast4) { _, newValue in
                             if newValue.count > 4 {
-                                last4 = String(newValue.prefix(4))
+                                cardLast4 = String(newValue.prefix(4))
                             }
                         }
+                    Picker("Card Type", selection: $cardType) {
+                        ForEach(CardType.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
+                    }
+                    TextField("Nickname", text: $nickname)
                 }
 
-                Section("Institution") {
-                    Picker("Institution", selection: $institutionID) {
-                        ForEach(viewModel.institutions) { institution in
-                            Text(institution.name).tag(institution.id)
+                Section("Bank") {
+                    Picker("Bank", selection: $bankId) {
+                        ForEach(viewModel.banks) { bank in
+                            Text(bank.name).tag(bank.id)
                         }
                     }
                 }
 
                 Section("Linked Account") {
-                    Picker("Account", selection: $accountID) {
+                    Picker("Account", selection: $linkedAccountId) {
                         Text("None").tag(UUID?.none)
-                        ForEach(viewModel.accounts) { account in
-                            Text(account.name).tag(UUID?(account.id))
+                        ForEach(viewModel.accounts.filter { $0.bankId == bankId }) { account in
+                            Text(account.accountName).tag(UUID?(account.id))
                         }
                     }
                 }
@@ -80,11 +87,12 @@ struct CardEditView: View {
                         Task {
                             let updated = Card(
                                 id: card.id,
-                                institutionID: institutionID,
-                                accountID: accountID,
-                                name: name,
-                                nickname: nickname,
-                                last4: last4
+                                bankId: bankId,
+                                linkedAccountId: linkedAccountId,
+                                cardName: cardName,
+                                cardLast4: cardLast4,
+                                cardType: cardType,
+                                nickname: nickname
                             )
                             await viewModel.updateCard(updated)
                         }

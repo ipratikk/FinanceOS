@@ -29,24 +29,24 @@ final class CardsViewModel {
 
     private let cardRepository: CardRepository
     private let accountRepository: AccountRepository
-    private let institutionRepository: InstitutionRepository
+    private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
 
     var cardRows: [CardRow] = []
     var isLoading = false
     var editingCard: Card?
-    var institutions: [Institution] = []
+    var banks: [Bank] = []
     var accounts: [Account] = []
 
     init(
         cardRepository: CardRepository,
         accountRepository: AccountRepository,
-        institutionRepository: InstitutionRepository,
+        bankRepository: BankRepository,
         transactionRepository: TransactionRepository
     ) {
         self.cardRepository = cardRepository
         self.accountRepository = accountRepository
-        self.institutionRepository = institutionRepository
+        self.bankRepository = bankRepository
         self.transactionRepository = transactionRepository
     }
 
@@ -62,16 +62,16 @@ final class CardsViewModel {
                 .fetchCards()
             let accounts = try await accountRepository
                 .fetchAccounts()
-            let institutions = try await institutionRepository
-                .fetchInstitutions()
+            let banks = try await bankRepository
+                .fetchBanks()
 
             self.accounts = accounts
-            self.institutions = institutions
+            self.banks = banks
 
             cardRows = makeCardRows(
                 cards: cards,
                 accounts: accounts,
-                institutions: institutions
+                banks: banks
             )
 
         } catch {
@@ -101,8 +101,8 @@ final class CardsViewModel {
     func convertToAccount(_ card: Card) async {
         do {
             let account = Account(
-                institutionID: card.institutionID,
-                name: card.name
+                bankId: card.bankId,
+                accountName: card.cardName
             )
             try await accountRepository.insert(account)
             try await transactionRepository.migrateTransactions(fromCard: card.id, toAccount: account.id)
@@ -117,7 +117,7 @@ final class CardsViewModel {
     private func makeCardRows(
         cards: [Card],
         accounts: [Account],
-        institutions: [Institution]
+        banks: [Bank]
     ) -> [CardRow] {
         let accountsByID = Dictionary(
             uniqueKeysWithValues: accounts.map { account in
@@ -125,25 +125,25 @@ final class CardsViewModel {
             }
         )
 
-        let institutionsByID = Dictionary(
-            uniqueKeysWithValues: institutions.map { institution in
-                (institution.id, institution)
+        let banksByID = Dictionary(
+            uniqueKeysWithValues: banks.map { bank in
+                (bank.id, bank)
             }
         )
 
         return cards.map { card in
-            let institutionName = institutionsByID[card.institutionID]?.name ?? "Unknown Institution"
-            let displayName = card.nickname.isEmpty ? card.name : card.nickname
-            let maskLast4 = card.last4.isEmpty ? "" : " ••••\(card.last4)"
-            let title = "\(institutionName) \(displayName)\(maskLast4)"
+            let bankName = banksByID[card.bankId]?.name ?? "Unknown Bank"
+            let displayName = card.nickname.isEmpty ? card.cardName : card.nickname
+            let maskLast4 = card.cardLast4.isEmpty ? "" : " ••••\(card.cardLast4)"
+            let title = "\(bankName) \(displayName)\(maskLast4)"
 
             return CardRow(
                 id: card.id,
                 card: card,
                 title: title,
-                institutionName: institutionName,
-                linkedAccountName: card.accountID.flatMap { accountID in
-                    accountsByID[accountID]?.name
+                institutionName: bankName,
+                linkedAccountName: card.linkedAccountId.flatMap { accountID in
+                    accountsByID[accountID]?.accountName
                 }
             )
         }
