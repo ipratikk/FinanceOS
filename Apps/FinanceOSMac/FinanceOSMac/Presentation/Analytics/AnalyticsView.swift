@@ -1,3 +1,4 @@
+import Charts
 import FinanceCore
 import SwiftUI
 
@@ -60,43 +61,47 @@ struct AnalyticsView: View {
             Text("6-Month Spending Trend")
                 .font(.system(size: 16, weight: .semibold))
 
-            VStack {
-                VStack(alignment: .center) {
-                    Text("Chart placeholder")
-                        .foregroundColor(.gray)
+            if let viewModel, !viewModel.monthlySummaries.isEmpty {
+                Chart(viewModel.monthlySummaries, id: \.id) { item in
+                    BarMark(
+                        x: .value("Month", item.id, unit: .month),
+                        y: .value("Debits", Double(item.totalDebit) / 100.0)
+                    )
+                    .foregroundStyle(Color.red.opacity(0.7))
+                    .position(by: .value("Type", "Debits"))
+
+                    BarMark(
+                        x: .value("Month", item.id, unit: .month),
+                        y: .value("Credits", Double(item.totalCredit) / 100.0)
+                    )
+                    .foregroundStyle(Color.green.opacity(0.7))
+                    .position(by: .value("Type", "Credits"))
                 }
                 .frame(height: 200)
-                .frame(maxWidth: .infinity)
+                .chartLegend(position: .bottom)
+                .chartXAxis {
+                    AxisMarks(format: .dateTime.month(.abbreviated))
+                }
+                .chartYAxis {
+                    AxisMarks { _ in
+                        AxisGridLine()
+                    }
+                }
+                .padding(16)
+                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                .cornerRadius(10)
             }
-            .padding(16)
-            .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-            .cornerRadius(10)
         }
     }
 
     var topMerchantsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Top Merchants")
-                .font(.system(size: 16, weight: .semibold))
-
-            VStack(spacing: 8) {
-                ForEach(viewModel?.topMerchants.prefix(5) ?? [], id: \.0) { merchant, amount in
-                    HStack {
-                        Text(merchant)
-                            .font(.system(size: 14, weight: .medium))
-                            .lineLimit(1)
-
-                        Spacer()
-
-                        Text(formatAmount(amount))
-                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                            .foregroundColor(.red)
-                    }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(8)
-                }
+        if let viewModel {
+            let merchants = viewModel.topMerchants.prefix(10).map { merchant, amount in
+                (name: merchant, amount: Double(amount) / 100.0)
             }
+            return AnyView(TopMerchantsChart(merchants: Array(merchants)))
+        } else {
+            return AnyView(EmptyView())
         }
     }
 

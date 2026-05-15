@@ -17,6 +17,10 @@ struct DashboardView: View {
                         summaryCards(totals)
                     }
 
+                    if !viewModel.monthlySummaries.isEmpty {
+                        SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
+                    }
+
                     if !viewModel.recentTransactions.isEmpty {
                         recentTransactionsSection
                     }
