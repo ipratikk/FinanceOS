@@ -51,10 +51,10 @@ struct DashboardView: View {
     var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Dashboard")
-                .font(.system(size: 22, weight: .semibold))
+                .headingLarge()
 
             Text("This Month")
-                .font(.system(size: 12, weight: .regular))
+                .labelSmall()
                 .foregroundColor(AppColors.textTertiary)
         }
     }
@@ -63,11 +63,11 @@ struct DashboardView: View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Total Debits")
-                    .font(.system(size: 11, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
 
                 Text(formatAmount(totals.totalDebit))
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
                     .foregroundColor(.red)
             }
             .padding(AppSpacing.sm)
@@ -77,11 +77,11 @@ struct DashboardView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Total Credits")
-                    .font(.system(size: 11, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
 
                 Text(formatAmount(totals.totalCredit))
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
                     .foregroundColor(.green)
             }
             .padding(AppSpacing.sm)
@@ -91,11 +91,11 @@ struct DashboardView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Transactions")
-                    .font(.system(size: 11, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
 
                 Text("\(totals.transactionCount)")
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
                     .foregroundColor(AppColors.accent)
             }
             .padding(AppSpacing.sm)
@@ -108,7 +108,7 @@ struct DashboardView: View {
     var chartSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("6-Month Trend")
-                .font(.system(size: 13, weight: .semibold))
+                .captionLarge()
                 .foregroundColor(.gray)
 
             if let viewModel {
@@ -124,7 +124,7 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Recent Activity")
-                    .font(.system(size: 13, weight: .semibold))
+                    .captionLarge()
                     .foregroundColor(.gray)
 
                 Spacer()
@@ -138,10 +138,10 @@ struct DashboardView: View {
                 )) {
                     HStack(spacing: 4) {
                         Text("View All")
-                            .font(.system(size: 11, weight: .medium))
+                            .labelSmall()
 
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .semibold))
+                            .labelSmall()
                     }
                     .foregroundColor(AppColors.accent)
                 }
@@ -156,11 +156,11 @@ struct DashboardView: View {
 
                         VStack(alignment: .leading, spacing: 2) {
                             Text(txn.description)
-                                .font(.system(size: 13, weight: .medium))
+                                .captionLarge()
                                 .lineLimit(1)
 
                             Text(dateString(txn.postedAt))
-                                .font(.system(size: 11, weight: .regular))
+                                .labelSmall()
                                 .foregroundColor(AppColors.textTertiary)
                         }
 
@@ -168,11 +168,11 @@ struct DashboardView: View {
 
                         HStack(spacing: 6) {
                             Text(formatAmount(txn.amountMinorUnits))
-                                .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                                .monoAmount()
                                 .foregroundColor(txn.transactionType == .debit ? .red : .green)
 
                             Text(txn.transactionType == .debit ? "Dr" : "Cr")
-                                .font(.system(size: 10, weight: .medium))
+                                .labelSmall()
                                 .padding(.vertical, 2)
                                 .padding(.horizontal, 4)
                                 .background(txn.transactionType == .debit ? Color.red

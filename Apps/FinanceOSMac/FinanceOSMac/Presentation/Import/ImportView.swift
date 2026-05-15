@@ -80,10 +80,10 @@ struct ImportView: View {
 
                         VStack(spacing: 4) {
                             Text("Drop Files Here")
-                                .font(.system(size: 16, weight: .semibold))
+                                .headingSmall()
 
                             Text("Release to import")
-                                .font(.system(size: 12, weight: .regular))
+                                .labelSmall()
                                 .foregroundColor(AppColors.textTertiary)
                         }
                     }
@@ -105,7 +105,7 @@ struct ImportView: View {
                                         .controlSize(.small)
 
                                     Text("Parsing statement...")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .labelSmall()
                                         .foregroundColor(AppColors.textTertiary)
                                 }
                                 .frame(maxWidth: .infinity)
@@ -170,10 +170,10 @@ struct ImportView: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Import Statements")
-                .font(.system(size: 18, weight: .semibold))
+                .headingMedium()
 
             Text("Upload your bank or credit card statements")
-                .font(.system(size: 13, weight: .regular))
+                .caption()
                 .foregroundColor(AppColors.textTertiary)
         }
     }
@@ -202,10 +202,10 @@ struct ImportView: View {
         }, label: {
             HStack(spacing: 8) {
                 Image(systemName: "folder.badge.plus")
-                    .font(.system(size: 14, weight: .semibold))
+                    .monoAmount()
 
                 Text("Select Files")
-                    .font(.system(size: 14, weight: .medium))
+                    .bodyLarge()
             }
             .frame(maxWidth: .infinity)
             .padding(AppSpacing.sm)
@@ -231,7 +231,7 @@ struct ImportView: View {
                     viewModel.selectedTarget = nil
                 }, label: {
                     Text("Cancel")
-                        .font(.system(size: 14, weight: .medium))
+                        .bodyLarge()
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -242,10 +242,10 @@ struct ImportView: View {
                 Button(action: viewModel.importTransactions, label: {
                     HStack(spacing: 8) {
                         Image(systemName: "arrow.down.doc.fill")
-                            .font(.system(size: 14, weight: .semibold))
+                            .monoAmount()
 
                         Text("Import")
-                            .font(.system(size: 14, weight: .semibold))
+                            .monoAmount()
                     }
                     .frame(maxWidth: .infinity)
                     .foregroundColor(.white)

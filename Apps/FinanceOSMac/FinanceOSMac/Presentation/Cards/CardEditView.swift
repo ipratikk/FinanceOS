@@ -29,11 +29,11 @@ struct CardEditView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Edit Card")
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 16))
+                        .headingSmall()
                         .foregroundColor(.gray)
                 })
             }
@@ -46,7 +46,7 @@ struct CardEditView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Card Information")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
@@ -60,7 +60,7 @@ struct CardEditView: View {
 
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Card Type")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                     .foregroundColor(.gray)
                                 Picker("Type", selection: $cardType) {
                                     ForEach(CardType.allCases, id: \.self) { type in
@@ -81,13 +81,13 @@ struct CardEditView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Bank & Account")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Bank")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                     .foregroundColor(.gray)
                                 Picker("Bank", selection: $bankId) {
                                     ForEach(viewModel.banks) { bank in
@@ -103,7 +103,7 @@ struct CardEditView: View {
 
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Linked Account")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                     .foregroundColor(.gray)
                                 Picker("Account", selection: $linkedAccountId) {
                                     Text("None").tag(UUID?.none)
@@ -129,9 +129,9 @@ struct CardEditView: View {
                         Button(action: { showDeleteConfirm = true }, label: {
                             HStack {
                                 Image(systemName: "trash.fill")
-                                    .font(.system(size: 12))
+                                    .labelSmall()
                                 Text("Delete Card")
-                                    .font(.system(size: 14, weight: .medium))
+                                    .bodyLarge()
                                 Spacer()
                             }
                             .foregroundColor(.red)
@@ -150,7 +150,7 @@ struct CardEditView: View {
             HStack(spacing: 12) {
                 Button(action: { dismiss() }, label: {
                     Text("Cancel")
-                        .font(.system(size: 14, weight: .medium))
+                        .bodyLarge()
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -174,7 +174,7 @@ struct CardEditView: View {
                     }
                 }, label: {
                     Text("Save")
-                        .font(.system(size: 14, weight: .semibold))
+                        .monoAmount()
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
@@ -202,10 +202,10 @@ struct CardEditView: View {
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
-                .font(.system(size: 12, weight: .regular))
+                .labelSmall()
                 .foregroundColor(.gray)
             TextField("", text: text)
-                .font(.system(size: 13, weight: .regular))
+                .caption()
                 .padding(AppSpacing.xs)
                 .background(AppColors.surface2)
                 .cornerRadius(AppRadius.sm)

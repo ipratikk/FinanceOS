@@ -32,10 +32,10 @@ struct BanksView: View {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(bank.name)
-                        .font(.system(size: 14, weight: .semibold))
+                        .monoAmount()
 
                     Text(bank.providerType.rawValue.uppercased())
-                        .font(.system(size: 11, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(AppColors.textTertiary)
                 }
 
@@ -74,10 +74,10 @@ struct BanksView: View {
 
             VStack(spacing: 8) {
                 Text("No Banks")
-                    .font(.system(size: 16, weight: .semibold))
+                    .headingSmall()
 
                 Text("Add a bank when importing your first statement")
-                    .font(.system(size: 13, weight: .regular))
+                    .caption()
                     .foregroundColor(AppColors.textTertiary)
             }
         }

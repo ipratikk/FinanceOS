@@ -42,7 +42,7 @@ struct SidebarView: View {
             Text("FinanceOS")
                 .font(.system(size: 20, weight: .bold))
             Text("Financial Operating System")
-                .font(.system(size: 12, weight: .regular))
+                .labelSmall()
                 .foregroundColor(.gray)
         }
         .padding(AppSpacing.md)
@@ -56,11 +56,11 @@ struct SidebarView: View {
                 Button(action: { selection = item }, label: {
                     HStack(spacing: 12) {
                         Image(systemName: item.icon)
-                            .font(.system(size: 16, weight: .semibold))
+                            .headingSmall()
                             .frame(width: 20)
 
                         Text(item.label)
-                            .font(.system(size: 14, weight: .medium))
+                            .bodyLarge()
 
                         Spacer()
                     }
@@ -84,16 +84,16 @@ struct SidebarView: View {
             if !accounts.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Accounts")
-                        .font(.system(size: 11, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(.gray)
 
                     ForEach(accounts.prefix(3), id: \.id) { account in
                         HStack(spacing: 8) {
                             Image(systemName: "building.2")
-                                .font(.system(size: 12, weight: .regular))
+                                .labelSmall()
                                 .foregroundColor(.gray)
                             Text(account.nickname.isEmpty ? account.accountName : account.nickname)
-                                .font(.system(size: 12, weight: .regular))
+                                .labelSmall()
                                 .lineLimit(1)
                         }
                         .foregroundColor(.gray)
@@ -104,16 +104,16 @@ struct SidebarView: View {
             if !cards.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Cards")
-                        .font(.system(size: 11, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(.gray)
 
                     ForEach(cards.prefix(3), id: \.id) { card in
                         HStack(spacing: 8) {
                             Image(systemName: "creditcard")
-                                .font(.system(size: 12, weight: .regular))
+                                .labelSmall()
                                 .foregroundColor(.gray)
                             Text(card.nickname.isEmpty ? card.cardName : card.nickname)
-                                .font(.system(size: 12, weight: .regular))
+                                .labelSmall()
                                 .lineLimit(1)
                         }
                         .foregroundColor(.gray)
@@ -127,10 +127,10 @@ struct SidebarView: View {
         Button(action: { selection = .importStatement }, label: {
             HStack(spacing: 12) {
                 Image(systemName: "arrow.down.doc.fill")
-                    .font(.system(size: 16, weight: .semibold))
+                    .headingSmall()
 
                 Text("Import Statement")
-                    .font(.system(size: 14, weight: .medium))
+                    .bodyLarge()
 
                 Spacer()
             }

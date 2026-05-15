@@ -95,10 +95,10 @@ struct CardsView: View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(cardRow.card.nickname.isEmpty ? cardRow.card.cardName : cardRow.card.nickname)
-                    .font(.system(size: 14, weight: .semibold))
+                    .monoAmount()
 
                 Text(cardRow.card.cardType.rawValue.uppercased())
-                    .font(.system(size: 11, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }
 
@@ -119,10 +119,10 @@ struct CardsView: View {
 
             VStack(spacing: 8) {
                 Text("No Cards")
-                    .font(.system(size: 16, weight: .semibold))
+                    .headingSmall()
 
                 Text("Import a statement to get started")
-                    .font(.system(size: 13, weight: .regular))
+                    .caption()
                     .foregroundColor(AppColors.textTertiary)
             }
         }

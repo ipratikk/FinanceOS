@@ -40,11 +40,11 @@ struct TargetSelectionSection: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Import To")
-                        .font(.system(size: 13, weight: .semibold))
+                        .captionLarge()
                         .foregroundColor(.gray)
 
                     Text("Select or create target")
-                        .font(.system(size: 12, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(AppColors.textTertiary)
                 }
 
@@ -52,7 +52,7 @@ struct TargetSelectionSection: View {
 
                 if targetChoice != nil {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 16))
+                        .headingSmall()
                         .foregroundColor(AppColors.accent)
                 }
             }

@@ -9,11 +9,11 @@ struct TransactionFilterView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Filters")
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 16))
+                        .headingSmall()
                         .foregroundColor(.gray)
                 })
             }
@@ -26,7 +26,7 @@ struct TransactionFilterView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Transaction Type")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         Picker("Type", selection: $listState.typeFilter) {
@@ -42,13 +42,13 @@ struct TransactionFilterView: View {
 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Date Range")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
                             HStack {
                                 Text("From")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -63,7 +63,7 @@ struct TransactionFilterView: View {
                                     Button("Clear") {
                                         listState.startDate = nil
                                     }
-                                    .font(.system(size: 11, weight: .medium))
+                                    .labelSmall()
                                     .foregroundColor(.blue)
                                 }
                             }
@@ -73,7 +73,7 @@ struct TransactionFilterView: View {
 
                             HStack {
                                 Text("To")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -88,7 +88,7 @@ struct TransactionFilterView: View {
                                     Button("Clear") {
                                         listState.endDate = nil
                                     }
-                                    .font(.system(size: 11, weight: .medium))
+                                    .labelSmall()
                                     .foregroundColor(.blue)
                                 }
                             }
@@ -112,7 +112,7 @@ struct TransactionFilterView: View {
                         Image(systemName: "arrow.clockwise")
                         Text("Reset")
                     }
-                    .font(.system(size: 14, weight: .medium))
+                    .bodyLarge()
                     .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.blue)
@@ -122,7 +122,7 @@ struct TransactionFilterView: View {
 
                 Button(action: { dismiss() }, label: {
                     Text("Done")
-                        .font(.system(size: 14, weight: .semibold))
+                        .monoAmount()
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })

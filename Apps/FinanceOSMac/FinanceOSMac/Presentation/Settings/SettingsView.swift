@@ -62,11 +62,11 @@ struct SettingsView: View {
         Button(action: { selectedTab = tab }, label: {
             HStack(spacing: 8) {
                 Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
+                    .monoAmount()
                     .frame(width: 20)
 
                 Text(label)
-                    .font(.system(size: 13, weight: .medium))
+                    .captionLarge()
 
                 Spacer()
             }
@@ -92,7 +92,7 @@ struct SettingsView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Danger Zone")
-                    .font(.system(size: 13, weight: .semibold))
+                    .captionLarge()
                     .foregroundColor(.gray)
 
                 Button(
@@ -100,10 +100,10 @@ struct SettingsView: View {
                     label: {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .font(.system(size: 12))
+                                .labelSmall()
 
                             Text("Clear All Data")
-                                .font(.system(size: 13, weight: .medium))
+                                .captionLarge()
 
                             Spacer()
                         }
@@ -131,7 +131,7 @@ struct SettingsView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Links")
-                    .font(.system(size: 13, weight: .semibold))
+                    .captionLarge()
                     .foregroundColor(.gray)
 
                 VStack(spacing: 8) {
@@ -154,14 +154,14 @@ struct SettingsView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 13, weight: .semibold))
+                .captionLarge()
                 .foregroundColor(.gray)
 
             VStack(spacing: 8) {
                 ForEach(items.indices, id: \.self) { index in
                     let (label, binding, _) = items[index]
                     Toggle(label, isOn: binding)
-                        .font(.system(size: 13, weight: .regular))
+                        .caption()
                         .padding(AppSpacing.xs)
                         .background(AppColors.surface2)
                         .cornerRadius(AppRadius.sm)
@@ -176,12 +176,12 @@ struct SettingsView: View {
     private func aboutItem(_ label: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
-                .font(.system(size: 13, weight: .semibold))
+                .captionLarge()
                 .foregroundColor(.gray)
 
             HStack {
                 Text(value)
-                    .font(.system(size: 13, weight: .regular))
+                    .caption()
 
                 Spacer()
 
@@ -207,15 +207,15 @@ struct SettingsView: View {
         Button(action: {}, label: {
             HStack(spacing: 8) {
                 Image(systemName: icon)
-                    .font(.system(size: 12))
+                    .labelSmall()
 
                 Text(label)
-                    .font(.system(size: 13, weight: .regular))
+                    .caption()
 
                 Spacer()
 
                 Image(systemName: "arrow.up.right")
-                    .font(.system(size: 10, weight: .semibold))
+                    .labelSmall()
             }
             .foregroundColor(AppColors.accent)
             .padding(AppSpacing.xs)

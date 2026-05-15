@@ -50,10 +50,10 @@ struct AnalyticsView: View {
     var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Analytics")
-                .font(.system(size: 22, weight: .semibold))
+                .headingLarge()
 
             Text("Spending insights & trends")
-                .font(.system(size: 12, weight: .regular))
+                .labelSmall()
                 .foregroundColor(AppColors.textTertiary)
         }
     }
@@ -61,7 +61,7 @@ struct AnalyticsView: View {
     var spendingTrendSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("6-Month Spending Trend")
-                .font(.system(size: 13, weight: .semibold))
+                .captionLarge()
                 .foregroundColor(.gray)
 
             if let viewModel, !viewModel.monthlySummaries.isEmpty {
@@ -104,7 +104,7 @@ struct AnalyticsView: View {
     var topMerchantsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Top Merchants")
-                .font(.system(size: 13, weight: .semibold))
+                .captionLarge()
                 .foregroundColor(.gray)
 
             if let viewModel {
@@ -122,7 +122,7 @@ struct AnalyticsView: View {
     var categoriesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Categories")
-                .font(.system(size: 13, weight: .semibold))
+                .captionLarge()
                 .foregroundColor(.gray)
 
             VStack(alignment: .center, spacing: 8) {
@@ -132,10 +132,10 @@ struct AnalyticsView: View {
 
                 VStack(spacing: 4) {
                     Text("Coming Soon")
-                        .font(.system(size: 14, weight: .semibold))
+                        .monoAmount()
 
                     Text("Auto-categorization with smart detection")
-                        .font(.system(size: 11, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(AppColors.textTertiary)
                 }
             }

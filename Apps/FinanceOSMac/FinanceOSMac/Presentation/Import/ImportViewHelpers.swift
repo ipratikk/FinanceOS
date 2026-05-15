@@ -12,11 +12,11 @@ struct SourcePickerSection: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("1. Statement Source")
-                        .font(.system(size: 13, weight: .semibold))
+                        .captionLarge()
                         .foregroundColor(.gray)
 
                     Text("Select your bank")
-                        .font(.system(size: 12, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(AppColors.textTertiary)
                 }
 
@@ -24,7 +24,7 @@ struct SourcePickerSection: View {
 
                 if selectedSource != nil {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 16))
+                        .headingSmall()
                         .foregroundColor(AppColors.accent)
                 }
             }
@@ -37,7 +37,7 @@ struct SourcePickerSection: View {
                             .foregroundColor(.red)
 
                         Text(error)
-                            .font(.system(size: 12, weight: .regular))
+                            .labelSmall()
                             .lineLimit(3)
                     }
                 }
@@ -80,14 +80,14 @@ struct DropZoneView: View {
 
                 VStack(spacing: 4) {
                     Text("Drop files here")
-                        .font(.system(size: 14, weight: .semibold))
+                        .monoAmount()
 
                     Text("or click button below")
-                        .font(.system(size: 12, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(AppColors.textTertiary)
 
                     Text("Supported: \(formatNames)")
-                        .font(.system(size: 11, weight: .regular))
+                        .labelSmall()
                         .foregroundColor(AppColors.textTertiary)
                         .padding(.top, 4)
                 }
@@ -120,11 +120,11 @@ struct FileSelectionPlaceholder: View {
 
             VStack(spacing: 4) {
                 Text("Select a bank above")
-                    .font(.system(size: 14, weight: .semibold))
+                    .monoAmount()
                     .foregroundColor(AppColors.textTertiary)
 
                 Text("to start importing")
-                    .font(.system(size: 12, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }
         }

@@ -1,5 +1,8 @@
 import SwiftUI
 
+// Note: AppColors is in the same Design module (no explicit import needed in Swift packages)
+// If SourceKit complains, ensure AppColors.swift is in the same target
+
 public extension View {
     func displayLarge() -> some View {
         font(.system(size: 34, weight: .bold, design: .default))
@@ -23,6 +26,12 @@ public extension View {
         font(.system(size: 18, weight: .semibold, design: .default))
             .foregroundColor(AppColors.textPrimary)
             .lineSpacing(1.5)
+    }
+
+    func headingSmall() -> some View {
+        font(.system(size: 16, weight: .semibold, design: .default))
+            .foregroundColor(AppColors.textPrimary)
+            .lineSpacing(1.4)
     }
 
     func bodyLarge() -> some View {

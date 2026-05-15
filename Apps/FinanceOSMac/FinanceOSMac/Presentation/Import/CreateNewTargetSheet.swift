@@ -21,11 +21,11 @@ struct CreateNewTargetSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text(isCard ? "Create New Card" : "Create New Account")
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
                 Spacer()
                 Button(action: { onCancel() }, label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 16))
+                        .headingSmall()
                         .foregroundColor(.gray)
                 })
             }
@@ -38,7 +38,7 @@ struct CreateNewTargetSheet: View {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Basic Information")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
@@ -62,21 +62,21 @@ struct CreateNewTargetSheet: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Bank")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Current Bank")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                     .foregroundColor(.gray)
                                 HStack {
                                     if let bank = selectedBank {
                                         Text(bank.name)
-                                            .font(.system(size: 13, weight: .regular))
+                                            .caption()
                                     } else {
                                         Text(detectedBank)
-                                            .font(.system(size: 13, weight: .regular))
+                                            .caption()
                                     }
                                     Spacer()
                                 }
@@ -88,7 +88,7 @@ struct CreateNewTargetSheet: View {
                             if !banks.isEmpty {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(selectedBank == nil ? "Select Bank" : "Change Bank")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .labelSmall()
                                         .foregroundColor(.gray)
                                     Picker("Bank", selection: $bankID) {
                                         Text("Select Bank").tag(UUID?.none)
@@ -117,7 +117,7 @@ struct CreateNewTargetSheet: View {
             HStack(spacing: 12) {
                 Button(action: { onCancel() }, label: {
                     Text("Cancel")
-                        .font(.system(size: 14, weight: .medium))
+                        .bodyLarge()
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -127,7 +127,7 @@ struct CreateNewTargetSheet: View {
 
                 Button(action: { onCreate() }, label: {
                     Text("Create")
-                        .font(.system(size: 14, weight: .semibold))
+                        .monoAmount()
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
@@ -145,10 +145,10 @@ struct CreateNewTargetSheet: View {
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
-                .font(.system(size: 12, weight: .regular))
+                .labelSmall()
                 .foregroundColor(.gray)
             TextField("", text: text)
-                .font(.system(size: 13, weight: .regular))
+                .caption()
                 .padding(AppSpacing.xs)
                 .background(AppColors.surface2)
                 .cornerRadius(AppRadius.sm)

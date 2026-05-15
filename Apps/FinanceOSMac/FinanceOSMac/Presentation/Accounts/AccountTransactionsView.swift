@@ -31,16 +31,16 @@ struct AccountTransactionsView: View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(account.nickname.isEmpty ? account.accountName : account.nickname)
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
 
                 Text("\(account.accountType.rawValue.uppercased()) • ••••\(account.accountLast4)")
-                    .font(.system(size: 12, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }
 
             HStack(spacing: 12) {
                 Text("Transactions: \(viewModel.sections.map(\.rows.count).reduce(0, +))")
-                    .font(.system(size: 12, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
 
                 Spacer()

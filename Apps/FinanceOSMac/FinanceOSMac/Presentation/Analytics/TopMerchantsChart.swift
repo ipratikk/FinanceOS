@@ -8,7 +8,7 @@ struct TopMerchantsChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Top Merchants")
-                .font(.system(size: 16, weight: .semibold))
+                .headingSmall()
 
             Chart(merchants, id: \.name) { item in
                 BarMark(

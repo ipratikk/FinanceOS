@@ -47,7 +47,7 @@ struct TransactionListContentView: View {
                     Button(action: { listState.reset() }, label: {
                         HStack(spacing: 4) {
                             Image(systemName: "xmark.circle.fill")
-                                .font(.system(size: 12))
+                                .labelSmall()
                             Text("Clear filters")
                                 .font(.system(size: 12, weight: .medium))
                         }
@@ -105,11 +105,11 @@ struct TransactionListContentView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(row.title)
-                    .font(.system(size: 14, weight: .medium))
+                    .bodyLarge()
                     .lineLimit(1)
 
                 Text(row.subtitle)
-                    .font(.system(size: 12, weight: .regular))
+                    .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }
 
@@ -121,7 +121,7 @@ struct TransactionListContentView: View {
                     .foregroundColor(row.transactionType == .debit ? .red : .green)
 
                 Text(row.transactionType == .debit ? "Dr" : "Cr")
-                    .font(.system(size: 11, weight: .medium))
+                    .labelSmall()
                     .padding(.vertical, 2)
                     .padding(.horizontal, 6)
                     .background(row.transactionType == .debit ? Color.red
@@ -141,14 +141,14 @@ struct TransactionListContentView: View {
 
             VStack(spacing: 8) {
                 Text("No Transactions")
-                    .font(.system(size: 16, weight: .semibold))
+                    .headingSmall()
 
                 Text(
                     listState.isFilterActive
                         ? "No transactions match your filters."
                         : "No transactions found."
                 )
-                .font(.system(size: 13, weight: .regular))
+                .caption()
                 .foregroundColor(AppColors.textTertiary)
             }
         }

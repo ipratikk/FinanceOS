@@ -24,7 +24,7 @@ struct SpendingTrendChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Spending Trend")
-                .font(.system(size: 16, weight: .semibold))
+                .headingSmall()
 
             Chart(chartData, id: \.date) { item in
                 BarMark(

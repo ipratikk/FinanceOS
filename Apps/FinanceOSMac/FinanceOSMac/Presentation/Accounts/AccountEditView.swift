@@ -29,11 +29,11 @@ struct AccountEditView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Edit Account")
-                    .font(.system(size: 18, weight: .semibold))
+                    .headingMedium()
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 16))
+                        .headingSmall()
                         .foregroundColor(.gray)
                 })
             }
@@ -46,7 +46,7 @@ struct AccountEditView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Account Information")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
@@ -56,7 +56,7 @@ struct AccountEditView: View {
 
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Account Type")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                     .foregroundColor(.gray)
                                 Picker("Type", selection: $accountType) {
                                     ForEach(AccountType.allCases, id: \.self) { type in
@@ -77,13 +77,13 @@ struct AccountEditView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Bank & Nickname")
-                            .font(.system(size: 13, weight: .semibold))
+                            .captionLarge()
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Bank")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .labelSmall()
                                     .foregroundColor(.gray)
                                 Picker("Bank", selection: $bankId) {
                                     ForEach(viewModel.banks) { bank in
@@ -108,9 +108,9 @@ struct AccountEditView: View {
                         Button(action: { showDeleteConfirm = true }, label: {
                             HStack {
                                 Image(systemName: "trash.fill")
-                                    .font(.system(size: 12))
+                                    .labelSmall()
                                 Text("Delete Account")
-                                    .font(.system(size: 14, weight: .medium))
+                                    .bodyLarge()
                                 Spacer()
                             }
                             .foregroundColor(.red)
@@ -129,7 +129,7 @@ struct AccountEditView: View {
             HStack(spacing: 12) {
                 Button(action: { dismiss() }, label: {
                     Text("Cancel")
-                        .font(.system(size: 14, weight: .medium))
+                        .bodyLarge()
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -153,7 +153,7 @@ struct AccountEditView: View {
                     }
                 }, label: {
                     Text("Save")
-                        .font(.system(size: 14, weight: .semibold))
+                        .monoAmount()
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
@@ -181,10 +181,10 @@ struct AccountEditView: View {
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
-                .font(.system(size: 12, weight: .regular))
+                .labelSmall()
                 .foregroundColor(.gray)
             TextField("", text: text)
-                .font(.system(size: 13, weight: .regular))
+                .caption()
                 .padding(AppSpacing.xs)
                 .background(AppColors.surface2)
                 .cornerRadius(AppRadius.sm)
