@@ -53,7 +53,7 @@ public struct ParsedTransaction: Codable, Identifiable {
         sourceFingerprint: String,
         rewardPoints: Int64? = nil
     ) {
-        self.id = UUID()
+        id = UUID()
         self.postedAt = postedAt
         self.description = description
         self.amountMinorUnits = amountMinorUnits

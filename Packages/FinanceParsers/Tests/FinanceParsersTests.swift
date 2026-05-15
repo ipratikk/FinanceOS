@@ -1,8 +1,8 @@
-import XCTest
 @testable import FinanceParsers
+import XCTest
 
 final class FinanceParsersTests: XCTestCase {
-    func testParserExists() throws {
+    func testParserExists() {
         let parser = HDFCPDFParser()
         XCTAssertEqual(parser.supportedFormat, .pdf)
     }
@@ -29,7 +29,11 @@ final class FinanceParsersTests: XCTestCase {
                 let statement = try await parser.parseStatement(from: pdfFile)
 
                 XCTAssertEqual(statement.bankName, "HDFC")
-                XCTAssertGreater(statement.transactions.count, 0, "No transactions parsed from \(pdfFile.lastPathComponent)")
+                XCTAssertGreater(
+                    statement.transactions.count,
+                    0,
+                    "No transactions parsed from \(pdfFile.lastPathComponent)"
+                )
 
                 // Verify transactions have required fields
                 for txn in statement.transactions {
