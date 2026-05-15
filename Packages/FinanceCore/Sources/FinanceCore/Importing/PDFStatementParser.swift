@@ -21,11 +21,11 @@ public struct PDFStatementParser: StatementParser, Sendable {
             throw TransactionImportError.malformedFile("Cannot open PDF")
         }
 
-        if doc.isEncrypted && !doc.isUnlocked {
+        if doc.isLocked {
             if let pwd = password {
                 doc.unlock(withPassword: pwd)
             }
-            if !doc.isUnlocked {
+            if doc.isLocked {
                 throw TransactionImportError.passwordProtected(fileURL.lastPathComponent)
             }
         }
