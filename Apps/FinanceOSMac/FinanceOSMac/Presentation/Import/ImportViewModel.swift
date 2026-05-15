@@ -89,15 +89,11 @@ final class ImportViewModel {
     var isLoading = false
     var errorMessage: String?
     var importResult: ImportResult?
-    var passwordPromptFilename: String?
-    var isPasswordInvalid = false
 
     var accounts: [Account] = []
     var cards: [Card] = []
     var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
-
-    var pdfPassword: String?
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(fileURLs, parsedStatements).map { ($0, $1) }
@@ -162,10 +158,18 @@ final class ImportViewModel {
             var statements: [ParsedStatement] = []
 
             for fileURL in fileURLs {
-                let result = await parseFile(fileURL, withPassword: nil)
-                if let statement = result.0 {
+                do {
+                    let statement = try await parseFile(fileURL)
                     statements.append(statement)
-                } else if result.1 {
+                } catch let error as FinanceCore.TransactionImportError {
+                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(formatError(error))"
+                    parsedStatements = []
+                    isLoading = false
+                    return
+                } catch {
+                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
+                    parsedStatements = []
+                    isLoading = false
                     return
                 }
             }
@@ -177,69 +181,23 @@ final class ImportViewModel {
         }
     }
 
-    private func parseFile(_ fileURL: URL, withPassword password: String?) async -> (ParsedStatement?, Bool) {
-        do {
-            let format = fileFormat(for: fileURL)
-            let fileName = fileURL.lastPathComponent
-            let statement: ParsedStatement
+    private func parseFile(_ fileURL: URL) async throws -> ParsedStatement {
+        let format = fileFormat(for: fileURL)
+        let fileName = fileURL.lastPathComponent
 
-            if let source = selectedSource, [.csv, .txt].contains(format) {
-                if let parser = parserRegistry.parser(for: source) {
-                    let rows = try CSVRowReader.read(from: fileURL)
-                    statement = try parser.parse(rows: rows)
-                } else {
-                    statement = try await transactionImporter.parseStatement(from: fileURL, format: format)
-                }
-            } else if format == .pdf, let source = selectedSource,
-                      source == .hdfcBank || source == .hdfcCard, let pwd = password
-            {
-                let pdfParser = FinanceParsers.HDFCPDFParser(password: pwd)
-                statement = try await pdfParser.parseStatement(from: fileURL)
-            } else {
-                statement = try await transactionImporter.parseStatement(from: fileURL, format: format)
-            }
-
-            logger.info("Parsed \(fileName, privacy: .public): \(statement.transactions.count, privacy: .public) txns")
-            return (statement, false)
-        } catch let error as FinanceCore.TransactionImportError {
-            if case .passwordProtected = error {
-                passwordPromptFilename = fileURL.lastPathComponent
-                isLoading = false
-                return (nil, true)
-            }
-            errorMessage = "Error parsing \(fileURL.lastPathComponent): \(formatError(error))"
-            parsedStatements = []
-            isLoading = false
-            return (nil, true)
-        } catch {
-            errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
-            parsedStatements = []
-            isLoading = false
-            return (nil, true)
-        }
-    }
-
-    func retryParseFilesWithPassword(_ password: String, saveToKeychain: Bool) async {
-        isLoading = true
-        errorMessage = nil
-        pdfPassword = password
-        var statements: [ParsedStatement] = []
-
-        for fileURL in fileURLs {
-            let result = await parseFile(fileURL, withPassword: password)
-            if let statement = result.0 {
-                statements.append(statement)
-            } else if result.1 {
-                isPasswordInvalid = true
-                return
-            }
+        guard let source = selectedSource, [.csv, .txt].contains(format) else {
+            throw TransactionImportError.unsupportedFormat(format.rawValue)
         }
 
-        parsedStatements = statements
-        passwordPromptFilename = nil
-        await loadTargetsOnAppear()
-        await autoSelectMatchingTarget()
-        isLoading = false
+        guard let parser = parserRegistry.parser(for: source) else {
+            throw TransactionImportError.unsupportedFormat("\(source.displayName) - \(format.rawValue)")
+        }
+
+        let rows = try CSVRowReader.read(from: fileURL)
+        let statement = try parser.parse(rows: rows)
+
+        logger.info("Parsed \(fileName, privacy: .public): \(statement.transactions.count, privacy: .public) txns")
+        return statement
     }
 
     func importTransactions() {

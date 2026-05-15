@@ -25,15 +25,15 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
     public var allowedFormats: [StatementFileFormat] {
         switch self {
         case .hdfcBank:
-            return [.txt, .pdf]
+            return [.txt]
         case .hdfcCard:
-            return [.csv, .txt, .pdf]
+            return [.csv, .txt]
         case .iciciBank:
-            return [.pdf]
+            return []
         case .iciciCard:
-            return [.csv, .pdf]
+            return [.csv]
         case .amex:
-            return [.csv, .pdf]
+            return [.csv]
         }
     }
 

@@ -16,8 +16,6 @@ struct ImportView: View {
     @State private var targetChoice: TargetChoice?
     @State private var selectedSource: StatementSource?
     @State private var isTargeted = false
-    @State private var showPasswordPrompt = false
-    @State private var passwordPromptFilename = ""
 
     var body: some View {
         Group {
@@ -85,7 +83,7 @@ struct ImportView: View {
                                 .font(.title2)
                                 .fontWeight(.semibold)
 
-                            Text("CSV, TXT, XLSX, or PDF files")
+                            Text("CSV or delimited TXT files")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -148,32 +146,6 @@ struct ImportView: View {
                 }
             }
             return true
-        }
-        .onChange(of: viewModel.passwordPromptFilename) { _, newValue in
-            if newValue != nil {
-                viewModel.isPasswordInvalid = false
-                showPasswordPrompt = true
-                passwordPromptFilename = newValue ?? ""
-            }
-        }
-        .sheet(isPresented: $showPasswordPrompt) {
-            PasswordPromptSheet(
-                filename: passwordPromptFilename,
-                isPasswordInvalid: viewModel.isPasswordInvalid,
-                onCancel: {
-                    showPasswordPrompt = false
-                    viewModel.passwordPromptFilename = nil
-                    viewModel.isPasswordInvalid = false
-                    viewModel.fileURLs = []
-                    viewModel.errorMessage = nil
-                },
-                onSubmit: { password, saveToKeychain in
-                    viewModel.isPasswordInvalid = false
-                    Task {
-                        await viewModel.retryParseFilesWithPassword(password, saveToKeychain: saveToKeychain)
-                    }
-                }
-            )
         }
     }
 
