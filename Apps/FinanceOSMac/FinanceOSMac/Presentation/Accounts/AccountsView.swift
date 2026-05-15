@@ -36,39 +36,40 @@ struct AccountsView: View {
         }
     }
 
-    private var groupedAccountsByBank: [String: [Account]] {
-        Dictionary(grouping: viewModel.accounts) { account in
-            viewModel.banks.first { $0.id == account.bankId }?.name ?? "Unknown"
-        }
-    }
-
     var accountsList: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                ForEach(groupedAccountsByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bankName, accounts in
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(bankName)
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
-                            .padding(.horizontal, 16)
-
-                        VStack(spacing: 8) {
-                            ForEach(accounts, id: \.id) { account in
-                                NavigationLink(value: account.id) {
-                                    accountRow(account)
-                                }
-                                .contextMenu {
-                                    Button("Edit") { viewModel.editingAccount = account }
-                                    Button("Delete", role: .destructive) { viewModel.editingAccount = account }
-                                }
+        List {
+            ForEach(
+                groupedAccountsByBank.sorted(by: { $0.key < $1.key }),
+                id: \.key
+            ) { bankName, accounts in
+                Section(bankName) {
+                    ForEach(accounts, id: \.id) { account in
+                        NavigationLink(value: account.id) {
+                            accountRow(account)
+                        }
+                        .listRowBackground(Color(red: 0.086, green: 0.086, blue: 0.098))
+                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        .listRowSeparator(.hidden)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                viewModel.editingAccount = account
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
                         }
-                        .padding(.horizontal, 16)
+                        .contextMenu {
+                            Button("Edit") { viewModel.editingAccount = account }
+                            Button("Delete", role: .destructive) {
+                                viewModel.editingAccount = account
+                            }
+                        }
                     }
                 }
             }
-            .padding(16)
         }
+        .listStyle(.plain)
+        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .scrollContentBackground(.hidden)
         .navigationDestination(for: UUID.self) { accountId in
             if let account = viewModel.accounts.first(where: { $0.id == accountId }) {
                 AccountTransactionsView(
@@ -81,6 +82,12 @@ struct AccountsView: View {
                 .navigationTitle(account.accountName)
                 .onAppear { selectedAccountId = accountId }
             }
+        }
+    }
+
+    private var groupedAccountsByBank: [String: [Account]] {
+        Dictionary(grouping: viewModel.accounts) { account in
+            viewModel.banks.first { $0.id == account.bankId }?.name ?? "Unknown"
         }
     }
 
@@ -102,8 +109,6 @@ struct AccountsView: View {
                 .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
         }
         .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
     }
 
     var emptyState: some View {

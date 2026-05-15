@@ -36,39 +36,40 @@ struct CardsView: View {
         }
     }
 
-    private var groupedCardsByBank: [String: [CardsViewModel.CardRow]] {
-        Dictionary(grouping: viewModel.cardRows) { cardRow in
-            viewModel.banks.first { $0.id == cardRow.card.bankId }?.name ?? "Unknown"
-        }
-    }
-
     var cardsList: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                ForEach(groupedCardsByBank.sorted(by: { $0.key < $1.key }), id: \.key) { bankName, cardRows in
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(bankName)
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
-                            .padding(.horizontal, 16)
-
-                        VStack(spacing: 8) {
-                            ForEach(cardRows, id: \.card.id) { cardRowData in
-                                NavigationLink(value: cardRowData.card.id) {
-                                    cardRowView(cardRowData)
-                                }
-                                .contextMenu {
-                                    Button("Edit") { viewModel.editingCard = cardRowData.card }
-                                    Button("Delete", role: .destructive) { viewModel.editingCard = cardRowData.card }
-                                }
+        List {
+            ForEach(
+                groupedCardsByBank.sorted(by: { $0.key < $1.key }),
+                id: \.key
+            ) { bankName, cardRows in
+                Section(bankName) {
+                    ForEach(cardRows, id: \.card.id) { cardRow in
+                        NavigationLink(value: cardRow.card.id) {
+                            cardRowView(cardRow)
+                        }
+                        .listRowBackground(Color(red: 0.086, green: 0.086, blue: 0.098))
+                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        .listRowSeparator(.hidden)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                viewModel.editingCard = cardRow.card
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
                         }
-                        .padding(.horizontal, 16)
+                        .contextMenu {
+                            Button("Edit") { viewModel.editingCard = cardRow.card }
+                            Button("Delete", role: .destructive) {
+                                viewModel.editingCard = cardRow.card
+                            }
+                        }
                     }
                 }
             }
-            .padding(16)
         }
+        .listStyle(.plain)
+        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .scrollContentBackground(.hidden)
         .navigationDestination(for: UUID.self) { cardId in
             if let card = viewModel.cardRows.first(where: { $0.card.id == cardId })?.card {
                 CardTransactionsView(
@@ -81,6 +82,12 @@ struct CardsView: View {
                 .navigationTitle(card.cardName)
                 .onAppear { selectedCardId = cardId }
             }
+        }
+    }
+
+    private var groupedCardsByBank: [String: [CardsViewModel.CardRow]] {
+        Dictionary(grouping: viewModel.cardRows) { cardRow in
+            viewModel.banks.first { $0.id == cardRow.card.bankId }?.name ?? "Unknown"
         }
     }
 
@@ -102,8 +109,6 @@ struct CardsView: View {
                 .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
         }
         .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
     }
 
     var emptyState: some View {

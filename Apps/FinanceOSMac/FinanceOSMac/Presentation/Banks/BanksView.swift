@@ -10,7 +10,7 @@ struct BanksView: View {
 
     var body: some View {
         NavigationStack {
-            if viewModel.banks.isEmpty && !viewModel.isLoading {
+            if viewModel.banks.isEmpty, !viewModel.isLoading {
                 emptyState
             } else if viewModel.isLoading {
                 loadingState
@@ -28,37 +28,42 @@ struct BanksView: View {
     }
 
     var banksList: some View {
-        ScrollView {
-            VStack(spacing: 8) {
-                ForEach(viewModel.banks, id: \.id) { bank in
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(bank.name)
-                                .font(.system(size: 14, weight: .semibold))
+        List(viewModel.banks, id: \.id) { bank in
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(bank.name)
+                        .font(.system(size: 14, weight: .semibold))
 
-                            Text(bank.providerType.rawValue.uppercased())
-                                .font(.system(size: 11, weight: .regular))
-                                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
-                        }
+                    Text(bank.providerType.rawValue.uppercased())
+                        .font(.system(size: 11, weight: .regular))
+                        .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                }
 
-                        Spacer()
+                Spacer()
 
-                        Menu {
-                            Button("Edit") { viewModel.editingBank = bank }
-                            Button("Delete", role: .destructive) { viewModel.editingBank = bank }
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
-                        }
-                    }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(10)
+                Menu {
+                    Button("Edit") { viewModel.editingBank = bank }
+                    Button("Delete", role: .destructive) { viewModel.editingBank = bank }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
                 }
             }
-            .padding(16)
+            .listRowBackground(Color(red: 0.086, green: 0.086, blue: 0.098))
+            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+            .listRowSeparator(.hidden)
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button(role: .destructive) {
+                    viewModel.editingBank = bank
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
         }
+        .listStyle(.plain)
+        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .scrollContentBackground(.hidden)
     }
 
     var emptyState: some View {
