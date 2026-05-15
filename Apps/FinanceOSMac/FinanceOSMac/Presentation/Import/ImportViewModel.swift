@@ -5,22 +5,6 @@ import OSLog
 
 let logger = FinanceLogger.importPipeline
 
-private func logInfo(_ staticMsg: StaticString, _ attrs: [String: CustomStringConvertible]) {
-    var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
-    for (key, value) in attrs {
-        msg = msg.replacingOccurrences(of: "{\(key)}", with: String(describing: value))
-    }
-    logger.info("\(msg, privacy: .public)")
-}
-
-private func logDebug(_ staticMsg: StaticString, _ attrs: [String: CustomStringConvertible]) {
-    var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
-    for (key, value) in attrs {
-        msg = msg.replacingOccurrences(of: "{\(key)}", with: String(describing: value))
-    }
-    logger.debug("\(msg, privacy: .public)")
-}
-
 private func fuzzyMatch(_ stored: String, _ parsed: String) -> Bool {
     let storedLower = stored.lowercased()
     let parsedLower = parsed.lowercased()
@@ -111,13 +95,13 @@ final class ImportViewModel {
         parserRegistry.supportedSources
     }
 
-    private let transactionImporter: any TransactionImporting
-    private let transactionImportPipeline: TransactionImportPipeline
-    private let bankRepository: any BankRepository
-    private let accountRepository: any AccountRepository
-    private let cardRepository: any CardRepository
-    private let transactionRepository: any TransactionRepository
-    private let parserRegistry: StatementParserRegistry
+    let transactionImporter: any TransactionImporting
+    let transactionImportPipeline: TransactionImportPipeline
+    let bankRepository: any BankRepository
+    let accountRepository: any AccountRepository
+    let cardRepository: any CardRepository
+    let transactionRepository: any TransactionRepository
+    let parserRegistry: StatementParserRegistry
 
     init(
         transactionImporter: any TransactionImporting,
@@ -207,7 +191,9 @@ final class ImportViewModel {
                   let target = selectedTarget
             else {
                 errorMessage = "Invalid import state"
-                let state = "files=\(!fileURLs.isEmpty), stmts=\(!parsedStatements.isEmpty), target=\(selectedTarget != nil)"
+                let filesOk = !fileURLs.isEmpty
+                let stmtsOk = !parsedStatements.isEmpty
+                let state = "files=\(filesOk), stmts=\(stmtsOk), target=\(selectedTarget != nil)"
                 logger.error("Invalid state: \(state)")
                 return
             }
@@ -218,47 +204,58 @@ final class ImportViewModel {
 
             let fileCount = self.fileURLs.count
             let targetDesc = String(describing: target)
-            logger.info("Starting: \(fileCount, privacy: .public) files, target: \(targetDesc, privacy: .public)")
+            logger.info(
+                "Starting: \(fileCount, privacy: .public) files, target: \(targetDesc, privacy: .public)"
+            )
 
             do {
-                var totalInserted = 0
-                var totalSkipped = 0
-
-                for (index, fileURL) in fileURLs.enumerated() {
-                    let format = fileFormat(for: fileURL)
-                    let fileName = fileURL.lastPathComponent
-                    let fileNumber = index + 1
-
-                    logger.debug("Importing file \(fileNumber)/\(fileCount): \(fileName, privacy: .public)")
-
-                    let result = try await transactionImportPipeline.execute(
-                        fileURL: fileURL,
-                        format: format,
-                        target: target
-                    )
-
-                    totalInserted += result.inserted
-                    totalSkipped += result.skipped
-                    logInfo("File {file}: {inserted} inserted, {skipped} skipped", [
-                        "file": fileName,
-                        "inserted": result.inserted,
-                        "skipped": result.skipped
-                    ])
-                }
-
-                importResult = ImportResult(inserted: totalInserted, skipped: totalSkipped)
-                logInfo("Import complete: {inserted} inserted, {skipped} skipped", [
-                    "inserted": totalInserted,
-                    "skipped": totalSkipped
-                ])
+                let result = try await performImport(target: target, fileCount: fileCount)
+                importResult = result
                 reset()
                 isLoading = false
             } catch {
-                logger.error("Import failed: \(error.localizedDescription, privacy: .public)")
-                errorMessage = "Import failed: \(error.localizedDescription)"
+                let desc = error.localizedDescription
+                logger.error("Import failed: \(desc, privacy: .public)")
+                errorMessage = "Import failed: \(desc)"
                 isLoading = false
             }
         }
+    }
+
+    private func performImport(
+        target: TransactionImportTarget,
+        fileCount: Int
+    ) async throws -> ImportResult {
+        var totalInserted = 0
+        var totalSkipped = 0
+
+        for (index, fileURL) in fileURLs.enumerated() {
+            let format = fileFormat(for: fileURL)
+            let fileName = fileURL.lastPathComponent
+            let fileNumber = index + 1
+
+            logger.debug("Importing file \(fileNumber)/\(fileCount): \(fileName, privacy: .public)")
+
+            let result = try await transactionImportPipeline.execute(
+                fileURL: fileURL,
+                format: format,
+                target: target
+            )
+
+            totalInserted += result.inserted
+            totalSkipped += result.skipped
+            logger.logInfo("File {file}: {inserted} inserted, {skipped} skipped", [
+                "file": fileName,
+                "inserted": result.inserted,
+                "skipped": result.skipped
+            ])
+        }
+
+        logger.logInfo("Import complete: {inserted} inserted, {skipped} skipped", [
+            "inserted": totalInserted,
+            "skipped": totalSkipped
+        ])
+        return ImportResult(inserted: totalInserted, skipped: totalSkipped)
     }
 
     func loadTargetsOnAppear() async {
@@ -267,7 +264,7 @@ final class ImportViewModel {
             accounts = try await accountRepository.fetchAccounts()
             cards = try await cardRepository.fetchCards()
             banks = try await bankRepository.fetchBanks()
-            logDebug("Loaded {accounts} accounts, {cards} cards, and {banks} banks", [
+            logger.logDebug("Loaded {accounts} accounts, {cards} cards, and {banks} banks", [
                 "accounts": accounts.count,
                 "cards": cards.count,
                 "banks": banks.count
@@ -301,9 +298,9 @@ final class ImportViewModel {
                 await detectDuplicates(for: .card(matchingCard.id))
             }
         } else if !isCard, let accountLast4 = statement.accountLast4 {
+            // swiftformat:disable all
             if let matchingAccount = accounts
-                .first(where: { $0.bankId == bank.id && $0.accountLast4 == accountLast4 })
-            {
+                .first(where: { $0.bankId == bank.id && $0.accountLast4 == accountLast4 }) {
                 selectedTarget = .account(matchingAccount.id)
                 logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
                 await detectDuplicates(for: .account(matchingAccount.id))
@@ -312,6 +309,7 @@ final class ImportViewModel {
                 logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
                 await detectDuplicates(for: .account(matchingAccount.id))
             }
+            // swiftformat:enable all
         } else if !isCard {
             if let matchingAccount = accounts.first(where: { $0.bankId == bank.id }) {
                 selectedTarget = .account(matchingAccount.id)
@@ -334,13 +332,14 @@ final class ImportViewModel {
 
             for (index, statement) in parsedStatements.enumerated() {
                 for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
+                    // swiftformat:disable all
                     for existingTxn in existingTransactions
-                        where isSameTransaction(parsed: parsedTxn, existing: existingTxn)
-                    {
+                        where isSameTransaction(parsed: parsedTxn, existing: existingTxn) {
                         let flatIndex = parsedStatements[..<index]
                             .reduce(0) { $0 + $1.transactions.count } + txnIndex
                         duplicateTransactionIndices.insert(flatIndex)
                     }
+                    // swiftformat:enable all
                 }
             }
 
