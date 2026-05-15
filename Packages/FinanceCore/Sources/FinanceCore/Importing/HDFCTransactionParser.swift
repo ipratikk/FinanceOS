@@ -74,27 +74,52 @@ class HDFCTransactionParser {
             }
         }
 
-        guard allAmounts.count >= 2 else {
-            if allAmounts.count == 1 {
-                return (nil, allAmounts[0])
+        guard allAmounts.count >= 1 else { return nil }
+
+        if allAmounts.count == 1 {
+            return (nil, allAmounts[0])
+        }
+
+        if allAmounts.count == 2 {
+            let debitValue = parseAmount(allAmounts[0])
+            let creditValue = parseAmount(allAmounts[1])
+            if debitValue == 0, creditValue > 0 {
+                return (nil, allAmounts[1])
             }
-            return nil
+            if creditValue == 0, debitValue > 0 {
+                return (allAmounts[0], nil)
+            }
+            return (allAmounts[0], allAmounts[1])
         }
 
-        let debit = allAmounts[allAmounts.count - 2]
-        let credit = allAmounts[allAmounts.count - 1]
+        var validAmounts = allAmounts.filter { !isLikelyBalance($0) }
+        if validAmounts.isEmpty { validAmounts = allAmounts }
 
-        let debitValue = parseAmount(debit)
-        let creditValue = parseAmount(credit)
+        if validAmounts.count >= 2 {
+            let debit = validAmounts[validAmounts.count - 2]
+            let credit = validAmounts[validAmounts.count - 1]
+            let debitValue = parseAmount(debit)
+            let creditValue = parseAmount(credit)
 
-        if debitValue == 0, creditValue > 0 {
-            return (nil, credit)
+            if debitValue == 0, creditValue > 0 {
+                return (nil, credit)
+            }
+            if creditValue == 0, debitValue > 0 {
+                return (debit, nil)
+            }
+            return (debit, credit)
         }
-        if creditValue == 0, debitValue > 0 {
-            return (debit, nil)
+
+        if validAmounts.count == 1 {
+            return (nil, validAmounts[0])
         }
 
-        return (debit, credit)
+        return nil
+    }
+
+    private func isLikelyBalance(_ amountString: String) -> Bool {
+        let value = parseAmount(amountString)
+        return value > 50_000_000
     }
 
     private func parseAmount(_ amountString: String) -> Int64 {

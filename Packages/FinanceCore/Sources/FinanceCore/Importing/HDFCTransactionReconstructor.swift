@@ -56,11 +56,47 @@ class HDFCTransactionReconstructor {
     }
 
     func mergeFragmentedNarration(from block: TransactionBlock) -> String {
-        return block.narrationLines
+        let merged = block.narrationLines
             .map { line in
                 return line.rawText.trimmingCharacters(in: .whitespaces)
             }
             .filter { !$0.isEmpty }
             .joined(separator: " ")
+
+        if merged.count > 500 {
+            return truncateBoilerplateMerge(merged)
+        }
+
+        return merged
+    }
+
+    private func truncateBoilerplateMerge(_ text: String) -> String {
+        let boilerplateKeywords = [
+            "contents of this statement",
+            "no error is reported within",
+            "statement generated on",
+            "thank you for banking",
+            "digital footprint",
+            "account number",
+            "ifsc code"
+        ]
+
+        let lower = text.lowercased()
+        for keyword in boilerplateKeywords {
+            if let range = lower.range(of: keyword) {
+                let endIndex = lower.index(range.lowerBound, offsetBy: 0)
+                let truncated = String(text[..<endIndex]).trimmingCharacters(in: .whitespaces)
+                if !truncated.isEmpty {
+                    return truncated
+                }
+            }
+        }
+
+        let sentences = text.components(separatedBy: ".")
+        if sentences.count > 1 {
+            return (sentences.first ?? "").trimmingCharacters(in: .whitespaces)
+        }
+
+        return String(text.prefix(200)).trimmingCharacters(in: .whitespaces)
     }
 }

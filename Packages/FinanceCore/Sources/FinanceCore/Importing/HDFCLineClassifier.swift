@@ -16,12 +16,39 @@ class HDFCLineClassifier {
     private let balancePattern = "Balance[:\\s]+\\d{1,3}(,\\d{3})*\\.\\d{2}"
     private let headerKeywords = ["date", "narration", "debit", "credit", "balance", "ref", "chq"]
     private let footerKeywords = ["closing balance", "statement period", "page", "statement end", "thank you"]
+    private let boilerplatePatterns = [
+        "hdfc bank",
+        "contents of this statement",
+        "no error is reported within",
+        "account number",
+        "account holder",
+        "customer care",
+        "statement generated on",
+        "thank you for banking",
+        "digital footprint",
+        "mobile banking",
+        "net banking",
+        "cheque deposit",
+        "financial inclusion",
+        "cbdt annual returns",
+        "ifsc code",
+        "legal entity identifier",
+        "pan",
+        "aadhaar",
+        "mca registered",
+        "registered office",
+        "bank guarantee"
+    ]
 
     func classify(_ line: String) -> ClassifiedLine {
         let trimmed = line.trimmingCharacters(in: .whitespaces)
 
         if trimmed.isEmpty {
             return ClassifiedLine(rawText: line, purpose: .blank, confidence: 1.0)
+        }
+
+        if isBoilerplate(trimmed) {
+            return ClassifiedLine(rawText: line, purpose: .footer, confidence: 0.98)
         }
 
         if isHeader(trimmed) {
@@ -46,6 +73,11 @@ class HDFCLineClassifier {
         }
 
         return ClassifiedLine(rawText: line, purpose: .narration, confidence: 0.70)
+    }
+
+    private func isBoilerplate(_ line: String) -> Bool {
+        let lower = line.lowercased()
+        return boilerplatePatterns.contains { lower.contains($0) }
     }
 
     private func isHeader(_ line: String) -> Bool {
