@@ -16,7 +16,7 @@ struct TransactionListContentView: View {
                 transactionsList
             }
         }
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
         .sheet(isPresented: $showFilterSheet) {
             TransactionFilterView(listState: listState)
         }
@@ -26,7 +26,7 @@ struct TransactionListContentView: View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
 
                 TextField("Search transactions", text: $listState.searchQuery)
                     .textFieldStyle(.plain)
@@ -34,13 +34,13 @@ struct TransactionListContentView: View {
                 if !listState.searchQuery.isEmpty {
                     Button(action: { listState.searchQuery = "" }, label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                            .foregroundColor(AppColors.textTertiary)
                     })
                 }
             }
-            .padding(8)
-            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-            .cornerRadius(10)
+            .padding(AppSpacing.xs)
+            .background(AppColors.surface2)
+            .cornerRadius(AppRadius.md)
 
             HStack(spacing: 8) {
                 if listState.isFilterActive {
@@ -53,8 +53,8 @@ struct TransactionListContentView: View {
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 8)
-                        .background(Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.2))
-                        .cornerRadius(6)
+                        .background(AppColors.accent.opacity(0.2))
+                        .cornerRadius(AppRadius.sm)
                     })
                 }
 
@@ -70,8 +70,8 @@ struct TransactionListContentView: View {
                 }
             }
         }
-        .padding(16)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .padding(AppSpacing.md)
+        .background(AppColors.base)
     }
 
     private var transactionsList: some View {
@@ -80,7 +80,7 @@ struct TransactionListContentView: View {
                 Section(section.title) {
                     ForEach(section.rows) { row in
                         transactionRow(row)
-                            .listRowBackground(Color(red: 0.086, green: 0.086, blue: 0.098))
+                            .listRowBackground(AppColors.surface)
                             .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                             .listRowSeparator(.hidden)
                             .swipeActions(edge: .trailing) {
@@ -93,7 +93,7 @@ struct TransactionListContentView: View {
             }
         }
         .listStyle(.plain)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
         .scrollContentBackground(.hidden)
     }
 
@@ -110,7 +110,7 @@ struct TransactionListContentView: View {
 
                 Text(row.subtitle)
                     .font(.system(size: 12, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
             }
 
             Spacer()
@@ -127,17 +127,17 @@ struct TransactionListContentView: View {
                     .background(row.transactionType == .debit ? Color.red
                         .opacity(0.15) : Color.green.opacity(0.15))
                     .foregroundColor(row.transactionType == .debit ? .red : .green)
-                    .cornerRadius(4)
+                    .cornerRadius(AppRadius.sm)
             }
         }
-        .padding(12)
+        .padding(AppSpacing.sm)
     }
 
     private var emptyState: some View {
         VStack(spacing: 16) {
             Image(systemName: "list.bullet")
                 .font(.system(size: 48, weight: .light))
-                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 8) {
                 Text("No Transactions")
@@ -149,7 +149,7 @@ struct TransactionListContentView: View {
                         : "No transactions found."
                 )
                 .font(.system(size: 13, weight: .regular))
-                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                .foregroundColor(AppColors.textTertiary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

@@ -37,8 +37,8 @@ struct CardEditView: View {
                         .foregroundColor(.gray)
                 })
             }
-            .padding(16)
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .padding(AppSpacing.md)
+            .background(AppColors.base)
 
             Divider()
 
@@ -70,14 +70,14 @@ struct CardEditView: View {
                                 .pickerStyle(.menu)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding(10)
-                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                            .cornerRadius(6)
+                            .padding(AppSpacing.xs)
+                            .background(AppColors.surface2)
+                            .cornerRadius(AppRadius.sm)
                         }
                     }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(10)
+                    .padding(AppSpacing.sm)
+                    .background(AppColors.surface)
+                    .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Bank & Account")
@@ -97,9 +97,9 @@ struct CardEditView: View {
                                 .pickerStyle(.menu)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding(10)
-                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                            .cornerRadius(6)
+                            .padding(AppSpacing.xs)
+                            .background(AppColors.surface2)
+                            .cornerRadius(AppRadius.sm)
 
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Linked Account")
@@ -114,16 +114,16 @@ struct CardEditView: View {
                                 .pickerStyle(.menu)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding(10)
-                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                            .cornerRadius(6)
+                            .padding(AppSpacing.xs)
+                            .background(AppColors.surface2)
+                            .cornerRadius(AppRadius.sm)
 
                             inputField("Nickname (Optional)", text: $nickname)
                         }
                     }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(10)
+                    .padding(AppSpacing.sm)
+                    .background(AppColors.surface)
+                    .cornerRadius(AppRadius.md)
 
                     VStack(spacing: 8) {
                         Button(action: { showDeleteConfirm = true }, label: {
@@ -135,14 +135,14 @@ struct CardEditView: View {
                                 Spacer()
                             }
                             .foregroundColor(.red)
-                            .padding(12)
+                            .padding(AppSpacing.sm)
                             .frame(maxWidth: .infinity)
                             .background(Color.red.opacity(0.1))
-                            .cornerRadius(8)
+                            .cornerRadius(AppRadius.md)
                         })
                     }
                 }
-                .padding(16)
+                .padding(AppSpacing.md)
             }
 
             Divider()
@@ -154,9 +154,9 @@ struct CardEditView: View {
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
-                .padding(12)
-                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface)
+                .cornerRadius(AppRadius.md)
 
                 Button(action: {
                     Task {
@@ -178,14 +178,14 @@ struct CardEditView: View {
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
-                .padding(12)
-                .background(Color(red: 0.231, green: 0.510, blue: 0.980))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.accent)
+                .cornerRadius(AppRadius.md)
             }
-            .padding(16)
+            .padding(AppSpacing.md)
         }
         .frame(maxHeight: .infinity, alignment: .topLeading)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
         .alert("Delete Card?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -206,9 +206,9 @@ struct CardEditView: View {
                 .foregroundColor(.gray)
             TextField("", text: text)
                 .font(.system(size: 13, weight: .regular))
-                .padding(10)
-                .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                .cornerRadius(6)
+                .padding(AppSpacing.xs)
+                .background(AppColors.surface2)
+                .cornerRadius(AppRadius.sm)
         }
     }
 }

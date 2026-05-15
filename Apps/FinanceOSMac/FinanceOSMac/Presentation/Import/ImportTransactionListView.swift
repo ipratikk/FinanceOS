@@ -43,8 +43,8 @@ struct ImportTransactionListView: View {
             transactionListContent()
         }
         .padding()
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 
     private func transactionListContent() -> some View {
@@ -93,9 +93,9 @@ struct ImportTransactionListView: View {
                         .foregroundColor(txn.amountMinorUnits < 0 ? .red : .green)
                         .opacity(isDuplicate ? 0.5 : 1.0)
                 }
-                .padding(12)
-                .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface2)
+                .cornerRadius(AppRadius.md)
             }
 
             if transactions.count > 5 {

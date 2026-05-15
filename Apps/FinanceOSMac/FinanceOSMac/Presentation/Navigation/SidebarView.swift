@@ -30,7 +30,7 @@ struct SidebarView: View {
 
                 footer
             }
-            .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+            .background(AppColors.surface)
             .task {
                 await loadAccounts()
             }
@@ -45,9 +45,9 @@ struct SidebarView: View {
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(.gray)
         }
-        .padding(16)
+        .padding(AppSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
     }
 
     var mainNavigation: some View {
@@ -67,9 +67,9 @@ struct SidebarView: View {
                     .foregroundColor(selection == item ? .white : .gray)
                     .padding(.vertical, 8)
                     .padding(.horizontal, 12)
-                    .background(selection == item ? Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.2) : Color
+                    .background(selection == item ? AppColors.accent.opacity(0.2) : Color
                         .clear)
-                    .cornerRadius(8)
+                    .cornerRadius(AppRadius.md)
                 })
             }
         }
@@ -137,10 +137,10 @@ struct SidebarView: View {
             .foregroundColor(.white)
             .padding(.vertical, 8)
             .padding(.horizontal, 12)
-            .background(Color(red: 0.231, green: 0.510, blue: 0.980))
-            .cornerRadius(8)
+            .background(AppColors.accent)
+            .cornerRadius(AppRadius.md)
         })
-        .padding(16)
+        .padding(AppSpacing.md)
     }
 
     private func loadAccounts() async {

@@ -52,8 +52,8 @@ struct SpendingTrendChart: View {
                 }
             }
         }
-        .padding(16)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.md)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 }

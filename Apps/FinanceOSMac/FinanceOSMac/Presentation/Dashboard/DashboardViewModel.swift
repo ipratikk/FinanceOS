@@ -29,9 +29,9 @@ class DashboardViewModel {
             async let summaries = spendingService.monthlySummary(months: 6)
             async let recent = spendingService.recentTransactions(limit: 5)
 
-            self.currentTotals = try await totals
-            self.monthlySummaries = try await summaries
-            self.recentTransactions = try await recent
+            currentTotals = try await totals
+            monthlySummaries = try await summaries
+            recentTransactions = try await recent
         } catch {
             self.error = error.localizedDescription
             print("Dashboard load error: \(error)")

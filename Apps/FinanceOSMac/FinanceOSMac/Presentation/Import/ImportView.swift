@@ -76,7 +76,7 @@ struct ImportView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "arrow.down.doc.fill")
                             .font(.system(size: 48, weight: .semibold))
-                            .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
+                            .foregroundColor(AppColors.accent)
 
                         VStack(spacing: 4) {
                             Text("Drop Files Here")
@@ -84,11 +84,11 @@ struct ImportView: View {
 
                             Text("Release to import")
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                                .foregroundColor(AppColors.textTertiary)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.1))
+                    .background(AppColors.accent.opacity(0.1))
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
@@ -106,12 +106,12 @@ struct ImportView: View {
 
                                     Text("Parsing statement...")
                                         .font(.system(size: 12, weight: .regular))
-                                        .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                                        .foregroundColor(AppColors.textTertiary)
                                 }
                                 .frame(maxWidth: .infinity)
-                                .padding(20)
-                                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                                .cornerRadius(10)
+                                .padding(AppSpacing.lg)
+                                .background(AppColors.surface)
+                                .cornerRadius(AppRadius.md)
                             } else {
                                 if selectedSource != nil {
                                     DropZoneView(selectedSource: selectedSource)
@@ -131,11 +131,11 @@ struct ImportView: View {
                             Spacer()
                                 .frame(height: 20)
                         }
-                        .padding(16)
+                        .padding(AppSpacing.md)
                     }
                 }
             }
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .background(AppColors.base)
         }
         .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
             guard let source = selectedSource else { return false }
@@ -174,7 +174,7 @@ struct ImportView: View {
 
             Text("Upload your bank or credit card statements")
                 .font(.system(size: 13, weight: .regular))
-                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                .foregroundColor(AppColors.textTertiary)
         }
     }
 
@@ -208,11 +208,11 @@ struct ImportView: View {
                     .font(.system(size: 14, weight: .medium))
             }
             .frame(maxWidth: .infinity)
-            .padding(12)
+            .padding(AppSpacing.sm)
             .foregroundColor(.white)
         })
-        .background(Color(red: 0.231, green: 0.510, blue: 0.980))
-        .cornerRadius(8)
+        .background(AppColors.accent)
+        .cornerRadius(AppRadius.md)
         .disabled(selectedSource == nil)
     }
 
@@ -235,9 +235,9 @@ struct ImportView: View {
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
-                .padding(12)
-                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface)
+                .cornerRadius(AppRadius.md)
 
                 Button(action: viewModel.importTransactions, label: {
                     HStack(spacing: 8) {
@@ -250,13 +250,13 @@ struct ImportView: View {
                     .frame(maxWidth: .infinity)
                     .foregroundColor(.white)
                 })
-                .padding(12)
-                .background(Color(red: 0.231, green: 0.510, blue: 0.980))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.accent)
+                .cornerRadius(AppRadius.md)
                 .disabled(viewModel.selectedTarget == nil || viewModel.isLoading)
                 .keyboardShortcut(.defaultAction)
             }
-            .padding(16)
+            .padding(AppSpacing.md)
         }
     }
 }

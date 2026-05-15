@@ -1,4 +1,5 @@
 import Charts
+import FinanceCore
 import SwiftUI
 
 struct TopMerchantsChart: View {
@@ -14,15 +15,15 @@ struct TopMerchantsChart: View {
                     x: .value("Amount", item.amount),
                     y: .value("Merchant", item.name)
                 )
-                .foregroundStyle(Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.7))
+                .foregroundStyle(AppColors.accent.opacity(0.7))
             }
             .frame(height: CGFloat(max(150, merchants.count * 25)))
             .chartXAxis {
                 AxisMarks(format: .currency(code: "INR"))
             }
         }
-        .padding(16)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.md)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 }

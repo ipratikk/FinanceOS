@@ -29,8 +29,8 @@ struct CreateNewTargetSheet: View {
                         .foregroundColor(.gray)
                 })
             }
-            .padding(16)
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .padding(AppSpacing.md)
+            .background(AppColors.base)
 
             Divider()
 
@@ -56,9 +56,9 @@ struct CreateNewTargetSheet: View {
                                 }
                         }
                     }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(10)
+                    .padding(AppSpacing.sm)
+                    .background(AppColors.surface)
+                    .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Bank")
@@ -80,9 +80,9 @@ struct CreateNewTargetSheet: View {
                                     }
                                     Spacer()
                                 }
-                                .padding(10)
-                                .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                                .cornerRadius(6)
+                                .padding(AppSpacing.xs)
+                                .background(AppColors.surface2)
+                                .cornerRadius(AppRadius.sm)
                             }
 
                             if !banks.isEmpty {
@@ -99,17 +99,17 @@ struct CreateNewTargetSheet: View {
                                     .pickerStyle(.menu)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                .padding(10)
-                                .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                                .cornerRadius(6)
+                                .padding(AppSpacing.xs)
+                                .background(AppColors.surface2)
+                                .cornerRadius(AppRadius.sm)
                             }
                         }
                     }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(10)
+                    .padding(AppSpacing.sm)
+                    .background(AppColors.surface)
+                    .cornerRadius(AppRadius.md)
                 }
-                .padding(16)
+                .padding(AppSpacing.md)
             }
 
             Divider()
@@ -121,9 +121,9 @@ struct CreateNewTargetSheet: View {
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
-                .padding(12)
-                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface)
+                .cornerRadius(AppRadius.md)
 
                 Button(action: { onCreate() }, label: {
                     Text("Create")
@@ -131,15 +131,15 @@ struct CreateNewTargetSheet: View {
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
-                .padding(12)
-                .background(Color(red: 0.231, green: 0.510, blue: 0.980))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.accent)
+                .cornerRadius(AppRadius.md)
                 .disabled(last4.trimmingCharacters(in: .whitespaces).isEmpty)
             }
-            .padding(16)
+            .padding(AppSpacing.md)
         }
         .frame(maxHeight: .infinity, alignment: .topLeading)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
     }
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
@@ -149,9 +149,9 @@ struct CreateNewTargetSheet: View {
                 .foregroundColor(.gray)
             TextField("", text: text)
                 .font(.system(size: 13, weight: .regular))
-                .padding(10)
-                .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                .cornerRadius(6)
+                .padding(AppSpacing.xs)
+                .background(AppColors.surface2)
+                .cornerRadius(AppRadius.sm)
         }
     }
 }

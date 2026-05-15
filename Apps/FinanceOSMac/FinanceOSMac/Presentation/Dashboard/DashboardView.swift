@@ -25,9 +25,9 @@ struct DashboardView: View {
                         recentTransactionsSection
                     }
                 }
-                .padding(16)
+                .padding(AppSpacing.md)
             }
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .background(AppColors.base)
             .task {
                 await viewModel.load()
                 isLoading = false
@@ -37,7 +37,7 @@ struct DashboardView: View {
                 ProgressView("Loading Dashboard...")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .background(AppColors.base)
             .task {
                 let dashboardViewModel = DashboardViewModel(
                     spendingService: appContainer.spendingService,
@@ -55,7 +55,7 @@ struct DashboardView: View {
 
             Text("This Month")
                 .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                .foregroundColor(AppColors.textTertiary)
         }
     }
 
@@ -64,44 +64,44 @@ struct DashboardView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Total Debits")
                     .font(.system(size: 11, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
 
                 Text(formatAmount(totals.totalDebit))
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.red)
             }
-            .padding(12)
+            .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-            .cornerRadius(10)
+            .background(AppColors.surface)
+            .cornerRadius(AppRadius.md)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Total Credits")
                     .font(.system(size: 11, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
 
                 Text(formatAmount(totals.totalCredit))
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.green)
             }
-            .padding(12)
+            .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-            .cornerRadius(10)
+            .background(AppColors.surface)
+            .cornerRadius(AppRadius.md)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Transactions")
                     .font(.system(size: 11, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
 
                 Text("\(totals.transactionCount)")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
+                    .foregroundColor(AppColors.accent)
             }
-            .padding(12)
+            .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-            .cornerRadius(10)
+            .background(AppColors.surface)
+            .cornerRadius(AppRadius.md)
         }
     }
 
@@ -115,9 +115,9 @@ struct DashboardView: View {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
             }
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 
     var recentTransactionsSection: some View {
@@ -143,7 +143,7 @@ struct DashboardView: View {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 10, weight: .semibold))
                     }
-                    .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
+                    .foregroundColor(AppColors.accent)
                 }
             }
 
@@ -161,7 +161,7 @@ struct DashboardView: View {
 
                             Text(dateString(txn.postedAt))
                                 .font(.system(size: 11, weight: .regular))
-                                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                                .foregroundColor(AppColors.textTertiary)
                         }
 
                         Spacer()
@@ -178,18 +178,18 @@ struct DashboardView: View {
                                 .background(txn.transactionType == .debit ? Color.red
                                     .opacity(0.15) : Color.green.opacity(0.15))
                                 .foregroundColor(txn.transactionType == .debit ? .red : .green)
-                                .cornerRadius(3)
+                                .cornerRadius(AppRadius.sm)
                         }
                     }
-                    .padding(10)
-                    .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                    .cornerRadius(8)
+                    .padding(AppSpacing.xs)
+                    .background(AppColors.surface2)
+                    .cornerRadius(AppRadius.md)
                 }
             }
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 
     private func formatAmount(_ minorUnits: Int64) -> String {

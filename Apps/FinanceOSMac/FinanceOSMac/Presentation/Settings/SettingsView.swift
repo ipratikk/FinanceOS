@@ -23,8 +23,8 @@ struct SettingsView: View {
                     settingTabButton("About", icon: "info.circle", tab: .about)
                     Spacer()
                 }
-                .padding(16)
-                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                .padding(AppSpacing.md)
+                .background(AppColors.surface)
                 .frame(width: 180)
 
                 Divider()
@@ -37,26 +37,25 @@ struct SettingsView: View {
                             aboutSettings
                         }
                     }
-                    .padding(16)
+                    .padding(AppSpacing.md)
                 }
             }
         }
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Settings")
-                .font(.system(size: 22, weight: .semibold))
+                .headingLarge()
 
             Text("App preferences & information")
-                .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                .labelSmall()
         }
-        .padding(16)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
-        .border(Color(red: 0.110, green: 0.110, blue: 0.122), width: 1)
+        .padding(AppSpacing.md)
+        .background(AppColors.base)
+        .border(AppColors.surface2, width: 1)
     }
 
     private func settingTabButton(_ label: String, icon: String, tab: SettingsTab) -> some View {
@@ -74,10 +73,10 @@ struct SettingsView: View {
             .foregroundColor(selectedTab == tab ? .white : Color(
                 red: 0.447, green: 0.447, blue: 0.478
             ))
-            .padding(10)
-            .background(selectedTab == tab ? Color(red: 0.231, green: 0.510, blue: 0.980)
+            .padding(AppSpacing.xs)
+            .background(selectedTab == tab ? AppColors.accent
                 .opacity(0.2) : Color.clear)
-            .cornerRadius(6)
+            .cornerRadius(AppRadius.sm)
         })
     }
 
@@ -111,14 +110,14 @@ struct SettingsView: View {
                     }
                 )
                 .foregroundColor(.red)
-                .padding(12)
+                .padding(AppSpacing.sm)
                 .frame(maxWidth: .infinity)
                 .background(Color.red.opacity(0.1))
-                .cornerRadius(8)
+                .cornerRadius(AppRadius.md)
             }
-            .padding(12)
-            .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-            .cornerRadius(10)
+            .padding(AppSpacing.sm)
+            .background(AppColors.surface)
+            .cornerRadius(AppRadius.md)
 
             Spacer()
         }
@@ -141,9 +140,9 @@ struct SettingsView: View {
                     aboutLink("Privacy Policy", icon: "lock.fill")
                 }
             }
-            .padding(12)
-            .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-            .cornerRadius(10)
+            .padding(AppSpacing.sm)
+            .background(AppColors.surface)
+            .cornerRadius(AppRadius.md)
 
             Spacer()
         }
@@ -163,15 +162,15 @@ struct SettingsView: View {
                     let (label, binding, _) = items[index]
                     Toggle(label, isOn: binding)
                         .font(.system(size: 13, weight: .regular))
-                        .padding(10)
-                        .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                        .cornerRadius(6)
+                        .padding(AppSpacing.xs)
+                        .background(AppColors.surface2)
+                        .cornerRadius(AppRadius.sm)
                 }
             }
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 
     private func aboutItem(_ label: String, value: String) -> some View {
@@ -192,16 +191,16 @@ struct SettingsView: View {
                 }, label: {
                     Image(systemName: "doc.on.doc")
                         .font(.system(size: 11))
-                        .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
+                        .foregroundColor(AppColors.accent)
                 })
             }
-            .padding(10)
-            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-            .cornerRadius(6)
+            .padding(AppSpacing.xs)
+            .background(AppColors.surface2)
+            .cornerRadius(AppRadius.sm)
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 
     private func aboutLink(_ label: String, icon: String) -> some View {
@@ -218,10 +217,10 @@ struct SettingsView: View {
                 Image(systemName: "arrow.up.right")
                     .font(.system(size: 10, weight: .semibold))
             }
-            .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
-            .padding(10)
-            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-            .cornerRadius(6)
+            .foregroundColor(AppColors.accent)
+            .padding(AppSpacing.xs)
+            .background(AppColors.surface2)
+            .cornerRadius(AppRadius.sm)
         })
     }
 }

@@ -69,7 +69,7 @@ struct ImportPreviewCard: View {
             }
         }
         .padding()
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 }

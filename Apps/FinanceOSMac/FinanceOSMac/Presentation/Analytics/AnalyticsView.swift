@@ -24,9 +24,9 @@ struct AnalyticsView: View {
 
                     categoriesSection
                 }
-                .padding(16)
+                .padding(AppSpacing.md)
             }
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .background(AppColors.base)
             .task {
                 await viewModel.load()
                 isLoading = false
@@ -36,7 +36,7 @@ struct AnalyticsView: View {
                 ProgressView("Loading Analytics...")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .background(AppColors.base)
             .task {
                 let analyticsViewModel = AnalyticsViewModel(
                     spendingService: appContainer.spendingService,
@@ -54,7 +54,7 @@ struct AnalyticsView: View {
 
             Text("Spending insights & trends")
                 .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                .foregroundColor(AppColors.textTertiary)
         }
     }
 
@@ -88,17 +88,17 @@ struct AnalyticsView: View {
                 .chartYAxis {
                     AxisMarks { _ in
                         AxisGridLine()
-                            .foregroundStyle(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .foregroundStyle(AppColors.surface2)
                     }
                 }
-                .padding(12)
-                .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface2)
+                .cornerRadius(AppRadius.md)
             }
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 
     var topMerchantsSection: some View {
@@ -114,9 +114,9 @@ struct AnalyticsView: View {
                 TopMerchantsChart(merchants: Array(merchants))
             }
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 
     var categoriesSection: some View {
@@ -128,7 +128,7 @@ struct AnalyticsView: View {
             VStack(alignment: .center, spacing: 8) {
                 Image(systemName: "tag.circle.fill")
                     .font(.system(size: 40, weight: .thin))
-                    .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.3))
+                    .foregroundColor(AppColors.accent.opacity(0.3))
 
                 VStack(spacing: 4) {
                     Text("Coming Soon")
@@ -136,17 +136,17 @@ struct AnalyticsView: View {
 
                     Text("Auto-categorization with smart detection")
                         .font(.system(size: 11, weight: .regular))
-                        .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                        .foregroundColor(AppColors.textTertiary)
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding(24)
-            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-            .cornerRadius(8)
+            .padding(AppSpacing.xl)
+            .background(AppColors.surface2)
+            .cornerRadius(AppRadius.md)
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 }
 

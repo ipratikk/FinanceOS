@@ -21,7 +21,7 @@ struct AccountTransactionsView: View {
                 listState: viewModel.listState
             )
         }
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
         .task {
             await viewModel.loadTransactions(for: account.id)
         }
@@ -35,19 +35,19 @@ struct AccountTransactionsView: View {
 
                 Text("\(account.accountType.rawValue.uppercased()) • ••••\(account.accountLast4)")
                     .font(.system(size: 12, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
             }
 
             HStack(spacing: 12) {
                 Text("Transactions: \(viewModel.sections.map(\.rows.count).reduce(0, +))")
                     .font(.system(size: 12, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
 
                 Spacer()
             }
         }
-        .padding(16)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .border(Color(red: 0.110, green: 0.110, blue: 0.122), width: 1)
+        .padding(AppSpacing.md)
+        .background(AppColors.surface)
+        .border(AppColors.surface2, width: 1)
     }
 }

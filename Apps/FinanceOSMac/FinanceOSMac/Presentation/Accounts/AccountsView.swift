@@ -47,7 +47,7 @@ struct AccountsView: View {
                         NavigationLink(value: account.id) {
                             accountRow(account)
                         }
-                        .listRowBackground(Color(red: 0.086, green: 0.086, blue: 0.098))
+                        .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                         .listRowSeparator(.hidden)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
@@ -68,7 +68,7 @@ struct AccountsView: View {
             }
         }
         .listStyle(.plain)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
         .scrollContentBackground(.hidden)
         .navigationDestination(for: UUID.self) { accountId in
             if let account = viewModel.accounts.first(where: { $0.id == accountId }) {
@@ -99,23 +99,23 @@ struct AccountsView: View {
 
                 Text(account.accountType.rawValue.uppercased())
                     .font(.system(size: 11, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
             }
 
             Spacer()
 
             Text("••••\(account.accountLast4)")
                 .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
+                .foregroundColor(AppColors.accent)
         }
-        .padding(12)
+        .padding(AppSpacing.sm)
     }
 
     var emptyState: some View {
         VStack(spacing: 16) {
             Image(systemName: "building.2")
                 .font(.system(size: 48, weight: .light))
-                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 8) {
                 Text("No Accounts")
@@ -123,7 +123,7 @@ struct AccountsView: View {
 
                 Text("Import a statement to get started")
                     .font(.system(size: 13, weight: .regular))
-                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                    .foregroundColor(AppColors.textTertiary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -134,28 +134,28 @@ struct AccountsView: View {
             ForEach(0 ..< 3, id: \.self) { _ in
                 HStack(spacing: 12) {
                     RoundedRectangle(cornerRadius: 6)
-                        .fill(Color(red: 0.110, green: 0.110, blue: 0.122))
+                        .fill(AppColors.surface2)
                         .frame(width: 40, height: 40)
 
                     VStack(alignment: .leading, spacing: 4) {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .fill(AppColors.surface2)
                             .frame(height: 12)
                             .frame(maxWidth: 120)
 
                         RoundedRectangle(cornerRadius: 3)
-                            .fill(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .fill(AppColors.surface2)
                             .frame(height: 10)
                             .frame(maxWidth: 80)
                     }
 
                     Spacer()
                 }
-                .padding(12)
-                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                .cornerRadius(10)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface)
+                .cornerRadius(AppRadius.md)
             }
         }
-        .padding(16)
+        .padding(AppSpacing.md)
     }
 }

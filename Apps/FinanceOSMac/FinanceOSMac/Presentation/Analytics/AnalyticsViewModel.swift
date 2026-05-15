@@ -26,10 +26,10 @@ class AnalyticsViewModel {
         do {
             async let summaries = spendingService.monthlySummary(months: 6)
 
-            self.monthlySummaries = try await summaries
+            monthlySummaries = try await summaries
 
             let allTransactions = try await transactionRepository.fetchTransactions()
-            self.topMerchants = aggregateTopMerchants(from: allTransactions)
+            topMerchants = aggregateTopMerchants(from: allTransactions)
         } catch {
             self.error = error.localizedDescription
             print("Analytics load error: \(error)")

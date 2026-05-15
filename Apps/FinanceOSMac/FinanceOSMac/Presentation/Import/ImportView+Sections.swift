@@ -27,7 +27,7 @@ struct SupportedSourcesView: View {
         }
         .padding()
         .background(Color.gray.opacity(0.05))
-        .cornerRadius(4)
+        .cornerRadius(AppRadius.sm)
     }
 }
 
@@ -45,7 +45,7 @@ struct TargetSelectionSection: View {
 
                     Text("Select or create target")
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                        .foregroundColor(AppColors.textTertiary)
                 }
 
                 Spacer()
@@ -53,7 +53,7 @@ struct TargetSelectionSection: View {
                 if targetChoice != nil {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 16))
-                        .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
+                        .foregroundColor(AppColors.accent)
                 }
             }
 
@@ -87,12 +87,12 @@ struct TargetSelectionSection: View {
             }
             .pickerStyle(.menu)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(10)
-            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-            .cornerRadius(6)
+            .padding(AppSpacing.xs)
+            .background(AppColors.surface2)
+            .cornerRadius(AppRadius.sm)
         }
-        .padding(12)
-        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-        .cornerRadius(10)
+        .padding(AppSpacing.sm)
+        .background(AppColors.surface)
+        .cornerRadius(AppRadius.md)
     }
 }

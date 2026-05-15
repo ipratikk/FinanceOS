@@ -17,8 +17,8 @@ struct TransactionFilterView: View {
                         .foregroundColor(.gray)
                 })
             }
-            .padding(16)
-            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+            .padding(AppSpacing.md)
+            .background(AppColors.base)
 
             Divider()
 
@@ -36,9 +36,9 @@ struct TransactionFilterView: View {
                         }
                         .pickerStyle(.segmented)
                     }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(10)
+                    .padding(AppSpacing.sm)
+                    .background(AppColors.surface)
+                    .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Date Range")
@@ -67,9 +67,9 @@ struct TransactionFilterView: View {
                                     .foregroundColor(.blue)
                                 }
                             }
-                            .padding(10)
-                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                            .cornerRadius(6)
+                            .padding(AppSpacing.xs)
+                            .background(AppColors.surface2)
+                            .cornerRadius(AppRadius.sm)
 
                             HStack {
                                 Text("To")
@@ -92,16 +92,16 @@ struct TransactionFilterView: View {
                                     .foregroundColor(.blue)
                                 }
                             }
-                            .padding(10)
-                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
-                            .cornerRadius(6)
+                            .padding(AppSpacing.xs)
+                            .background(AppColors.surface2)
+                            .cornerRadius(AppRadius.sm)
                         }
                     }
-                    .padding(12)
-                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                    .cornerRadius(10)
+                    .padding(AppSpacing.sm)
+                    .background(AppColors.surface)
+                    .cornerRadius(AppRadius.md)
                 }
-                .padding(16)
+                .padding(AppSpacing.md)
             }
 
             Divider()
@@ -116,9 +116,9 @@ struct TransactionFilterView: View {
                     .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.blue)
-                .padding(12)
-                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface)
+                .cornerRadius(AppRadius.md)
 
                 Button(action: { dismiss() }, label: {
                     Text("Done")
@@ -126,14 +126,14 @@ struct TransactionFilterView: View {
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
-                .padding(12)
-                .background(Color(red: 0.231, green: 0.510, blue: 0.980))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.accent)
+                .cornerRadius(AppRadius.md)
             }
-            .padding(16)
+            .padding(AppSpacing.md)
         }
         .frame(maxHeight: .infinity, alignment: .topLeading)
-        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+        .background(AppColors.base)
     }
 }
 
