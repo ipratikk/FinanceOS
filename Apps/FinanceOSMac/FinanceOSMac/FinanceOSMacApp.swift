@@ -17,7 +17,7 @@ struct FinanceOSMacApp: App {
                         viewModel: ImportViewModel(
                             transactionImporter: appContainer.transactionImporter,
                             transactionImportPipeline: appContainer.transactionImportPipeline,
-                            institutionRepository: appContainer.institutionRepository,
+                            bankRepository: appContainer.bankRepository,
                             accountRepository: appContainer.accountRepository,
                             cardRepository: appContainer.cardRepository,
                             transactionRepository: appContainer.transactionRepository,
@@ -28,19 +28,19 @@ struct FinanceOSMacApp: App {
                         Label("Import", systemImage: "arrow.down.doc")
                     }
 
-                    InstitutionsView(
-                        viewModel: InstitutionsViewModel(
-                            repository: appContainer.institutionRepository
+                    BanksView(
+                        viewModel: BanksViewModel(
+                            repository: appContainer.bankRepository
                         )
                     )
                     .tabItem {
-                        Label("Institutions", systemImage: "building.columns")
+                        Label("Banks", systemImage: "building.columns")
                     }
 
                     AccountsView(
                         viewModel: AccountsViewModel(
                             repository: appContainer.accountRepository,
-                            institutionRepository: appContainer.institutionRepository,
+                            bankRepository: appContainer.bankRepository,
                             cardRepository: appContainer.cardRepository,
                             transactionRepository: appContainer.transactionRepository
                         )
@@ -53,7 +53,7 @@ struct FinanceOSMacApp: App {
                         viewModel: CardsViewModel(
                             cardRepository: appContainer.cardRepository,
                             accountRepository: appContainer.accountRepository,
-                            institutionRepository: appContainer.institutionRepository,
+                            bankRepository: appContainer.bankRepository,
                             transactionRepository: appContainer.transactionRepository
                         )
                     )

@@ -23,14 +23,14 @@ struct MockTransactionRepository: TransactionRepository {
     func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {}
 }
 
-struct MockInstitutionRepository: InstitutionRepository {
-    func fetchInstitutions() async throws -> [Institution] {
+struct MockBankRepository: BankRepository {
+    func fetchBanks() async throws -> [Bank] {
         []
     }
 
-    func insert(_ institution: Institution) async throws {}
+    func insert(_ bank: Bank) async throws {}
 
-    func update(_ institution: Institution) async throws {}
+    func update(_ bank: Bank) async throws {}
 
     func delete(id: UUID) async throws {}
 }
@@ -61,7 +61,7 @@ struct MockCardRepository: CardRepository {
 
 struct MockTransactionImporter: TransactionImporting {
     func parseStatement(from fileURL: URL, format: StatementFileFormat) async throws -> ParsedStatement {
-        ParsedStatement(institution: "Mock", accountName: "Mock Account", transactions: [])
+        ParsedStatement(bankName: "Mock", accountName: "Mock Account", transactions: [])
     }
 
     func importTransactions(
