@@ -1,26 +1,31 @@
 import Foundation
 
+public struct DependencyStep: Identifiable, Sendable {
+    public let id: UUID
+    public let label: String
+    public var status: StepStatus
+    public var logLines: [String]
+
+    public init(label: String, status: StepStatus, logLines: [String] = []) {
+        self.id = UUID()
+        self.label = label
+        self.status = status
+        self.logLines = logLines
+    }
+}
+
+public enum StepStatus: Sendable {
+    case pending
+    case running
+    case done
+    case failed(String)
+}
+
 public enum DependencyChecker {
     private static let ssconvertAvailableKey = "com.financeOS.ssconvertAvailable"
     private static let dependencyInstallApprovedKey = "com.financeOS.dependencyInstallApproved"
 
-    public static func ensureSSConvertAvailable(permissionHandler: (String) async -> Bool = { _ in true }) async {
-        #if os(macOS)
-        if isSSConvertAvailable() {
-            return
-        }
-
-        let approved = await permissionHandler(
-            "FinanceOS needs to install ssconvert to parse Excel files. This requires Homebrew installation. Proceed?"
-        )
-
-        if approved {
-            await installSSConvert()
-        }
-        #endif
-    }
-
-    private static func isSSConvertAvailable() -> Bool {
+    public static func isSSConvertAvailable() -> Bool {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
         process.arguments = ["ssconvert"]
@@ -36,6 +41,49 @@ public enum DependencyChecker {
         } catch {
             return false
         }
+    }
+
+    public static func ensureSSConvertAvailable(progressHandler: @escaping (DependencyStep) async -> Void = { _ in }) async {
+        #if os(macOS)
+        var step1 = DependencyStep(label: "Checking for ssconvert", status: .running)
+        await progressHandler(step1)
+
+        if isSSConvertAvailable() {
+            step1.status = .done
+            await progressHandler(step1)
+            return
+        }
+
+        var step2 = DependencyStep(label: "Checking for Homebrew", status: .running)
+        await progressHandler(step2)
+
+        if isBrewInstalled() {
+            step2.status = .done
+            await progressHandler(step2)
+        } else {
+            step2.status = .failed("Homebrew not found")
+            await progressHandler(step2)
+
+            var step3 = DependencyStep(label: "Installing Homebrew", status: .running)
+            await progressHandler(step3)
+            await installBrew()
+            step3.status = .done
+            await progressHandler(step3)
+        }
+
+        _ = await installSSConvert(progressHandler: progressHandler)
+
+        var step5 = DependencyStep(label: "Verifying ssconvert", status: .running)
+        await progressHandler(step5)
+
+        if isSSConvertAvailable() {
+            step5.status = .done
+            await progressHandler(step5)
+        } else {
+            step5.status = .failed("ssconvert not found after install")
+            await progressHandler(step5)
+        }
+        #endif
     }
 
     private static func findBrewExecutable() -> URL? {
@@ -112,14 +160,12 @@ public enum DependencyChecker {
         #endif
     }
 
-    private static func installSSConvert() async {
+    private static func installSSConvert(progressHandler: @escaping (DependencyStep) async -> Void) async -> Bool {
         #if os(macOS)
-        if !isBrewInstalled() {
-            await installBrew()
-        }
-
         guard let brewPath = findBrewExecutable() else {
-            return
+            let failedStep = DependencyStep(label: "Installing gnumeric", status: .failed("brew not found"))
+            await progressHandler(failedStep)
+            return false
         }
 
         let process = Process()
@@ -131,12 +177,42 @@ public enum DependencyChecker {
         process.standardOutput = outputPipe
         process.standardError = errorPipe
 
+        let linesLock = NSLock()
+        var lines: [String] = []
+
         do {
             try process.run()
+
+            let fileHandle = outputPipe.fileHandleForReading
+            fileHandle.readabilityHandler = { handle in
+                let data = handle.availableData
+                if !data.isEmpty, let line = String(data: data, encoding: .utf8) {
+                    let trimmed = line.trimmingCharacters(in: .newlines)
+                    if !trimmed.isEmpty {
+                        linesLock.lock()
+                        lines.append(trimmed)
+                        let lineCopy = lines
+                        linesLock.unlock()
+
+                        let step = DependencyStep(label: "Installing gnumeric", status: .running, logLines: lineCopy)
+                        Task { @MainActor in
+                            await progressHandler(step)
+                        }
+                    }
+                }
+            }
+
             process.waitUntilExit()
+            fileHandle.readabilityHandler = nil
+
+            return process.terminationStatus == 0
         } catch {
-            return
+            let failedStep = DependencyStep(label: "Installing gnumeric", status: .failed("Process error"))
+            await progressHandler(failedStep)
+            return false
         }
+        #else
+        return false
         #endif
     }
 }
