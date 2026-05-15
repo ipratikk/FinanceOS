@@ -52,8 +52,7 @@ public struct HDFCPDFParser: StatementParser {
             let lower = line.lowercased()
             let hasDate = lower.contains("date")
             let hasNarration = lower.contains("narration")
-            let hasDelimiter = line.contains("|") || lower.contains("debit") || lower.contains("credit")
-            return hasDate && hasNarration && hasDelimiter
+            return hasDate && hasNarration
         }) else {
             throw TransactionImportError.malformedFile("No transaction table found in PDF")
         }
