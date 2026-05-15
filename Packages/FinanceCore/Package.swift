@@ -1,12 +1,12 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.1
 
 import PackageDescription
 
 let package = Package(
     name: "FinanceCore",
     platforms: [
-        .macOS(.v13),
-        .iOS(.v16)
+        .macOS(.v15),
+        .iOS(.v18)
     ],
     products: [
         .library(
