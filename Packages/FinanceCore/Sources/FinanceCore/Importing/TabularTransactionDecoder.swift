@@ -211,7 +211,7 @@ enum TabularTransactionDecoder {
 
         guard let descriptionIndex = index(
             in: normalizedHeaders,
-            matchingAnyOf: ["description", "details", "transactiondetails", "narration", "merchant"]
+            matchingAnyOf: ["description", "details", "transactiondetails", "narration", "merchant", "particulars"]
         ) else {
             throw TransactionImportError.missingRequiredColumn("description")
         }
