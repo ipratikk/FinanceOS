@@ -88,6 +88,7 @@ final class ImportViewModel {
     var errorMessage: String?
     var importResult: ImportResult?
     var passwordPromptFilename: String?
+    var isPasswordInvalid = false
 
     var accounts: [Account] = []
     var cards: [Card] = []
@@ -131,19 +132,26 @@ final class ImportViewModel {
     }
 
     func setFileURLs(_ urls: [URL]) {
+        logger.info("setFileURLs called with \(urls.count, privacy: .public) file(s)")
         fileURLs = urls
         errorMessage = nil
+        logger.debug("fileURLs updated, errorMessage cleared")
     }
 
     func parseFiles() {
+        logger.info("parseFiles() called, scheduling Task")
         Task {
+            logger.debug("Task started for parseFiles")
             guard !fileURLs.isEmpty else {
+                logger.error("Guard check failed: fileURLs is empty")
                 errorMessage = "No files selected"
                 logger.error("No file URLs provided")
                 return
             }
 
+            logger.debug("Guard passed, fileURLs count: \(self.fileURLs.count, privacy: .public)")
             isLoading = true
+            logger.info("isLoading set to true")
             errorMessage = nil
             let fileCount = fileURLs.count
             logger.info("Starting parse of \(fileCount, privacy: .public) file(s)")
@@ -167,7 +175,9 @@ final class ImportViewModel {
                     statements.append(statement)
                 } catch let error as TransactionImportError {
                     let fileName = fileURL.lastPathComponent
+                    logger.debug("Caught TransactionImportError: \(String(describing: error), privacy: .public)")
                     if case .passwordProtected = error {
+                        logger.debug("Error is passwordProtected, showing prompt for \(fileName, privacy: .public)")
                         passwordPromptFilename = fileName
                         isLoading = false
                         return
@@ -225,6 +235,12 @@ final class ImportViewModel {
                 statements.append(statement)
             } catch let error as TransactionImportError {
                 let fileName = fileURL.lastPathComponent
+                if case .passwordProtected = error {
+                    logger.debug("Password incorrect for \(fileName, privacy: .public)")
+                    isPasswordInvalid = true
+                    isLoading = false
+                    return
+                }
                 let formattedError = formatError(error)
                 logger.error("Parse error for \(fileName, privacy: .public): \(formattedError, privacy: .public)")
                 errorMessage = "Error parsing \(fileName): \(formattedError)"

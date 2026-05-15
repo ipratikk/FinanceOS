@@ -11,6 +11,7 @@ struct PasswordPromptSheet: View {
     @State private var password = ""
     @State private var saveToKeychain = false
     let filename: String
+    let isPasswordInvalid: Bool
     let onCancel: () -> Void
     let onSubmit: (String, Bool) -> Void
 
@@ -22,7 +23,20 @@ struct PasswordPromptSheet: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    SecureField("Password", text: $password)
+                    VStack(alignment: .leading, spacing: 4) {
+                        SecureField("Password", text: $password)
+                            .textFieldStyle(.roundedBorder)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(isPasswordInvalid ? Color.red : Color.clear, lineWidth: 2)
+                            )
+
+                        if isPasswordInvalid {
+                            Text("Incorrect password. Please try again.")
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                    }
                 }
 
                 Section {

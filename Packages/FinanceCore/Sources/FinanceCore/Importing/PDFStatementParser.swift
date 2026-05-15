@@ -20,30 +20,47 @@ public struct PDFStatementParser: StatementParser, Sendable {
     }
 
     public func parseStatement(from fileURL: URL) async throws -> ParsedStatement {
+        logger.debug("PDFStatementParser.parseStatement: opening PDF")
         guard let doc = PDFDocument(url: fileURL) else {
+            logger.error("PDFStatementParser.parseStatement: Cannot open PDF")
             throw TransactionImportError.malformedFile("Cannot open PDF")
         }
+        logger.debug("PDFStatementParser.parseStatement: PDF opened, checking if locked")
 
         if doc.isLocked {
+            logger.debug("PDFStatementParser.parseStatement: PDF is locked")
             if let pwd = password {
+                logger.debug("PDFStatementParser.parseStatement: attempting unlock with password")
                 doc.unlock(withPassword: pwd)
             }
             if doc.isLocked {
-                throw TransactionImportError.passwordProtected(fileURL.lastPathComponent)
+                logger.error("PDFStatementParser.parseStatement: PDF still locked after unlock attempt")
+                let filename = fileURL.lastPathComponent
+                logger
+                    .error(
+                        "PDFStatementParser.parseStatement: throwing passwordProtected error for \(filename, privacy: .public)"
+                    )
+                throw TransactionImportError.passwordProtected(filename)
             }
         }
+        logger.debug("PDFStatementParser.parseStatement: PDF unlocked, extracting text")
 
         var fullText = ""
+        logger.debug("PDFStatementParser.parseStatement: page count = \(doc.pageCount)")
         for i in 0 ..< doc.pageCount {
+            logger.debug("PDFStatementParser.parseStatement: extracting page \(i)")
             guard let page = doc.page(at: i),
                   let text = page.string
             else {
+                logger.debug("PDFStatementParser.parseStatement: skipping page \(i)")
                 continue
             }
             fullText += text + "\n"
         }
+        logger.debug("PDFStatementParser.parseStatement: text extraction complete, splitting lines")
 
         let lines = fullText.components(separatedBy: .newlines)
+        logger.debug("PDFStatementParser.parseStatement: lines count = \(lines.count)")
 
         guard let headerIdx = lines.firstIndex(where: {
             $0.lowercased().contains("date") && $0.lowercased().contains("narration")

@@ -139,6 +139,14 @@
     "mtime": 1778670120.1359353,
     "hash": "46f48ddd47bfde41505e871b824ebaf8"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/HDFCParserTestFixtures.swift": {
+    "mtime": 1778828200.7341268,
+    "hash": "0741f32992c20cb9141acdcb62ebe228"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/HDFCBalanceValidator.swift": {
+    "mtime": 1778828183.591216,
+    "hash": "cad843972456aade29617e64626f415b"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TXTStatementParser.swift": {
     "mtime": 1778824330.5432959,
     "hash": "770b0352640de4f46484f364da0211bf"
@@ -170,6 +178,10 @@
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ImportResult.swift": {
     "mtime": 1778780355.7077258,
     "hash": "9321221a90c07011d4b62a082cc15512"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/HDFCErrorRecovery.swift": {
+    "mtime": 1778828183.594994,
+    "hash": "e5d8aec63892bd04cf024dedc9f00566"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/ICICIBankStatementParser.swift": {
     "mtime": 1778819752.9466672,

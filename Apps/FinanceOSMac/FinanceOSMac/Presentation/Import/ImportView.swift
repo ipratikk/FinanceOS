@@ -152,6 +152,7 @@ struct ImportView: View {
         }
         .onChange(of: viewModel.passwordPromptFilename) { _, newValue in
             if newValue != nil {
+                viewModel.isPasswordInvalid = false
                 showPasswordPrompt = true
                 passwordPromptFilename = newValue ?? ""
             }
@@ -159,15 +160,19 @@ struct ImportView: View {
         .sheet(isPresented: $showPasswordPrompt) {
             PasswordPromptSheet(
                 filename: passwordPromptFilename,
+                isPasswordInvalid: viewModel.isPasswordInvalid,
                 onCancel: {
                     showPasswordPrompt = false
                     viewModel.passwordPromptFilename = nil
+                    viewModel.isPasswordInvalid = false
+                    viewModel.fileURLs = []
+                    viewModel.errorMessage = nil
                 },
                 onSubmit: { password, saveToKeychain in
+                    viewModel.isPasswordInvalid = false
                     Task {
                         await viewModel.retryParseFilesWithPassword(password, saveToKeychain: saveToKeychain)
                     }
-                    showPasswordPrompt = false
                 }
             )
         }
@@ -195,6 +200,7 @@ struct ImportView: View {
 
     private var filePickerButton: some View {
         Button("Select Files") {
+            print("[UI] Select Files button tapped")
             let panel = NSOpenPanel()
             var types: [UTType] = [.commaSeparatedText, .plainText, .pdf]
             if let xlsx = UTType(filenameExtension: "xlsx") {
@@ -205,9 +211,15 @@ struct ImportView: View {
             panel.canChooseDirectories = false
             panel.allowsMultipleSelection = true
 
-            if panel.runModal() == .OK, !panel.urls.isEmpty {
+            let result = panel.runModal()
+            print("[UI] Panel result: \(result.rawValue), urls: \(panel.urls.count)")
+
+            if result == .OK, !panel.urls.isEmpty {
+                print("[UI] Conditions met, calling setFileURLs and parseFiles")
                 viewModel.setFileURLs(panel.urls)
                 viewModel.parseFiles()
+            } else {
+                print("[UI] Conditions not met - result=\(result.rawValue) isEmpty=\(panel.urls.isEmpty)")
             }
         }
         .controlSize(.large)
