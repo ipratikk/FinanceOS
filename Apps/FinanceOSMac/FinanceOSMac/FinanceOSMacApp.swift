@@ -7,7 +7,7 @@ struct FinanceOSMacApp: App {
     @State private var isCheckingDependencies = true
     @State private var showDependencyAlert = false
     @State private var dependencyMessage = ""
-    @State private var permissionGranted = false
+    @State private var dependencyPermissionResponse: Bool?
 
     var body: some Scene {
         WindowGroup {
@@ -96,31 +96,35 @@ struct FinanceOSMacApp: App {
                 }
             }
             .task {
-                await DependencyChecker.ensureSSConvertAvailable { message in
-                    dependencyMessage = message
-                    showDependencyAlert = true
-
-                    while !permissionGranted, showDependencyAlert {
-                        try? await Task.sleep(nanoseconds: 100_000_000)
-                    }
-
-                    return permissionGranted
-                }
-
+                await ensureDependencies()
                 isCheckingDependencies = false
             }
             .alert("Install Dependencies", isPresented: $showDependencyAlert) {
                 Button("Cancel") {
                     showDependencyAlert = false
-                    permissionGranted = false
+                    dependencyPermissionResponse = false
                 }
                 Button("Install", action: {
-                    permissionGranted = true
+                    dependencyPermissionResponse = true
                     showDependencyAlert = false
                 })
             } message: {
                 Text(dependencyMessage)
             }
+        }
+    }
+
+    private func ensureDependencies() async {
+        dependencyPermissionResponse = nil
+        await DependencyChecker.ensureSSConvertAvailable { message in
+            dependencyMessage = message
+            showDependencyAlert = true
+
+            while dependencyPermissionResponse == nil {
+                try? await Task.sleep(nanoseconds: 100_000_000)
+            }
+
+            return dependencyPermissionResponse ?? false
         }
     }
 }
