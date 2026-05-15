@@ -141,63 +141,24 @@ final class ImportViewModel {
     func parseFiles() {
         logger.info("parseFiles() called, scheduling Task")
         Task {
-            logger.debug("Task started for parseFiles")
             guard !fileURLs.isEmpty else {
-                logger.error("Guard check failed: fileURLs is empty")
                 errorMessage = "No files selected"
-                logger.error("No file URLs provided")
                 return
             }
 
-            logger.debug("Guard passed, fileURLs count: \(self.fileURLs.count, privacy: .public)")
             isLoading = true
-            logger.info("isLoading set to true")
             errorMessage = nil
-            let fileCount = fileURLs.count
-            logger.info("Starting parse of \(fileCount, privacy: .public) file(s)")
-
             var statements: [ParsedStatement] = []
 
             for fileURL in fileURLs {
-                do {
-                    let format = fileFormat(for: fileURL)
-                    let fileName = fileURL.lastPathComponent
-                    logger.debug("Parsing \(fileName, privacy: .public) as \(format.rawValue, privacy: .public)")
-
-                    let statement = try await transactionImporter.parseStatement(
-                        from: fileURL,
-                        format: format
-                    )
-
-                    let txnCount = statement.transactions.count
-                    logger.info("Parsed \(fileName, privacy: .public): \(txnCount, privacy: .public) txns")
-
+                let result = await parseFile(fileURL, withPassword: nil)
+                if let statement = result.0 {
                     statements.append(statement)
-                } catch let error as TransactionImportError {
-                    let fileName = fileURL.lastPathComponent
-                    logger.debug("Caught TransactionImportError: \(String(describing: error), privacy: .public)")
-                    if case .passwordProtected = error {
-                        logger.debug("Error is passwordProtected, showing prompt for \(fileName, privacy: .public)")
-                        passwordPromptFilename = fileName
-                        isLoading = false
-                        return
-                    }
-                    let formattedError = formatError(error)
-                    logger.error("Parse error for \(fileName, privacy: .public): \(formattedError, privacy: .public)")
-                    errorMessage = "Error parsing \(fileName): \(formattedError)"
-                    parsedStatements = []
-                    isLoading = false
-                    return
-                } catch {
-                    let fileName = fileURL.lastPathComponent
-                    let errorDesc = error.localizedDescription
-                    logger.error("Parse error for \(fileName, privacy: .public): \(errorDesc, privacy: .public)")
-                    errorMessage = "Error parsing \(fileName): \(errorDesc)"
-                    parsedStatements = []
-                    isLoading = false
+                } else if result.1 {
                     return
                 }
             }
+
             self.parsedStatements = statements
             await loadTargetsOnAppear()
             await autoSelectMatchingTarget()
@@ -205,55 +166,49 @@ final class ImportViewModel {
         }
     }
 
+    private func parseFile(_ fileURL: URL, withPassword password: String?) async -> (ParsedStatement?, Bool) {
+        do {
+            let format = fileFormat(for: fileURL)
+            let fileName = fileURL.lastPathComponent
+            let statement: ParsedStatement
+            if format == .pdf, let pwd = password {
+                let pdfParser = PDFStatementParser(password: pwd)
+                statement = try await pdfParser.parseStatement(from: fileURL)
+            } else {
+                statement = try await transactionImporter.parseStatement(from: fileURL, format: format)
+            }
+            logger.info("Parsed \(fileName, privacy: .public): \(statement.transactions.count, privacy: .public) txns")
+            return (statement, false)
+        } catch let error as TransactionImportError {
+            if case .passwordProtected = error {
+                passwordPromptFilename = fileURL.lastPathComponent
+                isLoading = false
+                return (nil, true)
+            }
+            errorMessage = "Error parsing \(fileURL.lastPathComponent): \(formatError(error))"
+            parsedStatements = []
+            isLoading = false
+            return (nil, true)
+        } catch {
+            errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
+            parsedStatements = []
+            isLoading = false
+            return (nil, true)
+        }
+    }
+
     func retryParseFilesWithPassword(_ password: String, saveToKeychain: Bool) async {
         isLoading = true
         errorMessage = nil
         pdfPassword = password
-
         var statements: [ParsedStatement] = []
 
         for fileURL in fileURLs {
-            do {
-                let format = fileFormat(for: fileURL)
-                let fileName = fileURL.lastPathComponent
-                logger.debug("Retrying parse with password for \(fileName, privacy: .public)")
-
-                let statement: ParsedStatement
-                if format == .pdf {
-                    let pdfParser = PDFStatementParser(password: password)
-                    statement = try await pdfParser.parseStatement(from: fileURL)
-                } else {
-                    statement = try await transactionImporter.parseStatement(
-                        from: fileURL,
-                        format: format
-                    )
-                }
-
-                let txnCount = statement.transactions.count
-                logger.info("Parsed \(fileName, privacy: .public): \(txnCount, privacy: .public) txns")
-
+            let result = await parseFile(fileURL, withPassword: password)
+            if let statement = result.0 {
                 statements.append(statement)
-            } catch let error as TransactionImportError {
-                let fileName = fileURL.lastPathComponent
-                if case .passwordProtected = error {
-                    logger.debug("Password incorrect for \(fileName, privacy: .public)")
-                    isPasswordInvalid = true
-                    isLoading = false
-                    return
-                }
-                let formattedError = formatError(error)
-                logger.error("Parse error for \(fileName, privacy: .public): \(formattedError, privacy: .public)")
-                errorMessage = "Error parsing \(fileName): \(formattedError)"
-                parsedStatements = []
-                isLoading = false
-                return
-            } catch {
-                let fileName = fileURL.lastPathComponent
-                let desc = error.localizedDescription
-                logger.error("Parse error for \(fileName, privacy: .public): \(desc, privacy: .public)")
-                errorMessage = "Error parsing \(fileName): \(error.localizedDescription)"
-                parsedStatements = []
-                isLoading = false
+            } else if result.1 {
+                isPasswordInvalid = true
                 return
             }
         }
@@ -262,7 +217,6 @@ final class ImportViewModel {
         passwordPromptFilename = nil
         await loadTargetsOnAppear()
         await autoSelectMatchingTarget()
-
         isLoading = false
     }
 
