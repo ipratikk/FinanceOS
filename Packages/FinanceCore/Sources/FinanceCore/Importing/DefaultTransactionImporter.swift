@@ -5,8 +5,8 @@
 //  Created by Pratik Goel on 13/05/26.
 //
 
-import Foundation
 import FinanceParsers
+import Foundation
 
 public struct DefaultTransactionImporter:
     TransactionImporting,
@@ -26,7 +26,11 @@ public struct DefaultTransactionImporter:
         from fileURL: URL,
         format: StatementFileFormat
     ) async throws -> ParsedStatement {
-        return try await delegate.parseStatement(from: fileURL, format: format)
+        do {
+            return try await delegate.parseStatement(from: fileURL, format: format)
+        } catch let e as FinanceParsers.TransactionImportError {
+            throw e.asCoreError()
+        }
     }
 
     public func importTransactions(
@@ -66,6 +70,27 @@ public struct DefaultTransactionImporter:
                     sourceFingerprint: parsedTransaction.sourceFingerprint
                 )
             }
+        }
+    }
+}
+
+private extension FinanceParsers.TransactionImportError {
+    func asCoreError() -> TransactionImportError {
+        switch self {
+        case let .unsupportedFormat(s):
+            return .unsupportedFormat(StatementFileFormat(rawValue: s) ?? .csv)
+        case let .missingRequiredColumn(s):
+            return .missingRequiredColumn(s)
+        case let .invalidDate(s):
+            return .invalidDate(s)
+        case let .invalidAmount(s):
+            return .invalidAmount(s)
+        case let .malformedFile(s):
+            return .malformedFile(s)
+        case let .platformUnavailable(s):
+            return .platformUnavailable(s)
+        case let .passwordProtected(s):
+            return .passwordProtected(s)
         }
     }
 }

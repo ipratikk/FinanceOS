@@ -5,8 +5,8 @@
 //  Created by Pratik Goel on 13/05/26.
 //
 
-import Foundation
 import FinanceParsers
+import Foundation
 
 public enum TransactionImportError: Error, LocalizedError {
     case unsupportedFormat(StatementFileFormat)
