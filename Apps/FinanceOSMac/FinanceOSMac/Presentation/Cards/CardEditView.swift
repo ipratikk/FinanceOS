@@ -13,7 +13,6 @@ struct CardEditView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
-    @State private var showConvertConfirm = false
 
     init(card: Card, viewModel: CardsViewModel) {
         self.card = card
@@ -27,90 +26,166 @@ struct CardEditView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Card Details") {
-                    TextField("Card Name", text: $cardName)
-                    TextField("Last 4 Digits", text: $cardLast4)
-                        .onChange(of: cardLast4) { _, newValue in
-                            if newValue.count > 4 {
-                                cardLast4 = String(newValue.prefix(4))
-                            }
-                        }
-                    Picker("Card Type", selection: $cardType) {
-                        ForEach(CardType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
-                        }
-                    }
-                    TextField("Nickname", text: $nickname)
-                }
-
-                Section("Bank") {
-                    Picker("Bank", selection: $bankId) {
-                        ForEach(viewModel.banks) { bank in
-                            Text(bank.name).tag(bank.id)
-                        }
-                    }
-                }
-
-                Section("Linked Account") {
-                    Picker("Account", selection: $linkedAccountId) {
-                        Text("None").tag(UUID?.none)
-                        ForEach(viewModel.accounts.filter { $0.bankId == bankId }) { account in
-                            Text(account.accountName).tag(UUID?(account.id))
-                        }
-                    }
-                }
-
-                Section {
-                    Button("Convert to Account") {
-                        showConvertConfirm = true
-                    }
-                }
-
-                Section {
-                    Button("Delete Card", role: .destructive) {
-                        showDeleteConfirm = true
-                    }
-                }
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("Edit Card")
+                    .font(.system(size: 18, weight: .semibold))
+                Spacer()
+                Button(action: { dismiss() }, label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+                })
             }
-            .navigationTitle("Edit Card")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+            .padding(16)
+            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
+
+            Divider()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Card Information")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.gray)
+
+                        VStack(spacing: 8) {
+                            inputField("Card Name", text: $cardName)
+                            inputField("Last 4 Digits", text: $cardLast4)
+                                .onChange(of: cardLast4) { _, newValue in
+                                    if newValue.count > 4 {
+                                        cardLast4 = String(newValue.prefix(4))
+                                    }
+                                }
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Card Type")
+                                    .font(.system(size: 12, weight: .regular))
+                                    .foregroundColor(.gray)
+                                Picker("Type", selection: $cardType) {
+                                    ForEach(CardType.allCases, id: \.self) { type in
+                                        Text(type.rawValue.capitalized).tag(type)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(10)
+                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .cornerRadius(6)
+                        }
+                    }
+                    .padding(12)
+                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                    .cornerRadius(10)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Bank & Account")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.gray)
+
+                        VStack(spacing: 8) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Bank")
+                                    .font(.system(size: 12, weight: .regular))
+                                    .foregroundColor(.gray)
+                                Picker("Bank", selection: $bankId) {
+                                    ForEach(viewModel.banks) { bank in
+                                        Text(bank.name).tag(bank.id)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(10)
+                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .cornerRadius(6)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Linked Account")
+                                    .font(.system(size: 12, weight: .regular))
+                                    .foregroundColor(.gray)
+                                Picker("Account", selection: $linkedAccountId) {
+                                    Text("None").tag(UUID?.none)
+                                    ForEach(viewModel.accounts.filter { $0.bankId == bankId }) { account in
+                                        Text(account.accountName).tag(UUID?(account.id))
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(10)
+                            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .cornerRadius(6)
+
+                            inputField("Nickname (Optional)", text: $nickname)
+                        }
+                    }
+                    .padding(12)
+                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                    .cornerRadius(10)
+
+                    VStack(spacing: 8) {
+                        Button(action: { showDeleteConfirm = true }, label: {
+                            HStack {
+                                Image(systemName: "trash.fill")
+                                    .font(.system(size: 12))
+                                Text("Delete Card")
+                                    .font(.system(size: 14, weight: .medium))
+                                Spacer()
+                            }
+                            .foregroundColor(.red)
+                            .padding(12)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(8)
+                        })
+                    }
+                }
+                .padding(16)
+            }
+
+            Divider()
+
+            HStack(spacing: 12) {
+                Button(action: { dismiss() }, label: {
+                    Text("Cancel")
+                        .font(.system(size: 14, weight: .medium))
+                        .frame(maxWidth: .infinity)
+                })
+                .foregroundColor(.gray)
+                .padding(12)
+                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                .cornerRadius(8)
+
+                Button(action: {
+                    Task {
+                        let updated = Card(
+                            id: card.id,
+                            bankId: bankId,
+                            linkedAccountId: linkedAccountId,
+                            cardName: cardName,
+                            cardLast4: cardLast4,
+                            cardType: cardType,
+                            nickname: nickname
+                        )
+                        await viewModel.updateCard(updated)
                         dismiss()
                     }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        Task {
-                            let updated = Card(
-                                id: card.id,
-                                bankId: bankId,
-                                linkedAccountId: linkedAccountId,
-                                cardName: cardName,
-                                cardLast4: cardLast4,
-                                cardType: cardType,
-                                nickname: nickname
-                            )
-                            await viewModel.updateCard(updated)
-                        }
-                    }
-                }
+                }, label: {
+                    Text("Save")
+                        .font(.system(size: 14, weight: .semibold))
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                })
+                .padding(12)
+                .background(Color(red: 0.231, green: 0.510, blue: 0.980))
+                .cornerRadius(8)
             }
+            .padding(16)
         }
-        .alert("Convert to Account?", isPresented: $showConvertConfirm) {
-            Button("Cancel", role: .cancel) {}
-            Button("Convert", role: .destructive) {
-                Task {
-                    await viewModel.convertToAccount(card)
-                    dismiss()
-                }
-            }
-        } message: {
-            Text("This will convert this card to an account. All transactions will be reassigned.")
-        }
+        .frame(maxHeight: .infinity, alignment: .topLeading)
+        .background(Color(red: 0.051, green: 0.051, blue: 0.059))
         .alert("Delete Card?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -121,6 +196,19 @@ struct CardEditView: View {
             }
         } message: {
             Text("This will permanently delete this card and all associated transactions. This cannot be undone.")
+        }
+    }
+
+    private func inputField(_ label: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(.gray)
+            TextField("", text: text)
+                .font(.system(size: 13, weight: .regular))
+                .padding(10)
+                .background(Color(red: 0.110, green: 0.110, blue: 0.122))
+                .cornerRadius(6)
         }
     }
 }

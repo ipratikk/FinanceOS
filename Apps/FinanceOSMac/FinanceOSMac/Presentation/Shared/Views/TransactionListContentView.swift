@@ -46,7 +46,9 @@ struct TransactionListContentView: View {
 
                     Spacer()
 
-                    Button(action: { showFilterSheet = true }) {
+                    Button {
+                        showFilterSheet = true
+                    } label: {
                         Image(systemName: listState.isFilterActive
                             ? "line.3.horizontal.decrease.circle.fill"
                             : "line.3.horizontal.decrease.circle"
