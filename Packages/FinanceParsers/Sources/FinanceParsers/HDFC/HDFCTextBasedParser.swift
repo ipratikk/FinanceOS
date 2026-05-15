@@ -161,45 +161,29 @@ class HDFCTextBasedParser {
     }
 
     private func extractDebitCredit(from amounts: [Double]) -> (debit: Double?, credit: Double?) {
-        // HDFC format: Withdrawal Amt | Deposit Amt | Closing Balance
-        // Challenge: Vision OCR extracts all amounts (including closing balance) without column info.
-        // Strategy: Identify transaction amount by excluding balance.
+        // HDFC format: Debit Amt | Credit Amt | Closing Balance
+        // Challenge: Vision OCR extracts all amounts without column position info.
+        // Strategy: Pick smallest amount in transaction range (exclude largest, likely balance).
         let txnAmounts = amounts.filter { $0 >= 100 && $0 < 1_000_000 }
 
         guard !txnAmounts.isEmpty else {
             return (nil, nil)
         }
 
-        // If we have 2+ amounts, exclude the largest (likely closing balance)
-        // and use the smaller amount(s) as transaction candidate(s).
         let amount: Double
         if txnAmounts.count >= 2 {
+            // Exclude largest amount (likely closing balance), pick smallest
             let sorted = txnAmounts.sorted()
-            // Check if there's a clear pair like [2500, 0] or [0, 8679]
-            if sorted.count >= 2, sorted[0] == 0 || sorted[1] == 0 {
-                // Prefer the non-zero amount as transaction
-                amount = sorted.first(where: { $0 > 0 }) ?? sorted[0]
-            } else {
-                // Take median or second-smallest (exclude the largest balance)
-                amount = sorted.count > 2 ? sorted[1] : sorted[0]
-            }
+            amount = sorted[0] // Smallest is usually the transaction
         } else {
             amount = txnAmounts[0]
         }
 
-        // Classify: most transactions are < 100K (payments), larger ones > 100K (deposits/salary)
-        // This heuristic fails for large withdrawals, but works for most cases.
-        let debit: Double?
-        let credit: Double?
-
+        // Classify: < 100K = debit (payments), >= 100K = credit (salary/transfers)
         if amount >= 100_000 {
-            credit = amount
-            debit = nil
+            return (nil, amount)
         } else {
-            debit = amount
-            credit = nil
+            return (amount, nil)
         }
-
-        return (debit, credit)
     }
 }
