@@ -25,20 +25,14 @@ public final class GRDBBankRepository:
     }
 
     public func insert(_ bank: Bank) async throws {
-        try await dbQueue.write { db in
-            try bank.insert(db)
-        }
+        try await grdbInsert(bank, in: dbQueue)
     }
 
     public func update(_ bank: Bank) async throws {
-        try await dbQueue.write { db in
-            try bank.update(db)
-        }
+        try await grdbUpdate(bank, in: dbQueue)
     }
 
     public func delete(id: UUID) async throws {
-        try await dbQueue.write { db in
-            try Bank.deleteOne(db, key: id)
-        }
+        try await grdbDelete(Bank.self, key: id, in: dbQueue)
     }
 }

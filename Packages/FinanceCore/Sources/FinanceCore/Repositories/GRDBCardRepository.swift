@@ -29,20 +29,14 @@ public final class GRDBCardRepository:
     }
 
     public func insert(_ card: Card) async throws {
-        try await dbQueue.write { database in
-            try card.insert(database)
-        }
+        try await grdbInsert(card, in: dbQueue)
     }
 
     public func update(_ card: Card) async throws {
-        try await dbQueue.write { database in
-            try card.update(database)
-        }
+        try await grdbUpdate(card, in: dbQueue)
     }
 
     public func delete(id: UUID) async throws {
-        try await dbQueue.write { database in
-            try Card.deleteOne(database, key: id)
-        }
+        try await grdbDelete(Card.self, key: id, in: dbQueue)
     }
 }
