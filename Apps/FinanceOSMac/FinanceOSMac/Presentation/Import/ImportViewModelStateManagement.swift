@@ -30,25 +30,19 @@ extension ImportViewModel {
         var totalSkipped = 0
 
         for (index, fileURL) in fileURLs.enumerated() {
-            let format = fileFormat(for: fileURL)
             let fileName = fileURL.lastPathComponent
             let fileNumber = index + 1
 
             logger.debug("Importing file \(fileNumber)/\(fileCount): \(fileName, privacy: .public)")
 
-            let result: ImportResult
-            if format == .pdf {
-                guard index < parsedStatements.count else {
-                    throw FinanceCore.TransactionImportError.malformedFile("Parsed statement not available")
-                }
-                result = try await importStatement(parsedStatements[index], target: target)
-            } else {
-                result = try await transactionImportPipeline.execute(
-                    fileURL: fileURL,
-                    format: format,
-                    target: target
-                )
+            guard index < parsedStatements.count else {
+                throw FinanceCore.TransactionImportError.malformedFile("Parsed statement not available")
             }
+
+            let result = try await transactionImportPipeline.execute(
+                statement: parsedStatements[index],
+                target: target
+            )
 
             totalInserted += result.inserted
             totalSkipped += result.skipped
@@ -66,78 +60,18 @@ extension ImportViewModel {
         return ImportResult(inserted: totalInserted, skipped: totalSkipped)
     }
 
-    private func importStatement(
-        _ statement: ParsedStatement,
-        target: TransactionImportTarget
-    ) async throws -> ImportResult {
-        let transactions = statement.transactions.map { parsedTxn in
-            let accountID: UUID?
-            let cardID: UUID?
-
-            switch target {
-            case let .account(id):
-                accountID = id
-                cardID = nil
-            case let .card(id):
-                accountID = nil
-                cardID = id
-            }
-
-            return Transaction(
-                accountID: accountID,
-                cardID: cardID,
-                postedAt: parsedTxn.postedAt,
-                description: parsedTxn.description,
-                amountMinorUnits: abs(parsedTxn.amountMinorUnits),
-                currencyCode: parsedTxn.currencyCode,
-                transactionType: parsedTxn.amountMinorUnits < 0 ? .debit : .credit,
-                sourceFingerprint: parsedTxn.sourceFingerprint
-            )
-        }
-
-        return try await transactionRepository.insertTransactions(transactions)
-    }
-
     func autoSelectMatchingTarget() async {
         guard let statement = parsedStatements.first else { return }
 
-        let isCard = statement.cardLast4 != nil
-        let bankName = statement.bankName
-
-        let matchingBank = banks.first { bank in
-            fuzzyMatch(bank.name, bankName)
-        }
-        guard let bank = matchingBank else { return }
-
-        if isCard, let cardLast4 = statement.cardLast4 {
-            if let matchingCard = cards.first(where: { $0.bankId == bank.id && $0.cardLast4 == cardLast4 }) {
-                selectedTarget = .card(matchingCard.id)
-                logger.info("Auto-selected card: \(matchingCard.cardName, privacy: .public)")
-                await detectDuplicates(for: .card(matchingCard.id))
-            } else if let matchingCard = cards.first(where: { $0.bankId == bank.id }) {
-                selectedTarget = .card(matchingCard.id)
-                logger.info("Auto-selected card: \(matchingCard.cardName, privacy: .public)")
-                await detectDuplicates(for: .card(matchingCard.id))
-            }
-        } else if !isCard, let accountLast4 = statement.accountLast4 {
-            // swiftformat:disable all
-            if let matchingAccount = accounts
-                .first(where: { $0.bankId == bank.id && $0.accountLast4 == accountLast4 }) {
-                selectedTarget = .account(matchingAccount.id)
-                logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
-                await detectDuplicates(for: .account(matchingAccount.id))
-            } else if let matchingAccount = accounts.first(where: { $0.bankId == bank.id }) {
-                selectedTarget = .account(matchingAccount.id)
-                logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
-                await detectDuplicates(for: .account(matchingAccount.id))
-            }
-            // swiftformat:enable all
-        } else if !isCard {
-            if let matchingAccount = accounts.first(where: { $0.bankId == bank.id }) {
-                selectedTarget = .account(matchingAccount.id)
-                logger.info("Auto-selected account: \(matchingAccount.accountName, privacy: .public)")
-                await detectDuplicates(for: .account(matchingAccount.id))
-            }
+        if let target = FinanceCore.ImportTargetMatcher.bestTarget(
+            for: statement,
+            accounts: accounts,
+            cards: cards,
+            banks: banks
+        ) {
+            selectedTarget = target
+            logger.info("Auto-selected target")
+            await detectDuplicates(for: target)
         }
     }
 
@@ -156,7 +90,7 @@ extension ImportViewModel {
                 for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
                     // swiftformat:disable all
                     for existingTxn in existingTransactions
-                        where isSameTransaction(parsed: parsedTxn, existing: existingTxn) {
+                        where FinanceCore.TransactionDeduplicator.isSame(parsed: parsedTxn, existing: existingTxn) {
                         let flatIndex = parsedStatements[..<index]
                             .reduce(0) { $0 + $1.transactions.count } + txnIndex
                         duplicateTransactionIndices.insert(flatIndex)

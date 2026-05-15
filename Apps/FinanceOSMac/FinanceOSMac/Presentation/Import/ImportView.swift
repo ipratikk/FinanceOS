@@ -217,7 +217,6 @@ struct ImportView: View {
         ]
     )
     let mockPipeline = TransactionImportPipeline(
-        importer: mockImporter,
         repository: mockRepository
     )
 
