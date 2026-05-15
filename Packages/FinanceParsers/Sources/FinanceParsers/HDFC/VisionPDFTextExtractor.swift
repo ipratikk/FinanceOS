@@ -26,7 +26,7 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
     private let renderScale: CGFloat
     private let yTolerance: CGFloat
 
-    public init(renderScale: CGFloat = 3.0, yTolerance: CGFloat = 0.005) {
+    public init(renderScale: CGFloat = 3.0, yTolerance: CGFloat = 0.001) {
         self.renderScale = renderScale
         self.yTolerance = yTolerance
     }
