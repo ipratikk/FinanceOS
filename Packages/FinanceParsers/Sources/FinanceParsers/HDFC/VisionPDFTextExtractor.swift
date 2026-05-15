@@ -16,8 +16,8 @@ public protocol PDFTextExtractor: Sendable {
 }
 
 #if canImport(Vision) && canImport(AppKit) && canImport(PDFKit)
-import Vision
 import AppKit
+import Vision
 
 /// Vision-based OCR extractor. Renders the page to a high-resolution
 /// raster, runs `VNRecognizeTextRequest` in accurate mode, then groups
@@ -32,9 +32,15 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
     }
 
     public func extractLines(from page: PDFPage) -> [String] {
-        guard let cgImage = renderPage(page) else { return [] }
+        guard let cgImage = renderPage(page) else {
+            print("VisionPDFTextExtractor: renderPage failed")
+            return []
+        }
         let observations = recognizeText(in: cgImage)
-        return groupIntoRows(observations)
+        print("VisionPDFTextExtractor: recognized \(observations.count) text observations")
+        let lines = groupIntoRows(observations)
+        print("VisionPDFTextExtractor: grouped into \(lines.count) rows")
+        return lines
     }
 
     private func renderPage(_ page: PDFPage) -> CGImage? {
@@ -76,10 +82,14 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
         do {
             try handler.perform([request])
         } catch {
+            print("VisionPDFTextExtractor: Vision request failed: \(error)")
             return []
         }
 
-        guard let results = request.results else { return [] }
+        guard let results = request.results else {
+            print("VisionPDFTextExtractor: no results from Vision")
+            return []
+        }
         var out: [Observation] = []
         out.reserveCapacity(results.count)
         for result in results {
@@ -106,7 +116,7 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
         lines.reserveCapacity(buckets.count)
         for bucket in buckets {
             let sorted = bucket.items.sorted { $0.x < $1.x }
-            let joined = sorted.map { $0.text }.joined(separator: " ")
+            let joined = sorted.map(\.text).joined(separator: " ")
             let trimmed = joined.trimmingCharacters(in: .whitespaces)
             if !trimmed.isEmpty {
                 lines.append(trimmed)

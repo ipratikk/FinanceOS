@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FinanceParsers
 
 public enum TransactionImportError: Error, LocalizedError {
     case unsupportedFormat(StatementFileFormat)

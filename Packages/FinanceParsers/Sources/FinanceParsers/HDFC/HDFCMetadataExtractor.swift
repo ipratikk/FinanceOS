@@ -127,7 +127,7 @@ public struct HDFCMetadataExtractor: Sendable {
 
         let stopMarkers = ["JOINT HOLDERS", "Nomination", "Statement of account", "Cust ID"]
         var addressLines: [String] = []
-        for i in (nameIdx + 1)..<lines.count {
+        for i in (nameIdx + 1) ..< lines.count {
             let line = lines[i].trimmingCharacters(in: .whitespaces)
             if line.isEmpty { continue }
             // Skip stray punctuation-only lines (e.g. ".") that PDFKit emits
@@ -170,7 +170,7 @@ public struct HDFCMetadataExtractor: Sendable {
             return (nil, nil, nil, nil)
         }
         let endIdx = min(headerIdx + 6, lines.count)
-        for i in (headerIdx + 1)..<endIdx {
+        for i in (headerIdx + 1) ..< endIdx {
             if let parsed = parseFooterTotalsLine(lines[i]) {
                 return parsed
             }
@@ -201,7 +201,7 @@ public struct HDFCMetadataExtractor: Sendable {
     private func isNumericToken(_ s: String) -> Bool {
         let cleaned = s.replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: ".", with: "")
-        return !cleaned.isEmpty && cleaned.allSatisfy { $0.isNumber }
+        return !cleaned.isEmpty && cleaned.allSatisfy(\.isNumber)
     }
 
     // MARK: - Generated-at timestamp
@@ -239,7 +239,7 @@ public struct HDFCMetadataExtractor: Sendable {
 
 private extension String {
     var firstWord: String? {
-        let trimmed = self.trimmingCharacters(in: .whitespaces)
+        let trimmed = trimmingCharacters(in: .whitespaces)
         guard let space = trimmed.firstIndex(of: " ") else {
             return trimmed.isEmpty ? nil : trimmed
         }
@@ -248,7 +248,7 @@ private extension String {
     }
 
     var leadingDigits: String? {
-        let trimmed = self.trimmingCharacters(in: .whitespaces)
+        let trimmed = trimmingCharacters(in: .whitespaces)
         var digits = ""
         for ch in trimmed {
             if ch.isNumber { digits.append(ch) } else { break }
@@ -258,5 +258,7 @@ private extension String {
 }
 
 private extension Substring {
-    var firstWord: String? { String(self).firstWord }
+    var firstWord: String? {
+        String(self).firstWord
+    }
 }

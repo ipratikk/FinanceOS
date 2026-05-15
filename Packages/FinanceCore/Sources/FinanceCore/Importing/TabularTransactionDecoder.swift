@@ -287,9 +287,9 @@ enum TabularTransactionDecoder {
                     return nil
                 }
 
-                let rewardPoints: Int? = rewardPointsIndex.flatMap { idx in
+                let rewardPoints: Int64? = rewardPointsIndex.flatMap { idx in
                     let pointsStr = value(at: idx, in: row)
-                    return Int(pointsStr)
+                    return Int(pointsStr).map(Int64.init)
                 }
 
                 let fingerprint = [

@@ -62,6 +62,13 @@ public struct PDFStatementParser: StatementParser, Sendable {
         let lines = fullText.components(separatedBy: .newlines)
         logger.debug("PDFStatementParser.parseStatement: lines count = \(lines.count)")
 
+        // Debug: dump first 50 lines
+        print("=== RAW EXTRACTED LINES (first 50) ===")
+        for (i, line) in lines.prefix(50).enumerated() {
+            print("[\(i)]: \(line)")
+        }
+        print("=== END RAW LINES ===")
+
         guard let headerIdx = lines.firstIndex(where: {
             $0.lowercased().contains("date") && $0.lowercased().contains("narration")
         }) else {

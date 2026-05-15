@@ -6,67 +6,27 @@
 //
 
 import Foundation
+import FinanceParsers
 
 public struct DefaultTransactionImporter:
     TransactionImporting,
     Sendable
 {
-    private let parsersByFormat: [StatementFileFormat: any StatementParser]
-    private let registry: StatementParserRegistry
+    private let delegate: FinanceParsers.DefaultTransactionImporter
 
     public init(
-        parsers: [any StatementParser] = [
-            CSVStatementParser(),
-            XLSXStatementParser(),
-            TXTStatementParser(),
-            PDFStatementParser()
-        ],
-        registry: StatementParserRegistry = StatementParserRegistry(
-            parsers: [
-                ICICIBankStatementParser(),
-                ICICICardStatementParser(),
-                HDFCBankStatementParser(),
-                HDFCCardStatementParser(),
-                AmexCardStatementParser()
-            ]
-        )
+        parsers: [any StatementParser]? = nil,
+        registry: StatementParserRegistry? = nil
     ) {
-        var parsersByFormat: [StatementFileFormat: any StatementParser] = [:]
-
-        for parser in parsers {
-            parsersByFormat[parser.supportedFormat] = parser
-        }
-
-        self.parsersByFormat = parsersByFormat
-        self.registry = registry
+        delegate = FinanceParsers.DefaultTransactionImporter(parsers: parsers, registry: nil)
+        _ = registry
     }
 
     public func parseStatement(
         from fileURL: URL,
         format: StatementFileFormat
     ) async throws -> ParsedStatement {
-        guard let formatParser = parsersByFormat[format] else {
-            throw TransactionImportError.unsupportedFormat(format)
-        }
-
-        // Extract rows using format parser
-        let rows: [[String]]
-
-        if let csvParser = formatParser as? CSVStatementParser {
-            rows = try await csvParser.extractRows(from: fileURL)
-        } else if let xlsxParser = formatParser as? XLSXStatementParser {
-            rows = try await xlsxParser.extractRows(from: fileURL)
-        } else {
-            return try await formatParser.parseStatement(from: fileURL)
-        }
-
-        // Try institution parsers first
-        if let institutionParser = registry.parser(for: rows) {
-            return try institutionParser.parse(rows: rows)
-        }
-
-        // Fallback to generic decoder
-        return try TabularTransactionDecoder.decodeStatement(rows)
+        return try await delegate.parseStatement(from: fileURL, format: format)
     }
 
     public func importTransactions(

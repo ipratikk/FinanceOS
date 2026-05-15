@@ -11,9 +11,11 @@ public struct HDFCPDFParser: StatementParser {
     public init(password: String? = nil) {
         self.password = password
         #if canImport(Vision) && canImport(AppKit)
-        self.visionExtractor = VisionPDFTextExtractor()
+        visionExtractor = VisionPDFTextExtractor()
+        print("HDFCPDFParser: Vision available, created VisionPDFTextExtractor")
         #else
-        self.visionExtractor = nil
+        visionExtractor = nil
+        print("HDFCPDFParser: Vision NOT available, will use PDFKit fallback")
         #endif
     }
 
@@ -113,7 +115,7 @@ public struct HDFCPDFParser: StatementParser {
 
         var infos: [CharInfo] = []
         infos.reserveCapacity(n)
-        for i in 0..<n {
+        for i in 0 ..< n {
             let bounds = page.characterBounds(at: i)
             let ch = chars[i]
             if ch == "\n" || ch == "\r" { continue }

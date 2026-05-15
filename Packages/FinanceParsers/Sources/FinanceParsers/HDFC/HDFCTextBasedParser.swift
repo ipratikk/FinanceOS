@@ -85,7 +85,7 @@ class HDFCTextBasedParser {
 
             // Calculate amount
             let amount: Int64
-            if let debit = debit, let credit = credit {
+            if let debit, let credit {
                 if debit > 0, credit == 0 {
                     amount = Int64(-debit * 100)
                 } else if credit > 0, debit == 0 {
@@ -93,9 +93,9 @@ class HDFCTextBasedParser {
                 } else {
                     amount = Int64((credit - debit) * 100)
                 }
-            } else if let credit = credit {
+            } else if let credit {
                 amount = Int64(credit * 100)
-            } else if let debit = debit {
+            } else if let debit {
                 amount = Int64(-debit * 100)
             } else {
                 continue
@@ -151,7 +151,7 @@ class HDFCTextBasedParser {
     private func extractDebitCredit(from amounts: [Double]) -> (debit: Double?, credit: Double?) {
         // Filter out large amounts (likely balances, not transactions)
         // Threshold: 5,000,000 paise = 50,000 INR (typical balance vs transaction)
-        let filtered = amounts.filter { $0 < 500000 }
+        let filtered = amounts.filter { $0 < 500_000 }
 
         guard !filtered.isEmpty else {
             return (nil, nil)
