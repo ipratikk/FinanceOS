@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-15)
 
 ## Corpus Check
-- 90 files · ~21,068 words
+- 90 files · ~21,642 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 759 nodes · 1034 edges · 64 communities (35 shown, 29 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 54 edges (avg confidence: 0.8)
+- 765 nodes · 1049 edges · 65 communities (35 shown, 30 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 55 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `29665b9f`
+- Built from commit: `31c1f64b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -70,16 +70,17 @@
 - [[_COMMUNITY_Community 52|Community 52]]
 - [[_COMMUNITY_Community 53|Community 53]]
 - [[_COMMUNITY_Community 54|Community 54]]
-- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 55|Community 55]]
 - [[_COMMUNITY_Community 59|Community 59]]
-- [[_COMMUNITY_Community 63|Community 63]]
+- [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 64|Community 64]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `TabularTransactionDecoder` - 22 edges
-2. `ImportViewModel` - 21 edges
+1. `ImportViewModel` - 22 edges
+2. `TabularTransactionDecoder` - 22 edges
 3. `FinanceOS Coding Standards` - 16 edges
-4. `ImportView` - 13 edges
-5. `PDFStatementParser` - 12 edges
+4. `PDFStatementParser` - 14 edges
+5. `ImportView` - 13 edges
 6. `HDFCCardStatementParser` - 12 edges
 7. `TransactionImportError` - 11 edges
 8. `ImportPreviewView` - 11 edges
@@ -101,22 +102,22 @@
 - **Database Lifecycle Flow** — databasemanager_shared, databasemanager_migrator, appmigration_registermigrations, databasemanager_seed_database, databaseseeder_seedinstitutions [EXTRACTED 1.00]
 - **Architecture Rules To Code** — architecture_layered_flow, architecture_database_lifecycle_rule, architecture_dependency_composition_rule, architecture_repository_abstraction_rule, architecture_ui_database_boundary_rule, architecture_persistence_encapsulation_rule [EXTRACTED 1.00]
 
-## Communities (64 total, 29 thin omitted)
+## Communities (65 total, 30 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.05
-Nodes (7): ParsedStatement, AmexCardStatementParser, HDFCBankStatementParser, HDFCCardStatementParser, ICICIBankStatementParser, ICICICardStatementParser, InstitutionStatementParser
-
-### Community 1 - "Community 1"
 Cohesion: 0.06
 Nodes (20): HDFCLineClassifier, BalanceDiscrepancy, ClassifiedLine, HDFCRawTransaction, ParseWarning, StatementLinePurpose, amountLine, balanceLine (+12 more)
+
+### Community 1 - "Community 1"
+Cohesion: 0.05
+Nodes (7): ParsedStatement, AmexCardStatementParser, HDFCBankStatementParser, HDFCCardStatementParser, ICICIBankStatementParser, ICICICardStatementParser, InstitutionStatementParser
 
 ### Community 2 - "Community 2"
 Cohesion: 0.05
 Nodes (18): DatabaseManager, CSVStatementParser, ImportResult, StatementParser, TransactionImporting, TXTStatementParser, InstitutionStatementParser, StatementParserRegistry (+10 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (10): fileFormat(), formatError(), fuzzyMatch(), ImportViewModel, isSameTransaction(), logDebug(), logInfo(), transactionHash() (+2 more)
 
 ### Community 4 - "Community 4"
@@ -184,16 +185,16 @@ Cohesion: 0.17
 Nodes (10): Error, TransactionImportError, invalidAmount, invalidDate, malformedFile, missingRequiredColumn, passwordProtected, platformUnavailable (+2 more)
 
 ### Community 22 - "Community 22"
-Cohesion: 0.2
-Nodes (5): CreateNewTargetSheet, PasswordPromptSheet, View, TransactionFilterView, TransactionListContentView
-
-### Community 23 - "Community 23"
-Cohesion: 0.2
+Cohesion: 0.18
 Nodes (3): Columns, Institution, DatabaseSeeder
 
-### Community 24 - "Community 24"
-Cohesion: 0.22
+### Community 23 - "Community 23"
+Cohesion: 0.25
 Nodes (6): Codable, Columns, Transaction, TransactionType, credit, debit
+
+### Community 24 - "Community 24"
+Cohesion: 0.25
+Nodes (4): PasswordPromptSheet, View, TransactionFilterView, TransactionListContentView
 
 ### Community 25 - "Community 25"
 Cohesion: 0.57
@@ -215,29 +216,29 @@ Nodes (6): CaseIterable, BankProviderType, bank, credit, neobank, Columns
 Cohesion: 0.33
 Nodes (5): AccountType, credit, current, savings, Columns
 
-### Community 37 - "Community 37"
+### Community 36 - "Community 36"
 Cohesion: 0.33
 Nodes (5): StatementFileFormat, csv, pdf, txt, xlsx
 
 ## Knowledge Gaps
-- **101 isolated node(s):** `HDFCParserTestFixtures`, `header`, `footer`, `dateLine`, `balanceLine` (+96 more)
+- **101 isolated node(s):** `account`, `card`, `createAccount`, `createCard`, `HDFCParserTestFixtures` (+96 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **29 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **30 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ImportView` connect `Community 8` to `Community 22`?**
-  _High betweenness centrality (0.116) - this node is a cross-community bridge._
-- **Why does `PDFStatementParser` connect `Community 1` to `Community 2`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
-- **Why does `ParsedStatement` connect `Community 0` to `Community 2`, `Community 7`?**
+- **Why does `PDFStatementParser` connect `Community 0` to `Community 2`, `Community 3`?**
+  _High betweenness centrality (0.120) - this node is a cross-community bridge._
+- **Why does `ImportView` connect `Community 8` to `Community 24`?**
+  _High betweenness centrality (0.117) - this node is a cross-community bridge._
+- **Why does `ParsedStatement` connect `Community 1` to `Community 2`, `Community 7`?**
   _High betweenness centrality (0.079) - this node is a cross-community bridge._
 - **Are the 15 inferred relationships involving `String` (e.g. with `transactionHash()` and `.importTransactions()`) actually correct?**
   _`String` has 15 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `HDFCParserTestFixtures`, `header`, `footer` to the rest of the system?**
+- **What connects `account`, `card`, `createAccount` to the rest of the system?**
   _101 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
-- **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.06 - nodes in this community are weakly interconnected._
+- **Should `Community 1` be split into smaller, more focused modules?**
+  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
