@@ -25,10 +25,15 @@ public struct HDFCPDFParser: StatementParser {
         }
 
         if doc.isLocked {
-            if let pwd = password {
-                doc.unlock(withPassword: pwd)
+            guard let pwd = password else {
+                let filename = fileURL.lastPathComponent
+                throw TransactionImportError.passwordProtected(filename)
             }
-            if doc.isLocked {
+
+            let trimmedPwd = pwd.trimmingCharacters(in: .whitespaces)
+            let unlocked = doc.unlock(withPassword: trimmedPwd) || doc.unlock(withPassword: pwd)
+
+            if !unlocked, doc.isLocked {
                 let filename = fileURL.lastPathComponent
                 throw TransactionImportError.passwordProtected(filename)
             }
