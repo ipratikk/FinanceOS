@@ -118,24 +118,18 @@ public enum DependencyChecker {
             await installBrew()
         }
 
+        guard let brewPath = findBrewExecutable() else {
+            return
+        }
+
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/bash")
-        process.arguments = ["-c", "eval \"$(/opt/homebrew/bin/brew shellenv)\" && brew install gnumeric"]
+        process.executableURL = brewPath
+        process.arguments = ["install", "gnumeric"]
 
         let outputPipe = Pipe()
         let errorPipe = Pipe()
         process.standardOutput = outputPipe
         process.standardError = errorPipe
-
-        let environment = ProcessInfo.processInfo.environment
-        var processEnv = environment
-        // Add common Homebrew paths to ensure brew is found
-        let brewPaths = ["/opt/homebrew/bin", "/usr/local/bin"]
-        let currentPath = environment["PATH"] ?? ""
-        let newPath = brewPaths.filter { !currentPath.contains($0) }.joined(separator: ":") + ":" + currentPath
-        processEnv["PATH"] = newPath
-
-        process.environment = processEnv
 
         do {
             try process.run()

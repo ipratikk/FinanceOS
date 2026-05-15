@@ -30,8 +30,8 @@ public struct XLSStatementParser:
     #if os(macOS)
     private func convertXLSToCSV(_ fileURL: URL) throws -> Data {
         guard let ssconvertPath = findSSConvert() else {
-            throw TransactionImportError.malformedFile(
-                "ssconvert not found. Install gnumeric: brew install gnumeric"
+            throw TransactionImportError.platformUnavailable(
+                "ssconvert (from gnumeric) not found. Install: brew install gnumeric"
             )
         }
 

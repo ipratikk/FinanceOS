@@ -88,8 +88,8 @@
     "hash": "41bfcb097d7b948546c0f7c5ac31401e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Utilities/DependencyChecker.swift": {
-    "mtime": 1778783883.9272006,
-    "hash": "d1c32725600ce358a526c13b6ce6f356"
+    "mtime": 1778821433.3846917,
+    "hash": "0b24b16414902c6a1aa3ae36654333c9"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/AppContainer/AppContainer.swift": {
     "mtime": 1778819662.125974,
@@ -132,8 +132,8 @@
     "hash": "46f48ddd47bfde41505e871b824ebaf8"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/XLSStatementParser.swift": {
-    "mtime": 1778782491.017628,
-    "hash": "83734bff9949a58ac613f83245143104"
+    "mtime": 1778821501.8728113,
+    "hash": "08623459482518de430142537d89c158"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportPipeline.swift": {
     "mtime": 1778781330.9872837,
@@ -188,8 +188,8 @@
     "hash": "2d27d076d226e047bf6d6615a867e7e9"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift": {
-    "mtime": 1778820003.699683,
-    "hash": "78baadb722183a6622636cbe4cd5f954"
+    "mtime": 1778821315.0427763,
+    "hash": "0cc4b119f7b7f47b200c263b739ef9d7"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsViewModel.swift": {
     "mtime": 1778819962.3971024,
