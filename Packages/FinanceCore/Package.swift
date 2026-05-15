@@ -22,7 +22,8 @@ let package = Package(
         .package(
             url: "https://github.com/swiftcsv/SwiftCSV",
             from: "0.10.0"
-        )
+        ),
+        .package(path: "../FinanceParsers")
     ],
     targets: [
         .target(
@@ -35,7 +36,8 @@ let package = Package(
                 .product(
                     name: "SwiftCSV",
                     package: "SwiftCSV"
-                )
+                ),
+                "FinanceParsers"
             ]
         ),
         .testTarget(

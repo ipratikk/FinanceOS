@@ -1,6 +1,7 @@
 import Foundation
+import SwiftCSV
 
-public enum StatementFileFormat: String, CaseIterable {
+public enum StatementFileFormat: String, CaseIterable, Sendable {
     case csv
     case txt
     case xlsx
@@ -36,7 +37,7 @@ public enum TransactionImportError: Error, CustomStringConvertible {
     }
 }
 
-public struct ParsedTransaction: Codable, Identifiable {
+public struct ParsedTransaction: Codable, Identifiable, Sendable {
     public let id: UUID
     public let postedAt: Date
     public let description: String
@@ -122,11 +123,13 @@ public struct StatementMetadata: Codable, Sendable {
     }
 }
 
-public struct ParsedStatement: Codable {
+public struct ParsedStatement: Codable, Sendable {
     public let bankName: String
     public let accountName: String
-    public let statementPeriodStart: Date
-    public let statementPeriodEnd: Date
+    public let accountLast4: String?
+    public let cardLast4: String?
+    public let statementPeriodStart: Date?
+    public let statementPeriodEnd: Date?
     public let currency: String
     public let totalDebit: Int64
     public let totalCredit: Int64
@@ -136,16 +139,20 @@ public struct ParsedStatement: Codable {
     public init(
         bankName: String,
         accountName: String,
-        statementPeriodStart: Date,
-        statementPeriodEnd: Date,
-        currency: String,
-        totalDebit: Int64,
-        totalCredit: Int64,
-        transactions: [ParsedTransaction],
+        accountLast4: String? = nil,
+        cardLast4: String? = nil,
+        statementPeriodStart: Date? = nil,
+        statementPeriodEnd: Date? = nil,
+        currency: String = "INR",
+        totalDebit: Int64 = 0,
+        totalCredit: Int64 = 0,
+        transactions: [ParsedTransaction] = [],
         metadata: StatementMetadata? = nil
     ) {
         self.bankName = bankName
         self.accountName = accountName
+        self.accountLast4 = accountLast4
+        self.cardLast4 = cardLast4
         self.statementPeriodStart = statementPeriodStart
         self.statementPeriodEnd = statementPeriodEnd
         self.currency = currency
@@ -156,7 +163,7 @@ public struct ParsedStatement: Codable {
     }
 }
 
-public protocol StatementParser {
+public protocol StatementParser: Sendable {
     var supportedFormat: StatementFileFormat { get }
     func parseStatement(from fileURL: URL) async throws -> ParsedStatement
 }
@@ -180,5 +187,132 @@ public struct StatementParserRegistry {
 
     public func parser(for format: StatementFileFormat) -> StatementParser? {
         parsers.first { $0.supportedFormat == format }
+    }
+}
+
+public struct CSVStatementParser: StatementParser, Sendable {
+    public let supportedFormat: StatementFileFormat = .csv
+
+    public init() {}
+
+    public func parseStatement(
+        from fileURL: URL
+    ) async throws -> ParsedStatement {
+        let rows = try await extractRows(from: fileURL)
+        return try TabularTransactionDecoder.decodeStatement(rows)
+    }
+
+    func extractRows(from fileURL: URL) async throws -> [[String]] {
+        let csv = try EnumeratedCSV(
+            url: fileURL,
+            loadColumns: false
+        )
+        return [csv.header] + csv.rows
+    }
+}
+
+public struct TXTStatementParser: StatementParser, Sendable {
+    public let supportedFormat: StatementFileFormat = .txt
+
+    public init() {}
+
+    public func parseStatement(from fileURL: URL) async throws -> ParsedStatement {
+        let content = try String(contentsOf: fileURL, encoding: .utf8)
+        let lines = content.components(separatedBy: .newlines)
+
+        var rows: [[String]] = []
+        for line in lines {
+            if rows.isEmpty, line.trimmingCharacters(in: .whitespaces).isEmpty {
+                continue
+            }
+            let fields = line.components(separatedBy: ",")
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+            rows.append(fields)
+        }
+
+        guard rows.count > 1 else {
+            throw TransactionImportError.malformedFile("TXT statement has no data rows")
+        }
+
+        let normalizedHeaders = rows[0].map(normalizeHeader(_:))
+        guard normalizedHeaders.contains("debitamount") || normalizedHeaders.contains("creditamount") else {
+            throw TransactionImportError.malformedFile("Unrecognized TXT format")
+        }
+
+        let transactions = try TabularTransactionDecoder.decodeTransactions(rows)
+        let (periodStart, periodEnd) = TabularTransactionDecoder.extractPeriod(from: transactions)
+        var totalDebit: Int64 = 0
+        var totalCredit: Int64 = 0
+        for txn in transactions {
+            if txn.amountMinorUnits < 0 {
+                totalDebit -= txn.amountMinorUnits
+            } else {
+                totalCredit += txn.amountMinorUnits
+            }
+        }
+        return ParsedStatement(
+            bankName: "HDFC",
+            accountName: "Unknown",
+            statementPeriodStart: periodStart,
+            statementPeriodEnd: periodEnd,
+            currency: "INR",
+            totalDebit: totalDebit,
+            totalCredit: totalCredit,
+            transactions: transactions
+        )
+    }
+
+    private func normalizeHeader(_ h: String) -> String {
+        h.lowercased()
+            .replacingOccurrences(of: " ", with: "")
+            .replacingOccurrences(of: "-", with: "")
+            .replacingOccurrences(of: "_", with: "")
+    }
+}
+
+public struct XLSXStatementParser: StatementParser, Sendable {
+    public let supportedFormat: StatementFileFormat = .xlsx
+
+    public init() {}
+
+    public func parseStatement(from fileURL: URL) async throws -> ParsedStatement {
+        throw TransactionImportError.platformUnavailable("XLSX parsing not yet supported in FinanceParsers")
+    }
+}
+
+
+public struct DefaultTransactionImporter: Sendable {
+    private let parsersByFormat: [StatementFileFormat: any StatementParser]
+
+    public init(
+        parsers: [any StatementParser]? = nil,
+        registry: StatementParserRegistry? = nil
+    ) {
+        var parsersByFormat: [StatementFileFormat: any StatementParser] = [:]
+
+        let defaultParsers: [any StatementParser] = parsers ?? [
+            CSVStatementParser(),
+            XLSXStatementParser(),
+            TXTStatementParser(),
+            HDFCPDFParser()
+        ]
+
+        for parser in defaultParsers {
+            parsersByFormat[parser.supportedFormat] = parser
+        }
+
+        self.parsersByFormat = parsersByFormat
+        _ = registry
+    }
+
+    public func parseStatement(
+        from fileURL: URL,
+        format: StatementFileFormat
+    ) async throws -> ParsedStatement {
+        guard let formatParser = parsersByFormat[format] else {
+            throw TransactionImportError.unsupportedFormat(format.rawValue)
+        }
+
+        return try await formatParser.parseStatement(from: fileURL)
     }
 }
