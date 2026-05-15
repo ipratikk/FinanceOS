@@ -6,9 +6,15 @@ import PDFKit
 public struct HDFCPDFParser: StatementParser {
     public let supportedFormat: StatementFileFormat = .pdf
     private let password: String?
+    private let visionExtractor: PDFTextExtractor?
 
     public init(password: String? = nil) {
         self.password = password
+        #if canImport(Vision) && canImport(AppKit)
+        self.visionExtractor = VisionPDFTextExtractor()
+        #else
+        self.visionExtractor = nil
+        #endif
     }
 
     public func parseStatement(from fileURL: URL) async throws -> ParsedStatement {
@@ -26,17 +32,11 @@ public struct HDFCPDFParser: StatementParser {
             }
         }
 
-        var fullText = ""
+        var lines: [String] = []
         for i in 0 ..< doc.pageCount {
-            guard let page = doc.page(at: i),
-                  let text = page.string
-            else {
-                continue
-            }
-            fullText += text + "\n"
+            guard let page = doc.page(at: i) else { continue }
+            lines.append(contentsOf: extractLines(from: page))
         }
-
-        let lines = fullText.components(separatedBy: .newlines)
 
         guard let headerIdx = lines.firstIndex(where: {
             $0.lowercased().contains("date") && $0.lowercased().contains("narration")
@@ -44,6 +44,7 @@ public struct HDFCPDFParser: StatementParser {
             throw TransactionImportError.malformedFile("No transaction table found in PDF")
         }
 
+        let metadata = HDFCMetadataExtractor().extract(from: collectPDFKitLines(from: doc))
         let transactions = try parseHDFCTransactions(Array(lines[headerIdx...]))
         let (periodStart, periodEnd) = extractPeriod(from: transactions)
 
@@ -59,108 +60,110 @@ public struct HDFCPDFParser: StatementParser {
 
         return ParsedStatement(
             bankName: "HDFC",
-            accountName: "Unknown",
+            accountName: metadata.accountNumber ?? "Unknown",
             statementPeriodStart: periodStart,
             statementPeriodEnd: periodEnd,
             currency: "INR",
             totalDebit: totalDebit,
             totalCredit: totalCredit,
-            transactions: transactions
+            transactions: transactions,
+            metadata: metadata
         )
     }
 
-    private func expandConcatenatedLine(_ line: String) -> [String] {
-        let datePattern = try! NSRegularExpression(pattern: "\\d{2}/\\d{2}/\\d{2}")
-        let dateMatches = datePattern.matches(in: line, range: NSRange(line.startIndex..., in: line))
+    /// Returns the concatenated newline-split text of all pages using
+    /// PDFKit's native text extraction. Unlike Vision OCR, this preserves
+    /// header layout reliably for metadata extraction.
+    private func collectPDFKitLines(from doc: PDFDocument) -> [String] {
+        var out: [String] = []
+        for i in 0 ..< doc.pageCount {
+            guard let page = doc.page(at: i), let text = page.string else { continue }
+            out.append(contentsOf: text.components(separatedBy: .newlines))
+        }
+        return out
+    }
 
-        guard dateMatches.count > 1 else { return [line] }
-
-        var result: [String] = []
-        var lastEnd = line.startIndex
-
-        for (index, match) in dateMatches.enumerated() {
-            guard let range = Range(match.range, in: line) else { continue }
-
-            if index > 0 {
-                let segment = String(line[lastEnd..<range.lowerBound]).trimmingCharacters(in: .whitespaces)
-                if !segment.isEmpty {
-                    result.append(String(line[lastEnd..<range.lowerBound]))
-                }
+    private func extractLines(from page: PDFPage) -> [String] {
+        #if canImport(Vision) && canImport(AppKit)
+        if let extractor = visionExtractor as? VisionPDFTextExtractor {
+            let visionLines = extractor.extractLines(from: page)
+            if !visionLines.isEmpty {
+                return visionLines
             }
-            lastEnd = range.lowerBound
+        }
+        #endif
+        return extractRowLines(from: page)
+    }
+
+    private func extractRowLines(from page: PDFPage) -> [String] {
+        let n = page.numberOfCharacters
+        guard n > 0, let pageString = page.string else { return [] }
+
+        let chars = Array(pageString)
+        guard chars.count >= n else {
+            return pageString.components(separatedBy: .newlines)
         }
 
-        if lastEnd < line.endIndex {
-            result.append(String(line[lastEnd...]))
+        struct CharInfo {
+            let char: Character
+            let x: CGFloat
+            let width: CGFloat
+            let y: CGFloat
         }
 
-        return result.isEmpty ? [line] : result
+        var infos: [CharInfo] = []
+        infos.reserveCapacity(n)
+        for i in 0..<n {
+            let bounds = page.characterBounds(at: i)
+            let ch = chars[i]
+            if ch == "\n" || ch == "\r" { continue }
+            infos.append(CharInfo(char: ch, x: bounds.origin.x, width: bounds.width, y: bounds.origin.y))
+        }
+
+        guard !infos.isEmpty else { return [] }
+
+        // Bucket by Y with 2-point tolerance
+        let yTolerance: CGFloat = 2.0
+        var buckets: [(y: CGFloat, chars: [CharInfo])] = []
+        for info in infos {
+            if let idx = buckets.firstIndex(where: { abs($0.y - info.y) <= yTolerance }) {
+                buckets[idx].chars.append(info)
+            } else {
+                buckets.append((y: info.y, chars: [info]))
+            }
+        }
+
+        // PDF coordinate: origin bottom-left, so larger Y = higher on page = earlier in reading order
+        buckets.sort { $0.y > $1.y }
+
+        var lines: [String] = []
+        for bucket in buckets {
+            let sorted = bucket.chars.sorted { $0.x < $1.x }
+            var line = ""
+            var lastEndX: CGFloat = -1
+            for info in sorted {
+                if lastEndX >= 0 {
+                    let gap = info.x - lastEndX
+                    let avgCharWidth = max(info.width, 1)
+                    if gap > avgCharWidth * 0.5 {
+                        line += " "
+                    }
+                }
+                line.append(info.char)
+                lastEndX = info.x + info.width
+            }
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if !trimmed.isEmpty {
+                lines.append(line)
+            }
+        }
+        return lines
     }
 
     private func parseHDFCTransactions(_ lines: [String]) throws -> [ParsedTransaction] {
-        let classifier = HDFCLineClassifier()
-        let reconstructor = HDFCTransactionReconstructor()
-        let parser = HDFCTransactionParser()
-
-        let expandedLines = lines.flatMap { expandConcatenatedLine($0) }
-        let classifiedLines = expandedLines.map { classifier.classify($0) }
-        let blocks = reconstructor.reconstructTransactionBlocks(from: classifiedLines)
-
-        var transactions: [ParsedTransaction] = []
-
-        for block in blocks {
-            guard let rawTransaction = parser.parseTransactionBlock(block) else { continue }
-            guard let postedAt = parser.validateDate(rawTransaction.dateString) else { continue }
-
-            let description = rawTransaction.description.isEmpty ? "HDFC Transaction" : rawTransaction.description
-
-            let amount: Int64
-            if let debitStr = rawTransaction.debitAmount, let creditStr = rawTransaction.creditAmount {
-                let debit = try parseAmountMinorUnits(debitStr)
-                let credit = try parseAmountMinorUnits(creditStr)
-
-                if debit > 0, credit == 0 {
-                    amount = -debit
-                } else if credit > 0, debit == 0 {
-                    amount = credit
-                } else {
-                    amount = credit - debit
-                }
-            } else if let creditStr = rawTransaction.creditAmount {
-                amount = try parseAmountMinorUnits(creditStr)
-            } else if let debitStr = rawTransaction.debitAmount {
-                amount = try -parseAmountMinorUnits(debitStr)
-            } else {
-                continue
-            }
-
-            let fingerprint = [rawTransaction.dateString, description, String(amount)].joined(separator: "|")
-
-            let transaction = ParsedTransaction(
-                postedAt: postedAt,
-                description: description,
-                amountMinorUnits: amount,
-                currencyCode: "INR",
-                sourceFingerprint: fingerprint
-            )
-            transactions.append(transaction)
-        }
-
-        return transactions
-    }
-
-    private func parseAmountMinorUnits(_ value: String) throws -> Int64 {
-        let sanitized = value
-            .replacingOccurrences(of: ",", with: "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        guard let decimal = Decimal(string: sanitized) else {
-            throw TransactionImportError.invalidAmount(value)
-        }
-
-        let minorUnitsDecimal = decimal * 100
-        let rounded = NSDecimalNumber(decimal: minorUnitsDecimal).rounding(accordingToBehavior: nil)
-        return rounded.int64Value
+        let textParser = HDFCTextBasedParser()
+        let reconstructed = textParser.reconstructTransactions(from: lines)
+        return textParser.parseToNormalizedTransactions(reconstructed)
     }
 
     private func extractPeriod(from transactions: [ParsedTransaction]) -> (Date, Date) {
