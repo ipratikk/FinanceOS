@@ -43,6 +43,7 @@ struct ImportPreviewView: View {
                 detectedBank: detectedBank,
                 onCancel: {
                     showCreateSheet = false
+                    targetChoice = nil
                 },
                 onCreate: {
                     Task {
@@ -54,6 +55,7 @@ struct ImportPreviewView: View {
                             isCard: isCard
                         )
                         showCreateSheet = false
+                        targetChoice = nil
                     }
                 }
             )
