@@ -280,7 +280,6 @@ public struct XLSXStatementParser: StatementParser, Sendable {
     }
 }
 
-
 public struct DefaultTransactionImporter: Sendable {
     private let parsersByFormat: [StatementFileFormat: any StatementParser]
 

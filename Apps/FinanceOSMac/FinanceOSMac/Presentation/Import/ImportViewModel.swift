@@ -84,6 +84,7 @@ final class ImportViewModel {
     var fileURLs: [URL] = []
     var parsedStatements: [ParsedStatement] = []
     var selectedTarget: TransactionImportTarget?
+    var selectedSource: StatementSource?
 
     var isLoading = false
     var errorMessage: String?
@@ -139,6 +140,15 @@ final class ImportViewModel {
         logger.debug("fileURLs updated, errorMessage cleared")
     }
 
+    func setSource(_ source: StatementSource?) {
+        selectedSource = source
+        fileURLs = []
+        parsedStatements = []
+        errorMessage = nil
+        logger
+            .info("Source changed to \(source?.displayName ?? "none", privacy: .public), cleared files and statements")
+    }
+
     func parseFiles() {
         logger.info("parseFiles() called, scheduling Task")
         Task {
@@ -172,12 +182,18 @@ final class ImportViewModel {
             let format = fileFormat(for: fileURL)
             let fileName = fileURL.lastPathComponent
             let statement: ParsedStatement
-            if format == .pdf, let pwd = password {
-                let pdfParser = PDFStatementParser(password: pwd)
-                statement = try await pdfParser.parseStatement(from: fileURL)
+
+            if let source = selectedSource, [.csv, .txt].contains(format) {
+                if let parser = parserRegistry.parser(for: source) {
+                    let rows = try CSVRowReader.read(from: fileURL)
+                    statement = try parser.parse(rows: rows)
+                } else {
+                    statement = try await transactionImporter.parseStatement(from: fileURL, format: format)
+                }
             } else {
                 statement = try await transactionImporter.parseStatement(from: fileURL, format: format)
             }
+
             logger.info("Parsed \(fileName, privacy: .public): \(statement.transactions.count, privacy: .public) txns")
             return (statement, false)
         } catch let error as FinanceCore.TransactionImportError {

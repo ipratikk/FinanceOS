@@ -14,6 +14,7 @@ struct ImportView: View {
     let viewModel: ImportViewModel
 
     @State private var targetChoice: TargetChoice?
+    @State private var selectedSource: StatementSource?
     @State private var isTargeted = false
     @State private var showPasswordPrompt = false
     @State private var passwordPromptFilename = ""
@@ -62,6 +63,12 @@ struct ImportView: View {
                 targetChoice = nil
             }
         }
+        .onChange(of: selectedSource) { _, newValue in
+            viewModel.setSource(newValue)
+        }
+        .onChange(of: viewModel.selectedSource) { _, newValue in
+            selectedSource = newValue
+        }
     }
 
     private var fileSelectionView: some View {
@@ -104,18 +111,54 @@ struct ImportView: View {
                                 .cornerRadius(4)
                             }
 
-                            SupportedSourcesView(viewModel: viewModel)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Statement Source")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+
+                                Picker("Source", selection: $selectedSource) {
+                                    Text("Select source...").tag(StatementSource?.none)
+                                    ForEach(StatementSource.allCases, id: \.self) { source in
+                                        Text(source.displayName).tag(Optional(source))
+                                    }
+                                }
+                                .pickerStyle(.menu)
+
+                                if selectedSource == nil {
+                                    Text("Select a source to begin")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            .padding()
+                            .background(Color.gray.opacity(0.05))
+                            .cornerRadius(8)
 
                             Divider()
 
                             if viewModel.isLoading {
                                 ProgressView("Parsing files...")
                             } else {
-                                dropZoneView
+                                if selectedSource != nil {
+                                    dropZoneView
 
-                                Divider()
+                                    Divider()
 
-                                filePickerButton
+                                    filePickerButton
+                                } else {
+                                    VStack(spacing: 12) {
+                                        Image(systemName: "arrow.down.doc.fill")
+                                            .font(.system(size: 40))
+                                            .foregroundColor(.secondary)
+                                        Text("Select a source above to import files")
+                                            .font(.headline)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 140)
+                                    .background(Color.gray.opacity(0.05))
+                                    .cornerRadius(12)
+                                }
                             }
 
                             if !viewModel.parsedStatements.isEmpty {
@@ -130,6 +173,8 @@ struct ImportView: View {
             }
         }
         .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
+            guard let source = selectedSource else { return false }
+
             var urls: [URL] = []
             let group = DispatchGroup()
 
@@ -137,7 +182,11 @@ struct ImportView: View {
                 group.enter()
                 _ = provider.loadObject(ofClass: URL.self) { url, _ in
                     if let url {
-                        urls.append(url)
+                        let ext = url.pathExtension.lowercased()
+                        let allowedExts = source.allowedFormats.map(\.rawValue)
+                        if allowedExts.contains(ext) {
+                            urls.append(url)
+                        }
                     }
                     group.leave()
                 }
@@ -180,7 +229,8 @@ struct ImportView: View {
     }
 
     private var dropZoneView: some View {
-        VStack(spacing: 12) {
+        let formatNames = selectedSource?.allowedFormats.map { $0.rawValue.uppercased() }.joined(separator: ", ") ?? ""
+        return VStack(spacing: 12) {
             Image(systemName: "arrow.down.doc.fill")
                 .font(.system(size: 40))
                 .foregroundColor(.secondary)
@@ -188,7 +238,7 @@ struct ImportView: View {
                 Text("Drag files here or click button below")
                     .font(.headline)
 
-                Text("CSV, TXT, XLSX, or PDF formats supported")
+                Text("Supported: \(formatNames)")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -203,10 +253,13 @@ struct ImportView: View {
         Button("Select Files") {
             print("[UI] Select Files button tapped")
             let panel = NSOpenPanel()
-            var types: [UTType] = [.commaSeparatedText, .plainText, .pdf]
-            if let xlsx = UTType(filenameExtension: "xlsx") {
-                types.append(xlsx)
+
+            let allowedFormats = selectedSource?.allowedFormats ?? []
+            var types: [UTType] = []
+            for format in allowedFormats {
+                types.append(format.utType)
             }
+
             panel.allowedContentTypes = types
             panel.canChooseFiles = true
             panel.canChooseDirectories = false
@@ -224,6 +277,7 @@ struct ImportView: View {
             }
         }
         .controlSize(.large)
+        .disabled(selectedSource == nil)
     }
 
     private var previewView: some View {

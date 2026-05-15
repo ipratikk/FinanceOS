@@ -9,6 +9,10 @@ public struct StatementParserRegistry: Sendable {
         parsers.map { ($0.bankName, $0.sourceType) }
     }
 
+    public func parser(for source: StatementSource) -> (any InstitutionStatementParser)? {
+        parsers.first { $0.bankName == source.bankName && $0.sourceType == source.sourceType }
+    }
+
     func parser(for rows: [[String]]) -> (any InstitutionStatementParser)? {
         parsers.first { $0.canParse(rows: rows) }
     }
