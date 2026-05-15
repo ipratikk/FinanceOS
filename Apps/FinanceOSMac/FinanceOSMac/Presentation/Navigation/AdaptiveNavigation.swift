@@ -1,8 +1,10 @@
+import FinanceCore
 import SwiftUI
 
 struct AdaptiveNavigation: View {
     @Binding var selection: NavigationItem?
     @Environment(\.horizontalSizeClass) var sizeClass
+    private let appContainer = AppContainer.shared
 
     var body: some View {
         if sizeClass == .compact {
@@ -21,61 +23,128 @@ struct AdaptiveNavigation: View {
                     }
                     .tag(NavigationItem.dashboard)
 
-                TransactionsView()
-                    .tabItem {
-                        Label(NavigationItem.transactions.label, systemImage: NavigationItem.transactions.icon)
-                    }
-                    .tag(NavigationItem.transactions)
+                TransactionsView(
+                    viewModel: TransactionsViewModel(
+                        transactionRepository: appContainer.transactionRepository,
+                        accountRepository: appContainer.accountRepository,
+                        cardRepository: appContainer.cardRepository
+                    )
+                )
+                .tabItem {
+                    Label(NavigationItem.transactions.label, systemImage: NavigationItem.transactions.icon)
+                }
+                .tag(NavigationItem.transactions)
 
-                AccountsView()
-                    .tabItem {
-                        Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
-                    }
-                    .tag(NavigationItem.accounts)
+                AccountsView(
+                    viewModel: AccountsViewModel(
+                        repository: appContainer.accountRepository,
+                        bankRepository: appContainer.bankRepository,
+                        cardRepository: appContainer.cardRepository,
+                        transactionRepository: appContainer.transactionRepository
+                    ),
+                    transactionRepository: appContainer.transactionRepository,
+                    cardRepository: appContainer.cardRepository
+                )
+                .tabItem {
+                    Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
+                }
+                .tag(NavigationItem.accounts)
 
-                CardsView()
-                    .tabItem {
-                        Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
-                    }
-                    .tag(NavigationItem.cards)
+                CardsView(
+                    viewModel: CardsViewModel(
+                        cardRepository: appContainer.cardRepository,
+                        accountRepository: appContainer.accountRepository,
+                        bankRepository: appContainer.bankRepository,
+                        transactionRepository: appContainer.transactionRepository
+                    ),
+                    transactionRepository: appContainer.transactionRepository,
+                    accountRepository: appContainer.accountRepository
+                )
+                .tabItem {
+                    Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
+                }
+                .tag(NavigationItem.cards)
 
-                BanksView()
-                    .tabItem {
-                        Label(NavigationItem.banks.label, systemImage: NavigationItem.banks.icon)
-                    }
-                    .tag(NavigationItem.banks)
+                BanksView(
+                    viewModel: BanksViewModel(
+                        repository: appContainer.bankRepository
+                    )
+                )
+                .tabItem {
+                    Label(NavigationItem.banks.label, systemImage: NavigationItem.banks.icon)
+                }
+                .tag(NavigationItem.banks)
             }
         }
     }
 
     var iPadSplitView: some View {
-        NavigationSplitView(columnVisibility: .all) {
+        NavigationSplitView(columnVisibility: .constant(.all)) {
             SidebarView(selection: $selection)
         } detail: {
-            DetailRouter(selection: selection)
+            DetailRouter(selection: selection, appContainer: appContainer)
         }
     }
 }
 
 struct DetailRouter: View {
     let selection: NavigationItem?
+    let appContainer: AppContainer
 
     var body: some View {
         switch selection {
         case .dashboard:
             DashboardView()
         case .transactions:
-            TransactionsView()
+            TransactionsView(
+                viewModel: TransactionsViewModel(
+                    transactionRepository: appContainer.transactionRepository,
+                    accountRepository: appContainer.accountRepository,
+                    cardRepository: appContainer.cardRepository
+                )
+            )
         case .accounts:
-            AccountsView()
+            AccountsView(
+                viewModel: AccountsViewModel(
+                    repository: appContainer.accountRepository,
+                    bankRepository: appContainer.bankRepository,
+                    cardRepository: appContainer.cardRepository,
+                    transactionRepository: appContainer.transactionRepository
+                ),
+                transactionRepository: appContainer.transactionRepository,
+                cardRepository: appContainer.cardRepository
+            )
         case .cards:
-            CardsView()
+            CardsView(
+                viewModel: CardsViewModel(
+                    cardRepository: appContainer.cardRepository,
+                    accountRepository: appContainer.accountRepository,
+                    bankRepository: appContainer.bankRepository,
+                    transactionRepository: appContainer.transactionRepository
+                ),
+                transactionRepository: appContainer.transactionRepository,
+                accountRepository: appContainer.accountRepository
+            )
         case .banks:
-            BanksView()
+            BanksView(
+                viewModel: BanksViewModel(
+                    repository: appContainer.bankRepository
+                )
+            )
         case .analytics:
             AnalyticsView()
         case .importStatement:
-            ImportView()
+            ImportView(
+                viewModel: ImportViewModel(
+                    transactionImporter: appContainer.transactionImporter,
+                    transactionImportPipeline: appContainer.transactionImportPipeline,
+                    bankRepository: appContainer.bankRepository,
+                    accountRepository: appContainer.accountRepository,
+                    cardRepository: appContainer.cardRepository,
+                    transactionRepository: appContainer.transactionRepository,
+                    parserRegistry: appContainer.parserRegistry
+                )
+            )
         case .none:
             DashboardView()
         }

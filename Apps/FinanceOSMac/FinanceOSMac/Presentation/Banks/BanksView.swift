@@ -1,47 +1,107 @@
-//
-//  BanksView.swift
-//  FinanceOSMac
-//
-//  Created by Pratik Goel on 15/05/26.
-//
-
 import FinanceCore
 import SwiftUI
 
 struct BanksView: View {
     @State private var viewModel: BanksViewModel
 
-    init(
-        viewModel: BanksViewModel
-    ) {
-        _viewModel = State(
-            initialValue: viewModel
-        )
+    init(viewModel: BanksViewModel) {
+        _viewModel = State(initialValue: viewModel)
     }
 
     var body: some View {
         NavigationStack {
-            List(viewModel.banks) { bank in
-                Text(bank.name)
-                    .contextMenu {
-                        Button("Edit") {
-                            viewModel.editingBank = bank
-                        }
-                        Button("Delete", role: .destructive) {
-                            viewModel.editingBank = bank
-                        }
-                    }
+            if viewModel.banks.isEmpty && !viewModel.isLoading {
+                emptyState
+            } else if viewModel.isLoading {
+                loadingState
+            } else {
+                banksList
             }
-            .navigationTitle("Banks")
         }
+        .navigationTitle("Banks")
         .sheet(item: $viewModel.editingBank) { bank in
-            BankEditView(
-                bank: bank,
-                viewModel: viewModel
-            )
+            BankEditView(bank: bank, viewModel: viewModel)
         }
         .task {
             await viewModel.loadBanks()
         }
+    }
+
+    var banksList: some View {
+        ScrollView {
+            VStack(spacing: 8) {
+                ForEach(viewModel.banks, id: \.id) { bank in
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(bank.name)
+                                .font(.system(size: 14, weight: .semibold))
+
+                            Text(bank.providerType.rawValue.uppercased())
+                                .font(.system(size: 11, weight: .regular))
+                                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                        }
+
+                        Spacer()
+
+                        Menu {
+                            Button("Edit") { viewModel.editingBank = bank }
+                            Button("Delete", role: .destructive) { viewModel.editingBank = bank }
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                        }
+                    }
+                    .padding(12)
+                    .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                    .cornerRadius(10)
+                }
+            }
+            .padding(16)
+        }
+    }
+
+    var emptyState: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "building.columns")
+                .font(.system(size: 48, weight: .light))
+                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+
+            VStack(spacing: 8) {
+                Text("No Banks")
+                    .font(.system(size: 16, weight: .semibold))
+
+                Text("Add a bank when importing your first statement")
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+    }
+
+    var loadingState: some View {
+        VStack(spacing: 8) {
+            ForEach(0 ..< 3, id: \.self) { _ in
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .frame(height: 12)
+                            .frame(maxWidth: 120)
+
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(Color(red: 0.110, green: 0.110, blue: 0.122))
+                            .frame(height: 10)
+                            .frame(maxWidth: 80)
+                    }
+
+                    Spacer()
+                }
+                .padding(12)
+                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                .cornerRadius(10)
+            }
+        }
+        .padding(16)
     }
 }
