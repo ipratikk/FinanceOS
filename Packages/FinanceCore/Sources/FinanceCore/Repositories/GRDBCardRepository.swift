@@ -23,7 +23,7 @@ public final class GRDBCardRepository:
     public func fetchCards() async throws -> [Card] {
         try await dbQueue.read { database in
             try Card
-                .order(Card.Columns.name)
+                .order(Card.Columns.cardName)
                 .fetchAll(database)
         }
     }

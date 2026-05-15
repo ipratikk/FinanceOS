@@ -23,7 +23,7 @@ public final class GRDBAccountRepository:
     public func fetchAccounts() async throws -> [Account] {
         try await dbQueue.read { database in
             try Account
-                .order(Account.Columns.name)
+                .order(Account.Columns.accountName)
                 .fetchAll(database)
         }
     }
