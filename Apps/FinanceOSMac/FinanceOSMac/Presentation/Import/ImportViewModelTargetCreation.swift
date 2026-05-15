@@ -75,7 +75,10 @@ extension ImportViewModel {
         _ params: TargetParams,
         cardType: CardType
     ) async throws {
-        let cardName = params.customName ??
+        let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
+        let hasCustomName = !(customNameTrimmed?.isEmpty ?? true)
+        let cardName = hasCustomName ?
+            customNameTrimmed! :
             (params.statement.cardLast4
                 .map { "\(params.statement.bankName) Card - \($0)" } ??
                 "\(params.statement.bankName) Card")
@@ -97,7 +100,10 @@ extension ImportViewModel {
         _ params: TargetParams,
         accountType: AccountType
     ) async throws {
-        let accountName = params.customName ??
+        let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
+        let hasCustomName = !(customNameTrimmed?.isEmpty ?? true)
+        let accountName = hasCustomName ?
+            customNameTrimmed! :
             (params.statement.accountName.isEmpty ?
                 "\(params.statement.bankName) Account" :
                 params.statement.accountName)
