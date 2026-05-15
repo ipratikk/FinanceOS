@@ -68,8 +68,8 @@
     "hash": "d158aa07032fb9fbd8f3e590daf992e0"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBAccountRepository.swift": {
-    "mtime": 1778819711.8795435,
-    "hash": "9da91e6229865f65ac4bd8985fd24b91"
+    "mtime": 1778874062.3641145,
+    "hash": "e29a63680c4093ff981ce64cf15cfed6"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Repositories/TransactionRepository.swift": {
     "mtime": 1778785464.569781,
@@ -83,13 +83,17 @@
     "mtime": 1778785454.9615288,
     "hash": "5ab85af29b51032029eb331adac08a0b"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBRepositoryHelpers.swift": {
+    "mtime": 1778874271.8602064,
+    "hash": "ee4c84f860d9aa2358e1500bc6e46c60"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBCardRepository.swift": {
-    "mtime": 1778819716.7599225,
-    "hash": "513be6977c7cc013d06ebc42a7564327"
+    "mtime": 1778874074.257352,
+    "hash": "fef1e09de8f6c27010856d71b2a1858d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Repositories/GRDBBankRepository.swift": {
-    "mtime": 1778819644.334243,
-    "hash": "13091049d0c955ffbe0f50ee6644f219"
+    "mtime": 1778874066.2543323,
+    "hash": "d77bfdd0f5dd97bbd46b4daec3d3735d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Card.swift": {
     "mtime": 1778788907.9959855,
@@ -112,8 +116,8 @@
     "hash": "41bfcb097d7b948546c0f7c5ac31401e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/AppContainer/AppContainer.swift": {
-    "mtime": 1778819662.125974,
-    "hash": "6e3524984c9013276fd267a9b809a2b5"
+    "mtime": 1778873948.1365786,
+    "hash": "d6ab1570dd17155786649f235b26efa5"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Logging/FinanceLogger.swift": {
     "mtime": 1778822841.2745304,
@@ -124,8 +128,8 @@
     "hash": "cb33227e524d507d901e7f7b5e9ed144"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportError.swift": {
-    "mtime": 1778858551.493965,
-    "hash": "8aa07c1a9011075e44d8c65a50d528b8"
+    "mtime": 1778873745.3758755,
+    "hash": "5dad0ef664c4c475bc1ecf0d066b710a"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/StatementParser.swift": {
     "mtime": 1778858345.5625036,
@@ -143,6 +147,10 @@
     "mtime": 1778829317.941984,
     "hash": "bf25e3a2cf302a08f58bb69821d174d0"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/StatementFileFormat+Detection.swift": {
+    "mtime": 1778874325.9217036,
+    "hash": "0622b173a5414adab0a7b3db49b0e081"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/HDFCTransactionParser.swift": {
     "mtime": 1778828916.9702125,
     "hash": "071540bd57efa4e55b2aff0134ba48b9"
@@ -156,12 +164,16 @@
     "hash": "779f8271996b057b128bb82aeb504f18"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/CSVRowReader.swift": {
-    "mtime": 1778860404.063171,
-    "hash": "9793806f095b70912a9ffe61262907ff"
+    "mtime": 1778875037.1434593,
+    "hash": "b3108441f5a97739981d4f5384124201"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportTarget.swift": {
     "mtime": 1778668521.5771186,
     "hash": "1c34767ceba5811027cc0c7ceb9989b4"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionDeduplicator.swift": {
+    "mtime": 1778873992.3980594,
+    "hash": "c7c6dd470e659b48330ac66a1278cf6a"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ParsedTransaction.swift": {
     "mtime": 1778858341.1264534,
@@ -180,12 +192,12 @@
     "hash": "770b0352640de4f46484f364da0211bf"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportPipeline.swift": {
-    "mtime": 1778781330.9872837,
-    "hash": "b7f65e8b3ed0dbc7ab3e7ab84d640149"
+    "mtime": 1778874271.8579147,
+    "hash": "b64ac17d92ed51c16c176ff866cc37bd"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TabularTransactionDecoder.swift": {
-    "mtime": 1778858376.9283981,
-    "hash": "c00417e00f49907386fbac6dc62a9a11"
+    "mtime": 1778875480.2440019,
+    "hash": "e31540b35e8687a4694db6a39f03f762"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/HDFCLineClassifier.swift": {
     "mtime": 1778829313.6308074,
@@ -196,16 +208,24 @@
     "hash": "7b15418f719166fb6dd064f37025ea4e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/DefaultTransactionImporter.swift": {
-    "mtime": 1778858831.904234,
-    "hash": "20c5cb179ec2025bd4ec49e89dda11d9"
+    "mtime": 1778873982.8046534,
+    "hash": "cf1a9e27efa6de93206cc25d9f874e46"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ImportTargetMatcher.swift": {
+    "mtime": 1778874271.8668027,
+    "hash": "84d82bbbdce1d133a8a362acbffbc579"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/HDFCStatementModels.swift": {
     "mtime": 1778828114.7734556,
     "hash": "c7a16de7b29b61767e9612caa4156976"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ParsedTransactionMapper.swift": {
+    "mtime": 1778873925.8319316,
+    "hash": "b4c6cbf12b23ddd1f5868305e08ac05e"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/StatementSource.swift": {
-    "mtime": 1778860387.3114057,
-    "hash": "05688caf7476b4133880f6bf29889f5f"
+    "mtime": 1778872274.1951063,
+    "hash": "4edbe5617cf5813021003da4fdc36a9a"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ImportResult.swift": {
     "mtime": 1778780355.7077258,
@@ -216,12 +236,12 @@
     "hash": "e5d8aec63892bd04cf024dedc9f00566"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/ICICIBankStatementParser.swift": {
-    "mtime": 1778819752.9466672,
-    "hash": "1094a10f7a9eb9c5d0d8666f41e02423"
+    "mtime": 1778875266.2033243,
+    "hash": "d49d5d9447f07877dfbbbbd5230df48a"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/ICICICardStatementParser.swift": {
-    "mtime": 1778819761.120565,
-    "hash": "414791c6a6a8590441c140527fbd09c7"
+    "mtime": 1778874883.8779004,
+    "hash": "10b9a28a9ae80b00954f19a077af2d9f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCCardStatementParser.swift": {
     "mtime": 1778819781.2799873,
@@ -244,8 +264,8 @@
     "hash": "d6113049a593d4cf2823343e742cba71"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/InstitutionParsers/HDFCBankStatementParser.swift": {
-    "mtime": 1778819770.3777223,
-    "hash": "2d27d076d226e047bf6d6615a867e7e9"
+    "mtime": 1778874607.0434563,
+    "hash": "8e267f8b673165c05a9b017cf70267fc"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Package.swift": {
     "mtime": 1778857672.4184084,
@@ -260,8 +280,8 @@
     "hash": "67f6f421cd60c9691cc07950b6d1d0cc"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/StatementParser.swift": {
-    "mtime": 1778858551.535091,
-    "hash": "78ce872d0dfd780c86969750514ccbe0"
+    "mtime": 1778873870.755609,
+    "hash": "051d3247893eeea14eaa2a2e9c429194"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/TabularTransactionDecoder.swift": {
     "mtime": 1778857802.8634124,
@@ -284,15 +304,15 @@
     "hash": "b894bfba02d61bceefbb9ee5c9a2b41f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/HDFCTextBasedParser.swift": {
-    "mtime": 1778871013.7914426,
-    "hash": "742553906bad0c10f0fc760a92bd3ce8"
+    "mtime": 1778872388.9175093,
+    "hash": "801418334d80be3ffae52ff91e971390"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/VisionPDFTextExtractor.swift": {
-    "mtime": 1778870423.697503,
-    "hash": "5af23fdc56bc36b3d907b624894e298b"
+    "mtime": 1778871669.259263,
+    "hash": "49d61ee23e8b4bc7233c562fe0f4ec59"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/HDFCPDFParser.swift": {
-    "mtime": 1778862637.178876,
+    "mtime": 1778872181.9828615,
     "hash": "6d6bc0d86aa9591c9c74c9d994f99c43"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/HDFCMetadataExtractor.swift": {
@@ -376,8 +396,8 @@
     "hash": "55a004fae55d14120f42cf9d0d19d0c0"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift": {
-    "mtime": 1778870811.3184795,
-    "hash": "83f042f5badb319596f69eadf88aa3b8"
+    "mtime": 1778874030.5418904,
+    "hash": "54f3e6f5583d89635dcf67638bf8b2b6"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/CreateNewTargetSheet.swift": {
     "mtime": 1778825276.0879261,
@@ -408,16 +428,16 @@
     "hash": "b66b04219229df73a6936a16cbcc5be3"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelStateManagement.swift": {
-    "mtime": 1778858963.807987,
-    "hash": "d7866c3adafa6dde9c11e0f46827ec66"
+    "mtime": 1778874026.7402067,
+    "hash": "8910cf4ec9eeb6adecf363fe6c111e6b"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/PasswordPromptSheet.swift": {
     "mtime": 1778828641.6287847,
     "hash": "b913b68105df9faf070c3120c1b894c2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView.swift": {
-    "mtime": 1778870779.5308867,
-    "hash": "1da9a75c90b578c87f1826ab5d091a36"
+    "mtime": 1778874305.2932312,
+    "hash": "a8969c395730a7fb705b3b48f14778d4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportView+Sections.swift": {
     "mtime": 1778858936.1552763,
