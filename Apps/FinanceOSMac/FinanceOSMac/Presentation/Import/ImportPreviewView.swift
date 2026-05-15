@@ -18,17 +18,11 @@ struct ImportPreviewView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 fileListSection()
-
                 Divider()
-
                 aggregatedSummarySection()
-
                 Divider()
-
                 targetSelectionSection
-
                 Divider()
-
                 aggregatedTransactionListSection()
             }
             .padding()
