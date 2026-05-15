@@ -75,34 +75,46 @@ struct ImportView: View {
                 if isTargeted {
                     VStack(spacing: 16) {
                         Image(systemName: "arrow.down.doc.fill")
-                            .font(.system(size: 48))
-                            .foregroundColor(.blue)
+                            .font(.system(size: 48, weight: .semibold))
+                            .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
 
                         VStack(spacing: 4) {
                             Text("Drop Files Here")
-                                .font(.title2)
-                                .fontWeight(.semibold)
+                                .font(.system(size: 16, weight: .semibold))
 
-                            Text("CSV or delimited TXT files")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            Text("Release to import")
+                                .font(.system(size: 12, weight: .regular))
+                                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.blue.opacity(0.05))
+                    .background(Color(red: 0.231, green: 0.510, blue: 0.980).opacity(0.1))
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
-                            SourcePickerSection(selectedSource: $selectedSource, errorMessage: viewModel.errorMessage)
+                            headerSection
 
-                            Divider()
+                            SourcePickerSection(
+                                selectedSource: $selectedSource,
+                                errorMessage: viewModel.errorMessage
+                            )
 
                             if viewModel.isLoading {
-                                ProgressView("Parsing files...")
+                                VStack(spacing: 8) {
+                                    ProgressView()
+                                        .controlSize(.small)
+
+                                    Text("Parsing statement...")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(20)
+                                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                                .cornerRadius(10)
                             } else {
                                 if selectedSource != nil {
                                     DropZoneView(selectedSource: selectedSource)
-                                    Divider()
                                     filePickerButton
                                 } else {
                                     FileSelectionPlaceholder()
@@ -110,14 +122,20 @@ struct ImportView: View {
                             }
 
                             if !viewModel.parsedStatements.isEmpty {
-                                Divider()
-                                TargetSelectionSection(viewModel: viewModel, targetChoice: $targetChoice)
+                                TargetSelectionSection(
+                                    viewModel: viewModel,
+                                    targetChoice: $targetChoice
+                                )
                             }
+
+                            Spacer()
+                                .frame(height: 20)
                         }
-                        .padding()
+                        .padding(16)
                     }
                 }
             }
+            .background(Color(red: 0.051, green: 0.051, blue: 0.059))
         }
         .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
             guard let source = selectedSource else { return false }
@@ -149,9 +167,19 @@ struct ImportView: View {
         }
     }
 
+    private var headerSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Import Statements")
+                .font(.system(size: 18, weight: .semibold))
+
+            Text("Upload your bank or credit card statements")
+                .font(.system(size: 13, weight: .regular))
+                .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+        }
+    }
+
     private var filePickerButton: some View {
-        Button("Select Files") {
-            print("[UI] Select Files button tapped")
+        Button(action: {
             let panel = NSOpenPanel()
 
             let allowedFormats = selectedSource?.allowedFormats ?? []
@@ -166,17 +194,25 @@ struct ImportView: View {
             panel.allowsMultipleSelection = true
 
             let result = panel.runModal()
-            print("[UI] Panel result: \(result.rawValue), urls: \(panel.urls.count)")
 
             if result == .OK, !panel.urls.isEmpty {
-                print("[UI] Conditions met, calling setFileURLs and parseFiles")
                 viewModel.setFileURLs(panel.urls)
                 viewModel.parseFiles()
-            } else {
-                print("[UI] Conditions not met - result=\(result.rawValue) isEmpty=\(panel.urls.isEmpty)")
             }
-        }
-        .controlSize(.large)
+        }, label: {
+            HStack(spacing: 8) {
+                Image(systemName: "folder.badge.plus")
+                    .font(.system(size: 14, weight: .semibold))
+
+                Text("Select Files")
+                    .font(.system(size: 14, weight: .medium))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(12)
+            .foregroundColor(.white)
+        })
+        .background(Color(red: 0.231, green: 0.510, blue: 0.980))
+        .cornerRadius(8)
         .disabled(selectedSource == nil)
     }
 
@@ -185,21 +221,42 @@ struct ImportView: View {
             if !viewModel.parsedStatements.isEmpty {
                 ImportPreviewView(viewModel: viewModel, targetChoice: $targetChoice)
             }
+
             Divider()
+
             HStack(spacing: 12) {
-                Button("Cancel") {
+                Button(action: {
                     viewModel.fileURLs = []
                     viewModel.parsedStatements = []
                     viewModel.selectedTarget = nil
-                }
+                }, label: {
+                    Text("Cancel")
+                        .font(.system(size: 14, weight: .medium))
+                        .frame(maxWidth: .infinity)
+                })
+                .foregroundColor(.gray)
+                .padding(12)
+                .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+                .cornerRadius(8)
 
-                Spacer()
+                Button(action: viewModel.importTransactions, label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "arrow.down.doc.fill")
+                            .font(.system(size: 14, weight: .semibold))
 
-                Button("Import", action: viewModel.importTransactions)
-                    .disabled(viewModel.selectedTarget == nil || viewModel.isLoading)
-                    .keyboardShortcut(.defaultAction)
+                        Text("Import")
+                            .font(.system(size: 14, weight: .semibold))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.white)
+                })
+                .padding(12)
+                .background(Color(red: 0.231, green: 0.510, blue: 0.980))
+                .cornerRadius(8)
+                .disabled(viewModel.selectedTarget == nil || viewModel.isLoading)
+                .keyboardShortcut(.defaultAction)
             }
-            .padding()
+            .padding(16)
         }
     }
 }

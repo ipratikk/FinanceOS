@@ -36,33 +36,63 @@ struct TargetSelectionSection: View {
     @Binding var targetChoice: TargetChoice?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Import To")
-                .font(.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Import To")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.gray)
+
+                    Text("Select or create target")
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundColor(Color(red: 0.447, green: 0.447, blue: 0.478))
+                }
+
+                Spacer()
+
+                if targetChoice != nil {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(red: 0.231, green: 0.510, blue: 0.980))
+                }
+            }
 
             Picker("Target", selection: $targetChoice) {
-                Text("Select Account or Card...").tag(nil as TargetChoice?)
+                Text("Select target...").tag(nil as TargetChoice?)
 
                 if !viewModel.accounts.isEmpty {
-                    Divider()
-                    Text("Accounts").font(.caption).tag(nil as TargetChoice?)
-
-                    ForEach(viewModel.accounts) { account in
-                        Text(account.accountName)
-                            .tag(TargetChoice.account(account.id) as TargetChoice?)
+                    Section("Accounts") {
+                        ForEach(viewModel.accounts) { account in
+                            Text(account.accountName)
+                                .tag(TargetChoice.account(account.id) as TargetChoice?)
+                        }
                     }
                 }
 
                 if !viewModel.cards.isEmpty {
-                    Divider()
-                    Text("Cards").font(.caption).tag(nil as TargetChoice?)
-
-                    ForEach(viewModel.cards) { card in
-                        Text(card.cardName)
-                            .tag(TargetChoice.card(card.id) as TargetChoice?)
+                    Section("Cards") {
+                        ForEach(viewModel.cards) { card in
+                            Text(card.cardName)
+                                .tag(TargetChoice.card(card.id) as TargetChoice?)
+                        }
                     }
                 }
+
+                Section("Create New") {
+                    Text("New Account")
+                        .tag(TargetChoice.createAccount as TargetChoice?)
+                    Text("New Card")
+                        .tag(TargetChoice.createCard as TargetChoice?)
+                }
             }
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(10)
+            .background(Color(red: 0.110, green: 0.110, blue: 0.122))
+            .cornerRadius(6)
         }
+        .padding(12)
+        .background(Color(red: 0.086, green: 0.086, blue: 0.098))
+        .cornerRadius(10)
     }
 }
