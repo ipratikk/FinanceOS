@@ -80,6 +80,7 @@ class HDFCTransactionReconstructor {
             "account number",
             "ifsc code",
             "state account branch",
+            "account branch",
             "joint holders",
             "od limit",
             "cust id",
@@ -88,7 +89,11 @@ class HDFCTransactionReconstructor {
             "requesting branch",
             "computer generated statement",
             "phone no",
-            "this is a computer"
+            "this is a computer",
+            "this statement",
+            "address :",
+            "email :",
+            "not require signature"
         ]
 
         let lower = text.lowercased()

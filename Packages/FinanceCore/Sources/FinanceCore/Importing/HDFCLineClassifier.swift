@@ -39,6 +39,7 @@ class HDFCLineClassifier {
         "registered office",
         "bank guarantee",
         "state account branch",
+        "account branch",
         "joint holders",
         "od limit",
         "cust id",
@@ -48,7 +49,13 @@ class HDFCLineClassifier {
         "computer generated statement",
         "statement period",
         "closing balance",
-        "phone no"
+        "phone no",
+        "this statement",
+        "address :",
+        "email :",
+        "not require signature",
+        "bangalore",
+        "kolkata"
     ]
 
     func classify(_ line: String) -> ClassifiedLine {
