@@ -37,7 +37,18 @@ class HDFCLineClassifier {
         "aadhaar",
         "mca registered",
         "registered office",
-        "bank guarantee"
+        "bank guarantee",
+        "state account branch",
+        "joint holders",
+        "od limit",
+        "cust id",
+        "virtual preferred",
+        "statement summary",
+        "requesting branch",
+        "computer generated statement",
+        "statement period",
+        "closing balance",
+        "phone no"
     ]
 
     func classify(_ line: String) -> ClassifiedLine {

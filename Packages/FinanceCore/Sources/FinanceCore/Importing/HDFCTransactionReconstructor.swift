@@ -78,7 +78,17 @@ class HDFCTransactionReconstructor {
             "thank you for banking",
             "digital footprint",
             "account number",
-            "ifsc code"
+            "ifsc code",
+            "state account branch",
+            "joint holders",
+            "od limit",
+            "cust id",
+            "virtual preferred",
+            "statement summary",
+            "requesting branch",
+            "computer generated statement",
+            "phone no",
+            "this is a computer"
         ]
 
         let lower = text.lowercased()
