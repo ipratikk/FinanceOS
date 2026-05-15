@@ -69,12 +69,41 @@ public struct HDFCPDFParser: StatementParser {
         )
     }
 
+    private func expandConcatenatedLine(_ line: String) -> [String] {
+        let datePattern = try! NSRegularExpression(pattern: "\\d{2}/\\d{2}/\\d{2}")
+        let dateMatches = datePattern.matches(in: line, range: NSRange(line.startIndex..., in: line))
+
+        guard dateMatches.count > 1 else { return [line] }
+
+        var result: [String] = []
+        var lastEnd = line.startIndex
+
+        for (index, match) in dateMatches.enumerated() {
+            guard let range = Range(match.range, in: line) else { continue }
+
+            if index > 0 {
+                let segment = String(line[lastEnd..<range.lowerBound]).trimmingCharacters(in: .whitespaces)
+                if !segment.isEmpty {
+                    result.append(String(line[lastEnd..<range.lowerBound]))
+                }
+            }
+            lastEnd = range.lowerBound
+        }
+
+        if lastEnd < line.endIndex {
+            result.append(String(line[lastEnd...]))
+        }
+
+        return result.isEmpty ? [line] : result
+    }
+
     private func parseHDFCTransactions(_ lines: [String]) throws -> [ParsedTransaction] {
         let classifier = HDFCLineClassifier()
         let reconstructor = HDFCTransactionReconstructor()
         let parser = HDFCTransactionParser()
 
-        let classifiedLines = lines.map { classifier.classify($0) }
+        let expandedLines = lines.flatMap { expandConcatenatedLine($0) }
+        let classifiedLines = expandedLines.map { classifier.classify($0) }
         let blocks = reconstructor.reconstructTransactionBlocks(from: classifiedLines)
 
         var transactions: [ParsedTransaction] = []
