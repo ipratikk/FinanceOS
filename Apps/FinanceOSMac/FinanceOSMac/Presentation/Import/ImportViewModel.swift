@@ -46,8 +46,12 @@ private func fileFormat(for url: URL) -> StatementFileFormat {
     switch pathExtension {
     case "csv":
         return .csv
+    case "txt":
+        return .txt
     case "xlsx":
         return .xlsx
+    case "pdf":
+        return .pdf
     default:
         logger.warning("Unknown extension '\(pathExtension, privacy: .public)', defaulting to CSV")
         return .csv
