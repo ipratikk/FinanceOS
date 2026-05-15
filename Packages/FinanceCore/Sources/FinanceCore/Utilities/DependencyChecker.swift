@@ -173,37 +173,34 @@ public enum DependencyChecker {
         process.arguments = ["install", "gnumeric"]
 
         let outputPipe = Pipe()
-        let errorPipe = Pipe()
         process.standardOutput = outputPipe
-        process.standardError = errorPipe
+        process.standardError = Pipe()
 
-        let linesLock = NSLock()
         var lines: [String] = []
 
         do {
             try process.run()
 
             let fileHandle = outputPipe.fileHandleForReading
-            fileHandle.readabilityHandler = { handle in
-                let data = handle.availableData
-                if !data.isEmpty, let line = String(data: data, encoding: .utf8) {
-                    let trimmed = line.trimmingCharacters(in: .newlines)
-                    if !trimmed.isEmpty {
-                        linesLock.lock()
-                        lines.append(trimmed)
-                        let lineCopy = lines
-                        linesLock.unlock()
-
-                        let step = DependencyStep(label: "Installing gnumeric", status: .running, logLines: lineCopy)
-                        Task { @MainActor in
-                            await progressHandler(step)
+            let poller = Task {
+                while process.isRunning {
+                    let data = fileHandle.availableData
+                    if !data.isEmpty, let chunk = String(data: data, encoding: .utf8) {
+                        for line in chunk.split(separator: "\n") {
+                            let trimmed = line.trimmingCharacters(in: .whitespaces)
+                            if !trimmed.isEmpty {
+                                lines.append(trimmed)
+                                let step = DependencyStep(label: "Installing gnumeric", status: .running, logLines: lines)
+                                await progressHandler(step)
+                            }
                         }
                     }
+                    try? await Task.sleep(nanoseconds: 100_000_000)
                 }
             }
 
             process.waitUntilExit()
-            fileHandle.readabilityHandler = nil
+            poller.cancel()
 
             return process.terminationStatus == 0
         } catch {
