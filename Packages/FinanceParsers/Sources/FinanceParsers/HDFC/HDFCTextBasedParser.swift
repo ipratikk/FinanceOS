@@ -149,22 +149,22 @@ class HDFCTextBasedParser {
     }
 
     private func extractDebitCredit(from amounts: [Double]) -> (debit: Double?, credit: Double?) {
-        // Filter out large amounts (likely balances, not transactions)
-        // Threshold: 5,000,000 paise = 50,000 INR (typical balance vs transaction)
-        let filtered = amounts.filter { $0 < 500_000 }
+        // HDFC format: [withdrawal_amt, deposit_amt, closing_balance, ...]
+        // Only use the first 3 amounts; ignore any beyond (they're from narration)
+        let significantAmounts = amounts.prefix(3)
 
-        guard !filtered.isEmpty else {
+        guard significantAmounts.count >= 2 else {
             return (nil, nil)
         }
 
-        if filtered.count == 1 {
-            // Single amount = credit
-            return (nil, filtered[0])
-        } else if filtered.count >= 2 {
-            // Two+ amounts = debit, credit
-            return (filtered[0], filtered[1])
-        } else {
-            return (nil, filtered.first)
-        }
+        let withdrawal = significantAmounts[0]
+        let deposit = significantAmounts[1]
+        // closing_balance (significantAmounts[2]) is ignored
+
+        // In HDFC format, withdrawal and deposit are mutually exclusive
+        let debit = withdrawal > 0 ? withdrawal : nil
+        let credit = deposit > 0 ? deposit : nil
+
+        return (debit, credit)
     }
 }
