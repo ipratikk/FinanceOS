@@ -1,11 +1,15 @@
 {
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/compare_parsers.py": {
-    "mtime": 1778939993.9859931,
-    "hash": "948e429564378d5a7ace01c11b540521"
+    "mtime": 1778941532.5729349,
+    "hash": "9d3fc40eaffbd4aac1c150b8c37d74f1"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/extract_hdfc_pdf.py": {
     "mtime": 1778838670.2897794,
     "hash": "c552d41486390fd403625495263111f8"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/parse_statement.py": {
+    "mtime": 1778941071.4450223,
+    "hash": "82b5cf24bc663b156e49e8deef0371a8"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/inspect_hdfc_pdf.py": {
     "mtime": 1778838650.2876394,
@@ -16,8 +20,8 @@
     "hash": "b04c5da0d51d0cd10f867d311bf91b1b"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/extract_hdfc_reference.py": {
-    "mtime": 1778940090.9835007,
-    "hash": "6175eb325c7950c6f2fbc8187fe59709"
+    "mtime": 1778941475.496527,
+    "hash": "43a591fdbb4c0639e65dfc1dd886f41b"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Package.swift": {
     "mtime": 1778882162.86904,
