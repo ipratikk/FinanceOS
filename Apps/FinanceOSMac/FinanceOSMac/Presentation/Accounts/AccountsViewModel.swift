@@ -19,6 +19,7 @@ final class AccountsViewModel {
     var banks: [Bank] = []
     var isLoading = false
     var editingAccount: Ledger?
+    var deleteError: String?
 
     init(
         ledgerRepository: LedgerRepository,
@@ -59,10 +60,11 @@ final class AccountsViewModel {
 
     func deleteAccount(id: UUID) async {
         do {
+            deleteError = nil
             try await ledgerRepository.delete(id: id)
             await loadAccounts()
         } catch {
-            print(error)
+            deleteError = error.localizedDescription
         }
     }
 

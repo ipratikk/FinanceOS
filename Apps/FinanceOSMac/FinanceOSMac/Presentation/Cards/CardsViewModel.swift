@@ -36,6 +36,7 @@ final class CardsViewModel {
     var editingCard: Ledger?
     var banks: [Bank] = []
     var accounts: [Ledger] = []
+    var deleteError: String?
 
     init(
         ledgerRepository: LedgerRepository,
@@ -88,10 +89,11 @@ final class CardsViewModel {
 
     func deleteCard(id: UUID) async {
         do {
+            deleteError = nil
             try await ledgerRepository.delete(id: id)
             await loadCards()
         } catch {
-            print(error)
+            deleteError = error.localizedDescription
         }
     }
 

@@ -13,6 +13,7 @@ struct AccountEditView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
+    @State private var deleteErrorMessage: String?
 
     init(account: Ledger, viewModel: AccountsViewModel) {
         self.account = account
@@ -176,11 +177,22 @@ struct AccountEditView: View {
             Button("Delete", role: .destructive) {
                 Task {
                     await viewModel.deleteAccount(id: account.id)
-                    dismiss()
+                    if viewModel.deleteError == nil {
+                        dismiss()
+                    } else {
+                        deleteErrorMessage = viewModel.deleteError
+                    }
                 }
             }
         } message: {
             Text("This will permanently delete this account and all associated transactions. This cannot be undone.")
+        }
+        .alert("Delete Failed", isPresented: .constant(deleteErrorMessage != nil)) {
+            Button("OK") { deleteErrorMessage = nil }
+        } message: {
+            if let error = deleteErrorMessage {
+                Text(error)
+            }
         }
     }
 
