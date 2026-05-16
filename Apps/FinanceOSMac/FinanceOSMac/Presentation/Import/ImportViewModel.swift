@@ -139,16 +139,56 @@ final class ImportViewModel {
 
         do {
             let detectedSource = try StatementDetector.detect(fileURL: fileURL)
-            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
-            let txnCount = result.statement.transactions.count
+            var result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
+
+            // Enhance metadata by extracting from filename
+            let filenameExtractor = FilenameMetadataExtractor()
+            let filenameMetadata = filenameExtractor.extractMetadata(from: fileName)
+
+            // Merge filename metadata as fallback
+            var statement = result.statement
+            if statement.metadata == nil {
+                statement.metadata = StatementMetadata(
+                    accountNumber: filenameMetadata.accountLast4,
+                    fullAccountNumber: filenameMetadata.accountNumber,
+                    generatedAt: filenameMetadata.statementDate
+                )
+            } else if let metadata = statement.metadata {
+                statement.metadata = mergeMetadata(parsed: metadata, filename: filenameMetadata)
+            }
+
+            let txnCount = statement.transactions.count
             logger.logInfo(
                 "Parsed {file}: {count} txns from {bank}",
                 ["file": fileName, "count": txnCount, "bank": detectedSource.bankName]
             )
-            return result.statement
+            return statement
         } catch let error as DetectionError {
             throw TransactionImportError.unsupportedFormat(error.description)
         }
+    }
+
+    private func mergeMetadata(parsed: StatementMetadata, filename: FilenameMetadata) -> StatementMetadata {
+        return StatementMetadata(
+            customerName: parsed.customerName ?? filename.accountNumber,
+            customerId: parsed.customerId,
+            accountNumber: parsed.accountNumber ?? filename.accountLast4,
+            fullAccountNumber: parsed.fullAccountNumber ?? filename.accountNumber,
+            accountType: parsed.accountType,
+            cardType: parsed.cardType,
+            branch: parsed.branch,
+            branchCode: parsed.branchCode,
+            address: parsed.address,
+            email: parsed.email,
+            phone: parsed.phone,
+            ifsc: parsed.ifsc,
+            micr: parsed.micr,
+            openingBalance: parsed.openingBalance,
+            closingBalance: parsed.closingBalance,
+            debitCount: parsed.debitCount,
+            creditCount: parsed.creditCount,
+            generatedAt: parsed.generatedAt ?? filename.statementDate
+        )
     }
 
     func importTransactions() {
