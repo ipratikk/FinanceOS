@@ -3,7 +3,7 @@ import Foundation
 
 enum ParsedTransactionMapper {
     static func map(_ parsed: ParsedTransaction, target: TransactionImportTarget) -> Transaction {
-        let transactionType: TransactionType = parsed.amountMinorUnits >= 0 ? .credit : .debit
+        let transactionType: TransactionType = parsed.amountMinorUnits >= 0 ? .debit : .credit
         let absoluteAmount = abs(parsed.amountMinorUnits)
 
         switch target {
