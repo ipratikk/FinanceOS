@@ -35,11 +35,10 @@ public enum ImportTargetMatcher {
     /// Requires exact last4 match when available; does not fall back to "first at bank".
     public static func bestTarget(
         for statement: ParsedStatement,
-        accounts: [Account],
-        cards: [Card],
+        ledgers: [Ledger],
         banks: [Bank]
     ) -> TransactionImportTarget? {
-        guard let match = bestMatch(for: statement, accounts: accounts, cards: cards, banks: banks) else {
+        guard let match = bestMatch(for: statement, ledgers: ledgers, banks: banks) else {
             return nil
         }
         return match.confidence >= 0.9 ? match.target : nil
@@ -49,8 +48,7 @@ public enum ImportTargetMatcher {
     /// Returns nil if no potential match exists at all.
     public static func bestMatch(
         for statement: ParsedStatement,
-        accounts: [Account],
-        cards: [Card],
+        ledgers: [Ledger],
         banks: [Bank]
     ) -> ImportTargetMatch? {
         let isCard = statement.cardLast4 != nil
@@ -61,9 +59,9 @@ public enum ImportTargetMatcher {
         }
 
         if isCard, let cardLast4 = statement.cardLast4 {
-            let banksCards = cards.filter { $0.bankId == bank.id }
+            let banksCards = ledgers.filter { $0.bankId == bank.id && $0.kind == .creditCard }
 
-            if let matchingCard = banksCards.first(where: { $0.cardLast4 == cardLast4 }) {
+            if let matchingCard = banksCards.first(where: { $0.last4 == cardLast4 }) {
                 return ImportTargetMatch(.ledger(matchingCard.id), confidence: 1.0)
             }
 
@@ -75,9 +73,9 @@ public enum ImportTargetMatcher {
         }
 
         if !isCard, let accountLast4 = statement.accountLast4 {
-            let banksAccounts = accounts.filter { $0.bankId == bank.id }
+            let banksAccounts = ledgers.filter { $0.bankId == bank.id && $0.kind == .bankAccount }
 
-            if let matchingAccount = banksAccounts.first(where: { $0.accountLast4 == accountLast4 }) {
+            if let matchingAccount = banksAccounts.first(where: { $0.last4 == accountLast4 }) {
                 return ImportTargetMatch(.ledger(matchingAccount.id), confidence: 1.0)
             }
 
@@ -89,7 +87,7 @@ public enum ImportTargetMatcher {
         }
 
         if !isCard {
-            let banksAccounts = accounts.filter { $0.bankId == bank.id }
+            let banksAccounts = ledgers.filter { $0.bankId == bank.id && $0.kind == .bankAccount }
 
             if banksAccounts.count == 1 {
                 return ImportTargetMatch(.ledger(banksAccounts[0].id), confidence: 0.7)

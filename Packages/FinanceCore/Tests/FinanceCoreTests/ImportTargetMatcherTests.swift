@@ -7,34 +7,36 @@ let testBank = Bank(id: UUID(), name: "HDFC", providerType: .bank)
 let testBank2 = Bank(id: UUID(), name: "ICICI", providerType: .bank)
 let testBank3 = Bank(id: UUID(), name: "Amex", providerType: .credit)
 
-let testAccount1 = Account(
+let testLedger1 = Ledger(
     id: UUID(),
     bankId: testBank.id,
-    accountName: "HDFC Account 1",
-    accountLast4: "6521"
+    kind: .bankAccount,
+    displayName: "HDFC Account 1",
+    last4: "6521"
 )
 
-let testAccount2 = Account(
+let testLedger2 = Ledger(
     id: UUID(),
     bankId: testBank.id,
-    accountName: "HDFC Account 2",
-    accountLast4: "9876"
+    kind: .bankAccount,
+    displayName: "HDFC Account 2",
+    last4: "9876"
 )
 
-let testCard1 = Card(
+let testLedger3 = Ledger(
     id: UUID(),
     bankId: testBank.id,
-    linkedAccountId: testAccount1.id,
-    cardName: "HDFC Regalia",
-    cardLast4: "1234"
+    kind: .creditCard,
+    displayName: "HDFC Regalia",
+    last4: "1234"
 )
 
-let testCard2 = Card(
+let testLedger4 = Ledger(
     id: UUID(),
     bankId: testBank.id,
-    linkedAccountId: testAccount1.id,
-    cardName: "HDFC MoneyBack",
-    cardLast4: "5678"
+    kind: .creditCard,
+    displayName: "HDFC MoneyBack",
+    last4: "5678"
 )
 
 // MARK: - FuzzyMatch Tests
@@ -85,12 +87,11 @@ func bestTargetCardExactLast4Match() {
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1, testAccount2],
-        cards: [testCard1, testCard2],
+        ledgers: [testLedger1, testLedger2, testLedger3, testLedger4],
         banks: [testBank, testBank2, testBank3]
     )
 
-    #expect(result == .ledger(testCard1.id))
+    #expect(result == .ledger(testLedger3.id))
 }
 
 @Test
@@ -106,8 +107,7 @@ func bestTargetCardNoLast4MatchReturnsNil() {
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1, testAccount2],
-        cards: [testCard1, testCard2],
+        ledgers: [testLedger1, testLedger2, testLedger3, testLedger4],
         banks: [testBank, testBank2, testBank3]
     )
 
@@ -125,18 +125,17 @@ func bestTargetCardMultipleCardsNoMatchReturnsNil() {
         metadata: nil
     )
 
-    let mismatchedCard = Card(
+    let mismatchedLedger = Ledger(
         id: UUID(),
         bankId: testBank.id,
-        linkedAccountId: testAccount1.id,
-        cardName: "HDFC Card",
-        cardLast4: "9999"
+        kind: .creditCard,
+        displayName: "HDFC Card",
+        last4: "9999"
     )
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1],
-        cards: [testCard1, mismatchedCard],
+        ledgers: [testLedger3, mismatchedLedger],
         banks: [testBank]
     )
 
@@ -156,12 +155,11 @@ func bestTargetAccountExactLast4Match() {
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1, testAccount2],
-        cards: [testCard1, testCard2],
+        ledgers: [testLedger1, testLedger2, testLedger3, testLedger4],
         banks: [testBank, testBank2, testBank3]
     )
 
-    #expect(result == .ledger(testAccount1.id))
+    #expect(result == .ledger(testLedger1.id))
 }
 
 @Test
@@ -177,8 +175,7 @@ func bestTargetAccountNoLast4MatchReturnsNil() {
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1, testAccount2],
-        cards: [testCard1, testCard2],
+        ledgers: [testLedger1, testLedger2, testLedger3, testLedger4],
         banks: [testBank, testBank2, testBank3]
     )
 
@@ -198,12 +195,11 @@ func bestTargetAccountSingleAccount() {
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1],
-        cards: [],
+        ledgers: [testLedger1],
         banks: [testBank]
     )
 
-    #expect(result == .ledger(testAccount1.id))
+    #expect(result == .ledger(testLedger1.id))
 }
 
 @Test
@@ -219,8 +215,7 @@ func bestTargetAccountMultipleAccountsNoLast4ReturnsNil() {
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1, testAccount2],
-        cards: [],
+        ledgers: [testLedger1, testLedger2],
         banks: [testBank]
     )
 
@@ -240,8 +235,7 @@ func bestTargetBankNotFound() {
 
     let result = ImportTargetMatcher.bestTarget(
         for: statement,
-        accounts: [testAccount1],
-        cards: [],
+        ledgers: [testLedger1],
         banks: [testBank, testBank2]
     )
 
@@ -263,8 +257,7 @@ func bestMatchReturnsConfidenceWithScore() {
 
     let result = ImportTargetMatcher.bestMatch(
         for: statement,
-        accounts: [testAccount1, testAccount2],
-        cards: [],
+        ledgers: [testLedger1],
         banks: [testBank]
     )
 
