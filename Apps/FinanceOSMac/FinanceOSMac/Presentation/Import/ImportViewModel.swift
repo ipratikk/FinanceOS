@@ -28,7 +28,13 @@ final class ImportViewModel {
     }
 
     var supportedSources: [(bankName: String, sourceType: StatementSourceType)] {
-        parserRegistry.supportedSources
+        [
+            ("HDFC", .bankAccount),
+            ("HDFC", .creditCard),
+            ("ICICI", .bankAccount),
+            ("ICICI", .creditCard),
+            ("Amex", .creditCard)
+        ]
     }
 
     let transactionImportPipeline: TransactionImportPipeline
@@ -109,7 +115,10 @@ final class ImportViewModel {
         do {
             let detectedSource = try StatementDetector.detect(fileURL: fileURL)
             let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
-            logger.info("Parsed \(fileName, privacy: .public): \(result.statement.transactions.count, privacy: .public) txns from \(detectedSource.bankName, privacy: .public)")
+            logger
+                .info(
+                    "Parsed \(fileName, privacy: .public): \(result.statement.transactions.count, privacy: .public) txns from \(detectedSource.bankName, privacy: .public)"
+                )
             return result.statement
         } catch let error as DetectionError {
             throw TransactionImportError.unsupportedFormat(error.description)
