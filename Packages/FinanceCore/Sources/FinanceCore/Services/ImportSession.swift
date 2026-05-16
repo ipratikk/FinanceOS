@@ -3,16 +3,17 @@ import Foundation
 import Observation
 
 @Observable
-public final class ImportSession: Sendable {
+@MainActor
+public final class ImportSession {
     // Parse phase
     public var selectedSource: StatementSource?
     public var fileURLs: [URL] = []
     public var parsedStatements: [ParsedStatement] = []
 
-    // Preview phase
+    /// Preview phase
     public var matchedLedgers: [UUID: Ledger] = [:]
 
-    // Target creation phase
+    /// Target creation phase
     public var targetBeingCreated: TargetCreationState?
 
     // Final import
@@ -23,7 +24,7 @@ public final class ImportSession: Sendable {
     public var errorMessage: String?
     public var isLoading = false
 
-    // Derived state
+    /// Derived state
     public var currentParsedStatement: ParsedStatement? {
         parsedStatements.first
     }

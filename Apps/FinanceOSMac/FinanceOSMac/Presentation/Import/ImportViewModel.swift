@@ -19,10 +19,7 @@ final class ImportViewModel {
     var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
 
-    private lazy var accountMatcher = AccountMatcher(
-        ledgerRepository: ledgerRepository,
-        bankRepository: bankRepository
-    )
+    var accountMatcher: AccountMatcher
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(importSession.fileURLs, importSession.parsedStatements).map { ($0, $1) }
@@ -32,13 +29,15 @@ final class ImportViewModel {
         StatementSourceRegistry.supportedSources
     }
 
-    // For backward compatibility with views
+    /// For backward compatibility with views
     var fileURLs: [URL] {
-        importSession.fileURLs
+        get { importSession.fileURLs }
+        set { importSession.fileURLs = newValue }
     }
 
     var parsedStatements: [ParsedStatement] {
-        importSession.parsedStatements
+        get { importSession.parsedStatements }
+        set { importSession.parsedStatements = newValue }
     }
 
     var selectedTarget: TransactionImportTarget? {
@@ -72,11 +71,15 @@ final class ImportViewModel {
         ledgerRepository: any LedgerRepository,
         transactionRepository: any TransactionRepository
     ) {
-        self.importSession = ImportSession()
+        importSession = ImportSession()
         self.transactionImportPipeline = transactionImportPipeline
         self.bankRepository = bankRepository
         self.ledgerRepository = ledgerRepository
         self.transactionRepository = transactionRepository
+        accountMatcher = AccountMatcher(
+            ledgerRepository: ledgerRepository,
+            bankRepository: bankRepository
+        )
     }
 
     func setFileURLs(_ urls: [URL]) {
@@ -184,9 +187,5 @@ final class ImportViewModel {
                 importSession.isLoading = false
             }
         }
-    }
-
-    private func reset() {
-        importSession.reset()
     }
 }

@@ -58,7 +58,7 @@ public struct HDFCBankMetadataExtractor: Sendable {
 
     private func extractFullAccountNumber(from lines: [String]) -> String? {
         for line in lines.prefix(25) {
-            if line.contains("Account") && line.contains("XXXXXXXX") {
+            if line.contains("Account"), line.contains("XXXXXXXX") {
                 let pattern = "([0-9X]+)"
                 if let regex = try? NSRegularExpression(pattern: pattern) {
                     let range = NSRange(line.startIndex..., in: line)

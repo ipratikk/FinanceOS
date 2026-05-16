@@ -64,11 +64,11 @@ extension ImportViewModel {
         do {
             let matchResult = try await accountMatcher.findMatches(for: statement)
             switch matchResult {
-            case .exactMatch(let ledger):
+            case let .exactMatch(ledger):
                 importSession.selectedTarget = .ledger(ledger.id)
                 logger.info("Auto-matched exact account")
                 await detectDuplicates(for: .ledger(ledger.id))
-            case .fuzzyMatch(let ledger):
+            case let .fuzzyMatch(ledger):
                 importSession.selectedTarget = .ledger(ledger.id)
                 logger.info("Auto-matched fuzzy account")
                 await detectDuplicates(for: .ledger(ledger.id))

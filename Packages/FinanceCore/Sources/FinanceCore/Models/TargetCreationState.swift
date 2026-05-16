@@ -1,7 +1,7 @@
 import FinanceParsers
 import Foundation
 
-public struct TargetCreationState: Sendable {
+public struct TargetCreationState {
     public var customName: String = ""
     public var nickname: String = ""
     public var last4: String = ""
