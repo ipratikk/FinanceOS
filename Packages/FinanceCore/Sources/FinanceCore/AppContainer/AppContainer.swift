@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FinanceParsers
 
 @MainActor
 public final class AppContainer {

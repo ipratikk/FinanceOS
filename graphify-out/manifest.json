@@ -480,12 +480,40 @@
     "hash": "67f6f421cd60c9691cc07950b6d1d0cc"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/StatementParser.swift": {
-    "mtime": 1778873870.755609,
-    "hash": "051d3247893eeea14eaa2a2e9c429194"
+    "mtime": 1778910228.0871067,
+    "hash": "d279c4aec34c8b38a972105da74a6827"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/TabularTransactionDecoder.swift": {
     "mtime": 1778909909.7583902,
     "hash": "5d3319f9f1033f6e922f5400bfe25c28"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFC/HDFCCardStatementParser.swift": {
+    "mtime": 1778910069.3516848,
+    "hash": "a5c18fd876a330832c485d07a03e2028"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFC/HDFCBankStatementParser.swift": {
+    "mtime": 1778910062.0018206,
+    "hash": "97ed8e5776a3965de7f31ef5851b7875"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Format/XLSXStatementParser.swift": {
+    "mtime": 1778910216.6615415,
+    "hash": "e50b5ce3d6fc31c5d176937d71b2fee7"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Format/CSVStatementParser.swift": {
+    "mtime": 1778910202.450061,
+    "hash": "4615c87d893808d9eb377fd44b02183e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Format/CSVRowReader.swift": {
+    "mtime": 1778910217.7435582,
+    "hash": "b3108441f5a97739981d4f5384124201"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Format/TXTStatementParser.swift": {
+    "mtime": 1778910204.9830086,
+    "hash": "ed18995a795091eeda5c146b036e6396"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Amex/AmexCardStatementParser.swift": {
+    "mtime": 1778910058.6844726,
+    "hash": "0afa29b20a2b549dbfd6b062a5b450e0"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/HDFCModels.swift": {
     "mtime": 1778829631.3801873,
@@ -534,6 +562,14 @@
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Core/StatementSourceType.swift": {
     "mtime": 1778909933.3045554,
     "hash": "d6113049a593d4cf2823343e742cba71"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/ICICI/ICICIBankStatementParser.swift": {
+    "mtime": 1778910074.8143015,
+    "hash": "b65e42153b3104cde8f3a5093ec6d811"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/ICICI/ICICICardStatementParser.swift": {
+    "mtime": 1778910077.9826186,
+    "hash": "660dea9f579cde98667b0a773b99e927"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/ICICI/ICICIMetadataExtractor.swift": {
     "mtime": 1778909138.954874,
