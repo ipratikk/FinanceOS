@@ -13,15 +13,15 @@ public struct HDFCBankTXTMapper: Sendable {
                 roles.append(.date)
             case "narration":
                 roles.append(.description)
-            case "valuedat":
+            case "valuedat", "value dat":
                 roles.append(.ignored)
-            case "debitamount":
+            case "debitamount", "debit amount":
                 roles.append(.debit)
-            case "creditamount":
+            case "creditamount", "credit amount":
                 roles.append(.credit)
-            case "chq/refnumber":
+            case "chq/refnumber", "chq/ref number":
                 roles.append(.reference)
-            case "closingbalance":
+            case "closingbalance", "closing balance":
                 roles.append(.balance)
             default:
                 roles.append(.ignored)
