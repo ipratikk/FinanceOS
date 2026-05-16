@@ -36,26 +36,32 @@ struct MockBankRepository: BankRepository {
     func delete(id: UUID) async throws {}
 }
 
-struct MockAccountRepository: AccountRepository {
-    func fetchAccounts() async throws -> [Account] {
+struct MockLedgerRepository: LedgerRepository {
+    func fetchLedgers() async throws -> [Ledger] {
         []
     }
 
-    func insert(_ account: Account) async throws {}
-
-    func update(_ account: Account) async throws {}
-
-    func delete(id: UUID) async throws {}
-}
-
-struct MockCardRepository: CardRepository {
-    func fetchCards() async throws -> [Card] {
+    func fetchLedgers(bankId: UUID) async throws -> [Ledger] {
         []
     }
 
-    func insert(_ card: Card) async throws {}
+    func fetchLedgers(kind: LedgerKind) async throws -> [Ledger] {
+        []
+    }
 
-    func update(_ card: Card) async throws {}
+    func fetchLedgers(bankId: UUID, kind: LedgerKind) async throws -> [Ledger] {
+        []
+    }
+
+    func fetchLedger(id: UUID) async throws -> Ledger? {
+        nil
+    }
+
+    func insert(_ ledger: Ledger) async throws {}
+
+    func update(_ ledger: Ledger) async throws {}
+
+    func archive(id: UUID) async throws {}
 
     func delete(id: UUID) async throws {}
 }

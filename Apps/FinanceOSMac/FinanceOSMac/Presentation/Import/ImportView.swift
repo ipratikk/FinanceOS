@@ -229,8 +229,7 @@ struct ImportView: View {
         viewModel: ImportViewModel(
             transactionImportPipeline: mockPipeline,
             bankRepository: MockBankRepository(),
-            accountRepository: MockAccountRepository(),
-            cardRepository: MockCardRepository(),
+            ledgerRepository: MockLedgerRepository(),
             transactionRepository: mockRepository
         )
     )
