@@ -32,8 +32,8 @@ public struct HDFCCardMetadataExtractor: Sendable {
     private func extractCardLast4(from lines: [String]) -> String? {
         for line in lines.prefix(25) {
             if line.contains("Card No:") {
-                // Extract last 4 digits from "Card No: 5522 60XX XXXX 7880"
-                let parts = line.components(separatedBy: " ").filter { !$0.isEmpty }
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+                let parts = trimmed.components(separatedBy: " ").filter { !$0.isEmpty }
                 if let lastPart = parts.last, lastPart.count == 4, lastPart.allSatisfy(\.isNumber) {
                     return lastPart
                 }

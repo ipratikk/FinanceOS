@@ -428,8 +428,8 @@
     "hash": "c35f395547ce5d674104d39a944e5bb6"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/ICICICard/ICICICardMetadataExtractor.swift": {
-    "mtime": 1778943818.4273226,
-    "hash": "d6a284f59528816f9b5cd06496b841e9"
+    "mtime": 1778944177.6541474,
+    "hash": "b5c2c55e11add65de20daa3181842438"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/ICICI/ICICIBankCSVParser.swift": {
     "mtime": 1778913189.1790168,
@@ -472,8 +472,8 @@
     "hash": "03ad786a5699ac451548382c0437acc2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFCCard/HDFCCardMetadataExtractor.swift": {
-    "mtime": 1778943815.038984,
-    "hash": "76294a3ce1c6e4a40e842866323bce9f"
+    "mtime": 1778944173.1396031,
+    "hash": "d2188ae9953b8f0f12c9556fb44b5443"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Amex/AmexCardCSVNormalizer.swift": {
     "mtime": 1778913189.204421,
