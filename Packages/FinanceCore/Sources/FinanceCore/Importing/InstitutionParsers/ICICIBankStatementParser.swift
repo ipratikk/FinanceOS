@@ -1,4 +1,5 @@
 import Foundation
+import FinanceParsers
 
 public struct ICICIBankStatementParser: InstitutionStatementParser {
     public let bankName = "ICICI"
@@ -52,6 +53,8 @@ public struct ICICIBankStatementParser: InstitutionStatementParser {
             }
         }
 
+        let metadata = ICICIMetadataExtractor().extract(from: rows)
+
         return ParsedStatement(
             bankName: bankName,
             accountName: accountName,
@@ -61,7 +64,8 @@ public struct ICICIBankStatementParser: InstitutionStatementParser {
             currency: currency,
             totalDebit: totalDebit,
             totalCredit: totalCredit,
-            transactions: transactions
+            transactions: transactions,
+            metadata: metadata
         )
     }
 
