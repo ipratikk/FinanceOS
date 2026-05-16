@@ -119,13 +119,10 @@ struct ValidateCommand: AsyncParsableCommand {
             throw CLIError.fileNotFound(filePath)
         }
 
-        let fileExtension = fileURL.pathExtension.lowercased()
-        guard let format = StatementFileFormat(rawValue: fileExtension) else {
-            throw CLIError.unsupportedFormat(fileExtension)
-        }
-
         do {
-            let statement = try await parseStatement(fileURL: fileURL, format: format)
+            let detectedSource = try StatementDetector.detect(fileURL: fileURL)
+            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
+            let statement = result.statement
 
             print("✓ Valid statement parsed")
             print("  Bank: \(statement.bankName)")
@@ -134,32 +131,16 @@ struct ValidateCommand: AsyncParsableCommand {
                 print("  Card: ****\(cardLast4)")
             }
             print("  Transactions: \(statement.transactions.count)")
-            print("  Period: \(formatDate(statement.statementPeriodStart)) to \(formatDate(statement.statementPeriodEnd))")
             print("  Currency: \(statement.currency)")
             print("  Total Debit: \(formatAmount(statement.totalDebit))")
             print("  Total Credit: \(formatAmount(statement.totalCredit))")
+        } catch let error as DetectionError {
+            throw CLIError.parseError(error.description)
         } catch let error as TransactionImportError {
             throw CLIError.parseError(error.description)
         } catch {
             throw CLIError.parseError(error.localizedDescription)
         }
-    }
-
-    private func parseStatement(fileURL: URL, format: StatementFileFormat) async throws -> ParsedStatement {
-        let parser: StatementParser = {
-            switch format {
-            case .pdf:
-                return HDFCPDFParser(password: password)
-            case .csv:
-                return CSVStatementParser()
-            case .txt:
-                return TXTStatementParser()
-            case .xlsx:
-                return XLSXStatementParser()
-            }
-        }()
-
-        return try await parser.parseStatement(from: fileURL)
     }
 
     private func formatDate(_ date: Date?) -> String {
@@ -184,21 +165,12 @@ struct ListSourcesCommand: AsyncParsableCommand {
     )
 
     func run() throws {
-        let registry = StatementParserRegistry(
-            parsers: [
-                ICICIBankStatementParser(),
-                ICICICardStatementParser(),
-                HDFCBankStatementParser(),
-                HDFCCardStatementParser(),
-                AmexCardStatementParser()
-            ]
-        )
-
-        let sources = registry.supportedSources
         print("Registered statement sources:")
-        for (bankName, sourceType) in sources {
-            print("  • \(bankName) - \(sourceType.rawValue)")
-        }
+        print("  • ICICI Bank - bankAccount")
+        print("  • ICICI Card - creditCard")
+        print("  • HDFC Bank - bankAccount")
+        print("  • HDFC Card - creditCard")
+        print("  • Amex Card - creditCard")
     }
 }
 
@@ -226,19 +198,18 @@ struct CompareCommand: AsyncParsableCommand {
             throw CLIError.fileNotFound(filePath)
         }
 
-        let fileExtension = fileURL.pathExtension.lowercased()
-        guard let format = StatementFileFormat(rawValue: fileExtension) else {
-            throw CLIError.unsupportedFormat(fileExtension)
-        }
-
         do {
-            let statement = try await parseStatement(fileURL: fileURL, format: format)
+            let detectedSource = try StatementDetector.detect(fileURL: fileURL)
+            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            if #available(macOS 10.13, *) {
+                encoder.dateEncodingStrategy = .iso8601
+            }
 
-            guard let actualData = try? encoder.encode(statement),
+            guard let actualData = try? encoder.encode(result),
                   let actualJSON = String(data: actualData, encoding: .utf8) else {
-                throw CLIError.parseError("Failed to encode statement as JSON")
+                throw CLIError.parseError("Failed to encode result as JSON")
             }
 
             if let expectedPath = expected {
@@ -256,28 +227,13 @@ struct CompareCommand: AsyncParsableCommand {
             } else {
                 print(actualJSON)
             }
+        } catch let error as DetectionError {
+            throw CLIError.parseError(error.description)
         } catch let error as TransactionImportError {
             throw CLIError.parseError(error.description)
         } catch {
             throw CLIError.parseError(error.localizedDescription)
         }
-    }
-
-    private func parseStatement(fileURL: URL, format: StatementFileFormat) async throws -> ParsedStatement {
-        let parser: StatementParser = {
-            switch format {
-            case .pdf:
-                return HDFCPDFParser(password: password)
-            case .csv:
-                return CSVStatementParser()
-            case .txt:
-                return TXTStatementParser()
-            case .xlsx:
-                return XLSXStatementParser()
-            }
-        }()
-
-        return try await parser.parseStatement(from: fileURL)
     }
 }
 

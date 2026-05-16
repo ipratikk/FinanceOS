@@ -54,9 +54,6 @@ public struct DefaultTransactionImporter: Sendable {
         var parsersByFormat: [StatementFileFormat: any StatementParser] = [:]
 
         let defaultParsers: [any StatementParser] = parsers ?? [
-            CSVStatementParser(),
-            XLSXStatementParser(),
-            TXTStatementParser(),
             HDFCPDFParser()
         ]
 

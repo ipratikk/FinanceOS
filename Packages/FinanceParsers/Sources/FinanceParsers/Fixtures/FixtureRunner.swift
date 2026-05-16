@@ -24,38 +24,11 @@ public struct FixtureRunner: Sendable {
     }
 
     public func run(fixture: FixtureFile) async -> FixtureResult {
-        let fileExtension = fixture.inputURL.pathExtension.lowercased()
-        guard let format = StatementFileFormat(rawValue: fileExtension) else {
-            return FixtureResult(
-                fixture: fixture,
-                actual: nil,
-                expected: nil,
-                diff: ["Unsupported file format: \(fileExtension)"],
-                passed: false
-            )
-        }
-
         do {
-            let parser: StatementParser = {
-                switch format {
-                case .pdf:
-                    return HDFCPDFParser()
-                case .csv:
-                    return CSVStatementParser()
-                case .txt:
-                    return TXTStatementParser()
-                case .xlsx:
-                    return XLSXStatementParser()
-                }
-            }()
-
-            let statement = try await parser.parseStatement(from: fixture.inputURL)
-
-            let institutionVersion = institutionVersionForInstitution(fixture.institution)
-            let actual = ParseResult(
-                institutionVersion: institutionVersion,
-                statement: statement,
-                diagnostics: ParserDiagnostics()
+            let detectedSource = try StatementDetector.detect(fileURL: fixture.inputURL)
+            let actual = try UnifiedStatementParser().parse(
+                fileURL: fixture.inputURL,
+                detectedSource: detectedSource
             )
 
             let expected = try loadExpectedResult(fixture: fixture)
