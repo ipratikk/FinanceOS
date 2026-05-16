@@ -1,7 +1,7 @@
 import Foundation
 
-enum TabularTransactionDecoder {
-    static func decodeStatement(
+public enum TabularTransactionDecoder {
+    public static func decodeStatement(
         _ rows: [[String]]
     ) throws -> ParsedStatement {
         guard !rows.isEmpty else {
@@ -185,7 +185,7 @@ enum TabularTransactionDecoder {
         return formatter.string(from: date)
     }
 
-    static func decodeTransactions(
+    public static func decodeTransactions(
         _ rows: [[String]]
     ) throws -> [ParsedTransaction] {
         guard !rows.isEmpty else { return [] }
@@ -323,7 +323,7 @@ enum TabularTransactionDecoder {
         return amount
     }
 
-    static func extractPeriod(
+    public static func extractPeriod(
         from transactions: [ParsedTransaction]
     ) -> (Date?, Date?) {
         guard !transactions.isEmpty else { return (nil, nil) }
@@ -331,7 +331,7 @@ enum TabularTransactionDecoder {
         return (dates.first, dates.last)
     }
 
-    static func extractCurrencyFromHeaders(
+    public static func extractCurrencyFromHeaders(
         _ headers: [String]
     ) -> String {
         for header in headers {
