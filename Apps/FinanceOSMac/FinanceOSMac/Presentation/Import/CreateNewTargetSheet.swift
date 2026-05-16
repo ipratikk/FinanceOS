@@ -6,6 +6,7 @@ struct CreateNewTargetSheet: View {
     @Binding var nickname: String
     @Binding var last4: String
     @Binding var bankID: UUID?
+    @Binding var ownerName: String
     let isCard: Bool
     let banks: [Bank]
     let detectedBank: String
@@ -43,6 +44,10 @@ struct CreateNewTargetSheet: View {
 
                         VStack(spacing: 8) {
                             inputField("Name (Optional)", text: $name)
+
+                            if !isCard {
+                                inputField("Owner Name", text: $ownerName)
+                            }
 
                             if isCard {
                                 inputField("Nickname", text: $nickname)

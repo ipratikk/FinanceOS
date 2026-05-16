@@ -70,18 +70,23 @@ extension ImportPreviewView {
 
     func initializeCreateSheet(isCard: Bool) {
         let detected = viewModel.parsedStatements.first?.bankName ?? "Unknown"
+        let metadata = viewModel.parsedStatements.first?.metadata
         detectedBank = detected
         self.isCard = isCard
 
         if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
-            newEntityName = ""
+            let nameConstructed = "\(detected) •••• \(cardLast4)"
+            newEntityName = nameConstructed
             newEntityNickname = ""
             newEntityLast4 = cardLast4
+            newEntityOwnerName = ""
         } else {
             let accountLast4 = viewModel.parsedStatements.first?.accountLast4 ?? ""
-            newEntityName = ""
+            let nameConstructed = !accountLast4.isEmpty ? "\(detected) •••• \(accountLast4)" : detected
+            newEntityName = nameConstructed
             newEntityNickname = ""
             newEntityLast4 = accountLast4
+            newEntityOwnerName = metadata?.customerName ?? ""
         }
 
         let matchingBank = viewModel.banks.first { bank in

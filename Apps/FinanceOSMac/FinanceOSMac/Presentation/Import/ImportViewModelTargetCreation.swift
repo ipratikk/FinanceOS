@@ -17,6 +17,7 @@ extension ImportViewModel {
         nickname: String = "",
         last4: String = "",
         bankID: UUID? = nil,
+        ownerName: String = "",
         accountType: AccountType = .savings,
         cardType: CardType = .other,
         isCard: Bool? = nil
@@ -42,7 +43,7 @@ extension ImportViewModel {
             if isCardTarget {
                 try await createCard(params, cardType: cardType)
             } else {
-                try await createAccount(params, accountType: accountType)
+                try await createAccount(params, ownerName: ownerName, accountType: accountType)
             }
         } catch {
             let errorDesc = error.localizedDescription
@@ -97,6 +98,7 @@ extension ImportViewModel {
 
     private func createAccount(
         _ params: TargetParams,
+        ownerName: String = "",
         accountType: AccountType
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
@@ -108,6 +110,7 @@ extension ImportViewModel {
             bankId: params.bank.id,
             accountName: accountName,
             accountLast4: params.last4,
+            ownerName: ownerName,
             accountType: accountType,
             nickname: params.nickname
         )

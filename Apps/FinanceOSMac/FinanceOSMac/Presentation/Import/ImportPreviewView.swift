@@ -11,6 +11,7 @@ struct ImportPreviewView: View {
     @State var newEntityNickname = ""
     @State var newEntityLast4 = ""
     @State var newEntityBankID: UUID?
+    @State var newEntityOwnerName = ""
     @State var detectedBank = ""
     @State var isCard = false
 
@@ -33,6 +34,7 @@ struct ImportPreviewView: View {
                 nickname: $newEntityNickname,
                 last4: $newEntityLast4,
                 bankID: $newEntityBankID,
+                ownerName: $newEntityOwnerName,
                 isCard: isCard,
                 banks: viewModel.banks,
                 detectedBank: detectedBank,
@@ -42,11 +44,15 @@ struct ImportPreviewView: View {
                 },
                 onCreate: {
                     Task {
+                        let metadata = viewModel.parsedStatements.first?.metadata
+                        let accountType = AccountType.from(metadataAccountType: metadata?.accountType ?? "")
                         await viewModel.createTargetFromDetected(
                             customName: newEntityName,
                             nickname: newEntityNickname,
                             last4: newEntityLast4,
                             bankID: newEntityBankID,
+                            ownerName: newEntityOwnerName,
+                            accountType: accountType,
                             isCard: isCard
                         )
                         showCreateSheet = false

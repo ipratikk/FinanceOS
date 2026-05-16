@@ -23,7 +23,8 @@ public struct HDFCBankTXTParser: Sendable {
         guard parts.count >= 7 else { return parts }
 
         // Standard format: [date, narration, valueDate, debit, credit, ref, balance]
-        // If narration contains commas, it becomes: [date, narr_part1, narr_part2..., valueDate, debit, credit, ref, balance]
+        // If narration contains commas, it becomes: [date, narr_part1, narr_part2..., valueDate, debit, credit, ref,
+        // balance]
         // Re-anchor by finding valueDate scanning backward from end
 
         let date = parts[0]
@@ -50,7 +51,7 @@ public struct HDFCBankTXTParser: Sendable {
         // Reconstruct with correct column assignments
         var reconstructed = [String]()
         reconstructed.append(date)
-        reconstructed.append(parts[1...anchor - 1].joined(separator: ","))
+        reconstructed.append(parts[1 ... anchor - 1].joined(separator: ","))
         reconstructed.append(parts[anchor])
 
         if anchor + 1 < parts.count { reconstructed.append(parts[anchor + 1]) } else { reconstructed.append("") }
