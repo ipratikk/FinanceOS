@@ -484,8 +484,8 @@
     "hash": "051d3247893eeea14eaa2a2e9c429194"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/TabularTransactionDecoder.swift": {
-    "mtime": 1778857802.8634124,
-    "hash": "b4ea623f8a905f9ba7c3e573f88679bb"
+    "mtime": 1778909909.7583902,
+    "hash": "5d3319f9f1033f6e922f5400bfe25c28"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/HDFCModels.swift": {
     "mtime": 1778829631.3801873,
@@ -518,6 +518,22 @@
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/HDFCMetadataExtractor.swift": {
     "mtime": 1778842793.4376063,
     "hash": "505b2afc1b6a45f0bacda0d0391d5555"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Core/StatementParserRegistry.swift": {
+    "mtime": 1778909936.393532,
+    "hash": "a11b6e4aa2f0d7e3c1e7b508aaf3385c"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Core/InstitutionStatementParser.swift": {
+    "mtime": 1778909932.8836038,
+    "hash": "a3f4a1295031bb5697878d31b1f63993"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Core/StatementSource.swift": {
+    "mtime": 1778909935.2477987,
+    "hash": "0926744fef59c1fc8492d4c19fd451bf"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Core/StatementSourceType.swift": {
+    "mtime": 1778909933.3045554,
+    "hash": "d6113049a593d4cf2823343e742cba71"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/ICICI/ICICIMetadataExtractor.swift": {
     "mtime": 1778909138.954874,
