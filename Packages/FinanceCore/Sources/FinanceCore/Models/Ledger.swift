@@ -119,7 +119,7 @@ public extension Ledger {
 
             table.column("linkedLedgerId", .text)
                 .indexed()
-                .references(databaseTableName, column: "id", onDelete: .setNull)
+                .references(databaseTableName, column: "id", onDelete: .cascade)
 
             table.column("isArchived", .integer)
                 .notNull()
