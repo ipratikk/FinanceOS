@@ -146,6 +146,57 @@ enum AppMigration {
             // 4. Drop institutions (data already in banks)
             try database.drop(table: "institutions")
         }
+
+        migrator.registerMigration("v7_ledger_unification") { database in
+            FinanceLogger.migration.info("Running migration: v7_ledger_unification")
+
+            // 1. Create ledgers table
+            try Ledger.createTable(in: database)
+
+            // 2. Backfill from accounts
+            try database.execute(sql: """
+                INSERT INTO ledgers
+                (id, bankId, kind, displayName, last4, nickname, ownerName, createdAt,
+                 accountType, cardType, cardProduct, linkedLedgerId, isArchived)
+                SELECT id, bankId, 'bankAccount', accountName, accountLast4, nickname,
+                       ownerName, CURRENT_TIMESTAMP, accountType, NULL, NULL, NULL, 0
+                FROM accounts
+            """)
+
+            // 3. Backfill from cards
+            try database.execute(sql: """
+                INSERT INTO ledgers
+                (id, bankId, kind, displayName, last4, nickname, ownerName, createdAt,
+                 accountType, cardType, cardProduct, linkedLedgerId, isArchived)
+                SELECT id, bankId, 'creditCard', cardName, cardLast4, nickname, '',
+                       CURRENT_TIMESTAMP, NULL, cardType, '', linkedAccountId, 0
+                FROM cards
+            """)
+
+            // 4. Add ledgerId to transactions and backfill
+            try database.execute(sql: """
+                ALTER TABLE transactions ADD COLUMN ledgerId TEXT REFERENCES ledgers(id) ON DELETE CASCADE
+            """)
+
+            try database.execute(sql: """
+                UPDATE transactions SET ledgerId = COALESCE(accountID, cardID)
+            """)
+
+            // 5. Verify backfill
+            let orphanedTxns: Int = try database.scalar("""
+                SELECT COUNT(*) FROM transactions WHERE ledgerId IS NULL
+            """) ?? 0
+
+            guard orphanedTxns == 0 else {
+                throw DatabaseError(message: "Migration v7: Found \(orphanedTxns) transactions with NULL ledgerId")
+            }
+
+            // 6. Make ledgerId NOT NULL (for new inserts)
+            // Note: SQLite doesn't support ALTER COLUMN NOT NULL easily; enforce in Swift instead
+            // via Ledger struct validation
+
+            FinanceLogger.migration.info("Ledger unification complete: backfilled accounts + cards")
+        }
     }
 }
 
