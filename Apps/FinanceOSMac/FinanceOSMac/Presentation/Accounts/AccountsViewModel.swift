@@ -11,25 +11,22 @@ import Observation
 
 @Observable
 final class AccountsViewModel {
-    private let repository: AccountRepository
+    private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
-    private let cardRepository: CardRepository
     private let transactionRepository: TransactionRepository
 
-    var accounts: [Account] = []
+    var accounts: [Ledger] = []
     var banks: [Bank] = []
     var isLoading = false
-    var editingAccount: Account?
+    var editingAccount: Ledger?
 
     init(
-        repository: AccountRepository,
+        ledgerRepository: LedgerRepository,
         bankRepository: BankRepository,
-        cardRepository: CardRepository,
         transactionRepository: TransactionRepository
     ) {
-        self.repository = repository
+        self.ledgerRepository = ledgerRepository
         self.bankRepository = bankRepository
-        self.cardRepository = cardRepository
         self.transactionRepository = transactionRepository
     }
 
@@ -41,7 +38,7 @@ final class AccountsViewModel {
         }
 
         do {
-            async let accounts = repository.fetchAccounts()
+            async let accounts = ledgerRepository.fetchLedgers(kind: .bankAccount)
             async let banks = bankRepository.fetchBanks()
             self.accounts = try await accounts
             self.banks = try await banks
@@ -50,9 +47,9 @@ final class AccountsViewModel {
         }
     }
 
-    func updateAccount(_ account: Account) async {
+    func updateAccount(_ account: Ledger) async {
         do {
-            try await repository.update(account)
+            try await ledgerRepository.update(account)
             await loadAccounts()
             editingAccount = nil
         } catch {
@@ -62,23 +59,26 @@ final class AccountsViewModel {
 
     func deleteAccount(id: UUID) async {
         do {
-            try await repository.delete(id: id)
+            try await ledgerRepository.delete(id: id)
             await loadAccounts()
         } catch {
             print(error)
         }
     }
 
-    func convertToCard(_ account: Account) async {
+    func convertToCard(_ account: Ledger) async {
         do {
-            let card = Card(
+            let card = Ledger(
+                id: UUID(),
                 bankId: account.bankId,
-                linkedAccountId: nil,
-                cardName: account.accountName
+                kind: .creditCard,
+                displayName: account.displayName,
+                last4: account.last4,
+                linkedLedgerId: account.id
             )
-            try await cardRepository.insert(card)
+            try await ledgerRepository.insert(card)
             try await transactionRepository.migrateTransactions(fromAccount: account.id, toCard: card.id)
-            try await repository.delete(id: account.id)
+            try await ledgerRepository.delete(id: account.id)
             await loadAccounts()
             editingAccount = nil
         } catch {

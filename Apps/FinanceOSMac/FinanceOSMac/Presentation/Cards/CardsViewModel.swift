@@ -13,7 +13,7 @@ import Observation
 final class CardsViewModel {
     struct CardRow: Identifiable {
         let id: UUID
-        let card: Card
+        let card: Ledger
         let title: String
         let institutionName: String
         let linkedAccountName: String?
@@ -27,25 +27,22 @@ final class CardsViewModel {
         }
     }
 
-    private let cardRepository: CardRepository
-    private let accountRepository: AccountRepository
+    private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
 
     var cardRows: [CardRow] = []
     var isLoading = false
-    var editingCard: Card?
+    var editingCard: Ledger?
     var banks: [Bank] = []
-    var accounts: [Account] = []
+    var accounts: [Ledger] = []
 
     init(
-        cardRepository: CardRepository,
-        accountRepository: AccountRepository,
+        ledgerRepository: LedgerRepository,
         bankRepository: BankRepository,
         transactionRepository: TransactionRepository
     ) {
-        self.cardRepository = cardRepository
-        self.accountRepository = accountRepository
+        self.ledgerRepository = ledgerRepository
         self.bankRepository = bankRepository
         self.transactionRepository = transactionRepository
     }
@@ -58,10 +55,10 @@ final class CardsViewModel {
         }
 
         do {
-            let cards = try await cardRepository
-                .fetchCards()
-            let accounts = try await accountRepository
-                .fetchAccounts()
+            let cards = try await ledgerRepository
+                .fetchLedgers(kind: .creditCard)
+            let accounts = try await ledgerRepository
+                .fetchLedgers(kind: .bankAccount)
             let banks = try await bankRepository
                 .fetchBanks()
 
@@ -79,9 +76,9 @@ final class CardsViewModel {
         }
     }
 
-    func updateCard(_ card: Card) async {
+    func updateCard(_ card: Ledger) async {
         do {
-            try await cardRepository.update(card)
+            try await ledgerRepository.update(card)
             await loadCards()
             editingCard = nil
         } catch {
@@ -91,22 +88,25 @@ final class CardsViewModel {
 
     func deleteCard(id: UUID) async {
         do {
-            try await cardRepository.delete(id: id)
+            try await ledgerRepository.delete(id: id)
             await loadCards()
         } catch {
             print(error)
         }
     }
 
-    func convertToAccount(_ card: Card) async {
+    func convertToAccount(_ card: Ledger) async {
         do {
-            let account = Account(
+            let account = Ledger(
+                id: UUID(),
                 bankId: card.bankId,
-                accountName: card.cardName
+                kind: .bankAccount,
+                displayName: card.displayName,
+                last4: card.last4
             )
-            try await accountRepository.insert(account)
+            try await ledgerRepository.insert(account)
             try await transactionRepository.migrateTransactions(fromCard: card.id, toAccount: account.id)
-            try await cardRepository.delete(id: card.id)
+            try await ledgerRepository.delete(id: card.id)
             await loadCards()
             editingCard = nil
         } catch {
@@ -115,8 +115,8 @@ final class CardsViewModel {
     }
 
     private func makeCardRows(
-        cards: [Card],
-        accounts: [Account],
+        cards: [Ledger],
+        accounts: [Ledger],
         banks: [Bank]
     ) -> [CardRow] {
         let accountsByID = Dictionary(
@@ -133,8 +133,8 @@ final class CardsViewModel {
 
         return cards.map { card in
             let bankName = banksByID[card.bankId]?.name ?? "Unknown Bank"
-            let displayName = card.nickname.isEmpty ? card.cardName : card.nickname
-            let maskLast4 = card.cardLast4.isEmpty ? "" : " ••••\(card.cardLast4)"
+            let displayName = card.nickname.isEmpty ? card.displayName : card.nickname
+            let maskLast4 = card.last4.isEmpty ? "" : " ••••\(card.last4)"
             let title = "\(bankName) \(displayName)\(maskLast4)"
 
             return CardRow(
@@ -142,8 +142,8 @@ final class CardsViewModel {
                 card: card,
                 title: title,
                 institutionName: bankName,
-                linkedAccountName: card.linkedAccountId.flatMap { accountID in
-                    accountsByID[accountID]?.accountName
+                linkedAccountName: card.linkedLedgerId.flatMap { accountID in
+                    accountsByID[accountID]?.displayName
                 }
             )
         }
