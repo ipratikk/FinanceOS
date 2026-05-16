@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ParseResult: Codable, Sendable {
+public struct ParseResult: Codable, Sendable, Equatable {
     public let schemaVersion: String
     public let parserVersion: String
     public let institutionVersion: String

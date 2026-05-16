@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ParserDiagnostics: Codable, Sendable {
+public struct ParserDiagnostics: Codable, Sendable, Equatable {
     public let failedRows: [FailedRow]
     public let unmatchedLines: [String]
     public let balanceValidation: BalanceValidationResult?
@@ -34,7 +34,7 @@ public struct ParserDiagnostics: Codable, Sendable {
     }
 }
 
-public struct FailedRow: Codable, Sendable {
+public struct FailedRow: Codable, Sendable, Equatable {
     public let rowIndex: Int
     public let rawContent: [String]
     public let reason: String
@@ -50,7 +50,7 @@ public struct FailedRow: Codable, Sendable {
     }
 }
 
-public struct BalanceValidationResult: Codable, Sendable {
+public struct BalanceValidationResult: Codable, Sendable, Equatable {
     public let openingBalance: Int64?
     public let closingBalance: Int64?
     public let computedClosing: Int64?

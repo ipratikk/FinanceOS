@@ -51,22 +51,20 @@ struct ParseCommand: AsyncParsableCommand {
             throw CLIError.fileNotFound(filePath)
         }
 
-        let fileExtension = fileURL.pathExtension.lowercased()
-        guard let format = StatementFileFormat(rawValue: fileExtension) else {
-            throw CLIError.unsupportedFormat(fileExtension)
-        }
-
         do {
             let startTime = Date()
-            let statement = try await parseStatement(fileURL: fileURL, format: format)
+            let detectedSource = try StatementDetector.detect(fileURL: fileURL)
+            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
             let duration = Date().timeIntervalSince(startTime)
 
-            let output = compact ? encodeCompact(statement) : encodePretty(statement)
+            let output = compact ? encodeCompact(result) : encodePretty(result)
             print(output)
 
             if verbose {
-                fputs("Parse completed in \(String(format: "%.2f", duration))ms\n", stderr)
+                fputs("Parse completed in \(String(format: "%.2f", duration * 1000))ms\n", stderr)
             }
+        } catch let error as DetectionError {
+            throw CLIError.parseError(error.description)
         } catch let error as TransactionImportError {
             throw CLIError.parseError(error.description)
         } catch {
@@ -74,42 +72,25 @@ struct ParseCommand: AsyncParsableCommand {
         }
     }
 
-    private func parseStatement(fileURL: URL, format: StatementFileFormat) async throws -> ParsedStatement {
-        let parser: StatementParser = {
-            switch format {
-            case .pdf:
-                return HDFCPDFParser(password: password)
-            case .csv:
-                return CSVStatementParser()
-            case .txt:
-                return TXTStatementParser()
-            case .xlsx:
-                return XLSXStatementParser()
-            }
-        }()
-
-        return try await parser.parseStatement(from: fileURL)
-    }
-
-    private func encodePretty(_ statement: ParsedStatement) -> String {
+    private func encodePretty(_ result: ParseResult) -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         if #available(macOS 10.13, *) {
             encoder.dateEncodingStrategy = .iso8601
         }
-        guard let data = try? encoder.encode(statement),
+        guard let data = try? encoder.encode(result),
               let json = String(data: data, encoding: .utf8) else {
             return "{}"
         }
         return json
     }
 
-    private func encodeCompact(_ statement: ParsedStatement) -> String {
+    private func encodeCompact(_ result: ParseResult) -> String {
         let encoder = JSONEncoder()
         if #available(macOS 10.13, *) {
             encoder.dateEncodingStrategy = .iso8601
         }
-        guard let data = try? encoder.encode(statement),
+        guard let data = try? encoder.encode(result),
               let json = String(data: data, encoding: .utf8) else {
             return "{}"
         }
