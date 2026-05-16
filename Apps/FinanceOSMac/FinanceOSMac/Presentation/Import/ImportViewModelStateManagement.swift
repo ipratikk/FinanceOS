@@ -130,6 +130,7 @@ extension ImportViewModel {
         existingTransactions: [Transaction]
     ) async -> Set<Int> {
         var duplicates = Set<Int>()
+        var nonMatches: [(Int, String)] = []
 
         let existingHashes = Set(
             existingTransactions.map { txn in
@@ -143,8 +144,82 @@ extension ImportViewModel {
                 let hash = hashParsedTransaction(parsedTxn)
                 if existingHashes.contains(hash) {
                     duplicates.insert(flatIndex)
+                } else {
+                    nonMatches.append((flatIndex, parsedTxn.description))
                 }
                 flatIndex += 1
+            }
+        }
+
+        if !nonMatches.isEmpty {
+            logger.logWarning(
+                "Duplicate detection: {matched}/{total} matched, {unmatched} not found",
+                [
+                    "matched": String(duplicates.count),
+                    "total": String(flatIndex),
+                    "unmatched": String(nonMatches.count)
+                ]
+            )
+
+            let existingUpiTxns = existingTransactions.filter { $0.description.contains("UPI") }
+            logger.logDebug(
+                "Database has {count} UPI transactions",
+                ["count": String(existingUpiTxns.count)]
+            )
+
+            if let firstUpi = existingUpiTxns.first {
+                logger.logDebug(
+                    "Example stored UPI: len={len} desc={desc}",
+                    ["len": String(firstUpi.description.count), "desc": firstUpi.description]
+                )
+            }
+
+            let samples = nonMatches.prefix(1)
+            for (idx, parsedDesc) in samples {
+                logger.logDebug(
+                    "Example parsed UPI: len={len} desc={desc}",
+                    ["len": String(parsedDesc.count), "desc": parsedDesc]
+                )
+
+                var flatIdx = 0
+                for statement in parsedStatements {
+                    for parsedTxn in statement.transactions {
+                        if flatIdx == idx {
+                            logger.logDebug(
+                                "Parsed txn details: date={date} amount={amt}",
+                                [
+                                    "date": ISO8601DateFormatter().string(from: parsedTxn.postedAt),
+                                    "amt": String(parsedTxn.amountMinorUnits)
+                                ]
+                            )
+                        }
+                        flatIdx += 1
+                    }
+                }
+
+                let keyword = parsedDesc.prefix(20)
+                let storedMatches = existingTransactions.filter {
+                    $0.description.prefix(20) == keyword
+                }
+                if let match = storedMatches.first {
+                    logger.logDebug(
+                        "Found similar stored: len={len} desc={desc}",
+                        ["len": String(match.description.count), "desc": match.description]
+                    )
+
+                    let storedHash = hashTransaction(match)
+                    logger.logDebug(
+                        "Stored hash: {sh}",
+                        ["sh": storedHash]
+                    )
+                    logger.logDebug(
+                        "Match details: date={date} amount={amt}",
+                        [
+                            "date": ISO8601DateFormatter().string(from: match.postedAt),
+                            "amt": String(match.amountMinorUnits)
+                        ]
+                    )
+                }
             }
         }
 
@@ -155,20 +230,18 @@ extension ImportViewModel {
         let dateStr = ISO8601DateFormatter().string(
             from: Calendar.current.startOfDay(for: txn.postedAt)
         )
-        let amountStr = String(txn.amountMinorUnits)
+        let amountStr = String(abs(txn.amountMinorUnits))
         let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
-        return String(combined.hashValue)
+        return "\(dateStr)|\(amountStr)|\(descStr)"
     }
 
     private func hashTransaction(_ txn: Transaction) -> String {
         let dateStr = ISO8601DateFormatter().string(
             from: Calendar.current.startOfDay(for: txn.postedAt)
         )
-        let amountStr = String(txn.amountMinorUnits)
+        let amountStr = String(abs(txn.amountMinorUnits))
         let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
-        return String(combined.hashValue)
+        return "\(dateStr)|\(amountStr)|\(descStr)"
     }
 
     func reset() {
