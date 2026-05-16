@@ -91,8 +91,7 @@ extension ImportViewModel {
             nickname: params.nickname
         )
         try await cardRepository.insert(card)
-        selectedTarget = .card(card.id)
-        cards.append(card)
+        selectedTarget = .ledger(card.id)
         logger.info("Created card: \(cardName)")
     }
 
@@ -115,8 +114,7 @@ extension ImportViewModel {
             nickname: params.nickname
         )
         try await accountRepository.insert(account)
-        selectedTarget = .account(account.id)
-        accounts.append(account)
+        selectedTarget = .ledger(account.id)
         logger.info("Created account: \(accountName)")
     }
 }

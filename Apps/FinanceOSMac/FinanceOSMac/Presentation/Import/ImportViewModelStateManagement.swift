@@ -6,13 +6,11 @@ import OSLog
 extension ImportViewModel {
     func loadTargetsOnAppear() async {
         do {
-            logger.debug("Loading accounts, cards, and banks")
-            accounts = try await accountRepository.fetchAccounts()
-            cards = try await cardRepository.fetchCards()
+            logger.debug("Loading ledgers and banks")
+            ledgers = try await ledgerRepository.fetchLedgers()
             banks = try await bankRepository.fetchBanks()
-            logger.logDebug("Loaded {accounts} accounts, {cards} cards, and {banks} banks", [
-                "accounts": accounts.count,
-                "cards": cards.count,
+            logger.logDebug("Loaded {ledgers} ledgers and {banks} banks", [
+                "ledgers": ledgers.count,
                 "banks": banks.count
             ])
         } catch {
@@ -65,8 +63,7 @@ extension ImportViewModel {
 
         if let target = FinanceCore.ImportTargetMatcher.bestTarget(
             for: statement,
-            accounts: accounts,
-            cards: cards,
+            ledgers: ledgers,
             banks: banks
         ) {
             selectedTarget = target
@@ -77,30 +74,28 @@ extension ImportViewModel {
 
     func detectDuplicates(for target: TransactionImportTarget) async {
         do {
-            let existingTransactions: [Transaction] = switch target {
-            case let .account(id):
-                try await transactionRepository.fetchTransactionsForAccount(id)
-            case let .card(id):
-                try await transactionRepository.fetchTransactionsForCard(id)
-            }
+            let allTransactions = try await transactionRepository.fetchTransactions()
 
-            duplicateTransactionIndices = []
+            if case let .ledger(ledgerId) = target {
+                let existingTransactions = allTransactions.filter { $0.ledgerId == ledgerId }
+                duplicateTransactionIndices = []
 
-            for (index, statement) in parsedStatements.enumerated() {
-                for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
-                    // swiftformat:disable all
-                    for existingTxn in existingTransactions
-                        where FinanceCore.TransactionDeduplicator.isSame(parsed: parsedTxn, existing: existingTxn) {
-                        let flatIndex = parsedStatements[..<index]
-                            .reduce(0) { $0 + $1.transactions.count } + txnIndex
-                        duplicateTransactionIndices.insert(flatIndex)
+                for (index, statement) in parsedStatements.enumerated() {
+                    for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
+                        // swiftformat:disable all
+                        for existingTxn in existingTransactions
+                            where FinanceCore.TransactionDeduplicator.isSame(parsed: parsedTxn, existing: existingTxn) {
+                            let flatIndex = parsedStatements[..<index]
+                                .reduce(0) { $0 + $1.transactions.count } + txnIndex
+                            duplicateTransactionIndices.insert(flatIndex)
+                        }
+                        // swiftformat:enable all
                     }
-                    // swiftformat:enable all
                 }
-            }
 
-            let dupCount = duplicateTransactionIndices.count
-            logger.info("Found \(dupCount, privacy: .public) duplicate transactions")
+                let dupCount = duplicateTransactionIndices.count
+                logger.info("Found \(dupCount, privacy: .public) duplicate transactions")
+            }
         } catch {
             logger.error("Failed to detect duplicates: \(error.localizedDescription, privacy: .public)")
         }
@@ -111,8 +106,7 @@ extension ImportViewModel {
         parsedStatements = []
         selectedTarget = nil
         importResult = nil
-        accounts = []
-        cards = []
+        ledgers = []
         banks = []
     }
 }

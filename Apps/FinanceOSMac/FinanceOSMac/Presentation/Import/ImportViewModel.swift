@@ -18,8 +18,7 @@ final class ImportViewModel {
     var errorMessage: String?
     var importResult: ImportResult?
 
-    var accounts: [Account] = []
-    var cards: [Card] = []
+    var ledgers: [Ledger] = []
     var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
 
@@ -33,21 +32,18 @@ final class ImportViewModel {
 
     let transactionImportPipeline: TransactionImportPipeline
     let bankRepository: any BankRepository
-    let accountRepository: any AccountRepository
-    let cardRepository: any CardRepository
+    let ledgerRepository: any LedgerRepository
     let transactionRepository: any TransactionRepository
 
     init(
         transactionImportPipeline: TransactionImportPipeline,
         bankRepository: any BankRepository,
-        accountRepository: any AccountRepository,
-        cardRepository: any CardRepository,
+        ledgerRepository: any LedgerRepository,
         transactionRepository: any TransactionRepository
     ) {
         self.transactionImportPipeline = transactionImportPipeline
         self.bankRepository = bankRepository
-        self.accountRepository = accountRepository
-        self.cardRepository = cardRepository
+        self.ledgerRepository = ledgerRepository
         self.transactionRepository = transactionRepository
     }
 
