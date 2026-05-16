@@ -230,6 +230,9 @@ Use abbreviations in logs to save space:
 - `stmts` instead of `statements`
 - `desc` instead of `localizedDescription`
 
+Always use the FinanceLogger with a static string and attributes dictionary for logging.
+Do not use print statements
+
 ## Enforcement
 
 All files are checked via `swiftlint lint`. Fix violations before committing:
