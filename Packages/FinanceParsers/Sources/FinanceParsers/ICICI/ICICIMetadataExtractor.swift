@@ -16,7 +16,9 @@ public struct ICICIMetadataExtractor: Sendable {
             customerName: customerName,
             customerId: customerId,
             accountNumber: accountDetails.accountNumber,
+            fullAccountNumber: nil,
             accountType: accountDetails.accountType,
+            cardType: nil,
             address: address,
             closingBalance: accountDetails.balance,
             generatedAt: statementDate

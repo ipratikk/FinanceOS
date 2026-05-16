@@ -8,13 +8,16 @@ public struct HDFCBankMetadataExtractor: Sendable {
 
         let customerName = extractCustomerName(from: lines)
         let accountLast4 = extractAccountLast4(from: lines)
+        let fullAccountNumber = extractFullAccountNumber(from: lines)
         let accountType = extractAccountType(from: lines)
         let statementDate = extractStatementDate(from: lines)
 
         return StatementMetadata(
             customerName: customerName,
             accountNumber: accountLast4,
+            fullAccountNumber: fullAccountNumber,
             accountType: accountType,
+            cardType: nil,
             generatedAt: statementDate
         )
     }
@@ -45,6 +48,26 @@ public struct HDFCBankMetadataExtractor: Sendable {
                     if let match = regex.firstMatch(in: line, range: range) {
                         if let matchRange = Range(match.range(at: 1), in: line) {
                             return String(line[matchRange])
+                        }
+                    }
+                }
+            }
+        }
+        return nil
+    }
+
+    private func extractFullAccountNumber(from lines: [String]) -> String? {
+        for line in lines.prefix(25) {
+            if line.contains("Account") && line.contains("XXXXXXXX") {
+                let pattern = "([0-9X]+)"
+                if let regex = try? NSRegularExpression(pattern: pattern) {
+                    let range = NSRange(line.startIndex..., in: line)
+                    if let match = regex.firstMatch(in: line, range: range) {
+                        if let matchRange = Range(match.range(at: 1), in: line) {
+                            let accountNum = String(line[matchRange])
+                            if accountNum.contains("X") || accountNum.count >= 12 {
+                                return accountNum
+                            }
                         }
                     }
                 }

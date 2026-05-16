@@ -8,6 +8,9 @@ public struct SBICardMetadataExtractor: Sendable {
         return StatementMetadata(
             customerName: nil,
             accountNumber: cardLast4,
+            fullAccountNumber: nil,
+            accountType: nil,
+            cardType: nil,
             generatedAt: nil
         )
     }

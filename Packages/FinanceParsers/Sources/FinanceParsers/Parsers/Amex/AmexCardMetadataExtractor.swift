@@ -9,6 +9,9 @@ public struct AmexCardMetadataExtractor: Sendable {
         return StatementMetadata(
             customerName: nil,
             accountNumber: nil,
+            fullAccountNumber: nil,
+            accountType: nil,
+            cardType: nil,
             generatedAt: nil
         )
     }

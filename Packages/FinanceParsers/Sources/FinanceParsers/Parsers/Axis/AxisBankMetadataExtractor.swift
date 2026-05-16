@@ -8,6 +8,9 @@ public struct AxisBankMetadataExtractor: Sendable {
         return StatementMetadata(
             customerName: nil,
             accountNumber: accountNumber,
+            fullAccountNumber: nil,
+            accountType: nil,
+            cardType: nil,
             generatedAt: nil
         )
     }

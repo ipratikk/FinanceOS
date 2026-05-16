@@ -8,11 +8,16 @@ public struct HDFCCardMetadataExtractor: Sendable {
 
         let customerName = extractCustomerName(from: lines)
         let cardLast4 = extractCardLast4(from: lines)
+        let fullCardNumber = extractFullCardNumber(from: lines)
+        let cardType = extractCardType(from: lines)
         let statementDate = extractStatementDate(from: lines)
 
         return StatementMetadata(
             customerName: customerName,
             accountNumber: cardLast4,
+            fullAccountNumber: fullCardNumber,
+            accountType: nil,
+            cardType: cardType,
             generatedAt: statementDate
         )
     }
@@ -40,6 +45,33 @@ public struct HDFCCardMetadataExtractor: Sendable {
             }
         }
         return nil
+    }
+
+    private func extractFullCardNumber(from lines: [String]) -> String? {
+        for line in lines.prefix(25) {
+            if line.contains("Card No:") {
+                let colonParts = line.components(separatedBy: ":")
+                if colonParts.count >= 2 {
+                    let cardNum = colonParts[1].trimmingCharacters(in: .whitespaces)
+                    if cardNum.count >= 12 {
+                        return cardNum
+                    }
+                }
+            }
+        }
+        return nil
+    }
+
+    private func extractCardType(from lines: [String]) -> String? {
+        let content = lines.joined(separator: " ").lowercased()
+        if content.contains("visa") {
+            return "visa"
+        } else if content.contains("mastercard") {
+            return "mastercard"
+        } else if content.contains("amex") {
+            return "amex"
+        }
+        return "other"
     }
 
     private func extractStatementDate(from lines: [String]) -> Date? {

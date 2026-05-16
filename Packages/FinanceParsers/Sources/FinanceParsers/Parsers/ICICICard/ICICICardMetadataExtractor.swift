@@ -11,6 +11,9 @@ public struct ICICICardMetadataExtractor: Sendable {
         return StatementMetadata(
             customerName: customerName,
             accountNumber: cardLast4,
+            fullAccountNumber: nil,
+            accountType: nil,
+            cardType: nil,
             generatedAt: statementDate
         )
     }
