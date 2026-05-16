@@ -8,12 +8,14 @@
 import FinanceCore
 import Foundation
 import Observation
+import OSLog
 
 @Observable
 final class AccountsViewModel {
     private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
+    private let logger = FinanceLogger.ui
 
     var accounts: [Ledger] = []
     var banks: [Bank] = []
@@ -44,7 +46,10 @@ final class AccountsViewModel {
             self.accounts = try await accounts
             self.banks = try await banks
         } catch {
-            print(error)
+            logger.logError(
+                "Failed to load accounts: {error}",
+                ["error": error.localizedDescription]
+            )
         }
     }
 
@@ -54,16 +59,31 @@ final class AccountsViewModel {
             await loadAccounts()
             editingAccount = nil
         } catch {
-            print(error)
+            logger.logError(
+                "Failed to update account: {error}",
+                ["accountId": account.id.uuidString, "error": error.localizedDescription]
+            )
         }
     }
 
     func deleteAccount(id: UUID) async {
         do {
             deleteError = nil
+            logger.logDebug(
+                "Deleting account",
+                ["accountId": id.uuidString]
+            )
             try await ledgerRepository.delete(id: id)
+            logger.logInfo(
+                "Account deleted successfully",
+                ["accountId": id.uuidString]
+            )
             await loadAccounts()
         } catch {
+            logger.logError(
+                "Delete account failed: {error}",
+                ["accountId": id.uuidString, "error": error.localizedDescription]
+            )
             deleteError = error.localizedDescription
         }
     }
@@ -84,7 +104,10 @@ final class AccountsViewModel {
             await loadAccounts()
             editingAccount = nil
         } catch {
-            print(error)
+            logger.logError(
+                "Failed to convert account to card: {error}",
+                ["accountId": account.id.uuidString, "error": error.localizedDescription]
+            )
         }
     }
 }

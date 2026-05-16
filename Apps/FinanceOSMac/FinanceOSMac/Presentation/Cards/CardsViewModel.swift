@@ -8,6 +8,7 @@
 import FinanceCore
 import Foundation
 import Observation
+import OSLog
 
 @Observable
 final class CardsViewModel {
@@ -30,6 +31,7 @@ final class CardsViewModel {
     private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
+    private let logger = FinanceLogger.ui
 
     var cardRows: [CardRow] = []
     var isLoading = false
@@ -73,7 +75,10 @@ final class CardsViewModel {
             )
 
         } catch {
-            print(error)
+            logger.logError(
+                "Failed to load cards: {error}",
+                ["error": error.localizedDescription]
+            )
         }
     }
 
@@ -83,16 +88,31 @@ final class CardsViewModel {
             await loadCards()
             editingCard = nil
         } catch {
-            print(error)
+            logger.logError(
+                "Failed to update card: {error}",
+                ["cardId": card.id.uuidString, "error": error.localizedDescription]
+            )
         }
     }
 
     func deleteCard(id: UUID) async {
         do {
             deleteError = nil
+            logger.logDebug(
+                "Deleting card",
+                ["cardId": id.uuidString]
+            )
             try await ledgerRepository.delete(id: id)
+            logger.logInfo(
+                "Card deleted successfully",
+                ["cardId": id.uuidString]
+            )
             await loadCards()
         } catch {
+            logger.logError(
+                "Delete card failed: {error}",
+                ["cardId": id.uuidString, "error": error.localizedDescription]
+            )
             deleteError = error.localizedDescription
         }
     }
@@ -112,7 +132,10 @@ final class CardsViewModel {
             await loadCards()
             editingCard = nil
         } catch {
-            print(error)
+            logger.logError(
+                "Failed to convert card to account: {error}",
+                ["cardId": card.id.uuidString, "error": error.localizedDescription]
+            )
         }
     }
 
