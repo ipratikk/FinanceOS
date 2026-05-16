@@ -17,6 +17,7 @@ final class CardTransactionsViewModel {
     var listState = TransactionListState()
 
     var isLoading = false
+    var deleteError: String?
 
     var sections: [TransactionSection] {
         listState.sections(from: transactionRows)
@@ -64,6 +65,16 @@ final class CardTransactionsViewModel {
                 transactionType: transaction.transactionType,
                 postedAt: transaction.postedAt
             )
+        }
+    }
+
+    func deleteTransaction(id: UUID, cardID: UUID) async {
+        do {
+            deleteError = nil
+            try await transactionRepository.delete(id: id)
+            await loadTransactions(for: cardID)
+        } catch {
+            deleteError = error.localizedDescription
         }
     }
 

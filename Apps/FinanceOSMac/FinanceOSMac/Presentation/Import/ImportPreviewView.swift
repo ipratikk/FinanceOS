@@ -10,6 +10,24 @@ struct ImportPreviewView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                if let error = viewModel.errorMessage {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.red)
+                        Text(error)
+                            .caption()
+                            .foregroundColor(.red)
+                        Spacer()
+                        Button(action: { viewModel.errorMessage = nil }, label: {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.red)
+                        })
+                    }
+                    .padding(AppSpacing.sm)
+                    .background(Color.red.opacity(0.1))
+                    .cornerRadius(AppRadius.sm)
+                }
+
                 fileListSection()
                 Divider()
                 aggregatedSummarySection()

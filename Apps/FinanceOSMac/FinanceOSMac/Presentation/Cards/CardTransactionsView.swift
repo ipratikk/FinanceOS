@@ -18,10 +18,23 @@ struct CardTransactionsView: View {
             cardHeader
             TransactionListContentView(
                 sections: viewModel.sections,
-                listState: viewModel.listState
+                listState: viewModel.listState,
+                onDelete: { id in
+                    Task { await viewModel.deleteTransaction(id: id, cardID: ledger.id) }
+                }
             )
         }
         .background(AppColors.base)
+        .alert("Delete Failed", isPresented: Binding(
+            get: { viewModel.deleteError != nil },
+            set: { if !$0 { viewModel.deleteError = nil } }
+        )) {
+            Button("OK") { viewModel.deleteError = nil }
+        } message: {
+            if let error = viewModel.deleteError {
+                Text(error)
+            }
+        }
         .task {
             await viewModel.loadTransactions(for: ledger.id)
         }

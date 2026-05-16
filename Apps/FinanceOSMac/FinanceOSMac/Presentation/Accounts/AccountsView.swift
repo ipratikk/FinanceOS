@@ -4,6 +4,7 @@ import SwiftUI
 struct AccountsView: View {
     @State private var viewModel: AccountsViewModel
     @State private var selectedAccountId: UUID?
+    @State private var accountPendingDelete: Ledger?
     private let transactionRepository: any TransactionRepository
     private let ledgerRepository: any LedgerRepository
 
@@ -31,6 +32,35 @@ struct AccountsView: View {
         .sheet(item: $viewModel.editingAccount) { ledger in
             AccountEditView(account: ledger, viewModel: viewModel)
         }
+        .alert(
+            "Delete \"\(accountPendingDelete?.displayName ?? "")\"?",
+            isPresented: Binding(
+                get: { accountPendingDelete != nil },
+                set: { if !$0 { accountPendingDelete = nil } }
+            )
+        ) {
+            Button("Cancel", role: .cancel) { accountPendingDelete = nil }
+            Button("Delete", role: .destructive) {
+                if let ledger = accountPendingDelete {
+                    accountPendingDelete = nil
+                    Task { await viewModel.deleteAccount(id: ledger.id) }
+                }
+            }
+        } message: {
+            Text(
+                "This will permanently delete this account and all associated transactions. This cannot be undone."
+            )
+        }
+        .alert("Delete Failed", isPresented: Binding(
+            get: { viewModel.deleteError != nil },
+            set: { if !$0 { viewModel.deleteError = nil } }
+        )) {
+            Button("OK") { viewModel.deleteError = nil }
+        } message: {
+            if let error = viewModel.deleteError {
+                Text(error)
+            }
+        }
         .task {
             await viewModel.loadAccounts()
         }
@@ -50,9 +80,9 @@ struct AccountsView: View {
                         .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                         .listRowSeparator(.hidden)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
-                                viewModel.editingAccount = ledger
+                                accountPendingDelete = ledger
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -60,7 +90,7 @@ struct AccountsView: View {
                         .contextMenu {
                             Button("Edit") { viewModel.editingAccount = ledger }
                             Button("Delete", role: .destructive) {
-                                viewModel.editingAccount = ledger
+                                accountPendingDelete = ledger
                             }
                         }
                     }

@@ -104,6 +104,19 @@ public final class GRDBTransactionRepository:
         }
     }
 
+    public func delete(id: UUID) async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: """
+                DELETE FROM transactions WHERE "id" = ?
+            """, arguments: [id.uuidString])
+
+            self.logger.logInfo(
+                "Transaction deleted",
+                ["transactionId": id.uuidString]
+            )
+        }
+    }
+
     public func migrateTransactions(fromCard cardID: UUID, toAccount accountID: UUID) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """

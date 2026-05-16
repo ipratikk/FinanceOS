@@ -4,6 +4,7 @@ import SwiftUI
 struct CardsView: View {
     @State private var viewModel: CardsViewModel
     @State private var selectedCardId: UUID?
+    @State private var cardPendingDelete: Ledger?
     private let transactionRepository: any TransactionRepository
     private let ledgerRepository: any LedgerRepository
 
@@ -31,6 +32,35 @@ struct CardsView: View {
         .sheet(item: $viewModel.editingCard) { ledger in
             CardEditView(card: ledger, viewModel: viewModel)
         }
+        .alert(
+            "Delete \"\(cardPendingDelete?.displayName ?? "")\"?",
+            isPresented: Binding(
+                get: { cardPendingDelete != nil },
+                set: { if !$0 { cardPendingDelete = nil } }
+            )
+        ) {
+            Button("Cancel", role: .cancel) { cardPendingDelete = nil }
+            Button("Delete", role: .destructive) {
+                if let ledger = cardPendingDelete {
+                    cardPendingDelete = nil
+                    Task { await viewModel.deleteCard(id: ledger.id) }
+                }
+            }
+        } message: {
+            Text(
+                "This will permanently delete this card and all associated transactions. This cannot be undone."
+            )
+        }
+        .alert("Delete Failed", isPresented: Binding(
+            get: { viewModel.deleteError != nil },
+            set: { if !$0 { viewModel.deleteError = nil } }
+        )) {
+            Button("OK") { viewModel.deleteError = nil }
+        } message: {
+            if let error = viewModel.deleteError {
+                Text(error)
+            }
+        }
         .task {
             await viewModel.loadCards()
         }
@@ -50,9 +80,9 @@ struct CardsView: View {
                         .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                         .listRowSeparator(.hidden)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) {
-                                viewModel.editingCard = cardRow.card
+                                cardPendingDelete = cardRow.card
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -60,7 +90,7 @@ struct CardsView: View {
                         .contextMenu {
                             Button("Edit") { viewModel.editingCard = cardRow.card }
                             Button("Delete", role: .destructive) {
-                                viewModel.editingCard = cardRow.card
+                                cardPendingDelete = cardRow.card
                             }
                         }
                     }

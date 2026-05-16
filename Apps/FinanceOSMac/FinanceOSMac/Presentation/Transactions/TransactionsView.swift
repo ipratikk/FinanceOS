@@ -23,9 +23,22 @@ struct TransactionsView: View {
         NavigationStack {
             TransactionListContentView(
                 sections: viewModel.sections,
-                listState: viewModel.listState
+                listState: viewModel.listState,
+                onDelete: { id in
+                    Task { await viewModel.deleteTransaction(id: id) }
+                }
             )
             .navigationTitle("Transactions")
+        }
+        .alert("Delete Failed", isPresented: Binding(
+            get: { viewModel.deleteError != nil },
+            set: { if !$0 { viewModel.deleteError = nil } }
+        )) {
+            Button("OK") { viewModel.deleteError = nil }
+        } message: {
+            if let error = viewModel.deleteError {
+                Text(error)
+            }
         }
         .task {
             await viewModel.loadTransactions()

@@ -4,7 +4,9 @@ import SwiftUI
 struct TransactionListContentView: View {
     let sections: [TransactionSection]
     @Bindable var listState: TransactionListState
+    var onDelete: ((UUID) -> Void)?
     @State private var showFilterSheet = false
+    @State private var transactionPendingDelete: TransactionRow?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,6 +21,25 @@ struct TransactionListContentView: View {
         .background(AppColors.base)
         .sheet(isPresented: $showFilterSheet) {
             TransactionFilterView(listState: listState)
+        }
+        .alert(
+            "Delete Transaction?",
+            isPresented: Binding(
+                get: { transactionPendingDelete != nil },
+                set: { if !$0 { transactionPendingDelete = nil } }
+            )
+        ) {
+            Button("Cancel", role: .cancel) { transactionPendingDelete = nil }
+            Button("Delete", role: .destructive) {
+                if let row = transactionPendingDelete {
+                    transactionPendingDelete = nil
+                    onDelete?(row.id)
+                }
+            }
+        } message: {
+            Text(
+                "This will permanently delete \"\(transactionPendingDelete?.title ?? "this transaction")\". This cannot be undone."
+            )
         }
     }
 
@@ -83,8 +104,10 @@ struct TransactionListContentView: View {
                             .listRowBackground(AppColors.surface)
                             .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                             .listRowSeparator(.hidden)
-                            .swipeActions(edge: .trailing) {
-                                Button(role: .destructive) {} label: {
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    transactionPendingDelete = row
+                                } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
                             }

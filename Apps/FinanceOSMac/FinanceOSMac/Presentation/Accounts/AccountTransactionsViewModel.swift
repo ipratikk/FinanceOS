@@ -18,6 +18,7 @@ final class AccountTransactionsViewModel {
     var listState = TransactionListState()
 
     var isLoading = false
+    var deleteError: String?
 
     var sections: [TransactionSection] {
         listState.sections(from: transactionRows)
@@ -41,12 +42,12 @@ final class AccountTransactionsViewModel {
         do {
             let transactions = try await transactionRepository
                 .fetchTransactionsForAccount(accountID)
-            let cards = try await ledgerRepository
-                .fetchLedgers(kind: .creditCard)
+            let ledgers = try await ledgerRepository
+                .fetchLedgers()
 
             transactionRows = makeTransactionRows(
                 transactions: transactions,
-                cards: cards
+                ledgers: ledgers
             )
 
         } catch {
@@ -56,19 +57,17 @@ final class AccountTransactionsViewModel {
 
     private func makeTransactionRows(
         transactions: [Transaction],
-        cards: [Ledger]
+        ledgers: [Ledger]
     ) -> [TransactionRow] {
-        let cardsByID = Dictionary(
-            uniqueKeysWithValues: cards.map { card in
-                (card.id, card)
+        let ledgersByID = Dictionary(
+            uniqueKeysWithValues: ledgers.map { ledger in
+                (ledger.id, ledger)
             }
         )
 
         return transactions.map { transaction in
-            let sourceName: String = (
-                transaction.cardID.flatMap { cardsByID[$0] }?.displayName ??
-                    "Unknown Source"
-            )
+            let ledger = transaction.ledgerId.flatMap { ledgersByID[$0] }
+            let sourceName: String = ledger?.displayName ?? "Unknown Source"
 
             return TransactionRow(
                 id: transaction.id,
@@ -82,6 +81,16 @@ final class AccountTransactionsViewModel {
                 transactionType: transaction.transactionType,
                 postedAt: transaction.postedAt
             )
+        }
+    }
+
+    func deleteTransaction(id: UUID, accountID: UUID) async {
+        do {
+            deleteError = nil
+            try await transactionRepository.delete(id: id)
+            await loadTransactions(for: accountID)
+        } catch {
+            deleteError = error.localizedDescription
         }
     }
 
