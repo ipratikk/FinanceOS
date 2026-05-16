@@ -109,6 +109,7 @@ public struct UnifiedStatementParser: Sendable {
         case .iciciBank:
             let extractor = ICICIMetadataExtractor()
             metadata = extractor.extract(from: allRows)
+            accountLast4 = metadata?.accountNumber
             let mapper = ICICIBankCSVMapper()
             let normalizer = ICICIBankCSVNormalizer()
             let roles = try mapper.map(headerRow: headerRow)

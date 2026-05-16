@@ -83,8 +83,11 @@ extension ImportPreviewView {
         detectedBank = detected
         self.isCard = isCard
 
-        if isCard, let cardLast4 = statement.cardLast4 {
-            let nameConstructed = "\(detected) •••• \(cardLast4)"
+        if isCard {
+            let cardLast4 = statement.cardLast4 ?? ""
+            let nameConstructed = !cardLast4.isEmpty
+                ? "\(detected) •••• \(cardLast4)"
+                : detected
             newEntityName = nameConstructed
             newEntityNickname = ""
             newEntityLast4 = cardLast4

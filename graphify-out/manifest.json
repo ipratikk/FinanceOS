@@ -427,6 +427,10 @@
     "mtime": 1778912183.6267815,
     "hash": "c35f395547ce5d674104d39a944e5bb6"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/ICICICard/ICICICardMetadataExtractor.swift": {
+    "mtime": 1778943362.8254123,
+    "hash": "d6a284f59528816f9b5cd06496b841e9"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/ICICI/ICICIBankCSVParser.swift": {
     "mtime": 1778913189.1790168,
     "hash": "3ad4c21e8acb3a3c9e9916038e206c14"
@@ -451,6 +455,10 @@
     "mtime": 1778913648.746366,
     "hash": "a8d7db1210e9808d2c412dea972916c9"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFCBank/HDFCBankMetadataExtractor.swift": {
+    "mtime": 1778943382.3895285,
+    "hash": "567d9d9ab46f84a954f8ce1698d87b6d"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFCCard/HDFCCardCSVNormalizer.swift": {
     "mtime": 1778913189.198554,
     "hash": "676aac74165d5bd191fa1a44fd93f773"
@@ -463,9 +471,17 @@
     "mtime": 1778912212.0401683,
     "hash": "03ad786a5699ac451548382c0437acc2"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFCCard/HDFCCardMetadataExtractor.swift": {
+    "mtime": 1778943220.5399342,
+    "hash": "76294a3ce1c6e4a40e842866323bce9f"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Amex/AmexCardCSVNormalizer.swift": {
     "mtime": 1778913189.204421,
     "hash": "60f74c1da6db59a9fe799f080f192058"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Amex/AmexCardMetadataExtractor.swift": {
+    "mtime": 1778943392.5429418,
+    "hash": "8cbd980b90e3aa981c7258687b9aa330"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Amex/AmexCardCSVMapper.swift": {
     "mtime": 1778912162.663857,
@@ -496,8 +512,8 @@
     "hash": "505b2afc1b6a45f0bacda0d0391d5555"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Core/UnifiedStatementParser.swift": {
-    "mtime": 1778913189.159094,
-    "hash": "c0947626a05e46463365c2a3f7beb4ac"
+    "mtime": 1778943420.4486964,
+    "hash": "efa42688337b3f2f2410930dee346977"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Core/StatementParserRegistry.swift": {
     "mtime": 1778909936.393532,
@@ -688,8 +704,8 @@
     "hash": "bf9ba749af806842c73e8894db1fe322"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift": {
-    "mtime": 1778913221.5959175,
-    "hash": "38126e09b0326208e13dab6683ca4eb8"
+    "mtime": 1778943470.3664508,
+    "hash": "69f7040a1d57d92245cc00ea3f427605"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewCard.swift": {
     "mtime": 1778881129.0435085,
@@ -712,8 +728,8 @@
     "hash": "4d2c2575a7fce9b82ffc543fae4f7e3c"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView+Sections.swift": {
-    "mtime": 1778942528.6770186,
-    "hash": "600abd47a4e415ce32ce120e11818df5"
+    "mtime": 1778943495.3290222,
+    "hash": "d134d9727718b604cdc57184c9cdd4ec"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportFileListView.swift": {
     "mtime": 1778881129.0544236,
