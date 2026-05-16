@@ -17,8 +17,8 @@ public struct FilenameMetadataExtractor {
     private func extractAccountLast4(from filename: String) -> String? {
         // Look for patterns like "1234", "****1234", "xxxx1234" at word boundaries
         let patterns = [
-            "(?:x{4}|\\*{4})(\\d{4})",  // ****1234 or xxxx1234
-            "\\b(\\d{4})\\b"             // standalone 4-digit sequence
+            "(?:x{4}|\\*{4})(\\d{4})", // ****1234 or xxxx1234
+            "\\b(\\d{4})\\b" // standalone 4-digit sequence
         ]
 
         for pattern in patterns {
@@ -27,7 +27,7 @@ public struct FilenameMetadataExtractor {
                 if let match = regex.firstMatch(in: filename, range: range) {
                     if let matchRange = Range(match.range(at: 1), in: filename) {
                         let last4 = String(filename[matchRange])
-                        if last4.count == 4 && last4.allSatisfy(\.isNumber) {
+                        if last4.count == 4, last4.allSatisfy(\.isNumber) {
                             return last4
                         }
                     }
@@ -57,6 +57,7 @@ public struct FilenameMetadataExtractor {
         let datePatterns = [
             ("yyyy-MM-dd", "\\d{4}-\\d{2}-\\d{2}"),
             ("dd-MM-yyyy", "\\d{2}-\\d{2}-\\d{4}"),
+            ("ddMMyyyy", "\\d{8}"),
             ("yyyyMMdd", "\\d{8}"),
             ("MMM yyyy", "[A-Za-z]{3}\\s\\d{4}"),
             ("MMMM yyyy", "[A-Za-z]+\\s\\d{4}")
