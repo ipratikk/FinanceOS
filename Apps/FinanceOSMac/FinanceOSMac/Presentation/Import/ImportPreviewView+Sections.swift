@@ -77,45 +77,25 @@ extension ImportPreviewView {
     }
 
     func initializeCreateSheet(isCard: Bool) {
-        guard let statement = viewModel.parsedStatements.first else {
-            detectedBank = "Unknown"
-            self.isCard = isCard
-            newEntityName = ""
-            newEntityOwnerName = ""
-            newEntityLast4 = ""
+        guard let statement = viewModel.importSession.parsedStatements.first else {
+            var state = TargetCreationState()
+            state.isCard = isCard
+            viewModel.importSession.targetBeingCreated = state
             showCreateSheet = true
             return
         }
 
+        var state = TargetCreationState()
+        state.isCard = isCard
+        state.initializeFromStatement(statement)
+
         let detected = statement.bankName.isEmpty ? "Unknown" : statement.bankName
-        detectedBank = detected
-        self.isCard = isCard
-
-        if isCard {
-            let cardLast4 = statement.cardLast4 ?? ""
-            let nameConstructed = !cardLast4.isEmpty
-                ? "\(detected) •••• \(cardLast4)"
-                : detected
-            newEntityName = nameConstructed
-            newEntityNickname = ""
-            newEntityLast4 = cardLast4
-            newEntityOwnerName = ""
-        } else {
-            let accountLast4 = statement.accountLast4 ?? ""
-            let displayName = statement.accountName.isEmpty ? detected : statement.accountName
-            let nameConstructed = !accountLast4.isEmpty
-                ? "\(displayName) •••• \(accountLast4)"
-                : displayName
-            newEntityName = nameConstructed
-            newEntityNickname = ""
-            newEntityLast4 = accountLast4
-            newEntityOwnerName = statement.metadata?.customerName ?? ""
-        }
-
         let matchingBank = viewModel.banks.first { bank in
             ImportFormatting.fuzzyMatch(bank.name, detected)
         }
-        newEntityBankID = matchingBank?.id
+        state.selectedBankID = matchingBank?.id
+
+        viewModel.importSession.targetBeingCreated = state
         showCreateSheet = true
     }
 

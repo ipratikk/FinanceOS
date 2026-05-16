@@ -4,7 +4,9 @@ public struct StatementMetadata: Codable, Sendable, Equatable {
     public let customerName: String?
     public let customerId: String?
     public let accountNumber: String?
+    public let fullAccountNumber: String?
     public let accountType: String?
+    public let cardType: String?
     public let branch: String?
     public let branchCode: String?
     public let address: String?
@@ -22,7 +24,9 @@ public struct StatementMetadata: Codable, Sendable, Equatable {
         customerName: String? = nil,
         customerId: String? = nil,
         accountNumber: String? = nil,
+        fullAccountNumber: String? = nil,
         accountType: String? = nil,
+        cardType: String? = nil,
         branch: String? = nil,
         branchCode: String? = nil,
         address: String? = nil,
@@ -39,7 +43,9 @@ public struct StatementMetadata: Codable, Sendable, Equatable {
         self.customerName = customerName
         self.customerId = customerId
         self.accountNumber = accountNumber
+        self.fullAccountNumber = fullAccountNumber
         self.accountType = accountType
+        self.cardType = cardType
         self.branch = branch
         self.branchCode = branchCode
         self.address = address

@@ -9,31 +9,62 @@ let logger = FinanceLogger.importPipeline
 @MainActor
 @Observable
 final class ImportViewModel {
-    var fileURLs: [URL] = []
-    var parsedStatements: [ParsedStatement] = []
-    var selectedTarget: TransactionImportTarget?
-    var selectedSource: StatementSource?
-
-    var isLoading = false
-    var errorMessage: String?
-    var importResult: ImportResult?
+    let importSession: ImportSession
+    let transactionImportPipeline: TransactionImportPipeline
+    let bankRepository: any BankRepository
+    let ledgerRepository: any LedgerRepository
+    let transactionRepository: any TransactionRepository
 
     var ledgers: [Ledger] = []
     var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
 
+    private lazy var accountMatcher = AccountMatcher(
+        ledgerRepository: ledgerRepository,
+        bankRepository: bankRepository
+    )
+
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
-        zip(fileURLs, parsedStatements).map { ($0, $1) }
+        zip(importSession.fileURLs, importSession.parsedStatements).map { ($0, $1) }
     }
 
     var supportedSources: [(bankName: String, sourceType: StatementSourceType)] {
         StatementSourceRegistry.supportedSources
     }
 
-    let transactionImportPipeline: TransactionImportPipeline
-    let bankRepository: any BankRepository
-    let ledgerRepository: any LedgerRepository
-    let transactionRepository: any TransactionRepository
+    // For backward compatibility with views
+    var fileURLs: [URL] {
+        importSession.fileURLs
+    }
+
+    var parsedStatements: [ParsedStatement] {
+        importSession.parsedStatements
+    }
+
+    var selectedTarget: TransactionImportTarget? {
+        get { importSession.selectedTarget }
+        set { importSession.selectedTarget = newValue }
+    }
+
+    var selectedSource: StatementSource? {
+        get { importSession.selectedSource }
+        set { importSession.selectedSource = newValue }
+    }
+
+    var isLoading: Bool {
+        get { importSession.isLoading }
+        set { importSession.isLoading = newValue }
+    }
+
+    var errorMessage: String? {
+        get { importSession.errorMessage }
+        set { importSession.errorMessage = newValue }
+    }
+
+    var importResult: ImportResult? {
+        get { importSession.importResult }
+        set { importSession.importResult = newValue }
+    }
 
     init(
         transactionImportPipeline: TransactionImportPipeline,
@@ -41,6 +72,7 @@ final class ImportViewModel {
         ledgerRepository: any LedgerRepository,
         transactionRepository: any TransactionRepository
     ) {
+        self.importSession = ImportSession()
         self.transactionImportPipeline = transactionImportPipeline
         self.bankRepository = bankRepository
         self.ledgerRepository = ledgerRepository
@@ -49,16 +81,16 @@ final class ImportViewModel {
 
     func setFileURLs(_ urls: [URL]) {
         logger.info("setFileURLs called with \(urls.count, privacy: .public) file(s)")
-        fileURLs = urls
-        errorMessage = nil
+        importSession.fileURLs = urls
+        importSession.errorMessage = nil
         logger.debug("fileURLs updated, errorMessage cleared")
     }
 
     func setSource(_ source: StatementSource?) {
-        selectedSource = source
-        fileURLs = []
-        parsedStatements = []
-        errorMessage = nil
+        importSession.selectedSource = source
+        importSession.fileURLs = []
+        importSession.parsedStatements = []
+        importSession.errorMessage = nil
         logger
             .info("Source changed to \(source?.displayName ?? "none", privacy: .public), cleared files and statements")
     }
@@ -66,36 +98,36 @@ final class ImportViewModel {
     func parseFiles() {
         logger.info("parseFiles() called, scheduling Task")
         Task {
-            guard !fileURLs.isEmpty else {
-                errorMessage = "No files selected"
+            guard !importSession.fileURLs.isEmpty else {
+                importSession.errorMessage = "No files selected"
                 return
             }
 
-            isLoading = true
-            errorMessage = nil
+            importSession.isLoading = true
+            importSession.errorMessage = nil
             var statements: [ParsedStatement] = []
 
-            for fileURL in fileURLs {
+            for fileURL in importSession.fileURLs {
                 do {
                     let statement = try await parseFile(fileURL)
                     statements.append(statement)
                 } catch let error as FinanceCore.TransactionImportError {
-                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.userMessage)"
-                    parsedStatements = []
-                    isLoading = false
+                    importSession.errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.userMessage)"
+                    importSession.parsedStatements = []
+                    importSession.isLoading = false
                     return
                 } catch {
-                    errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
-                    parsedStatements = []
-                    isLoading = false
+                    importSession.errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
+                    importSession.parsedStatements = []
+                    importSession.isLoading = false
                     return
                 }
             }
 
-            self.parsedStatements = statements
+            importSession.parsedStatements = statements
             await loadTargetsOnAppear()
             await autoSelectMatchingTarget()
-            isLoading = false
+            importSession.isLoading = false
         }
     }
 
@@ -118,23 +150,23 @@ final class ImportViewModel {
 
     func importTransactions() {
         Task {
-            guard !fileURLs.isEmpty,
-                  !parsedStatements.isEmpty,
-                  let target = selectedTarget
+            guard !importSession.fileURLs.isEmpty,
+                  !importSession.parsedStatements.isEmpty,
+                  let target = importSession.selectedTarget
             else {
-                errorMessage = "Invalid import state"
-                let filesOk = !fileURLs.isEmpty
-                let stmtsOk = !parsedStatements.isEmpty
-                let state = "files=\(filesOk), stmts=\(stmtsOk), target=\(selectedTarget != nil)"
+                importSession.errorMessage = "Invalid import state"
+                let filesOk = !importSession.fileURLs.isEmpty
+                let stmtsOk = !importSession.parsedStatements.isEmpty
+                let state = "files=\(filesOk), stmts=\(stmtsOk), target=\(importSession.selectedTarget != nil)"
                 logger.error("Invalid state: \(state)")
                 return
             }
 
-            isLoading = true
-            errorMessage = nil
-            importResult = nil
+            importSession.isLoading = true
+            importSession.errorMessage = nil
+            importSession.importResult = nil
 
-            let fileCount = self.fileURLs.count
+            let fileCount = importSession.fileURLs.count
             let targetDesc = String(describing: target)
             logger.info(
                 "Starting: \(fileCount, privacy: .public) files, target: \(targetDesc, privacy: .public)"
@@ -142,15 +174,19 @@ final class ImportViewModel {
 
             do {
                 let result = try await performImport(target: target, fileCount: fileCount)
-                importResult = result
+                importSession.importResult = result
                 reset()
-                isLoading = false
+                importSession.isLoading = false
             } catch {
                 let desc = error.localizedDescription
                 logger.error("Import failed: \(desc, privacy: .public)")
-                errorMessage = "Import failed: \(desc)"
-                isLoading = false
+                importSession.errorMessage = "Import failed: \(desc)"
+                importSession.isLoading = false
             }
         }
+    }
+
+    private func reset() {
+        importSession.reset()
     }
 }

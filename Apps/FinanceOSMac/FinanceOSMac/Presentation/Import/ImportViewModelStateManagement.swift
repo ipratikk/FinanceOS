@@ -16,7 +16,7 @@ extension ImportViewModel {
         } catch {
             let errorMsg = error.localizedDescription
             logger.error("Failed to load targets: \(errorMsg, privacy: .public)")
-            errorMessage = errorMsg
+            importSession.errorMessage = errorMsg
         }
     }
 
@@ -27,18 +27,18 @@ extension ImportViewModel {
         var totalInserted = 0
         var totalSkipped = 0
 
-        for (index, fileURL) in fileURLs.enumerated() {
+        for (index, fileURL) in importSession.fileURLs.enumerated() {
             let fileName = fileURL.lastPathComponent
             let fileNumber = index + 1
 
             logger.debug("Importing file \(fileNumber)/\(fileCount): \(fileName, privacy: .public)")
 
-            guard index < parsedStatements.count else {
+            guard index < importSession.parsedStatements.count else {
                 throw FinanceCore.TransactionImportError.malformedFile("Parsed statement not available")
             }
 
             let result = try await transactionImportPipeline.execute(
-                statement: parsedStatements[index],
+                statement: importSession.parsedStatements[index],
                 target: target
             )
 
@@ -59,14 +59,14 @@ extension ImportViewModel {
     }
 
     func autoSelectMatchingTarget() async {
-        guard let statement = parsedStatements.first else { return }
+        guard let statement = importSession.parsedStatements.first else { return }
 
         if let target = FinanceCore.ImportTargetMatcher.bestTarget(
             for: statement,
             ledgers: ledgers,
             banks: banks
         ) {
-            selectedTarget = target
+            importSession.selectedTarget = target
             logger.info("Auto-selected target")
             await detectDuplicates(for: target)
         }
@@ -80,12 +80,12 @@ extension ImportViewModel {
                 let existingTransactions = allTransactions.filter { $0.ledgerId == ledgerId }
                 duplicateTransactionIndices = []
 
-                for (index, statement) in parsedStatements.enumerated() {
+                for (index, statement) in importSession.parsedStatements.enumerated() {
                     for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
                         // swiftformat:disable all
                         for existingTxn in existingTransactions
                             where FinanceCore.TransactionDeduplicator.isSame(parsed: parsedTxn, existing: existingTxn) {
-                            let flatIndex = parsedStatements[..<index]
+                            let flatIndex = importSession.parsedStatements[..<index]
                                 .reduce(0) { $0 + $1.transactions.count } + txnIndex
                             duplicateTransactionIndices.insert(flatIndex)
                         }
@@ -102,11 +102,9 @@ extension ImportViewModel {
     }
 
     func reset() {
-        fileURLs = []
-        parsedStatements = []
-        selectedTarget = nil
-        importResult = nil
+        importSession.reset()
         ledgers = []
         banks = []
+        duplicateTransactionIndices = []
     }
 }

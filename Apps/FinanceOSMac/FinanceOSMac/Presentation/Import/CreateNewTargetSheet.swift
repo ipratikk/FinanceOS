@@ -2,20 +2,19 @@ import FinanceCore
 import SwiftUI
 
 struct CreateNewTargetSheet: View {
-    @Binding var name: String
-    @Binding var nickname: String
-    @Binding var last4: String
-    @Binding var bankID: UUID?
-    @Binding var ownerName: String
-    let isCard: Bool
+    @Binding var state: TargetCreationState
     let banks: [Bank]
     let detectedBank: String
     let onCancel: () -> Void
     let onCreate: () -> Void
 
     var selectedBank: Bank? {
-        guard let id = bankID else { return nil }
+        guard let id = state.selectedBankID else { return nil }
         return banks.first { $0.id == id }
+    }
+
+    var isCard: Bool {
+        state.isCard
     }
 
     var body: some View {
@@ -43,20 +42,20 @@ struct CreateNewTargetSheet: View {
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
-                            inputField("Name (Optional)", text: $name)
+                            inputField("Name (Optional)", text: $state.customName)
 
                             if !isCard {
-                                inputField("Owner Name", text: $ownerName)
+                                inputField("Owner Name", text: $state.ownerName)
                             }
 
                             if isCard {
-                                inputField("Nickname", text: $nickname)
+                                inputField("Nickname", text: $state.nickname)
                             }
 
-                            inputField("Last 4 Digits", text: $last4)
-                                .onChange(of: last4) { _, newValue in
+                            inputField("Last 4 Digits", text: $state.last4)
+                                .onChange(of: state.last4) { _, newValue in
                                     if newValue.count > 4 {
-                                        last4 = String(newValue.prefix(4))
+                                        state.last4 = String(newValue.prefix(4))
                                     }
                                 }
                         }
@@ -95,7 +94,7 @@ struct CreateNewTargetSheet: View {
                                     Text(selectedBank == nil ? "Select Bank" : "Change Bank")
                                         .labelSmall()
                                         .foregroundColor(.gray)
-                                    Picker("Bank", selection: $bankID) {
+                                    Picker("Bank", selection: $state.selectedBankID) {
                                         Text("Select Bank").tag(UUID?.none)
                                         ForEach(banks) { bank in
                                             Text(bank.name).tag(UUID?(bank.id))
@@ -139,7 +138,7 @@ struct CreateNewTargetSheet: View {
                 .padding(AppSpacing.sm)
                 .background(AppColors.accent)
                 .cornerRadius(AppRadius.md)
-                .disabled(last4.trimmingCharacters(in: .whitespaces).isEmpty)
+                .disabled(state.last4.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .padding(AppSpacing.md)
         }

@@ -22,8 +22,8 @@ extension ImportViewModel {
         cardType: String = "other",
         isCard: Bool? = nil
     ) async {
-        guard let statement = parsedStatements.first else {
-            errorMessage = "No parsed statements available"
+        guard let statement = importSession.parsedStatements.first else {
+            importSession.errorMessage = "No parsed statements available"
             return
         }
 
@@ -48,7 +48,7 @@ extension ImportViewModel {
         } catch {
             let errorDesc = error.localizedDescription
             logger.error("Failed to create target: \(errorDesc)")
-            errorMessage = "Failed to create target: \(errorDesc)"
+            importSession.errorMessage = "Failed to create target: \(errorDesc)"
         }
     }
 
@@ -92,7 +92,7 @@ extension ImportViewModel {
             cardType: cardType
         )
         try await ledgerRepository.insert(ledger)
-        selectedTarget = .ledger(ledger.id)
+        importSession.selectedTarget = .ledger(ledger.id)
         logger.info("Created credit card: \(cardDisplayName)")
     }
 
@@ -117,7 +117,7 @@ extension ImportViewModel {
             accountType: accountType
         )
         try await ledgerRepository.insert(ledger)
-        selectedTarget = .ledger(ledger.id)
+        importSession.selectedTarget = .ledger(ledger.id)
         logger.info("Created bank account: \(accountDisplayName)")
     }
 }
