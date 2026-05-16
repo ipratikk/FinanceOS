@@ -59,17 +59,3 @@ struct MockCardRepository: CardRepository {
 
     func delete(id: UUID) async throws {}
 }
-
-struct MockTransactionImporter: TransactionImporting {
-    func parseStatement(from fileURL: URL, format: StatementFileFormat) async throws -> ParsedStatement {
-        ParsedStatement(bankName: "Mock", accountName: "Mock Account", transactions: [])
-    }
-
-    func importTransactions(
-        from fileURL: URL,
-        format: StatementFileFormat,
-        target: TransactionImportTarget
-    ) async throws -> [Transaction] {
-        []
-    }
-}
