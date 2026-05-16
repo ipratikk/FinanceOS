@@ -226,6 +226,59 @@ enum AppMigration {
 
             FinanceLogger.migration.info("Ledger unification complete: backfilled accounts + cards")
         }
+
+        migrator.registerMigration("v8_fix_ledger_cascade_delete") { database in
+            FinanceLogger.migration.info("Running migration: v8_fix_ledger_cascade_delete")
+
+            // Fix linkedLedgerId constraint to use CASCADE instead of SET NULL
+            // This allows deletion of accounts even if cards reference them
+
+            // Temporarily disable foreign key checks
+            try database.execute(sql: "PRAGMA foreign_keys = OFF")
+
+            // 1. Create ledgers_new with CASCADE constraint
+            try database.execute(sql: """
+                CREATE TABLE ledgers_new (
+                    id TEXT PRIMARY KEY,
+                    bankId TEXT NOT NULL REFERENCES banks(id) ON DELETE CASCADE,
+                    kind TEXT NOT NULL,
+                    displayName TEXT NOT NULL,
+                    last4 TEXT NOT NULL DEFAULT '',
+                    nickname TEXT NOT NULL DEFAULT '',
+                    ownerName TEXT NOT NULL DEFAULT '',
+                    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    accountType TEXT,
+                    cardType TEXT,
+                    cardProduct TEXT,
+                    linkedLedgerId TEXT REFERENCES ledgers_new(id) ON DELETE CASCADE,
+                    isArchived INTEGER NOT NULL DEFAULT 0,
+                    CHECK (kind IN ('bankAccount','creditCard','loan','wallet','crypto','investment'))
+                )
+            """)
+
+            // 2. Copy all data
+            try database.execute(sql: """
+                INSERT INTO ledgers_new
+                SELECT * FROM ledgers
+            """)
+
+            // 3. Drop old table
+            try database.execute(sql: "DROP TABLE ledgers")
+
+            // 4. Rename new table
+            try database.execute(sql: "ALTER TABLE ledgers_new RENAME TO ledgers")
+
+            // 5. Recreate indexes
+            try database.execute(sql: "CREATE INDEX idx_ledgers_bankId ON ledgers(bankId)")
+            try database.execute(sql: "CREATE INDEX idx_ledgers_kind ON ledgers(kind)")
+            try database.execute(sql: "CREATE INDEX idx_ledgers_linkedLedgerId ON ledgers(linkedLedgerId)")
+            try database.execute(sql: "CREATE INDEX idx_ledgers_bank_kind ON ledgers(bankId, kind)")
+
+            // Re-enable foreign key checks
+            try database.execute(sql: "PRAGMA foreign_keys = ON")
+
+            FinanceLogger.migration.info("Fixed ledger CASCADE delete constraint")
+        }
     }
 }
 
