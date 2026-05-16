@@ -7,7 +7,7 @@ public struct AmexCardCSVParser: Sendable {
         let rows = try CSVReader.readRows(from: fileURL, delimiter: ",")
         guard rows.count > 1 else { return [] }
 
-        return Array(rows.dropFirst())
+        return rows
     }
 
     public func canParse(fileURL: URL) throws -> Bool {
