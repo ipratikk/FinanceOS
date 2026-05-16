@@ -120,7 +120,9 @@ final class ImportViewModel {
                     importSession.isLoading = false
                     return
                 } catch {
-                    importSession.errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.localizedDescription)"
+                    let fileName = fileURL.lastPathComponent
+                    let errorDesc = error.localizedDescription
+                    importSession.errorMessage = "Error parsing \(fileName): \(errorDesc)"
                     importSession.parsedStatements = []
                     importSession.isLoading = false
                     return
@@ -139,7 +141,7 @@ final class ImportViewModel {
 
         do {
             let detectedSource = try StatementDetector.detect(fileURL: fileURL)
-            var result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
+            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
 
             // Enhance metadata by extracting from filename
             let filenameExtractor = FilenameMetadataExtractor()
@@ -147,15 +149,29 @@ final class ImportViewModel {
 
             // Merge filename metadata as fallback
             var statement = result.statement
-            if statement.metadata == nil {
-                statement.metadata = StatementMetadata(
+            let enhancedMetadata: FinanceParsers.StatementMetadata? = if let existingMetadata = statement.metadata {
+                mergeMetadata(parsed: existingMetadata, filename: filenameMetadata)
+            } else {
+                FinanceParsers.StatementMetadata(
                     accountNumber: filenameMetadata.accountLast4,
                     fullAccountNumber: filenameMetadata.accountNumber,
                     generatedAt: filenameMetadata.statementDate
                 )
-            } else if let metadata = statement.metadata {
-                statement.metadata = mergeMetadata(parsed: metadata, filename: filenameMetadata)
             }
+
+            statement = ParsedStatement(
+                bankName: statement.bankName,
+                accountName: statement.accountName,
+                accountLast4: statement.accountLast4,
+                cardLast4: statement.cardLast4,
+                statementPeriodStart: statement.statementPeriodStart,
+                statementPeriodEnd: statement.statementPeriodEnd,
+                currency: statement.currency,
+                totalDebit: statement.totalDebit,
+                totalCredit: statement.totalCredit,
+                transactions: statement.transactions,
+                metadata: enhancedMetadata
+            )
 
             let txnCount = statement.transactions.count
             logger.logInfo(
@@ -168,8 +184,11 @@ final class ImportViewModel {
         }
     }
 
-    private func mergeMetadata(parsed: StatementMetadata, filename: FilenameMetadata) -> StatementMetadata {
-        return StatementMetadata(
+    private func mergeMetadata(
+        parsed: FinanceParsers.StatementMetadata,
+        filename: FilenameMetadata
+    ) -> FinanceParsers.StatementMetadata {
+        return FinanceParsers.StatementMetadata(
             customerName: parsed.customerName ?? filename.accountNumber,
             customerId: parsed.customerId,
             accountNumber: parsed.accountNumber ?? filename.accountLast4,
