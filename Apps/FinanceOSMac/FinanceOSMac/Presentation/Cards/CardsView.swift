@@ -5,16 +5,16 @@ struct CardsView: View {
     @State private var viewModel: CardsViewModel
     @State private var selectedCardId: UUID?
     private let transactionRepository: any TransactionRepository
-    private let accountRepository: any AccountRepository
+    private let ledgerRepository: any LedgerRepository
 
     init(
         viewModel: CardsViewModel,
         transactionRepository: any TransactionRepository,
-        accountRepository: any AccountRepository
+        ledgerRepository: any LedgerRepository
     ) {
         _viewModel = State(initialValue: viewModel)
         self.transactionRepository = transactionRepository
-        self.accountRepository = accountRepository
+        self.ledgerRepository = ledgerRepository
     }
 
     var body: some View {
@@ -28,8 +28,8 @@ struct CardsView: View {
             }
         }
         .navigationTitle("Cards")
-        .sheet(item: $viewModel.editingCard) { card in
-            CardEditView(card: card, viewModel: viewModel)
+        .sheet(item: $viewModel.editingCard) { ledger in
+            CardEditView(card: ledger, viewModel: viewModel)
         }
         .task {
             await viewModel.loadCards()
@@ -45,7 +45,7 @@ struct CardsView: View {
                 Section(bankName) {
                     ForEach(cardRows, id: \.card.id) { cardRow in
                         NavigationLink(value: cardRow.card.id) {
-                            cardRowView(cardRow)
+                            cardRowView(cardRow.card)
                         }
                         .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
@@ -71,15 +71,14 @@ struct CardsView: View {
         .background(AppColors.base)
         .scrollContentBackground(.hidden)
         .navigationDestination(for: UUID.self) { cardId in
-            if let card = viewModel.cardRows.first(where: { $0.card.id == cardId })?.card {
+            if let ledger = viewModel.cardRows.first(where: { $0.card.id == cardId })?.card {
                 CardTransactionsView(
-                    card: card,
+                    ledger: ledger,
                     viewModel: CardTransactionsViewModel(
-                        transactionRepository: transactionRepository,
-                        accountRepository: accountRepository
+                        transactionRepository: transactionRepository
                     )
                 )
-                .navigationTitle(card.cardName)
+                .navigationTitle(ledger.displayName)
                 .onAppear { selectedCardId = cardId }
             }
         }
@@ -91,20 +90,20 @@ struct CardsView: View {
         }
     }
 
-    func cardRowView(_ cardRow: CardsViewModel.CardRow) -> some View {
+    func cardRowView(_ ledger: Ledger) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(cardRow.card.nickname.isEmpty ? cardRow.card.cardName : cardRow.card.nickname)
+                Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
 
-                Text(cardRow.card.cardType.rawValue.uppercased())
+                Text(ledger.cardType?.rawValue.uppercased() ?? "")
                     .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }
 
             Spacer()
 
-            Text("••••\(cardRow.card.cardLast4)")
+            Text("••••\(ledger.last4)")
                 .font(.system(size: 13, weight: .semibold, design: .monospaced))
                 .foregroundColor(AppColors.accent)
         }

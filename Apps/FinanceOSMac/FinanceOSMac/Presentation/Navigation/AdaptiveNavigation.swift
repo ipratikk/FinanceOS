@@ -26,8 +26,7 @@ struct AdaptiveNavigation: View {
                 TransactionsView(
                     viewModel: TransactionsViewModel(
                         transactionRepository: appContainer.transactionRepository,
-                        accountRepository: appContainer.accountRepository,
-                        cardRepository: appContainer.cardRepository
+                        ledgerRepository: appContainer.ledgerRepository
                     )
                 )
                 .tabItem {
@@ -37,13 +36,12 @@ struct AdaptiveNavigation: View {
 
                 AccountsView(
                     viewModel: AccountsViewModel(
-                        repository: appContainer.accountRepository,
+                        ledgerRepository: appContainer.ledgerRepository,
                         bankRepository: appContainer.bankRepository,
-                        cardRepository: appContainer.cardRepository,
                         transactionRepository: appContainer.transactionRepository
                     ),
                     transactionRepository: appContainer.transactionRepository,
-                    cardRepository: appContainer.cardRepository
+                    ledgerRepository: appContainer.ledgerRepository
                 )
                 .tabItem {
                     Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
@@ -52,13 +50,12 @@ struct AdaptiveNavigation: View {
 
                 CardsView(
                     viewModel: CardsViewModel(
-                        cardRepository: appContainer.cardRepository,
-                        accountRepository: appContainer.accountRepository,
+                        ledgerRepository: appContainer.ledgerRepository,
                         bankRepository: appContainer.bankRepository,
                         transactionRepository: appContainer.transactionRepository
                     ),
                     transactionRepository: appContainer.transactionRepository,
-                    accountRepository: appContainer.accountRepository
+                    ledgerRepository: appContainer.ledgerRepository
                 )
                 .tabItem {
                     Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
@@ -99,31 +96,28 @@ struct DetailRouter: View {
             TransactionsView(
                 viewModel: TransactionsViewModel(
                     transactionRepository: appContainer.transactionRepository,
-                    accountRepository: appContainer.accountRepository,
-                    cardRepository: appContainer.cardRepository
+                    ledgerRepository: appContainer.ledgerRepository
                 )
             )
         case .accounts:
             AccountsView(
                 viewModel: AccountsViewModel(
-                    repository: appContainer.accountRepository,
+                    ledgerRepository: appContainer.ledgerRepository,
                     bankRepository: appContainer.bankRepository,
-                    cardRepository: appContainer.cardRepository,
                     transactionRepository: appContainer.transactionRepository
                 ),
                 transactionRepository: appContainer.transactionRepository,
-                cardRepository: appContainer.cardRepository
+                ledgerRepository: appContainer.ledgerRepository
             )
         case .cards:
             CardsView(
                 viewModel: CardsViewModel(
-                    cardRepository: appContainer.cardRepository,
-                    accountRepository: appContainer.accountRepository,
+                    ledgerRepository: appContainer.ledgerRepository,
                     bankRepository: appContainer.bankRepository,
                     transactionRepository: appContainer.transactionRepository
                 ),
                 transactionRepository: appContainer.transactionRepository,
-                accountRepository: appContainer.accountRepository
+                ledgerRepository: appContainer.ledgerRepository
             )
         case .banks:
             BanksView(
@@ -138,8 +132,7 @@ struct DetailRouter: View {
                 viewModel: ImportViewModel(
                     transactionImportPipeline: appContainer.transactionImportPipeline,
                     bankRepository: appContainer.bankRepository,
-                    accountRepository: appContainer.accountRepository,
-                    cardRepository: appContainer.cardRepository,
+                    ledgerRepository: appContainer.ledgerRepository,
                     transactionRepository: appContainer.transactionRepository
                 )
             )

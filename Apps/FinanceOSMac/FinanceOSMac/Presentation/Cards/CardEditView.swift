@@ -2,27 +2,27 @@ import FinanceCore
 import SwiftUI
 
 struct CardEditView: View {
-    let card: Card
+    let card: Ledger
     let viewModel: CardsViewModel
-    @State private var cardName: String
-    @State private var cardLast4: String
+    @State private var displayName: String
+    @State private var last4: String
     @State private var cardType: CardType
     @State private var nickname: String
     @State private var bankId: UUID
-    @State private var linkedAccountId: UUID?
+    @State private var linkedLedgerId: UUID?
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
 
-    init(card: Card, viewModel: CardsViewModel) {
+    init(card: Ledger, viewModel: CardsViewModel) {
         self.card = card
         self.viewModel = viewModel
-        _cardName = State(initialValue: card.cardName)
-        _cardLast4 = State(initialValue: card.cardLast4)
-        _cardType = State(initialValue: card.cardType)
+        _displayName = State(initialValue: card.displayName)
+        _last4 = State(initialValue: card.last4)
+        _cardType = State(initialValue: card.cardType ?? .other)
         _nickname = State(initialValue: card.nickname)
         _bankId = State(initialValue: card.bankId)
-        _linkedAccountId = State(initialValue: card.linkedAccountId)
+        _linkedLedgerId = State(initialValue: card.linkedLedgerId)
     }
 
     var body: some View {
@@ -50,11 +50,11 @@ struct CardEditView: View {
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
-                            inputField("Card Name", text: $cardName)
-                            inputField("Last 4 Digits", text: $cardLast4)
-                                .onChange(of: cardLast4) { _, newValue in
+                            inputField("Card Name", text: $displayName)
+                            inputField("Last 4 Digits", text: $last4)
+                                .onChange(of: last4) { _, newValue in
                                     if newValue.count > 4 {
-                                        cardLast4 = String(newValue.prefix(4))
+                                        last4 = String(newValue.prefix(4))
                                     }
                                 }
 
@@ -105,10 +105,10 @@ struct CardEditView: View {
                                 Text("Linked Account")
                                     .labelSmall()
                                     .foregroundColor(.gray)
-                                Picker("Account", selection: $linkedAccountId) {
+                                Picker("Account", selection: $linkedLedgerId) {
                                     Text("None").tag(UUID?.none)
                                     ForEach(viewModel.accounts.filter { $0.bankId == bankId }) { account in
-                                        Text(account.accountName).tag(UUID?(account.id))
+                                        Text(account.displayName).tag(UUID?(account.id))
                                     }
                                 }
                                 .pickerStyle(.menu)
@@ -160,14 +160,20 @@ struct CardEditView: View {
 
                 Button(action: {
                     Task {
-                        let updated = Card(
+                        let updated = Ledger(
                             id: card.id,
                             bankId: bankId,
-                            linkedAccountId: linkedAccountId,
-                            cardName: cardName,
-                            cardLast4: cardLast4,
+                            kind: card.kind,
+                            displayName: displayName,
+                            last4: last4,
+                            nickname: nickname,
+                            ownerName: card.ownerName,
+                            createdAt: card.createdAt,
+                            accountType: card.accountType,
                             cardType: cardType,
-                            nickname: nickname
+                            cardProduct: card.cardProduct,
+                            linkedLedgerId: linkedLedgerId,
+                            isArchived: card.isArchived
                         )
                         await viewModel.updateCard(updated)
                         dismiss()

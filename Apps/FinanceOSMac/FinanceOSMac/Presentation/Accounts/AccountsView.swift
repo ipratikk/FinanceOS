@@ -5,16 +5,16 @@ struct AccountsView: View {
     @State private var viewModel: AccountsViewModel
     @State private var selectedAccountId: UUID?
     private let transactionRepository: any TransactionRepository
-    private let cardRepository: any CardRepository
+    private let ledgerRepository: any LedgerRepository
 
     init(
         viewModel: AccountsViewModel,
         transactionRepository: any TransactionRepository,
-        cardRepository: any CardRepository
+        ledgerRepository: any LedgerRepository
     ) {
         _viewModel = State(initialValue: viewModel)
         self.transactionRepository = transactionRepository
-        self.cardRepository = cardRepository
+        self.ledgerRepository = ledgerRepository
     }
 
     var body: some View {
@@ -28,8 +28,8 @@ struct AccountsView: View {
             }
         }
         .navigationTitle("Accounts")
-        .sheet(item: $viewModel.editingAccount) { account in
-            AccountEditView(account: account, viewModel: viewModel)
+        .sheet(item: $viewModel.editingAccount) { ledger in
+            AccountEditView(account: ledger, viewModel: viewModel)
         }
         .task {
             await viewModel.loadAccounts()
@@ -41,26 +41,26 @@ struct AccountsView: View {
             ForEach(
                 groupedAccountsByBank.sorted(by: { $0.key < $1.key }),
                 id: \.key
-            ) { bankName, accounts in
+            ) { bankName, ledgers in
                 Section(bankName) {
-                    ForEach(accounts, id: \.id) { account in
-                        NavigationLink(value: account.id) {
-                            accountRow(account)
+                    ForEach(ledgers, id: \.id) { ledger in
+                        NavigationLink(value: ledger.id) {
+                            accountRow(ledger)
                         }
                         .listRowBackground(AppColors.surface)
                         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                         .listRowSeparator(.hidden)
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
-                                viewModel.editingAccount = account
+                                viewModel.editingAccount = ledger
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
                         .contextMenu {
-                            Button("Edit") { viewModel.editingAccount = account }
+                            Button("Edit") { viewModel.editingAccount = ledger }
                             Button("Delete", role: .destructive) {
-                                viewModel.editingAccount = account
+                                viewModel.editingAccount = ledger
                             }
                         }
                     }
@@ -71,40 +71,40 @@ struct AccountsView: View {
         .background(AppColors.base)
         .scrollContentBackground(.hidden)
         .navigationDestination(for: UUID.self) { accountId in
-            if let account = viewModel.accounts.first(where: { $0.id == accountId }) {
+            if let ledger = viewModel.accounts.first(where: { $0.id == accountId }) {
                 AccountTransactionsView(
-                    account: account,
+                    ledger: ledger,
                     viewModel: AccountTransactionsViewModel(
                         transactionRepository: transactionRepository,
-                        cardRepository: cardRepository
+                        ledgerRepository: ledgerRepository
                     )
                 )
-                .navigationTitle(account.accountName)
+                .navigationTitle(ledger.displayName)
                 .onAppear { selectedAccountId = accountId }
             }
         }
     }
 
-    private var groupedAccountsByBank: [String: [Account]] {
-        Dictionary(grouping: viewModel.accounts) { account in
-            viewModel.banks.first { $0.id == account.bankId }?.name ?? "Unknown"
+    private var groupedAccountsByBank: [String: [Ledger]] {
+        Dictionary(grouping: viewModel.accounts) { ledger in
+            viewModel.banks.first { $0.id == ledger.bankId }?.name ?? "Unknown"
         }
     }
 
-    func accountRow(_ account: Account) -> some View {
+    func accountRow(_ ledger: Ledger) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(account.nickname.isEmpty ? account.accountName : account.nickname)
+                Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
 
-                Text(account.accountType.rawValue.uppercased())
+                Text(ledger.accountType?.rawValue.uppercased() ?? "")
                     .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }
 
             Spacer()
 
-            Text("••••\(account.accountLast4)")
+            Text("••••\(ledger.last4)")
                 .font(.system(size: 13, weight: .semibold, design: .monospaced))
                 .foregroundColor(AppColors.accent)
         }

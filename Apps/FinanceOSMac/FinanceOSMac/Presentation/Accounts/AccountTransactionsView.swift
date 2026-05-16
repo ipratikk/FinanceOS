@@ -2,14 +2,14 @@ import FinanceCore
 import SwiftUI
 
 struct AccountTransactionsView: View {
-    let account: Account
+    let ledger: Ledger
     @State private var viewModel: AccountTransactionsViewModel
 
     init(
-        account: Account,
+        ledger: Ledger,
         viewModel: AccountTransactionsViewModel
     ) {
-        self.account = account
+        self.ledger = ledger
         _viewModel = State(initialValue: viewModel)
     }
 
@@ -23,17 +23,17 @@ struct AccountTransactionsView: View {
         }
         .background(AppColors.base)
         .task {
-            await viewModel.loadTransactions(for: account.id)
+            await viewModel.loadTransactions(for: ledger.id)
         }
     }
 
     private var accountHeader: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(account.nickname.isEmpty ? account.accountName : account.nickname)
+                Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .headingMedium()
 
-                Text("\(account.accountType.rawValue.uppercased()) • ••••\(account.accountLast4)")
+                Text("\(ledger.accountType?.rawValue.uppercased() ?? "") • ••••\(ledger.last4)")
                     .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }

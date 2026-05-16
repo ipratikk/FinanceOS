@@ -11,11 +11,9 @@ import Foundation
 public final class AppContainer {
     public static let shared = AppContainer()
 
-    public let accountRepository: any AccountRepository
-    public let cardRepository: any CardRepository
     public let transactionRepository: any TransactionRepository
-
     public let bankRepository: any BankRepository
+    public let ledgerRepository: any LedgerRepository
 
     public let transactionImportPipeline: TransactionImportPipeline
 
@@ -24,19 +22,15 @@ public final class AppContainer {
     private init() {
         let databaseManager = DatabaseManager.shared
 
-        accountRepository = GRDBAccountRepository(
-            dbQueue: databaseManager.dbQueue
-        )
-
-        cardRepository = GRDBCardRepository(
-            dbQueue: databaseManager.dbQueue
-        )
-
         transactionRepository = GRDBTransactionRepository(
             dbQueue: databaseManager.dbQueue
         )
 
         bankRepository = GRDBBankRepository(
+            dbQueue: databaseManager.dbQueue
+        )
+
+        ledgerRepository = GRDBLedgerRepository(
             dbQueue: databaseManager.dbQueue
         )
 

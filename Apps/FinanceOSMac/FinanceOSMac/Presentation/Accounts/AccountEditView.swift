@@ -2,10 +2,10 @@ import FinanceCore
 import SwiftUI
 
 struct AccountEditView: View {
-    let account: Account
+    let account: Ledger
     let viewModel: AccountsViewModel
-    @State private var accountName: String
-    @State private var accountLast4: String
+    @State private var displayName: String
+    @State private var last4: String
     @State private var ownerName: String
     @State private var accountType: AccountType
     @State private var nickname: String
@@ -14,13 +14,13 @@ struct AccountEditView: View {
 
     @State private var showDeleteConfirm = false
 
-    init(account: Account, viewModel: AccountsViewModel) {
+    init(account: Ledger, viewModel: AccountsViewModel) {
         self.account = account
         self.viewModel = viewModel
-        _accountName = State(initialValue: account.accountName)
-        _accountLast4 = State(initialValue: account.accountLast4)
+        _displayName = State(initialValue: account.displayName)
+        _last4 = State(initialValue: account.last4)
         _ownerName = State(initialValue: account.ownerName)
-        _accountType = State(initialValue: account.accountType)
+        _accountType = State(initialValue: account.accountType ?? .savings)
         _nickname = State(initialValue: account.nickname)
         _bankId = State(initialValue: account.bankId)
     }
@@ -50,9 +50,9 @@ struct AccountEditView: View {
                             .foregroundColor(.gray)
 
                         VStack(spacing: 8) {
-                            inputField("Account Name", text: $accountName)
+                            inputField("Account Name", text: $displayName)
                             inputField("Owner Name", text: $ownerName)
-                            inputField("Last 4 Digits", text: $accountLast4)
+                            inputField("Last 4 Digits", text: $last4)
 
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Account Type")
@@ -139,14 +139,20 @@ struct AccountEditView: View {
 
                 Button(action: {
                     Task {
-                        let updated = Account(
+                        let updated = Ledger(
                             id: account.id,
                             bankId: bankId,
-                            accountName: accountName,
-                            accountLast4: accountLast4,
+                            kind: account.kind,
+                            displayName: displayName,
+                            last4: last4,
+                            nickname: nickname,
                             ownerName: ownerName,
+                            createdAt: account.createdAt,
                             accountType: accountType,
-                            nickname: nickname
+                            cardType: account.cardType,
+                            cardProduct: account.cardProduct,
+                            linkedLedgerId: account.linkedLedgerId,
+                            isArchived: account.isArchived
                         )
                         await viewModel.updateAccount(updated)
                         dismiss()
