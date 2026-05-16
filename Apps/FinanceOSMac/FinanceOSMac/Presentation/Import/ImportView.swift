@@ -262,30 +262,18 @@ struct ImportView: View {
 }
 
 #Preview {
-    let mockImporter = MockTransactionImporter()
     let mockRepository = MockTransactionRepository()
-    let mockRegistry = StatementParserRegistry(
-        parsers: [
-            ICICIBankStatementParser(),
-            ICICICardStatementParser(),
-            HDFCBankStatementParser(),
-            HDFCCardStatementParser(),
-            AmexCardStatementParser()
-        ]
-    )
     let mockPipeline = TransactionImportPipeline(
         repository: mockRepository
     )
 
     ImportView(
         viewModel: ImportViewModel(
-            transactionImporter: mockImporter,
             transactionImportPipeline: mockPipeline,
             bankRepository: MockBankRepository(),
             accountRepository: MockAccountRepository(),
             cardRepository: MockCardRepository(),
-            transactionRepository: mockRepository,
-            parserRegistry: mockRegistry
+            transactionRepository: mockRepository
         )
     )
 }

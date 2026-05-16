@@ -136,13 +136,11 @@ struct DetailRouter: View {
         case .importStatement:
             ImportView(
                 viewModel: ImportViewModel(
-                    transactionImporter: appContainer.transactionImporter,
                     transactionImportPipeline: appContainer.transactionImportPipeline,
                     bankRepository: appContainer.bankRepository,
                     accountRepository: appContainer.accountRepository,
                     cardRepository: appContainer.cardRepository,
-                    transactionRepository: appContainer.transactionRepository,
-                    parserRegistry: appContainer.parserRegistry
+                    transactionRepository: appContainer.transactionRepository
                 )
             )
         case .none:

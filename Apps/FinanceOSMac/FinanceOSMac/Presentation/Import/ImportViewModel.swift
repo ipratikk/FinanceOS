@@ -31,30 +31,24 @@ final class ImportViewModel {
         parserRegistry.supportedSources
     }
 
-    let transactionImporter: any TransactionImporting
     let transactionImportPipeline: TransactionImportPipeline
     let bankRepository: any BankRepository
     let accountRepository: any AccountRepository
     let cardRepository: any CardRepository
     let transactionRepository: any TransactionRepository
-    let parserRegistry: FinanceCore.StatementParserRegistry
 
     init(
-        transactionImporter: any TransactionImporting,
         transactionImportPipeline: TransactionImportPipeline,
         bankRepository: any BankRepository,
         accountRepository: any AccountRepository,
         cardRepository: any CardRepository,
-        transactionRepository: any TransactionRepository,
-        parserRegistry: FinanceCore.StatementParserRegistry
+        transactionRepository: any TransactionRepository
     ) {
-        self.transactionImporter = transactionImporter
         self.transactionImportPipeline = transactionImportPipeline
         self.bankRepository = bankRepository
         self.accountRepository = accountRepository
         self.cardRepository = cardRepository
         self.transactionRepository = transactionRepository
-        self.parserRegistry = parserRegistry
     }
 
     func setFileURLs(_ urls: [URL]) {
@@ -110,22 +104,16 @@ final class ImportViewModel {
     }
 
     private func parseFile(_ fileURL: URL) async throws -> ParsedStatement {
-        let format = StatementFileFormat.detect(from: fileURL)
         let fileName = fileURL.lastPathComponent
 
-        guard let source = selectedSource, [.csv, .txt].contains(format) else {
-            throw TransactionImportError.unsupportedFormat(format.rawValue)
+        do {
+            let detectedSource = try StatementDetector.detect(fileURL: fileURL)
+            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
+            logger.info("Parsed \(fileName, privacy: .public): \(result.statement.transactions.count, privacy: .public) txns from \(detectedSource.bankName, privacy: .public)")
+            return result.statement
+        } catch let error as DetectionError {
+            throw TransactionImportError.unsupportedFormat(error.description)
         }
-
-        guard let parser = parserRegistry.parser(for: source) else {
-            throw TransactionImportError.unsupportedFormat("\(source.displayName) - \(format.rawValue)")
-        }
-
-        let rows = try CSVRowReader.read(from: fileURL)
-        let statement = try parser.parse(rows: rows)
-
-        logger.info("Parsed \(fileName, privacy: .public): \(statement.transactions.count, privacy: .public) txns")
-        return statement
     }
 
     func importTransactions() {

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import FinanceParsers
 
 @MainActor
 public final class AppContainer {
@@ -18,9 +17,7 @@ public final class AppContainer {
 
     public let bankRepository: any BankRepository
 
-    public let transactionImporter: any TransactionImporting
     public let transactionImportPipeline: TransactionImportPipeline
-    public let parserRegistry: StatementParserRegistry
 
     public let spendingService: any SpendingServiceProtocol
 
@@ -42,18 +39,6 @@ public final class AppContainer {
         bankRepository = GRDBBankRepository(
             dbQueue: databaseManager.dbQueue
         )
-
-        parserRegistry = StatementParserRegistry(
-            parsers: [
-                ICICIBankStatementParser(),
-                ICICICardStatementParser(),
-                HDFCBankStatementParser(),
-                HDFCCardStatementParser(),
-                AmexCardStatementParser()
-            ]
-        )
-
-        transactionImporter = DefaultTransactionImporter()
 
         transactionImportPipeline = TransactionImportPipeline(
             repository: transactionRepository
