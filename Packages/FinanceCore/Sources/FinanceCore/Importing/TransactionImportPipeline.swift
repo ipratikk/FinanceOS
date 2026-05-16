@@ -12,10 +12,11 @@ public struct TransactionImportPipeline: Sendable {
 
     public func execute(
         statement: ParsedStatement,
-        target: TransactionImportTarget
+        target: TransactionImportTarget,
+        ledgerKind: LedgerKind
     ) async throws -> ImportResult {
         let transactions = statement.transactions.map { parsedTxn in
-            ParsedTransactionMapper.map(parsedTxn, target: target)
+            ParsedTransactionMapper.map(parsedTxn, target: target, ledgerKind: ledgerKind)
         }
 
         return try await repository.insertTransactions(transactions)

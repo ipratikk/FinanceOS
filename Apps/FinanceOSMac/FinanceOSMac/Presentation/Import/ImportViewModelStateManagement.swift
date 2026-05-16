@@ -37,9 +37,16 @@ extension ImportViewModel {
                 throw FinanceCore.TransactionImportError.malformedFile("Parsed statement not available")
             }
 
+            let ledgerKind: LedgerKind = if case let .ledger(ledgerId) = target {
+                ledgers.first { $0.id == ledgerId }?.kind ?? .bankAccount
+            } else {
+                .bankAccount
+            }
+
             let result = try await transactionImportPipeline.execute(
                 statement: importSession.parsedStatements[index],
-                target: target
+                target: target,
+                ledgerKind: ledgerKind
             )
 
             totalInserted += result.inserted

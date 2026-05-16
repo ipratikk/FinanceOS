@@ -2,7 +2,11 @@ import FinanceParsers
 import Foundation
 
 enum ParsedTransactionMapper {
-    static func map(_ parsed: ParsedTransaction, target: TransactionImportTarget) -> Transaction {
+    static func map(
+        _ parsed: ParsedTransaction,
+        target: TransactionImportTarget,
+        ledgerKind: LedgerKind
+    ) -> Transaction {
         let transactionType: TransactionType = parsed.amountMinorUnits >= 0 ? .debit : .credit
         let absoluteAmount = abs(parsed.amountMinorUnits)
 
@@ -10,6 +14,8 @@ enum ParsedTransactionMapper {
         case let .ledger(ledgerId):
             return Transaction(
                 ledgerId: ledgerId,
+                accountID: ledgerKind == .bankAccount ? ledgerId : nil,
+                cardID: ledgerKind == .creditCard ? ledgerId : nil,
                 postedAt: parsed.postedAt,
                 description: parsed.description,
                 amountMinorUnits: absoluteAmount,
