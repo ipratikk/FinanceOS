@@ -159,11 +159,14 @@ final class ImportViewModel {
                 )
             }
 
+            let finalAccountLast4 = enhancedMetadata?.accountNumber ?? statement.accountLast4
+            let finalCardLast4 = statement.cardLast4
+
             statement = ParsedStatement(
                 bankName: statement.bankName,
                 accountName: statement.accountName,
-                accountLast4: statement.accountLast4,
-                cardLast4: statement.cardLast4,
+                accountLast4: finalAccountLast4,
+                cardLast4: finalCardLast4,
                 statementPeriodStart: statement.statementPeriodStart,
                 statementPeriodEnd: statement.statementPeriodEnd,
                 currency: statement.currency,
