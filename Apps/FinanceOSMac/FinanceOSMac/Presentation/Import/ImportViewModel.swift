@@ -28,13 +28,7 @@ final class ImportViewModel {
     }
 
     var supportedSources: [(bankName: String, sourceType: StatementSourceType)] {
-        [
-            ("HDFC", .bankAccount),
-            ("HDFC", .creditCard),
-            ("ICICI", .bankAccount),
-            ("ICICI", .creditCard),
-            ("Amex", .creditCard)
-        ]
+        StatementSourceRegistry.supportedSources
     }
 
     let transactionImportPipeline: TransactionImportPipeline
