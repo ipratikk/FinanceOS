@@ -11,7 +11,7 @@ func reImportingSameTransactionsProducesSkipped() throws {
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
-        try DatabaseSeeder.seedInstitutions(in: database)
+        try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedAccounts(in: database)
         try DatabaseSeeder.seedCards(in: database)
@@ -55,7 +55,7 @@ func sameFingerprointDifferentAccountsInsertBoth() throws {
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
-        try DatabaseSeeder.seedInstitutions(in: database)
+        try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedAccounts(in: database)
     }

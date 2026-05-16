@@ -14,9 +14,7 @@ func migrationAndSeedingCreateTransactions() throws {
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
-        try DatabaseSeeder.seedInstitutions(
-            in: database
-        )
+        try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedAccounts(
             in: database
         )
@@ -52,9 +50,7 @@ func transactionSeedingIsIdempotent() throws {
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
-        try DatabaseSeeder.seedInstitutions(
-            in: database
-        )
+        try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedAccounts(
             in: database
         )

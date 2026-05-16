@@ -14,10 +14,7 @@ func migrationAndSeedingCreateLinkedAccountsAndCards() throws {
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
-        try DatabaseSeeder.seedInstitutions(
-            in: database
-        )
-
+        try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedAccounts(
             in: database
         )
@@ -26,16 +23,16 @@ func migrationAndSeedingCreateLinkedAccountsAndCards() throws {
             in: database
         )
 
-        let institutions = try Institution
+        let banks = try Bank
             .fetchAll(database)
         let accounts = try Account
             .fetchAll(database)
         let cards = try Card
             .fetchAll(database)
 
-        let institutionsByID = Dictionary(
-            uniqueKeysWithValues: institutions.map { institution in
-                (institution.id, institution)
+        let banksByID = Dictionary(
+            uniqueKeysWithValues: banks.map { bank in
+                (bank.id, bank)
             }
         )
         let accountsByID = Dictionary(
@@ -44,56 +41,56 @@ func migrationAndSeedingCreateLinkedAccountsAndCards() throws {
             }
         )
 
-        #expect(institutions.count == 4)
+        #expect(banks.count == 4)
         #expect(accounts.count == 2)
         #expect(cards.count == 5)
         #expect(accounts.allSatisfy { account in
-            institutions.contains { institution in
-                institution.id == account.institutionID
+            banks.contains { bank in
+                bank.id == account.bankId
             }
         })
         #expect(cards.allSatisfy { card in
-            institutions.contains { institution in
-                institution.id == card.institutionID
+            banks.contains { bank in
+                bank.id == card.bankId
             }
         })
 
         let hdfcAccount = accounts.first { account in
-            account.name == "HDFC Bank Account"
+            account.accountName == "HDFC Bank Account"
         }
         let iciciAccount = accounts.first { account in
-            account.name == "ICICI Bank Account"
+            account.accountName == "ICICI Bank Account"
         }
         let hdfcRegalia = cards.first { card in
-            card.name == "HDFC Regalia"
+            card.cardName == "HDFC Regalia"
         }
         let iciciCoral = cards.first { card in
-            card.name == "ICICI Coral"
+            card.cardName == "ICICI Coral"
         }
         let iciciAmazonPay = cards.first { card in
-            card.name == "ICICI Amazon Pay"
+            card.cardName == "ICICI Amazon Pay"
         }
         let amexPlatinumTravel = cards.first { card in
-            card.name == "American Express Platinum Travel"
+            card.cardName == "American Express Platinum Travel"
         }
         let scapia = cards.first { card in
-            card.name == "Scapia"
+            card.cardName == "Scapia"
         }
 
-        #expect(hdfcRegalia?.accountID == hdfcAccount?.id)
-        #expect(iciciCoral?.accountID == iciciAccount?.id)
-        #expect(iciciAmazonPay?.accountID == iciciAccount?.id)
-        #expect(amexPlatinumTravel?.accountID == nil)
-        #expect(scapia?.accountID == nil)
+        #expect(hdfcRegalia?.linkedAccountId == hdfcAccount?.id)
+        #expect(iciciCoral?.linkedAccountId == iciciAccount?.id)
+        #expect(iciciAmazonPay?.linkedAccountId == iciciAccount?.id)
+        #expect(amexPlatinumTravel?.linkedAccountId == nil)
+        #expect(scapia?.linkedAccountId == nil)
 
         #expect(hdfcRegalia.flatMap { card in
-            card.accountID.flatMap { accountsByID[$0] }?.name
+            card.linkedAccountId.flatMap { accountsByID[$0] }?.accountName
         } == "HDFC Bank Account")
         #expect(iciciCoral.flatMap { card in
-            card.accountID.flatMap { accountsByID[$0] }?.name
+            card.linkedAccountId.flatMap { accountsByID[$0] }?.accountName
         } == "ICICI Bank Account")
         #expect(amexPlatinumTravel.flatMap { card in
-            institutionsByID[card.institutionID]?.name
+            banksByID[card.bankId]?.name
         } == "Amex")
     }
 }
@@ -110,9 +107,7 @@ func accountAndCardSeedingIsIdempotent() throws {
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
-        try DatabaseSeeder.seedInstitutions(
-            in: database
-        )
+        try DatabaseSeeder.seedBanks(in: database)
         try DatabaseSeeder.seedAccounts(
             in: database
         )
