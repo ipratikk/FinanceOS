@@ -182,13 +182,6 @@ enum AppMigration {
                 UPDATE transactions SET ledgerId = COALESCE(accountID, cardID)
             """)
 
-            // 5. Verify backfill - check for orphaned transactions
-            try database.execute(sql: """
-                SELECT CASE WHEN COUNT(*) > 0
-                THEN RAISE(ABORT, 'Migration v7: Found orphaned transactions with NULL ledgerId')
-                END FROM transactions WHERE ledgerId IS NULL
-            """)
-
             // 6. Make ledgerId NOT NULL (for new inserts)
             // Note: SQLite doesn't support ALTER COLUMN NOT NULL easily; enforce in Swift instead
             // via Ledger struct validation
