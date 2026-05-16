@@ -17,7 +17,7 @@ public struct HDFCBankTXTParser: Sendable {
 
             if headerRow == nil {
                 let normalized = row.map { $0.lowercased() }
-                if normalized.contains("narration") && normalized.contains("closingbalance") {
+                if normalized.contains("narration"), normalized.contains("closing balance") {
                     headerRow = row
                     result.append(row)
                     continue
@@ -38,7 +38,7 @@ public struct HDFCBankTXTParser: Sendable {
 
         for line in lines {
             let normalized = line.lowercased()
-            if normalized.contains("narration") && normalized.contains("closingbalance") {
+            if normalized.contains("narration"), normalized.contains("closing balance") {
                 return true
             }
         }
