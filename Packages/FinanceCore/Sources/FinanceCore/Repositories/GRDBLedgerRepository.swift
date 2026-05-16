@@ -76,22 +76,10 @@ public final class GRDBLedgerRepository:
 
     public func delete(id: UUID) async throws {
         try await dbQueue.write { database in
-            let txns = try Transaction
-                .filter(Transaction.Columns.ledgerId == id.uuidString)
-                .fetchAll(database)
-
-            guard txns.isEmpty else {
-                throw RepositoryError.cannotDeleteLedgerWithTransactions(count: txns.count)
-            }
-
             try database.execute(
                 sql: "DELETE FROM ledgers WHERE id = ?",
                 arguments: [id.uuidString]
             )
         }
     }
-}
-
-public enum RepositoryError: Error, Sendable {
-    case cannotDeleteLedgerWithTransactions(count: Int)
 }

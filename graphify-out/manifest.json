@@ -284,8 +284,8 @@
     "hash": "183c0004c3b32eaed1547e2863afc531"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/TransactionImportPipeline.swift": {
-    "mtime": 1778874271.8579147,
-    "hash": "b64ac17d92ed51c16c176ff866cc37bd"
+    "mtime": 1778968739.948777,
+    "hash": "e68696a2e8a9eba78832a9a08b207b35"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ParsedStatement.swift": {
     "mtime": 1778858335.2872624,
@@ -296,8 +296,8 @@
     "hash": "f6a0ee2899efb5f423236d41dd164883"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ParsedTransactionMapper.swift": {
-    "mtime": 1778960975.7071211,
-    "hash": "c88f8aaa0b659ca9940794ed1ef224ca"
+    "mtime": 1778968754.5122721,
+    "hash": "322486001a8be9b54d6378a3a0b3fef6"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Importing/ImportResult.swift": {
     "mtime": 1778780355.7077258,
@@ -796,8 +796,8 @@
     "hash": "9532eef6b66e677cdeb1bec9a969a69f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift": {
-    "mtime": 1778968229.361979,
-    "hash": "5dbcf0648511e5b6a055b304f44e74e4"
+    "mtime": 1778968564.723819,
+    "hash": "998ed06c47bb3351053ea78a46c2ae14"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewCard.swift": {
     "mtime": 1778881129.0435085,
@@ -840,8 +840,8 @@
     "hash": "27be34d47745f76340e10a618f587504"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelStateManagement.swift": {
-    "mtime": 1778967735.389053,
-    "hash": "83a52c2821154f13dd91fc3bdca3de96"
+    "mtime": 1778968764.3354127,
+    "hash": "6e8f2ca6845f8edf1f98ace4b5eff296"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/PasswordPromptSheet.swift": {
     "mtime": 1778881129.0642211,
