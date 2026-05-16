@@ -124,7 +124,7 @@ public struct UnifiedStatementParser: Sendable {
             }
         }
 
-        let totalDebit = transactions.filter { $0.amountMinorUnits > 0 }.map { $0.amountMinorUnits }.reduce(0, +)
+        let totalDebit = transactions.filter { $0.amountMinorUnits > 0 }.map(\.amountMinorUnits).reduce(0, +)
         let totalCredit = transactions.filter { $0.amountMinorUnits < 0 }.map { -$0.amountMinorUnits }.reduce(0, +)
 
         return ParsedStatement(
@@ -157,4 +157,3 @@ public struct UnifiedStatementParser: Sendable {
         }
     }
 }
-

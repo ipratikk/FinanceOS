@@ -336,3 +336,35 @@ Avoid:
 * excessive prose
 * dumping entire files unnecessarily
 * broad repo summaries unless requested
+
+---
+
+# Agent Routing (ENFORCED)
+
+**HAIKU** — only for mechanical execution:
+* Build/test/lint commands
+* File ops (rename, move, delete)
+* Git ops (commit, push)
+* Search/grep
+* Snapshot/fixture regen
+* Parser invocation
+
+**SONNET** — for feature work + integration:
+* Implement features (views, viewmodels, parsers, services)
+* SwiftUI/ViewModel work
+* Test writing
+* Refactor (extract, inline)
+* Integration/wiring
+
+**OPUS** — ONLY for architectural reasoning:
+* Parser broken/wrong (root cause unknown)
+* Concurrency/async boundary issues
+* Cross-module refactors
+* Database schema design
+* Pipeline redesign
+* Architecture decisions
+* Tradeoff analysis
+
+**DEFAULT: SONNET** for ambiguous tasks.
+
+**RULE:** Spawn the correct agent via Agent tool. Do NOT override. If your prompt matches haiku criteria, spawn haiku. Cost optimization mandatory.

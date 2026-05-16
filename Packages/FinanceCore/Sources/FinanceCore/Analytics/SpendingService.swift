@@ -14,7 +14,7 @@ public struct MonthlySpendingSummary: Identifiable, Codable, Equatable, Sendable
 
     public init(month: Date, totalDebit: Int64, totalCredit: Int64) {
         self.month = month
-        self.id = month
+        id = month
         self.totalDebit = totalDebit
         self.totalCredit = totalCredit
     }

@@ -14,15 +14,86 @@ from pathlib import Path
 import pdfplumber
 
 
-def extract_text_lines(pdf_path):
-    """Extract all text lines from PDF."""
+def extract_text_lines(file_path):
+    """Extract all text lines from PDF or TXT file."""
     lines = []
-    with pdfplumber.open(pdf_path) as pdf:
-        for page in pdf.pages:
-            text = page.extract_text()
-            if text:
-                lines.extend(text.split('\n'))
+    path = Path(file_path)
+
+    if path.suffix.lower() == '.txt':
+        with open(file_path, 'r', encoding='utf-8') as f:
+            lines = f.read().split('\n')
+    else:
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text:
+                    lines.extend(text.split('\n'))
     return lines
+
+
+def is_csv_format(lines):
+    """Check if file is CSV-formatted (has comma-separated columns)."""
+    for line in lines[:20]:
+        if ',' in line and any(kw in line.lower() for kw in ['date', 'narration', 'debit', 'credit']):
+            return True
+    return False
+
+
+def parse_csv_format(lines, start_idx):
+    """Parse CSV-formatted transaction file."""
+    transactions = []
+
+    # Parse header row
+    header_line = lines[start_idx]
+    headers = [h.strip().lower() for h in header_line.split(',')]
+
+    # Find column indices
+    date_idx = next((i for i, h in enumerate(headers) if 'date' in h), None)
+    narration_idx = next((i for i, h in enumerate(headers) if 'narration' in h), None)
+    debit_idx = next((i for i, h in enumerate(headers) if 'debit' in h), None)
+    credit_idx = next((i for i, h in enumerate(headers) if 'credit' in h), None)
+
+    if date_idx is None:
+        return []
+
+    # Parse data rows
+    for line in lines[start_idx + 1:]:
+        if not line.strip():
+            continue
+
+        cols = [c.strip() for c in line.split(',')]
+        if len(cols) <= date_idx:
+            continue
+
+        date = cols[date_idx] if date_idx < len(cols) else ""
+        if not date or not is_date_line(date):
+            continue
+
+        narration = cols[narration_idx] if narration_idx is not None and narration_idx < len(cols) else ""
+        debit_str = cols[debit_idx] if debit_idx is not None and debit_idx < len(cols) else "0"
+        credit_str = cols[credit_idx] if credit_idx is not None and credit_idx < len(cols) else "0"
+
+        debit = parse_amount(debit_str) or 0.0
+        credit = parse_amount(credit_str) or 0.0
+
+        if debit == 0 and credit == 0:
+            continue
+
+        # Calculate amount_minor_units with proper rounding
+        if debit > 0:
+            amount_minor = round(-debit * 100)  # Negative for debit, rounded
+        else:
+            amount_minor = round(credit * 100)  # Positive for credit, rounded
+
+        transactions.append({
+            'date': date,
+            'description': narration,
+            'amount_minor_units': int(amount_minor),
+            'debit': debit,
+            'credit': credit,
+        })
+
+    return transactions
 
 
 def find_table_start(lines):
@@ -178,18 +249,18 @@ def parse_hdfc_transactions(transactions):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python extract_hdfc_reference.py <pdf_path>")
+        print("Usage: python extract_hdfc_reference.py <pdf_or_txt_path>")
         sys.exit(1)
 
-    pdf_path = sys.argv[1]
-    if not Path(pdf_path).exists():
-        print(f"Error: File not found: {pdf_path}", file=sys.stderr)
+    file_path = sys.argv[1]
+    if not Path(file_path).exists():
+        print(f"Error: File not found: {file_path}", file=sys.stderr)
         sys.exit(1)
 
-    print(f"Extracting from: {pdf_path}", file=sys.stderr)
+    print(f"Extracting from: {file_path}", file=sys.stderr)
 
     # Extract raw text
-    lines = extract_text_lines(pdf_path)
+    lines = extract_text_lines(file_path)
     print(f"Extracted {len(lines)} text lines", file=sys.stderr)
 
     # Find table start
@@ -200,13 +271,19 @@ def main():
 
     print(f"Transaction table starts at line {start_idx}", file=sys.stderr)
 
-    # Reconstruct transactions
-    txns = reconstruct_transactions(lines, start_idx)
-    print(f"Reconstructed {len(txns)} transactions", file=sys.stderr)
+    # Check if CSV-formatted and parse accordingly
+    if is_csv_format(lines):
+        print("Detected CSV format", file=sys.stderr)
+        parsed = parse_csv_format(lines, start_idx)
+        print(f"Parsed {len(parsed)} transactions from CSV", file=sys.stderr)
+    else:
+        # Reconstruct transactions (PDF format)
+        txns = reconstruct_transactions(lines, start_idx)
+        print(f"Reconstructed {len(txns)} transactions", file=sys.stderr)
 
-    # Parse to normalized format
-    parsed = parse_hdfc_transactions(txns)
-    print(f"Parsed {len(parsed)} valid transactions", file=sys.stderr)
+        # Parse to normalized format
+        parsed = parse_hdfc_transactions(txns)
+        print(f"Parsed {len(parsed)} valid transactions", file=sys.stderr)
 
     # Output JSON
     result = {

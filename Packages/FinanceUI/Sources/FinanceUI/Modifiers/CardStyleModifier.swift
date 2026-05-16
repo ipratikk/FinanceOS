@@ -10,8 +10,8 @@ public struct CardStyleModifier: ViewModifier {
     }
 }
 
-extension View {
-    public func cardStyle() -> some View {
+public extension View {
+    func cardStyle() -> some View {
         modifier(CardStyleModifier())
     }
 }

@@ -60,7 +60,7 @@ public struct ICICIMetadataExtractor: Sendable {
     private func extractCustomerIdAndDate(from rows: [[String]]) -> (String?, Date?) {
         for row in rows {
             let joined = row.joined(separator: " ")
-            if joined.uppercased().contains("STATEMENT SUMMARY") && joined.uppercased().contains("CUSTOMER ID") {
+            if joined.uppercased().contains("STATEMENT SUMMARY"), joined.uppercased().contains("CUSTOMER ID") {
                 let customerId = extractCustomerIdValue(from: joined)
                 let dateStr = extractDateFromSummary(from: joined)
                 let date = parseStatementDate(dateStr)
@@ -109,7 +109,7 @@ public struct ICICIMetadataExtractor: Sendable {
 
             let firstCol = (row.first ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
 
-            if firstCol.contains("XXXXXXXX") && firstCol.contains("A/c") {
+            if firstCol.contains("XXXXXXXX"), firstCol.contains("A/c") {
                 if let number = extractAccountNumberFromCell(firstCol) {
                     details.accountNumber = number
                 }
@@ -117,7 +117,7 @@ public struct ICICIMetadataExtractor: Sendable {
                     details.accountType = type
                 }
                 if row.count >= 2 {
-                    let balanceCell = (row[1]).trimmingCharacters(in: .whitespacesAndNewlines)
+                    let balanceCell = row[1].trimmingCharacters(in: .whitespacesAndNewlines)
                     if let amt = parseAmountToMinorUnits(balanceCell) {
                         details.balance = amt
                     }
@@ -169,7 +169,7 @@ public struct ICICIMetadataExtractor: Sendable {
     }
 
     private func parseStatementDate(_ dateStr: String?) -> Date? {
-        guard let dateStr = dateStr else { return nil }
+        guard let dateStr else { return nil }
 
         let formatters = [
             "MMMM dd  yyyy",
@@ -198,5 +198,4 @@ public struct ICICIMetadataExtractor: Sendable {
         guard let value = Double(cleaned) else { return nil }
         return Int64((value * 100).rounded())
     }
-
 }

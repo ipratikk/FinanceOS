@@ -20,7 +20,8 @@ public struct FixtureDirectory: Sendable {
         for institutionDir in institutionDirs {
             var isDirectory: ObjCBool = false
             guard fileManager.fileExists(atPath: institutionDir.path, isDirectory: &isDirectory),
-                  isDirectory.boolValue else {
+                  isDirectory.boolValue
+            else {
                 continue
             }
 

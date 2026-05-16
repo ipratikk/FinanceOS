@@ -9,7 +9,7 @@ from collections import defaultdict
 
 
 def run_swift_parser(pdf_path):
-    """Run Swift CLI parser and return JSON output."""
+    """Run Swift CLI parser and return parsed transactions."""
     script_dir = Path(__file__).parent.parent / "Packages" / "FinanceParsers"
     try:
         result = subprocess.run(
@@ -35,7 +35,13 @@ def run_swift_parser(pdf_path):
                 elif c == '}':
                     depth -= 1
                     if depth == 0:
-                        return json.loads(output[start:start+i+1])
+                        data = json.loads(output[start:start+i+1])
+                        # Extract transactions from nested structure
+                        return {
+                            "transactions": data.get("statement", {}).get("transactions", []),
+                            "total_credit": data.get("statement", {}).get("totalCredit", 0),
+                            "total_debit": data.get("statement", {}).get("totalDebit", 0),
+                        }
         return None
     except Exception as e:
         print(f"Error running Swift parser: {e}", file=sys.stderr)
@@ -75,32 +81,87 @@ def run_python_parser(pdf_path):
         return None
 
 
-def analyze_differences(swift_txns, python_txns):
-    """Compare transactions and identify differences."""
+def extract_date_from_fingerprint(fingerprint):
+    """Extract date from sourceFingerprint (format: dd/mm/yy|...)."""
+    if fingerprint:
+        parts = fingerprint.split("|")
+        return parts[0] if parts else ""
+    return ""
+
+
+def analyze_differences(swift_txns, python_txns, swift_totals=None, python_totals=None):
+    """Comprehensive comparison of parsed transactions."""
     swift_count = len(swift_txns)
     python_count = len(python_txns)
 
-    # Build lookup by date + amount for matching
-    swift_by_key = defaultdict(list)
-    for t in swift_txns:
-        key = (t["postedAt"], t["amountMinorUnits"])
-        swift_by_key[key].append(t)
+    # Match transactions by date + amount
+    matched = []
+    matched_python_indices = set()
 
-    python_by_key = defaultdict(list)
+    for s_txn in swift_txns:
+        # Extract date from Swift's sourceFingerprint (more reliable)
+        s_date = extract_date_from_fingerprint(s_txn.get("sourceFingerprint", ""))
+        s_amount = s_txn.get("amountMinorUnits", 0)
+
+        for p_idx, p_txn in enumerate(python_txns):
+            if p_idx in matched_python_indices:
+                continue
+
+            p_date = p_txn.get("date", "")
+            p_amount = p_txn.get("amount_minor_units", 0)
+
+            # Match by date and absolute amount (signs may differ)
+            if s_date == p_date and abs(s_amount) == abs(p_amount):
+                matched.append({
+                    "swift": s_txn,
+                    "python": p_txn,
+                    "date_match": True,
+                    "amount_match": s_amount == p_amount,
+                    "description_match": s_txn.get("description", "") == p_txn.get("description", ""),
+                })
+                matched_python_indices.add(p_idx)
+                break
+
+    unmatched_swift = [t for i, t in enumerate(swift_txns) if not any(m["swift"] == t for m in matched)]
+    unmatched_python = [t for i, t in enumerate(python_txns) if i not in matched_python_indices]
+
+    # Calculate totals
+    swift_total_debit = sum(abs(t.get("amountMinorUnits", 0)) for t in swift_txns if t.get("amountMinorUnits", 0) > 0)
+    swift_total_credit = sum(abs(t.get("amountMinorUnits", 0)) for t in swift_txns if t.get("amountMinorUnits", 0) < 0)
+
+    # Python totals may be debit/credit or amount_minor_units
+    python_total_debit = 0
+    python_total_credit = 0
     for t in python_txns:
-        # Convert date string to timestamp for comparison
-        python_by_key[t["date"]].append(t)
+        amount = t.get("amount_minor_units", 0)
+        if amount > 0:
+            python_total_debit += abs(amount)
+        elif amount < 0:
+            python_total_credit += abs(amount)
 
-    # Metrics
-    empty_descriptions = sum(1 for t in swift_txns if t.get("description") == "HDFC Transaction")
-    missing_entirely = python_count - swift_count
+    # Check for description mismatches (accounting for empty descriptions)
+    description_issues = sum(1 for m in matched
+                            if m["swift"]["description"] and not m["python"].get("description")
+                            and m["swift"]["description"] != m["python"].get("description", ""))
+
+    # Check for amount sign mismatches (common between parsers with different conventions)
+    amount_issues = sum(1 for m in matched if m["swift"].get("amountMinorUnits") != m["python"].get("amount_minor_units"))
 
     return {
         "swift_count": swift_count,
         "python_count": python_count,
-        "missing_from_swift": missing_entirely,
-        "empty_descriptions_swift": empty_descriptions,
-        "description_quality_swift": f"{100 * (swift_count - empty_descriptions) / max(1, swift_count):.1f}%",
+        "matched_count": len(matched),
+        "unmatched_swift_count": len(unmatched_swift),
+        "unmatched_python_count": len(unmatched_python),
+        "swift_total_debit": swift_total_debit,
+        "swift_total_credit": swift_total_credit,
+        "python_total_debit": python_total_debit,
+        "python_total_credit": python_total_credit,
+        "description_mismatches": description_issues,
+        "amount_mismatches": amount_issues,
+        "matched": matched,
+        "unmatched_swift": unmatched_swift,
+        "unmatched_python": unmatched_python,
     }
 
 
@@ -136,28 +197,71 @@ def main():
         python_result = {"transactions": []}
 
     # Analyze
+    swift_txns = swift_result.get("transactions", [])
+    python_txns = python_result.get("transactions", [])
+
     metrics = analyze_differences(
-        swift_result.get("transactions", []),
-        python_result.get("transactions", [])
+        swift_txns,
+        python_txns,
+        swift_totals={
+            "debit": swift_result.get("total_debit", 0),
+            "credit": swift_result.get("total_credit", 0),
+        },
+        python_totals=python_result.get("totals", {})
     )
 
     print("\n=== COMPARISON RESULTS ===\n", file=sys.stderr)
-    print(f"Swift parser:        {metrics['swift_count']:3d} transactions", file=sys.stderr)
-    print(f"Python parser:       {metrics['python_count']:3d} transactions", file=sys.stderr)
-    missing = metrics.get('missing_entirely', 0)
-    py_count = metrics['python_count']
-    if py_count > 0:
-        print(f"Missing from Swift:  {missing:3d} ({100*missing/py_count:.1f}%)", file=sys.stderr)
-    print(f"\nDescription quality:", file=sys.stderr)
-    print(f"  Swift empty:       {metrics['empty_descriptions_swift']:3d} ({metrics['description_quality_swift']})", file=sys.stderr)
-    print(f"  Python empty:      {sum(1 for t in python_result.get('transactions', []) if not t.get('description'))}", file=sys.stderr)
+    print(f"Transaction Count:", file=sys.stderr)
+    print(f"  Swift:           {metrics['swift_count']:4d}", file=sys.stderr)
+    print(f"  Python:          {metrics['python_count']:4d}", file=sys.stderr)
+    print(f"  Matched:         {metrics['matched_count']:4d}", file=sys.stderr)
+    print(f"  Unmatched Swift: {metrics['unmatched_swift_count']:4d}", file=sys.stderr)
+    print(f"  Unmatched Python:{metrics['unmatched_python_count']:4d}", file=sys.stderr)
+
+    print(f"\nAmount Totals (in paise):", file=sys.stderr)
+    print(f"  Swift  - Debit:  {metrics['swift_total_debit']:10d}", file=sys.stderr)
+    print(f"  Swift  - Credit: {metrics['swift_total_credit']:10d}", file=sys.stderr)
+    print(f"  Python - Debit:  {metrics['python_total_debit']:10d}", file=sys.stderr)
+    print(f"  Python - Credit: {metrics['python_total_credit']:10d}", file=sys.stderr)
+
+    print(f"\nData Quality:", file=sys.stderr)
+    print(f"  Description mismatches: {metrics['description_mismatches']}", file=sys.stderr)
+    print(f"  Amount mismatches:      {metrics['amount_mismatches']}", file=sys.stderr)
+
+    # Determine status
+    if metrics['unmatched_swift_count'] == 0 and metrics['unmatched_python_count'] == 0:
+        gap_pct = 0
+        status = "PASS"
+    else:
+        gap_pct = 100 * max(metrics['unmatched_swift_count'], metrics['unmatched_python_count']) / max(1, metrics['python_count'])
+        status = "PASS" if gap_pct == 0 else ("GAP" if gap_pct <= 5 else "FAIL")
+
+    print(f"\nStatus: {status} ({gap_pct:.1f}% gap)", file=sys.stderr)
 
     # Output JSON comparison
     output = {
-        "pdf_path": pdf_path,
-        "metrics": metrics,
-        "swift_sample": swift_result.get("transactions", [])[:3],
-        "python_sample": python_result.get("transactions", [])[:3],
+        "file_path": pdf_path,
+        "status": status,
+        "gap_percent": gap_pct,
+        "metrics": {
+            "swift_count": metrics['swift_count'],
+            "python_count": metrics['python_count'],
+            "matched": metrics['matched_count'],
+            "unmatched_swift": metrics['unmatched_swift_count'],
+            "unmatched_python": metrics['unmatched_python_count'],
+            "description_mismatches": metrics['description_mismatches'],
+            "amount_mismatches": metrics['amount_mismatches'],
+        },
+        "totals": {
+            "swift_debit": metrics['swift_total_debit'],
+            "swift_credit": metrics['swift_total_credit'],
+            "python_debit": metrics['python_total_debit'],
+            "python_credit": metrics['python_total_credit'],
+        },
+        "issues": {
+            "unmatched_swift": metrics['unmatched_swift'][:5] if metrics['unmatched_swift'] else [],
+            "unmatched_python": metrics['unmatched_python'][:5] if metrics['unmatched_python'] else [],
+        }
     }
     print(json.dumps(output, indent=2))
 

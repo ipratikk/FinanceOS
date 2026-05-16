@@ -13,7 +13,9 @@ public struct ICICIBankCSVParser: Sendable {
             let firstCol = row.first?.uppercased() ?? ""
             if firstCol == "DATE" {
                 let normalized = row.map { $0.lowercased() }
-                if normalized.contains("particulars") && normalized.contains("deposits") && normalized.contains("withdrawals") {
+                if normalized.contains("particulars"), normalized.contains("deposits"),
+                   normalized.contains("withdrawals")
+                {
                     headerIndex = index
                     result.append(row)
                     break
@@ -26,7 +28,7 @@ public struct ICICIBankCSVParser: Sendable {
         for row in rows.dropFirst(headerIndex + 1) {
             guard row.count > 2 else { continue }
             let particulars = row[2].trimmingCharacters(in: .whitespaces)
-            if !particulars.hasPrefix("B/F") && !particulars.isEmpty {
+            if !particulars.hasPrefix("B/F"), !particulars.isEmpty {
                 result.append(row)
             }
         }
@@ -39,9 +41,10 @@ public struct ICICIBankCSVParser: Sendable {
 
         for row in rows {
             let normalized = row.map { $0.lowercased() }
-            if normalized.contains("particulars") &&
-               normalized.contains("deposits") &&
-               normalized.contains("withdrawals") {
+            if normalized.contains("particulars"),
+               normalized.contains("deposits"),
+               normalized.contains("withdrawals")
+            {
                 return true
             }
         }

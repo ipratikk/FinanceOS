@@ -9,7 +9,7 @@ public struct ICICICardCSVParser: Sendable {
         var headerIndex = -1
         for (index, row) in rows.enumerated() {
             let normalized = row.map { $0.lowercased() }
-            if normalized.contains("date") && normalized.contains("billingamountsign") {
+            if normalized.contains("date"), normalized.contains("billingamountsign") {
                 headerIndex = index
                 break
             }
@@ -24,7 +24,7 @@ public struct ICICICardCSVParser: Sendable {
 
         for row in rows {
             let normalized = row.map { $0.lowercased() }
-            if normalized.contains("billingamountsign") && normalized.contains("date") {
+            if normalized.contains("billingamountsign"), normalized.contains("date") {
                 return true
             }
         }

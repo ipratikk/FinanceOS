@@ -29,7 +29,7 @@ public enum CSVReader {
             if char == "\"" {
                 inQuotes = !inQuotes
                 i = line.index(after: i)
-            } else if char == "," && !inQuotes {
+            } else if char == ",", !inQuotes {
                 result.append(current.trimmingCharacters(in: .whitespaces))
                 current = ""
                 i = line.index(after: i)

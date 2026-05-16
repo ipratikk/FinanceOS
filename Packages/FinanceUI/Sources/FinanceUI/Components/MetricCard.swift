@@ -15,8 +15,13 @@ public struct MetricCard: View {
             self.period = period
         }
 
-        var isPositive: Bool { change >= 0 }
-        var text: String { String(format: "%+.0f%%", change) }
+        var isPositive: Bool {
+            change >= 0
+        }
+
+        var text: String {
+            String(format: "%+.0f%%", change)
+        }
     }
 
     public init(_ label: String, value: String, delta: Delta? = nil, icon: String? = nil) {
@@ -65,8 +70,18 @@ public struct MetricCard: View {
 
 #Preview {
     VStack(spacing: AppSpacing.lg) {
-        MetricCard("Total Debits", value: "₹1,24,500", delta: .init(change: 12, period: "last month"), icon: "arrow.down.circle.fill")
-        MetricCard("Total Credits", value: "₹85,000", delta: .init(change: -5, period: "last month"), icon: "arrow.up.circle.fill")
+        MetricCard(
+            "Total Debits",
+            value: "₹1,24,500",
+            delta: .init(change: 12, period: "last month"),
+            icon: "arrow.down.circle.fill"
+        )
+        MetricCard(
+            "Total Credits",
+            value: "₹85,000",
+            delta: .init(change: -5, period: "last month"),
+            icon: "arrow.up.circle.fill"
+        )
     }
     .padding(AppSpacing.lg)
     .background(AppColors.base)

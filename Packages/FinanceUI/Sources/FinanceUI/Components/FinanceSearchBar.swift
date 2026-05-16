@@ -6,7 +6,7 @@ public struct FinanceSearchBar: View {
 
     public init(_ placeholder: String = "Search", text: Binding<String>) {
         self.placeholder = placeholder
-        self._text = text
+        _text = text
     }
 
     public var body: some View {

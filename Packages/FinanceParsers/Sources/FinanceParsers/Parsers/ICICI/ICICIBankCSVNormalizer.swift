@@ -5,7 +5,8 @@ public struct ICICIBankCSVNormalizer: Sendable {
 
     public func normalize(normalizedRow: NormalizedRow) throws -> ParsedTransaction? {
         guard let dateStr = normalizedRow[.date],
-              let descStr = normalizedRow[.description] else {
+              let descStr = normalizedRow[.description]
+        else {
             return nil
         }
 

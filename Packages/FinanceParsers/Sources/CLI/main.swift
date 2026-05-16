@@ -79,7 +79,8 @@ struct ParseCommand: AsyncParsableCommand {
             encoder.dateEncodingStrategy = .iso8601
         }
         guard let data = try? encoder.encode(result),
-              let json = String(data: data, encoding: .utf8) else {
+              let json = String(data: data, encoding: .utf8)
+        else {
             return "{}"
         }
         return json
@@ -91,7 +92,8 @@ struct ParseCommand: AsyncParsableCommand {
             encoder.dateEncodingStrategy = .iso8601
         }
         guard let data = try? encoder.encode(result),
-              let json = String(data: data, encoding: .utf8) else {
+              let json = String(data: data, encoding: .utf8)
+        else {
             return "{}"
         }
         return json
@@ -144,7 +146,7 @@ struct ValidateCommand: AsyncParsableCommand {
     }
 
     private func formatDate(_ date: Date?) -> String {
-        guard let date = date else { return "unknown" }
+        guard let date else { return "unknown" }
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter.string(from: date)
@@ -208,7 +210,8 @@ struct CompareCommand: AsyncParsableCommand {
             }
 
             guard let actualData = try? encoder.encode(result),
-                  let actualJSON = String(data: actualData, encoding: .utf8) else {
+                  let actualJSON = String(data: actualData, encoding: .utf8)
+            else {
                 throw CLIError.parseError("Failed to encode result as JSON")
             }
 

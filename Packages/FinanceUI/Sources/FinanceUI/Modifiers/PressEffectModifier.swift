@@ -14,8 +14,8 @@ public struct PressEffectModifier: ViewModifier {
     }
 }
 
-extension View {
-    public func pressEffect() -> some View {
+public extension View {
+    func pressEffect() -> some View {
         modifier(PressEffectModifier())
     }
 }

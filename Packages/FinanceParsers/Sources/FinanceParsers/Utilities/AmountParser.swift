@@ -11,7 +11,7 @@ public enum AmountParser {
         guard let decimal = Decimal(string: cleaned) else { return nil }
 
         let multiplied = decimal * 100
-        guard !multiplied.isNaN && multiplied.isFinite else { return nil }
+        guard !multiplied.isNaN, multiplied.isFinite else { return nil }
 
         return NSDecimalNumber(decimal: multiplied).int64Value
     }

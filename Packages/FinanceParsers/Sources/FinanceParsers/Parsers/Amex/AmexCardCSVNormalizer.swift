@@ -6,7 +6,8 @@ public struct AmexCardCSVNormalizer: Sendable {
     public func normalize(normalizedRow: NormalizedRow) throws -> ParsedTransaction? {
         guard let dateStr = normalizedRow[.date],
               let descStr = normalizedRow[.description],
-              let amountStr = normalizedRow[.amount] else {
+              let amountStr = normalizedRow[.amount]
+        else {
             return nil
         }
 

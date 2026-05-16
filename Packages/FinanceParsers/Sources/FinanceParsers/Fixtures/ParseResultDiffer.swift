@@ -4,8 +4,8 @@ public enum ParseResultDiffer {
     public static func compare(_ actual: ParseResult?, _ expected: ParseResult?) -> [String] {
         var diffs: [String] = []
 
-        guard let actual = actual, let expected = expected else {
-            if actual == nil && expected == nil {
+        guard let actual, let expected else {
+            if actual == nil, expected == nil {
                 return []
             }
             diffs.append("One result is nil")
@@ -82,7 +82,8 @@ public enum ParseResultDiffer {
             }
 
             if actualTxn.amountMinorUnits != expectedTxn.amountMinorUnits {
-                diffs.append("Transaction \(i) amount: \(actualTxn.amountMinorUnits) vs \(expectedTxn.amountMinorUnits)")
+                diffs
+                    .append("Transaction \(i) amount: \(actualTxn.amountMinorUnits) vs \(expectedTxn.amountMinorUnits)")
             }
 
             if actualTxn.currencyCode != expectedTxn.currencyCode {

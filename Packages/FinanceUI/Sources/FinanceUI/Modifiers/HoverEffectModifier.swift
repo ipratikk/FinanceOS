@@ -23,8 +23,8 @@ public struct HoverEffectModifier: ViewModifier {
     }
 }
 
-extension View {
-    public func hoverEffect() -> some View {
+public extension View {
+    func hoverEffect() -> some View {
         modifier(HoverEffectModifier())
     }
 }

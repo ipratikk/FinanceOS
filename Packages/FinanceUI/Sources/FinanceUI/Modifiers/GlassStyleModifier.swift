@@ -16,8 +16,8 @@ public struct GlassStyleModifier: ViewModifier {
     }
 }
 
-extension View {
-    public func glassStyle() -> some View {
+public extension View {
+    func glassStyle() -> some View {
         modifier(GlassStyleModifier())
     }
 }

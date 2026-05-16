@@ -60,7 +60,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         var count = 0
 
         for txn in allTransactions {
-            guard txn.postedAt >= currentMonthStart && txn.postedAt < currentMonthEnd else {
+            guard txn.postedAt >= currentMonthStart, txn.postedAt < currentMonthEnd else {
                 continue
             }
 

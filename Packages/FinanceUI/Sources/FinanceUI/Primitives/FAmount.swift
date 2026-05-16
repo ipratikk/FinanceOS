@@ -14,7 +14,7 @@ public struct FAmount: View {
 
     public init(_ amountMinorUnits: Int64, currency: String, isDebit: Bool = false, size: Size = .medium) {
         self.amountMinorUnits = amountMinorUnits
-        self.currencyCode = currency
+        currencyCode = currency
         self.isDebit = isDebit
         self.size = size
     }
@@ -64,7 +64,7 @@ public struct FAmount: View {
 
 #Preview {
     VStack(spacing: 12) {
-        FAmount(124500, currency: "INR", isDebit: true, size: .large)
+        FAmount(124_500, currency: "INR", isDebit: true, size: .large)
         FAmount(85000, currency: "INR", isDebit: false, size: .medium)
         FAmount(320, currency: "INR", isDebit: true, size: .small)
     }

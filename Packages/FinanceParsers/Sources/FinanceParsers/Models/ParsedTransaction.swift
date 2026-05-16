@@ -32,10 +32,10 @@ public struct ParsedTransaction: Codable, Sendable, Equatable {
 
     public static func == (lhs: ParsedTransaction, rhs: ParsedTransaction) -> Bool {
         lhs.postedAt == rhs.postedAt &&
-        lhs.description == rhs.description &&
-        lhs.amountMinorUnits == rhs.amountMinorUnits &&
-        lhs.currencyCode == rhs.currencyCode &&
-        lhs.sourceFingerprint == rhs.sourceFingerprint &&
-        lhs.rewardPoints == rhs.rewardPoints
+            lhs.description == rhs.description &&
+            lhs.amountMinorUnits == rhs.amountMinorUnits &&
+            lhs.currencyCode == rhs.currencyCode &&
+            lhs.sourceFingerprint == rhs.sourceFingerprint &&
+            lhs.rewardPoints == rhs.rewardPoints
     }
 }

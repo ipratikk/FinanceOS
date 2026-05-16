@@ -43,7 +43,12 @@ public struct SectionHeader: View {
 #Preview {
     VStack(spacing: AppSpacing.md) {
         SectionHeader("Recent Transactions")
-        SectionHeader("Accounts", subtitle: "3 linked accounts", action: { print("View All") }, actionLabel: "View All →")
+        SectionHeader(
+            "Accounts",
+            subtitle: "3 linked accounts",
+            action: { print("View All") },
+            actionLabel: "View All →"
+        )
     }
     .padding(AppSpacing.lg)
     .background(AppColors.base)
