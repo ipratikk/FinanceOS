@@ -116,9 +116,9 @@ final class ImportViewModel {
             let detectedSource = try StatementDetector.detect(fileURL: fileURL)
             let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
             let txnCount = result.statement.transactions.count
-            logger.info(
-                "Parsed \(fileName, privacy: .public): \(txnCount, privacy: .public) txns from "
-                    + "\(detectedSource.bankName, privacy: .public)"
+            logger.logInfo(
+                "Parsed {file}: {count} txns from {bank}",
+                ["file": fileName, "count": txnCount, "bank": detectedSource.bankName]
             )
             return result.statement
         } catch let error as DetectionError {

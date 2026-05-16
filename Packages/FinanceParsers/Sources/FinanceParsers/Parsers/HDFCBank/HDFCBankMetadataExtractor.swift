@@ -38,7 +38,7 @@ public struct HDFCBankMetadataExtractor: Sendable {
 
     private func extractAccountLast4(from lines: [String]) -> String? {
         for line in lines.prefix(25) {
-            if line.contains("Account") && line.contains("XXXXXXXX") {
+            if line.contains("Account"), line.contains("XXXXXXXX") {
                 let pattern = "XXXXXXXX(\\d{4})"
                 if let regex = try? NSRegularExpression(pattern: pattern) {
                     let range = NSRange(line.startIndex..., in: line)
