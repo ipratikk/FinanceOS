@@ -40,7 +40,7 @@ def is_csv_format(lines):
 
 
 def parse_csv_format(lines, start_idx):
-    """Parse CSV-formatted transaction file."""
+    """Parse CSV-formatted transaction file with variable-length narrations."""
     transactions = []
 
     # Parse header row
@@ -62,16 +62,29 @@ def parse_csv_format(lines, start_idx):
             continue
 
         cols = [c.strip() for c in line.split(',')]
-        if len(cols) <= date_idx:
+        if len(cols) < 5:  # Minimum: date, narr, debit, credit, ref
             continue
 
         date = cols[date_idx] if date_idx < len(cols) else ""
         if not date or not is_date_line(date):
             continue
 
-        narration = cols[narration_idx] if narration_idx is not None and narration_idx < len(cols) else ""
-        debit_str = cols[debit_idx] if debit_idx is not None and debit_idx < len(cols) else "0"
-        credit_str = cols[credit_idx] if credit_idx is not None and credit_idx < len(cols) else "0"
+        # Handle variable-length narrations (some contain commas)
+        # Standard: 7 cols = date | narr | valuedate | debit | credit | ref | balance
+        # Variable: 8+ cols = date | narr_part1 | narr_part2... | valuedate | debit | credit | ...
+        # Work backwards from end: balance, ref, credit, debit, valuedate, then narration(s)
+
+        if len(cols) == 7:
+            # Standard case: date | narr | valuedate | debit | credit | ref | balance
+            narration = cols[narration_idx] if narration_idx < len(cols) else ""
+            debit_str = cols[debit_idx] if debit_idx < len(cols) else "0"
+            credit_str = cols[credit_idx] if credit_idx < len(cols) else "0"
+        else:
+            # Variable length: date | narr_parts... | valuedate | debit | credit | ref | balance
+            # Work backwards: [ref, balance] are last 2, [debit, credit] are next 2
+            narration = ' '.join(cols[1:-4])  # Everything between date and valuedate
+            debit_str = cols[-4]  # Fourth from end (debit amount)
+            credit_str = cols[-3]  # Third from end (credit amount)
 
         debit = parse_amount(debit_str) or 0.0
         credit = parse_amount(credit_str) or 0.0
