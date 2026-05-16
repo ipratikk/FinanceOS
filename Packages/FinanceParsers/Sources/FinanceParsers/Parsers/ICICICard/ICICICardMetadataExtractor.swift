@@ -35,7 +35,7 @@ public struct ICICICardMetadataExtractor: Sendable {
             if trimmed.uppercased().contains("CARD NUMBER") {
                 if row.count > 1 {
                     let cardNum = row[1].trimmingCharacters(in: .whitespaces)
-                    let parts = cardNum.components(separatedBy: " ")
+                    let parts = cardNum.components(separatedBy: " ").filter { !$0.isEmpty }
                     if let lastPart = parts.last, lastPart.count == 4, lastPart.allSatisfy(\.isNumber) {
                         return lastPart
                     }

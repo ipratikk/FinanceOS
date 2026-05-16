@@ -1,16 +1,16 @@
 # Graph Report - FinanceOS  (2026-05-16)
 
 ## Corpus Check
-- 204 files · ~47,035 words
+- 204 files · ~47,032 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1614 nodes · 2218 edges · 163 communities (63 shown, 100 thin omitted)
+- 1614 nodes · 2218 edges · 166 communities (70 shown, 96 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 161 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9c2f38dd`
+- Built from commit: `c785dee7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -144,19 +144,22 @@
 - [[_COMMUNITY_Community 126|Community 126]]
 - [[_COMMUNITY_Community 127|Community 127]]
 - [[_COMMUNITY_Community 128|Community 128]]
+- [[_COMMUNITY_Community 129|Community 129]]
+- [[_COMMUNITY_Community 130|Community 130]]
 - [[_COMMUNITY_Community 131|Community 131]]
-- [[_COMMUNITY_Community 132|Community 132]]
-- [[_COMMUNITY_Community 133|Community 133]]
 - [[_COMMUNITY_Community 134|Community 134]]
 - [[_COMMUNITY_Community 135|Community 135]]
 - [[_COMMUNITY_Community 136|Community 136]]
 - [[_COMMUNITY_Community 137|Community 137]]
+- [[_COMMUNITY_Community 138|Community 138]]
 - [[_COMMUNITY_Community 139|Community 139]]
 - [[_COMMUNITY_Community 140|Community 140]]
-- [[_COMMUNITY_Community 141|Community 141]]
 - [[_COMMUNITY_Community 142|Community 142]]
 - [[_COMMUNITY_Community 143|Community 143]]
-- [[_COMMUNITY_Community 162|Community 162]]
+- [[_COMMUNITY_Community 144|Community 144]]
+- [[_COMMUNITY_Community 145|Community 145]]
+- [[_COMMUNITY_Community 146|Community 146]]
+- [[_COMMUNITY_Community 165|Community 165]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `TabularTransactionDecoder` - 23 edges
@@ -185,107 +188,107 @@
 - **Database Lifecycle Flow** — databasemanager_shared, databasemanager_migrator, appmigration_registermigrations, databasemanager_seed_database, databaseseeder_seedinstitutions [EXTRACTED 1.00]
 - **Architecture Rules To Code** — architecture_layered_flow, architecture_database_lifecycle_rule, architecture_dependency_composition_rule, architecture_repository_abstraction_rule, architecture_ui_database_boundary_rule, architecture_persistence_encapsulation_rule [EXTRACTED 1.00]
 
-## Communities (163 total, 100 thin omitted)
+## Communities (166 total, 96 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.05
-Nodes (23): AsyncParsableCommand, CLIError, fileNotFound, parseError, unsupportedFormat, CompareCommand, FinanceParserCLI, ListSourcesCommand (+15 more)
-
-### Community 1 - "Community 1"
-Cohesion: 0.05
 Nodes (17): CSVStatementParser, TXTStatementParser, ParsedWorkbook, SharedStringsParserDelegate, WorksheetParserDelegate, XLSXStatementParser, XLSXWorkbookReader, CSVStatementParser (+9 more)
 
-### Community 2 - "Community 2"
+### Community 1 - "Community 1"
 Cohesion: 0.04
 Nodes (47): 1. Token-Driven Design, 2. Component-First Architecture, 3. Semantic Styling, 4. Dark Mode First, 5. Native Apple Platform Feel, Accessibility Standards, Anti-Patterns, Backgrounds (+39 more)
 
-### Community 3 - "Community 3"
+### Community 2 - "Community 2"
 Cohesion: 0.06
 Nodes (18): ClassifiedLine, HDFCRawTransaction, StatementLinePurpose, amountLine, balanceLine, blank, dateLine, footer (+10 more)
 
-### Community 4 - "Community 4"
+### Community 3 - "Community 3"
 Cohesion: 0.05
 Nodes (10): GRDBSpendingService, AppContainer, TransactionImportPipeline, GRDBAccountRepository, GRDBBankRepository, GRDBCardRepository, grdbDelete(), grdbInsert() (+2 more)
 
-### Community 5 - "Community 5"
+### Community 4 - "Community 4"
 Cohesion: 0.07
 Nodes (13): AccountRepository, ImportView, MockAccountRepository, MockTransactionRepository, TargetChoice, account, card, createAccount (+5 more)
+
+### Community 5 - "Community 5"
+Cohesion: 0.08
+Nodes (25): AsyncParsableCommand, CLIError, fileNotFound, parseError, unsupportedFormat, CompareCommand, FinanceParserCLI, ListSourcesCommand (+17 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.07
 Nodes (19): HDFCLineClassifier, BalanceDiscrepancy, ClassifiedLine, HDFCRawTransaction, ParseWarning, StatementLinePurpose, amountLine, balanceLine (+11 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.05
-Nodes (34): StatementSource, amex, hdfcBank, hdfcCard, iciciBank, iciciCard, Hashable, StatementSource (+26 more)
+Cohesion: 0.06
+Nodes (6): AmexCardCSVParser, UnifiedStatementParser, HDFCBankTXTParser, ICICIBankCSVParser, ICICICardCSVParser, date
 
 ### Community 8 - "Community 8"
+Cohesion: 0.05
+Nodes (33): StatementSource, amex, hdfcBank, hdfcCard, iciciBank, iciciCard, Hashable, StatementSource (+25 more)
+
+### Community 9 - "Community 9"
 Cohesion: 0.07
 Nodes (34): Architecture Alignment, Brace Spacing, code:swift (// ❌ Too long), code:swift (// ❌ Wrong), code:swift (// ❌ Wrong), code:swift (// ❌ Too long), code:bash (swiftlint lint                    # Check all files), code:block14 (Presentation/) (+26 more)
 
-### Community 9 - "Community 9"
+### Community 10 - "Community 10"
 Cohesion: 0.11
 Nodes (4): ImportViewModel, logDebug(), logInfo(), ImportViewModel
 
-### Community 10 - "Community 10"
-Cohesion: 0.09
-Nodes (26): CodingKeys, amountMinorUnits, currencyCode, description, id, postedAt, rewardPoints, sourceFingerprint (+18 more)
-
 ### Community 11 - "Community 11"
-Cohesion: 0.06
-Nodes (14): InstitutionStatementParser, StatementParserRegistry, ImportResult, StatementParser, TransactionImporting, InstitutionStatementParser, ParseOptions, ParseRequest (+6 more)
-
-### Community 12 - "Community 12"
 Cohesion: 0.11
 Nodes (6): HDFCMetadataExtractor, ScalarFields, String, Substring, HDFCTextBasedParser, ReconstructedTransaction
 
-### Community 13 - "Community 13"
-Cohesion: 0.08
-Nodes (15): MonthlySpendingSummary, SpendingServiceProtocol, SpendingTotals, Codable, BalanceValidationResult, FailedRow, ParserDiagnostics, Equatable (+7 more)
+### Community 12 - "Community 12"
+Cohesion: 0.06
+Nodes (14): InstitutionStatementParser, StatementParserRegistry, ImportResult, StatementParser, TransactionImporting, InstitutionStatementParser, ParseOptions, ParseRequest (+6 more)
 
-### Community 14 - "Community 14"
+### Community 13 - "Community 13"
 Cohesion: 0.1
 Nodes (27): extract_debit_credit(), extract_text_lines(), find_table_start(), is_csv_format(), is_date_line(), main(), parse_amount(), parse_csv_format() (+19 more)
+
+### Community 14 - "Community 14"
+Cohesion: 0.15
+Nodes (3): ParsedTransaction, StatementMetadata, TabularTransactionDecoder
 
 ### Community 15 - "Community 15"
 Cohesion: 0.1
 Nodes (11): FetchableRecord, Identifiable, Account, Bank, Card, Columns, Institution, Transaction (+3 more)
 
 ### Community 16 - "Community 16"
-Cohesion: 0.15
-Nodes (3): ParsedTransaction, StatementMetadata, TabularTransactionDecoder
+Cohesion: 0.11
+Nodes (3): AccountDetails, ICICIMetadataExtractor, ICICIBankStatementParser
 
 ### Community 17 - "Community 17"
+Cohesion: 0.11
+Nodes (11): MonthlySpendingSummary, SpendingServiceProtocol, SpendingTotals, Codable, BalanceValidationResult, FailedRow, ParserDiagnostics, Equatable (+3 more)
+
+### Community 18 - "Community 18"
+Cohesion: 0.12
+Nodes (18): DefaultTransactionImporter, ParsedStatement, ParsedTransaction, StatementFileFormat, csv, pdf, txt, xlsx (+10 more)
+
+### Community 19 - "Community 19"
 Cohesion: 0.08
 Nodes (24): Architecture, Build, code:bash (cd Packages/FinanceParsers), code:bash (python3 scripts/extract_hdfc_pdf.py statement.pdf), code:bash (python3 scripts/compare_parsers.py statement.pdf), code:bash (swift run FinanceParserCLI parse ~/Documents/statement.pdf), code:bash (swift test -v), code:bash (make parser-test          # Run tests) (+16 more)
 
-### Community 18 - "Community 18"
+### Community 20 - "Community 20"
+Cohesion: 0.1
+Nodes (13): SectionHeader, SupportedSourcesView, TargetSelectionSection, DropZoneView, FileSelectionPlaceholder, SourcePickerSection, AdaptiveNavigation, DetailRouter (+5 more)
+
+### Community 21 - "Community 21"
 Cohesion: 0.11
 Nodes (4): AccountTransactionsViewModel, CardTransactionsViewModel, TransactionRow, TransactionsViewModel
 
-### Community 19 - "Community 19"
+### Community 22 - "Community 22"
 Cohesion: 0.1
 Nodes (21): Agent Routing (ENFORCED), ALWAYS Read First, Architecture Rules, Build & Test Workflow, Change Scope Rules, code:bash (git rev-parse HEAD), code:bash (graphify update .), code:bash (git status) (+13 more)
 
-### Community 20 - "Community 20"
+### Community 23 - "Community 23"
 Cohesion: 0.11
 Nodes (9): CardStyleModifier, View, GlassStyleModifier, View, HoverEffectModifier, View, PressEffectModifier, View (+1 more)
 
-### Community 21 - "Community 21"
-Cohesion: 0.1
-Nodes (15): CustomStringConvertible, DetectionError, couldNotReadFile, unrecognizedFormat, StatementDetector, Error, TransactionImportError, invalidAmount (+7 more)
-
-### Community 22 - "Community 22"
-Cohesion: 0.12
-Nodes (12): TransactionRowView, SupportedSourcesView, TargetSelectionSection, DropZoneView, FileSelectionPlaceholder, SourcePickerSection, AdaptiveNavigation, DetailRouter (+4 more)
-
-### Community 23 - "Community 23"
+### Community 24 - "Community 24"
 Cohesion: 0.12
 Nodes (6): AmexStatementDetector, HDFCStatementDetector, ICICIStatementDetector, DetectedStatementMetadata, StatementDetector, StatementDetector
-
-### Community 24 - "Community 24"
-Cohesion: 0.11
-Nodes (16): CaseIterable, StatementFileFormat, csv, pdf, txt, xlsx, AccountType, credit (+8 more)
 
 ### Community 25 - "Community 25"
 Cohesion: 0.16
@@ -295,27 +298,35 @@ Nodes (4): FixtureDirectory, FixtureFile, FixtureResult, FixtureRunner
 Cohesion: 0.14
 Nodes (16): Architecture, Composition Root, Concrete Implementations, Core Rules, CSV, Current Modules, Database Handle, FinanceOS Architecture Rules (+8 more)
 
-### Community 29 - "Community 29"
+### Community 28 - "Community 28"
 Cohesion: 0.2
 Nodes (7): DependencyChecker, DependencyStep, StepStatus, done, failed, pending, running
 
-### Community 30 - "Community 30"
+### Community 29 - "Community 29"
 Cohesion: 0.18
 Nodes (8): export_csv(), parse_amount(), parse_date(), parse_statement(), HDFC Bank Statement Parser Parses the fixed-width CSV text statement format expo, Parse an HDFC bank statement text file and return a list of Transaction objects., Export parsed transactions to a clean CSV file., Transaction
 
-### Community 31 - "Community 31"
+### Community 30 - "Community 30"
 Cohesion: 0.23
 Nodes (13): Current Architectural Constraints, Current Completed Features, Current Naming, Current Repositories, Current Risks, Current UI Flow, Database, Dependency Composition (+5 more)
 
-### Community 34 - "Community 34"
+### Community 33 - "Community 33"
 Cohesion: 0.18
 Nodes (10): CodingKey, CodingKeys, amountMinorUnits, currencyCode, description, id, postedAt, rewardPoints (+2 more)
+
+### Community 34 - "Community 34"
+Cohesion: 0.19
+Nodes (3): CSVRowReader, ICICICardStatementParser, String
 
 ### Community 35 - "Community 35"
 Cohesion: 0.29
 Nodes (3): Observation, PDFTextExtractor, VisionPDFTextExtractor
 
 ### Community 36 - "Community 36"
+Cohesion: 0.15
+Nodes (11): CaseIterable, AccountType, credit, current, savings, Columns, BankProviderType, bank (+3 more)
+
+### Community 37 - "Community 37"
 Cohesion: 0.23
 Nodes (11): analyze_differences(), extract_date_from_fingerprint(), main(), Run Swift CLI parser and return parsed transactions., Run Python reference parser and return JSON output., Run Python reference parser and return JSON output., Compare transactions and identify differences., Extract date from sourceFingerprint (format: dd/mm/yy|...). (+3 more)
 
@@ -323,13 +334,9 @@ Nodes (11): analyze_differences(), extract_date_from_fingerprint(), main(), Run 
 Cohesion: 0.2
 Nodes (8): BadgeColor, amber, blue, gray, green, purple, red, FBadge
 
-### Community 49 - "Community 49"
+### Community 50 - "Community 50"
 Cohesion: 0.28
 Nodes (3): DefaultTransactionImporter, FinanceParsers.TransactionImportError, TransactionImporting
-
-### Community 51 - "Community 51"
-Cohesion: 0.25
-Nodes (7): CardType, amex, mastercard, other, rupay, visa, Columns
 
 ### Community 54 - "Community 54"
 Cohesion: 0.57
@@ -344,30 +351,54 @@ Cohesion: 0.36
 Nodes (7): extract_tables(), extract_text_with_positions(), main(), parse_hdfc_transactions(), Extract text preserving position information for table detection., Extract tables from PDF using pdfplumber's table detection., Parse HDFC transaction table into normalized format.      Handles pdfplumber's t
 
 ### Community 59 - "Community 59"
+Cohesion: 0.25
+Nodes (8): CodingKeys, amountMinorUnits, currencyCode, description, id, postedAt, rewardPoints, sourceFingerprint
+
+### Community 60 - "Community 60"
+Cohesion: 0.25
+Nodes (7): CardType, amex, mastercard, other, rupay, visa, Columns
+
+### Community 61 - "Community 61"
 Cohesion: 0.29
 Nodes (8): DatabaseManager makeDatabaseURL, DatabaseManager migrator, DatabaseManager seedDatabase, DatabaseManager shared lifecycle, DatabaseSeeder seedInstitutions, Institution createTable, Institution Model, institutions SQLite Table
 
-### Community 60 - "Community 60"
+### Community 63 - "Community 63"
 Cohesion: 0.29
 Nodes (5): FAmount, Size, large, medium, small
 
 ### Community 72 - "Community 72"
 Cohesion: 0.33
+Nodes (5): StatementFileFormat, csv, pdf, txt, xlsx
+
+### Community 82 - "Community 82"
+Cohesion: 0.33
 Nodes (4): FileType, csv, txt, FileTypeDetector
+
+### Community 99 - "Community 99"
+Cohesion: 0.4
+Nodes (4): Columns, TransactionType, credit, debit
+
+### Community 100 - "Community 100"
+Cohesion: 0.5
+Nodes (3): StatementSourceType, bankAccount, creditCard
+
+### Community 101 - "Community 101"
+Cohesion: 0.5
+Nodes (3): StatementSourceType, bankAccount, creditCard
 
 ## Knowledge Gaps
 - **258 isolated node(s):** `code:swift (// ❌ Too long)`, `code:swift (// ❌ Single large function)`, `code:swift (// ❌ Single 300+ line View struct)`, `File Length`, `code:swift (// ❌ Wrong)` (+253 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **100 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **96 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ImportView` connect `Community 5` to `Community 22`?**
-  _High betweenness centrality (0.128) - this node is a cross-community bridge._
-- **Why does `TargetChoice` connect `Community 5` to `Community 7`?**
-  _High betweenness centrality (0.115) - this node is a cross-community bridge._
-- **Why does `ColumnRole` connect `Community 7` to `Community 0`, `Community 11`, `Community 13`?**
+- **Why does `ImportView` connect `Community 4` to `Community 20`?**
+  _High betweenness centrality (0.127) - this node is a cross-community bridge._
+- **Why does `TargetChoice` connect `Community 4` to `Community 8`?**
+  _High betweenness centrality (0.114) - this node is a cross-community bridge._
+- **Why does `ColumnRole` connect `Community 8` to `Community 17`, `Community 34`, `Community 12`, `Community 7`?**
   _High betweenness centrality (0.054) - this node is a cross-community bridge._
 - **Are the 41 inferred relationships involving `String` (e.g. with `.importTransactions()` and `.run()`) actually correct?**
   _`String` has 41 INFERRED edges - model-reasoned connections that need verification._
@@ -376,4 +407,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
