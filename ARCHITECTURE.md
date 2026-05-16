@@ -29,8 +29,22 @@ Packages/
 
 # Current Repositories
 
-* InstitutionRepository
-* GRDBInstitutionRepository
+* BankRepository / GRDBBankRepository
+* LedgerRepository / GRDBLedgerRepository
+* TransactionRepository / GRDBTransactionRepository
+* (Legacy: AccountRepository, CardRepository - being deprecated)
+
+---
+
+# Ledger Unification (Phase 8)
+
+Unified Account/Card models into single Ledger model:
+* Ledger enum LedgerKind { bankAccount, creditCard, ... }
+* TransactionImportTarget: ledger(UUID) - single case
+* ImportTargetMatcher: takes [Ledger], returns .ledger(id)
+* ParsedTransactionMapper: writes transaction.ledgerId
+* Migration v7_ledger_unification: backfills from Account/Card
+* LedgerEditView: unified form for account & card editing
 
 ---
 
