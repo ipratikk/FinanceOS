@@ -33,9 +33,9 @@ extension ImportPreviewView {
                             }
                         }
                     }
-                    Button(action: { initializeCreateSheet(isCard: false) }) {
-                        Text("Create New Account...")
-                    }
+                }
+                Button(action: { initializeCreateSheet(isCard: false) }) {
+                    Text("Create New Account...")
                 }
 
                 let cards = viewModel.ledgers.filter { $0.kind == .creditCard }
@@ -53,18 +53,9 @@ extension ImportPreviewView {
                             }
                         }
                     }
-                    Button(action: { initializeCreateSheet(isCard: true) }) {
-                        Text("Create New Card...")
-                    }
                 }
-
-                if accounts.isEmpty, cards.isEmpty {
-                    Button(action: { initializeCreateSheet(isCard: false) }) {
-                        Text("Create New Account...")
-                    }
-                    Button(action: { initializeCreateSheet(isCard: true) }) {
-                        Text("Create New Card...")
-                    }
+                Button(action: { initializeCreateSheet(isCard: true) }) {
+                    Text("Create New Card...")
                 }
             } label: {
                 let displayText: String = {
