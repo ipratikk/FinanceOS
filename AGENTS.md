@@ -125,11 +125,27 @@ Single Ledger model replaces Account/Card split:
 
 ---
 
+# Completed Phases (1-10)
+
+1. Phase 1: Import flow analysis & architecture doc
+2. Phase 2: Fix sign-convention bug in ParsedTransactionMapper
+3. Phase 3: Add UNIQUE INDEX for deterministic deduplication
+4. Phase 4: Tighten ImportTargetMatcher to prevent mis-routing
+5. Phase 5: Hoist supportedSources to registry
+6. Phase 6: Collapse TargetChoice ↔ TransactionImportTarget binding loops
+7. Phase 7: Remove dead code and orphaned models
+8. Phase 8: Design & implement Ledger unification (8.1-8.13 subphases)
+9. Phase 9: Comprehensive E2E import flow tests
+10. Phase 10: Complete UI layer migration to Ledger model
+
+---
+
 # Near-Term Targets
 
-1. Refactor remaining ViewModels (Accounts, Cards) to use LedgerRepository
-2. Deprecate and remove Account/Card/Institution models
-3. Complete import flow end-to-end verification (Phase 9)
-4. Parser protocol formalization
-5. CSV/XLSX/PDF ingestion completion
-6. Deduplication testing at scale
+1. CSV/XLSX parser hardening (ICICI, HDFC, Axis, etc.)
+2. Statement format auto-detection
+3. Bank-specific parsing rules
+4. OCR for scanned statements (fallback only)
+5. Duplicate transaction detection at scale
+6. Analytics & spending insights
+7. Budget management system
