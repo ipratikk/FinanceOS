@@ -64,28 +64,30 @@ struct TargetSelectionSection: View {
                     Divider()
                 }
 
-                if !viewModel.accounts.isEmpty {
+                let accounts = viewModel.ledgers.filter { $0.kind == .bankAccount }
+                if !accounts.isEmpty {
                     Menu("Accounts") {
-                        ForEach(viewModel.accounts) { account in
-                            Button(action: { viewModel.selectedTarget = .account(account.id) }) {
-                                if case .account(let id) = viewModel.selectedTarget, id == account.id {
-                                    Label(account.accountName, systemImage: "checkmark")
+                        ForEach(accounts) { account in
+                            Button(action: { viewModel.selectedTarget = .ledger(account.id) }) {
+                                if case .ledger(let id) = viewModel.selectedTarget, id == account.id {
+                                    Label(account.displayName, systemImage: "checkmark")
                                 } else {
-                                    Text(account.accountName)
+                                    Text(account.displayName)
                                 }
                             }
                         }
                     }
                 }
 
-                if !viewModel.cards.isEmpty {
+                let cards = viewModel.ledgers.filter { $0.kind == .creditCard }
+                if !cards.isEmpty {
                     Menu("Cards") {
-                        ForEach(viewModel.cards) { card in
-                            Button(action: { viewModel.selectedTarget = .card(card.id) }) {
-                                if case .card(let id) = viewModel.selectedTarget, id == card.id {
-                                    Label(card.cardName, systemImage: "checkmark")
+                        ForEach(cards) { card in
+                            Button(action: { viewModel.selectedTarget = .ledger(card.id) }) {
+                                if case .ledger(let id) = viewModel.selectedTarget, id == card.id {
+                                    Label(card.displayName, systemImage: "checkmark")
                                 } else {
-                                    Text(card.cardName)
+                                    Text(card.displayName)
                                 }
                             }
                         }
@@ -98,11 +100,8 @@ struct TargetSelectionSection: View {
             } label: {
                 let displayText: String = {
                     if let target = viewModel.selectedTarget {
-                        switch target {
-                        case .account(let id):
-                            return viewModel.accounts.first { $0.id == id }?.accountName ?? "Account"
-                        case .card(let id):
-                            return viewModel.cards.first { $0.id == id }?.cardName ?? "Card"
+                        if case .ledger(let id) = target {
+                            return viewModel.ledgers.first { $0.id == id }?.displayName ?? "Ledger"
                         }
                     }
                     return "Select target..."
