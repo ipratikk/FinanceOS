@@ -115,10 +115,11 @@ final class ImportViewModel {
         do {
             let detectedSource = try StatementDetector.detect(fileURL: fileURL)
             let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
-            logger
-                .info(
-                    "Parsed \(fileName, privacy: .public): \(result.statement.transactions.count, privacy: .public) txns from \(detectedSource.bankName, privacy: .public)"
-                )
+            let txnCount = result.statement.transactions.count
+            logger.info(
+                "Parsed \(fileName, privacy: .public): \(txnCount, privacy: .public) txns from "
+                    + "\(detectedSource.bankName, privacy: .public)"
+            )
             return result.statement
         } catch let error as DetectionError {
             throw TransactionImportError.unsupportedFormat(error.description)

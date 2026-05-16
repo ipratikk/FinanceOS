@@ -6,6 +6,7 @@ public struct UnifiedStatementParser: Sendable {
     public func parse(fileURL: URL, detectedSource: StatementSource) throws -> ParseResult {
         let startTime = Date()
 
+        let fileContent = try String(contentsOf: fileURL, encoding: .utf8)
         let rows = try loadRows(from: fileURL, source: detectedSource)
         guard !rows.isEmpty else {
             throw TransactionImportError.malformedFile("No data rows found")
@@ -16,8 +17,10 @@ public struct UnifiedStatementParser: Sendable {
 
         let statement = try buildStatement(
             from: dataRows,
+            allRows: rows,
             headerRow: headerRow,
-            source: detectedSource
+            source: detectedSource,
+            fileContent: fileContent
         )
 
         let durationMs = Date().timeIntervalSince(startTime) * 1000
@@ -66,13 +69,21 @@ public struct UnifiedStatementParser: Sendable {
 
     private func buildStatement(
         from dataRows: [[String]],
+        allRows: [[String]],
         headerRow: [String],
-        source: StatementSource
+        source: StatementSource,
+        fileContent: String
     ) throws -> ParsedStatement {
         var transactions: [ParsedTransaction] = []
+        var metadata: StatementMetadata? = nil
+        var cardLast4: String? = nil
+        var accountLast4: String? = nil
 
         switch source {
         case .hdfcCard:
+            let extractor = HDFCCardMetadataExtractor()
+            metadata = extractor.extract(from: fileContent)
+            cardLast4 = metadata?.accountNumber
             let mapper = HDFCCardCSVMapper()
             let normalizer = HDFCCardCSVNormalizer()
             let roles = try mapper.map(headerRow: headerRow)
@@ -83,6 +94,9 @@ public struct UnifiedStatementParser: Sendable {
                 }
             }
         case .iciciCard:
+            let extractor = ICICICardMetadataExtractor()
+            metadata = extractor.extract(from: allRows)
+            cardLast4 = metadata?.accountNumber
             let mapper = ICICICardCSVMapper()
             let normalizer = ICICICardCSVNormalizer()
             let roles = try mapper.map(headerRow: headerRow)
@@ -93,6 +107,8 @@ public struct UnifiedStatementParser: Sendable {
                 }
             }
         case .iciciBank:
+            let extractor = ICICIMetadataExtractor()
+            metadata = extractor.extract(from: allRows)
             let mapper = ICICIBankCSVMapper()
             let normalizer = ICICIBankCSVNormalizer()
             let roles = try mapper.map(headerRow: headerRow)
@@ -103,6 +119,9 @@ public struct UnifiedStatementParser: Sendable {
                 }
             }
         case .hdfcBank:
+            let extractor = HDFCBankMetadataExtractor()
+            metadata = extractor.extract(from: fileContent)
+            accountLast4 = metadata?.accountNumber
             let mapper = HDFCBankTXTMapper()
             let normalizer = HDFCBankTXTNormalizer()
             let roles = try mapper.map(headerRow: headerRow)
@@ -113,6 +132,9 @@ public struct UnifiedStatementParser: Sendable {
                 }
             }
         case .amex:
+            let extractor = AmexCardMetadataExtractor()
+            metadata = extractor.extract(from: allRows)
+            cardLast4 = metadata?.accountNumber
             let mapper = AmexCardCSVMapper()
             let normalizer = AmexCardCSVNormalizer()
             let roles = try mapper.map(headerRow: headerRow)
@@ -129,16 +151,16 @@ public struct UnifiedStatementParser: Sendable {
 
         return ParsedStatement(
             bankName: source.bankName,
-            accountName: source.bankName,
-            accountLast4: nil,
-            cardLast4: nil,
+            accountName: metadata?.customerName ?? source.bankName,
+            accountLast4: accountLast4,
+            cardLast4: cardLast4,
             statementPeriodStart: nil,
             statementPeriodEnd: nil,
             currency: "INR",
             totalDebit: totalDebit,
             totalCredit: totalCredit,
             transactions: transactions,
-            metadata: nil
+            metadata: metadata
         )
     }
 

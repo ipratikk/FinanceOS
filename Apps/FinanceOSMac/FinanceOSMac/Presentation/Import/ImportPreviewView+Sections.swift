@@ -69,24 +69,36 @@ extension ImportPreviewView {
     }
 
     func initializeCreateSheet(isCard: Bool) {
-        let detected = viewModel.parsedStatements.first?.bankName ?? "Unknown"
-        let metadata = viewModel.parsedStatements.first?.metadata
+        guard let statement = viewModel.parsedStatements.first else {
+            detectedBank = "Unknown"
+            self.isCard = isCard
+            newEntityName = ""
+            newEntityOwnerName = ""
+            newEntityLast4 = ""
+            showCreateSheet = true
+            return
+        }
+
+        let detected = statement.bankName.isEmpty ? "Unknown" : statement.bankName
         detectedBank = detected
         self.isCard = isCard
 
-        if isCard, let cardLast4 = viewModel.parsedStatements.first?.cardLast4 {
+        if isCard, let cardLast4 = statement.cardLast4 {
             let nameConstructed = "\(detected) •••• \(cardLast4)"
             newEntityName = nameConstructed
             newEntityNickname = ""
             newEntityLast4 = cardLast4
             newEntityOwnerName = ""
         } else {
-            let accountLast4 = viewModel.parsedStatements.first?.accountLast4 ?? ""
-            let nameConstructed = !accountLast4.isEmpty ? "\(detected) •••• \(accountLast4)" : detected
+            let accountLast4 = statement.accountLast4 ?? ""
+            let displayName = statement.accountName.isEmpty ? detected : statement.accountName
+            let nameConstructed = !accountLast4.isEmpty
+                ? "\(displayName) •••• \(accountLast4)"
+                : displayName
             newEntityName = nameConstructed
             newEntityNickname = ""
             newEntityLast4 = accountLast4
-            newEntityOwnerName = metadata?.customerName ?? ""
+            newEntityOwnerName = statement.metadata?.customerName ?? ""
         }
 
         let matchingBank = viewModel.banks.first { bank in
