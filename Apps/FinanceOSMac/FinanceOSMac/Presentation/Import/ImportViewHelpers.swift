@@ -47,7 +47,7 @@ struct SourcePickerSection: View {
             }
 
             Picker("Source", selection: $selectedSource) {
-                Text("Select a bank...").tag(StatementSource?.none)
+                Text("Select a bank...").tag(nil as StatementSource?)
                 ForEach(StatementSource.allCases, id: \.self) { source in
                     Text(source.displayName).tag(Optional(source))
                 }
