@@ -228,13 +228,27 @@ def main():
     print(f"  Description mismatches: {metrics['description_mismatches']}", file=sys.stderr)
     print(f"  Amount mismatches:      {metrics['amount_mismatches']}", file=sys.stderr)
 
-    # Determine status
-    if metrics['unmatched_swift_count'] == 0 and metrics['unmatched_python_count'] == 0:
+    # Determine status - check both transaction count AND total amount accuracy
+    unmatched_gap = max(metrics['unmatched_swift_count'], metrics['unmatched_python_count'])
+
+    # Calculate actual amount delta as percentage of total
+    debit_delta = abs(metrics['swift_total_debit'] - metrics['python_total_debit'])
+    credit_delta = abs(metrics['swift_total_credit'] - metrics['python_total_credit'])
+    total_amount = metrics['swift_total_debit'] + metrics['swift_total_credit']
+    amount_delta_pct = 100 * (debit_delta + credit_delta) / max(1, total_amount * 2) if total_amount > 0 else 0
+
+    if unmatched_gap == 0 and amount_delta_pct < 0.5:  # Less than 0.5% variance
+        gap_pct = amount_delta_pct
+        status = "PASS"
+    elif unmatched_gap > 0:
+        gap_pct = 100 * unmatched_gap / max(1, metrics['python_count'])
+        status = "GAP" if gap_pct <= 5 else "FAIL"
+    elif amount_delta_pct >= 0.5:
+        gap_pct = amount_delta_pct
+        status = "GAP" if amount_delta_pct <= 5 else "FAIL"
+    else:
         gap_pct = 0
         status = "PASS"
-    else:
-        gap_pct = 100 * max(metrics['unmatched_swift_count'], metrics['unmatched_python_count']) / max(1, metrics['python_count'])
-        status = "PASS" if gap_pct == 0 else ("GAP" if gap_pct <= 5 else "FAIL")
 
     print(f"\nStatus: {status} ({gap_pct:.1f}% gap)", file=sys.stderr)
 
