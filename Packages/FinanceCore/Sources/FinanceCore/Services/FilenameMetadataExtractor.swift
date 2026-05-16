@@ -1,6 +1,9 @@
 import Foundation
+import OSLog
 
 public struct FilenameMetadataExtractor {
+    private let logger = FinanceLogger.parsing
+
     public init() {}
 
     public func extractMetadata(from filename: String) -> FilenameMetadata {
@@ -15,14 +18,14 @@ public struct FilenameMetadataExtractor {
     }
 
     private func extractAccountLast4(from filename: String) -> String? {
-        // Look for patterns like "1234", "****1234", "xxxx1234" at word boundaries
         let patterns = [
-            "(?:x{4}|\\*{4})(\\d{4})", // ****1234 or xxxx1234
-            "\\b(\\d{4})\\b" // standalone 4-digit sequence
+            "(?:x{4}|\\*{4})(\\d{4})",
+            "\\b(\\d{4})\\b"
         ]
 
         for pattern in patterns {
-            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+            do {
+                let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
                 let range = NSRange(filename.startIndex..., in: filename)
                 if let match = regex.firstMatch(in: filename, range: range) {
                     if let matchRange = Range(match.range(at: 1), in: filename) {
@@ -32,28 +35,37 @@ public struct FilenameMetadataExtractor {
                         }
                     }
                 }
+            } catch {
+                logger.logDebug(
+                    "Regex pattern failed for last4: {pattern}",
+                    ["pattern": pattern]
+                )
             }
         }
         return nil
     }
 
     private func extractAccountNumber(from filename: String) -> String? {
-        // Look for longer digit sequences that could be account numbers
         let pattern = "(\\d{10,16})"
 
-        if let regex = try? NSRegularExpression(pattern: pattern) {
+        do {
+            let regex = try NSRegularExpression(pattern: pattern)
             let range = NSRange(filename.startIndex..., in: filename)
             if let match = regex.firstMatch(in: filename, range: range) {
                 if let matchRange = Range(match.range(at: 1), in: filename) {
                     return String(filename[matchRange])
                 }
             }
+        } catch {
+            logger.logDebug(
+                "Failed to extract account number",
+                ["error": String(describing: error)]
+            )
         }
         return nil
     }
 
     private func extractStatementDate(from filename: String) -> Date? {
-        // Look for date patterns: YYYY-MM-DD, DD-MM-YYYY, MMDDYYYY, etc
         let datePatterns = [
             ("yyyy-MM-dd", "\\d{4}-\\d{2}-\\d{2}"),
             ("dd-MM-yyyy", "\\d{2}-\\d{2}-\\d{4}"),
@@ -64,7 +76,8 @@ public struct FilenameMetadataExtractor {
         ]
 
         for (format, pattern) in datePatterns {
-            if let regex = try? NSRegularExpression(pattern: pattern) {
+            do {
+                let regex = try NSRegularExpression(pattern: pattern)
                 let range = NSRange(filename.startIndex..., in: filename)
                 if let match = regex.firstMatch(in: filename, range: range) {
                     if let matchRange = Range(match.range, in: filename) {
@@ -74,6 +87,11 @@ public struct FilenameMetadataExtractor {
                         }
                     }
                 }
+            } catch {
+                logger.logDebug(
+                    "Regex pattern failed for date {format}",
+                    ["format": format]
+                )
             }
         }
         return nil

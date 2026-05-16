@@ -26,8 +26,14 @@ public final class DatabaseManager: @unchecked Sendable {
             "Database initialized at: \(databaseURL.path)"
         )
 
+        var config = Configuration()
+        config.prepareDatabase { db in
+            try db.execute(sql: "PRAGMA foreign_keys = ON")
+        }
+
         dbQueue = try DatabaseQueue(
-            path: databaseURL.path
+            path: databaseURL.path,
+            configuration: config
         )
 
         try migrator.migrate(dbQueue)
@@ -75,12 +81,9 @@ private extension DatabaseManager {
 
 private extension DatabaseManager {
     func seedDatabase() throws {
-        try dbQueue.write { _ in
-            // Seeding disabled - user will create institutions/accounts/cards/transactions manually
-            // try DatabaseSeeder.seedInstitutions(in: database)
-            // try DatabaseSeeder.seedAccounts(in: database)
-            // try DatabaseSeeder.seedCards(in: database)
-            // try DatabaseSeeder.seedTransactions(in: database)
+        try dbQueue.write { database in
+            // Seed default banks (required for foreign key constraints)
+            try DatabaseSeeder.seedBanks(in: database)
         }
     }
 }

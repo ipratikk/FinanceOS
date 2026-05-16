@@ -136,15 +136,22 @@ public final class GRDBLedgerRepository:
     public func delete(id: UUID) async throws {
         try await dbQueue.write { database in
             do {
-                try database.execute(
-                    sql: "DELETE FROM ledgers WHERE id = ?",
-                    arguments: [id.uuidString]
-                )
+                guard let ledger = try Ledger.fetchOne(database, id: id) else {
+                    self.logger.logWarning(
+                        "Ledger not found for deletion",
+                        ["ledgerId": id.uuidString]
+                    )
+                    throw RepositoryError.notFound(entity: "Ledger", id: id.uuidString)
+                }
+
+                try ledger.delete(database)
 
                 self.logger.logInfo(
                     "Deleted ledger",
                     ["ledgerId": id.uuidString]
                 )
+            } catch let error as RepositoryError {
+                throw error
             } catch let error as GRDB.DatabaseError {
                 self.logger.logError(
                     "Delete ledger failed: {error}",

@@ -24,6 +24,7 @@ extension ImportViewModel {
         target: TransactionImportTarget,
         fileCount: Int
     ) async throws -> ImportResult {
+        let context = OperationContext.importSession()
         var totalInserted = 0
         var totalSkipped = 0
 
@@ -46,7 +47,8 @@ extension ImportViewModel {
             let result = try await transactionImportPipeline.execute(
                 statement: importSession.parsedStatements[index],
                 target: target,
-                ledgerKind: ledgerKind
+                ledgerKind: ledgerKind,
+                context: context
             )
 
             totalInserted += result.inserted
@@ -103,25 +105,70 @@ extension ImportViewModel {
                 let existingTransactions = allTransactions.filter { $0.ledgerId == ledgerId }
                 duplicateTransactionIndices = []
 
-                for (index, statement) in importSession.parsedStatements.enumerated() {
-                    for (txnIndex, parsedTxn) in statement.transactions.enumerated() {
-                        // swiftformat:disable all
-                        for existingTxn in existingTransactions
-                            where FinanceCore.TransactionDeduplicator.isSame(parsed: parsedTxn, existing: existingTxn) {
-                            let flatIndex = importSession.parsedStatements[..<index]
-                                .reduce(0) { $0 + $1.transactions.count } + txnIndex
-                            duplicateTransactionIndices.insert(flatIndex)
-                        }
-                        // swiftformat:enable all
-                    }
-                }
+                let duplicates = await detectDuplicatesOptimized(
+                    parsedStatements: importSession.parsedStatements,
+                    existingTransactions: existingTransactions
+                )
 
+                duplicateTransactionIndices = duplicates
                 let dupCount = duplicateTransactionIndices.count
-                logger.info("Found \(dupCount, privacy: .public) duplicate transactions")
+                logger.logInfo(
+                    "Found {count} duplicate transactions out of {total}",
+                    [
+                        "count": String(dupCount),
+                        "total": String(importSession.parsedStatements.reduce(0) { $0 + $1.transactions.count })
+                    ]
+                )
             }
         } catch {
-            logger.error("Failed to detect duplicates: \(error.localizedDescription, privacy: .public)")
+            logger.logError("Failed to detect duplicates: {error}", ["error": error.localizedDescription])
         }
+    }
+
+    private func detectDuplicatesOptimized(
+        parsedStatements: [ParsedStatement],
+        existingTransactions: [Transaction]
+    ) async -> Set<Int> {
+        var duplicates = Set<Int>()
+
+        let existingHashes = Set(
+            existingTransactions.map { txn in
+                hashTransaction(txn)
+            }
+        )
+
+        var flatIndex = 0
+        for statement in parsedStatements {
+            for parsedTxn in statement.transactions {
+                let hash = hashParsedTransaction(parsedTxn)
+                if existingHashes.contains(hash) {
+                    duplicates.insert(flatIndex)
+                }
+                flatIndex += 1
+            }
+        }
+
+        return duplicates
+    }
+
+    private func hashParsedTransaction(_ txn: ParsedTransaction) -> String {
+        let dateStr = ISO8601DateFormatter().string(
+            from: Calendar.current.startOfDay(for: txn.postedAt)
+        )
+        let amountStr = String(txn.amountMinorUnits)
+        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
+        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
+        return String(combined.hashValue)
+    }
+
+    private func hashTransaction(_ txn: Transaction) -> String {
+        let dateStr = ISO8601DateFormatter().string(
+            from: Calendar.current.startOfDay(for: txn.postedAt)
+        )
+        let amountStr = String(txn.amountMinorUnits)
+        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
+        let combined = "\(dateStr)|\(amountStr)|\(descStr)"
+        return String(combined.hashValue)
     }
 
     func reset() {

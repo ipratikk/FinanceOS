@@ -165,9 +165,9 @@ enum AppMigration {
         }
 
         migrator.registerMigration("v7_ledger_unification") { database in
-            FinanceLogger.migration.info("Running migration: v7_ledger_unification")
+            FinanceLogger.migration.info("v7: Starting ledger unification")
 
-            // 1. Create ledgers table
+            FinanceLogger.migration.info("v7: Creating ledgers table")
             try database.execute(sql: """
                 CREATE TABLE ledgers (
                     id TEXT PRIMARY KEY,
@@ -181,17 +181,18 @@ enum AppMigration {
                     accountType TEXT,
                     cardType TEXT,
                     cardProduct TEXT,
-                    linkedLedgerId TEXT REFERENCES ledgers(id) ON DELETE SET NULL,
+                    linkedLedgerId TEXT REFERENCES ledgers(id) ON DELETE CASCADE,
                     isArchived INTEGER NOT NULL DEFAULT 0,
                     CHECK (kind IN ('bankAccount','creditCard','loan','wallet','crypto','investment'))
                 )
             """)
+            FinanceLogger.migration.info("v7: Creating ledger indexes")
             try database.execute(sql: "CREATE INDEX idx_ledgers_bankId ON ledgers(bankId)")
             try database.execute(sql: "CREATE INDEX idx_ledgers_kind ON ledgers(kind)")
             try database.execute(sql: "CREATE INDEX idx_ledgers_linkedLedgerId ON ledgers(linkedLedgerId)")
             try database.execute(sql: "CREATE INDEX idx_ledgers_bank_kind ON ledgers(bankId, kind)")
 
-            // 2. Backfill from accounts
+            FinanceLogger.migration.info("v7: Backfilling from accounts")
             try database.execute(sql: """
                 INSERT INTO ledgers
                 (id, bankId, kind, displayName, last4, nickname, ownerName, createdAt,
@@ -201,7 +202,7 @@ enum AppMigration {
                 FROM accounts
             """)
 
-            // 3. Backfill from cards
+            FinanceLogger.migration.info("v7: Backfilling from cards")
             try database.execute(sql: """
                 INSERT INTO ledgers
                 (id, bankId, kind, displayName, last4, nickname, ownerName, createdAt,
@@ -211,73 +212,25 @@ enum AppMigration {
                 FROM cards
             """)
 
-            // 4. Add ledgerId to transactions (now that Ledger table exists)
+            FinanceLogger.migration.info("v7: Adding ledgerId column to transactions")
             try database.execute(sql: """
                 ALTER TABLE transactions ADD COLUMN ledgerId TEXT REFERENCES ledgers(id) ON DELETE CASCADE
             """)
 
+            FinanceLogger.migration.info("v7: Populating ledgerId from accountID/cardID")
             try database.execute(sql: """
                 UPDATE transactions SET ledgerId = COALESCE(accountID, cardID)
             """)
 
-            // 6. Make ledgerId NOT NULL (for new inserts)
-            // Note: SQLite doesn't support ALTER COLUMN NOT NULL easily; enforce in Swift instead
-            // via Ledger struct validation
-
-            FinanceLogger.migration.info("Ledger unification complete: backfilled accounts + cards")
+            FinanceLogger.migration.info("v7: Ledger unification complete")
         }
 
-        migrator.registerMigration("v8_fix_ledger_cascade_delete") { database in
+        migrator.registerMigration("v8_fix_ledger_cascade_delete") { _ in
             FinanceLogger.migration.info("Running migration: v8_fix_ledger_cascade_delete")
 
-            // Fix linkedLedgerId constraint to use CASCADE instead of SET NULL
-            // This allows deletion of accounts even if cards reference them
-
-            // Temporarily disable foreign key checks
-            try database.execute(sql: "PRAGMA foreign_keys = OFF")
-
-            // 1. Create ledgers_new with CASCADE constraint
-            try database.execute(sql: """
-                CREATE TABLE ledgers_new (
-                    id TEXT PRIMARY KEY,
-                    bankId TEXT NOT NULL REFERENCES banks(id) ON DELETE CASCADE,
-                    kind TEXT NOT NULL,
-                    displayName TEXT NOT NULL,
-                    last4 TEXT NOT NULL DEFAULT '',
-                    nickname TEXT NOT NULL DEFAULT '',
-                    ownerName TEXT NOT NULL DEFAULT '',
-                    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    accountType TEXT,
-                    cardType TEXT,
-                    cardProduct TEXT,
-                    linkedLedgerId TEXT REFERENCES ledgers_new(id) ON DELETE CASCADE,
-                    isArchived INTEGER NOT NULL DEFAULT 0,
-                    CHECK (kind IN ('bankAccount','creditCard','loan','wallet','crypto','investment'))
-                )
-            """)
-
-            // 2. Copy all data
-            try database.execute(sql: """
-                INSERT INTO ledgers_new
-                SELECT * FROM ledgers
-            """)
-
-            // 3. Drop old table
-            try database.execute(sql: "DROP TABLE ledgers")
-
-            // 4. Rename new table
-            try database.execute(sql: "ALTER TABLE ledgers_new RENAME TO ledgers")
-
-            // 5. Recreate indexes
-            try database.execute(sql: "CREATE INDEX idx_ledgers_bankId ON ledgers(bankId)")
-            try database.execute(sql: "CREATE INDEX idx_ledgers_kind ON ledgers(kind)")
-            try database.execute(sql: "CREATE INDEX idx_ledgers_linkedLedgerId ON ledgers(linkedLedgerId)")
-            try database.execute(sql: "CREATE INDEX idx_ledgers_bank_kind ON ledgers(bankId, kind)")
-
-            // Re-enable foreign key checks
-            try database.execute(sql: "PRAGMA foreign_keys = ON")
-
-            FinanceLogger.migration.info("Fixed ledger CASCADE delete constraint")
+            // v7 now creates ledgers with CASCADE constraint from the start
+            // This migration is now a no-op but kept for migration history
+            FinanceLogger.migration.info("v8: No-op migration (CASCADE constraint fixed in v7)")
         }
     }
 }

@@ -8,14 +8,19 @@
 import OSLog
 
 public enum FinanceLogger {
-    public static let database = Logger(
+    public static let ui = Logger(
         subsystem: subsystem,
-        category: "Database"
+        category: "UI"
     )
 
-    public static let migration = Logger(
+    public static let accounts = Logger(
         subsystem: subsystem,
-        category: "Migration"
+        category: "Accounts"
+    )
+
+    public static let transactions = Logger(
+        subsystem: subsystem,
+        category: "Transactions"
     )
 
     public static let importPipeline = Logger(
@@ -28,38 +33,107 @@ public enum FinanceLogger {
         category: "Parsing"
     )
 
+    public static let database = Logger(
+        subsystem: subsystem,
+        category: "Database"
+    )
+
+    public static let migration = Logger(
+        subsystem: subsystem,
+        category: "Migration"
+    )
+
+    public static let repository = Logger(
+        subsystem: subsystem,
+        category: "Repository"
+    )
+
+    public static let performance = Logger(
+        subsystem: subsystem,
+        category: "Performance"
+    )
+
     public static let sync = Logger(
         subsystem: subsystem,
         category: "Sync"
+    )
+
+    public static let security = Logger(
+        subsystem: subsystem,
+        category: "Security"
     )
 
     private static let subsystem = "com.pratik.FinanceOS"
 }
 
 public extension Logger {
-    /// Log with static string and attribute dictionary to avoid OSLog privacy marker concatenation issues.
-    /// Use placeholders in format: "Message {key1} and {key2}"
-    /// Then call: logger.logInfo("Message {key1} and {key2}", ["key1": value1, "key2": value2])
+    /// Format message with metadata dictionary, replacing {key} placeholders.
+    /// Messages are logged with .public privacy level.
+    /// Example: logger.logTrace("Parsing {file}", ["file": fileName])
+    func logTrace(
+        _ staticMsg: StaticString,
+        _ metadata: [String: CustomStringConvertible] = [:]
+    ) {
+        let msg = _formatMessage(staticMsg, metadata)
+        trace("\(msg, privacy: .public)")
+    }
+
+    func logDebug(
+        _ staticMsg: StaticString,
+        _ metadata: [String: CustomStringConvertible] = [:]
+    ) {
+        let msg = _formatMessage(staticMsg, metadata)
+        debug("\(msg, privacy: .public)")
+    }
+
     func logInfo(
         _ staticMsg: StaticString,
-        _ attrs: [String: CustomStringConvertible] = [:]
+        _ metadata: [String: CustomStringConvertible] = [:]
     ) {
-        var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
-        for (key, value) in attrs {
-            msg = msg.replacingOccurrences(of: "{\(key)}", with: String(describing: value))
-        }
+        let msg = _formatMessage(staticMsg, metadata)
         info("\(msg, privacy: .public)")
     }
 
-    /// Debug version of logInfo.
-    func logDebug(
+    func logNotice(
         _ staticMsg: StaticString,
-        _ attrs: [String: CustomStringConvertible] = [:]
+        _ metadata: [String: CustomStringConvertible] = [:]
     ) {
+        let msg = _formatMessage(staticMsg, metadata)
+        notice("\(msg, privacy: .public)")
+    }
+
+    func logWarning(
+        _ staticMsg: StaticString,
+        _ metadata: [String: CustomStringConvertible] = [:]
+    ) {
+        let msg = _formatMessage(staticMsg, metadata)
+        warning("\(msg, privacy: .public)")
+    }
+
+    func logError(
+        _ staticMsg: StaticString,
+        _ metadata: [String: CustomStringConvertible] = [:]
+    ) {
+        let msg = _formatMessage(staticMsg, metadata)
+        error("\(msg, privacy: .public)")
+    }
+
+    func logCritical(
+        _ staticMsg: StaticString,
+        _ metadata: [String: CustomStringConvertible] = [:]
+    ) {
+        let msg = _formatMessage(staticMsg, metadata)
+        critical("\(msg, privacy: .public)")
+    }
+
+    private func _formatMessage(
+        _ staticMsg: StaticString,
+        _ metadata: [String: CustomStringConvertible]
+    ) -> String {
         var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
-        for (key, value) in attrs {
+        for (key, value) in metadata {
             msg = msg.replacingOccurrences(of: "{\(key)}", with: String(describing: value))
         }
-        debug("\(msg, privacy: .public)")
+        return msg
     }
 }

@@ -25,8 +25,6 @@ public struct TargetCreationState {
         }
 
         let displayName = statement.accountName.isEmpty ? statement.bankName : statement.accountName
-        customName = !last4.isEmpty
-            ? "\(displayName) •••• \(last4)"
-            : displayName
+        customName = displayName
     }
 }
