@@ -32,4 +32,12 @@ public enum DateParser {
     public static func parseAmex(_ string: String) -> Date? {
         parse(string, formats: ["MM/dd/yyyy"])
     }
+
+    public static func parseAxisBank(_ string: String) -> Date? {
+        parse(string, formats: ["dd/MM/yyyy", "dd-MMM-yyyy"])
+    }
+
+    public static func parseSBIBank(_ string: String) -> Date? {
+        parse(string, formats: ["dd/MM/yyyy", "dd-MMM-yyyy"])
+    }
 }

@@ -64,6 +64,18 @@ public struct UnifiedStatementParser: Sendable {
         case .amex:
             let parser = AmexCardCSVParser()
             return try parser.parse(fileURL: fileURL)
+        case .axisBank:
+            let parser = AxisBankCSVParser()
+            return try parser.parse(fileURL: fileURL)
+        case .axisCard:
+            let parser = AxisCardCSVParser()
+            return try parser.parse(fileURL: fileURL)
+        case .sbiBank:
+            let parser = SBIBankCSVParser()
+            return try parser.parse(fileURL: fileURL)
+        case .sbiCard:
+            let parser = SBICardCSVParser()
+            return try parser.parse(fileURL: fileURL)
         }
     }
 
@@ -145,6 +157,58 @@ public struct UnifiedStatementParser: Sendable {
                     transactions.append(txn)
                 }
             }
+        case .axisBank:
+            let extractor = AxisBankMetadataExtractor()
+            metadata = extractor.extract(from: allRows)
+            accountLast4 = metadata?.accountNumber
+            let mapper = AxisBankCSVMapper()
+            let normalizer = AxisBankCSVNormalizer()
+            let roles = try mapper.map(headerRow: headerRow)
+            for row in dataRows {
+                let normalized = mapper.mapRow(row, using: roles)
+                if let txn = try normalizer.normalize(normalizedRow: normalized) {
+                    transactions.append(txn)
+                }
+            }
+        case .axisCard:
+            let extractor = AxisCardMetadataExtractor()
+            metadata = extractor.extract(from: allRows)
+            cardLast4 = metadata?.accountNumber
+            let mapper = AxisCardCSVMapper()
+            let normalizer = AxisCardCSVNormalizer()
+            let roles = try mapper.map(headerRow: headerRow)
+            for row in dataRows {
+                let normalized = mapper.mapRow(row, using: roles)
+                if let txn = try normalizer.normalize(normalizedRow: normalized) {
+                    transactions.append(txn)
+                }
+            }
+        case .sbiBank:
+            let extractor = SBIBankMetadataExtractor()
+            metadata = extractor.extract(from: allRows)
+            accountLast4 = metadata?.accountNumber
+            let mapper = SBIBankCSVMapper()
+            let normalizer = SBIBankCSVNormalizer()
+            let roles = try mapper.map(headerRow: headerRow)
+            for row in dataRows {
+                let normalized = mapper.mapRow(row, using: roles)
+                if let txn = try normalizer.normalize(normalizedRow: normalized) {
+                    transactions.append(txn)
+                }
+            }
+        case .sbiCard:
+            let extractor = SBICardMetadataExtractor()
+            metadata = extractor.extract(from: allRows)
+            cardLast4 = metadata?.accountNumber
+            let mapper = SBICardCSVMapper()
+            let normalizer = SBICardCSVNormalizer()
+            let roles = try mapper.map(headerRow: headerRow)
+            for row in dataRows {
+                let normalized = mapper.mapRow(row, using: roles)
+                if let txn = try normalizer.normalize(normalizedRow: normalized) {
+                    transactions.append(txn)
+                }
+            }
         }
 
         let totalDebit = transactions.filter { $0.amountMinorUnits > 0 }.map(\.amountMinorUnits).reduce(0, +)
@@ -177,6 +241,14 @@ public struct UnifiedStatementParser: Sendable {
             return "HDFC-Bank-1.0"
         case .amex:
             return "Amex-1.0"
+        case .axisBank:
+            return "Axis-Bank-1.0"
+        case .axisCard:
+            return "Axis-Card-1.0"
+        case .sbiBank:
+            return "SBI-Bank-1.0"
+        case .sbiCard:
+            return "SBI-Card-1.0"
         }
     }
 }
