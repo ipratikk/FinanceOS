@@ -1,12 +1,12 @@
 import Foundation
 
 public enum LedgerKind: String, Codable, Sendable, CaseIterable, Hashable {
-    case bankAccount = "bankAccount"
-    case creditCard = "creditCard"
-    case loan = "loan"
-    case wallet = "wallet"
-    case crypto = "crypto"
-    case investment = "investment"
+    case bankAccount
+    case creditCard
+    case loan
+    case wallet
+    case crypto
+    case investment
 
     public var displayName: String {
         switch self {

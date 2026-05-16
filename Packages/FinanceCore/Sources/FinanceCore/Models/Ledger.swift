@@ -19,8 +19,8 @@ public struct Ledger:
     public let ownerName: String
     public let createdAt: Date
 
-    public let accountType: AccountType?
-    public let cardType: CardType?
+    public let accountType: String?
+    public let cardType: String?
     public let cardProduct: String?
     public let linkedLedgerId: UUID?
 
@@ -35,8 +35,8 @@ public struct Ledger:
         nickname: String = "",
         ownerName: String = "",
         createdAt: Date = Date(),
-        accountType: AccountType? = nil,
-        cardType: CardType? = nil,
+        accountType: String? = nil,
+        cardType: String? = nil,
         cardProduct: String? = nil,
         linkedLedgerId: UUID? = nil,
         isArchived: Bool = false

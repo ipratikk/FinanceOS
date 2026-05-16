@@ -150,8 +150,12 @@ func ledgerRepositoryUpdate() async throws {
 
     try await repo.insert(ledger)
 
-    var updated = ledger
-    updated.displayName = "Updated"
+    let updated = Ledger(
+        id: ledger.id,
+        bankId: ledger.bankId,
+        kind: ledger.kind,
+        displayName: "Updated"
+    )
 
     try await repo.update(updated)
 
@@ -207,19 +211,39 @@ func ledgerRepositoryDeleteBlocked() async throws {
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(in: database)
-        try DatabaseSeeder.seedTransactions(in: database)
     }
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let ledgers = try await repo.fetchLedgers(kind: .bankAccount)
-    guard let ledgerWithTxns = ledgers.first else {
-        fatalError("No ledgers created")
+    let bank = try dbQueue.read { database in
+        try Bank.fetchAll(database).first!
+    }
+
+    let ledger = Ledger(
+        bankId: bank.id,
+        kind: .bankAccount,
+        displayName: "Test Account With Transactions"
+    )
+    try await repo.insert(ledger)
+
+    // Insert a transaction referencing this ledger via ledgerId.
+    // accountID must be non-null to satisfy the schema check constraint.
+    let txn = Transaction(
+        ledgerId: ledger.id,
+        accountID: ledger.id,
+        postedAt: Date(timeIntervalSince1970: 0),
+        description: "Seed Transaction",
+        amountMinorUnits: 5000,
+        currencyCode: "INR",
+        transactionType: .debit
+    )
+
+    try dbQueue.write { database in
+        try txn.insert(database)
     }
 
     do {
-        try await repo.delete(id: ledgerWithTxns.id)
+        try await repo.delete(id: ledger.id)
         fatalError("Should have thrown")
     } catch let error as RepositoryError {
         if case .cannotDeleteLedgerWithTransactions = error {

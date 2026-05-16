@@ -33,7 +33,7 @@ struct CardTransactionsView: View {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .headingMedium()
 
-                Text("\(ledger.cardType?.rawValue.uppercased() ?? "") • ••••\(ledger.last4)")
+                Text("\((ledger.cardType ?? "").uppercased()) • ••••\(ledger.last4)")
                     .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }

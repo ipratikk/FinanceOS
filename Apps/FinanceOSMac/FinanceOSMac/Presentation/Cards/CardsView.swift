@@ -96,7 +96,7 @@ struct CardsView: View {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
 
-                Text(ledger.cardType?.rawValue.uppercased() ?? "")
+                Text((ledger.cardType ?? "").uppercased())
                     .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }

@@ -13,7 +13,7 @@ public struct SBIBankCSVParser: Sendable {
             let normalized = row.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
             if normalized.contains("value date") || normalized.contains("date") {
                 if normalized.contains("description") || normalized.contains("narration"),
-                   (normalized.contains("debit") || normalized.contains("credit"))
+                   normalized.contains("debit") || normalized.contains("credit")
                 {
                     headerIndex = index
                     result.append(row)
@@ -27,7 +27,7 @@ public struct SBIBankCSVParser: Sendable {
         for row in rows.dropFirst(headerIndex + 1) {
             guard row.count > 2 else { continue }
             let firstCol = row[0].trimmingCharacters(in: .whitespaces)
-            if !firstCol.isEmpty && !firstCol.hasPrefix("Closing") {
+            if !firstCol.isEmpty, !firstCol.hasPrefix("Closing") {
                 result.append(row)
             }
         }
@@ -40,9 +40,9 @@ public struct SBIBankCSVParser: Sendable {
 
         for row in rows {
             let normalized = row.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
-            if (normalized.contains("value date") || normalized.contains("date")) &&
-               (normalized.contains("description") || normalized.contains("narration")) &&
-               (normalized.contains("debit") || normalized.contains("credit"))
+            if normalized.contains("value date") || normalized.contains("date"),
+               normalized.contains("description") || normalized.contains("narration"),
+               normalized.contains("debit") || normalized.contains("credit")
             {
                 return true
             }

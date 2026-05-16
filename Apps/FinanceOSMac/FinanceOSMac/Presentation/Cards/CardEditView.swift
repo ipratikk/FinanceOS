@@ -6,7 +6,7 @@ struct CardEditView: View {
     let viewModel: CardsViewModel
     @State private var displayName: String
     @State private var last4: String
-    @State private var cardType: CardType
+    @State private var cardType: String
     @State private var nickname: String
     @State private var bankId: UUID
     @State private var linkedLedgerId: UUID?
@@ -19,7 +19,7 @@ struct CardEditView: View {
         self.viewModel = viewModel
         _displayName = State(initialValue: card.displayName)
         _last4 = State(initialValue: card.last4)
-        _cardType = State(initialValue: card.cardType ?? .other)
+        _cardType = State(initialValue: card.cardType ?? "other")
         _nickname = State(initialValue: card.nickname)
         _bankId = State(initialValue: card.bankId)
         _linkedLedgerId = State(initialValue: card.linkedLedgerId)
@@ -63,8 +63,8 @@ struct CardEditView: View {
                                     .labelSmall()
                                     .foregroundColor(.gray)
                                 Picker("Type", selection: $cardType) {
-                                    ForEach(CardType.allCases, id: \.self) { type in
-                                        Text(type.rawValue.capitalized).tag(type)
+                                    ForEach(["credit", "debit", "other"], id: \.self) { type in
+                                        Text(type.capitalized).tag(type)
                                     }
                                 }
                                 .pickerStyle(.menu)

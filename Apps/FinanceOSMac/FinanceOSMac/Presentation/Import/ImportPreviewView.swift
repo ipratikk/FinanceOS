@@ -43,7 +43,7 @@ struct ImportPreviewView: View {
                 onCreate: {
                     Task {
                         let metadata = viewModel.parsedStatements.first?.metadata
-                        let accountType = AccountType.from(metadataAccountType: metadata?.accountType ?? "")
+                        let accountType = metadata?.accountType ?? "savings"
                         await viewModel.createTargetFromDetected(
                             customName: newEntityName,
                             nickname: newEntityNickname,

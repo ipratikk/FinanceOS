@@ -3,7 +3,22 @@ import GRDB
 import Testing
 
 @Test
-func ledgerMigrationBackfillsAccountsAndCards() throws {
+func ledgerTableIsCreatedByMigration() throws {
+    var migrator = DatabaseMigrator()
+    AppMigration.registerMigrations(in: &migrator)
+
+    let dbQueue = try DatabaseQueue()
+    try migrator.migrate(dbQueue)
+
+    let ledgerCount = try dbQueue.read { database in
+        try Ledger.fetchCount(database)
+    }
+
+    #expect(ledgerCount == 0)
+}
+
+@Test
+func ledgersOfBothKindsCanBeInsertedAfterMigration() throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
@@ -12,28 +27,41 @@ func ledgerMigrationBackfillsAccountsAndCards() throws {
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(in: database)
-        try DatabaseSeeder.seedCards(in: database)
-        try DatabaseSeeder.seedTransactions(in: database)
     }
 
-    let accountCount = try dbQueue.read { database in
-        try Account.fetchCount(database)
+    let bank = try dbQueue.read { database in
+        try Bank.fetchAll(database).first!
     }
 
-    let cardCount = try dbQueue.read { database in
-        try Card.fetchCount(database)
+    let accountLedger = Ledger(
+        bankId: bank.id,
+        kind: .bankAccount,
+        displayName: "Savings Account",
+        accountType: "savings"
+    )
+
+    let cardLedger = Ledger(
+        bankId: bank.id,
+        kind: .creditCard,
+        displayName: "Platinum Card",
+        cardType: "credit",
+        linkedLedgerId: accountLedger.id
+    )
+
+    try dbQueue.write { database in
+        try accountLedger.insert(database)
+        try cardLedger.insert(database)
     }
 
     let ledgerCount = try dbQueue.read { database in
         try Ledger.fetchCount(database)
     }
 
-    #expect(ledgerCount == accountCount + cardCount)
+    #expect(ledgerCount == 2)
 }
 
 @Test
-func ledgerMigrationPopulatesTransactionLedgerId() throws {
+func ledgerPropertiesArePersistedCorrectly() throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
@@ -42,26 +70,42 @@ func ledgerMigrationPopulatesTransactionLedgerId() throws {
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(in: database)
-        try DatabaseSeeder.seedCards(in: database)
-        try DatabaseSeeder.seedTransactions(in: database)
     }
 
-    let transactionsWithLedgerId = try dbQueue.read { database in
-        try Transaction
-            .filter(Transaction.Columns.ledgerId != nil)
-            .fetchCount(database)
+    let bank = try dbQueue.read { database in
+        try Bank.fetchAll(database).first!
     }
 
-    let totalTransactions = try dbQueue.read { database in
-        try Transaction.fetchCount(database)
+    let original = Ledger(
+        bankId: bank.id,
+        kind: .bankAccount,
+        displayName: "Checking Account",
+        last4: "1234",
+        nickname: "Primary",
+        ownerName: "Test User",
+        accountType: "checking"
+    )
+
+    try dbQueue.write { database in
+        try original.insert(database)
     }
 
-    #expect(transactionsWithLedgerId == totalTransactions)
+    let fetched = try dbQueue.read { database in
+        try Ledger.fetchOne(database, id: original.id)
+    }
+
+    #expect(fetched != nil)
+    #expect(fetched?.bankId == original.bankId)
+    #expect(fetched?.displayName == original.displayName)
+    #expect(fetched?.last4 == original.last4)
+    #expect(fetched?.nickname == original.nickname)
+    #expect(fetched?.ownerName == original.ownerName)
+    #expect(fetched?.accountType == original.accountType)
+    #expect(fetched?.kind == .bankAccount)
 }
 
 @Test
-func ledgerMigrationPreservesAccountProperties() throws {
+func cardLedgerPropertiesArePersistedCorrectly() throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
@@ -70,64 +114,40 @@ func ledgerMigrationPreservesAccountProperties() throws {
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(in: database)
     }
 
-    let originalAccounts = try dbQueue.read { database in
-        try Account.fetchAll(database)
+    let bank = try dbQueue.read { database in
+        try Bank.fetchAll(database).first!
     }
 
-    let ledgers = try dbQueue.read { database in
-        try Ledger
-            .filter(Ledger.Columns.kind == LedgerKind.bankAccount.rawValue)
-            .fetchAll(database)
-    }
+    let accountLedger = Ledger(
+        bankId: bank.id,
+        kind: .bankAccount,
+        displayName: "Bank Account"
+    )
 
-    #expect(ledgers.count == originalAccounts.count)
-
-    for original in originalAccounts {
-        let ledger = ledgers.first { $0.id == original.id }
-        #expect(ledger != nil)
-        #expect(ledger?.bankId == original.bankId)
-        #expect(ledger?.displayName == original.accountName)
-        #expect(ledger?.accountType == original.accountType)
-        #expect(ledger?.kind == .bankAccount)
-    }
-}
-
-@Test
-func ledgerMigrationPreservesCardProperties() throws {
-    var migrator = DatabaseMigrator()
-    AppMigration.registerMigrations(in: &migrator)
-
-    let dbQueue = try DatabaseQueue()
-    try migrator.migrate(dbQueue)
+    let cardLedger = Ledger(
+        bankId: bank.id,
+        kind: .creditCard,
+        displayName: "Travel Card",
+        last4: "5678",
+        cardType: "credit",
+        linkedLedgerId: accountLedger.id
+    )
 
     try dbQueue.write { database in
-        try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(in: database)
-        try DatabaseSeeder.seedCards(in: database)
+        try accountLedger.insert(database)
+        try cardLedger.insert(database)
     }
 
-    let originalCards = try dbQueue.read { database in
-        try Card.fetchAll(database)
+    let fetched = try dbQueue.read { database in
+        try Ledger.fetchOne(database, id: cardLedger.id)
     }
 
-    let ledgers = try dbQueue.read { database in
-        try Ledger
-            .filter(Ledger.Columns.kind == LedgerKind.creditCard.rawValue)
-            .fetchAll(database)
-    }
-
-    #expect(ledgers.count == originalCards.count)
-
-    for original in originalCards {
-        let ledger = ledgers.first { $0.id == original.id }
-        #expect(ledger != nil)
-        #expect(ledger?.bankId == original.bankId)
-        #expect(ledger?.displayName == original.cardName)
-        #expect(ledger?.cardType == original.cardType)
-        #expect(ledger?.linkedLedgerId == original.linkedAccountId)
-        #expect(ledger?.kind == .creditCard)
-    }
+    #expect(fetched != nil)
+    #expect(fetched?.bankId == cardLedger.bankId)
+    #expect(fetched?.displayName == cardLedger.displayName)
+    #expect(fetched?.cardType == cardLedger.cardType)
+    #expect(fetched?.linkedLedgerId == accountLedger.id)
+    #expect(fetched?.kind == .creditCard)
 }

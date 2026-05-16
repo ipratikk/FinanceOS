@@ -7,7 +7,7 @@ struct AccountEditView: View {
     @State private var displayName: String
     @State private var last4: String
     @State private var ownerName: String
-    @State private var accountType: AccountType
+    @State private var accountType: String
     @State private var nickname: String
     @State private var bankId: UUID
     @Environment(\.dismiss) var dismiss
@@ -20,7 +20,7 @@ struct AccountEditView: View {
         _displayName = State(initialValue: account.displayName)
         _last4 = State(initialValue: account.last4)
         _ownerName = State(initialValue: account.ownerName)
-        _accountType = State(initialValue: account.accountType ?? .savings)
+        _accountType = State(initialValue: account.accountType ?? "savings")
         _nickname = State(initialValue: account.nickname)
         _bankId = State(initialValue: account.bankId)
     }
@@ -59,8 +59,8 @@ struct AccountEditView: View {
                                     .labelSmall()
                                     .foregroundColor(.gray)
                                 Picker("Type", selection: $accountType) {
-                                    ForEach(AccountType.allCases, id: \.self) { type in
-                                        Text(type.rawValue.capitalized).tag(type)
+                                    ForEach(["savings", "checking", "credit"], id: \.self) { type in
+                                        Text(type.capitalized).tag(type)
                                     }
                                 }
                                 .pickerStyle(.menu)

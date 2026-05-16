@@ -132,8 +132,7 @@ struct DashboardView: View {
                 NavigationLink(destination: TransactionsView(
                     viewModel: TransactionsViewModel(
                         transactionRepository: appContainer.transactionRepository,
-                        accountRepository: appContainer.accountRepository,
-                        cardRepository: appContainer.cardRepository
+                        ledgerRepository: appContainer.ledgerRepository
                     )
                 )) {
                     HStack(spacing: 4) {

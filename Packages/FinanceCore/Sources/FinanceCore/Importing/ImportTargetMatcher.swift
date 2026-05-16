@@ -23,7 +23,7 @@ public enum ImportTargetMatcher {
         let storedWords = storedLower.split(separator: " ").map(String.init)
         let parsedWords = parsedLower.split(separator: " ").map(String.init)
 
-        guard !storedWords.isEmpty && !parsedWords.isEmpty else { return false }
+        guard !storedWords.isEmpty, !parsedWords.isEmpty else { return false }
 
         let commonWords = Set(storedWords).intersection(Set(parsedWords))
         let requiredCommonWords = max(1, min(storedWords.count, parsedWords.count) - 1)

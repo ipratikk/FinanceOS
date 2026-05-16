@@ -93,19 +93,9 @@ public extension Transaction {
 
             table.column("accountID", .text)
                 .indexed()
-                .references(
-                    Account.databaseTableName,
-                    column: "id",
-                    onDelete: .cascade
-                )
 
             table.column("cardID", .text)
                 .indexed()
-                .references(
-                    Card.databaseTableName,
-                    column: "id",
-                    onDelete: .cascade
-                )
 
             table.column("postedAt", .datetime)
                 .notNull()

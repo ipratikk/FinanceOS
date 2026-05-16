@@ -12,19 +12,27 @@ func reImportingSameTransactionsProducesSkipped() throws {
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(in: database)
-        try DatabaseSeeder.seedCards(in: database)
     }
 
     let repo = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let accountID = try dbQueue.read { database in
-        try Account.fetchAll(database).first!.id
+    let bank = try dbQueue.read { database in
+        try Bank.fetchAll(database).first!
+    }
+
+    let ledger = Ledger(
+        bankId: bank.id,
+        kind: .bankAccount,
+        displayName: "Test Account"
+    )
+
+    try dbQueue.write { database in
+        try ledger.insert(database)
     }
 
     let txn = Transaction(
-        accountID: accountID,
+        ledgerId: ledger.id,
+        accountID: ledger.id,
         postedAt: Date(timeIntervalSince1970: 0),
         description: "Test Transaction",
         amountMinorUnits: 10000,
@@ -56,23 +64,36 @@ func sameFingerprointDifferentAccountsInsertBoth() throws {
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(in: database)
     }
 
     let repo = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let accounts = try dbQueue.read { database in
-        try Account.fetchAll(database)
+    let bank = try dbQueue.read { database in
+        try Bank.fetchAll(database).first!
     }
 
-    guard accounts.count >= 2 else {
-        fatalError("Need at least 2 accounts for this test")
+    let ledger1 = Ledger(
+        bankId: bank.id,
+        kind: .bankAccount,
+        displayName: "Account 1"
+    )
+
+    let ledger2 = Ledger(
+        bankId: bank.id,
+        kind: .bankAccount,
+        displayName: "Account 2"
+    )
+
+    try dbQueue.write { database in
+        try ledger1.insert(database)
+        try ledger2.insert(database)
     }
 
     let fingerprint = "test|20260501|10000"
+
     let txn1 = Transaction(
-        accountID: accounts[0].id,
+        ledgerId: ledger1.id,
+        accountID: ledger1.id,
         postedAt: Date(timeIntervalSince1970: 0),
         description: "Test Transaction",
         amountMinorUnits: 10000,
@@ -82,7 +103,8 @@ func sameFingerprointDifferentAccountsInsertBoth() throws {
     )
 
     let txn2 = Transaction(
-        accountID: accounts[1].id,
+        ledgerId: ledger2.id,
+        accountID: ledger2.id,
         postedAt: Date(timeIntervalSince1970: 0),
         description: "Test Transaction",
         amountMinorUnits: 10000,
@@ -114,7 +136,7 @@ private func awaitThrows<T>(_ body: @escaping () async throws -> T) throws -> T 
 
     Task {
         do {
-            result = .success(try await body())
+            result = try await .success(body())
         } catch {
             result = .failure(error)
         }

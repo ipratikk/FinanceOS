@@ -25,7 +25,7 @@ extension ImportPreviewView {
                             Button(action: {
                                 viewModel.selectedTarget = .ledger(account.id)
                             }) {
-                                if case .ledger(let id) = viewModel.selectedTarget, id == account.id {
+                                if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
                                     Label(account.displayName, systemImage: "checkmark")
                                 } else {
                                     Text(account.displayName)
@@ -45,7 +45,7 @@ extension ImportPreviewView {
                             Button(action: {
                                 viewModel.selectedTarget = .ledger(card.id)
                             }) {
-                                if case .ledger(let id) = viewModel.selectedTarget, id == card.id {
+                                if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
                                     Label(card.displayName, systemImage: "checkmark")
                                 } else {
                                     Text(card.displayName)
@@ -58,7 +58,7 @@ extension ImportPreviewView {
                     }
                 }
 
-                if accounts.isEmpty && cards.isEmpty {
+                if accounts.isEmpty, cards.isEmpty {
                     Button(action: { initializeCreateSheet(isCard: false) }) {
                         Text("Create New Account...")
                     }
@@ -69,7 +69,7 @@ extension ImportPreviewView {
             } label: {
                 let displayText: String = {
                     if let target = viewModel.selectedTarget {
-                        if case .ledger(let id) = target {
+                        if case let .ledger(id) = target {
                             return viewModel.ledgers.first { $0.id == id }?.displayName ?? "Ledger"
                         }
                     }
@@ -126,7 +126,6 @@ extension ImportPreviewView {
         }
         newEntityBankID = matchingBank?.id
         showCreateSheet = true
-        targetChoice = nil
     }
 
     func fileListSection() -> some View {

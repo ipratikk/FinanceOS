@@ -13,8 +13,8 @@ public struct AxisBankCSVParser: Sendable {
             let normalized = row.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
             if normalized.contains("tran. date") || normalized.contains("transaction date") {
                 if normalized.contains("description"),
-                   (normalized.contains("deposit") || normalized.contains("credit")),
-                   (normalized.contains("withdrawal") || normalized.contains("debit"))
+                   normalized.contains("deposit") || normalized.contains("credit"),
+                   normalized.contains("withdrawal") || normalized.contains("debit")
                 {
                     headerIndex = index
                     result.append(row)
@@ -28,7 +28,7 @@ public struct AxisBankCSVParser: Sendable {
         for row in rows.dropFirst(headerIndex + 1) {
             guard row.count > 2 else { continue }
             let firstCol = row[0].trimmingCharacters(in: .whitespaces)
-            if !firstCol.isEmpty && !firstCol.hasPrefix("CLOSING BALANCE") {
+            if !firstCol.isEmpty, !firstCol.hasPrefix("CLOSING BALANCE") {
                 result.append(row)
             }
         }
@@ -41,10 +41,10 @@ public struct AxisBankCSVParser: Sendable {
 
         for row in rows {
             let normalized = row.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
-            if (normalized.contains("tran. date") || normalized.contains("transaction date")) &&
-               normalized.contains("description") &&
-               ((normalized.contains("deposit") || normalized.contains("credit")) ||
-                (normalized.contains("withdrawal") || normalized.contains("debit")))
+            if normalized.contains("tran. date") || normalized.contains("transaction date"),
+               normalized.contains("description"),
+               (normalized.contains("deposit") || normalized.contains("credit")) ||
+               (normalized.contains("withdrawal") || normalized.contains("debit"))
             {
                 return true
             }

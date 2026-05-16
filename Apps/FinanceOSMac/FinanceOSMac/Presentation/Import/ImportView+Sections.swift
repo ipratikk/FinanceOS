@@ -69,7 +69,7 @@ struct TargetSelectionSection: View {
                     Menu("Accounts") {
                         ForEach(accounts) { account in
                             Button(action: { viewModel.selectedTarget = .ledger(account.id) }) {
-                                if case .ledger(let id) = viewModel.selectedTarget, id == account.id {
+                                if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
                                     Label(account.displayName, systemImage: "checkmark")
                                 } else {
                                     Text(account.displayName)
@@ -84,7 +84,7 @@ struct TargetSelectionSection: View {
                     Menu("Cards") {
                         ForEach(cards) { card in
                             Button(action: { viewModel.selectedTarget = .ledger(card.id) }) {
-                                if case .ledger(let id) = viewModel.selectedTarget, id == card.id {
+                                if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
                                     Label(card.displayName, systemImage: "checkmark")
                                 } else {
                                     Text(card.displayName)
@@ -100,7 +100,7 @@ struct TargetSelectionSection: View {
             } label: {
                 let displayText: String = {
                     if let target = viewModel.selectedTarget {
-                        if case .ledger(let id) = target {
+                        if case let .ledger(id) = target {
                             return viewModel.ledgers.first { $0.id == id }?.displayName ?? "Ledger"
                         }
                     }

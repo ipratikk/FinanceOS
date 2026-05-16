@@ -3,8 +3,7 @@ import SwiftUI
 
 struct SidebarView: View {
     @Binding var selection: NavigationItem?
-    @State private var accounts: [Account] = []
-    @State private var cards: [Card] = []
+    @State private var ledgers: [Ledger] = []
 
     private let appContainer = AppContainer.shared
 
@@ -81,6 +80,9 @@ struct SidebarView: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.gray)
 
+            let accounts = ledgers.filter { $0.kind == .bankAccount }
+            let cards = ledgers.filter { $0.kind == .creditCard }
+
             if !accounts.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Accounts")
@@ -92,7 +94,7 @@ struct SidebarView: View {
                             Image(systemName: "building.2")
                                 .labelSmall()
                                 .foregroundColor(.gray)
-                            Text(account.nickname.isEmpty ? account.accountName : account.nickname)
+                            Text(account.nickname.isEmpty ? account.displayName : account.nickname)
                                 .labelSmall()
                                 .lineLimit(1)
                         }
@@ -112,7 +114,7 @@ struct SidebarView: View {
                             Image(systemName: "creditcard")
                                 .labelSmall()
                                 .foregroundColor(.gray)
-                            Text(card.nickname.isEmpty ? card.cardName : card.nickname)
+                            Text(card.nickname.isEmpty ? card.displayName : card.nickname)
                                 .labelSmall()
                                 .lineLimit(1)
                         }
@@ -145,8 +147,7 @@ struct SidebarView: View {
 
     private func loadAccounts() async {
         do {
-            accounts = try await appContainer.accountRepository.fetchAccounts()
-            cards = try await appContainer.cardRepository.fetchCards()
+            ledgers = try await appContainer.ledgerRepository.fetchLedgers()
         } catch {
             print("Error loading sidebar data: \(error)")
         }

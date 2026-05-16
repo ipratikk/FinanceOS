@@ -19,7 +19,7 @@ func importFlowE2E_successfulAccountImport() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try await bankRepository.fetchBanks().first!
+    let bank = try try await #require(bankRepository.fetchBanks().first)
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -77,7 +77,7 @@ func importFlowE2E_deduplicationWorksWithLedgerId() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try await bankRepository.fetchBanks().first!
+    let bank = try try await #require(bankRepository.fetchBanks().first)
     let ledger = Ledger(
         bankId: bank.id,
         kind: .bankAccount,
@@ -128,7 +128,7 @@ func importFlowE2E_targetMatchingFindsLedgerByLast4() async throws {
     let bankRepository = GRDBBankRepository(dbQueue: dbQueue)
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try await bankRepository.fetchBanks().first!
+    let bank = try try await #require(bankRepository.fetchBanks().first)
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -173,7 +173,7 @@ func importFlowE2E_creditCardImport() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try await bankRepository.fetchBanks().first!
+    let bank = try try await #require(bankRepository.fetchBanks().first)
 
     let card = Ledger(
         bankId: bank.id,
@@ -228,7 +228,7 @@ func importFlowE2E_archiveBlocksDeletion() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try await bankRepository.fetchBanks().first!
+    let bank = try try await #require(bankRepository.fetchBanks().first)
     let ledger = Ledger(
         bankId: bank.id,
         kind: .bankAccount,
@@ -267,7 +267,7 @@ func importFlowE2E_archiveBlocksDeletion() async throws {
     }
 
     #expect(deletionError != nil)
-    if case .cannotDeleteLedgerWithTransactions = deletionError! {
+    if case .cannotDeleteLedgerWithTransactions = try #require(deletionError) {
         // Expected
     } else {
         #expect(false, "Wrong error type")

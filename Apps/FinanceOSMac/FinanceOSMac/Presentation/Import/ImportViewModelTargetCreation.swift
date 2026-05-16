@@ -18,8 +18,8 @@ extension ImportViewModel {
         last4: String = "",
         bankID: UUID? = nil,
         ownerName: String = "",
-        accountType: AccountType = .savings,
-        cardType: CardType = .other,
+        accountType: String = "savings",
+        cardType: String = "other",
         isCard: Bool? = nil
     ) async {
         guard let statement = parsedStatements.first else {
@@ -57,13 +57,12 @@ extension ImportViewModel {
         providedBankID: UUID?
     ) async throws -> Bank {
         let detectedBankName = statement.bankName
-        // swiftformat:disable all
         if let providedBankID,
            let found = try await bankRepository.fetchBanks()
-           .first(where: { $0.id == providedBankID }) {
+           .first(where: { $0.id == providedBankID })
+        {
             return found
         }
-        // swiftformat:enable all
         let existingBanks = try await bankRepository.fetchBanks()
         if let existingBank = existingBanks.first(where: { $0.name == detectedBankName }) {
             return existingBank
@@ -75,46 +74,50 @@ extension ImportViewModel {
 
     private func createCard(
         _ params: TargetParams,
-        cardType: CardType
+        cardType: String
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
         let displayName = customNameTrimmed ?? params.statement.bankName
-        let cardName = !params.last4.isEmpty ?
+        let cardDisplayName = !params.last4.isEmpty ?
             "\(displayName) •••• \(params.last4)" :
             displayName
-        let card = Card(
+
+        let ledger = Ledger(
             bankId: params.bank.id,
-            linkedAccountId: nil,
-            cardName: cardName,
-            cardLast4: params.last4,
-            cardType: cardType,
-            nickname: params.nickname
+            kind: .creditCard,
+            displayName: cardDisplayName,
+            last4: params.last4,
+            nickname: params.nickname,
+            ownerName: "",
+            cardType: cardType
         )
-        try await cardRepository.insert(card)
-        selectedTarget = .ledger(card.id)
-        logger.info("Created card: \(cardName)")
+        try await ledgerRepository.insert(ledger)
+        selectedTarget = .ledger(ledger.id)
+        logger.info("Created credit card: \(cardDisplayName)")
     }
 
     private func createAccount(
         _ params: TargetParams,
         ownerName: String = "",
-        accountType: AccountType
+        accountType: String
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
         let displayName = customNameTrimmed ?? params.statement.bankName
-        let accountName = !params.last4.isEmpty ?
+        let accountDisplayName = !params.last4.isEmpty ?
             "\(displayName) •••• \(params.last4)" :
             displayName
-        let account = Account(
+
+        let ledger = Ledger(
             bankId: params.bank.id,
-            accountName: accountName,
-            accountLast4: params.last4,
+            kind: .bankAccount,
+            displayName: accountDisplayName,
+            last4: params.last4,
+            nickname: params.nickname,
             ownerName: ownerName,
-            accountType: accountType,
-            nickname: params.nickname
+            accountType: accountType
         )
-        try await accountRepository.insert(account)
-        selectedTarget = .ledger(account.id)
-        logger.info("Created account: \(accountName)")
+        try await ledgerRepository.insert(ledger)
+        selectedTarget = .ledger(ledger.id)
+        logger.info("Created bank account: \(accountDisplayName)")
     }
 }

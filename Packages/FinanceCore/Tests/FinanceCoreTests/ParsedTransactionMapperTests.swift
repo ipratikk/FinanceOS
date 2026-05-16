@@ -4,7 +4,7 @@ import Foundation
 import Testing
 
 @Test
-func mapperSignsDebitCorrectly() throws {
+func mapperSignsDebitCorrectly() {
     let debitParsed = ParsedTransaction(
         postedAt: Date(),
         description: "ATM Withdrawal",
@@ -23,11 +23,11 @@ func mapperSignsDebitCorrectly() throws {
 }
 
 @Test
-func mapperSignsCreditCorrectly() throws {
+func mapperSignsCreditCorrectly() {
     let creditParsed = ParsedTransaction(
         postedAt: Date(),
         description: "Salary Deposit",
-        amountMinorUnits: -100000,
+        amountMinorUnits: -100_000,
         currencyCode: "INR",
         sourceFingerprint: "test|salary|-100000"
     )
@@ -38,11 +38,11 @@ func mapperSignsCreditCorrectly() throws {
     let mapped = ParsedTransactionMapper.map(creditParsed, target: target)
 
     #expect(mapped.transactionType == .credit)
-    #expect(mapped.amountMinorUnits == 100000)
+    #expect(mapped.amountMinorUnits == 100_000)
 }
 
 @Test
-func mapperHandlesCardDebit() throws {
+func mapperHandlesCardDebit() {
     let debitParsed = ParsedTransaction(
         postedAt: Date(),
         description: "Grocery Store",
@@ -62,7 +62,7 @@ func mapperHandlesCardDebit() throws {
 }
 
 @Test
-func mapperHandlesCardCredit() throws {
+func mapperHandlesCardCredit() {
     let creditParsed = ParsedTransaction(
         postedAt: Date(),
         description: "Payment Received",
@@ -82,7 +82,7 @@ func mapperHandlesCardCredit() throws {
 }
 
 @Test
-func mapperPreservesSourceFingerprint() throws {
+func mapperPreservesSourceFingerprint() {
     let parsed = ParsedTransaction(
         postedAt: Date(),
         description: "Test",
@@ -98,7 +98,7 @@ func mapperPreservesSourceFingerprint() throws {
 }
 
 @Test
-func mapperPreservesDescription() throws {
+func mapperPreservesDescription() {
     let description = "Amazon Purchase - Electronics"
     let parsed = ParsedTransaction(
         postedAt: Date(),
@@ -115,7 +115,7 @@ func mapperPreservesDescription() throws {
 }
 
 @Test
-func mapperHandlesZeroAmount() throws {
+func mapperHandlesZeroAmount() {
     let parsed = ParsedTransaction(
         postedAt: Date(),
         description: "Zero Transaction",

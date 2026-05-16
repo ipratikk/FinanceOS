@@ -3,130 +3,122 @@ import GRDB
 import Testing
 
 @Test
-func migrationAndSeedingCreateLinkedAccountsAndCards() throws {
+func bankSeedingCreatesExpectedBanks() throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(
         in: &migrator
     )
 
     let dbQueue = try DatabaseQueue()
-
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(
-            in: database
-        )
-
-        try DatabaseSeeder.seedCards(
-            in: database
-        )
-
-        let banks = try Bank
-            .fetchAll(database)
-        let accounts = try Account
-            .fetchAll(database)
-        let cards = try Card
-            .fetchAll(database)
-
-        let banksByID = Dictionary(
-            uniqueKeysWithValues: banks.map { bank in
-                (bank.id, bank)
-            }
-        )
-        let accountsByID = Dictionary(
-            uniqueKeysWithValues: accounts.map { account in
-                (account.id, account)
-            }
-        )
-
-        #expect(banks.count == 4)
-        #expect(accounts.count == 2)
-        #expect(cards.count == 5)
-        #expect(accounts.allSatisfy { account in
-            banks.contains { bank in
-                bank.id == account.bankId
-            }
-        })
-        #expect(cards.allSatisfy { card in
-            banks.contains { bank in
-                bank.id == card.bankId
-            }
-        })
-
-        let hdfcAccount = accounts.first { account in
-            account.accountName == "HDFC Bank Account"
-        }
-        let iciciAccount = accounts.first { account in
-            account.accountName == "ICICI Bank Account"
-        }
-        let hdfcRegalia = cards.first { card in
-            card.cardName == "HDFC Regalia"
-        }
-        let iciciCoral = cards.first { card in
-            card.cardName == "ICICI Coral"
-        }
-        let iciciAmazonPay = cards.first { card in
-            card.cardName == "ICICI Amazon Pay"
-        }
-        let amexPlatinumTravel = cards.first { card in
-            card.cardName == "American Express Platinum Travel"
-        }
-        let scapia = cards.first { card in
-            card.cardName == "Scapia"
-        }
-
-        #expect(hdfcRegalia?.linkedAccountId == hdfcAccount?.id)
-        #expect(iciciCoral?.linkedAccountId == iciciAccount?.id)
-        #expect(iciciAmazonPay?.linkedAccountId == iciciAccount?.id)
-        #expect(amexPlatinumTravel?.linkedAccountId == nil)
-        #expect(scapia?.linkedAccountId == nil)
-
-        #expect(hdfcRegalia.flatMap { card in
-            card.linkedAccountId.flatMap { accountsByID[$0] }?.accountName
-        } == "HDFC Bank Account")
-        #expect(iciciCoral.flatMap { card in
-            card.linkedAccountId.flatMap { accountsByID[$0] }?.accountName
-        } == "ICICI Bank Account")
-        #expect(amexPlatinumTravel.flatMap { card in
-            banksByID[card.bankId]?.name
-        } == "Amex")
     }
+
+    let banks = try dbQueue.read { database in
+        try Bank.fetchAll(database)
+    }
+
+    #expect(banks.count == 4)
+    #expect(banks.contains { $0.name == "HDFC" })
+    #expect(banks.contains { $0.name == "ICICI" })
+    #expect(banks.contains { $0.name == "Amex" })
+    #expect(banks.contains { $0.name == "Scapia" })
 }
 
 @Test
-func accountAndCardSeedingIsIdempotent() throws {
+func ledgersCanBeLinkedAcrossBankAccountAndCard() throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(
         in: &migrator
     )
 
     let dbQueue = try DatabaseQueue()
-
     try migrator.migrate(dbQueue)
 
     try dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
-        try DatabaseSeeder.seedAccounts(
-            in: database
-        )
-        try DatabaseSeeder.seedAccounts(
-            in: database
-        )
-        try DatabaseSeeder.seedCards(
-            in: database
-        )
-        try DatabaseSeeder.seedCards(
-            in: database
-        )
-
-        let accountsCount = try Account
-            .fetchCount(database)
-        let cardsCount = try Card
-            .fetchCount(database)
-
-        #expect(accountsCount == 2)
-        #expect(cardsCount == 5)
     }
+
+    let banks = try dbQueue.read { database in
+        try Bank.fetchAll(database)
+    }
+
+    let hdfcBank = try #require(banks.first { $0.name == "HDFC" })
+    let iciciBank = try #require(banks.first { $0.name == "ICICI" })
+
+    let hdfcAccount = Ledger(
+        bankId: hdfcBank.id,
+        kind: .bankAccount,
+        displayName: "HDFC Bank Account"
+    )
+
+    let iciciAccount = Ledger(
+        bankId: iciciBank.id,
+        kind: .bankAccount,
+        displayName: "ICICI Bank Account"
+    )
+
+    try dbQueue.write { database in
+        try hdfcAccount.insert(database)
+        try iciciAccount.insert(database)
+    }
+
+    let hdfcRegalia = Ledger(
+        bankId: hdfcBank.id,
+        kind: .creditCard,
+        displayName: "HDFC Regalia",
+        linkedLedgerId: hdfcAccount.id
+    )
+
+    let iciciCoral = Ledger(
+        bankId: iciciBank.id,
+        kind: .creditCard,
+        displayName: "ICICI Coral",
+        linkedLedgerId: iciciAccount.id
+    )
+
+    try dbQueue.write { database in
+        try hdfcRegalia.insert(database)
+        try iciciCoral.insert(database)
+    }
+
+    let ledgers = try dbQueue.read { database in
+        try Ledger.fetchAll(database)
+    }
+
+    let accountLedgers = ledgers.filter { $0.kind == .bankAccount }
+    let cardLedgers = ledgers.filter { $0.kind == .creditCard }
+
+    #expect(accountLedgers.count == 2)
+    #expect(cardLedgers.count == 2)
+
+    let fetchedRegalia = try #require(cardLedgers.first { $0.displayName == "HDFC Regalia" })
+    let fetchedCoral = try #require(cardLedgers.first { $0.displayName == "ICICI Coral" })
+
+    #expect(fetchedRegalia.linkedLedgerId == hdfcAccount.id)
+    #expect(fetchedCoral.linkedLedgerId == iciciAccount.id)
+}
+
+@Test
+func bankSeedingIsIdempotent() throws {
+    var migrator = DatabaseMigrator()
+    AppMigration.registerMigrations(
+        in: &migrator
+    )
+
+    let dbQueue = try DatabaseQueue()
+    try migrator.migrate(dbQueue)
+
+    try dbQueue.write { database in
+        try DatabaseSeeder.seedBanks(in: database)
+        try DatabaseSeeder.seedBanks(in: database)
+    }
+
+    let banksCount = try dbQueue.read { database in
+        try Bank.fetchCount(database)
+    }
+
+    #expect(banksCount == 4)
 }

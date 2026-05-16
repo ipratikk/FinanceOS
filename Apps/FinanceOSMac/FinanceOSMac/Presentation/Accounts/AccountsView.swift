@@ -97,7 +97,7 @@ struct AccountsView: View {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
 
-                Text(ledger.accountType?.rawValue.uppercased() ?? "")
+                Text((ledger.accountType ?? "").uppercased())
                     .labelSmall()
                     .foregroundColor(AppColors.textTertiary)
             }

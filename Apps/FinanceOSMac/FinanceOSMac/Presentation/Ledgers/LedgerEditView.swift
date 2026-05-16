@@ -11,8 +11,8 @@ struct LedgerEditView: View {
     @State private var nickname: String
     @State private var bankId: UUID
     @State private var ownerName: String
-    @State private var accountType: AccountType
-    @State private var cardType: CardType
+    @State private var accountType: String
+    @State private var cardType: String
     @State private var linkedLedgerId: UUID?
 
     @State private var banks: [Bank] = []
@@ -36,8 +36,8 @@ struct LedgerEditView: View {
         _nickname = State(initialValue: ledger.nickname)
         _bankId = State(initialValue: ledger.bankId)
         _ownerName = State(initialValue: ledger.ownerName)
-        _accountType = State(initialValue: ledger.accountType ?? .savings)
-        _cardType = State(initialValue: ledger.cardType ?? .other)
+        _accountType = State(initialValue: ledger.accountType ?? "savings")
+        _cardType = State(initialValue: ledger.cardType ?? "other")
         _linkedLedgerId = State(initialValue: ledger.linkedLedgerId)
     }
 
@@ -82,8 +82,8 @@ struct LedgerEditView: View {
                                         .labelSmall()
                                         .foregroundColor(.gray)
                                     Picker("Type", selection: $accountType) {
-                                        ForEach(AccountType.allCases, id: \.self) { type in
-                                            Text(type.rawValue.capitalized).tag(type)
+                                        ForEach(["savings", "checking", "credit"], id: \.self) { type in
+                                            Text(type.capitalized).tag(type)
                                         }
                                     }
                                     .pickerStyle(.menu)
@@ -100,8 +100,8 @@ struct LedgerEditView: View {
                                         .labelSmall()
                                         .foregroundColor(.gray)
                                     Picker("Type", selection: $cardType) {
-                                        ForEach(CardType.allCases, id: \.self) { type in
-                                            Text(type.rawValue.capitalized).tag(type)
+                                        ForEach(["credit", "debit", "other"], id: \.self) { type in
+                                            Text(type.capitalized).tag(type)
                                         }
                                     }
                                     .pickerStyle(.menu)
@@ -230,7 +230,9 @@ struct LedgerEditView: View {
                 }
             }
         } message: {
-            Text("This will permanently delete this \(ledger.kind.displayName.lowercased()) and all associated transactions. This cannot be undone.")
+            Text(
+                "This will permanently delete this \(ledger.kind.displayName.lowercased()) and all associated transactions. This cannot be undone."
+            )
         }
     }
 
