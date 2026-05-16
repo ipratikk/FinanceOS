@@ -16,7 +16,7 @@ public struct InstitutionDetector: Sendable {
     private static func detectCSV(lines: [String]) throws -> StatementSource {
         let text = lines.joined(separator: "\n").lowercased()
 
-        if text.contains("~|~") && text.contains("card no:") {
+        if text.contains("~|~"), text.contains("card no:") {
             return .hdfcCard
         }
 
@@ -25,16 +25,18 @@ public struct InstitutionDetector: Sendable {
             if normalized.contains("billingamountsign") {
                 return .iciciCard
             }
-            if normalized.contains("particulars") &&
-               normalized.contains("deposits") &&
-               normalized.contains("withdrawals") {
+            if normalized.contains("particulars"),
+               normalized.contains("deposits"),
+               normalized.contains("withdrawals")
+            {
                 return .iciciBank
             }
             let cols = line.components(separatedBy: ",").map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
-            if cols.count == 3 &&
-               cols.contains("date") &&
-               cols.contains("description") &&
-               cols.contains("amount") {
+            if cols.count == 3,
+               cols.contains("date"),
+               cols.contains("description"),
+               cols.contains("amount")
+            {
                 return .amex
             }
         }
@@ -45,7 +47,7 @@ public struct InstitutionDetector: Sendable {
     private static func detectTXT(lines: [String]) throws -> StatementSource {
         let text = lines.joined(separator: "\n").lowercased()
 
-        if text.contains("narration") && text.contains("closingbalance") {
+        if text.contains("narration"), text.contains("closing balance") {
             return .hdfcBank
         }
 
