@@ -75,6 +75,28 @@ enum AppMigration {
             """)
         }
 
+        migrator.registerMigration("v5b_fix_transaction_uniqueness") { database in
+            FinanceLogger.migration.info("Running migration: v5b_fix_transaction_uniqueness")
+
+            // Drop the overly-broad UNIQUE INDEX that causes false conflicts
+            try database.execute(sql: """
+                DROP INDEX IF EXISTS idx_transactions_sourceFingerprint
+            """)
+
+            // Create scoped indexes to deduplicate within each account/card separately
+            try database.execute(sql: """
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_transactions_account_fingerprint
+                ON transactions(accountID, sourceFingerprint)
+                WHERE accountID IS NOT NULL AND cardID IS NULL AND sourceFingerprint IS NOT NULL
+            """)
+
+            try database.execute(sql: """
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_transactions_card_fingerprint
+                ON transactions(cardID, sourceFingerprint)
+                WHERE accountID IS NULL AND cardID IS NOT NULL AND sourceFingerprint IS NOT NULL
+            """)
+        }
+
         migrator.registerMigration("v6_bank_model_update") { database in
             FinanceLogger.migration.info("Running migration: v6_bank_model_update")
 
