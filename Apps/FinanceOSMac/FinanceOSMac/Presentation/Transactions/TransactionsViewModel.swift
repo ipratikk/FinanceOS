@@ -12,8 +12,7 @@ import Observation
 @Observable
 final class TransactionsViewModel {
     private let transactionRepository: TransactionRepository
-    private let accountRepository: AccountRepository
-    private let cardRepository: CardRepository
+    private let ledgerRepository: LedgerRepository
 
     var transactionRows: [TransactionRow] = []
     var listState = TransactionListState()
@@ -26,12 +25,10 @@ final class TransactionsViewModel {
 
     init(
         transactionRepository: TransactionRepository,
-        accountRepository: AccountRepository,
-        cardRepository: CardRepository
+        ledgerRepository: LedgerRepository
     ) {
         self.transactionRepository = transactionRepository
-        self.accountRepository = accountRepository
-        self.cardRepository = cardRepository
+        self.ledgerRepository = ledgerRepository
     }
 
     func loadTransactions() async {
@@ -44,15 +41,12 @@ final class TransactionsViewModel {
         do {
             let transactions = try await transactionRepository
                 .fetchTransactions()
-            let accounts = try await accountRepository
-                .fetchAccounts()
-            let cards = try await cardRepository
-                .fetchCards()
+            let ledgers = try await ledgerRepository
+                .fetchLedgers()
 
             transactionRows = makeTransactionRows(
                 transactions: transactions,
-                accounts: accounts,
-                cards: cards
+                ledgers: ledgers
             )
 
         } catch {
@@ -62,25 +56,17 @@ final class TransactionsViewModel {
 
     private func makeTransactionRows(
         transactions: [Transaction],
-        accounts: [Account],
-        cards: [Card]
+        ledgers: [Ledger]
     ) -> [TransactionRow] {
-        let accountsByID = Dictionary(
-            uniqueKeysWithValues: accounts.map { account in
-                (account.id, account)
-            }
-        )
-
-        let cardsByID = Dictionary(
-            uniqueKeysWithValues: cards.map { card in
-                (card.id, card)
+        let ledgersByID = Dictionary(
+            uniqueKeysWithValues: ledgers.map { ledger in
+                (ledger.id, ledger)
             }
         )
 
         return transactions.map { transaction in
             let sourceName: String = (
-                transaction.accountID.flatMap { accountsByID[$0] }?.accountName ??
-                    transaction.cardID.flatMap { cardsByID[$0] }?.cardName ??
+                transaction.ledgerId.flatMap { ledgersByID[$0] }?.displayName ??
                     "Unknown Source"
             )
 

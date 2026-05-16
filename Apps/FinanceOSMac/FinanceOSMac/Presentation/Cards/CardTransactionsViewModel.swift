@@ -12,7 +12,6 @@ import Observation
 @Observable
 final class CardTransactionsViewModel {
     private let transactionRepository: TransactionRepository
-    private let accountRepository: AccountRepository
 
     var transactionRows: [TransactionRow] = []
     var listState = TransactionListState()
@@ -24,11 +23,9 @@ final class CardTransactionsViewModel {
     }
 
     init(
-        transactionRepository: TransactionRepository,
-        accountRepository: AccountRepository
+        transactionRepository: TransactionRepository
     ) {
         self.transactionRepository = transactionRepository
-        self.accountRepository = accountRepository
     }
 
     func loadTransactions(for cardID: UUID) async {
@@ -41,12 +38,9 @@ final class CardTransactionsViewModel {
         do {
             let transactions = try await transactionRepository
                 .fetchTransactionsForCard(cardID)
-            let accounts = try await accountRepository
-                .fetchAccounts()
 
             transactionRows = makeTransactionRows(
-                transactions: transactions,
-                accounts: accounts
+                transactions: transactions
             )
 
         } catch {
@@ -55,8 +49,7 @@ final class CardTransactionsViewModel {
     }
 
     private func makeTransactionRows(
-        transactions: [Transaction],
-        accounts: [Account]
+        transactions: [Transaction]
     ) -> [TransactionRow] {
         transactions.map { transaction in
             TransactionRow(

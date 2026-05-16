@@ -12,7 +12,7 @@ import Observation
 @Observable
 final class AccountTransactionsViewModel {
     private let transactionRepository: TransactionRepository
-    private let cardRepository: CardRepository
+    private let ledgerRepository: LedgerRepository
 
     var transactionRows: [TransactionRow] = []
     var listState = TransactionListState()
@@ -25,10 +25,10 @@ final class AccountTransactionsViewModel {
 
     init(
         transactionRepository: TransactionRepository,
-        cardRepository: CardRepository
+        ledgerRepository: LedgerRepository
     ) {
         self.transactionRepository = transactionRepository
-        self.cardRepository = cardRepository
+        self.ledgerRepository = ledgerRepository
     }
 
     func loadTransactions(for accountID: UUID) async {
@@ -41,8 +41,8 @@ final class AccountTransactionsViewModel {
         do {
             let transactions = try await transactionRepository
                 .fetchTransactionsForAccount(accountID)
-            let cards = try await cardRepository
-                .fetchCards()
+            let cards = try await ledgerRepository
+                .fetchLedgers(kind: .creditCard)
 
             transactionRows = makeTransactionRows(
                 transactions: transactions,
@@ -56,7 +56,7 @@ final class AccountTransactionsViewModel {
 
     private func makeTransactionRows(
         transactions: [Transaction],
-        cards: [Card]
+        cards: [Ledger]
     ) -> [TransactionRow] {
         let cardsByID = Dictionary(
             uniqueKeysWithValues: cards.map { card in
@@ -66,7 +66,7 @@ final class AccountTransactionsViewModel {
 
         return transactions.map { transaction in
             let sourceName: String = (
-                transaction.cardID.flatMap { cardsByID[$0] }?.cardName ??
+                transaction.cardID.flatMap { cardsByID[$0] }?.displayName ??
                     "Unknown Source"
             )
 
