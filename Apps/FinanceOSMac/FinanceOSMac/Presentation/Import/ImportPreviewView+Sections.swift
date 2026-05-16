@@ -8,63 +8,81 @@ extension ImportPreviewView {
             Text("Import To")
                 .font(.headline)
 
-            Picker("Target", selection: $targetChoice) {
-                Text("Select Account or Card...").tag(nil as TargetChoice?)
+            Menu {
+                if viewModel.selectedTarget != nil {
+                    Button(action: {
+                        viewModel.selectedTarget = nil
+                    }) {
+                        Text("Clear Selection")
+                    }
+                    Divider()
+                }
 
                 if !viewModel.accounts.isEmpty {
-                    Divider()
-                    Text("Accounts").font(.caption).tag(nil as TargetChoice?)
-
-                    ForEach(viewModel.accounts) { account in
-                        Text(account.accountName)
-                            .tag(TargetChoice.account(account.id) as TargetChoice?)
+                    Menu("Accounts") {
+                        ForEach(viewModel.accounts) { account in
+                            Button(action: {
+                                viewModel.selectedTarget = .account(account.id)
+                            }) {
+                                if case .account(let id) = viewModel.selectedTarget, id == account.id {
+                                    Label(account.accountName, systemImage: "checkmark")
+                                } else {
+                                    Text(account.accountName)
+                                }
+                            }
+                        }
                     }
-
-                    Text("Create New Account...")
-                        .tag(TargetChoice.createAccount as TargetChoice?)
+                    Button(action: { initializeCreateSheet(isCard: false) }) {
+                        Text("Create New Account...")
+                    }
                 }
 
                 if !viewModel.cards.isEmpty {
-                    Divider()
-                    Text("Cards").font(.caption).tag(nil as TargetChoice?)
-
-                    ForEach(viewModel.cards) { card in
-                        Text(card.cardName)
-                            .tag(TargetChoice.card(card.id) as TargetChoice?)
+                    Menu("Cards") {
+                        ForEach(viewModel.cards) { card in
+                            Button(action: {
+                                viewModel.selectedTarget = .card(card.id)
+                            }) {
+                                if case .card(let id) = viewModel.selectedTarget, id == card.id {
+                                    Label(card.cardName, systemImage: "checkmark")
+                                } else {
+                                    Text(card.cardName)
+                                }
+                            }
+                        }
                     }
-
-                    Text("Create New Card...")
-                        .tag(TargetChoice.createCard as TargetChoice?)
+                    Button(action: { initializeCreateSheet(isCard: true) }) {
+                        Text("Create New Card...")
+                    }
                 }
 
-                if viewModel.accounts.isEmpty {
-                    Divider()
-                    Text("Create New Account...")
-                        .tag(TargetChoice.createAccount as TargetChoice?)
-                }
-
-                if viewModel.cards.isEmpty {
-                    if !viewModel.accounts.isEmpty {
-                        Divider()
+                if viewModel.accounts.isEmpty && viewModel.cards.isEmpty {
+                    Button(action: { initializeCreateSheet(isCard: false) }) {
+                        Text("Create New Account...")
                     }
-                    Text("Create New Card...")
-                        .tag(TargetChoice.createCard as TargetChoice?)
+                    Button(action: { initializeCreateSheet(isCard: true) }) {
+                        Text("Create New Card...")
+                    }
+                }
+            } label: {
+                let displayText: String = {
+                    if let target = viewModel.selectedTarget {
+                        switch target {
+                        case .account(let id):
+                            return viewModel.accounts.first { $0.id == id }?.accountName ?? "Account"
+                        case .card(let id):
+                            return viewModel.cards.first { $0.id == id }?.cardName ?? "Card"
+                        }
+                    }
+                    return "Select Account or Card..."
+                }()
+
+                HStack {
+                    Text(displayText)
+                    Spacer()
+                    Image(systemName: "chevron.down")
                 }
             }
-            .onChange(of: targetChoice) { _, newValue in
-                handleTargetSelection(newValue)
-            }
-        }
-    }
-
-    func handleTargetSelection(_ choice: TargetChoice?) {
-        switch choice {
-        case .createAccount:
-            initializeCreateSheet(isCard: false)
-        case .createCard:
-            initializeCreateSheet(isCard: true)
-        case .account, .card, .none:
-            break
         }
     }
 

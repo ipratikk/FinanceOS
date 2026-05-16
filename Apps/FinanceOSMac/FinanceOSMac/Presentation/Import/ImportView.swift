@@ -3,17 +3,9 @@ import FinanceParsers
 import SwiftUI
 import UniformTypeIdentifiers
 
-enum TargetChoice: Hashable {
-    case account(UUID)
-    case card(UUID)
-    case createAccount
-    case createCard
-}
-
 struct ImportView: View {
     let viewModel: ImportViewModel
 
-    @State private var targetChoice: TargetChoice?
     @State private var selectedSource: StatementSource?
     @State private var isTargeted = false
 
@@ -28,37 +20,6 @@ struct ImportView: View {
         .onAppear {
             Task {
                 await viewModel.loadTargetsOnAppear()
-            }
-
-            if let target = viewModel.selectedTarget {
-                switch target {
-                case let .account(id):
-                    targetChoice = .account(id)
-                case let .card(id):
-                    targetChoice = .card(id)
-                }
-            } else {
-                targetChoice = nil
-            }
-        }
-        .onChange(of: targetChoice) { _, newValue in
-            switch newValue {
-            case let .account(id):
-                viewModel.selectedTarget = .account(id)
-            case let .card(id):
-                viewModel.selectedTarget = .card(id)
-            case .createAccount, .createCard, nil:
-                break
-            }
-        }
-        .onChange(of: viewModel.selectedTarget) { _, newValue in
-            switch newValue {
-            case let .account(id):
-                targetChoice = .account(id)
-            case let .card(id):
-                targetChoice = .card(id)
-            case nil:
-                targetChoice = nil
             }
         }
         .onChange(of: selectedSource) { _, newValue in
@@ -122,10 +83,7 @@ struct ImportView: View {
                             }
 
                             if !viewModel.parsedStatements.isEmpty {
-                                TargetSelectionSection(
-                                    viewModel: viewModel,
-                                    targetChoice: $targetChoice
-                                )
+                                TargetSelectionSection(viewModel: viewModel)
                             }
 
                             Spacer()
@@ -219,7 +177,7 @@ struct ImportView: View {
     private var previewView: some View {
         VStack(spacing: 0) {
             if !viewModel.parsedStatements.isEmpty {
-                ImportPreviewView(viewModel: viewModel, targetChoice: $targetChoice)
+                ImportPreviewView(viewModel: viewModel)
             }
 
             Divider()

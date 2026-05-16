@@ -33,7 +33,6 @@ struct SupportedSourcesView: View {
 
 struct TargetSelectionSection: View {
     let viewModel: ImportViewModel
-    @Binding var targetChoice: TargetChoice?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -50,42 +49,71 @@ struct TargetSelectionSection: View {
 
                 Spacer()
 
-                if targetChoice != nil {
+                if viewModel.selectedTarget != nil {
                     Image(systemName: "checkmark.circle.fill")
                         .headingSmall()
                         .foregroundColor(AppColors.accent)
                 }
             }
 
-            Picker("Target", selection: $targetChoice) {
-                Text("Select target...").tag(nil as TargetChoice?)
+            Menu {
+                if viewModel.selectedTarget != nil {
+                    Button(action: { viewModel.selectedTarget = nil }) {
+                        Text("Clear")
+                    }
+                    Divider()
+                }
 
                 if !viewModel.accounts.isEmpty {
-                    Section("Accounts") {
+                    Menu("Accounts") {
                         ForEach(viewModel.accounts) { account in
-                            Text(account.accountName)
-                                .tag(TargetChoice.account(account.id) as TargetChoice?)
+                            Button(action: { viewModel.selectedTarget = .account(account.id) }) {
+                                if case .account(let id) = viewModel.selectedTarget, id == account.id {
+                                    Label(account.accountName, systemImage: "checkmark")
+                                } else {
+                                    Text(account.accountName)
+                                }
+                            }
                         }
                     }
                 }
 
                 if !viewModel.cards.isEmpty {
-                    Section("Cards") {
+                    Menu("Cards") {
                         ForEach(viewModel.cards) { card in
-                            Text(card.cardName)
-                                .tag(TargetChoice.card(card.id) as TargetChoice?)
+                            Button(action: { viewModel.selectedTarget = .card(card.id) }) {
+                                if case .card(let id) = viewModel.selectedTarget, id == card.id {
+                                    Label(card.cardName, systemImage: "checkmark")
+                                } else {
+                                    Text(card.cardName)
+                                }
+                            }
                         }
                     }
                 }
 
-                Section("Create New") {
-                    Text("New Account")
-                        .tag(TargetChoice.createAccount as TargetChoice?)
-                    Text("New Card")
-                        .tag(TargetChoice.createCard as TargetChoice?)
+                Divider()
+                Button(action: {}) { Text("New Account") }
+                Button(action: {}) { Text("New Card") }
+            } label: {
+                let displayText: String = {
+                    if let target = viewModel.selectedTarget {
+                        switch target {
+                        case .account(let id):
+                            return viewModel.accounts.first { $0.id == id }?.accountName ?? "Account"
+                        case .card(let id):
+                            return viewModel.cards.first { $0.id == id }?.cardName ?? "Card"
+                        }
+                    }
+                    return "Select target..."
+                }()
+
+                HStack {
+                    Text(displayText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Image(systemName: "chevron.down")
                 }
             }
-            .pickerStyle(.menu)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(AppSpacing.xs)
             .background(AppColors.surface2)

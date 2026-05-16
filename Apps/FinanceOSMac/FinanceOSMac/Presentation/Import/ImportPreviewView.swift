@@ -4,7 +4,6 @@ import SwiftUI
 
 struct ImportPreviewView: View {
     let viewModel: ImportViewModel
-    @Binding var targetChoice: TargetChoice?
 
     @State var showCreateSheet = false
     @State var newEntityName = ""
@@ -40,7 +39,6 @@ struct ImportPreviewView: View {
                 detectedBank: detectedBank,
                 onCancel: {
                     showCreateSheet = false
-                    targetChoice = nil
                 },
                 onCreate: {
                     Task {
@@ -56,7 +54,6 @@ struct ImportPreviewView: View {
                             isCard: isCard
                         )
                         showCreateSheet = false
-                        targetChoice = nil
                     }
                 }
             )
