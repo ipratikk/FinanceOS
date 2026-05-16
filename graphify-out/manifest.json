@@ -495,6 +495,18 @@
     "mtime": 1778910352.1758678,
     "hash": "5eec75ca73a0a8fe1d1e0010804db607"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Fixtures/FixtureRunner.swift": {
+    "mtime": 1778910604.0320852,
+    "hash": "e95236d10e11e89adec2f2761856e24c"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Fixtures/FixtureDirectory.swift": {
+    "mtime": 1778910597.5543602,
+    "hash": "d2e66871af73f18d6fabe62c1bbfed94"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Fixtures/ParseResultDiffer.swift": {
+    "mtime": 1778910608.332411,
+    "hash": "0a35c7d8e761b5d1163e83eef919d545"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift": {
     "mtime": 1778876682.6463296,
     "hash": "192e6a9d5bb4f37cad34165f0695a1e8"
