@@ -7,20 +7,9 @@ enum ParsedTransactionMapper {
         let absoluteAmount = abs(parsed.amountMinorUnits)
 
         switch target {
-        case let .account(accountID):
+        case let .ledger(ledgerId):
             return Transaction(
-                accountID: accountID,
-                postedAt: parsed.postedAt,
-                description: parsed.description,
-                amountMinorUnits: absoluteAmount,
-                currencyCode: parsed.currencyCode,
-                transactionType: transactionType,
-                sourceFingerprint: parsed.sourceFingerprint
-            )
-
-        case let .card(cardID):
-            return Transaction(
-                cardID: cardID,
+                ledgerId: ledgerId,
                 postedAt: parsed.postedAt,
                 description: parsed.description,
                 amountMinorUnits: absoluteAmount,

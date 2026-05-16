@@ -21,6 +21,7 @@ public struct Transaction:
     PersistableRecord
 {
     public let id: UUID
+    public let ledgerId: UUID?
     public let accountID: UUID?
     public let cardID: UUID?
     public let postedAt: Date
@@ -32,6 +33,7 @@ public struct Transaction:
 
     public init(
         id: UUID = UUID(),
+        ledgerId: UUID? = nil,
         accountID: UUID? = nil,
         cardID: UUID? = nil,
         postedAt: Date,
@@ -42,6 +44,7 @@ public struct Transaction:
         sourceFingerprint: String? = nil
     ) {
         self.id = id
+        self.ledgerId = ledgerId
         self.accountID = accountID
         self.cardID = cardID
         self.postedAt = postedAt
@@ -56,6 +59,7 @@ public struct Transaction:
 public extension Transaction {
     enum Columns {
         static let id = Column(CodingKeys.id)
+        static let ledgerId = Column(CodingKeys.ledgerId)
         static let accountID = Column(CodingKeys.accountID)
         static let cardID = Column(CodingKeys.cardID)
         static let postedAt = Column(CodingKeys.postedAt)
@@ -78,6 +82,14 @@ public extension Transaction {
         ) { table in
             table.column("id", .text)
                 .primaryKey()
+
+            table.column("ledgerId", .text)
+                .indexed()
+                .references(
+                    Ledger.databaseTableName,
+                    column: "id",
+                    onDelete: .cascade
+                )
 
             table.column("accountID", .text)
                 .indexed()

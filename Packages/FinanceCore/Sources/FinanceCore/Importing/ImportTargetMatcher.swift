@@ -64,11 +64,11 @@ public enum ImportTargetMatcher {
             let banksCards = cards.filter { $0.bankId == bank.id }
 
             if let matchingCard = banksCards.first(where: { $0.cardLast4 == cardLast4 }) {
-                return ImportTargetMatch(.card(matchingCard.id), confidence: 1.0)
+                return ImportTargetMatch(.ledger(matchingCard.id), confidence: 1.0)
             }
 
             if banksCards.count == 1 {
-                return ImportTargetMatch(.card(banksCards[0].id), confidence: 0.5)
+                return ImportTargetMatch(.ledger(banksCards[0].id), confidence: 0.5)
             }
 
             return nil
@@ -78,11 +78,11 @@ public enum ImportTargetMatcher {
             let banksAccounts = accounts.filter { $0.bankId == bank.id }
 
             if let matchingAccount = banksAccounts.first(where: { $0.accountLast4 == accountLast4 }) {
-                return ImportTargetMatch(.account(matchingAccount.id), confidence: 1.0)
+                return ImportTargetMatch(.ledger(matchingAccount.id), confidence: 1.0)
             }
 
             if banksAccounts.count == 1 {
-                return ImportTargetMatch(.account(banksAccounts[0].id), confidence: 0.5)
+                return ImportTargetMatch(.ledger(banksAccounts[0].id), confidence: 0.5)
             }
 
             return nil
@@ -92,7 +92,7 @@ public enum ImportTargetMatcher {
             let banksAccounts = accounts.filter { $0.bankId == bank.id }
 
             if banksAccounts.count == 1 {
-                return ImportTargetMatch(.account(banksAccounts[0].id), confidence: 0.7)
+                return ImportTargetMatch(.ledger(banksAccounts[0].id), confidence: 0.7)
             }
 
             return nil

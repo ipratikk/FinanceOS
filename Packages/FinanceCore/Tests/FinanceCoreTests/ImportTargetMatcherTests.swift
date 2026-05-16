@@ -90,7 +90,7 @@ func bestTargetCardExactLast4Match() {
         banks: [testBank, testBank2, testBank3]
     )
 
-    #expect(result == .card(testCard1.id))
+    #expect(result == .ledger(testCard1.id))
 }
 
 @Test
@@ -161,7 +161,7 @@ func bestTargetAccountExactLast4Match() {
         banks: [testBank, testBank2, testBank3]
     )
 
-    #expect(result == .account(testAccount1.id))
+    #expect(result == .ledger(testAccount1.id))
 }
 
 @Test
@@ -203,7 +203,7 @@ func bestTargetAccountSingleAccount() {
         banks: [testBank]
     )
 
-    #expect(result == .account(testAccount1.id))
+    #expect(result == .ledger(testAccount1.id))
 }
 
 @Test
@@ -268,7 +268,7 @@ func bestMatchReturnsConfidenceWithScore() {
         banks: [testBank]
     )
 
-    #expect(result?.target == .account(testAccount1.id))
+    #expect(result?.target == .ledger(testAccount1.id))
     #expect(result?.confidence == 1.0)
 }
 
@@ -290,6 +290,6 @@ func bestMatchPartialConfidenceForSingleAccountWithoutLast4() {
         banks: [testBank]
     )
 
-    #expect(result?.target == .account(testAccount1.id))
+    #expect(result?.target == .ledger(testAccount1.id))
     #expect(result?.confidence == 0.7)
 }

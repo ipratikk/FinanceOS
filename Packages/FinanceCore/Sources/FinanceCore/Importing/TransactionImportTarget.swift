@@ -12,6 +12,5 @@ public enum TransactionImportTarget:
     Equatable,
     Hashable
 {
-    case account(UUID)
-    case card(UUID)
+    case ledger(UUID)
 }

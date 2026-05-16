@@ -13,8 +13,8 @@ func mapperSignsDebitCorrectly() throws {
         sourceFingerprint: "test|withdrawal|50000"
     )
 
-    let accountID = UUID()
-    let target = TransactionImportTarget.account(accountID)
+    let ledgerId = UUID()
+    let target = TransactionImportTarget.ledger(ledgerId)
 
     let mapped = ParsedTransactionMapper.map(debitParsed, target: target)
 
@@ -51,14 +51,14 @@ func mapperHandlesCardDebit() throws {
         sourceFingerprint: "test|grocery|5000"
     )
 
-    let cardID = UUID()
-    let target = TransactionImportTarget.card(cardID)
+    let ledgerId = UUID()
+    let target = TransactionImportTarget.ledger(ledgerId)
 
     let mapped = ParsedTransactionMapper.map(debitParsed, target: target)
 
     #expect(mapped.transactionType == .debit)
     #expect(mapped.amountMinorUnits == 5000)
-    #expect(mapped.cardID == cardID)
+    #expect(mapped.ledgerId == ledgerId)
 }
 
 @Test
@@ -78,7 +78,7 @@ func mapperHandlesCardCredit() throws {
 
     #expect(mapped.transactionType == .credit)
     #expect(mapped.amountMinorUnits == 10000)
-    #expect(mapped.cardID == cardID)
+    #expect(mapped.ledgerId == ledgerId)
 }
 
 @Test
@@ -91,7 +91,7 @@ func mapperPreservesSourceFingerprint() throws {
         sourceFingerprint: "20260501|Test|1000"
     )
 
-    let target = TransactionImportTarget.account(UUID())
+    let target = TransactionImportTarget.ledger(UUID())
     let mapped = ParsedTransactionMapper.map(parsed, target: target)
 
     #expect(mapped.sourceFingerprint == "20260501|Test|1000")
@@ -108,7 +108,7 @@ func mapperPreservesDescription() throws {
         sourceFingerprint: "test|amazon|25000"
     )
 
-    let target = TransactionImportTarget.account(UUID())
+    let target = TransactionImportTarget.ledger(UUID())
     let mapped = ParsedTransactionMapper.map(parsed, target: target)
 
     #expect(mapped.description == description)
@@ -124,7 +124,7 @@ func mapperHandlesZeroAmount() throws {
         sourceFingerprint: "test|zero|0"
     )
 
-    let target = TransactionImportTarget.account(UUID())
+    let target = TransactionImportTarget.ledger(UUID())
     let mapped = ParsedTransactionMapper.map(parsed, target: target)
 
     #expect(mapped.transactionType == .debit)
