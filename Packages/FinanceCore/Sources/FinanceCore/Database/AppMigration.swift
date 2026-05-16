@@ -60,9 +60,26 @@ enum AppMigration {
         migrator.registerMigration("v4_transactions") { database in
             FinanceLogger.migration.info("Running migration: v4_transactions")
 
-            try Transaction.createTable(
-                in: database
-            )
+            try database.create(table: "transactions") { table in
+                table.column("id", .text).primaryKey()
+                table.column("accountID", .text).indexed()
+                table.column("cardID", .text).indexed()
+                table.column("postedAt", .datetime).notNull().indexed()
+                table.column("description", .text).notNull()
+                table.column("amountMinorUnits", .integer).notNull()
+                table.column("currencyCode", .text).notNull()
+                table.column("transactionType", .text).notNull().defaults(to: "debit")
+                table.column("sourceFingerprint", .text)
+                table.check(
+                    sql: """
+                    (
+                        ("accountID" IS NOT NULL AND "cardID" IS NULL)
+                        OR
+                        ("accountID" IS NULL AND "cardID" IS NOT NULL)
+                    )
+                    """
+                )
+            }
         }
 
         migrator.registerMigration("v5_transaction_sourceFingerprint_unique") { database in
@@ -151,7 +168,28 @@ enum AppMigration {
             FinanceLogger.migration.info("Running migration: v7_ledger_unification")
 
             // 1. Create ledgers table
-            try Ledger.createTable(in: database)
+            try database.execute(sql: """
+                CREATE TABLE ledgers (
+                    id TEXT PRIMARY KEY,
+                    bankId TEXT NOT NULL REFERENCES banks(id) ON DELETE CASCADE,
+                    kind TEXT NOT NULL,
+                    displayName TEXT NOT NULL,
+                    last4 TEXT NOT NULL DEFAULT '',
+                    nickname TEXT NOT NULL DEFAULT '',
+                    ownerName TEXT NOT NULL DEFAULT '',
+                    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    accountType TEXT,
+                    cardType TEXT,
+                    cardProduct TEXT,
+                    linkedLedgerId TEXT REFERENCES ledgers(id) ON DELETE SET NULL,
+                    isArchived INTEGER NOT NULL DEFAULT 0,
+                    CHECK (kind IN ('bankAccount','creditCard','loan','wallet','crypto','investment'))
+                )
+            """)
+            try database.execute(sql: "CREATE INDEX idx_ledgers_bankId ON ledgers(bankId)")
+            try database.execute(sql: "CREATE INDEX idx_ledgers_kind ON ledgers(kind)")
+            try database.execute(sql: "CREATE INDEX idx_ledgers_linkedLedgerId ON ledgers(linkedLedgerId)")
+            try database.execute(sql: "CREATE INDEX idx_ledgers_bank_kind ON ledgers(bankId, kind)")
 
             // 2. Backfill from accounts
             try database.execute(sql: """
@@ -173,7 +211,7 @@ enum AppMigration {
                 FROM cards
             """)
 
-            // 4. Add ledgerId to transactions and backfill
+            // 4. Add ledgerId to transactions (now that Ledger table exists)
             try database.execute(sql: """
                 ALTER TABLE transactions ADD COLUMN ledgerId TEXT REFERENCES ledgers(id) ON DELETE CASCADE
             """)
