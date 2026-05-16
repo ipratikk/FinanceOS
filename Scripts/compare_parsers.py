@@ -129,15 +129,15 @@ def analyze_differences(swift_txns, python_txns, swift_totals=None, python_total
     swift_total_debit = sum(abs(t.get("amountMinorUnits", 0)) for t in swift_txns if t.get("amountMinorUnits", 0) > 0)
     swift_total_credit = sum(abs(t.get("amountMinorUnits", 0)) for t in swift_txns if t.get("amountMinorUnits", 0) < 0)
 
-    # Python totals may be debit/credit or amount_minor_units
+    # Python: negative = debit, positive = credit (opposite of Swift)
     python_total_debit = 0
     python_total_credit = 0
     for t in python_txns:
         amount = t.get("amount_minor_units", 0)
-        if amount > 0:
-            python_total_debit += abs(amount)
-        elif amount < 0:
-            python_total_credit += abs(amount)
+        if amount < 0:
+            python_total_debit += abs(amount)  # Negative amounts are debits
+        elif amount > 0:
+            python_total_credit += abs(amount)  # Positive amounts are credits
 
     # Check for description mismatches (accounting for empty descriptions)
     description_issues = sum(1 for m in matched
