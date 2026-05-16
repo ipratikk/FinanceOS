@@ -1,11 +1,7 @@
 {
-  "/Users/pragoel/Documents/GitHub/FinanceOS/test_classifier.swift": {
-    "mtime": 1778842793.395432,
-    "hash": "d5faadd10d603c3099655b31eadb1758"
-  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/compare_parsers.py": {
-    "mtime": 1778838820.1969328,
-    "hash": "ca971560a3d0bee61a3f04c848dd447b"
+    "mtime": 1778939993.9859931,
+    "hash": "948e429564378d5a7ace01c11b540521"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/extract_hdfc_pdf.py": {
     "mtime": 1778838670.2897794,
@@ -20,8 +16,8 @@
     "hash": "b04c5da0d51d0cd10f867d311bf91b1b"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/extract_hdfc_reference.py": {
-    "mtime": 1778838691.589038,
-    "hash": "4d01805d28682f0efe640c19060b9229"
+    "mtime": 1778940090.9835007,
+    "hash": "6175eb325c7950c6f2fbc8187fe59709"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Package.swift": {
     "mtime": 1778882162.86904,
@@ -436,8 +432,8 @@
     "hash": "489d1fe1ed29d0fd7145bde9cf71115f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFCBank/HDFCBankTXTNormalizer.swift": {
-    "mtime": 1778913189.1875052,
-    "hash": "53188d60177248d6353989825eaad1c4"
+    "mtime": 1778939398.5243533,
+    "hash": "225e53baeb069377e2b85dea2be92ca0"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFCBank/HDFCBankTXTParser.swift": {
     "mtime": 1778913550.0035214,
@@ -468,8 +464,8 @@
     "hash": "ab46fdbd97dde32254532f0b7d395d96"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Amex/AmexCardCSVParser.swift": {
-    "mtime": 1778913189.210951,
-    "hash": "be7154d899e8a33fce8a445ac99505bf"
+    "mtime": 1778935604.7704744,
+    "hash": "a7482e9e339b45c3e7415c3ce0024f28"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/HDFC/HDFCModels.swift": {
     "mtime": 1778829631.3801873,
@@ -787,9 +783,13 @@
     "mtime": 1778667480.925316,
     "hash": "0338be50e024f7de11596fd5e4de2775"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/output.txt": {
+    "mtime": 1778915338.5732756,
+    "hash": "ac713f8a1b3880a991da45a9a2ecc8c0"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/CLAUDE.md": {
-    "mtime": 1778673255.4360971,
-    "hash": "b6ab053ebb523f8474d2acef6521c268"
+    "mtime": 1778938865.3727179,
+    "hash": "c3692ffef1427291010213aae67a5c40"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/README.md": {
     "mtime": 1778829769.3584032,

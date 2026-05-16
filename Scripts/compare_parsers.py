@@ -125,19 +125,19 @@ def analyze_differences(swift_txns, python_txns, swift_totals=None, python_total
     unmatched_swift = [t for i, t in enumerate(swift_txns) if not any(m["swift"] == t for m in matched)]
     unmatched_python = [t for i, t in enumerate(python_txns) if i not in matched_python_indices]
 
-    # Calculate totals
-    swift_total_debit = sum(abs(t.get("amountMinorUnits", 0)) for t in swift_txns if t.get("amountMinorUnits", 0) > 0)
+    # Calculate totals (both use: positive = debit, negative = credit)
+    swift_total_debit = sum(t.get("amountMinorUnits", 0) for t in swift_txns if t.get("amountMinorUnits", 0) > 0)
     swift_total_credit = sum(abs(t.get("amountMinorUnits", 0)) for t in swift_txns if t.get("amountMinorUnits", 0) < 0)
 
-    # Python: negative = debit, positive = credit (opposite of Swift)
+    # Python: same convention (positive = debit, negative = credit)
     python_total_debit = 0
     python_total_credit = 0
     for t in python_txns:
         amount = t.get("amount_minor_units", 0)
-        if amount < 0:
-            python_total_debit += abs(amount)  # Negative amounts are debits
-        elif amount > 0:
-            python_total_credit += abs(amount)  # Positive amounts are credits
+        if amount > 0:
+            python_total_debit += amount  # Positive amounts are debits
+        elif amount < 0:
+            python_total_credit += abs(amount)  # Negative amounts are credits
 
     # Check for description mismatches (accounting for empty descriptions)
     description_issues = sum(1 for m in matched
@@ -210,6 +210,9 @@ def main():
         python_totals=python_result.get("totals", {})
     )
 
+    # Store matched transactions for root cause analysis
+    matched_txns = metrics.get('matched', [])
+
     print("\n=== COMPARISON RESULTS ===\n", file=sys.stderr)
     print(f"Transaction Count:", file=sys.stderr)
     print(f"  Swift:           {metrics['swift_count']:4d}", file=sys.stderr)
@@ -237,6 +240,16 @@ def main():
     total_amount = metrics['swift_total_debit'] + metrics['swift_total_credit']
     amount_delta_pct = 100 * (debit_delta + credit_delta) / max(1, total_amount * 2) if total_amount > 0 else 0
 
+    # Analyze root cause of mismatches
+    root_cause = ""
+    if metrics['amount_mismatches'] > 0:
+        # Check if mismatches are in NEFT transactions (indicates narration comma issue)
+        neft_mismatch_count = sum(1 for m in matched_txns
+                                 if m.get("swift", {}).get("description", "").startswith("NEFT")
+                                 and m.get("swift", {}).get("amountMinorUnits") != m.get("python", {}).get("amount_minor_units"))
+        if neft_mismatch_count > 0:
+            root_cause = f" (NEFT narration comma issue: {neft_mismatch_count} txns)"
+
     if unmatched_gap == 0 and amount_delta_pct < 0.5:  # Less than 0.5% variance
         gap_pct = amount_delta_pct
         status = "PASS"
@@ -250,7 +263,7 @@ def main():
         gap_pct = 0
         status = "PASS"
 
-    print(f"\nStatus: {status} ({gap_pct:.1f}% gap)", file=sys.stderr)
+    print(f"\nStatus: {status} ({gap_pct:.1f}% gap){root_cause}", file=sys.stderr)
 
     # Output JSON comparison
     output = {

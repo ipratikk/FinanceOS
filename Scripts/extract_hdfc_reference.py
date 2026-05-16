@@ -40,7 +40,13 @@ def is_csv_format(lines):
 
 
 def parse_csv_format(lines, start_idx):
-    """Parse CSV-formatted transaction file with variable-length narrations."""
+    """Parse CSV-formatted transaction file with variable-length narrations.
+
+    Format: Date | Narration (variable length, may contain commas) | Value Date | Debit | Credit | Ref | Balance
+
+    Re-anchors on value_date when narration contains commas. Works backward from end to identify
+    debit/credit amounts reliably.
+    """
     transactions = []
 
     # Parse header row
@@ -49,9 +55,6 @@ def parse_csv_format(lines, start_idx):
 
     # Find column indices
     date_idx = next((i for i, h in enumerate(headers) if 'date' in h), None)
-    narration_idx = next((i for i, h in enumerate(headers) if 'narration' in h), None)
-    debit_idx = next((i for i, h in enumerate(headers) if 'debit' in h), None)
-    credit_idx = next((i for i, h in enumerate(headers) if 'credit' in h), None)
 
     if date_idx is None:
         return []
@@ -65,26 +68,41 @@ def parse_csv_format(lines, start_idx):
         if len(cols) < 5:  # Minimum: date, narr, debit, credit, ref
             continue
 
-        date = cols[date_idx] if date_idx < len(cols) else ""
-        if not date or not is_date_line(date):
+        date_str = cols[0]
+        if not is_date_line(date_str):
             continue
 
-        # Handle variable-length narrations (some contain commas)
-        # Standard: 7 cols = date | narr | valuedate | debit | credit | ref | balance
-        # Variable: 8+ cols = date | narr_part1 | narr_part2... | valuedate | debit | credit | ...
-        # Work backwards from end: balance, ref, credit, debit, valuedate, then narration(s)
+        # Standard layout: [0]=date, [1]=narration, [2]=value_date, [3]=debit, [4]=credit, [5]=ref, [6]=balance
+        # When narration has commas, it expands: [0]=date, [1..N]=narration_parts, [N+1]=value_date, [N+2]=debit, ...
 
-        if len(cols) == 7:
-            # Standard case: date | narr | valuedate | debit | credit | ref | balance
-            narration = cols[narration_idx] if narration_idx < len(cols) else ""
-            debit_str = cols[debit_idx] if debit_idx < len(cols) else "0"
-            credit_str = cols[credit_idx] if credit_idx < len(cols) else "0"
-        else:
-            # Variable length: date | narr_parts... | valuedate | debit | credit | ref | balance
-            # Work backwards: [ref, balance] are last 2, [debit, credit] are next 2
-            narration = ' '.join(cols[1:-4])  # Everything between date and valuedate
-            debit_str = cols[-4]  # Fourth from end (debit amount)
-            credit_str = cols[-3]  # Third from end (credit amount)
+        # Try to parse value_date at standard index 2
+        value_date_str = cols[2] if len(cols) > 2 else ""
+        try:
+            parse_date(value_date_str)
+            # Standard case
+            narration = cols[1].strip()
+            debit_str = cols[3] if len(cols) > 3 else "0"
+            credit_str = cols[4] if len(cols) > 4 else "0"
+        except ValueError:
+            # Re-anchor: narration contains commas. Find value_date by scanning backward from end.
+            # Last 4 cols are: [debit, credit, ref, balance]
+            # Scan backward from position len(cols)-4 to find first valid date (value_date).
+            anchor = None
+            for i in range(len(cols) - 4, 1, -1):
+                try:
+                    parse_date(cols[i])
+                    anchor = i
+                    break
+                except ValueError:
+                    continue
+
+            if anchor is None:
+                continue  # Cannot locate value_date
+
+            value_date_str = cols[anchor]
+            debit_str = cols[anchor + 1] if anchor + 1 < len(cols) else "0"
+            credit_str = cols[anchor + 2] if anchor + 2 < len(cols) else "0"
+            narration = ",".join(cols[1:anchor]).strip()
 
         debit = parse_amount(debit_str) or 0.0
         credit = parse_amount(credit_str) or 0.0
@@ -92,14 +110,15 @@ def parse_csv_format(lines, start_idx):
         if debit == 0 and credit == 0:
             continue
 
-        # Calculate amount_minor_units with proper rounding
+        # Calculate amount_minor_units: positive for debit, negative for credit
+        # (matches Swift parser convention)
         if debit > 0:
-            amount_minor = round(-debit * 100)  # Negative for debit, rounded
+            amount_minor = round(debit * 100)
         else:
-            amount_minor = round(credit * 100)  # Positive for credit, rounded
+            amount_minor = round(-credit * 100)
 
         transactions.append({
-            'date': date,
+            'date': date_str,
             'description': narration,
             'amount_minor_units': int(amount_minor),
             'debit': debit,
@@ -120,6 +139,17 @@ def find_table_start(lines):
 def is_date_line(text):
     """Check if line starts with a transaction date (dd/mm/yy format)."""
     return bool(re.match(r'^\s*\d{2}/\d{2}/\d{2}', text))
+
+
+def parse_date(s: str) -> datetime:
+    """Parse date in dd/mm/yy or dd/mm/yyyy format."""
+    s = s.strip()
+    for fmt in ("%d/%m/%y", "%d/%m/%Y"):
+        try:
+            return datetime.strptime(s, fmt)
+        except ValueError:
+            continue
+    raise ValueError(f"Cannot parse date: {s!r}")
 
 
 def parse_amount(amount_str):
