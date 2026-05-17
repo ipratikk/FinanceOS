@@ -1,10 +1,9 @@
-import Testing
-import SwiftUI
-import FinanceTesting
 @testable import FinanceOSMac
+import FinanceTesting
+import SwiftUI
+import Testing
 
 /// Snapshot tests for import flow across states.
-@Suite
 struct ImportFlowSnapshotTests {
     @Test("Import flow - empty state")
     func importFlowEmpty() {

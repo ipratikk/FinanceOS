@@ -1,55 +1,60 @@
 import FinanceCore
 import Foundation
 
-/// Preview/test data for accounts.
-public enum PreviewAccounts {
+/// Preview/test data for ledgers (accounts and cards).
+public enum PreviewLedgers {
+    /// Standard bank UUID for all preview ledgers.
+    private static let bankId = UUID(uuidString: "00000000-0000-0000-0000-000000000099")!
+
     /// Create a preview checking account.
-    public static func checking() -> Account {
-        Account(
+    public static func checking() -> Ledger {
+        Ledger(
             id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-            accountName: "Checking",
-            accountType: .checking,
-            bankName: "Chase",
-            accountNumber: "****1234",
-            currencyCode: "USD",
-            currentBalance: 5234.56,
+            bankId: bankId,
+            kind: .bankAccount,
+            displayName: "Chase Checking",
+            last4: "1234",
+            nickname: "Checking",
+            ownerName: "John Doe",
             createdAt: Date(timeIntervalSince1970: 1_740_000_000),
-            updatedAt: Date(timeIntervalSince1970: 1_747_000_000)
+            accountType: "checking"
         )
     }
 
     /// Create a preview savings account.
-    public static func savings() -> Account {
-        Account(
+    public static func savings() -> Ledger {
+        Ledger(
             id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
-            accountName: "Savings",
-            accountType: .savings,
-            bankName: "Chase",
-            accountNumber: "****5678",
-            currencyCode: "USD",
-            currentBalance: 25000.00,
+            bankId: bankId,
+            kind: .bankAccount,
+            displayName: "Chase Savings",
+            last4: "5678",
+            nickname: "Savings",
+            ownerName: "John Doe",
             createdAt: Date(timeIntervalSince1970: 1_740_000_000),
-            updatedAt: Date(timeIntervalSince1970: 1_747_000_000)
+            accountType: "savings"
         )
     }
 
-    /// Create preview credit card.
-    public static func creditCard() -> Account {
-        Account(
+    /// Create a preview credit card.
+    public static func creditCard() -> Ledger {
+        Ledger(
             id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!,
-            accountName: "Amex Premium",
-            accountType: .creditCard,
-            bankName: "American Express",
-            accountNumber: "****9999",
-            currencyCode: "USD",
-            currentBalance: -2450.00,
+            bankId: bankId,
+            kind: .creditCard,
+            displayName: "Amex Premium",
+            last4: "9999",
+            nickname: "Amex",
+            ownerName: "John Doe",
             createdAt: Date(timeIntervalSince1970: 1_740_000_000),
-            updatedAt: Date(timeIntervalSince1970: 1_747_000_000)
+            cardType: "amex",
+            cardProduct: "Premium Rewards",
+            bin: "378282"
         )
     }
 
-    /// Collection of accounts for preview.
-    public static var all: [Account] {
+    /// Collection of ledgers for preview.
+    public static var all: [Ledger] {
         [checking(), savings(), creditCard()]
     }
 }

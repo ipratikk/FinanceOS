@@ -10,13 +10,11 @@ public enum SnapshotNaming {
         device: SnapshotDevice = .iPhone16Pro
     ) -> String {
         if device == .iPhone16Pro, theme == .light {
-            // Default case: no suffix needed
-            baseName
-        } else {
-            let themeSuffix = theme == .light ? "light" : "dark"
-            let deviceSuffix = device.displayName
-            "\(baseName).\(themeSuffix).\(deviceSuffix)"
+            return baseName
         }
+        let themeSuffix = theme == .light ? "light" : "dark"
+        let deviceSuffix = device.displayName
+        return "\(baseName).\(themeSuffix).\(deviceSuffix)"
     }
 
     /// Generate snapshot name with only theme suffix.
@@ -25,7 +23,7 @@ public enum SnapshotNaming {
         theme: SnapshotTheme = .light
     ) -> String {
         let themeSuffix = theme == .light ? "light" : "dark"
-        "\(baseName).\(themeSuffix)"
+        return "\(baseName).\(themeSuffix)"
     }
 
     /// Generate snapshot name with only device suffix.
@@ -34,7 +32,7 @@ public enum SnapshotNaming {
         device: SnapshotDevice = .iPhone16Pro
     ) -> String {
         let deviceSuffix = device.displayName
-        "\(baseName).\(deviceSuffix)"
+        return "\(baseName).\(deviceSuffix)"
     }
 
     /// Generate snapshot names for all devices.
@@ -73,7 +71,7 @@ public enum SnapshotNaming {
 }
 
 /// Theme variants for snapshot testing.
-public enum SnapshotTheme {
+public enum SnapshotTheme: Sendable {
     case light
     case dark
 

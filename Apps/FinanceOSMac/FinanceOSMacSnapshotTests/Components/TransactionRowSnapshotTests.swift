@@ -1,10 +1,9 @@
-import Testing
-import SwiftUI
-import FinanceTesting
 @testable import FinanceOSMac
+import FinanceTesting
+import SwiftUI
+import Testing
 
 /// Snapshot tests for TransactionRowView across states and themes.
-@Suite
 struct TransactionRowSnapshotTests {
     @Test("Transaction row debit light mode")
     func transactionRowDebitLight() {

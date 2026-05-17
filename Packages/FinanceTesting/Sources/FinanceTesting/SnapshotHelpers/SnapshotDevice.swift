@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 /// Standard device configurations for snapshot testing.
-public enum SnapshotDevice {
+public enum SnapshotDevice: Sendable {
     case iPhone16Pro
     case iPhoneSE
     case iPadPro

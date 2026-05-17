@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Dynamic type sizes for accessibility snapshot testing.
-public enum DynamicTypeSize: CaseIterable {
+public enum DynamicTypeSize: CaseIterable, Sendable {
     case extraSmall
     case small
     case medium

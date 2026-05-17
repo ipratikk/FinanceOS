@@ -31,6 +31,11 @@ let package = Package(
                     name: "SnapshotTesting",
                     package: "swift-snapshot-testing"
                 )
+            ],
+            swiftSettings: [
+                .unsafeFlags([
+                    "-suppress-warnings"
+                ])
             ]
         )
     ]

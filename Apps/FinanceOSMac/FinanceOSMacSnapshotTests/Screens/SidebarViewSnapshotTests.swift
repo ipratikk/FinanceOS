@@ -1,47 +1,28 @@
-import Testing
+import XCTest
 import SwiftUI
+import SnapshotTesting
+import FinanceTesting
 @testable import FinanceOSMac
 
-/// Snapshot tests for SidebarView across themes and states.
-@Suite
-struct SidebarViewSnapshotTests {
-    @Test("Sidebar light theme")
-    func sidebarLightTheme() {
-        // TODO: Create sidebar snapshots
+/// Snapshot tests for SidebarView.
+final class SidebarViewSnapshotTests: XCTestCase {
+    let record = false
+
+    func test_sidebar_initial() {
+        // TODO: Create SidebarView with preview state
         // let view = SidebarView()
-        //     .snapshotEnvironment()
-        //     .snapshotTheme(.light)
-        //
-        // assertSnapshot(of: view, as: .image, named: "SidebarView.light")
+        // verifySnapshots(view, device: .macOS, record: record)
     }
 
-    @Test("Sidebar dark theme")
-    func sidebarDarkTheme() {
-        // TODO: Create sidebar snapshots
-        // let view = SidebarView()
-        //     .snapshotEnvironment()
-        //     .snapshotTheme(.dark)
-        //
-        // assertSnapshot(of: view, as: .image, named: "SidebarView.dark")
+    func test_sidebar_selected_dashboard() {
+        // TODO: Test with dashboard selected
     }
 
-    @Test("Sidebar dashboard selected")
-    func sidebarDashboardSelected() {
-        // TODO: Test with dashboard item selected
+    func test_sidebar_selected_accounts() {
+        // TODO: Test with accounts selected
     }
 
-    @Test("Sidebar accounts selected")
-    func sidebarAccountsSelected() {
-        // TODO: Test with accounts item selected
-    }
-
-    @Test("Sidebar expanded width")
-    func sidebarExpandedWidth() {
-        // TODO: Test sidebar at expanded width
-    }
-
-    @Test("Sidebar compact width")
-    func sidebarCompactWidth() {
-        // TODO: Test sidebar at compact width
+    func test_sidebar_selected_cards() {
+        // TODO: Test with cards selected
     }
 }

@@ -5,52 +5,44 @@ import Foundation
 public enum PreviewTransactions {
     /// Create a debit transaction.
     public static func debit(
-        merchant: String = "Whole Foods Market",
-        amount: Double = 65.43,
-        category: String = "Groceries"
+        description: String = "Whole Foods Market",
+        amountMinorUnits: Int64 = 6543
     ) -> Transaction {
         Transaction(
             id: UUID(),
             accountID: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-            merchant: merchant,
-            amount: amount,
-            currency: "USD",
-            category: category,
-            transactionDate: Date(timeIntervalSince1970: 1_747_000_000),
-            createdAt: Date(timeIntervalSince1970: 1_747_000_000),
-            isRecurring: false,
-            notes: nil
+            postedAt: Date(timeIntervalSince1970: 1_747_000_000),
+            description: description,
+            amountMinorUnits: amountMinorUnits,
+            currencyCode: "USD",
+            transactionType: .debit
         )
     }
 
     /// Create a credit transaction.
     public static func credit(
-        merchant: String = "Salary Deposit",
-        amount: Double = 5000.00,
-        category: String = "Income"
+        description: String = "Salary Deposit",
+        amountMinorUnits: Int64 = 500_000
     ) -> Transaction {
         Transaction(
             id: UUID(),
             accountID: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
-            merchant: merchant,
-            amount: amount,
-            currency: "USD",
-            category: category,
-            transactionDate: Date(timeIntervalSince1970: 1_747_000_000),
-            createdAt: Date(timeIntervalSince1970: 1_747_000_000),
-            isRecurring: true,
-            notes: "Monthly salary"
+            postedAt: Date(timeIntervalSince1970: 1_747_000_000),
+            description: description,
+            amountMinorUnits: amountMinorUnits,
+            currencyCode: "USD",
+            transactionType: .credit
         )
     }
 
     /// Sample transactions for preview.
     public static var samples: [Transaction] {
         [
-            debit(merchant: "Whole Foods Market", amount: 65.43, category: "Groceries"),
-            debit(merchant: "Shell Gas Station", amount: 42.15, category: "Gas"),
-            debit(merchant: "Starbucks", amount: 6.25, category: "Coffee"),
-            debit(merchant: "Target", amount: 145.67, category: "Shopping"),
-            credit(merchant: "Employer Deposit", amount: 5000.00, category: "Income")
+            debit(description: "Whole Foods Market", amountMinorUnits: 6543),
+            debit(description: "Shell Gas Station", amountMinorUnits: 4215),
+            debit(description: "Starbucks", amountMinorUnits: 625),
+            debit(description: "Target", amountMinorUnits: 14567),
+            credit(description: "Employer Deposit", amountMinorUnits: 500_000)
         ]
     }
 }
