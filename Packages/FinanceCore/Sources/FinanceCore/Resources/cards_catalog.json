@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "generatedAt": "2026-05-17T09:00:24.025Z",
+  "generatedAt": "2026-05-17T09:02:08.105Z",
   "issuers": [
     {
       "id": "hdfc",
@@ -36,29 +36,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Millennia Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Millennia Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "5% Cashback On Amazon, Flipkart, Myntra, Swiggy, Zomato And More.",
               " ₹1000 Worth Gift Voucher On Spends Of ₹1 Lakh Per Calendar Quarter",
               "Get 10% Additional Discount On Swiggy Dineout"
             ],
-            "benefits": [
-              "Dining",
-              "Shopping",
-              "Entertainment",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?LGCode=MKTG&utm_content=MKTG&mc_id=website_organic_millenia_CC_Cat_pg_apply_online&icid=website_organic_millenia_CC_Cat_pg_apply_online#nbb",
-            "detailsUrl": "https://www.hdfc.bank.in/credit-cards/millennia-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "millennia credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -87,27 +80,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "The Most Rewarding Card for Household Spends",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "The Most Rewarding Card for Household Spends",
-            "rewards": [
+            "features": [
               "10x Cashpoints(2.5% Valueback) At Select Merchants",
               "Gift Voucher Worth Upto ₹500 On Spends On ₹50,000 Per Calendar Quarter",
               "10% Additional Discount On Swiggy Dineout"
             ],
-            "benefits": [
-              "Shopping",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?LGCode=MKTG&utm_content=MKTG&mc_id=website_organic_prodPg_applynow_moneybackplus_CC&icid=website_organic:prodPg_applynow:moneybackplus#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/moneyback-plus-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "moneyback+ credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -136,26 +124,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "IndianOil Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "IndianOil Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "Earn Up To 50 Litres Of Free Fuel Annually",
               "Earn 5% Of Your Spends As Fuel Points At Indianoil Outlets",
               "Earn 5% Of Your Spends As Fuel Points On Groceries And Bill Payments"
             ],
-            "benefits": [
-              "Fuel"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?channelsource=iocl&LGCode=MKTG&mc_id=website_organic_CatPg_applynow_IOCL_CC&icid=website_organic:CatPg_applynow:IOCL_CC#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/indianoil-hdfc-bank-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "indianoil credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -184,27 +168,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "The Born Digital Range of Credit Cards ",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "The Born Digital Range of Credit Cards ",
-            "rewards": [
+            "features": [
               "Up To 5% Cashback On Select Categories ",
               "Customisable Design & Billing Cycle",
               "Manage Card Easily On Payzapp "
             ],
-            "benefits": [
-              "Dining",
-              "Shopping"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=ZETA&LGCode=MKTG&mc_id=website_cc_cat_pg_pixel_play_accordion_apply&icicd=website_cc_cat_pg_pixel_play_accordion_apply#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/pixel-play-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "pixel play credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -233,26 +212,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Freedom Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Freedom Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "10x Cashpoints On Select Merchants",
               "Get Additional 10% Off Via Swiggy Dineout",
               "Up To 50 Days Of Interest Free Period"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?LGCode=MKTG&utm_content=MKTG&mc_id=website_organic_CC_CatPg_applyonline_Freedomcc&icid=website_organic_CC_CatPg_applyonline_Freedomcc#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/freedom-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "freedom credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -281,28 +256,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Global Belonging, Ready for You. ",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Global Belonging, Ready for You. ",
-            "rewards": [
+            "features": [
               "10,000 Points On Quarterly Spends Of ₹4l ",
               "6 Complimentary Golf Games",
               "Unlimited Airport Lounge Access"
             ],
-            "benefits": [
-              "Travel",
-              "Dining",
-              "Shopping"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?utm_content=MKTG&mc_id=website_dc_black_metal&icid=website_dc_black_metal#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/diners-club-black-metal-edition-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "diners club black metal edition credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -331,28 +300,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Extraordinary Rewards, Ready for You.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Extraordinary Rewards, Ready for You.",
-            "rewards": [
+            "features": [
               "2% Back As Neucoins On Tata Neu And Partner Tata Brand Spends",
               "Additional 5% Back As Neucoins On Selected Tata Neu Spends, Post Registering For Tata Neupass",
               "1% Back As Neucoins On Other Eligible Non Upi Spends"
             ],
-            "benefits": [
-              "Travel",
-              "Shopping",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=TDCC&Lgcode=MKTG&mc_id=website&icid=website#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/tata-neu-plus-hdfc-bank-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "tata neu plus credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -381,28 +344,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "UNMATCHED LUXURY. READY FOR YOU.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "UNMATCHED LUXURY. READY FOR YOU.",
-            "rewards": [
+            "features": [
               "Complimentary Stay At Marriott Bonvoy",
               "Earn Up To 15,000 Points",
               "Marriott Bonvoy Silver Elite Status"
             ],
-            "benefits": [
-              "Travel",
-              "Dining",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=MRTB&DEDUPE=N&LGcode=MKTG&mc_id=website_organic_marriott_CC_Cat_pg_apply_online&icid=website_organic_marriott_CC_Cat_pg_apply_online#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/marriott-bonvoy-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "marriott bonvoy hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -431,27 +388,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "There's a train ride in every swipe",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "There's a train ride in every swipe",
-            "rewards": [
+            "features": [
               "5 Reward Points On Irctc Website And App",
               "Gift Voucher Worth ₹500",
               "Complimentary Access To Irctc Executive Lounge"
             ],
-            "benefits": [
-              "Travel",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=IRCT?LGCode=MKTG&mc_id=website_organic_irctc_CC_Cat_pg_apply_online&icid=website_organic_irctc_CC_Cat_pg_apply_online#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/irctc-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "irctc hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -480,28 +432,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Global Belonging Ready for You",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Global Belonging Ready for You",
-            "rewards": [
+            "features": [
               "‘buy One, Get One’ On  Bookmyshow",
               "5x Reward Points On Swiggy & Zomato",
               "8 Free Airport Lounge Access Worldwide"
             ],
-            "benefits": [
-              "Dining",
-              "Entertainment",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=DINE&LGcode=MKTG&mc_id=website_dc_privilege&icid=website_dc_privilege#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/diners-privilege-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "diners club privilege credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -530,28 +476,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Extraordinary Rewards. Ready for You.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Extraordinary Rewards. Ready for You.",
-            "rewards": [
+            "features": [
               "5% Back As Neucoins On Tata Neu And Partner Tata Brand Spends",
               "Additional 5% Back As Neucoins On Selected Tata Neu Spends, Post Registering For Tata Neupass",
               "1.5% Back As Neucoins On Other Eligible Non Upi Spends"
             ],
-            "benefits": [
-              "Travel",
-              "Shopping",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=TDCC&Lgcode=MKTG&mc_id=website_catpage&icid=website_catpage#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/tata-neu-infinity-hdfc-bank-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "tata neu infinity hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -580,26 +520,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Rewarding Style. Ready for You",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Rewarding Style. Ready for You",
-            "rewards": [
+            "features": [
               "7% Reward Points On Shoppers Stop Purchases",
               "Welcome Voucher Worth ₹1,500",
               "Shoppers Stop Black Membership"
             ],
-            "benefits": [
-              "Shopping"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=FCBH&DEDUPE=N&LGcode=MKTG&mc_id=website_catpage&icid=website_catpage#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/shoppers-stop-black-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "shoppers stop black hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -628,26 +564,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Rewarding Style, Ready for you",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Rewarding Style, Ready for you",
-            "rewards": [
+            "features": [
               "3% Reward Points On Shoppers Stop Purchases",
               "Welcome Voucher Worth ₹500",
               "Shoppers Stop Silver Edge Membership"
             ],
-            "benefits": [
-              "Shopping"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=FCBH&DEDUPE=N&LGcode=MKTG&mc_id=website_catpage&icid=website_catpage#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/shoppers-stop-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "shoppers stop hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -676,26 +608,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "CashBack on Every Purchase",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "CashBack on Every Purchase",
-            "rewards": [
+            "features": [
               "Up To 5% Cashback On Every Purchase",
               "Paytm First Membership",
               "8 Free Airport Lounge Accesses"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://paytm.com/offer/paytm-hdfc-bank-select-credit-card?shortlink=2t2cdyrf&is_retargeting=true&c=HDFC_DIGITAL_Asset_Consumer_Affluent&pid=HDFC_BANK&source_caller=ui",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/paytm-select-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank select credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -724,26 +652,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Unlimited CashBack Every Time",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Unlimited CashBack Every Time",
-            "rewards": [
+            "features": [
               "Up To 3% Cashback On Every Purchase",
               "Paytm First Membership",
               "Upto 50 Days Of Credit Free Period"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://paytm.com/offer/paytm-hdfcbank-cc?shortlink=CM&is_retargeting=true&c=HDFC_DIGITAL_Asset_Consumer_Mass&pid=HDFC_BANK&source_caller=unknown",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/paytm-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -772,26 +696,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Your Mobile is Your Credit Card ",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Your Mobile is Your Credit Card ",
-            "rewards": [
+            "features": [
               "Up To 2% Unlimited Cashback",
               "Upgrade To A Paytm Hdfc Bank Credit Card",
               "Easy Card Customisation"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://paytm.com/",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/paytm-mobile-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank mobile credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -820,35 +740,29 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "The Born Digital Range of Credit Cards",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "The Born Digital Range of Credit Cards",
-            "rewards": [
+            "features": [
               "1% Cashback On Select Transactions",
               "Shop Now, Pay Later In Emis",
               "25% Off On Restaurants Via Swiggy Dineout"
             ],
-            "benefits": [
-              "Dining",
-              "Shopping",
-              "Entertainment"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=ZETA&LGCode=MKTG",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/pixel-go-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "pixel go credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
           "id": "hdfc-hdfc-bank-upi-rupay-credit-card",
           "name": "HDFC Bank UPI RuPay Credit Card",
           "type": "Credit Card",
-          "network": "Visa",
+          "network": "RuPay",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
@@ -870,26 +784,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "HDFC Bank UPI RuPay Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "HDFC Bank UPI RuPay Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "Up To 3% Cashpoints On Daily, Utility & Other Spends ",
               "Interest Free Credit Period ",
               "Renewal Fee Waiver  "
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://mycards.hdfc.bank.in/?redirect_url=%2F/dualcard?type=rupayCard%3FfeatureType%3DrupayCard&type=rupayCard&productType=CC&cardNum",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/hdfc-bank-upi-rupay-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "hdfc bank upi rupay credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -918,26 +828,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Digital Experience Curated for You",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Digital Experience Curated for You",
-            "rewards": [
+            "features": [
               "Up To 2% Cashback On Scan & Pay",
               "Card Personalisation As Per Preference",
               "Fuel Surcharge Waiver"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "/content/hdfcbankpws/in/en/coming-soon.html",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/paytm-digital-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank digital credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -966,26 +872,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "HDFC Bank Times Card Credit",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "HDFC Bank Times Card Credit",
-            "rewards": [
+            "description": "",
+            "features": [
               "Free Annual Membership Valued At ₹999",
               "50% Off On Movie Tickets At Bookmyshow",
               "3 Reward Points For Every ₹150 Spent"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?LGCode=MKTG&utm_content=MKTG&mc_id=website_organic_times_CC_Cat_pg_applyonline&icid=website_organic_times_CC_Cat_pg_applyonline#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/titanium-times-card-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "hdfc bank times card credit"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -1014,27 +916,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Experience the Golden Side of Life",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Experience the Golden Side of Life",
-            "rewards": [
+            "features": [
               "Gift Voucher Worth ₹2,500*",
               "Complimentary Memberships ",
               "5x Reward Points On Top Brands "
             ],
-            "benefits": [
-              "Travel",
-              "Shopping"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=RGCC&LGCode=MKTG&icid=website_organic_herobanner_regaliagoldcreditcard:banner:applynow#nbb",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/regalia-gold-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "regalia gold credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -1063,27 +960,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "BizBlack Metal Edition Business Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "BizBlack Metal Edition Business Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "No Interest Up To 55 Days",
               "5 Reward Points For Every ₹150 Spent",
               "Complimentary Annual Club Marriott Membership"
             ],
-            "benefits": [
-              "Travel",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=BIZC&LGCode=MKTG&mc_id=website_organic_catPg_applynow_BizBlack&icid=website_organic_catPg_applynow_BizBlack",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/business-credit-cards/biz-black-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "bizblack metal edition business credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -1112,28 +1004,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "BizFirst Business Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "BizFirst Business Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "Up To 3% Cashpoints On Emi, Utility & More",
               "₹250 Gift Voucher On Card Activation",
               "Save 20% Via Swiggy Dineout"
             ],
-            "benefits": [
-              "Shopping",
-              "Fuel",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=BIZC&LGCode=MKTG&utm_content=MKTG&mc_id=website_organic_catPg_applynow_BizFirst&icid=website_organic_catPg_applynow_BizFirst",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/business-credit-cards/biz-first-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "bizfirst business credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -1162,28 +1048,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "BizGrow Business Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "BizGrow Business Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "Business Insurance Benefits Up To ₹5 Lakh",
               "2000 Cashpoints For ₹1 Lakh Quarterly Spends",
               "1% Fuel Surcharge Waiver"
             ],
-            "benefits": [
-              "Shopping",
-              "Fuel",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=BIZC&LGCode=MKTG&mc_id=website_organic_catPg_applynow_BizGrow&icid=website_organic_catPg_applynow_BizGrow",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/business-credit-cards/biz-grow-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "bizgrow business credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -1212,28 +1092,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "BizPower Business Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "BizPower Business Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "5x Reward Points On Bill Payments",
               "Free Amazon Prime Annual Membership & More",
               "Domestic & International Airport Lounge Access"
             ],
-            "benefits": [
-              "Travel",
-              "Shopping",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://applyonline.hdfc.bank.in/cards/credit-cards.html?CHANNELSOURCE=BIZC&LGCode=MKTG&utm_content=MKTG&mc_id=website_organic_catPg_applynow_BizPower&icid=website_organic_catPg_applynow_BizPower",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/business-credit-cards/biz-power-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "bizpower business credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -1262,27 +1136,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "PhonePe HDFC Bank Ultimo Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "PhonePe HDFC Bank Ultimo Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "10% Reward Points On Select Phonepe Categories",
               "5% Reward Points On Select Online Brands",
               "1% Reward Points On All Scan & Pay Transactions"
             ],
-            "benefits": [
-              "Dining",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://www.phonepe.com/credit-cards/phonepe-hdfc-credit-card/?icid=website_organic_herobanner_phonepehdfcbankultimocreditcard:banner:applynow",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/phonepe-hdfc-bank-ultimo-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "phonepe hdfc bank ultimo credit card"
+            ],
+            "issuerName": "HDFC"
           }
         },
         {
@@ -1311,27 +1180,22 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "PhonePe HDFC Bank Uno Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "PhonePe HDFC Bank Uno Credit Card",
-            "rewards": [
+            "description": "",
+            "features": [
               "2% Reward Points On Select Phonepe Categories",
               "1% Reward Points On Select Online Brands",
               "1% Reward Points On All Scan & Pay Transactions"
             ],
-            "benefits": [
-              "Dining",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://www.phonepe.com/credit-cards/phonepe-hdfc-credit-card/?icid=website_organic_herobanner_phonepehdfcbankultimocreditcard:banner:applynow",
-            "detailsUrl": "/content/hdfcbankpws/in/en/personal-banking/credit-cards/phonepe-hdfc-bank-uno-credit-card.html",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "phonepe hdfc bank uno credit card"
+            ],
+            "issuerName": "HDFC"
           }
         }
       ]
@@ -1370,24 +1234,20 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for Adani One ICICI Bank Platinum Credit Card & get complimentary domestic lounge visits per year. Enjoy hotel vouchers, lounge access & airport benefits",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for Adani One ICICI Bank Platinum Credit Card & get complimentary domestic lounge visits per year. Enjoy hotel vouchers, lounge access & airport benefits",
-            "rewards": [
+            "features": [
               "get complimentary domestic lounge visits per year"
             ],
-            "benefits": [
-              "Lounge Access"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/adani-icici-credit-card/platinum-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "adani one icici bank platinum credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1416,24 +1276,20 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for the Adani One ICICI Bank Signature Credit Card   and earn 7% Adani Reward Points on Adani One spends. Enjoy vouchers, lounge access, and exclusive airport benefits.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for the Adani One ICICI Bank Signature Credit Card   and earn 7% Adani Reward Points on Adani One spends. Enjoy vouchers, lounge access, and exclusive airport benefits.",
-            "rewards": [
+            "features": [
               "7% Adani Reward Points on Adani One spends"
             ],
-            "benefits": [
-              "Lounge Access"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/adani-icici-credit-card/signature-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "adani one icici bank signature credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1462,23 +1318,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for the Amazon Pay ICICI Bank Credit Card and enjoy cashback on every purchase. Unlock exclusive rewards and start saving instantly.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for the Amazon Pay ICICI Bank Credit Card and enjoy cashback on every purchase. Unlock exclusive rewards and start saving instantly.",
-            "rewards": [],
-            "benefits": [
-              "Shopping",
-              "Fuel"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/amazon-pay-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "amazon pay icici bank credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1507,25 +1358,21 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Get the best ICICI Bank Fuel Credit Card and save up to 5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Get the best ICICI Bank Fuel Credit Card and save up to 5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends.",
-            "rewards": [
+            "features": [
               "5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends",
               "Get the best ICICI Bank Fuel Credit Card and save up to 5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends"
             ],
-            "benefits": [
-              "Fuel"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/fuel",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "best fuel credit card - apply for hpcl fuel credit card online"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1554,24 +1401,20 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits, rewards, and exciting offers for loyal fans. Apply now!",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits, rewards, and exciting offers for loyal fans. Apply now!",
-            "rewards": [
+            "features": [
               "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/csk-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "chennai super kings icici bank credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1600,22 +1443,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Terms and Conditions of ICICI Bank Ltd",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Terms and Conditions of ICICI Bank Ltd",
-            "rewards": [],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/revamp/personal-banking/cards/credit-card/credit-builder-programme",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "credit builder programme - how to track and maintain credit score"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1644,22 +1483,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Shop in full, pay in parts with ICICI Bank Instant EMI. Instant EMI refers to the conversion into EMI upon request by the Card Member, of transactions performed using the Card and for such online transactions, where the option for such conversion is available.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Shop in full, pay in parts with ICICI Bank Instant EMI. Instant EMI refers to the conversion into EMI upon request by the Card Member, of transactions performed using the Card and for such online transactions, where the option for such conversion is available.",
-            "rewards": [],
-            "benefits": [
-              "Shopping"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/culinary-treat",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "culinary treats program with exclusive credit card offers - icici bank"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1688,24 +1523,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Expressions Credit Card - Personalise your card with unique designs. Enjoy rewards, complimentary lounge access, fuel waivers, and discounts on movies. ",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Expressions Credit Card - Personalise your card with unique designs. Enjoy rewards, complimentary lounge access, fuel waivers, and discounts on movies. ",
-            "rewards": [],
-            "benefits": [
-              "Lounge Access",
-              "Fuel",
-              "Entertainment"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/expressions-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "expressions credit card - personalise your card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1734,23 +1563,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "ICICI Bank Coral credit card offers lounge access, reward points, and BookMyShow offers. Apply for ICICI Bank Coral credit card   today and enjoy premium benefits.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "ICICI Bank Coral credit card offers lounge access, reward points, and BookMyShow offers. Apply for ICICI Bank Coral credit card   today and enjoy premium benefits.",
-            "rewards": [],
-            "benefits": [
-              "Lounge Access",
-              "Fuel"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/coral-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank coral credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1779,23 +1603,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Redeem your ICICI Bank credit card reward points for gift vouchers, lifestyle products, travel benefits, and exclusive deals. Learn the simple process.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Redeem your ICICI Bank credit card reward points for gift vouchers, lifestyle products, travel benefits, and exclusive deals. Learn the simple process.",
-            "rewards": [],
-            "benefits": [
-              "Travel",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/credit-card-services/rewards",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank credit card rewards"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1824,25 +1643,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Upgrade to a premium lifestyle with the ICICI Bank Emeralde Credit Card—featuring unlimited lounge access, golf sessions, movie offers, travel benefits, and reward points.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Upgrade to a premium lifestyle with the ICICI Bank Emeralde Credit Card—featuring unlimited lounge access, golf sessions, movie offers, travel benefits, and reward points.",
-            "rewards": [],
-            "benefits": [
-              "Travel",
-              "Lounge Access",
-              "Entertainment",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/emeralde-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank emeralde credit card - experience premium privileges"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1871,25 +1683,20 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "ICICI Bank Emeralde Private Metal Credit Card: Get luxury benefits including Taj Epicure & EazyDiner Prime memberships, unlimited lounge access & golf rounds, 12,500 reward points & more!",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "ICICI Bank Emeralde Private Metal Credit Card: Get luxury benefits including Taj Epicure & EazyDiner Prime memberships, unlimited lounge access & golf rounds, 12,500 reward points & more!",
-            "rewards": [
+            "features": [
               "Get luxury benefits including Taj Epicure & EazyDiner Prime memberships"
             ],
-            "benefits": [
-              "Lounge Access",
-              "Entertainment"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icicibank.com/personal-banking/cards/credit-card/emeralde-private-metal-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank emeralde private metal credit card - apply online"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1918,27 +1725,21 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for the ICICI Bank HPCL Coral Credit Card and get 25% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for the ICICI Bank HPCL Coral Credit Card and get 25% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
-            "rewards": [
+            "features": [
               "25% cashback on fuel spends",
               "get 25% cashback on fuel spends"
             ],
-            "benefits": [
-              "Shopping",
-              "Fuel",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/hpcl-coral-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank hpcl coral credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -1967,27 +1768,21 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for the ICICI Bank HPCL Super Saver Credit Card and get 5% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for the ICICI Bank HPCL Super Saver Credit Card and get 5% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
-            "rewards": [
+            "features": [
               "5% cashback on fuel spends",
               "get 5% cashback on fuel spends"
             ],
-            "benefits": [
-              "Shopping",
-              "Fuel",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/hpcl-super-saver",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank hpcl super saver credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2016,26 +1811,20 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Get the ICICI Bank Manchester United Platinum Credit Card. Enjoy exclusive football rewards, lounge access, and dining discounts. Apply for your card today!",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Get the ICICI Bank Manchester United Platinum Credit Card. Enjoy exclusive football rewards, lounge access, and dining discounts. Apply for your card today!",
-            "rewards": [
+            "features": [
               "Get the ICICI Bank Manchester United Platinum Credit Card"
             ],
-            "benefits": [
-              "Lounge Access",
-              "Dining",
-              "Fuel"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/manchester-platinum-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank manchester united platinum card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2064,23 +1853,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Experience a world of unlimited rewards and benefits with ICICI Bank's Parakram Credit Card. Apply now and take your finances to new heights!",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Experience a world of unlimited rewards and benefits with ICICI Bank's Parakram Credit Card. Apply now and take your finances to new heights!",
-            "rewards": [],
-            "benefits": [
-              "Fuel",
-              "Insurance"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/parakram-cards/parakram",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank parakram credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2109,25 +1893,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply online for the ICICI Bank Rubyx Credit Card and enjoy premium travel, lifestyle, dining, and entertainment privileges with exclusive rewards..",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply online for the ICICI Bank Rubyx Credit Card and enjoy premium travel, lifestyle, dining, and entertainment privileges with exclusive rewards..",
-            "rewards": [],
-            "benefits": [
-              "Travel",
-              "Dining",
-              "Entertainment",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/rubyx-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank rubyx credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2156,22 +1933,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply online for the ICICI Bank Sapphiro Credit Card and enjoy airport lounge access, welcome vouchers, milestone rewards, BookMyShow discounts, and concierge services.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply online for the ICICI Bank Sapphiro Credit Card and enjoy airport lounge access, welcome vouchers, milestone rewards, BookMyShow discounts, and concierge services.",
-            "rewards": [],
-            "benefits": [
-              "Lounge Access"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/sapphiro-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "icici bank sapphiro credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2200,24 +1973,20 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for an FD credit card against fixed deposit at ICICI Bank. Enjoy instant approval, minimal documentation, and up to 90% credit limit on your fixed deposit.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for an FD credit card against fixed deposit at ICICI Bank. Enjoy instant approval, minimal documentation, and up to 90% credit limit on your fixed deposit.",
-            "rewards": [
+            "features": [
               "90% credit limit on your fixed deposit"
             ],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/credit-card-against-fixed-deposit",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "instant fd credit card against fixed deposit"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2246,22 +2015,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for an instant ICICI bank personal loan against credit card and enjoy low credit card loan interest rates with fast disbursal.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for an instant ICICI bank personal loan against credit card and enjoy low credit card loan interest rates with fast disbursal.",
-            "rewards": [],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/personal-loan-on-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "instant loan against credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2290,22 +2055,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Branches offering Secured Credit Cards – find locations near you that provide secured credit card services",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Branches offering Secured Credit Cards – find locations near you that provide secured credit card services",
-            "rewards": [],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/revamp/personal-banking/cards/credit-card/list-of-branches",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "list of branches sourcing secured credit cards"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2334,25 +2095,21 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Unlock exclusive travel perks with the MakeMyTrip ICICI Bank Credit Card. Get 6% myCash travel, MMTBLACK Gold membership, and low forex markup fees.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Unlock exclusive travel perks with the MakeMyTrip ICICI Bank Credit Card. Get 6% myCash travel, MMTBLACK Gold membership, and low forex markup fees.",
-            "rewards": [
+            "features": [
               "6% myCash travel",
               "Get 6% myCash travel"
             ],
-            "benefits": [
-              "Travel"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/makemytrip/makemytrip-icici-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "makemytrip icici bank credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2381,26 +2138,20 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Travel smarter with the MakeMyTrip ICICI Bank Platinum Card. Earn myCash on every spend, get exclusive hotel discounts and domestic lounge access. No annual fee!",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Travel smarter with the MakeMyTrip ICICI Bank Platinum Card. Earn myCash on every spend, get exclusive hotel discounts and domestic lounge access. No annual fee!",
-            "rewards": [
+            "features": [
               "get exclusive hotel discounts and domestic lounge access"
             ],
-            "benefits": [
-              "Travel",
-              "Lounge Access",
-              "Fuel"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/makemytrip/platinum-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "makemytrip icici bank platinum card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2429,24 +2180,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Signature Credit Cards from ICICI Bank and MakeMyTrip Card are designed to complement your lifestyle. Our products extend several offers ranging from travel.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Signature Credit Cards from ICICI Bank and MakeMyTrip Card are designed to complement your lifestyle. Our products extend several offers ranging from travel.",
-            "rewards": [],
-            "benefits": [
-              "Travel",
-              "Lounge Access",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/makemytrip/signature-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "makemytrip icici bank signature credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2475,22 +2220,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "ICICI Bank Manchester United Signature Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "ICICI Bank Manchester United Signature Credit Card",
-            "rewards": [],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/manchester-signature-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "manchester united signature credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2519,25 +2260,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Rubyx Credit Card: Apply online for Rubyx credit card at ICICI Bank and enjoy the privileges such as ✓Lifestyle. ✓Dining & Golf. ✓Travel Benefits. ✓Free Movie Tickets.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Rubyx Credit Card: Apply online for Rubyx credit card at ICICI Bank and enjoy the privileges such as ✓Lifestyle. ✓Dining & Golf. ✓Travel Benefits. ✓Free Movie Tickets.",
-            "rewards": [],
-            "benefits": [
-              "Travel",
-              "Dining",
-              "Fuel",
-              "Entertainment"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/parakram-cards/parakram-select",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "parakram select credit card - apply now"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2566,22 +2300,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "The ICICI Bank Platinum Chip Credit Card offers great value with benefits like anti-fraud protection, payback rewards, fuel surcharge waiver, and more. Easy to manage and no-frills.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "The ICICI Bank Platinum Chip Credit Card offers great value with benefits like anti-fraud protection, payback rewards, fuel surcharge waiver, and more. Easy to manage and no-frills.",
-            "rewards": [],
-            "benefits": [
-              "Fuel"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/platinum-chip-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "platinum chip credit card - benefits, features & fees"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2610,29 +2340,25 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Check your eligibility and prequalify credit cards with ICICI Bank. Explore pre-approved credit card offers, credit card preapprovals, and enjoy quick approval with minimal documentation",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Check your eligibility and prequalify credit cards with ICICI Bank. Explore pre-approved credit card offers, credit card preapprovals, and enjoy quick approval with minimal documentation",
-            "rewards": [],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/pre-approved-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "prequalify credit cards"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
           "id": "icici-rupay-credit-card",
           "name": "RuPay Credit Card",
           "type": "Credit Card",
-          "network": "Visa",
+          "network": "RuPay",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
@@ -2654,22 +2380,18 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Apply for ICICI Bank RuPay Credit Card Online – enjoy seamless payments, UPI-link convenience, nationwide acceptance and secure banking experience with tailored features.",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Apply for ICICI Bank RuPay Credit Card Online – enjoy seamless payments, UPI-link convenience, nationwide acceptance and secure banking experience with tailored features.",
-            "rewards": [],
-            "benefits": [
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/coral-rupay-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "features": [],
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "rupay credit card"
+            ],
+            "issuerName": "ICICI"
           }
         },
         {
@@ -2698,30 +2420,49 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check issuer website",
+            "joiningBenefit": "Get dining discounts, movie offers, and free memberships with the Times Black ICICI Bank Credit Card. Start saving on your lifestyle expenses. Apply now!",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
             "description": "Get dining discounts, movie offers, and free memberships with the Times Black ICICI Bank Credit Card. Start saving on your lifestyle expenses. Apply now!",
-            "rewards": [
+            "features": [
               "Get dining discounts"
             ],
-            "benefits": [
-              "Lounge Access",
-              "Dining",
-              "Entertainment",
-              "Lifestyle"
-            ],
-            "applyUrl": "https://buy.icici.bank.in/cap-v2/utm?iup=UCC00476&ius=IDPEDUCONST",
-            "detailsUrl": "https://www.icici.bank.in/personal-banking/cards/credit-card/times-black-icici-credit-card",
-            "updatedAt": "2026-05-17T09:00:24.025Z"
+            "eligibility": "Age 21+, Employed"
           },
-          "eligibility": {
-            "minimumAge": 21,
-            "minimumIncome": "Check issuer website",
-            "creditScore": "Good (650+)"
+          "parsingHints": {
+            "statementAliases": [
+              "times black icici bank credit card"
+            ],
+            "issuerName": "ICICI"
           }
         }
       ]
     }
-  ]
+  ],
+  "networks": [
+    {
+      "id": "visa",
+      "name": "Visa",
+      "color": "#1434CB",
+      "website": "https://www.visa.com"
+    },
+    {
+      "id": "mastercard",
+      "name": "Mastercard",
+      "color": "#EB001B",
+      "website": "https://www.mastercard.com"
+    },
+    {
+      "id": "rupay",
+      "name": "RuPay",
+      "color": "#1C2653",
+      "website": "https://www.rupayindia.com"
+    }
+  ],
+  "metadata": {
+    "cardCount": 57,
+    "issuerCount": 2,
+    "networkCount": 3,
+    "lastUpdated": "2026-05-17T09:02:08.105Z"
+  }
 }

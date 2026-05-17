@@ -44,6 +44,7 @@ public enum CardCatalogLoader {
 }
 
 // MARK: - Catalog Structures
+
 private struct CardCatalog: Decodable {
     struct Issuer: Decodable {
         let id: String

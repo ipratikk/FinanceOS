@@ -24,6 +24,29 @@ const ISSUER_CONFIG = {
     }
 };
 
+const NETWORKS = [
+    {
+        id: "visa",
+        name: "Visa",
+        color: "#1434CB",
+        website: "https://www.visa.com"
+    },
+
+    {
+        id: "mastercard",
+        name: "Mastercard",
+        color: "#EB001B",
+        website: "https://www.mastercard.com"
+    },
+
+    {
+        id: "rupay",
+        name: "RuPay",
+        color: "#1C2653",
+        website: "https://www.rupayindia.com"
+    }
+];
+
 function generateCardId(
     name,
     bank
@@ -76,6 +99,25 @@ function transformCard(
                       "#FFD700"
               };
 
+    // Determine network
+    let network = "Visa";
+    const nameUpper =
+        rawCard.name.toUpperCase();
+
+    if (
+        nameUpper.includes(
+            "MASTERCARD"
+        )
+    ) {
+        network = "Mastercard";
+    } else if (
+        nameUpper.includes(
+            "RUPAY"
+        )
+    ) {
+        network = "RuPay";
+    }
+
     return {
         id,
 
@@ -83,8 +125,7 @@ function transformCard(
 
         type: "Credit Card",
 
-        network:
-            "Visa", // Default to Visa
+        network,
 
         variant: "credit",
 
@@ -109,45 +150,36 @@ function transformCard(
         theme,
 
         details: {
-            annualFee:
-                "Check issuer website",
+            annualFee: "Check issuer website",
 
             joiningBenefit:
-                "Check issuer website",
+                rawCard.description ||
+                rawCard.name,
 
-            interestRate:
-                "Check issuer website",
+            interestRate: "Check issuer website",
 
             gracePeriod: "45 days",
 
             description:
-                rawCard.description ||
-                rawCard.name,
+                rawCard.description,
 
-            rewards:
-                rawCard.rewards,
+            features: rawCard.rewards,
 
-            benefits:
-                rawCard.benefits,
-
-            applyUrl:
-                rawCard.applyLink,
-
-            detailsUrl:
-                rawCard.detailsLink,
-
-            updatedAt: new Date()
-                .toISOString()
+            eligibility:
+                "Age 21+, Employed"
         },
 
-        eligibility: {
-            minimumAge: 21,
+        parsingHints: {
+            statementAliases: [
+                rawCard.name
+                    .toLowerCase()
+            ],
 
-            minimumIncome:
-                "Check issuer website",
-
-            creditScore:
-                "Good (650+)"
+            issuerName:
+                bank ===
+                "hdfc"
+                    ? "HDFC"
+                    : "ICICI"
         }
     };
 }
@@ -203,7 +235,22 @@ function main() {
 
                 cards: iciciCards
             }
-        ]
+        ],
+
+        networks: NETWORKS,
+
+        metadata: {
+            cardCount:
+                hdfcCards.length +
+                iciciCards.length,
+
+            issuerCount: 2,
+
+            networkCount: 3,
+
+            lastUpdated: new Date()
+                .toISOString()
+        }
     };
 
     // Save

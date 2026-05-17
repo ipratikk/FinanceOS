@@ -1,4 +1,80 @@
 {
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/normalizers/creditCardNormalizer.js": {
+    "mtime": 1779007403.5171256,
+    "hash": "103b6a7253046a9dbe8d4b0074bde636"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/utils/logger.js": {
+    "mtime": 1779007403.5116508,
+    "hash": "3d07623f804925a66ac6f7ed3f72e056"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/utils/json.js": {
+    "mtime": 1779007403.5134113,
+    "hash": "85c4abd612a942cf2c2809ded3e3998f"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/storage/cardsRepository.js": {
+    "mtime": 1779007403.515248,
+    "hash": "ba62fc7992333e47b9ad383736b8e232"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/processors/cardEnricher.js": {
+    "mtime": 1779008181.1406074,
+    "hash": "fbd82dc0e9e8f6c7ad16bb2bb69bef89"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/scripts/scrape-and-report.js": {
+    "mtime": 1779008252.203118,
+    "hash": "e4a382fbafe4f740267049b3569dce0f"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/scripts/transform-to-catalog.js": {
+    "mtime": 1779008426.6966224,
+    "hash": "aacbcd0f152dfa171a43690faff9b036"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/scripts/process-output.js": {
+    "mtime": 1779008349.3298388,
+    "hash": "19816dde09c6a267105dfa864272297f"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/idfc/cards.js": {
+    "mtime": 1779003752.3199317,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/hdfc/cards.js": {
+    "mtime": 1779007403.5190976,
+    "hash": "94d80c3372f2bbd01faa72a37739c979"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/scapia/cards.js": {
+    "mtime": 1779003752.3392181,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/icici/cards.js": {
+    "mtime": 1779008334.3153625,
+    "hash": "5639fa0659b0f164fa71890b79ad30b3"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/yesbank/cards.js": {
+    "mtime": 1779003752.333679,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/axis/cards.js": {
+    "mtime": 1779003752.3069208,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/sbi/cards.js": {
+    "mtime": 1779003752.3151507,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/au/cards.js": {
+    "mtime": 1779003752.3270872,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/amex/cards.js": {
+    "mtime": 1779003752.3110094,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/runners/run-icici.js": {
+    "mtime": 1779007403.524775,
+    "hash": "a6918fc565b16ee3f136fee24dc00812"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/runners/run-hdfc.js": {
+    "mtime": 1779007403.5230742,
+    "hash": "7107e22ce6fba2f94da284c3f55c03eb"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Scripts/compare_parsers.py": {
     "mtime": 1778941532.5729349,
     "hash": "9d3fc40eaffbd4aac1c150b8c37d74f1"
@@ -964,7 +1040,7 @@
     "hash": "88e9e09b64a55508470368fb1dbe1dad"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/CODING_STANDARDS.md": {
-    "mtime": 1778943784.1200306,
+    "mtime": 1779004127.1517794,
     "hash": "9dee42e2b4793ac2f8303ea103e261eb"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/DESIGN_STANDARDS.md": {
@@ -975,10 +1051,6 @@
     "mtime": 1778965042.565364,
     "hash": "29ffc432def0134249e4996b1f30319c"
   },
-  "/Users/pragoel/Documents/GitHub/FinanceOS/output.txt": {
-    "mtime": 1778915338.5732756,
-    "hash": "ac713f8a1b3880a991da45a9a2ecc8c0"
-  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/CLAUDE.md": {
     "mtime": 1778938865.3727179,
     "hash": "c3692ffef1427291010213aae67a5c40"
@@ -986,6 +1058,10 @@
   "/Users/pragoel/Documents/GitHub/FinanceOS/IMPORT_PIPELINE_REDESIGN.md": {
     "mtime": 1778967196.8684528,
     "hash": "91aac792f3fce7caef7a5b8234e45cb2"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/README.md": {
+    "mtime": 1779007403.5061285,
+    "hash": "14badfe6a408765a2508552171b77e1f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/docs/ledger-abstraction-design.md": {
     "mtime": 1778946120.0756729,
