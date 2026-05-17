@@ -3,11 +3,11 @@ import FinanceUI
 import SwiftUI
 
 struct CardSelectionView: View {
-    @State private var selectedIssuer: String?
     @State private var selectedCard: CardMetadata?
     @State private var searchText: String = ""
-    @State private var allCards: [CardMetadata] = []
-    @State private var allIssuers: [String] = []
+    @State private var allCards: [CardMetadata] = CardDatabase.supportedCards()
+    @State private var allIssuers: [String] = CardDatabase.issuers()
+    @State private var selectedIssuer: String? = CardDatabase.issuers().first
     var onSelect: (CardMetadata) -> Void
     var onDismiss: () -> Void
 
@@ -38,8 +38,11 @@ struct CardSelectionView: View {
 
             VStack(spacing: 12) {
                 // Debug: Show card counts
-                FDSLabel("Available: \(allCards.count) | Filtered: \(filteredCards.count) | Selected issuer: \(selectedIssuer ?? "All")", style: .caption)
-                    .padding(AppSpacing.sm)
+                FDSLabel(
+                    "Available: \(allCards.count) | Filtered: \(filteredCards.count) | Selected issuer: \(selectedIssuer ?? "All")",
+                    style: .caption
+                )
+                .padding(AppSpacing.sm)
 
                 // Issuer Filter
                 HStack(spacing: 8) {
@@ -127,22 +130,6 @@ struct CardSelectionView: View {
         }
         .background(AppColors.base)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .onAppear {
-            let cards = CardDatabase.supportedCards()
-            let issuers = CardDatabase.issuers()
-            print("CardDatabase loaded: \(cards.count) cards, \(issuers.count) issuers")
-            print("Issuers: \(issuers)")
-            print("First 3 cards: \(cards.prefix(3).map { $0.name })")
-            if !cards.isEmpty {
-                print("Sample card issuer: \(cards[0].issuer), name: \(cards[0].name)")
-            }
-            allCards = cards
-            allIssuers = issuers
-            // Set initial issuer to first one if available
-            if let firstIssuer = issuers.first, selectedIssuer == nil {
-                selectedIssuer = firstIssuer
-            }
-        }
     }
 }
 
