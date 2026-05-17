@@ -114,10 +114,10 @@ struct AccountEditView: View {
                                     .bodyLarge()
                                 Spacer()
                             }
-                            .foregroundColor(.red)
+                            .foregroundColor(AppColors.debit)
                             .padding(AppSpacing.sm)
                             .frame(maxWidth: .infinity)
-                            .background(Color.red.opacity(0.1))
+                            .background(AppColors.debit.opacity(0.1))
                             .cornerRadius(AppRadius.md)
                         })
                     }

@@ -7,6 +7,7 @@ struct TransactionListContentView: View {
     var onDelete: ((UUID) -> Void)?
     @State private var showFilterSheet = false
     @State private var transactionPendingDelete: TransactionRow?
+    @State private var selectedTransaction: TransactionRow?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -21,6 +22,9 @@ struct TransactionListContentView: View {
         .background(AppColors.base)
         .sheet(isPresented: $showFilterSheet) {
             TransactionFilterView(listState: listState)
+        }
+        .sheet(item: $selectedTransaction) { transaction in
+            TransactionDetailView(row: transaction)
         }
         .alert(
             "Delete Transaction?",
@@ -123,7 +127,7 @@ struct TransactionListContentView: View {
     private func transactionRow(_ row: TransactionRow) -> some View {
         HStack(spacing: 12) {
             Circle()
-                .fill(row.transactionType == .debit ? Color.red : Color.green)
+                .fill(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
                 .frame(width: 8, height: 8)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -140,20 +144,23 @@ struct TransactionListContentView: View {
 
             HStack(spacing: 8) {
                 Text(row.amountText)
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                    .foregroundColor(row.transactionType == .debit ? .red : .green)
+                    .monoAmount()
+                    .foregroundColor(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
 
                 Text(row.transactionType == .debit ? "Dr" : "Cr")
                     .labelSmall()
                     .padding(.vertical, 2)
                     .padding(.horizontal, 6)
-                    .background(row.transactionType == .debit ? Color.red
-                        .opacity(0.15) : Color.green.opacity(0.15))
-                    .foregroundColor(row.transactionType == .debit ? .red : .green)
+                    .background(row.transactionType == .debit ? AppColors.debit
+                        .opacity(0.15) : AppColors.credit.opacity(0.15))
+                    .foregroundColor(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
                     .cornerRadius(AppRadius.sm)
             }
         }
         .padding(AppSpacing.sm)
+        .onTapGesture {
+            selectedTransaction = row
+        }
     }
 
     private var emptyState: some View {

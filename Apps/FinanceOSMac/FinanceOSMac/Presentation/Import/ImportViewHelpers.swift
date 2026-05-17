@@ -34,7 +34,7 @@ struct SourcePickerSection: View {
                     HStack(spacing: 8) {
                         Image(systemName: "exclamationmark.circle.fill")
                             .font(.system(size: 14))
-                            .foregroundColor(.red)
+                            .foregroundColor(AppColors.debit)
 
                         Text(error)
                             .labelSmall()
@@ -42,7 +42,7 @@ struct SourcePickerSection: View {
                     }
                 }
                 .padding(AppSpacing.xs)
-                .background(Color.red.opacity(0.1))
+                .background(AppColors.debit.opacity(0.1))
                 .cornerRadius(AppRadius.sm)
             }
 

@@ -31,14 +31,14 @@ struct SpendingTrendChart: View {
                     x: .value("Month", item.date, unit: .month),
                     y: .value("Debits", item.debit)
                 )
-                .foregroundStyle(Color.red.opacity(0.7))
+                .foregroundStyle(AppColors.debit.opacity(0.7))
                 .position(by: .value("Type", "Debits"))
 
                 BarMark(
                     x: .value("Month", item.date, unit: .month),
                     y: .value("Credits", item.credit)
                 )
-                .foregroundStyle(Color.green.opacity(0.7))
+                .foregroundStyle(AppColors.credit.opacity(0.7))
                 .position(by: .value("Type", "Credits"))
             }
             .frame(height: 200)

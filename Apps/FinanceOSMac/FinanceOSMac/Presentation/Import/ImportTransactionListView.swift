@@ -57,7 +57,7 @@ struct ImportTransactionListView: View {
 
                 HStack(spacing: 12) {
                     Circle()
-                        .fill(txn.amountMinorUnits < 0 ? Color.red : Color.green)
+                        .fill(txn.amountMinorUnits < 0 ? AppColors.debit : AppColors.credit)
                         .frame(width: 8, height: 8)
 
                     VStack(alignment: .leading, spacing: 2) {

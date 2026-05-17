@@ -68,7 +68,7 @@ struct DashboardView: View {
 
                 Text(formatAmount(totals.totalDebit))
                     .headingMedium()
-                    .foregroundColor(.red)
+                    .foregroundColor(AppColors.debit)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -82,7 +82,7 @@ struct DashboardView: View {
 
                 Text(formatAmount(totals.totalCredit))
                     .headingMedium()
-                    .foregroundColor(.green)
+                    .foregroundColor(AppColors.credit)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -150,7 +150,7 @@ struct DashboardView: View {
                 ForEach(viewModel?.recentTransactions.prefix(5) ?? [], id: \.id) { txn in
                     HStack(spacing: 12) {
                         Circle()
-                            .fill(txn.transactionType == .debit ? Color.red : Color.green)
+                            .fill(txn.transactionType == .debit ? AppColors.debit : AppColors.credit)
                             .frame(width: 8, height: 8)
 
                         VStack(alignment: .leading, spacing: 2) {
@@ -168,15 +168,15 @@ struct DashboardView: View {
                         HStack(spacing: 6) {
                             Text(formatAmount(txn.amountMinorUnits))
                                 .monoAmount()
-                                .foregroundColor(txn.transactionType == .debit ? .red : .green)
+                                .foregroundColor(txn.transactionType == .debit ? AppColors.debit : AppColors.credit)
 
                             Text(txn.transactionType == .debit ? "Dr" : "Cr")
                                 .labelSmall()
                                 .padding(.vertical, 2)
                                 .padding(.horizontal, 4)
-                                .background(txn.transactionType == .debit ? Color.red
-                                    .opacity(0.15) : Color.green.opacity(0.15))
-                                .foregroundColor(txn.transactionType == .debit ? .red : .green)
+                                .background(txn.transactionType == .debit ? AppColors.debit
+                                    .opacity(0.15) : AppColors.credit.opacity(0.15))
+                                .foregroundColor(txn.transactionType == .debit ? AppColors.debit : AppColors.credit)
                                 .cornerRadius(AppRadius.sm)
                         }
                     }

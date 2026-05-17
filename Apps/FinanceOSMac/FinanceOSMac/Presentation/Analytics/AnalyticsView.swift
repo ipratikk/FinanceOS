@@ -70,14 +70,14 @@ struct AnalyticsView: View {
                         x: .value("Month", item.id, unit: .month),
                         y: .value("Debits", Double(item.totalDebit) / 100.0)
                     )
-                    .foregroundStyle(Color.red.opacity(0.8))
+                    .foregroundStyle(AppColors.debit.opacity(0.8))
                     .position(by: .value("Type", "Debits"))
 
                     BarMark(
                         x: .value("Month", item.id, unit: .month),
                         y: .value("Credits", Double(item.totalCredit) / 100.0)
                     )
-                    .foregroundStyle(Color.green.opacity(0.8))
+                    .foregroundStyle(AppColors.credit.opacity(0.8))
                     .position(by: .value("Type", "Credits"))
                 }
                 .frame(height: 200)

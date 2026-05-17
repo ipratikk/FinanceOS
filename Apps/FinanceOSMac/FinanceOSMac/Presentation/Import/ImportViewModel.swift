@@ -19,6 +19,8 @@ final class ImportViewModel {
     var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
     var lastImportResult: ImportResult?
+    var currentFileIndex: Int = 0
+    var totalFilesToParse: Int = 0
 
     var accountMatcher: AccountMatcher
 
@@ -109,16 +111,21 @@ final class ImportViewModel {
 
             importSession.isLoading = true
             importSession.errorMessage = nil
+            totalFilesToParse = importSession.fileURLs.count
+            currentFileIndex = 0
             var statements: [ParsedStatement] = []
 
             for fileURL in importSession.fileURLs {
                 do {
                     let statement = try await parseFile(fileURL)
                     statements.append(statement)
+                    currentFileIndex += 1
                 } catch let error as FinanceCore.TransactionImportError {
                     importSession.errorMessage = "Error parsing \(fileURL.lastPathComponent): \(error.userMessage)"
                     importSession.parsedStatements = []
                     importSession.isLoading = false
+                    currentFileIndex = 0
+                    totalFilesToParse = 0
                     return
                 } catch {
                     let fileName = fileURL.lastPathComponent
@@ -126,6 +133,8 @@ final class ImportViewModel {
                     importSession.errorMessage = "Error parsing \(fileName): \(errorDesc)"
                     importSession.parsedStatements = []
                     importSession.isLoading = false
+                    currentFileIndex = 0
+                    totalFilesToParse = 0
                     return
                 }
             }
@@ -134,6 +143,8 @@ final class ImportViewModel {
             await loadTargetsOnAppear()
             await autoSelectMatchingTarget()
             importSession.isLoading = false
+            currentFileIndex = 0
+            totalFilesToParse = 0
         }
     }
 

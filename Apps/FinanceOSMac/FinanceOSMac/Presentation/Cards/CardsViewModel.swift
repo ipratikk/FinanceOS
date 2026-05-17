@@ -160,7 +160,7 @@ final class CardsViewModel {
             let bankName = banksByID[card.bankId]?.name ?? "Unknown Bank"
             let displayName = card.nickname.isEmpty ? card.displayName : card.nickname
             let maskLast4 = card.last4.isEmpty ? "" : " ••••\(card.last4)"
-            let title = "\(bankName) \(displayName)\(maskLast4)"
+            let title = "\(bankName) \(displayName)\(maskLast4)".trimmingCharacters(in: .whitespaces)
 
             return CardRow(
                 id: card.id,

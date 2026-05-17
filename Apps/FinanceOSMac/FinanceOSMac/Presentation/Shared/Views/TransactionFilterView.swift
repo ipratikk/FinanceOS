@@ -5,6 +5,11 @@ struct TransactionFilterView: View {
     @Bindable var listState: TransactionListState
     @Environment(\.dismiss) var dismiss
 
+    var dateRangeError: String? {
+        guard let start = listState.startDate, let end = listState.endDate else { return nil }
+        return end < start ? "End date must be after start date" : nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
@@ -100,6 +105,19 @@ struct TransactionFilterView: View {
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface)
                     .cornerRadius(AppRadius.md)
+
+                    if let error = dateRangeError {
+                        HStack(spacing: 8) {
+                            Image(systemName: "exclamationmark.circle.fill")
+                                .labelSmall()
+                                .foregroundColor(.red)
+                            Text(error)
+                                .labelSmall()
+                                .foregroundColor(.red)
+                        }
+                        .padding(AppSpacing.xs)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
                 .padding(AppSpacing.md)
             }

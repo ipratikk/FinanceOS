@@ -72,9 +72,15 @@ struct ImportView: View {
                                     ProgressView()
                                         .controlSize(.small)
 
-                                    Text("Parsing statement...")
-                                        .labelSmall()
-                                        .foregroundColor(AppColors.textTertiary)
+                                    if viewModel.totalFilesToParse > 1 {
+                                        Text("Parsing file \(viewModel.currentFileIndex + 1) of \(viewModel.totalFilesToParse)...")
+                                            .labelSmall()
+                                            .foregroundColor(AppColors.textTertiary)
+                                    } else {
+                                        Text("Parsing statement...")
+                                            .labelSmall()
+                                            .foregroundColor(AppColors.textTertiary)
+                                    }
                                 }
                                 .frame(maxWidth: .infinity)
                                 .padding(AppSpacing.lg)
@@ -198,7 +204,7 @@ struct ImportView: View {
             .buttonStyle(.plain)
         }
         .padding(AppSpacing.sm)
-        .background(Color.green.opacity(0.85))
+        .background(AppColors.credit.opacity(0.85))
         .cornerRadius(AppRadius.md)
         .padding(AppSpacing.md)
         .shadow(radius: 4)
