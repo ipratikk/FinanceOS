@@ -50,7 +50,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 4) {
             FDSText("Settings", style: .headingLarge)
 
-            FDSText("App preferences & information", style: .labelSmall)
+            FDSLabel("App preferences & information", style: .hint)
         }
         .padding(AppSpacing.md)
         .background(AppColors.base)
@@ -64,7 +64,7 @@ struct SettingsView: View {
                     .monoAmount()
                     .frame(width: 20)
 
-                FDSText(label, style: .captionLarge)
+                FDSLabel(label, style: .subheading)
 
                 Spacer()
             }
@@ -89,7 +89,7 @@ struct SettingsView: View {
             settingsSection("Data", items: [])
 
             VStack(alignment: .leading, spacing: 8) {
-                FDSText("Danger Zone", style: .captionLarge, color: .secondary)
+                FDSLabel("Danger Zone", style: .subheading)
 
                 Button(
                     action: { showConfirmClear = true },
@@ -98,7 +98,7 @@ struct SettingsView: View {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .labelSmall()
 
-                            FDSText("Clear All Data", style: .captionLarge)
+                            FDSLabel("Clear All Data", style: .subheading)
 
                             Spacer()
                         }
@@ -125,7 +125,7 @@ struct SettingsView: View {
             aboutItem("Platform", value: "macOS")
 
             VStack(alignment: .leading, spacing: 8) {
-                FDSText("Links", style: .captionLarge, color: .secondary)
+                FDSLabel("Links", style: .subheading)
 
                 VStack(spacing: 8) {
                     aboutLink("GitHub Repository", icon: "link")
@@ -146,7 +146,7 @@ struct SettingsView: View {
         items: [(String, Binding<Bool>, optional: Bool)]
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            FDSText(title, style: .captionLarge, color: .secondary)
+            FDSLabel(title, style: .subheading)
 
             VStack(spacing: 8) {
                 ForEach(items.indices, id: \.self) { index in
@@ -166,10 +166,10 @@ struct SettingsView: View {
 
     private func aboutItem(_ label: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            FDSText(label, style: .captionLarge, color: .secondary)
+            FDSLabel(label, style: .subheading)
 
             HStack {
-                FDSText(value, style: .caption)
+                FDSLabel(value, style: .caption)
 
                 Spacer()
 
@@ -197,7 +197,7 @@ struct SettingsView: View {
                 Image(systemName: icon)
                     .labelSmall()
 
-                FDSText(label, style: .caption)
+                FDSLabel(label, style: .caption)
 
                 Spacer()
 

@@ -31,7 +31,7 @@ struct TransactionFilterView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Transaction Type", style: .captionLarge, color: .secondary)
+                        FDSLabel("Transaction Type", style: .subheading)
 
                         Picker("Type", selection: $listState.typeFilter) {
                             Text("All").tag(TransactionType?.none)
@@ -45,11 +45,11 @@ struct TransactionFilterView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 12) {
-                        FDSText("Date Range", style: .captionLarge, color: .secondary)
+                        FDSLabel("Date Range", style: .subheading)
 
                         VStack(spacing: 8) {
                             HStack {
-                                FDSText("From", style: .labelSmall)
+                                FDSLabel("From", style: .hint)
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -73,7 +73,7 @@ struct TransactionFilterView: View {
                             .cornerRadius(AppRadius.sm)
 
                             HStack {
-                                FDSText("To", style: .labelSmall)
+                                FDSLabel("To", style: .hint)
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -106,7 +106,7 @@ struct TransactionFilterView: View {
                             Image(systemName: "exclamationmark.circle.fill")
                                 .labelSmall()
                                 .foregroundColor(.red)
-                            FDSText(error, style: .labelSmall, color: .warning)
+                            FDSLabel(error, style: .hint)
                         }
                         .padding(AppSpacing.xs)
                         .frame(maxWidth: .infinity, alignment: .leading)

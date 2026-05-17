@@ -73,9 +73,9 @@ struct BanksView: View {
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 8) {
-                FDSText("No Banks", style: .headingSmall)
+                FDSLabel("No Banks", style: .heading)
 
-                FDSText("Add a bank when importing your first statement", style: .caption, color: .tertiary)
+                FDSLabel("Add a bank when importing your first statement", style: .caption)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

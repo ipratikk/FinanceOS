@@ -52,13 +52,13 @@ struct AnalyticsView: View {
         VStack(alignment: .leading, spacing: 4) {
             FDSText("Analytics", style: .headingLarge)
 
-            FDSText("Spending insights & trends", style: .labelSmall, color: .tertiary)
+            FDSLabel("Spending insights & trends", style: .hint)
         }
     }
 
     var spendingTrendSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            FDSText("6-Month Spending Trend", style: .captionLarge, color: .secondary)
+            FDSLabel("6-Month Spending Trend", style: .subheading)
 
             if let viewModel, !viewModel.monthlySummaries.isEmpty {
                 Chart(viewModel.monthlySummaries, id: \.id) { item in
@@ -99,7 +99,7 @@ struct AnalyticsView: View {
 
     var topMerchantsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            FDSText("Top Merchants", style: .captionLarge, color: .secondary)
+            FDSLabel("Top Merchants", style: .subheading)
 
             if let viewModel {
                 let merchants = viewModel.topMerchants.prefix(10).map { merchant, amount in
@@ -115,7 +115,7 @@ struct AnalyticsView: View {
 
     var categoriesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            FDSText("Categories", style: .captionLarge, color: .secondary)
+            FDSLabel("Categories", style: .subheading)
 
             VStack(alignment: .center, spacing: 8) {
                 Image(systemName: "tag.circle.fill")
@@ -125,7 +125,7 @@ struct AnalyticsView: View {
                 VStack(spacing: 4) {
                     FDSText("Coming Soon", style: .monoAmount)
 
-                    FDSText("Auto-categorization with smart detection", style: .labelSmall, color: .tertiary)
+                    FDSLabel("Auto-categorization with smart detection", style: .hint)
                 }
             }
             .frame(maxWidth: .infinity)

@@ -40,7 +40,7 @@ struct SidebarView: View {
     var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             FDSText("FinanceOS", style: .headingLarge)
-            FDSText("Financial Operating System", style: .labelSmall)
+            FDSLabel("Financial Operating System", style: .hint)
         }
         .padding(AppSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -73,14 +73,14 @@ struct SidebarView: View {
 
     var quickAccess: some View {
         VStack(alignment: .leading, spacing: 8) {
-            FDSText("Quick Access", style: .captionLarge)
+            FDSLabel("Quick Access", style: .subheading)
 
             let accounts = ledgers.filter { $0.kind == .bankAccount }
             let cards = ledgers.filter { $0.kind == .creditCard }
 
             if !accounts.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText("Accounts", style: .labelSmall, color: .secondary)
+                    FDSLabel("Accounts", style: .hint)
 
                     ForEach(accounts.prefix(3), id: \.id) { account in
                         HStack(spacing: 8) {
@@ -100,14 +100,14 @@ struct SidebarView: View {
 
             if !cards.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText("Cards", style: .labelSmall, color: .secondary)
+                    FDSLabel("Cards", style: .hint)
 
                     ForEach(cards.prefix(3), id: \.id) { card in
                         HStack(spacing: 8) {
                             Image(systemName: "creditcard")
                                 .labelSmall()
                                 .foregroundColor(.gray)
-                            FDSText(card.nickname.isEmpty ? card.displayName : card.nickname, style: .labelSmall)
+                            FDSLabel(card.nickname.isEmpty ? card.displayName : card.nickname, style: .hint)
                                 .lineLimit(1)
                         }
                         .foregroundColor(.gray)

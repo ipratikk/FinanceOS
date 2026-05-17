@@ -37,7 +37,7 @@ struct CreateNewTargetSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Basic Information", style: .captionLarge, color: .secondary)
+                        FDSLabel("Basic Information", style: .subheading)
 
                         VStack(spacing: 8) {
                             inputField("Name (Optional)", text: $state.customName)
@@ -63,16 +63,16 @@ struct CreateNewTargetSheet: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Bank", style: .captionLarge, color: .secondary)
+                        FDSLabel("Bank", style: .subheading)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Current Bank", style: .labelSmall, color: .secondary)
+                                FDSLabel("Current Bank", style: .hint)
                                 HStack {
                                     if let bank = selectedBank {
-                                        FDSText(bank.name, style: .caption)
+                                        FDSLabel(bank.name, style: .caption)
                                     } else {
-                                        FDSText(detectedBank, style: .caption)
+                                        FDSLabel(detectedBank, style: .caption)
                                     }
                                     Spacer()
                                 }
@@ -140,7 +140,7 @@ struct CreateNewTargetSheet: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText(label, style: .labelSmall, color: .secondary)
+            FDSLabel(label, style: .hint)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)

@@ -47,7 +47,7 @@ struct AccountEditView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Account Information", style: .captionLarge, color: .secondary)
+                        FDSLabel("Account Information", style: .subheading)
 
                         VStack(spacing: 8) {
                             inputField("Account Name", text: $displayName)
@@ -55,7 +55,7 @@ struct AccountEditView: View {
                             inputField("Last 4 Digits", text: $last4)
 
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Account Type", style: .labelSmall, color: .secondary)
+                                FDSLabel("Account Type", style: .hint)
                                 Picker("Type", selection: $accountType) {
                                     ForEach(["savings", "checking", "credit"], id: \.self) { type in
                                         Text(type.capitalized).tag(type)
@@ -74,11 +74,11 @@ struct AccountEditView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Bank & Nickname", style: .captionLarge, color: .secondary)
+                        FDSLabel("Bank & Nickname", style: .subheading)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Bank", style: .labelSmall, color: .secondary)
+                                FDSLabel("Bank", style: .hint)
                                 Picker("Bank", selection: $bankId) {
                                     ForEach(viewModel.banks) { bank in
                                         Text(bank.name).tag(bank.id)
@@ -188,7 +188,7 @@ struct AccountEditView: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText(label, style: .labelSmall, color: .secondary)
+            FDSLabel(label, style: .hint)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)

@@ -39,13 +39,13 @@ struct BankEditView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Bank Information", style: .captionLarge, color: .secondary)
+                        FDSLabel("Bank Information", style: .subheading)
 
                         VStack(spacing: 8) {
                             inputField("Name", text: $name)
 
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Provider Type", style: .labelSmall, color: .secondary)
+                                FDSLabel("Provider Type", style: .hint)
                                 Picker("Type", selection: $providerType) {
                                     ForEach(BankProviderType.allCases, id: \.self) { type in
                                         Text(type.rawValue.capitalized).tag(type)
@@ -142,7 +142,7 @@ struct BankEditView: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText(label, style: .labelSmall, color: .secondary)
+            FDSLabel(label, style: .hint)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)

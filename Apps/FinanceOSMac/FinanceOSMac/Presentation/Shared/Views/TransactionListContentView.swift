@@ -75,7 +75,7 @@ struct TransactionListContentView: View {
                         HStack(spacing: 4) {
                             Image(systemName: "xmark.circle.fill")
                                 .labelSmall()
-                            FDSText("Clear filters", style: .labelSmall, color: .accent)
+                            FDSLabel("Clear filters", style: .hint)
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 8)
@@ -140,7 +140,7 @@ struct TransactionListContentView: View {
                 FDSText(row.title, style: .bodyLarge, color: .primary)
                     .lineLimit(1)
 
-                FDSText(row.subtitle, style: .labelSmall, color: .tertiary)
+                FDSLabel(row.subtitle, style: .hint)
             }
 
             Spacer()
@@ -173,7 +173,7 @@ struct TransactionListContentView: View {
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 8) {
-                FDSText("No Transactions", style: .headingSmall, color: .primary)
+                FDSLabel("No Transactions", style: .heading)
 
                 FDSText(
                     listState.isFilterActive

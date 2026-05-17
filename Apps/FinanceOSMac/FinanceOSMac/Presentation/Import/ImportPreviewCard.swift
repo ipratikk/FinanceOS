@@ -20,11 +20,11 @@ struct ImportPreviewCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            FDSText("Import Summary", style: .headingSmall)
+            FDSLabel("Import Summary", style: .heading)
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText("Total Files", style: .caption)
+                    FDSLabel("Total Files", style: .caption)
                     Text("\(parsedStatements.count)")
                         .bodyLarge()
                 }
@@ -32,7 +32,7 @@ struct ImportPreviewCard: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    FDSText("Total Transactions", style: .caption)
+                    FDSLabel("Total Transactions", style: .caption)
                     Text("\(totalTransactions)")
                         .bodyLarge()
                 }
@@ -40,7 +40,7 @@ struct ImportPreviewCard: View {
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText("Total Debits", style: .caption)
+                    FDSLabel("Total Debits", style: .caption)
                     Text(ImportFormatting.formatAmount(totalDebit))
                         .bodyLarge()
                         .foregroundColor(AppColors.debit)
@@ -49,7 +49,7 @@ struct ImportPreviewCard: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    FDSText("Total Credits", style: .caption)
+                    FDSLabel("Total Credits", style: .caption)
                     Text(ImportFormatting.formatAmount(totalCredit))
                         .bodyLarge()
                         .foregroundColor(AppColors.credit)

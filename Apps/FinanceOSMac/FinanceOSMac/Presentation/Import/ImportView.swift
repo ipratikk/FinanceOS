@@ -48,9 +48,9 @@ struct ImportView: View {
                             .foregroundColor(AppColors.accent)
 
                         VStack(spacing: 4) {
-                            FDSText("Drop Files Here", style: .headingSmall)
+                            FDSLabel("Drop Files Here", style: .heading)
 
-                            FDSText("Release to import", style: .labelSmall, color: .tertiary)
+                            FDSLabel("Release to import", style: .hint)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -77,7 +77,7 @@ struct ImportView: View {
                                         .labelSmall()
                                         .foregroundColor(AppColors.textTertiary)
                                     } else {
-                                        FDSText("Parsing statement...", style: .labelSmall, color: .tertiary)
+                                        FDSLabel("Parsing statement...", style: .hint)
                                     }
                                 }
                                 .frame(maxWidth: .infinity)
@@ -140,7 +140,7 @@ struct ImportView: View {
         VStack(alignment: .leading, spacing: 8) {
             FDSText("Import Statements", style: .headingMedium)
 
-            FDSText("Upload your bank or credit card statements", style: .caption, color: .tertiary)
+            FDSLabel("Upload your bank or credit card statements", style: .caption)
         }
     }
 

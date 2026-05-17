@@ -12,9 +12,9 @@ struct SourcePickerSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText("1. Statement Source", style: .captionLarge, color: .secondary)
+                    FDSLabel("1. Statement Source", style: .subheading)
 
-                    FDSText("Select your bank", style: .labelSmall, color: .tertiary)
+                    FDSLabel("Select your bank", style: .hint)
                 }
 
                 Spacer()
@@ -33,7 +33,7 @@ struct SourcePickerSection: View {
                             .font(.system(size: 14))
                             .foregroundColor(AppColors.debit)
 
-                        FDSText(error, style: .labelSmall)
+                        FDSLabel(error, style: .hint)
                             .lineLimit(3)
                     }
                 }
@@ -77,7 +77,7 @@ struct DropZoneView: View {
                 VStack(spacing: 4) {
                     FDSText("Drop files here", style: .monoAmount)
 
-                    FDSText("or click button below", style: .labelSmall, color: .tertiary)
+                    FDSLabel("or click button below", style: .hint)
 
                     Text("Supported: \(formatNames)")
                         .labelSmall()
@@ -114,7 +114,7 @@ struct FileSelectionPlaceholder: View {
             VStack(spacing: 4) {
                 FDSText("Select a bank above", style: .monoAmount, color: .tertiary)
 
-                FDSText("to start importing", style: .labelSmall, color: .tertiary)
+                FDSLabel("to start importing", style: .hint)
             }
         }
         .frame(maxWidth: .infinity)

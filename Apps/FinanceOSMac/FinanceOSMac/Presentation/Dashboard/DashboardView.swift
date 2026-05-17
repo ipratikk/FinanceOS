@@ -52,14 +52,14 @@ struct DashboardView: View {
     var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             FDSText("Dashboard", style: .headingLarge)
-            FDSText("This Month", style: .labelSmall, color: .tertiary)
+            FDSLabel("This Month", style: .hint)
         }
     }
 
     func summaryCards(_ totals: SpendingTotals) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
-                FDSText("Total Debits", style: .labelSmall, color: .tertiary)
+                FDSLabel("Total Debits", style: .hint)
                 FDSText(formatAmount(totals.totalDebit), style: .headingMedium, color: .debit)
             }
             .padding(AppSpacing.sm)
@@ -68,7 +68,7 @@ struct DashboardView: View {
             .cornerRadius(AppRadius.md)
 
             VStack(alignment: .leading, spacing: 8) {
-                FDSText("Total Credits", style: .labelSmall, color: .tertiary)
+                FDSLabel("Total Credits", style: .hint)
                 FDSText(formatAmount(totals.totalCredit), style: .headingMedium, color: .credit)
             }
             .padding(AppSpacing.sm)
@@ -77,7 +77,7 @@ struct DashboardView: View {
             .cornerRadius(AppRadius.md)
 
             VStack(alignment: .leading, spacing: 8) {
-                FDSText("Transactions", style: .labelSmall, color: .tertiary)
+                FDSLabel("Transactions", style: .hint)
                 FDSText("\(totals.transactionCount)", style: .headingMedium, color: .accent)
             }
             .padding(AppSpacing.sm)
@@ -89,7 +89,7 @@ struct DashboardView: View {
 
     var chartSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            FDSText("6-Month Trend", style: .captionLarge, color: .secondary)
+            FDSLabel("6-Month Trend", style: .subheading)
 
             if let viewModel {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
@@ -103,7 +103,7 @@ struct DashboardView: View {
     var recentTransactionsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                FDSText("Recent Activity", style: .captionLarge, color: .secondary)
+                FDSLabel("Recent Activity", style: .subheading)
                 Spacer()
 
                 NavigationLink(destination: TransactionsView(
@@ -113,7 +113,7 @@ struct DashboardView: View {
                     )
                 )) {
                     HStack(spacing: 4) {
-                        FDSText("View All", style: .labelSmall, color: .accent)
+                        FDSLabel("View All", style: .hint)
                         Image(systemName: "chevron.right").labelSmall()
                     }
                 }
@@ -127,10 +127,10 @@ struct DashboardView: View {
                             .frame(width: 8, height: 8)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            FDSText(txn.description, style: .captionLarge, color: .primary)
+                            FDSLabel(txn.description, style: .subheading)
                                 .lineLimit(1)
 
-                            FDSText(dateString(txn.postedAt), style: .labelSmall, color: .tertiary)
+                            FDSLabel(dateString(txn.postedAt), style: .hint)
                         }
 
                         Spacer()
@@ -141,7 +141,7 @@ struct DashboardView: View {
                                 type: txn.transactionType == .debit ? .debit : .credit
                             )
 
-                            FDSText(txn.transactionType == .debit ? "Dr" : "Cr", style: .labelSmall)
+                            FDSLabel(txn.transactionType == .debit ? "Dr" : "Cr", style: .hint)
                                 .padding(.vertical, 2)
                                 .padding(.horizontal, 4)
                                 .background(txn.transactionType == .debit ? AppColors.debit

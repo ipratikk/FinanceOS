@@ -47,7 +47,7 @@ struct CardEditView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Card Information", style: .captionLarge, color: .secondary)
+                        FDSLabel("Card Information", style: .subheading)
 
                         VStack(spacing: 8) {
                             inputField("Card Name", text: $displayName)
@@ -59,7 +59,7 @@ struct CardEditView: View {
                                 }
 
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Card Type", style: .labelSmall, color: .secondary)
+                                FDSLabel("Card Type", style: .hint)
                                 Picker("Type", selection: $cardType) {
                                     ForEach(["credit", "debit", "other"], id: \.self) { type in
                                         Text(type.capitalized).tag(type)
@@ -78,11 +78,11 @@ struct CardEditView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Bank & Account", style: .captionLarge, color: .secondary)
+                        FDSLabel("Bank & Account", style: .subheading)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Bank", style: .labelSmall, color: .secondary)
+                                FDSLabel("Bank", style: .hint)
                                 Picker("Bank", selection: $bankId) {
                                     ForEach(viewModel.banks) { bank in
                                         Text(bank.name).tag(bank.id)
@@ -96,7 +96,7 @@ struct CardEditView: View {
                             .cornerRadius(AppRadius.sm)
 
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Linked Account", style: .labelSmall, color: .secondary)
+                                FDSLabel("Linked Account", style: .hint)
                                 Picker("Account", selection: $linkedLedgerId) {
                                     Text("None").tag(UUID?.none)
                                     ForEach(viewModel.accounts.filter { $0.bankId == bankId }) { account in
@@ -207,7 +207,7 @@ struct CardEditView: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText(label, style: .labelSmall, color: .secondary)
+            FDSLabel(label, style: .hint)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)

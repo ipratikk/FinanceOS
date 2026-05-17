@@ -8,7 +8,7 @@ struct SupportedSourcesView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            FDSText("Supported Statements", style: .captionLarge)
+            FDSLabel("Supported Statements", style: .subheading)
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(viewModel.supportedSources.enumerated()), id: \.offset) { _, source in
                     let isFullySupported = source.bankName == "ICICI" && source.sourceType == .bankAccount
@@ -34,9 +34,9 @@ struct TargetSelectionSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText("Import To", style: .captionLarge)
+                    FDSLabel("Import To", style: .subheading)
 
-                    FDSText("Select or create target", style: .labelSmall)
+                    FDSLabel("Select or create target", style: .hint)
                 }
 
                 Spacer()

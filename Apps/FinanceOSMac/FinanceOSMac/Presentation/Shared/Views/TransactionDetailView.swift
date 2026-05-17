@@ -12,7 +12,7 @@ struct TransactionDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Amount", style: .captionLarge, color: .primary)
+                        FDSLabel("Amount", style: .subheading)
 
                         HStack(spacing: 8) {
                             FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit)
@@ -36,7 +36,7 @@ struct TransactionDetailView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Description", style: .captionLarge, color: .secondary)
+                        FDSLabel("Description", style: .subheading)
                         FDSText(row.title, style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
@@ -44,7 +44,7 @@ struct TransactionDetailView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Source", style: .captionLarge, color: .secondary)
+                        FDSLabel("Source", style: .subheading)
                         FDSText(row.subtitle, style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
@@ -52,7 +52,7 @@ struct TransactionDetailView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        FDSText("Date", style: .captionLarge, color: .secondary)
+                        FDSLabel("Date", style: .subheading)
                         FDSText(formatDate(row.postedAt), style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)

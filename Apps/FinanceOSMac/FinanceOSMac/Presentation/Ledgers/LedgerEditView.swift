@@ -80,7 +80,7 @@ struct LedgerEditView: View {
                                 inputField("Owner Name", text: $ownerName)
 
                                 VStack(alignment: .leading, spacing: 4) {
-                                    FDSText("Account Type", style: .labelSmall, color: .secondary)
+                                    FDSLabel("Account Type", style: .hint)
                                     Picker("Type", selection: $accountType) {
                                         ForEach(["savings", "checking", "credit"], id: \.self) { type in
                                             Text(type.capitalized).tag(type)
@@ -96,7 +96,7 @@ struct LedgerEditView: View {
 
                             if ledger.kind == .creditCard {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    FDSText("Card Type", style: .labelSmall, color: .secondary)
+                                    FDSLabel("Card Type", style: .hint)
                                     Picker("Type", selection: $cardType) {
                                         ForEach(["credit", "debit", "other"], id: \.self) { type in
                                             Text(type.capitalized).tag(type)
@@ -122,7 +122,7 @@ struct LedgerEditView: View {
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSText("Bank", style: .labelSmall, color: .secondary)
+                                FDSLabel("Bank", style: .hint)
                                 Picker("Bank", selection: $bankId) {
                                     ForEach(banks) { bank in
                                         Text(bank.name).tag(bank.id)
@@ -137,7 +137,7 @@ struct LedgerEditView: View {
 
                             if ledger.kind == .creditCard {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    FDSText("Linked Account", style: .labelSmall, color: .secondary)
+                                    FDSLabel("Linked Account", style: .hint)
                                     Picker("Account", selection: $linkedLedgerId) {
                                         Text("None").tag(UUID?.none)
                                         ForEach(linkedLedgers) { acct in
@@ -288,7 +288,7 @@ struct LedgerEditView: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText(label, style: .labelSmall, color: .secondary)
+            FDSLabel(label, style: .hint)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)

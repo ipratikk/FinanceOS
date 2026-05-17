@@ -15,21 +15,21 @@ struct ImportTransactionListView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText("New Transactions", style: .caption)
+                    FDSLabel("New Transactions", style: .caption)
                     FDSText("\(newTransactionCount)", style: .bodyLarge)
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    FDSText("Already Imported", style: .caption)
+                    FDSLabel("Already Imported", style: .caption)
                     FDSText("\(duplicateIndices.count)", style: .bodyLarge, color: .warning)
                 }
             }
 
             Divider()
 
-            FDSText("Transactions (\(transactions.count))", style: .headingSmall)
+            FDSLabel("Transactions (\(transactions.count))", style: .heading)
 
             transactionListContent()
         }
@@ -57,14 +57,14 @@ struct ImportTransactionListView: View {
                             .opacity(isDuplicate ? 0.5 : 1.0)
 
                         HStack(spacing: 8) {
-                            FDSText(ImportFormatting.formatDate(txn.postedAt), style: .caption)
+                            FDSLabel(ImportFormatting.formatDate(txn.postedAt), style: .caption)
 
                             if isDuplicate {
-                                FDSText("Already imported", style: .caption, color: .warning)
+                                FDSLabel("Already imported", style: .caption)
                             }
 
                             if let points = txn.rewardPoints, points > 0 {
-                                FDSText("+\(points) pts", style: .caption, color: .accent)
+                                FDSLabel("+\(points) pts", style: .caption)
                             }
                         }
                     }
