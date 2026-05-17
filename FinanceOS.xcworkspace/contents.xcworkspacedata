@@ -13,4 +13,7 @@
    <FileRef
       location = "group:Apps/FinanceOSMac/FinanceOSMac.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Apps/FinanceOSMac/FinanceOSMac.xctestplan">
+   </FileRef>
 </Workspace>
