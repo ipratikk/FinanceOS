@@ -92,6 +92,7 @@ extension ImportViewModel {
             cardType: cardType
         )
         try await ledgerRepository.insert(ledger)
+        ledgers = try await ledgerRepository.fetchLedgers()
         importSession.selectedTarget = .ledger(ledger.id)
         logger.info("Created credit card: \(cardDisplayName)")
     }
@@ -117,6 +118,7 @@ extension ImportViewModel {
             accountType: accountType
         )
         try await ledgerRepository.insert(ledger)
+        ledgers = try await ledgerRepository.fetchLedgers()
         importSession.selectedTarget = .ledger(ledger.id)
         logger.info("Created bank account: \(accountDisplayName)")
     }
