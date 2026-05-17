@@ -127,7 +127,11 @@ struct CardsView: View {
     }
 
     private func bankLogoURL(for issuer: String) -> URL? {
-        CardCatalogLoader.bankLogoURL(for: issuer, size: .large)
+        let logos: [String: String] = [
+            "HDFC Bank": "https://upload.wikimedia.org/wikipedia/en/0/0a/HDFC_bank_logo.svg",
+            "ICICI Bank": "https://upload.wikimedia.org/wikipedia/en/c/c0/ICICI_Bank_Logo.svg"
+        ]
+        return logos[issuer].flatMap { URL(string: $0) }
     }
 
     func cardRowView(_ ledger: Ledger) -> some View {

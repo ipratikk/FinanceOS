@@ -43,6 +43,12 @@ public struct SVGImageView: View {
     }
 
     private func loadSVGImage(from url: URL) -> NSImage {
+        // Try loading from file path
+        let path = url.path
+        if let nsImage = NSImage(byReferencingFile: path) {
+            return nsImage
+        }
+        // Fallback: try contentsOf
         if let nsImage = NSImage(contentsOf: url) {
             return nsImage
         }

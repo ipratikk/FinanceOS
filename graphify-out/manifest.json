@@ -283,6 +283,10 @@
     "mtime": 1778880898.110209,
     "hash": "1a999c482a3998d462039dd853e61fed"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Components/SVGImageView.swift": {
+    "mtime": 1779014282.270252,
+    "hash": "82a9c3a0b290afc6318ae1e334d5ab82"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Components/TransactionRowView.swift": {
     "mtime": 1778880898.1103542,
     "hash": "e29a7e97c017e0ceec840a303d869694"
@@ -368,8 +372,8 @@
     "hash": "ba0513c915bc64af0f33d175deed95c2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Services/CardCatalogLoader.swift": {
-    "mtime": 1779014060.666663,
-    "hash": "c35ca3000cecf47d7e4a9cae217a670f"
+    "mtime": 1779014147.6352196,
+    "hash": "0dc56249b6907a16cc8dd17fd7d1f1fd"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Services/CardDatabase.swift": {
     "mtime": 1779001124.5346007,
@@ -812,20 +816,20 @@
     "hash": "83023938a08bf946e5861d87fdfe9333"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardSelectionView.swift": {
-    "mtime": 1779014064.6968594,
-    "hash": "40b83fc894675d92969c37705397634e"
+    "mtime": 1779014261.9746194,
+    "hash": "bfd4cf54994a2db7dd2dd4f6e37d6316"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsView.swift": {
-    "mtime": 1779013892.8219278,
-    "hash": "afb7ed8158af9bb410369cb4ce1f126e"
+    "mtime": 1779014273.4183342,
+    "hash": "921598e96a29d48becfaa6f1062ddc51"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardEditView.swift": {
     "mtime": 1779009685.2025402,
     "hash": "2812686fa90c228cd490fab546592cee"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift": {
-    "mtime": 1779014068.1292899,
-    "hash": "846ed3db112352e9f2411f5904562d88"
+    "mtime": 1779014269.2593539,
+    "hash": "6e89e92d87897835c8f34f45ae6961d5"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Navigation/SheetRoute.swift": {
     "mtime": 1778998512.2859595,

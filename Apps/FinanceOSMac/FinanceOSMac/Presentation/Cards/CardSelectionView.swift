@@ -33,16 +33,12 @@ struct CardSelectionView: View {
     }
 
     private func bankLogoURL(for issuer: String) -> URL? {
-        // Try local small logos first
-        if let localURL = CardCatalogLoader.bankLogoURL(for: issuer, size: .small) {
-            return localURL
-        }
-
-        // Fallback to external logos
-        let externalLogos: [String: String] = [
+        let logos: [String: String] = [
+            "HDFC Bank": "https://upload.wikimedia.org/wikipedia/en/0/0a/HDFC_bank_logo.svg",
+            "ICICI Bank": "https://upload.wikimedia.org/wikipedia/en/c/c0/ICICI_Bank_Logo.svg",
             "American Express": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/American_Express_logo.svg/1200px-American_Express_logo.svg.png"
         ]
-        return externalLogos[issuer].flatMap { URL(string: $0) }
+        return logos[issuer].flatMap { URL(string: $0) }
     }
 
     private func networkColor(for type: String) -> Color {
