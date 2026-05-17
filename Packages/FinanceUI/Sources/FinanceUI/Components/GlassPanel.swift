@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 public struct GlassPanel<Content: View>: View {

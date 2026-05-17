@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		049E34262FB3B303002A3820 /* FinanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34252FB3B303002A3820 /* FinanceCore */; };
+		049E34292FB3B303002A3820 /* FinanceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34282FB3B303002A3820 /* FinanceUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				049E34262FB3B303002A3820 /* FinanceCore in Frameworks */,
+				049E34292FB3B303002A3820 /* FinanceUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +83,7 @@
 			name = FinanceOSMac;
 			packageProductDependencies = (
 				049E34252FB3B303002A3820 /* FinanceCore */,
+				049E34282FB3B303002A3820 /* FinanceUI */,
 			);
 			productName = FinanceOSMac;
 			productReference = 049E34102FB3B1D2002A3820 /* FinanceOSMac.app */;
@@ -391,6 +394,10 @@
 		049E34252FB3B303002A3820 /* FinanceCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FinanceCore;
+		};
+		049E34282FB3B303002A3820 /* FinanceUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FinanceUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

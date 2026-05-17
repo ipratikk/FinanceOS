@@ -167,7 +167,10 @@ struct DashboardView: View {
                         Spacer()
 
                         HStack(spacing: 6) {
-                            FDSAmount(formatAmount(txn.amountMinorUnits), type: txn.transactionType == .debit ? .debit : .credit)
+                            FDSAmount(
+                                formatAmount(txn.amountMinorUnits),
+                                type: txn.transactionType == .debit ? .debit : .credit
+                            )
 
                             Text(txn.transactionType == .debit ? "Dr" : "Cr")
                                 .labelSmall()

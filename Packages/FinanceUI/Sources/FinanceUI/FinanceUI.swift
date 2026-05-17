@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 public protocol FinanceUIModule {

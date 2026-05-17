@@ -1,7 +1,7 @@
 import FinanceCore
 import SwiftUI
 
-enum FDSTextStyle {
+public enum FDSTextStyle {
     case displayLarge
     case displayMedium
     case headingLarge
@@ -16,7 +16,7 @@ enum FDSTextStyle {
     case monoAmountSmall
 }
 
-enum FDSTextColor {
+public enum FDSTextColor {
     case primary
     case secondary
     case tertiary
@@ -26,7 +26,7 @@ enum FDSTextColor {
     case accent
     case custom(Color)
 
-    var color: Color {
+    public var color: Color {
         switch self {
         case .primary:
             return AppColors.textPrimary
@@ -42,24 +42,24 @@ enum FDSTextColor {
             return AppColors.warning
         case .accent:
             return AppColors.accent
-        case .custom(let color):
+        case let .custom(color):
             return color
         }
     }
 }
 
-struct FDSText: View {
+public struct FDSText: View {
     let text: String
     let style: FDSTextStyle
     let color: FDSTextColor
 
-    var body: some View {
+    public var body: some View {
         Text(text)
             .applyStyle(style)
             .foregroundColor(color.color)
     }
 
-    init(_ text: String, style: FDSTextStyle = .bodyLarge, color: FDSTextColor = .primary) {
+    public init(_ text: String, style: FDSTextStyle = .bodyLarge, color: FDSTextColor = .primary) {
         self.text = text
         self.style = style
         self.color = color
@@ -70,29 +70,29 @@ private extension View {
     func applyStyle(_ style: FDSTextStyle) -> some View {
         switch style {
         case .displayLarge:
-            return AnyView(self.displayLarge())
+            return AnyView(font(.system(size: 34, weight: .bold)).lineSpacing(2))
         case .displayMedium:
-            return AnyView(self.displayMedium())
+            return AnyView(font(.system(size: 28, weight: .bold)).lineSpacing(2))
         case .headingLarge:
-            return AnyView(self.headingLarge())
+            return AnyView(font(.system(size: 24, weight: .bold)).lineSpacing(1.5))
         case .headingMedium:
-            return AnyView(self.headingMedium())
+            return AnyView(font(.system(size: 20, weight: .semibold)).lineSpacing(1.5))
         case .headingSmall:
-            return AnyView(self.headingSmall())
+            return AnyView(font(.system(size: 16, weight: .semibold)).lineSpacing(1))
         case .bodyLarge:
-            return AnyView(self.bodyLarge())
+            return AnyView(font(.system(size: 16, weight: .regular)).lineSpacing(1.5))
         case .bodyMedium:
-            return AnyView(self.bodyMedium())
+            return AnyView(font(.system(size: 14, weight: .regular)).lineSpacing(1.5))
         case .labelSmall:
-            return AnyView(self.labelSmall())
+            return AnyView(font(.system(size: 12, weight: .medium)).lineSpacing(0))
         case .captionLarge:
-            return AnyView(self.captionLarge())
+            return AnyView(font(.system(size: 12, weight: .regular)).lineSpacing(0))
         case .caption:
-            return AnyView(self.caption())
+            return AnyView(font(.system(size: 10, weight: .regular)).lineSpacing(0))
         case .monoAmount:
-            return AnyView(self.font(.system(size: 14, weight: .semibold, design: .monospaced)).lineSpacing(0))
+            return AnyView(font(.system(size: 14, weight: .semibold, design: .monospaced)).lineSpacing(0))
         case .monoAmountSmall:
-            return AnyView(self.font(.system(size: 12, weight: .regular, design: .monospaced)).lineSpacing(0))
+            return AnyView(font(.system(size: 12, weight: .regular, design: .monospaced)).lineSpacing(0))
         }
     }
 }

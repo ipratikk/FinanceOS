@@ -1,23 +1,23 @@
 import FinanceCore
 import SwiftUI
 
-enum FDSLabelStyle {
+public enum FDSLabelStyle {
     case heading
     case subheading
     case caption
     case hint
 }
 
-struct FDSLabel: View {
+public struct FDSLabel: View {
     let text: String
     let style: FDSLabelStyle
 
-    var body: some View {
+    public var body: some View {
         Text(text)
             .applyLabelStyle(style)
     }
 
-    init(_ text: String, style: FDSLabelStyle = .caption) {
+    public init(_ text: String, style: FDSLabelStyle = .caption) {
         self.text = text
         self.style = style
     }
@@ -27,13 +27,13 @@ private extension View {
     func applyLabelStyle(_ style: FDSLabelStyle) -> some View {
         switch style {
         case .heading:
-            return AnyView(self.headingSmall())
+            return AnyView(font(.system(size: 16, weight: .semibold)).lineSpacing(1))
         case .subheading:
-            return AnyView(self.captionLarge())
+            return AnyView(font(.system(size: 12, weight: .regular)).lineSpacing(0))
         case .caption:
-            return AnyView(self.caption())
+            return AnyView(font(.system(size: 10, weight: .regular)).lineSpacing(0))
         case .hint:
-            return AnyView(self.labelSmall())
+            return AnyView(font(.system(size: 12, weight: .medium)).lineSpacing(0))
         }
     }
 }

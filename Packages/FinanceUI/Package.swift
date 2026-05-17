@@ -4,17 +4,20 @@ import PackageDescription
 let package = Package(
     name: "FinanceUI",
     platforms: [
-        .macOS(.v13),
-        .iOS(.v16),
+        .macOS(.v14),
+        .iOS(.v17),
         .macCatalyst(.v16)
     ],
     products: [
         .library(name: "FinanceUI", targets: ["FinanceUI"])
     ],
+    dependencies: [
+        .package(path: "../FinanceCore")
+    ],
     targets: [
         .target(
             name: "FinanceUI",
-            dependencies: []
+            dependencies: ["FinanceCore"]
         ),
         .testTarget(
             name: "FinanceUITests",

@@ -105,26 +105,30 @@ struct TransactionListContentView: View {
     private var transactionsList: some View {
         List {
             ForEach(sections) { section in
-                Section(section.title) {
-                    ForEach(section.rows) { row in
-                        transactionRow(row)
-                            .listRowBackground(AppColors.surface)
-                            .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
-                            .listRowSeparator(.hidden)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(role: .destructive) {
-                                    transactionPendingDelete = row
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                    }
+                Section(header: Text(section.title)) {
+                    sectionRows(section.rows)
                 }
             }
         }
         .listStyle(.plain)
         .background(AppColors.base)
         .scrollContentBackground(.hidden)
+    }
+
+    private func sectionRows(_ rows: [TransactionRow]) -> some View {
+        ForEach(rows, id: \.id) { row in
+            transactionRow(row)
+                .listRowBackground(AppColors.surface)
+                .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                .listRowSeparator(.hidden)
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        transactionPendingDelete = row
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+        }
     }
 
     private func transactionRow(_ row: TransactionRow) -> some View {

@@ -1,30 +1,30 @@
 import FinanceCore
 import SwiftUI
 
-enum FDSAmountType {
+public enum FDSAmountType {
     case debit
     case credit
 }
 
-struct FDSAmount: View {
+public struct FDSAmount: View {
     let text: String
     let type: FDSAmountType
     let size: FDSAmountSize
 
-    var body: some View {
+    public var body: some View {
         Text(text)
             .applyAmountStyle(size)
             .foregroundColor(type == .debit ? AppColors.debit : AppColors.credit)
     }
 
-    init(_ text: String, type: FDSAmountType, size: FDSAmountSize = .normal) {
+    public init(_ text: String, type: FDSAmountType, size: FDSAmountSize = .normal) {
         self.text = text
         self.type = type
         self.size = size
     }
 }
 
-enum FDSAmountSize {
+public enum FDSAmountSize {
     case normal
     case small
 }
@@ -33,9 +33,9 @@ private extension View {
     func applyAmountStyle(_ size: FDSAmountSize) -> some View {
         switch size {
         case .normal:
-            return AnyView(self.font(.system(size: 14, weight: .semibold, design: .monospaced)).lineSpacing(0))
+            return AnyView(font(.system(size: 14, weight: .semibold, design: .monospaced)).lineSpacing(0))
         case .small:
-            return AnyView(self.font(.system(size: 12, weight: .regular, design: .monospaced)).lineSpacing(0))
+            return AnyView(font(.system(size: 12, weight: .regular, design: .monospaced)).lineSpacing(0))
         }
     }
 }
