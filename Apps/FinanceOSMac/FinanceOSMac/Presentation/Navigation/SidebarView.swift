@@ -39,10 +39,9 @@ struct SidebarView: View {
     var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("FinanceOS")
-                .font(.system(size: 20, weight: .bold))
+                .headingLarge()
             Text("Financial Operating System")
                 .labelSmall()
-                .foregroundColor(.gray)
         }
         .padding(AppSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -77,8 +76,7 @@ struct SidebarView: View {
     var quickAccess: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Quick Access")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(.gray)
+                .captionLarge()
 
             let accounts = ledgers.filter { $0.kind == .bankAccount }
             let cards = ledgers.filter { $0.kind == .creditCard }

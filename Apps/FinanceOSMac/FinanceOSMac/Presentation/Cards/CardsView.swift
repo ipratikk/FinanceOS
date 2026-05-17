@@ -134,7 +134,7 @@ struct CardsView: View {
             Spacer()
 
             Text("••••\(ledger.last4)")
-                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .monoAmountSmall()
                 .foregroundColor(AppColors.accent)
         }
         .padding(AppSpacing.sm)
