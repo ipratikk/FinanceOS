@@ -74,7 +74,7 @@ struct TransactionListContentView: View {
                             Image(systemName: "xmark.circle.fill")
                                 .labelSmall()
                             Text("Clear filters")
-                                .font(.system(size: 12, weight: .medium))
+                                .labelSmall()
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 8)
