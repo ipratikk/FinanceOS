@@ -75,7 +75,7 @@ struct DropZoneView: View {
                     .foregroundColor(AppColors.accent)
 
                 VStack(spacing: 4) {
-                    FDSText("Drop files here", style: .monoAmount)
+                    FDSLabel("Drop files here", style: .monoAmount)
 
                     FDSLabel("or click button below", style: .hint)
 
@@ -112,7 +112,7 @@ struct FileSelectionPlaceholder: View {
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 4) {
-                FDSText("Select a bank above", style: .monoAmount, color: .tertiary)
+                FDSLabel("Select a bank above", style: .monoAmount, color: .tertiary)
 
                 FDSLabel("to start importing", style: .hint)
             }

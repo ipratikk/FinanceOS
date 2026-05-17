@@ -21,7 +21,7 @@ struct CreateNewTargetSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                FDSText(isCard ? "Create New Card" : "Create New Account", style: .headingMedium)
+                FDSLabel(isCard ? "Create New Card" : "Create New Account", style: .headingMedium)
                 Spacer()
                 Button(action: { onCancel() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -83,7 +83,7 @@ struct CreateNewTargetSheet: View {
 
                             if !banks.isEmpty {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    FDSText(
+                                    FDSLabel(
                                         selectedBank == nil ? "Select Bank" : "Change Bank",
                                         style: .labelSmall,
                                         color: .secondary
@@ -114,7 +114,7 @@ struct CreateNewTargetSheet: View {
 
             HStack(spacing: 12) {
                 Button(action: { onCancel() }, label: {
-                    FDSText("Cancel", style: .bodyLarge)
+                    FDSLabel("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -123,7 +123,7 @@ struct CreateNewTargetSheet: View {
                 .cornerRadius(AppRadius.md)
 
                 Button(action: { onCreate() }, label: {
-                    FDSText("Create", style: .monoAmount)
+                    FDSLabel("Create", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })

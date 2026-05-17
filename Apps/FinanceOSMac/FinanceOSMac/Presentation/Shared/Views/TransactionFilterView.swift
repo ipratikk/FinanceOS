@@ -14,7 +14,7 @@ struct TransactionFilterView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                FDSText("Filters", style: .headingMedium)
+                FDSLabel("Filters", style: .headingMedium)
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -132,7 +132,7 @@ struct TransactionFilterView: View {
                 .cornerRadius(AppRadius.md)
 
                 Button(action: { dismiss() }, label: {
-                    FDSText("Done", style: .monoAmount)
+                    FDSLabel("Done", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })

@@ -32,7 +32,7 @@ struct BanksView: View {
         List(viewModel.banks, id: \.id) { bank in
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSText(bank.name, style: .monoAmount)
+                    FDSLabel(bank.name, style: .monoAmount)
 
                     Text(bank.providerType.rawValue.uppercased())
                         .labelSmall()

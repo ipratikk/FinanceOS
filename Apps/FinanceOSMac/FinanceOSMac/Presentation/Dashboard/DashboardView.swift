@@ -51,7 +51,7 @@ struct DashboardView: View {
 
     var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText("Dashboard", style: .headingLarge)
+            FDSLabel("Dashboard", style: .headingLarge)
             FDSLabel("This Month", style: .hint)
         }
     }
@@ -60,7 +60,7 @@ struct DashboardView: View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
                 FDSLabel("Total Debits", style: .hint)
-                FDSText(formatAmount(totals.totalDebit), style: .headingMedium, color: .debit)
+                FDSLabel(formatAmount(totals.totalDebit), style: .headingMedium, color: .debit)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -69,7 +69,7 @@ struct DashboardView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 FDSLabel("Total Credits", style: .hint)
-                FDSText(formatAmount(totals.totalCredit), style: .headingMedium, color: .credit)
+                FDSLabel(formatAmount(totals.totalCredit), style: .headingMedium, color: .credit)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -78,7 +78,7 @@ struct DashboardView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 FDSLabel("Transactions", style: .hint)
-                FDSText("\(totals.transactionCount)", style: .headingMedium, color: .accent)
+                FDSLabel("\(totals.transactionCount)", style: .headingMedium, color: .accent)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)

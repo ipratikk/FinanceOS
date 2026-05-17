@@ -21,7 +21,7 @@ struct ImportFileListView: View {
                             .frame(width: 16)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            FDSText(pair.url.lastPathComponent, style: .bodyLarge)
+                            FDSLabel(pair.url.lastPathComponent, style: .bodyLarge)
                                 .lineLimit(1)
 
                             FDSLabel(pair.statement.bankName, style: .caption)

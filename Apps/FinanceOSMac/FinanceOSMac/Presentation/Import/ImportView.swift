@@ -138,7 +138,7 @@ struct ImportView: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            FDSText("Import Statements", style: .headingMedium)
+            FDSLabel("Import Statements", style: .headingMedium)
 
             FDSLabel("Upload your bank or credit card statements", style: .caption)
         }
@@ -170,7 +170,7 @@ struct ImportView: View {
                 Image(systemName: "folder.badge.plus")
                     .monoAmount()
 
-                FDSText("Select Files", style: .bodyLarge)
+                FDSLabel("Select Files", style: .bodyLarge)
             }
             .frame(maxWidth: .infinity)
             .padding(AppSpacing.sm)
@@ -219,7 +219,7 @@ struct ImportView: View {
                     viewModel.parsedStatements = []
                     viewModel.selectedTarget = nil
                 }, label: {
-                    FDSText("Cancel", style: .bodyLarge)
+                    FDSLabel("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -232,7 +232,7 @@ struct ImportView: View {
                         Image(systemName: "arrow.down.doc.fill")
                             .monoAmount()
 
-                        FDSText("Import", style: .monoAmount)
+                        FDSLabel("Import", style: .monoAmount)
                     }
                     .frame(maxWidth: .infinity)
                     .foregroundColor(.white)

@@ -39,7 +39,7 @@ struct SidebarView: View {
 
     var header: some View {
         VStack(alignment: .leading, spacing: 8) {
-            FDSText("FinanceOS", style: .headingLarge)
+            FDSLabel("FinanceOS", style: .headingLarge)
             FDSLabel("Financial Operating System", style: .hint)
         }
         .padding(AppSpacing.md)
@@ -56,7 +56,7 @@ struct SidebarView: View {
                             .headingSmall()
                             .frame(width: 20)
 
-                        FDSText(item.label, style: .bodyLarge)
+                        FDSLabel(item.label, style: .bodyLarge)
 
                         Spacer()
                     }
@@ -87,7 +87,7 @@ struct SidebarView: View {
                             Image(systemName: "building.2")
                                 .labelSmall()
                                 .foregroundColor(.gray)
-                            FDSText(
+                            FDSLabel(
                                 account.nickname.isEmpty ? account.displayName : account.nickname,
                                 style: .labelSmall
                             )
@@ -123,7 +123,7 @@ struct SidebarView: View {
                 Image(systemName: "arrow.down.doc.fill")
                     .headingSmall()
 
-                FDSText("Import Statement", style: .bodyLarge)
+                FDSLabel("Import Statement", style: .bodyLarge)
 
                 Spacer()
             }

@@ -183,7 +183,7 @@ struct LedgerEditView: View {
 
             HStack(spacing: 12) {
                 Button(action: { dismiss() }, label: {
-                    FDSText("Cancel", style: .bodyLarge)
+                    FDSLabel("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -196,7 +196,7 @@ struct LedgerEditView: View {
                         await saveLedger()
                     }
                 }, label: {
-                    FDSText("Save", style: .monoAmount)
+                    FDSLabel("Save", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })

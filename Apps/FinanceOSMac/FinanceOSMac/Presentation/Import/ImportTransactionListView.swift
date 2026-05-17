@@ -16,14 +16,14 @@ struct ImportTransactionListView: View {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("New Transactions", style: .caption)
-                    FDSText("\(newTransactionCount)", style: .bodyLarge)
+                    FDSLabel("\(newTransactionCount)", style: .bodyLarge)
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
                     FDSLabel("Already Imported", style: .caption)
-                    FDSText("\(duplicateIndices.count)", style: .bodyLarge, color: .warning)
+                    FDSLabel("\(duplicateIndices.count)", style: .bodyLarge, color: .warning)
                 }
             }
 
@@ -52,7 +52,7 @@ struct ImportTransactionListView: View {
                         .frame(width: 8, height: 8)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        FDSText(txn.description, style: .bodyLarge)
+                        FDSLabel(txn.description, style: .bodyLarge)
                             .lineLimit(1)
                             .opacity(isDuplicate ? 0.5 : 1.0)
 

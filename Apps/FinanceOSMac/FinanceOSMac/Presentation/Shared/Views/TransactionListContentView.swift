@@ -137,7 +137,7 @@ struct TransactionListContentView: View {
                 .frame(width: 8, height: 8)
 
             VStack(alignment: .leading, spacing: 2) {
-                FDSText(row.title, style: .bodyLarge, color: .primary)
+                FDSLabel(row.title, style: .bodyLarge, color: .primary)
                     .lineLimit(1)
 
                 FDSLabel(row.subtitle, style: .hint)
@@ -148,7 +148,7 @@ struct TransactionListContentView: View {
             HStack(spacing: 8) {
                 FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit)
 
-                FDSText(
+                FDSLabel(
                     row.transactionType == .debit ? "Dr" : "Cr",
                     style: .labelSmall,
                     color: row.transactionType == .debit ? .debit : .credit
@@ -175,7 +175,7 @@ struct TransactionListContentView: View {
             VStack(spacing: 8) {
                 FDSLabel("No Transactions", style: .heading)
 
-                FDSText(
+                FDSLabel(
                     listState.isFilterActive
                         ? "No transactions match your filters."
                         : "No transactions found.",

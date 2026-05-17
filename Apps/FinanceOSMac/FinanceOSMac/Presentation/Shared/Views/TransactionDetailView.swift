@@ -17,7 +17,7 @@ struct TransactionDetailView: View {
                         HStack(spacing: 8) {
                             FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit)
 
-                            FDSText(
+                            FDSLabel(
                                 row.transactionType == .debit ? "Dr" : "Cr",
                                 style: .labelSmall,
                                 color: row.transactionType == .debit ? .debit : .credit
@@ -37,7 +37,7 @@ struct TransactionDetailView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         FDSLabel("Description", style: .subheading)
-                        FDSText(row.title, style: .bodyLarge, color: .primary)
+                        FDSLabel(row.title, style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface)
@@ -45,7 +45,7 @@ struct TransactionDetailView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         FDSLabel("Source", style: .subheading)
-                        FDSText(row.subtitle, style: .bodyLarge, color: .primary)
+                        FDSLabel(row.subtitle, style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface)
@@ -53,7 +53,7 @@ struct TransactionDetailView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         FDSLabel("Date", style: .subheading)
-                        FDSText(formatDate(row.postedAt), style: .bodyLarge, color: .primary)
+                        FDSLabel(formatDate(row.postedAt), style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface)
@@ -69,7 +69,7 @@ struct TransactionDetailView: View {
 
     var headerView: some View {
         HStack {
-            FDSText("Transaction Details", style: .headingMedium)
+            FDSLabel("Transaction Details", style: .headingMedium)
             Spacer()
             Button(action: { dismiss() }, label: {
                 Image(systemName: "xmark.circle.fill").headingSmall().foregroundColor(.gray)

@@ -22,7 +22,7 @@ struct BankEditView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                FDSText("Edit Bank", style: .headingMedium)
+                FDSLabel("Edit Bank", style: .headingMedium)
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -68,7 +68,7 @@ struct BankEditView: View {
                             HStack {
                                 Image(systemName: "trash.fill")
                                     .labelSmall()
-                                FDSText("Delete Bank", style: .bodyLarge)
+                                FDSLabel("Delete Bank", style: .bodyLarge)
                                 Spacer()
                             }
                         })
@@ -103,7 +103,7 @@ struct BankEditView: View {
                         // Sheet dismisses via binding when editingBank is set to nil
                     }
                 }, label: {
-                    FDSText("Save", style: .monoAmount)
+                    FDSLabel("Save", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })

@@ -30,7 +30,7 @@ struct AccountEditView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                FDSText("Edit Account", style: .headingMedium)
+                FDSLabel("Edit Account", style: .headingMedium)
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -103,7 +103,7 @@ struct AccountEditView: View {
                             HStack {
                                 Image(systemName: "trash.fill")
                                     .labelSmall()
-                                FDSText("Delete Account", style: .bodyLarge)
+                                FDSLabel("Delete Account", style: .bodyLarge)
                                 Spacer()
                             }
                             .foregroundColor(AppColors.debit)
@@ -121,7 +121,7 @@ struct AccountEditView: View {
 
             HStack(spacing: 12) {
                 Button(action: { dismiss() }, label: {
-                    FDSText("Cancel", style: .bodyLarge)
+                    FDSLabel("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -150,7 +150,7 @@ struct AccountEditView: View {
                         // Sheet dismisses via binding when editingAccount is set to nil
                     }
                 }, label: {
-                    FDSText("Save", style: .monoAmount)
+                    FDSLabel("Save", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })

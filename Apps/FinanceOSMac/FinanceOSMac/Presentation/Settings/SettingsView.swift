@@ -48,7 +48,7 @@ struct SettingsView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText("Settings", style: .headingLarge)
+            FDSLabel("Settings", style: .headingLarge)
 
             FDSLabel("App preferences & information", style: .hint)
         }

@@ -50,7 +50,7 @@ struct AnalyticsView: View {
 
     var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSText("Analytics", style: .headingLarge)
+            FDSLabel("Analytics", style: .headingLarge)
 
             FDSLabel("Spending insights & trends", style: .hint)
         }
@@ -123,7 +123,7 @@ struct AnalyticsView: View {
                     .foregroundColor(AppColors.accent.opacity(0.3))
 
                 VStack(spacing: 4) {
-                    FDSText("Coming Soon", style: .monoAmount)
+                    FDSLabel("Coming Soon", style: .monoAmount)
 
                     FDSLabel("Auto-categorization with smart detection", style: .hint)
                 }
