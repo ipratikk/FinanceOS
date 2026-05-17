@@ -12,9 +12,13 @@ public struct FinanceCard<Content: View>: View {
     public var body: some View {
         content
             .padding(padding)
-            .background(AppColors.surface)
+            .background(.ultraThinMaterial)
+            .overlay(
+                RoundedRectangle(cornerRadius: AppRadius.md)
+                    .stroke(AppColors.borderSubtle, lineWidth: 0.5)
+            )
             .cornerRadius(AppRadius.md)
-            .shadow(color: .black.opacity(AppShadow.cardOpacity), radius: AppShadow.cardRadius / 2, y: 2)
+            .shadow(color: AppShadow.card.color, radius: AppShadow.card.radius / 2, y: AppShadow.card.y / 2)
     }
 }
 

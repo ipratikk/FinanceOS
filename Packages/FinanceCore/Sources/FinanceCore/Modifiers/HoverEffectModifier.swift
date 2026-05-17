@@ -7,8 +7,8 @@ public struct HoverEffectModifier: ViewModifier {
         #if os(macOS)
         content
             .scaleEffect(isHovered ? 1.02 : 1.0)
-            .background(AppColors.surface2.opacity(isHovered ? 0.5 : 0))
-            .animation(AppAnimation.easeFast, value: isHovered)
+            .background(AppColors.glass.opacity(isHovered ? 1.0 : 0))
+            .animation(AppAnimation.hover, value: isHovered)
             .onContinuousHover { phase in
                 switch phase {
                 case .active:
