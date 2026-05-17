@@ -143,8 +143,7 @@ struct BankEditView: View {
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             FDSLabel(label, style: .hint)
-            TextField("", text: text)
-                .caption()
+            FDSTextInput("", text: text, style: .bodyMedium)
                 .padding(AppSpacing.xs)
                 .background(AppColors.surface2)
                 .cornerRadius(AppRadius.sm)

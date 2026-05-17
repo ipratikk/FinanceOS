@@ -25,7 +25,7 @@ struct PasswordPromptSheet: View {
                         FDSLabel("The file \"\(filename)\" is password-protected.", style: .caption)
 
                         VStack(alignment: .leading, spacing: 4) {
-                            SecureField("Password", text: $password)
+                            FDSTextInput("Password", text: $password, style: .bodyMedium, isSecure: true)
                                 .textFieldStyle(.roundedBorder)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 6)
