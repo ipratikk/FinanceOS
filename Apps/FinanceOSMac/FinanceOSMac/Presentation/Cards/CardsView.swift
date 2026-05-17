@@ -107,14 +107,22 @@ struct CardsView: View {
         }
     }
 
-    private func networkLogoURL(for cardType: String) -> URL? {
-        let urls: [String: String] = [
-            "visa": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png",
-            "mastercard": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1024px-Mastercard-logo.svg.png",
-            "rupay": "https://upload.wikimedia.org/wikipedia/en/6/6d/RuPay_logo.svg",
-            "discover": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Discover_Card_logo.svg/1024px-Discover_Card_logo.svg.png"
+    private func networkLogo(for cardType: String) -> NSImage? {
+        let assetNames: [String: String] = [
+            "visa": "visa",
+            "mastercard": "mastercard",
+            "amex": "amex",
+            "rupay": "rupay",
+            "diners": "diners"
         ]
-        return urls[cardType.lowercased()].flatMap { URL(string: $0) }
+
+        if let assetName = assetNames[cardType.lowercased()],
+           let nsImage = NSImage(named: assetName)
+        {
+            return nsImage
+        }
+
+        return nil
     }
 
     private func bankSectionHeader(_ bankName: String) -> some View {
@@ -154,7 +162,12 @@ struct CardsView: View {
 
                 HStack(spacing: 6) {
                     if let cardType = ledger.cardType {
-                        SVGImageView(networkLogoURL(for: cardType), width: 20, height: 10)
+                        if let logo = networkLogo(for: cardType) {
+                            Image(nsImage: logo)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 10)
+                        }
 
                         Text(cardType.uppercased())
                             .labelSmall()

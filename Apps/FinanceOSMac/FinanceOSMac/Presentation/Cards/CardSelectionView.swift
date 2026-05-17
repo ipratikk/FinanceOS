@@ -20,16 +20,22 @@ struct CardSelectionView: View {
         }
     }
 
-    private func networkLogoURL(for type: String) -> URL? {
-        let urls: [String: String] = [
-            "visa": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png",
-            "mastercard": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1024px-Mastercard-logo.svg.png",
-            "amex": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/American_Express_logo.svg/1200px-American_Express_logo.svg.png",
-            "rupay": "https://upload.wikimedia.org/wikipedia/en/6/6d/RuPay_logo.svg",
-            "discover": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Discover_Card_logo.svg/1024px-Discover_Card_logo.svg.png",
-            "diners": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Diners_Club_logo.svg/1024px-Diners_Club_logo.svg.png"
+    private func networkLogo(for type: String) -> NSImage? {
+        let assetNames: [String: String] = [
+            "visa": "visa",
+            "mastercard": "mastercard",
+            "amex": "amex",
+            "rupay": "rupay",
+            "diners": "diners"
         ]
-        return urls[type.lowercased()].flatMap { URL(string: $0) }
+
+        if let assetName = assetNames[type.lowercased()],
+           let nsImage = NSImage(named: assetName)
+        {
+            return nsImage
+        }
+
+        return nil
     }
 
     private func bankLogo(for issuer: String) -> NSImage? {
@@ -157,10 +163,15 @@ struct CardSelectionView: View {
                         }
 
                         // Network Logo Badge
-                        SVGImageView(networkLogoURL(for: card.cardType), width: 28, height: 18)
-                            .padding(4)
-                            .background(Color.white)
-                            .cornerRadius(4)
+                        if let logo = networkLogo(for: card.cardType) {
+                            Image(nsImage: logo)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 28, height: 18)
+                                .padding(4)
+                                .background(Color.white)
+                                .cornerRadius(4)
+                        }
                     }
                     .frame(width: 100, height: 65)
 
