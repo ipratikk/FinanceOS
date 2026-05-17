@@ -64,6 +64,18 @@ public extension View {
             .lineSpacing(0)
     }
 
+    func monoAmountDebit() -> some View {
+        font(.system(size: 14, weight: .semibold, design: .monospaced))
+            .foregroundColor(AppColors.debit)
+            .lineSpacing(0)
+    }
+
+    func monoAmountCredit() -> some View {
+        font(.system(size: 14, weight: .semibold, design: .monospaced))
+            .foregroundColor(AppColors.credit)
+            .lineSpacing(0)
+    }
+
     func captionLarge() -> some View {
         font(.system(size: 13, weight: .semibold, design: .default))
             .foregroundColor(AppColors.textSecondary)

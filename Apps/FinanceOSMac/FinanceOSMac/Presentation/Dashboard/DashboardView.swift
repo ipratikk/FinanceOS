@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct DashboardView: View {
@@ -166,9 +167,7 @@ struct DashboardView: View {
                         Spacer()
 
                         HStack(spacing: 6) {
-                            Text(formatAmount(txn.amountMinorUnits))
-                                .font(.system(size: 14, weight: .semibold, design: .monospaced))
-                                .foregroundColor(txn.transactionType == .debit ? AppColors.debit : AppColors.credit)
+                            FDSAmount(formatAmount(txn.amountMinorUnits), type: txn.transactionType == .debit ? .debit : .credit)
 
                             Text(txn.transactionType == .debit ? "Dr" : "Cr")
                                 .labelSmall()

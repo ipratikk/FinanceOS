@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct TransactionDetailView: View {
@@ -29,9 +30,7 @@ struct TransactionDetailView: View {
                                 .captionLarge()
 
                             HStack(spacing: 8) {
-                                Text(row.amountText)
-                                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
-                                    .foregroundColor(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
+                                FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit)
 
                                 Text(row.transactionType == .debit ? "Dr" : "Cr")
                                     .labelSmall()
