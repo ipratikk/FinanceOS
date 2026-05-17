@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "generatedAt": "2026-05-17T09:02:08.105Z",
+  "generatedAt": "2026-05-17T09:48:17.013Z",
   "issuers": [
     {
       "id": "hdfc",
@@ -1209,21 +1209,21 @@
       "logoUrl": "https://upload.wikimedia.org/wikipedia/en/c/c0/ICICI_Bank_Logo.svg",
       "cards": [
         {
-          "id": "icici-adani-one-icici-bank-platinum-credit-car",
-          "name": "Adani One ICICI Bank Platinum Credit Card",
+          "id": "icici-adani-one-signature-credit-card",
+          "name": "Adani One Signature Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Adani One ICICI Bank Platinum Credit Card"
+            "Adani One Signature Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-adani-one-icici-bank-platinum-credit-car",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/adani-one/adani-one-signature-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/adani-one/adani-one-signature-desktop.webp",
+            "localAssetName": "icici-adani-one-signature-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1234,120 +1234,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for Adani One ICICI Bank Platinum Credit Card & get complimentary domestic lounge visits per year. Enjoy hotel vouchers, lounge access & airport benefits",
+            "joiningBenefit": "Adani One Signature Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Apply for Adani One ICICI Bank Platinum Credit Card & get complimentary domestic lounge visits per year. Enjoy hotel vouchers, lounge access & airport benefits",
-            "features": [
-              "get complimentary domestic lounge visits per year"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "adani one icici bank platinum credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-adani-one-icici-bank-signature-credit-ca",
-          "name": "Adani One ICICI Bank Signature Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "Adani One ICICI Bank Signature Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-adani-one-icici-bank-signature-credit-ca",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for the Adani One ICICI Bank Signature Credit Card   and earn 7% Adani Reward Points on Adani One spends. Enjoy vouchers, lounge access, and exclusive airport benefits.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Apply for the Adani One ICICI Bank Signature Credit Card   and earn 7% Adani Reward Points on Adani One spends. Enjoy vouchers, lounge access, and exclusive airport benefits.",
-            "features": [
-              "7% Adani Reward Points on Adani One spends"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "adani one icici bank signature credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-amazon-pay-icici-bank-credit-card",
-          "name": "Amazon Pay ICICI Bank Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "Amazon Pay ICICI Bank Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-amazon-pay-icici-bank-credit-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for the Amazon Pay ICICI Bank Credit Card and enjoy cashback on every purchase. Unlock exclusive rewards and start saving instantly.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Apply for the Amazon Pay ICICI Bank Credit Card and enjoy cashback on every purchase. Unlock exclusive rewards and start saving instantly.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "amazon pay icici bank credit card"
+              "adani one signature credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-best-fuel-credit-card---apply-for-hpcl-f",
-          "name": "Best Fuel Credit Card - Apply for HPCL Fuel Credit Card Online",
+          "id": "icici-coral-credit-card",
+          "name": "Coral Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Best Fuel Credit Card - Apply for HPCL Fuel Credit Card Online"
+            "Coral Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-best-fuel-credit-card---apply-for-hpcl-f",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/hpcl-coral/coral-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/hpcl-coral/coral-desktop.webp",
+            "localAssetName": "icici-coral-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1358,121 +1274,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Get the best ICICI Bank Fuel Credit Card and save up to 5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends.",
+            "joiningBenefit": "Coral Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Get the best ICICI Bank Fuel Credit Card and save up to 5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends.",
-            "features": [
-              "5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends",
-              "Get the best ICICI Bank Fuel Credit Card and save up to 5% at HPCL pumps with fuel surcharge waivers and rewards on utility spends"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "best fuel credit card - apply for hpcl fuel credit card online"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-chennai-super-kings-icici-bank-credit-ca",
-          "name": "Chennai Super Kings ICICI Bank Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "Chennai Super Kings ICICI Bank Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-chennai-super-kings-icici-bank-credit-ca",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits, rewards, and exciting offers for loyal fans. Apply now!",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits, rewards, and exciting offers for loyal fans. Apply now!",
-            "features": [
-              "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "chennai super kings icici bank credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-credit-builder-programme---how-to-track-",
-          "name": "Credit Builder Programme - How to Track and Maintain Credit Score",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "Credit Builder Programme - How to Track and Maintain Credit Score"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-credit-builder-programme---how-to-track-",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Terms and Conditions of ICICI Bank Ltd",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Terms and Conditions of ICICI Bank Ltd",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "credit builder programme - how to track and maintain credit score"
+              "coral credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-culinary-treats-program-with-exclusive-c",
-          "name": "Culinary Treats Program With Exclusive Credit Card Offers - ICICI Bank",
+          "id": "icici-csk-credit-card",
+          "name": "CSK Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Culinary Treats Program With Exclusive Credit Card Offers - ICICI Bank"
+            "CSK Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-culinary-treats-program-with-exclusive-c",
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/csk/csk-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/csk/csk-desktop.webp",
+            "localAssetName": "icici-csk-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1483,36 +1314,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Shop in full, pay in parts with ICICI Bank Instant EMI. Instant EMI refers to the conversion into EMI upon request by the Card Member, of transactions performed using the Card and for such online transactions, where the option for such conversion is available.",
+            "joiningBenefit": "CSK Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Shop in full, pay in parts with ICICI Bank Instant EMI. Instant EMI refers to the conversion into EMI upon request by the Card Member, of transactions performed using the Card and for such online transactions, where the option for such conversion is available.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "culinary treats program with exclusive credit card offers - icici bank"
+              "csk credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-expressions-credit-card---personalise-yo",
-          "name": "Expressions Credit Card - Personalise Your Card",
+          "id": "icici-emeralde-credit-card",
+          "name": "Emeralde Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Expressions Credit Card - Personalise Your Card"
+            "Emeralde Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-expressions-credit-card---personalise-yo",
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/emeralde/emeralde-card-d.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/emeralde/emeralde-card-d.webp",
+            "localAssetName": "icici-emeralde-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1523,36 +1354,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Expressions Credit Card - Personalise your card with unique designs. Enjoy rewards, complimentary lounge access, fuel waivers, and discounts on movies. ",
+            "joiningBenefit": "Emeralde Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Expressions Credit Card - Personalise your card with unique designs. Enjoy rewards, complimentary lounge access, fuel waivers, and discounts on movies. ",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "expressions credit card - personalise your card"
+              "emeralde credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-icici-bank-coral-credit-card",
-          "name": "ICICI Bank Coral Credit Card",
+          "id": "icici-emeralde-metal-credit-card",
+          "name": "Emeralde Metal Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "ICICI Bank Coral Credit Card"
+            "Emeralde Metal Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-coral-credit-card",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/emerald-metal.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/emerald-metal.webp",
+            "localAssetName": "icici-emeralde-metal-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1563,36 +1394,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "ICICI Bank Coral credit card offers lounge access, reward points, and BookMyShow offers. Apply for ICICI Bank Coral credit card   today and enjoy premium benefits.",
+            "joiningBenefit": "Emeralde Metal Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "ICICI Bank Coral credit card offers lounge access, reward points, and BookMyShow offers. Apply for ICICI Bank Coral credit card   today and enjoy premium benefits.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "icici bank coral credit card"
+              "emeralde metal credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-icici-bank-credit-card-rewards",
-          "name": "ICICI Bank Credit Card Rewards",
+          "id": "icici-expressions-credit-card",
+          "name": "Expressions Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "ICICI Bank Credit Card Rewards"
+            "Expressions Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-credit-card-rewards",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/expressions-desk.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/expressions-desk.webp",
+            "localAssetName": "icici-expressions-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1603,36 +1434,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Redeem your ICICI Bank credit card reward points for gift vouchers, lifestyle products, travel benefits, and exclusive deals. Learn the simple process.",
+            "joiningBenefit": "Expressions Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Redeem your ICICI Bank credit card reward points for gift vouchers, lifestyle products, travel benefits, and exclusive deals. Learn the simple process.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "icici bank credit card rewards"
+              "expressions credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-icici-bank-emeralde-credit-card---experi",
-          "name": "ICICI Bank Emeralde Credit Card - Experience Premium Privileges",
+          "id": "icici-hpcl-super-saver-credit-card",
+          "name": "HPCL Super Saver Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "ICICI Bank Emeralde Credit Card - Experience Premium Privileges"
+            "HPCL Super Saver Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-emeralde-credit-card---experi",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/hpcl-supersaver.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/hpcl-supersaver.webp",
+            "localAssetName": "icici-hpcl-super-saver-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1643,36 +1474,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Upgrade to a premium lifestyle with the ICICI Bank Emeralde Credit Card—featuring unlimited lounge access, golf sessions, movie offers, travel benefits, and reward points.",
+            "joiningBenefit": "HPCL Super Saver Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Upgrade to a premium lifestyle with the ICICI Bank Emeralde Credit Card—featuring unlimited lounge access, golf sessions, movie offers, travel benefits, and reward points.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "icici bank emeralde credit card - experience premium privileges"
+              "hpcl super saver credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-icici-bank-emeralde-private-metal-credit",
-          "name": "ICICI Bank Emeralde Private Metal Credit Card - Apply Online",
+          "id": "icici-makemytrip-platinum-credit-card",
+          "name": "MakeMyTrip Platinum Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "ICICI Bank Emeralde Private Metal Credit Card - Apply Online"
+            "MakeMyTrip Platinum Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-emeralde-private-metal-credit",
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/makemytrip/mmt-platinum-d.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/makemytrip/mmt-platinum-d.webp",
+            "localAssetName": "icici-makemytrip-platinum-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1683,206 +1514,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "ICICI Bank Emeralde Private Metal Credit Card: Get luxury benefits including Taj Epicure & EazyDiner Prime memberships, unlimited lounge access & golf rounds, 12,500 reward points & more!",
+            "joiningBenefit": "MakeMyTrip Platinum Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "ICICI Bank Emeralde Private Metal Credit Card: Get luxury benefits including Taj Epicure & EazyDiner Prime memberships, unlimited lounge access & golf rounds, 12,500 reward points & more!",
-            "features": [
-              "Get luxury benefits including Taj Epicure & EazyDiner Prime memberships"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "icici bank emeralde private metal credit card - apply online"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-icici-bank-hpcl-coral-credit-card",
-          "name": "ICICI Bank HPCL Coral Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "ICICI Bank HPCL Coral Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-hpcl-coral-credit-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for the ICICI Bank HPCL Coral Credit Card and get 25% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Apply for the ICICI Bank HPCL Coral Credit Card and get 25% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
-            "features": [
-              "25% cashback on fuel spends",
-              "get 25% cashback on fuel spends"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "icici bank hpcl coral credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-icici-bank-hpcl-super-saver-credit-card",
-          "name": "ICICI Bank HPCL Super Saver Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "ICICI Bank HPCL Super Saver Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-hpcl-super-saver-credit-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for the ICICI Bank HPCL Super Saver Credit Card and get 5% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Apply for the ICICI Bank HPCL Super Saver Credit Card and get 5% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
-            "features": [
-              "5% cashback on fuel spends",
-              "get 5% cashback on fuel spends"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "icici bank hpcl super saver credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-icici-bank-manchester-united-platinum-ca",
-          "name": "ICICI Bank Manchester United Platinum Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "ICICI Bank Manchester United Platinum Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
-            "localAssetName": "icici-icici-bank-manchester-united-platinum-ca",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Get the ICICI Bank Manchester United Platinum Credit Card. Enjoy exclusive football rewards, lounge access, and dining discounts. Apply for your card today!",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Get the ICICI Bank Manchester United Platinum Credit Card. Enjoy exclusive football rewards, lounge access, and dining discounts. Apply for your card today!",
-            "features": [
-              "Get the ICICI Bank Manchester United Platinum Credit Card"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "icici bank manchester united platinum card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-icici-bank-parakram-credit-card",
-          "name": "ICICI Bank Parakram Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "ICICI Bank Parakram Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-parakram-credit-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Experience a world of unlimited rewards and benefits with ICICI Bank's Parakram Credit Card. Apply now and take your finances to new heights!",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Experience a world of unlimited rewards and benefits with ICICI Bank's Parakram Credit Card. Apply now and take your finances to new heights!",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "icici bank parakram credit card"
+              "makemytrip platinum credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-icici-bank-rubyx-credit-card",
-          "name": "ICICI Bank Rubyx Credit Card",
+          "id": "icici-makemytrip-signature-credit-card",
+          "name": "MakeMyTrip Signature Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "ICICI Bank Rubyx Credit Card"
+            "MakeMyTrip Signature Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-rubyx-credit-card",
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/makemytrip/mmt-signature-d.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/makemytrip/mmt-signature-d.webp",
+            "localAssetName": "icici-makemytrip-signature-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1893,36 +1554,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply online for the ICICI Bank Rubyx Credit Card and enjoy premium travel, lifestyle, dining, and entertainment privileges with exclusive rewards..",
+            "joiningBenefit": "MakeMyTrip Signature Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Apply online for the ICICI Bank Rubyx Credit Card and enjoy premium travel, lifestyle, dining, and entertainment privileges with exclusive rewards..",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "icici bank rubyx credit card"
+              "makemytrip signature credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-icici-bank-sapphiro-credit-card",
-          "name": "ICICI Bank Sapphiro Credit Card",
+          "id": "icici-manchester-united-platinum-credit-card",
+          "name": "Manchester United Platinum Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "ICICI Bank Sapphiro Credit Card"
+            "Manchester United Platinum Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-icici-bank-sapphiro-credit-card",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-platinum-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-platinum-desktop.webp",
+            "localAssetName": "icici-manchester-united-platinum-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -1933,263 +1594,16 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply online for the ICICI Bank Sapphiro Credit Card and enjoy airport lounge access, welcome vouchers, milestone rewards, BookMyShow discounts, and concierge services.",
+            "joiningBenefit": "Manchester United Platinum Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Apply online for the ICICI Bank Sapphiro Credit Card and enjoy airport lounge access, welcome vouchers, milestone rewards, BookMyShow discounts, and concierge services.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "icici bank sapphiro credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-instant-fd-credit-card-against-fixed-dep",
-          "name": "Instant FD Credit Card Against Fixed Deposit",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "Instant FD Credit Card Against Fixed Deposit"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-instant-fd-credit-card-against-fixed-dep",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for an FD credit card against fixed deposit at ICICI Bank. Enjoy instant approval, minimal documentation, and up to 90% credit limit on your fixed deposit.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Apply for an FD credit card against fixed deposit at ICICI Bank. Enjoy instant approval, minimal documentation, and up to 90% credit limit on your fixed deposit.",
-            "features": [
-              "90% credit limit on your fixed deposit"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "instant fd credit card against fixed deposit"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-instant-loan-against-credit-card",
-          "name": "Instant Loan Against Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "Instant Loan Against Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-instant-loan-against-credit-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for an instant ICICI bank personal loan against credit card and enjoy low credit card loan interest rates with fast disbursal.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Apply for an instant ICICI bank personal loan against credit card and enjoy low credit card loan interest rates with fast disbursal.",
-            "features": [],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "instant loan against credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-list-of-branches-sourcing-secured-credit",
-          "name": "List of branches sourcing Secured Credit Cards",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "List of branches sourcing Secured Credit Cards"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-list-of-branches-sourcing-secured-credit",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Branches offering Secured Credit Cards – find locations near you that provide secured credit card services",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Branches offering Secured Credit Cards – find locations near you that provide secured credit card services",
-            "features": [],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "list of branches sourcing secured credit cards"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-makemytrip-icici-bank-credit-card",
-          "name": "MakeMyTrip ICICI Bank Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "MakeMyTrip ICICI Bank Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-makemytrip-icici-bank-credit-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Unlock exclusive travel perks with the MakeMyTrip ICICI Bank Credit Card. Get 6% myCash travel, MMTBLACK Gold membership, and low forex markup fees.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Unlock exclusive travel perks with the MakeMyTrip ICICI Bank Credit Card. Get 6% myCash travel, MMTBLACK Gold membership, and low forex markup fees.",
-            "features": [
-              "6% myCash travel",
-              "Get 6% myCash travel"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "makemytrip icici bank credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-makemytrip-icici-bank-platinum-card",
-          "name": "MakeMyTrip ICICI Bank Platinum Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "MakeMyTrip ICICI Bank Platinum Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
-            "localAssetName": "icici-makemytrip-icici-bank-platinum-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Travel smarter with the MakeMyTrip ICICI Bank Platinum Card. Earn myCash on every spend, get exclusive hotel discounts and domestic lounge access. No annual fee!",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Travel smarter with the MakeMyTrip ICICI Bank Platinum Card. Earn myCash on every spend, get exclusive hotel discounts and domestic lounge access. No annual fee!",
-            "features": [
-              "get exclusive hotel discounts and domestic lounge access"
-            ],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "makemytrip icici bank platinum card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-makemytrip-icici-bank-signature-credit-c",
-          "name": "MakeMyTrip ICICI Bank Signature Credit Card",
-          "type": "Credit Card",
-          "network": "Visa",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "MakeMyTrip ICICI Bank Signature Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-makemytrip-icici-bank-signature-credit-c",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Signature Credit Cards from ICICI Bank and MakeMyTrip Card are designed to complement your lifestyle. Our products extend several offers ranging from travel.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Signature Credit Cards from ICICI Bank and MakeMyTrip Card are designed to complement your lifestyle. Our products extend several offers ranging from travel.",
-            "features": [],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "makemytrip icici bank signature credit card"
+              "manchester united platinum credit card"
             ],
             "issuerName": "ICICI"
           }
@@ -2207,8 +1621,8 @@
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-signature-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-signature-desktop.webp",
             "localAssetName": "icici-manchester-united-signature-credit-card",
             "aspectRatio": "16:10"
           },
@@ -2220,10 +1634,10 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "ICICI Bank Manchester United Signature Credit Card",
+            "joiningBenefit": "Manchester United Signature Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "ICICI Bank Manchester United Signature Credit Card",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
@@ -2235,21 +1649,21 @@
           }
         },
         {
-          "id": "icici-parakram-select-credit-card---apply-now",
-          "name": "Parakram Select Credit Card - Apply Now",
+          "id": "icici-mmt-1",
+          "name": "Mmt 1",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Parakram Select Credit Card - Apply Now"
+            "Mmt 1"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-parakram-select-credit-card---apply-now",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/mmt-1.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/mmt-1.webp",
+            "localAssetName": "icici-mmt-1",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -2260,36 +1674,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Rubyx Credit Card: Apply online for Rubyx credit card at ICICI Bank and enjoy the privileges such as ✓Lifestyle. ✓Dining & Golf. ✓Travel Benefits. ✓Free Movie Tickets.",
+            "joiningBenefit": "Mmt 1",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Rubyx Credit Card: Apply online for Rubyx credit card at ICICI Bank and enjoy the privileges such as ✓Lifestyle. ✓Dining & Golf. ✓Travel Benefits. ✓Free Movie Tickets.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "parakram select credit card - apply now"
+              "mmt 1"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-platinum-chip-credit-card---benefits-fea",
-          "name": "Platinum Chip Credit Card - Benefits, Features & Fees",
+          "id": "icici-parakram-credit-card",
+          "name": "Parakram Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Platinum Chip Credit Card - Benefits, Features & Fees"
+            "Parakram Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-platinum-chip-credit-card---benefits-fea",
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/parakram.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/parakram.webp",
+            "localAssetName": "icici-parakram-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -2300,36 +1714,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "The ICICI Bank Platinum Chip Credit Card offers great value with benefits like anti-fraud protection, payback rewards, fuel surcharge waiver, and more. Easy to manage and no-frills.",
+            "joiningBenefit": "Parakram Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "The ICICI Bank Platinum Chip Credit Card offers great value with benefits like anti-fraud protection, payback rewards, fuel surcharge waiver, and more. Easy to manage and no-frills.",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "platinum chip credit card - benefits, features & fees"
+              "parakram credit card"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-prequalify-credit-cards",
-          "name": "Prequalify Credit Cards",
+          "id": "icici-platinum",
+          "name": "Platinum",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Prequalify Credit Cards"
+            "Platinum"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-prequalify-credit-cards",
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "localAssetName": "icici-platinum",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -2340,76 +1754,36 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Check your eligibility and prequalify credit cards with ICICI Bank. Explore pre-approved credit card offers, credit card preapprovals, and enjoy quick approval with minimal documentation",
+            "joiningBenefit": "Platinum",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Check your eligibility and prequalify credit cards with ICICI Bank. Explore pre-approved credit card offers, credit card preapprovals, and enjoy quick approval with minimal documentation",
+            "description": "",
             "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "prequalify credit cards"
+              "platinum"
             ],
             "issuerName": "ICICI"
           }
         },
         {
-          "id": "icici-rupay-credit-card",
-          "name": "RuPay Credit Card",
-          "type": "Credit Card",
-          "network": "RuPay",
-          "variant": "credit",
-          "active": true,
-          "premiumTier": false,
-          "aliases": [
-            "RuPay Credit Card"
-          ],
-          "binRanges": [],
-          "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-rupay-credit-card",
-            "aspectRatio": "16:10"
-          },
-          "theme": {
-            "primaryColor": "#003D7A",
-            "secondaryColor": "#FFD700",
-            "textColor": "#FFFFFF",
-            "accentColor": "#FFD700"
-          },
-          "details": {
-            "annualFee": "Check issuer website",
-            "joiningBenefit": "Apply for ICICI Bank RuPay Credit Card Online – enjoy seamless payments, UPI-link convenience, nationwide acceptance and secure banking experience with tailored features.",
-            "interestRate": "Check issuer website",
-            "gracePeriod": "45 days",
-            "description": "Apply for ICICI Bank RuPay Credit Card Online – enjoy seamless payments, UPI-link convenience, nationwide acceptance and secure banking experience with tailored features.",
-            "features": [],
-            "eligibility": "Age 21+, Employed"
-          },
-          "parsingHints": {
-            "statementAliases": [
-              "rupay credit card"
-            ],
-            "issuerName": "ICICI"
-          }
-        },
-        {
-          "id": "icici-times-black-icici-bank-credit-card",
-          "name": "Times Black ICICI Bank Credit Card",
+          "id": "icici-rubyx-credit-card",
+          "name": "Rubyx Credit Card",
           "type": "Credit Card",
           "network": "Visa",
           "variant": "credit",
           "active": true,
           "premiumTier": false,
           "aliases": [
-            "Times Black ICICI Bank Credit Card"
+            "Rubyx Credit Card"
           ],
           "binRanges": [],
           "image": {
-            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-pages/header/credit-card-d.webp",
-            "localAssetName": "icici-times-black-icici-bank-credit-card",
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/emeralde-rubyx/emirates-rubyx-crad-d.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/emeralde-rubyx/emirates-rubyx-crad-d.webp",
+            "localAssetName": "icici-rubyx-credit-card",
             "aspectRatio": "16:10"
           },
           "theme": {
@@ -2420,18 +1794,96 @@
           },
           "details": {
             "annualFee": "Check issuer website",
-            "joiningBenefit": "Get dining discounts, movie offers, and free memberships with the Times Black ICICI Bank Credit Card. Start saving on your lifestyle expenses. Apply now!",
+            "joiningBenefit": "Rubyx Credit Card",
             "interestRate": "Check issuer website",
             "gracePeriod": "45 days",
-            "description": "Get dining discounts, movie offers, and free memberships with the Times Black ICICI Bank Credit Card. Start saving on your lifestyle expenses. Apply now!",
-            "features": [
-              "Get dining discounts"
-            ],
+            "description": "",
+            "features": [],
             "eligibility": "Age 21+, Employed"
           },
           "parsingHints": {
             "statementAliases": [
-              "times black icici bank credit card"
+              "rubyx credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-sapphiro-credit-card",
+          "name": "Sapphiro Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Sapphiro Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/emirates-sapphiro.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/emirates-sapphiro.webp",
+            "localAssetName": "icici-sapphiro-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Sapphiro Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "sapphiro credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-times-black-credit-card",
+          "name": "Times Black Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Times Black Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/times-black.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/times-black.webp",
+            "localAssetName": "icici-times-black-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Times Black Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "times black credit card"
             ],
             "issuerName": "ICICI"
           }
@@ -2460,9 +1912,9 @@
     }
   ],
   "metadata": {
-    "cardCount": 57,
+    "cardCount": 44,
     "issuerCount": 2,
     "networkCount": 3,
-    "lastUpdated": "2026-05-17T09:02:08.105Z"
+    "lastUpdated": "2026-05-17T09:48:17.013Z"
   }
 }

@@ -213,251 +213,6 @@ function cleanICICIName(
         .join(" ");
 }
 
-async function fetchCardDetails(
-    cardDetailUrl
-) {
-    try {
-        console.log(
-            `Fetching: ${cardDetailUrl}`
-        );
-
-        const response =
-            await fetch(
-                cardDetailUrl,
-                {
-                    headers: {
-                        "User-Agent":
-                            "Mozilla/5.0"
-                    }
-                }
-            );
-
-        if (
-            !response.ok
-        ) {
-            return null;
-        }
-
-        const html =
-            await response.text();
-
-        const $ =
-            cheerio.load(
-                html
-            );
-
-        // Extract product name (clean title)
-        const title =
-            $("title").text();
-
-        let productName =
-            title
-                .split(":")[0]
-                .split("|")[0]
-                .split("–")[0]
-                .trim();
-
-        // Clean product name of extra chars
-        productName =
-            productName
-                .replace(
-                    /\s+/g,
-                    " "
-                );
-
-        // Extract description
-        let description =
-            $('meta[property="og:description"]')
-                .attr("content") ||
-            "";
-
-        if (
-            description
-        ) {
-            description =
-                description
-                    .slice(0, 400);
-        }
-
-        // Extract rewards from description as fallback
-        const rewards =
-            [];
-
-        // Try to get reward points info
-        $(
-            ".icon__benefit img[src*='reward'], " +
-            ".icon__benefit img[src*='points']"
-        )
-            .closest(".icon__benefit")
-            .find("p").each(
-                (_, elem) => {
-                    const text =
-                        $(elem)
-                            .text()
-                            .trim()
-                            .replace(
-                                /\n/g,
-                                " "
-                            )
-                            .replace(
-                                /\s+/g,
-                                " "
-                            );
-
-                    if (
-                        text &&
-                        text.length > 15
-                    ) {
-                        rewards.push(
-                            text
-                        );
-                    }
-                }
-            );
-
-        // Extract benefits category names
-        const benefits =
-            [];
-
-        $(
-            ".benefits__lt .dis__badge p, " +
-            ".product-maximum-benefits .dis__badge p"
-        ).each(
-            (_, elem) => {
-                const text =
-                    $(elem)
-                        .text()
-                        .trim();
-
-                if (
-                    text &&
-                    benefits.length < 5
-                ) {
-                    benefits.push(
-                        text
-                    );
-                }
-            }
-        );
-
-        // Extract apply link
-        const applyLink =
-            $('a[href*="buy.icici.bank"]')
-                .first()
-                .attr("href") || null;
-
-        return {
-            productName,
-
-            description,
-
-            rewards:
-                rewards.slice(0, 5),
-
-            benefits:
-                benefits.slice(0, 5),
-
-            applyLink,
-
-            detailsLink:
-                cardDetailUrl
-        };
-    } catch (error) {
-        return null;
-    }
-}
-
-const CARD_PAGE_KEYWORDS = [
-    "credit-card",
-    "rupay",
-    "signature",
-    "platinum",
-    "coral",
-    "sapphiro",
-    "rubyx",
-    "emeralde",
-    "hpcl",
-    "adani",
-    "manchester",
-    "mmt",
-    "makemytrip",
-    "emirates",
-    "expressions",
-    "parakram",
-    "times-black",
-    "csk"
-];
-
-function isCardProductPage(
-    url
-) {
-    const lower =
-        url.toLowerCase();
-
-    const hasCardKeyword =
-        CARD_PAGE_KEYWORDS.some(
-            keyword =>
-                lower.includes(
-                    keyword
-                )
-        );
-
-    const isNotServicePage =
-        !lower.includes(
-            "faq"
-        ) &&
-        !lower.includes(
-            "cancel"
-        ) &&
-        !lower.includes(
-            "pin"
-        ) &&
-        !lower.includes(
-            "limit"
-        ) &&
-        !lower.includes(
-            "emi"
-        ) &&
-        !lower.includes(
-            "terms"
-        ) &&
-        !lower.includes(
-            "benefits-and-features"
-        ) &&
-        !lower.includes(
-            "experience"
-        ) &&
-        !lower.includes(
-            "generate"
-        ) &&
-        !lower.includes(
-            "calculator"
-        );
-
-    return hasCardKeyword &&
-        isNotServicePage;
-}
-
-function fuzzyMatch(
-    str1,
-    str2
-) {
-    const a =
-        str1
-            .toLowerCase()
-            .replace(/\W/g, "");
-    const b =
-        str2
-            .toLowerCase()
-            .replace(/\W/g, "");
-
-    return (
-        a.includes(b) ||
-        b.includes(a) ||
-        a === b
-    );
-}
-
 export async function fetchICICICards() {
     console.log(
         "Fetching ICICI listing page..."
@@ -482,38 +237,7 @@ export async function fetchICICICards() {
             html
         );
 
-    // Extract product card URLs only
-    const cardUrls =
-        new Set();
-
-    $(
-        'a[href*="/personal-banking/cards/credit-card/"]'
-    ).each(
-        (_, elem) => {
-            const href =
-                $(elem).attr(
-                    "href"
-                );
-
-            if (
-                href &&
-                isCardProductPage(
-                    href
-                )
-            ) {
-                cardUrls.add(
-                    href
-                );
-            }
-        }
-    );
-
-    console.log(
-        `Found ${cardUrls.size} product card pages`
-    );
-
-    // Extract all card images from listing with context
-    const allImages =
+    const cards =
         [];
 
     $("img").each(
@@ -524,7 +248,9 @@ export async function fetchICICICards() {
                 );
 
             if (
-                !image
+                !isValidCardImage(
+                    image
+                )
             ) {
                 return;
             }
@@ -534,13 +260,13 @@ export async function fetchICICICards() {
                     image
                 );
 
-            const cleanName =
+            const name =
                 cleanICICIName(
                     rawName
                 );
 
             if (
-                !cleanName
+                !name
             ) {
                 return;
             }
@@ -552,91 +278,36 @@ export async function fetchICICICards() {
                     ? image
                     : `https://www.icici.bank.in${image}`;
 
-            allImages.push({
-                cleanName,
-                rawName,
-                absoluteImage
+            const container =
+                $(imageElement)
+                    .closest(
+                        "section, div, article, li"
+                    );
+
+            const description =
+                container
+                    .text()
+                    .replace(
+                        /\s+/g,
+                        " "
+                    )
+                    .trim()
+                    .slice(
+                        0,
+                        400
+                    );
+
+            cards.push({
+                name,
+
+                image:
+                    absoluteImage,
+
+                description
             });
         }
     );
 
-    console.log(
-        `Extracted ${allImages.length} card images`
-    );
-
-    // Fetch details for each card
-    const cards =
-        [];
-
-    for (const url of cardUrls) {
-        const fullUrl =
-            url.startsWith(
-                "http"
-            )
-                ? url
-                : `https://www.icici.bank.in${url}`;
-
-        const details =
-            await fetchCardDetails(
-                fullUrl
-            );
-
-        if (
-            !details ||
-            !details.applyLink
-        ) {
-            continue;
-        }
-
-        const cardName =
-            details.productName;
-
-        // Match image by fuzzy name matching
-        let matchedImage =
-            null;
-
-        for (const imgData of allImages) {
-            if (
-                fuzzyMatch(
-                    cardName,
-                    imgData.cleanName
-                ) ||
-                fuzzyMatch(
-                    cardName,
-                    imgData.rawName
-                )
-            ) {
-                matchedImage =
-                    imgData.absoluteImage;
-                break;
-            }
-        }
-
-        cards.push({
-            name:
-                cardName,
-
-            image:
-                matchedImage,
-
-            description:
-                details.description,
-
-            rewards:
-                details.rewards,
-
-            benefits:
-                details.benefits,
-
-            applyLink:
-                details.applyLink,
-
-            detailsLink:
-                details.detailsLink
-        });
-    }
-
-    // Deduplicate by name
     const unique =
         Array.from(
             new Map(
