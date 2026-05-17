@@ -10,7 +10,7 @@ struct BanksView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        Group {
             if viewModel.banks.isEmpty, !viewModel.isLoading {
                 emptyState
             } else if viewModel.isLoading {

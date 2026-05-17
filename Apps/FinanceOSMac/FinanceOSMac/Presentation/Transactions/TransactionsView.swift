@@ -20,29 +20,27 @@ struct TransactionsView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            TransactionListContentView(
-                sections: viewModel.sections,
-                listState: viewModel.listState,
-                onDelete: { id in
-                    Task { await viewModel.deleteTransaction(id: id) }
-                }
-            )
-            .overlay {
-                if viewModel.isLoading, viewModel.transactionRows.isEmpty {
-                    VStack(spacing: 12) {
-                        ProgressView()
-                            .controlSize(.large)
-                        Text("Loading transactions...")
-                            .caption()
-                            .foregroundColor(AppColors.textTertiary)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppColors.base)
-                }
+        TransactionListContentView(
+            sections: viewModel.sections,
+            listState: viewModel.listState,
+            onDelete: { id in
+                Task { await viewModel.deleteTransaction(id: id) }
             }
-            .navigationTitle("Transactions")
+        )
+        .overlay {
+            if viewModel.isLoading, viewModel.transactionRows.isEmpty {
+                VStack(spacing: 12) {
+                    ProgressView()
+                        .controlSize(.large)
+                    Text("Loading transactions...")
+                        .caption()
+                        .foregroundColor(AppColors.textTertiary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(AppColors.base)
+            }
         }
+        .navigationTitle("Transactions")
         .alert("Delete Failed", isPresented: Binding(
             get: { viewModel.deleteError != nil },
             set: { if !$0 { viewModel.deleteError = nil } }

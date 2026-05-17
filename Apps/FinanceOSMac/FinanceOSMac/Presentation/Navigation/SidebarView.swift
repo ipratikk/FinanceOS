@@ -9,31 +9,29 @@ struct SidebarView: View {
     private let appContainer = AppContainer.shared
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                header
+        VStack(spacing: 0) {
+            header
 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        mainNavigation
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    mainNavigation
 
-                        Divider()
-                            .padding(.vertical, 8)
+                    Divider()
+                        .padding(.vertical, 8)
 
-                        quickAccess
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
+                    quickAccess
                 }
-
-                Spacer()
-
-                footer
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
             }
-            .background(AppColors.surface)
-            .task {
-                await loadAccounts()
-            }
+
+            Spacer()
+
+            footer
+        }
+        .background(AppColors.surface)
+        .task {
+            await loadAccounts()
         }
     }
 

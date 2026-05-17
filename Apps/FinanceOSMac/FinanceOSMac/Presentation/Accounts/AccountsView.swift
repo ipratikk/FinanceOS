@@ -19,7 +19,7 @@ struct AccountsView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        Group {
             if viewModel.accounts.isEmpty, !viewModel.isLoading {
                 emptyState
             } else if viewModel.isLoading {
@@ -74,7 +74,7 @@ struct AccountsView: View {
             ) { bankName, ledgers in
                 Section(bankName) {
                     ForEach(ledgers, id: \.id) { ledger in
-                        NavigationLink(value: ledger.id) {
+                        NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
                             accountRow(ledger)
                         }
                         .listRowBackground(AppColors.surface)
@@ -100,19 +100,6 @@ struct AccountsView: View {
         .listStyle(.plain)
         .background(AppColors.base)
         .scrollContentBackground(.hidden)
-        .navigationDestination(for: UUID.self) { accountId in
-            if let ledger = viewModel.accounts.first(where: { $0.id == accountId }) {
-                AccountTransactionsView(
-                    ledger: ledger,
-                    viewModel: AccountTransactionsViewModel(
-                        transactionRepository: transactionRepository,
-                        ledgerRepository: ledgerRepository
-                    )
-                )
-                .navigationTitle(ledger.displayName)
-                .onAppear { selectedAccountId = accountId }
-            }
-        }
     }
 
     private var groupedAccountsByBank: [String: [Ledger]] {

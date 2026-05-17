@@ -19,7 +19,7 @@ struct CardsView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        Group {
             if viewModel.cardRows.isEmpty, !viewModel.isLoading {
                 emptyState
             } else if viewModel.isLoading {
@@ -74,7 +74,7 @@ struct CardsView: View {
             ) { bankName, cardRows in
                 Section(bankName) {
                     ForEach(cardRows, id: \.card.id) { cardRow in
-                        NavigationLink(value: cardRow.card.id) {
+                        NavigationLink(value: DetailDestination.cardTransactions(cardRow.card.id)) {
                             cardRowView(cardRow.card)
                         }
                         .listRowBackground(AppColors.surface)
@@ -100,18 +100,6 @@ struct CardsView: View {
         .listStyle(.plain)
         .background(AppColors.base)
         .scrollContentBackground(.hidden)
-        .navigationDestination(for: UUID.self) { cardId in
-            if let ledger = viewModel.cardRows.first(where: { $0.card.id == cardId })?.card {
-                CardTransactionsView(
-                    ledger: ledger,
-                    viewModel: CardTransactionsViewModel(
-                        transactionRepository: transactionRepository
-                    )
-                )
-                .navigationTitle(ledger.displayName)
-                .onAppear { selectedCardId = cardId }
-            }
-        }
     }
 
     private var groupedCardsByBank: [String: [CardsViewModel.CardRow]] {

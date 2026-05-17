@@ -15,66 +15,64 @@ struct AdaptiveNavigation: View {
     }
 
     var iPhoneTabView: some View {
-        NavigationStack {
-            TabView(selection: .init(
-                get: { navigator.sidebarSelection },
-                set: { navigator.navigate(to: $0) }
-            )) {
-                DashboardView()
-                    .tabItem {
-                        Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
-                    }
-                    .tag(NavigationItem.dashboard)
-
-                TransactionsView(
-                    viewModel: TransactionsViewModel(
-                        transactionRepository: appContainer.transactionRepository,
-                        ledgerRepository: appContainer.ledgerRepository
-                    )
-                )
+        TabView(selection: .init(
+            get: { navigator.sidebarSelection },
+            set: { navigator.navigate(to: $0) }
+        )) {
+            DashboardView()
                 .tabItem {
-                    Label(NavigationItem.transactions.label, systemImage: NavigationItem.transactions.icon)
+                    Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
                 }
-                .tag(NavigationItem.transactions)
+                .tag(NavigationItem.dashboard)
 
-                AccountsView(
-                    viewModel: AccountsViewModel(
-                        ledgerRepository: appContainer.ledgerRepository,
-                        bankRepository: appContainer.bankRepository,
-                        transactionRepository: appContainer.transactionRepository
-                    ),
+            TransactionsView(
+                viewModel: TransactionsViewModel(
                     transactionRepository: appContainer.transactionRepository,
                     ledgerRepository: appContainer.ledgerRepository
                 )
-                .tabItem {
-                    Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
-                }
-                .tag(NavigationItem.accounts)
-
-                CardsView(
-                    viewModel: CardsViewModel(
-                        ledgerRepository: appContainer.ledgerRepository,
-                        bankRepository: appContainer.bankRepository,
-                        transactionRepository: appContainer.transactionRepository
-                    ),
-                    transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository
-                )
-                .tabItem {
-                    Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
-                }
-                .tag(NavigationItem.cards)
-
-                BanksView(
-                    viewModel: BanksViewModel(
-                        repository: appContainer.bankRepository
-                    )
-                )
-                .tabItem {
-                    Label(NavigationItem.banks.label, systemImage: NavigationItem.banks.icon)
-                }
-                .tag(NavigationItem.banks)
+            )
+            .tabItem {
+                Label(NavigationItem.transactions.label, systemImage: NavigationItem.transactions.icon)
             }
+            .tag(NavigationItem.transactions)
+
+            AccountsView(
+                viewModel: AccountsViewModel(
+                    ledgerRepository: appContainer.ledgerRepository,
+                    bankRepository: appContainer.bankRepository,
+                    transactionRepository: appContainer.transactionRepository
+                ),
+                transactionRepository: appContainer.transactionRepository,
+                ledgerRepository: appContainer.ledgerRepository
+            )
+            .tabItem {
+                Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
+            }
+            .tag(NavigationItem.accounts)
+
+            CardsView(
+                viewModel: CardsViewModel(
+                    ledgerRepository: appContainer.ledgerRepository,
+                    bankRepository: appContainer.bankRepository,
+                    transactionRepository: appContainer.transactionRepository
+                ),
+                transactionRepository: appContainer.transactionRepository,
+                ledgerRepository: appContainer.ledgerRepository
+            )
+            .tabItem {
+                Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
+            }
+            .tag(NavigationItem.cards)
+
+            BanksView(
+                viewModel: BanksViewModel(
+                    repository: appContainer.bankRepository
+                )
+            )
+            .tabItem {
+                Label(NavigationItem.banks.label, systemImage: NavigationItem.banks.icon)
+            }
+            .tag(NavigationItem.banks)
         }
     }
 
@@ -92,6 +90,19 @@ struct DetailRouter: View {
     let appContainer: AppContainer
 
     var body: some View {
+        NavigationStack(path: .init(
+            get: { navigator.detailPath },
+            set: { navigator.detailPath = $0 }
+        )) {
+            detailContent
+                .navigationDestination(for: DetailDestination.self) { destination in
+                    destinationView(for: destination)
+                }
+        }
+    }
+
+    @ViewBuilder
+    var detailContent: some View {
         switch navigator.sidebarSelection {
         case .dashboard:
             DashboardView()
@@ -138,6 +149,24 @@ struct DetailRouter: View {
                     ledgerRepository: appContainer.ledgerRepository,
                     transactionRepository: appContainer.transactionRepository
                 )
+            )
+        }
+    }
+
+    @ViewBuilder
+    func destinationView(for destination: DetailDestination) -> some View {
+        switch destination {
+        case let .accountTransactions(ledgerId):
+            AccountTransactionsDestinationView(
+                ledgerId: ledgerId,
+                transactionRepository: appContainer.transactionRepository,
+                ledgerRepository: appContainer.ledgerRepository
+            )
+        case let .cardTransactions(ledgerId):
+            CardTransactionsDestinationView(
+                ledgerId: ledgerId,
+                transactionRepository: appContainer.transactionRepository,
+                ledgerRepository: appContainer.ledgerRepository
             )
         }
     }
