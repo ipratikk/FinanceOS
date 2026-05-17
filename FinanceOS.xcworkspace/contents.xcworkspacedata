@@ -8,6 +8,9 @@
       location = "group:Packages/FinanceUI">
    </FileRef>
    <FileRef
+      location = "group:Packages/FinanceTesting">
+   </FileRef>
+   <FileRef
       location = "group:Apps/FinanceOSMac/FinanceOSMac.xcodeproj">
    </FileRef>
 </Workspace>
