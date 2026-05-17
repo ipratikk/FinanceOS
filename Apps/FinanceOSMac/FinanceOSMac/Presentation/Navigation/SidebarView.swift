@@ -4,142 +4,86 @@ import SwiftUI
 
 struct SidebarView: View {
     @Environment(AppNavigator.self) private var navigator
-    @State private var ledgers: [Ledger] = []
-
-    private let appContainer = AppContainer.shared
+    @Namespace private var selectionNamespace
 
     var body: some View {
         VStack(spacing: 0) {
-            header
+            // Header
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                FDSLabel("FinanceOS", style: .headingMedium)
+                FDSLabel("Financial OS", style: .labelSmall)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(AppSpacing.md)
+            .background(.ultraThinMaterial)
+            .overlay(
+                Divider(),
+                alignment: .bottom
+            )
 
+            // Navigation
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    mainNavigation
-
-                    Divider()
-                        .padding(.vertical, 8)
-
-                    quickAccess
+                VStack(alignment: .leading, spacing: 2) {
+                    ForEach(NavigationItem.allCases, id: \.self) { item in
+                        navigationButton(item)
+                    }
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
+                .padding(.vertical, AppSpacing.md)
+                .padding(.horizontal, AppSpacing.sm)
             }
 
             Spacer()
 
-            footer
-        }
-        .background(AppColors.surface)
-        .task {
-            await loadAccounts()
-        }
-    }
-
-    var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FDSLabel("FinanceOS", style: .headingLarge)
-            FDSLabel("Financial Operating System", style: .hint)
-        }
-        .padding(AppSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppColors.base)
-    }
-
-    var mainNavigation: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            ForEach(NavigationItem.allCases, id: \.self) { item in
-                Button(action: { navigator.navigate(to: item) }, label: {
-                    HStack(spacing: 12) {
-                        Image(systemName: item.icon)
-                            .headingSmall()
-                            .frame(width: 20)
-
-                        FDSLabel(item.label, style: .bodyLarge)
-
-                        Spacer()
-                    }
-                    .foregroundColor(navigator.sidebarSelection == item ? .white : .gray)
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 12)
-                    .background(navigator.sidebarSelection == item ? AppColors.accent.opacity(0.2) : Color
-                        .clear)
-                    .cornerRadius(AppRadius.md)
-                })
-            }
-        }
-    }
-
-    var quickAccess: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FDSLabel("Quick Access", style: .subheading)
-
-            let accounts = ledgers.filter { $0.kind == .bankAccount }
-            let cards = ledgers.filter { $0.kind == .creditCard }
-
-            if !accounts.isEmpty {
-                VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Accounts", style: .hint)
-
-                    ForEach(accounts.prefix(3), id: \.id) { account in
-                        HStack(spacing: 8) {
-                            Image(systemName: "building.2")
-                                .labelSmall()
-                                .foregroundColor(.gray)
-                            FDSLabel(
-                                account.nickname.isEmpty ? account.displayName : account.nickname,
-                                style: .labelSmall
-                            )
-                            .lineLimit(1)
-                        }
-                        .foregroundColor(.gray)
-                    }
-                }
-            }
-
-            if !cards.isEmpty {
-                VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Cards", style: .hint)
-
-                    ForEach(cards.prefix(3), id: \.id) { card in
-                        HStack(spacing: 8) {
-                            Image(systemName: "creditcard")
-                                .labelSmall()
-                                .foregroundColor(.gray)
-                            FDSLabel(card.nickname.isEmpty ? card.displayName : card.nickname, style: .hint)
-                                .lineLimit(1)
-                        }
-                        .foregroundColor(.gray)
-                    }
-                }
-            }
-        }
-    }
-
-    var footer: some View {
-        Button(action: { navigator.navigate(to: .importStatement) }, label: {
-            HStack(spacing: 12) {
+            // Footer
+            Button(action: { navigator.navigate(to: .importStatement) }, label: {
                 Image(systemName: "arrow.down.doc.fill")
-                    .headingSmall()
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(AppColors.accent)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(AppSpacing.md)
+                    .contentShape(Rectangle())
+            })
+            .buttonStyle(.plain)
+            .background(.ultraThinMaterial)
+            .overlay(
+                Divider(),
+                alignment: .top
+            )
+        }
+        .background(AppColors.base)
+        .frame(minWidth: 180)
+    }
 
-                FDSLabel("Import Statement", style: .bodyLarge)
+    private func navigationButton(_ item: NavigationItem) -> some View {
+        Button(action: { withAnimation(AppAnimation.selection) { navigator.navigate(to: item) } }) {
+            HStack(spacing: AppSpacing.sm) {
+                Image(systemName: item.icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .frame(width: 16)
+
+                Text(item.label)
+                    .bodyLarge()
 
                 Spacer()
             }
-            .foregroundColor(.white)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 12)
-            .background(AppColors.accent)
-            .cornerRadius(AppRadius.md)
-        })
-        .padding(AppSpacing.md)
-    }
-
-    private func loadAccounts() async {
-        do {
-            ledgers = try await appContainer.ledgerRepository.fetchLedgers()
-        } catch {
-            print("Error loading sidebar data: \(error)")
+            .foregroundColor(navigator.sidebarSelection == item ? AppColors.textPrimary : AppColors.textTertiary)
+            .padding(.vertical, AppSpacing.compact)
+            .padding(.horizontal, AppSpacing.sm)
+            .background(
+                Group {
+                    if navigator.sidebarSelection == item {
+                        RoundedRectangle(cornerRadius: AppRadius.sm)
+                            .fill(.ultraThinMaterial)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: AppRadius.sm)
+                                    .stroke(AppColors.borderGlass, lineWidth: 0.5)
+                            )
+                            .matchedGeometryEffect(id: "selection", in: selectionNamespace)
+                    }
+                }
+            )
         }
+        .buttonStyle(.plain)
     }
 }
 
