@@ -200,7 +200,7 @@ struct CreateNewTargetSheet: View {
             CardSelectionView(
                 onSelect: { card in
                     state.cardType = card.cardType
-                    state.cardProduct = card.name
+                    state.cardProduct = card.id
                     showCardSelection = false
                 },
                 onDismiss: { showCardSelection = false }

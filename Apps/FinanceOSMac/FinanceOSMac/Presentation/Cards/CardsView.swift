@@ -163,7 +163,7 @@ struct CardsView: View {
         HStack(spacing: 12) {
             let supportedCards = CardDatabase.supportedCards()
             let card = ledger.cardProduct.flatMap { product in
-                supportedCards.first { $0.name == product }
+                supportedCards.first { $0.id == product }
             } ?? supportedCards.first { $0.name == ledger.displayName }
 
             AsyncImage(url: URL(string: card?.imageURL ?? "")) { phase in
