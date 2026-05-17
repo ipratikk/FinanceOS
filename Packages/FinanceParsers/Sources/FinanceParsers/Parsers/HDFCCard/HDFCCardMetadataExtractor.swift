@@ -35,7 +35,7 @@ public struct HDFCCardMetadataExtractor: Sendable {
     }
 
     private func extractCardLast4(from lines: [String]) -> String? {
-        for line in lines.prefix(25) {
+        for line in lines.prefix(50) {
             if line.contains("Card No:") {
                 let trimmed = line.trimmingCharacters(in: .whitespaces)
                 let parts = trimmed.components(separatedBy: " ").filter { !$0.isEmpty }
@@ -48,7 +48,7 @@ public struct HDFCCardMetadataExtractor: Sendable {
     }
 
     private func extractFullCardNumber(from lines: [String]) -> String? {
-        for line in lines.prefix(25) {
+        for line in lines.prefix(50) {
             if line.contains("Card No:") {
                 let colonParts = line.components(separatedBy: ":")
                 if colonParts.count >= 2 {
