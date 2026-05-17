@@ -17,7 +17,7 @@ public enum CardCatalogLoader {
 
         let assetName = size == .small ? logos[issuer]?.small : logos[issuer]?.large
 
-        if let assetName = assetName,
+        if let assetName,
            let assetURL = Bundle.module.url(forResource: assetName, withExtension: nil)
         {
             return assetURL

@@ -119,24 +119,7 @@ struct CardsView: View {
 
     private func bankSectionHeader(_ bankName: String) -> some View {
         HStack(spacing: 8) {
-            AsyncImage(url: bankLogoURL(for: bankName)) { phase in
-                switch phase {
-                case let .success(image):
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 20)
-                case .failure:
-                    Text(bankName)
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
-                default:
-                    Text(bankName)
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
-                }
-            }
-            .frame(width: 50, height: 20)
+            SVGImageView(bankLogoURL(for: bankName), width: 50, height: 20)
 
             Text(bankName)
                 .headingSmall()
@@ -155,18 +138,7 @@ struct CardsView: View {
 
                 HStack(spacing: 6) {
                     if let cardType = ledger.cardType {
-                        AsyncImage(url: networkLogoURL(for: cardType)) { phase in
-                            switch phase {
-                            case let .success(image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 10)
-                            default:
-                                EmptyView()
-                            }
-                        }
-                        .frame(width: 20, height: 10)
+                        SVGImageView(networkLogoURL(for: cardType), width: 20, height: 10)
 
                         Text(cardType.uppercased())
                             .labelSmall()

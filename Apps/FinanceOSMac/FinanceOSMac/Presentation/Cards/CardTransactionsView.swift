@@ -58,18 +58,7 @@ struct CardTransactionsView: View {
 
                 HStack(spacing: 8) {
                     if let cardType = ledger.cardType {
-                        AsyncImage(url: networkLogoURL(for: cardType)) { phase in
-                            switch phase {
-                            case let .success(image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 12)
-                            default:
-                                EmptyView()
-                            }
-                        }
-                        .frame(width: 24, height: 12)
+                        SVGImageView(networkLogoURL(for: cardType), width: 24, height: 12)
 
                         Text(cardType.uppercased())
                             .labelSmall()

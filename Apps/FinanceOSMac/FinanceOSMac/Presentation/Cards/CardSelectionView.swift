@@ -155,20 +155,10 @@ struct CardSelectionView: View {
                         }
 
                         // Network Logo Badge
-                        AsyncImage(url: networkLogoURL(for: card.cardType)) { phase in
-                            switch phase {
-                            case let .success(image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 28, height: 18)
-                                    .padding(4)
-                                    .background(Color.white)
-                                    .cornerRadius(4)
-                            default:
-                                EmptyView()
-                            }
-                        }
+                        SVGImageView(networkLogoURL(for: card.cardType), width: 28, height: 18)
+                            .padding(4)
+                            .background(Color.white)
+                            .cornerRadius(4)
                     }
                     .frame(width: 100, height: 65)
 
@@ -178,20 +168,7 @@ struct CardSelectionView: View {
 
                         HStack(spacing: 8) {
                             // Bank Logo
-                            AsyncImage(url: bankLogoURL(for: card.issuer)) { phase in
-                                switch phase {
-                                case let .success(image):
-                                    image
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(height: 16)
-                                case .failure:
-                                    FDSLabel(card.issuer, style: .caption, color: .secondary)
-                                default:
-                                    FDSLabel(card.issuer, style: .caption, color: .secondary)
-                                }
-                            }
-                            .frame(width: 40, height: 16)
+                            SVGImageView(bankLogoURL(for: card.issuer), width: 40, height: 16)
 
                             Spacer()
                             FDSLabel(card.cardType.uppercased(), style: .caption)
