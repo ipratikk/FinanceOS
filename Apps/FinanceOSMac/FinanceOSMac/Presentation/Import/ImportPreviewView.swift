@@ -65,6 +65,7 @@ struct ImportPreviewView: View {
                                 ownerName: state.ownerName,
                                 accountType: state.accountType,
                                 cardType: state.cardType,
+                                cardProduct: state.cardProduct,
                                 isCard: state.isCard
                             )
                         }

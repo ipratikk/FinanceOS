@@ -9,6 +9,8 @@ struct CreateNewTargetSheet: View {
     let onCancel: () -> Void
     let onCreate: () -> Void
 
+    @State private var showCardSelection = false
+
     var selectedBank: Bank? {
         guard let id = state.selectedBankID else { return nil }
         return banks.first { $0.id == id }
@@ -58,29 +60,44 @@ struct CreateNewTargetSheet: View {
                                 }
 
                             if isCard {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
-                                        FDSLabel("Card Type", style: .hint)
-                                        Spacer()
-                                        Button(action: { autoDetectCardType() }) {
-                                            FDSLabel("Auto-detect", style: .caption, color: .secondary)
+                                VStack(alignment: .leading, spacing: 8) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        HStack {
+                                            FDSLabel("Card Type", style: .hint)
+                                            Spacer()
+                                            Button(action: { autoDetectCardType() }) {
+                                                FDSLabel("Auto-detect", style: .caption, color: .secondary)
+                                            }
+                                            .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
                                         }
-                                        .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
+                                        Picker("Type", selection: $state.cardType) {
+                                            Text("Visa").tag("visa")
+                                            Text("Mastercard").tag("mastercard")
+                                            Text("American Express").tag("amex")
+                                            Text("Discover").tag("discover")
+                                            Text("Diners Club").tag("diners")
+                                            Text("Other").tag("other")
+                                        }
+                                        .pickerStyle(.menu)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                     }
-                                    Picker("Type", selection: $state.cardType) {
-                                        Text("Visa").tag("visa")
-                                        Text("Mastercard").tag("mastercard")
-                                        Text("American Express").tag("amex")
-                                        Text("Discover").tag("discover")
-                                        Text("Diners Club").tag("diners")
-                                        Text("Other").tag("other")
+                                    .padding(AppSpacing.xs)
+                                    .background(AppColors.surface2)
+                                    .cornerRadius(AppRadius.sm)
+
+                                    Button(action: { showCardSelection = true }) {
+                                        HStack {
+                                            Image(systemName: "creditcard.fill")
+                                                .labelSmall()
+                                            FDSLabel("Browse Card Database", style: .bodyMedium)
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
+                                                .labelSmall()
+                                        }
+                                        .foregroundColor(AppColors.accent)
+                                        .padding(AppSpacing.xs)
                                     }
-                                    .pickerStyle(.menu)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
                             }
 
                             if !isCard {
@@ -179,6 +196,16 @@ struct CreateNewTargetSheet: View {
         }
         .frame(maxHeight: .infinity, alignment: .topLeading)
         .background(AppColors.base)
+        .sheet(isPresented: $showCardSelection) {
+            CardSelectionView(
+                onSelect: { card in
+                    state.cardType = card.cardType
+                    state.cardProduct = card.id
+                    showCardSelection = false
+                },
+                onDismiss: { showCardSelection = false }
+            )
+        }
     }
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {

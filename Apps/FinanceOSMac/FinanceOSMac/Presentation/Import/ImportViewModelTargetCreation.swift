@@ -20,6 +20,7 @@ extension ImportViewModel {
         ownerName: String = "",
         accountType: String = "savings",
         cardType: String = "other",
+        cardProduct: String = "",
         isCard: Bool? = nil
     ) async {
         guard let statement = importSession.parsedStatements.first else {
@@ -41,7 +42,7 @@ extension ImportViewModel {
             )
             let isCardTarget = isCard ?? (statement.cardLast4 != nil)
             if isCardTarget {
-                try await createCard(params, cardType: cardType)
+                try await createCard(params, cardType: cardType, cardProduct: cardProduct)
             } else {
                 try await createAccount(params, ownerName: ownerName, accountType: accountType)
             }
@@ -74,7 +75,8 @@ extension ImportViewModel {
 
     private func createCard(
         _ params: TargetParams,
-        cardType: String
+        cardType: String,
+        cardProduct: String = ""
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
         let displayName = customNameTrimmed ?? params.statement.bankName
@@ -89,7 +91,8 @@ extension ImportViewModel {
             last4: params.last4,
             nickname: params.nickname,
             ownerName: "",
-            cardType: cardType
+            cardType: cardType,
+            cardProduct: cardProduct.isEmpty ? nil : cardProduct
         )
         try await ledgerRepository.insert(ledger)
         ledgers = try await ledgerRepository.fetchLedgers()

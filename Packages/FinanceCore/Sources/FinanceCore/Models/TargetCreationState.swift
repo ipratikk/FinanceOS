@@ -12,6 +12,7 @@ public struct TargetCreationState: Identifiable {
     public var isCard: Bool = false
     public var accountType: String = "savings"
     public var cardType: String = "other"
+    public var cardProduct: String = ""
 
     public init() {}
 

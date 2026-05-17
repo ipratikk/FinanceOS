@@ -14,6 +14,7 @@ struct CardEditView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
+    @State private var showCardSelection = false
 
     init(card: Ledger, context: CardEditContext) {
         self.card = card
@@ -57,29 +58,44 @@ struct CardEditView: View {
                                     }
                                 }
 
-                            VStack(alignment: .leading, spacing: 4) {
-                                HStack {
-                                    FDSLabel("Card Network", style: .hint)
-                                    Spacer()
-                                    Button(action: { autoDetectCardType() }) {
-                                        FDSLabel("Auto-detect", style: .caption, color: .secondary)
+                            VStack(alignment: .leading, spacing: 8) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        FDSLabel("Card Network", style: .hint)
+                                        Spacer()
+                                        Button(action: { autoDetectCardType() }) {
+                                            FDSLabel("Auto-detect", style: .caption, color: .secondary)
+                                        }
+                                        .disabled(last4.trimmingCharacters(in: .whitespaces).count < 4)
                                     }
-                                    .disabled(last4.trimmingCharacters(in: .whitespaces).count < 4)
+                                    Picker("Network", selection: $cardType) {
+                                        Text("Visa").tag("visa")
+                                        Text("Mastercard").tag("mastercard")
+                                        Text("American Express").tag("amex")
+                                        Text("Discover").tag("discover")
+                                        Text("Diners Club").tag("diners")
+                                        Text("Other").tag("other")
+                                    }
+                                    .pickerStyle(.menu)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                Picker("Network", selection: $cardType) {
-                                    Text("Visa").tag("visa")
-                                    Text("Mastercard").tag("mastercard")
-                                    Text("American Express").tag("amex")
-                                    Text("Discover").tag("discover")
-                                    Text("Diners Club").tag("diners")
-                                    Text("Other").tag("other")
+                                .padding(AppSpacing.xs)
+                                .background(AppColors.surface2)
+                                .cornerRadius(AppRadius.sm)
+
+                                Button(action: { showCardSelection = true }) {
+                                    HStack {
+                                        Image(systemName: "creditcard.fill")
+                                            .labelSmall()
+                                        FDSLabel("Browse Card Database", style: .bodyMedium)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .labelSmall()
+                                    }
+                                    .foregroundColor(AppColors.accent)
+                                    .padding(AppSpacing.xs)
                                 }
-                                .pickerStyle(.menu)
-                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
                         }
                     }
                     .padding(AppSpacing.sm)
@@ -214,6 +230,15 @@ struct CardEditView: View {
             if let error = context.deleteError {
                 Text(error)
             }
+        }
+        .sheet(isPresented: $showCardSelection) {
+            CardSelectionView(
+                onSelect: { card in
+                    cardType = card.cardType
+                    showCardSelection = false
+                },
+                onDismiss: { showCardSelection = false }
+            )
         }
     }
 
