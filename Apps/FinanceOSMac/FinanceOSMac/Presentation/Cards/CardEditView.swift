@@ -239,6 +239,7 @@ struct CardEditView: View {
                 },
                 onDismiss: { showCardSelection = false }
             )
+            .frame(minWidth: 520, minHeight: 600)
         }
     }
 

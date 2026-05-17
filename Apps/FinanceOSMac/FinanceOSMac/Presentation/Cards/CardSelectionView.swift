@@ -5,9 +5,9 @@ import SwiftUI
 struct CardSelectionView: View {
     @State private var selectedCard: CardMetadata?
     @State private var searchText: String = ""
-    @State private var allCards: [CardMetadata] = CardDatabase.supportedCards()
-    @State private var allIssuers: [String] = CardDatabase.issuers()
-    @State private var selectedIssuer: String? = CardDatabase.issuers().first
+    @State private var allCards: [CardMetadata] = []
+    @State private var allIssuers: [String] = []
+    @State private var selectedIssuer: String?
     var onSelect: (CardMetadata) -> Void
     var onDismiss: () -> Void
 
@@ -17,6 +17,46 @@ struct CardSelectionView: View {
         } ?? allCards
         return cards.filter { card in
             searchText.isEmpty || card.name.lowercased().contains(searchText.lowercased())
+        }
+    }
+
+    private func networkLogoURL(for type: String) -> URL? {
+        let urls: [String: String] = [
+            "visa": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png",
+            "mastercard": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1024px-Mastercard-logo.svg.png",
+            "amex": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/American_Express_logo.svg/1200px-American_Express_logo.svg.png",
+            "rupay": "https://upload.wikimedia.org/wikipedia/en/6/6d/RuPay_logo.svg",
+            "discover": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Discover_Card_logo.svg/1024px-Discover_Card_logo.svg.png",
+            "diners": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Diners_Club_logo.svg/1024px-Diners_Club_logo.svg.png"
+        ]
+        return urls[type.lowercased()].flatMap { URL(string: $0) }
+    }
+
+    private func bankLogoURL(for issuer: String) -> URL? {
+        let urls: [String: String] = [
+            "HDFC Bank": "https://upload.wikimedia.org/wikipedia/en/0/0a/HDFC_bank_logo.svg",
+            "ICICI Bank": "https://upload.wikimedia.org/wikipedia/en/c/c0/ICICI_Bank_Logo.svg",
+            "American Express": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/American_Express_logo.svg/1200px-American_Express_logo.svg.png"
+        ]
+        return urls[issuer].flatMap { URL(string: $0) }
+    }
+
+    private func networkColor(for type: String) -> Color {
+        switch type.lowercased() {
+        case "visa":
+            return Color(red: 0.13, green: 0.20, blue: 0.79)
+        case "mastercard":
+            return Color(red: 0.92, green: 0, blue: 0.1)
+        case "amex":
+            return Color(red: 0.01, green: 0.33, blue: 0.76)
+        case "rupay":
+            return Color(red: 0.11, green: 0.15, blue: 0.32)
+        case "discover":
+            return Color(red: 1, green: 0.6, blue: 0)
+        case "diners":
+            return Color(red: 0, green: 0.51, blue: 0.73)
+        default:
+            return AppColors.textSecondary
         }
     }
 
@@ -37,13 +77,6 @@ struct CardSelectionView: View {
             Divider()
 
             VStack(spacing: 12) {
-                // Debug: Show card counts
-                FDSLabel(
-                    "Available: \(allCards.count) | Filtered: \(filteredCards.count) | Selected issuer: \(selectedIssuer ?? "All")",
-                    style: .caption
-                )
-                .padding(AppSpacing.sm)
-
                 // Issuer Filter
                 HStack(spacing: 8) {
                     FDSLabel("Issuer:", style: .hint)
@@ -88,48 +121,114 @@ struct CardSelectionView: View {
             .background(AppColors.base)
 
             // Card List
-            if filteredCards.isEmpty {
-                VStack(spacing: 16) {
-                    Image(systemName: "creditcard.slash")
-                        .font(.system(size: 32))
-                        .foregroundColor(AppColors.textTertiary)
-                    FDSLabel("No cards found", style: .bodyMedium)
-                        .foregroundColor(AppColors.textTertiary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(AppColors.base)
-            } else {
-                List(filteredCards, id: \.id) { card in
-                    HStack(spacing: 12) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            FDSLabel(card.name, style: .monoAmount)
-                            HStack(spacing: 8) {
-                                FDSLabel(card.variant.capitalized, style: .hint)
-                                FDSLabel(card.cardType.uppercased(), style: .hint)
-                                    .foregroundColor(AppColors.accent)
+            List(filteredCards, id: \.id) { card in
+                HStack(spacing: 12) {
+                    // Card Image + Network Logo
+                    ZStack(alignment: .bottomTrailing) {
+                        AsyncImage(url: URL(string: card.imageURL ?? "")) { phase in
+                            switch phase {
+                            case .empty:
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(AppColors.surface2)
+                                    .frame(width: 100, height: 65)
+                            case let .success(image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 65)
+                                    .cornerRadius(8)
+                            case .failure:
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(AppColors.surface2)
+                                    .frame(width: 100, height: 65)
+                                    .overlay(
+                                        Image(systemName: "creditcard")
+                                            .foregroundColor(AppColors.textTertiary)
+                                    )
+                            @unknown default:
+                                EmptyView()
                             }
                         }
-                        Spacer()
-                        Button(action: {
-                            selectedCard = card
-                            onSelect(card)
-                        }) {
-                            Image(systemName: "checkmark.circle")
-                                .foregroundColor(selectedCard?.id == card.id ? AppColors.accent : AppColors
-                                    .textTertiary)
+
+                        // Network Logo Badge
+                        AsyncImage(url: networkLogoURL(for: card.cardType)) { phase in
+                            switch phase {
+                            case let .success(image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 28, height: 18)
+                                    .padding(4)
+                                    .background(Color.white)
+                                    .cornerRadius(4)
+                            default:
+                                EmptyView()
+                            }
                         }
                     }
-                    .listRowBackground(AppColors.surface)
-                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
-                    .listRowSeparator(.hidden)
+                    .frame(width: 100, height: 65)
+
+                    // Card Info
+                    VStack(alignment: .leading, spacing: 6) {
+                        FDSLabel(card.name, style: .monoAmount)
+
+                        HStack(spacing: 8) {
+                            // Bank Logo
+                            AsyncImage(url: bankLogoURL(for: card.issuer)) { phase in
+                                switch phase {
+                                case let .success(image):
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 16)
+                                case .failure:
+                                    FDSLabel(card.issuer, style: .caption, color: .secondary)
+                                default:
+                                    FDSLabel(card.issuer, style: .caption, color: .secondary)
+                                }
+                            }
+                            .frame(width: 40, height: 16)
+
+                            Spacer()
+                            FDSLabel(card.cardType.uppercased(), style: .caption)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(networkColor(for: card.cardType).opacity(0.1))
+                                .foregroundColor(networkColor(for: card.cardType))
+                                .cornerRadius(3)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    // Select Button
+                    Button(action: {
+                        selectedCard = card
+                        onSelect(card)
+                    }) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(selectedCard?.id == card.id ? AppColors.accent : AppColors.textTertiary)
+                    }
                 }
-                .listStyle(.plain)
-                .background(AppColors.base)
-                .scrollContentBackground(.hidden)
+                .padding(AppSpacing.sm)
+                .listRowBackground(AppColors.surface)
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .background(AppColors.base)
+            .scrollContentBackground(.hidden)
+            .frame(maxHeight: .infinity)
         }
         .background(AppColors.base)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .onAppear {
+            allCards = CardDatabase.supportedCards()
+            allIssuers = CardDatabase.issuers()
+            if selectedIssuer == nil, !allIssuers.isEmpty {
+                selectedIssuer = allIssuers.first
+            }
+        }
     }
 }
 
