@@ -150,6 +150,8 @@ struct DetailRouter: View {
                     transactionRepository: appContainer.transactionRepository
                 )
             )
+        case .settings:
+            SettingsView()
         }
     }
 
