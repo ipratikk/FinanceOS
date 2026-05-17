@@ -206,7 +206,10 @@ struct CardEditView: View {
         } message: {
             Text("This will permanently delete this card and all associated transactions. This cannot be undone.")
         }
-        .alert("Delete Failed", isPresented: .constant(deleteErrorMessage != nil)) {
+        .alert("Delete Failed", isPresented: Binding(
+            get: { deleteErrorMessage != nil },
+            set: { if !$0 { deleteErrorMessage = nil } }
+        )) {
             Button("OK") { deleteErrorMessage = nil }
         } message: {
             if let error = deleteErrorMessage {
