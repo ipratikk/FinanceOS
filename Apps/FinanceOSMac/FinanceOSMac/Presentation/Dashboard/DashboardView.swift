@@ -9,6 +9,13 @@ struct DashboardView: View {
 
     private let appContainer = AppContainer.shared
 
+    init() {}
+
+    init(viewModel: DashboardViewModel) {
+        _viewModel = State(initialValue: viewModel)
+        _isLoading = State(initialValue: false)
+    }
+
     var body: some View {
         if let viewModel {
             ScrollView {
