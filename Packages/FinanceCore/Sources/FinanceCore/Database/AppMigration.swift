@@ -232,6 +232,16 @@ enum AppMigration {
             // This migration is now a no-op but kept for migration history
             FinanceLogger.migration.info("v8: No-op migration (CASCADE constraint fixed in v7)")
         }
+
+        migrator.registerMigration("v9_add_bin_column") { database in
+            FinanceLogger.migration.info("Running migration: v9_add_bin_column")
+
+            try database.execute(sql: """
+                ALTER TABLE ledgers ADD COLUMN bin TEXT
+            """)
+
+            FinanceLogger.migration.info("v9: Added bin column to ledgers")
+        }
     }
 }
 
