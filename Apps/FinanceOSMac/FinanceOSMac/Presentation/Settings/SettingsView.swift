@@ -44,6 +44,16 @@ struct SettingsView: View {
         }
         .background(AppColors.base)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .alert("Clear All Data?", isPresented: $showConfirmClear) {
+            Button("Cancel", role: .cancel) {}
+            Button("Clear", role: .destructive) {
+                // TODO: Implement actual data clearing logic
+            }
+        } message: {
+            Text(
+                "This will permanently delete all data including banks, accounts, cards, and transactions. This action cannot be undone."
+            )
+        }
     }
 
     private var header: some View {
