@@ -161,7 +161,10 @@ struct CardsView: View {
 
     func cardRowView(_ ledger: Ledger) -> some View {
         HStack(spacing: 12) {
-            let card = CardDatabase.supportedCards().first { $0.name == ledger.displayName }
+            let supportedCards = CardDatabase.supportedCards()
+            let card = ledger.cardProduct.flatMap { product in
+                supportedCards.first { $0.name == product }
+            } ?? supportedCards.first { $0.name == ledger.displayName }
 
             AsyncImage(url: URL(string: card?.imageURL ?? "")) { phase in
                 switch phase {
