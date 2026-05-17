@@ -161,6 +161,34 @@ struct CardsView: View {
 
     func cardRowView(_ ledger: Ledger) -> some View {
         HStack(spacing: 12) {
+            let card = CardDatabase.supportedCards().first { $0.name == ledger.displayName }
+
+            AsyncImage(url: URL(string: card?.imageURL ?? "")) { phase in
+                switch phase {
+                case .empty:
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(AppColors.surface2)
+                        .frame(width: 60, height: 38)
+                case let .success(image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 38)
+                        .cornerRadius(6)
+                case .failure:
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(AppColors.surface2)
+                        .frame(width: 60, height: 38)
+                        .overlay(
+                            Image(systemName: "creditcard")
+                                .font(.system(size: 12))
+                                .foregroundColor(AppColors.textTertiary)
+                        )
+                @unknown default:
+                    EmptyView()
+                }
+            }
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
@@ -174,18 +202,21 @@ struct CardsView: View {
                                 .frame(width: 20, height: 10)
                         }
 
-                        Text(cardType.uppercased())
+                        Text("••••\(ledger.last4)")
                             .labelSmall()
                             .foregroundColor(AppColors.textTertiary)
                     }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer()
-
-            Text("••••\(ledger.last4)")
-                .monoAmountSmall()
-                .foregroundColor(AppColors.accent)
+            Menu {
+                Button("Edit") { navigator.present(.cardEdit(ledger)) }
+                Button("Delete", role: .destructive) { cardPendingDelete = ledger }
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .foregroundColor(AppColors.textTertiary)
+            }
         }
         .padding(AppSpacing.sm)
     }
