@@ -222,6 +222,15 @@ struct CardsView: View {
             }
         }
         .padding(AppSpacing.sm)
+        .onAppear {
+            let supportedCards = CardDatabase.supportedCards()
+            let card = ledger.cardProduct.flatMap { product in
+                supportedCards.first { $0.id == product }
+            } ?? supportedCards.first { $0.name == ledger.displayName }
+            print(
+                "[CardsView] '\(ledger.displayName)' cardProduct=\(ledger.cardProduct ?? "nil") image=\(card?.imageURL ?? "nil")"
+            )
+        }
     }
 
     var emptyState: some View {

@@ -201,6 +201,7 @@ struct CreateNewTargetSheet: View {
                 onSelect: { card in
                     state.cardType = card.cardType
                     state.cardProduct = card.id
+                    print("[CreateNewTargetSheet] Selected card: '\(card.name)' (id=\(card.id))")
                     showCardSelection = false
                 },
                 onDismiss: { showCardSelection = false }
