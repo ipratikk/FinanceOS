@@ -19,6 +19,9 @@ struct ContentView: View {
             #endif
         }
         .environment(navigator)
+        .sheet(item: $navigator.sheet) { route in
+            SheetView(route: route, appContainer: appContainer)
+        }
     }
 }
 

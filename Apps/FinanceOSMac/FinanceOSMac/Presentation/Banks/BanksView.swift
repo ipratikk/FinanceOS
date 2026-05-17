@@ -4,6 +4,7 @@ import SwiftUI
 
 struct BanksView: View {
     @State private var viewModel: BanksViewModel
+    @Environment(AppNavigator.self) private var navigator
 
     init(viewModel: BanksViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -20,9 +21,6 @@ struct BanksView: View {
             }
         }
         .navigationTitle("Banks")
-        .sheet(item: $viewModel.editingBank) { bank in
-            BankEditView(bank: bank, viewModel: viewModel)
-        }
         .task {
             await viewModel.loadBanks()
         }
@@ -42,8 +40,8 @@ struct BanksView: View {
                 Spacer()
 
                 Menu {
-                    Button("Edit") { viewModel.editingBank = bank }
-                    Button("Delete", role: .destructive) { viewModel.editingBank = bank }
+                    Button("Edit") { navigator.present(.bankEdit(bank)) }
+                    Button("Delete", role: .destructive) { /* handled by swipe */ }
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 12, weight: .semibold))
@@ -55,7 +53,7 @@ struct BanksView: View {
             .listRowSeparator(.hidden)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button(role: .destructive) {
-                    viewModel.editingBank = bank
+                    navigator.present(.bankEdit(bank))
                 } label: {
                     Label("Delete", systemImage: "trash")
                 }

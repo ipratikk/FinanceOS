@@ -4,17 +4,17 @@ import SwiftUI
 
 struct BankEditView: View {
     let bank: Bank
-    let viewModel: BanksViewModel
+    let context: BankEditContext
     @State private var name: String
     @State private var providerType: BankProviderType
     @Environment(\.dismiss) var dismiss
+    @Environment(AppNavigator.self) private var navigator
 
     @State private var showDeleteConfirm = false
-    @State private var deleteErrorMessage: String?
 
-    init(bank: Bank, viewModel: BanksViewModel) {
+    init(bank: Bank, context: BankEditContext) {
         self.bank = bank
-        self.viewModel = viewModel
+        self.context = context
         _name = State(initialValue: bank.name)
         _providerType = State(initialValue: bank.providerType)
     }
@@ -99,8 +99,10 @@ struct BankEditView: View {
                             name: name,
                             providerType: providerType
                         )
-                        await viewModel.updateBank(updated)
-                        // Sheet dismisses via binding when editingBank is set to nil
+                        await context.updateBank(updated)
+                        if context.deleteError == nil {
+                            dismiss()
+                        }
                     }
                 }, label: {
                     FDSLabel("Save", style: .monoAmount)
@@ -119,11 +121,9 @@ struct BankEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    await viewModel.deleteBank(id: bank.id)
-                    if viewModel.deleteError == nil {
+                    await context.deleteBank(id: bank.id)
+                    if context.deleteError == nil {
                         dismiss()
-                    } else {
-                        deleteErrorMessage = viewModel.deleteError
                     }
                 }
             }
@@ -131,10 +131,13 @@ struct BankEditView: View {
             Text("This will delete this bank and all associated cards, " +
                 "accounts, and transactions. This cannot be undone.")
         }
-        .alert("Delete Failed", isPresented: .constant(deleteErrorMessage != nil)) {
-            Button("OK") { deleteErrorMessage = nil }
+        .alert("Delete Failed", isPresented: Binding(
+            get: { context.deleteError != nil },
+            set: { if !$0 { context.clearError() } }
+        )) {
+            Button("OK") { context.clearError() }
         } message: {
-            if let error = deleteErrorMessage {
+            if let error = context.deleteError {
                 Text(error)
             }
         }
