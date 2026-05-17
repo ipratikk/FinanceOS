@@ -2,20 +2,23 @@ import FinanceCore
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selection: NavigationItem? = .dashboard
+    @State private var navigator = AppNavigator()
     private let appContainer = AppContainer.shared
 
     var body: some View {
-        #if os(macOS)
-        NavigationSplitView(columnVisibility: .constant(.all)) {
-            SidebarView(selection: $selection)
-        } detail: {
-            DetailRouter(selection: $selection, appContainer: appContainer)
+        Group {
+            #if os(macOS)
+            NavigationSplitView(columnVisibility: .constant(.all)) {
+                SidebarView()
+            } detail: {
+                DetailRouter(appContainer: appContainer)
+            }
+            .navigationSplitViewStyle(.balanced)
+            #else
+            AdaptiveNavigation()
+            #endif
         }
-        .navigationSplitViewStyle(.balanced)
-        #else
-        AdaptiveNavigation(selection: $selection)
-        #endif
+        .environment(navigator)
     }
 }
 

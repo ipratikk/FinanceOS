@@ -156,8 +156,8 @@
     "hash": "d77bfdd0f5dd97bbd46b4daec3d3735d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/TargetCreationState.swift": {
-    "mtime": 1778971236.923805,
-    "hash": "adb41b635307e74b641d8d75f3deb3bd"
+    "mtime": 1778996944.4810681,
+    "hash": "137173478706e94975463bf86a6fe810"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Ledger.swift": {
     "mtime": 1778969052.983012,
@@ -188,8 +188,8 @@
     "hash": "2e13713a67e1b68f0a1873ddc363c3bb"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Utilities/BINParser.swift": {
-    "mtime": 1778996713.1422079,
-    "hash": "96df9b56e89cfc5c790119d93087fae3"
+    "mtime": 1778996974.3347988,
+    "hash": "73e866859dc4e0550e0c817a651ff98b"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Components/InsightCard.swift": {
     "mtime": 1778880898.110046,
@@ -724,24 +724,24 @@
     "hash": "509b3a7198a7cd09cf55179e34d27bd2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift": {
-    "mtime": 1778995358.1726267,
-    "hash": "03d2e2e75b8dbbb1066cc5a5b4f8fd51"
+    "mtime": 1778997517.8164568,
+    "hash": "c85abe4991141744a7d53a1bacf11450"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Navigation/SidebarView.swift": {
     "mtime": 1778995723.2305844,
     "hash": "ad3a58f161fe486787e28af765296fb4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Navigation/AdaptiveNavigation.swift": {
-    "mtime": 1778964981.499454,
-    "hash": "7335dea6e4b9cf524c3f8a5d7fb8e2d3"
+    "mtime": 1778997571.55819,
+    "hash": "2d3abbc828ccdb3949bdc72d05af487e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Navigation/NavigationItem.swift": {
     "mtime": 1778881129.0196526,
     "hash": "4c164c7d2b838775328e3dc6cf89d6cd"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Navigation/ContentView.swift": {
-    "mtime": 1778881129.0212758,
-    "hash": "195fe0cf5b3560f788cfe6317760708d"
+    "mtime": 1778997378.1524792,
+    "hash": "3b4ea38dbe34e3cda965ef4b77cb5d5e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Shared/Models/TransactionSection.swift": {
     "mtime": 1778881129.0828998,
@@ -776,8 +776,8 @@
     "hash": "84113a80fbf865cfa7eded6333136e6a"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Dashboard/DashboardView.swift": {
-    "mtime": 1778995723.2312796,
-    "hash": "ce20dba059b858a74de71a5a9a51cc02"
+    "mtime": 1778997400.3674467,
+    "hash": "cfcd280f8f5f10647c7101a2beea3622"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Dashboard/SpendingTrendChart.swift": {
     "mtime": 1778993501.1243637,
@@ -812,8 +812,8 @@
     "hash": "9b22abc2e48d8cdded677d6f6a9c03d2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Accounts/AccountsView.swift": {
-    "mtime": 1778995358.1723795,
-    "hash": "50df825550d6360a267e2324bd264b18"
+    "mtime": 1778997510.2957633,
+    "hash": "0c3b55eb7b6421f7c8ce7f9fbb7f9cc7"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift": {
     "mtime": 1778993272.4829824,
@@ -824,8 +824,8 @@
     "hash": "2c39b5acb6512961766e951cda0264d4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/CreateNewTargetSheet.swift": {
-    "mtime": 1778996796.3798285,
-    "hash": "004f5189ddef33aaecc2ff1f53fa1fec"
+    "mtime": 1778996955.255492,
+    "hash": "d8cbc04afdd3788da31bb8a4138607e3"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelTargetCreation.swift": {
     "mtime": 1778996534.8143315,

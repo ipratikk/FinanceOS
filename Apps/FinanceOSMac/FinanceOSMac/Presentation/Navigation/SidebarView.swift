@@ -3,7 +3,7 @@ import FinanceUI
 import SwiftUI
 
 struct SidebarView: View {
-    @Binding var selection: NavigationItem?
+    @Environment(AppNavigator.self) private var navigator
     @State private var ledgers: [Ledger] = []
 
     private let appContainer = AppContainer.shared
@@ -50,7 +50,7 @@ struct SidebarView: View {
     var mainNavigation: some View {
         VStack(alignment: .leading, spacing: 4) {
             ForEach(NavigationItem.allCases, id: \.self) { item in
-                Button(action: { selection = item }, label: {
+                Button(action: { navigator.navigate(to: item) }, label: {
                     HStack(spacing: 12) {
                         Image(systemName: item.icon)
                             .headingSmall()
@@ -60,10 +60,10 @@ struct SidebarView: View {
 
                         Spacer()
                     }
-                    .foregroundColor(selection == item ? .white : .gray)
+                    .foregroundColor(navigator.sidebarSelection == item ? .white : .gray)
                     .padding(.vertical, 8)
                     .padding(.horizontal, 12)
-                    .background(selection == item ? AppColors.accent.opacity(0.2) : Color
+                    .background(navigator.sidebarSelection == item ? AppColors.accent.opacity(0.2) : Color
                         .clear)
                     .cornerRadius(AppRadius.md)
                 })
@@ -118,7 +118,7 @@ struct SidebarView: View {
     }
 
     var footer: some View {
-        Button(action: { selection = .importStatement }, label: {
+        Button(action: { navigator.navigate(to: .importStatement) }, label: {
             HStack(spacing: 12) {
                 Image(systemName: "arrow.down.doc.fill")
                     .headingSmall()
@@ -146,6 +146,7 @@ struct SidebarView: View {
 }
 
 #Preview {
-    @Previewable @State var selection: NavigationItem? = .dashboard
-    return SidebarView(selection: $selection)
+    let navigator = AppNavigator()
+    return SidebarView()
+        .environment(navigator)
 }

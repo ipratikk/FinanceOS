@@ -5,7 +5,7 @@ import SwiftUI
 struct DashboardView: View {
     @State private var viewModel: DashboardViewModel?
     @State private var isLoading = true
-    @Binding var selection: NavigationItem?
+    @Environment(AppNavigator.self) private var navigator
 
     private let appContainer = AppContainer.shared
 
@@ -107,7 +107,7 @@ struct DashboardView: View {
                 FDSLabel("Recent Activity", style: .subheading)
                 Spacer()
 
-                Button(action: { selection = .transactions }) {
+                Button(action: { navigator.navigate(to: .transactions) }) {
                     HStack(spacing: 4) {
                         FDSLabel("View All", style: .hint)
                         Image(systemName: "chevron.right").labelSmall()
@@ -175,6 +175,7 @@ struct DashboardView: View {
 }
 
 #Preview {
-    @Previewable @State var selection: NavigationItem? = .dashboard
-    DashboardView(selection: $selection)
+    let navigator = AppNavigator()
+    return DashboardView()
+        .environment(navigator)
 }

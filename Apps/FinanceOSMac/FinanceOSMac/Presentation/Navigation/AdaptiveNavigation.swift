@@ -2,7 +2,7 @@ import FinanceCore
 import SwiftUI
 
 struct AdaptiveNavigation: View {
-    @Binding var selection: NavigationItem?
+    @Environment(AppNavigator.self) private var navigator
     @Environment(\.horizontalSizeClass) var sizeClass
     private let appContainer = AppContainer.shared
 
@@ -16,8 +16,11 @@ struct AdaptiveNavigation: View {
 
     var iPhoneTabView: some View {
         NavigationStack {
-            TabView(selection: $selection) {
-                DashboardView(selection: $selection)
+            TabView(selection: .init(
+                get: { navigator.sidebarSelection },
+                set: { navigator.navigate(to: $0) }
+            )) {
+                DashboardView()
                     .tabItem {
                         Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
                     }
@@ -41,8 +44,7 @@ struct AdaptiveNavigation: View {
                         transactionRepository: appContainer.transactionRepository
                     ),
                     transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository,
-                    selection: selection
+                    ledgerRepository: appContainer.ledgerRepository
                 )
                 .tabItem {
                     Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
@@ -56,8 +58,7 @@ struct AdaptiveNavigation: View {
                         transactionRepository: appContainer.transactionRepository
                     ),
                     transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository,
-                    selection: selection
+                    ledgerRepository: appContainer.ledgerRepository
                 )
                 .tabItem {
                     Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
@@ -79,21 +80,21 @@ struct AdaptiveNavigation: View {
 
     var iPadSplitView: some View {
         NavigationSplitView(columnVisibility: .constant(.all)) {
-            SidebarView(selection: $selection)
+            SidebarView()
         } detail: {
-            DetailRouter(selection: $selection, appContainer: appContainer)
+            DetailRouter(appContainer: appContainer)
         }
     }
 }
 
 struct DetailRouter: View {
-    @Binding var selection: NavigationItem?
+    @Environment(AppNavigator.self) private var navigator
     let appContainer: AppContainer
 
     var body: some View {
-        switch selection {
+        switch navigator.sidebarSelection {
         case .dashboard:
-            DashboardView(selection: $selection)
+            DashboardView()
         case .transactions:
             TransactionsView(
                 viewModel: TransactionsViewModel(
@@ -109,8 +110,7 @@ struct DetailRouter: View {
                     transactionRepository: appContainer.transactionRepository
                 ),
                 transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository,
-                selection: selection
+                ledgerRepository: appContainer.ledgerRepository
             )
         case .cards:
             CardsView(
@@ -120,8 +120,7 @@ struct DetailRouter: View {
                     transactionRepository: appContainer.transactionRepository
                 ),
                 transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository,
-                selection: selection
+                ledgerRepository: appContainer.ledgerRepository
             )
         case .banks:
             BanksView(
@@ -140,13 +139,12 @@ struct DetailRouter: View {
                     transactionRepository: appContainer.transactionRepository
                 )
             )
-        case .none:
-            DashboardView(selection: $selection)
         }
     }
 }
 
 #Preview {
-    @Previewable @State var selection: NavigationItem? = .dashboard
-    return AdaptiveNavigation(selection: $selection)
+    let navigator = AppNavigator()
+    return AdaptiveNavigation()
+        .environment(navigator)
 }

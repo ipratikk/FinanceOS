@@ -5,20 +5,17 @@ struct CardsView: View {
     @State private var viewModel: CardsViewModel
     @State private var selectedCardId: UUID?
     @State private var cardPendingDelete: Ledger?
-    let selection: NavigationItem?
     private let transactionRepository: any TransactionRepository
     private let ledgerRepository: any LedgerRepository
 
     init(
         viewModel: CardsViewModel,
         transactionRepository: any TransactionRepository,
-        ledgerRepository: any LedgerRepository,
-        selection: NavigationItem? = nil
+        ledgerRepository: any LedgerRepository
     ) {
         _viewModel = State(initialValue: viewModel)
         self.transactionRepository = transactionRepository
         self.ledgerRepository = ledgerRepository
-        self.selection = selection
     }
 
     var body: some View {
@@ -67,7 +64,6 @@ struct CardsView: View {
         .task {
             await viewModel.loadCards()
         }
-        .id(selection)
     }
 
     var cardsList: some View {
