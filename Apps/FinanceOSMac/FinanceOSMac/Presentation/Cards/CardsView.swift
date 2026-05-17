@@ -69,7 +69,7 @@ struct CardsView: View {
                 groupedCardsByBank.sorted(by: { $0.key < $1.key }),
                 id: \.key
             ) { bankName, cardRows in
-                Section(bankName) {
+                Section {
                     ForEach(cardRows, id: \.card.id) { cardRow in
                         NavigationLink(value: DetailDestination.cardTransactions(cardRow.card.id)) {
                             cardRowView(cardRow.card)
@@ -91,6 +91,8 @@ struct CardsView: View {
                             }
                         }
                     }
+                } header: {
+                    bankSectionHeader(bankName)
                 }
             }
         }
@@ -105,15 +107,82 @@ struct CardsView: View {
         }
     }
 
+    private func networkLogoURL(for cardType: String) -> URL? {
+        let urls: [String: String] = [
+            "visa": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/1200px-Visa_Inc._logo.svg.png",
+            "mastercard": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1024px-Mastercard-logo.svg.png",
+            "rupay": "https://upload.wikimedia.org/wikipedia/en/6/6d/RuPay_logo.svg",
+            "discover": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Discover_Card_logo.svg/1024px-Discover_Card_logo.svg.png"
+        ]
+        return urls[cardType.lowercased()].flatMap { URL(string: $0) }
+    }
+
+    private func bankSectionHeader(_ bankName: String) -> some View {
+        HStack(spacing: 8) {
+            AsyncImage(url: bankLogoURL(for: bankName)) { phase in
+                switch phase {
+                case let .success(image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 20)
+                case .failure:
+                    Text(bankName)
+                        .labelSmall()
+                        .foregroundColor(AppColors.textTertiary)
+                default:
+                    Text(bankName)
+                        .labelSmall()
+                        .foregroundColor(AppColors.textTertiary)
+                }
+            }
+            .frame(width: 50, height: 20)
+
+            Text(bankName)
+                .headingSmall()
+        }
+    }
+
+    private func bankLogoURL(for issuer: String) -> URL? {
+        let localLogos: [String: String] = [
+            "HDFC Bank": "bank-logos/hdfc",
+            "ICICI Bank": "bank-logos/icici"
+        ]
+
+        if let localAsset = localLogos[issuer],
+           let assetURL = Bundle.module.url(forResource: localAsset, withExtension: nil) {
+            return assetURL
+        }
+
+        return nil
+    }
+
     func cardRowView(_ ledger: Ledger) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
 
-                Text((ledger.cardType ?? "").uppercased())
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
+                HStack(spacing: 6) {
+                    if let cardType = ledger.cardType {
+                        AsyncImage(url: networkLogoURL(for: cardType)) { phase in
+                            switch phase {
+                            case let .success(image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 10)
+                            default:
+                                EmptyView()
+                            }
+                        }
+                        .frame(width: 20, height: 10)
+
+                        Text(cardType.uppercased())
+                            .labelSmall()
+                            .foregroundColor(AppColors.textTertiary)
+                    }
+                }
             }
 
             Spacer()

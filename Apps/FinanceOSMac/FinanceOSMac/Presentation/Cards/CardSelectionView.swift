@@ -33,12 +33,20 @@ struct CardSelectionView: View {
     }
 
     private func bankLogoURL(for issuer: String) -> URL? {
-        let urls: [String: String] = [
-            "HDFC Bank": "https://upload.wikimedia.org/wikipedia/en/0/0a/HDFC_bank_logo.svg",
-            "ICICI Bank": "https://upload.wikimedia.org/wikipedia/en/c/c0/ICICI_Bank_Logo.svg",
+        let localLogos: [String: String] = [
+            "HDFC Bank": "bank-logos/hdfc-small",
+            "ICICI Bank": "bank-logos/icici-small"
+        ]
+
+        if let localAsset = localLogos[issuer],
+           let assetURL = Bundle.module.url(forResource: localAsset, withExtension: nil) {
+            return assetURL
+        }
+
+        let externalLogos: [String: String] = [
             "American Express": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/American_Express_logo.svg/1200px-American_Express_logo.svg.png"
         ]
-        return urls[issuer].flatMap { URL(string: $0) }
+        return externalLogos[issuer].flatMap { URL(string: $0) }
     }
 
     private func networkColor(for type: String) -> Color {
