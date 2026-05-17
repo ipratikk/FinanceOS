@@ -17,7 +17,7 @@ struct AdaptiveNavigation: View {
     var iPhoneTabView: some View {
         NavigationStack {
             TabView(selection: $selection) {
-                DashboardView()
+                DashboardView(selection: $selection)
                     .tabItem {
                         Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
                     }
@@ -41,7 +41,8 @@ struct AdaptiveNavigation: View {
                         transactionRepository: appContainer.transactionRepository
                     ),
                     transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository
+                    ledgerRepository: appContainer.ledgerRepository,
+                    selection: selection
                 )
                 .tabItem {
                     Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
@@ -55,7 +56,8 @@ struct AdaptiveNavigation: View {
                         transactionRepository: appContainer.transactionRepository
                     ),
                     transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository
+                    ledgerRepository: appContainer.ledgerRepository,
+                    selection: selection
                 )
                 .tabItem {
                     Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
@@ -79,19 +81,19 @@ struct AdaptiveNavigation: View {
         NavigationSplitView(columnVisibility: .constant(.all)) {
             SidebarView(selection: $selection)
         } detail: {
-            DetailRouter(selection: selection, appContainer: appContainer)
+            DetailRouter(selection: $selection, appContainer: appContainer)
         }
     }
 }
 
 struct DetailRouter: View {
-    let selection: NavigationItem?
+    @Binding var selection: NavigationItem?
     let appContainer: AppContainer
 
     var body: some View {
         switch selection {
         case .dashboard:
-            DashboardView()
+            DashboardView(selection: $selection)
         case .transactions:
             TransactionsView(
                 viewModel: TransactionsViewModel(
@@ -107,7 +109,8 @@ struct DetailRouter: View {
                     transactionRepository: appContainer.transactionRepository
                 ),
                 transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                ledgerRepository: appContainer.ledgerRepository,
+                selection: selection
             )
         case .cards:
             CardsView(
@@ -117,7 +120,8 @@ struct DetailRouter: View {
                     transactionRepository: appContainer.transactionRepository
                 ),
                 transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                ledgerRepository: appContainer.ledgerRepository,
+                selection: selection
             )
         case .banks:
             BanksView(

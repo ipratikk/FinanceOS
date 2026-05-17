@@ -10,7 +10,7 @@ struct ContentView: View {
         NavigationSplitView(columnVisibility: .constant(.all)) {
             SidebarView(selection: $selection)
         } detail: {
-            DetailRouter(selection: selection, appContainer: appContainer)
+            DetailRouter(selection: $selection, appContainer: appContainer)
         }
         .navigationSplitViewStyle(.balanced)
         #else
