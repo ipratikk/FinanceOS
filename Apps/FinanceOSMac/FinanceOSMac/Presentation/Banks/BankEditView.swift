@@ -9,6 +9,7 @@ struct BankEditView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
+    @State private var deleteErrorMessage: String?
 
     init(bank: Bank, viewModel: BanksViewModel) {
         self.bank = bank
@@ -103,7 +104,7 @@ struct BankEditView: View {
                             providerType: providerType
                         )
                         await viewModel.updateBank(updated)
-                        dismiss()
+                        // Sheet dismisses via binding when editingBank is set to nil
                     }
                 }, label: {
                     Text("Save")
@@ -124,12 +125,23 @@ struct BankEditView: View {
             Button("Delete", role: .destructive) {
                 Task {
                     await viewModel.deleteBank(id: bank.id)
-                    dismiss()
+                    if viewModel.deleteError == nil {
+                        dismiss()
+                    } else {
+                        deleteErrorMessage = viewModel.deleteError
+                    }
                 }
             }
         } message: {
             Text("This will delete this bank and all associated cards, " +
                 "accounts, and transactions. This cannot be undone.")
+        }
+        .alert("Delete Failed", isPresented: .constant(deleteErrorMessage != nil)) {
+            Button("OK") { deleteErrorMessage = nil }
+        } message: {
+            if let error = deleteErrorMessage {
+                Text(error)
+            }
         }
     }
 

@@ -28,6 +28,19 @@ struct TransactionsView: View {
                     Task { await viewModel.deleteTransaction(id: id) }
                 }
             )
+            .overlay {
+                if viewModel.isLoading, viewModel.transactionRows.isEmpty {
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .controlSize(.large)
+                        Text("Loading transactions...")
+                            .caption()
+                            .foregroundColor(AppColors.textTertiary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(AppColors.base)
+                }
+            }
             .navigationTitle("Transactions")
         }
         .alert("Delete Failed", isPresented: Binding(

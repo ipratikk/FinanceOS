@@ -156,7 +156,7 @@ struct AccountEditView: View {
                             isArchived: account.isArchived
                         )
                         await viewModel.updateAccount(updated)
-                        dismiss()
+                        // Sheet dismisses via binding when editingAccount is set to nil
                     }
                 }, label: {
                     Text("Save")

@@ -17,6 +17,13 @@ struct ImportView: View {
                 previewView
             }
         }
+        .overlay(alignment: .top) {
+            if let result = viewModel.lastImportResult {
+                importSuccessBanner(result: result)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .animation(.easeInOut(duration: 0.3), value: viewModel.lastImportResult != nil)
+            }
+        }
         .onAppear {
             Task {
                 await viewModel.loadTargetsOnAppear()
@@ -172,6 +179,29 @@ struct ImportView: View {
         .background(AppColors.accent)
         .cornerRadius(AppRadius.md)
         .disabled(selectedSource == nil)
+    }
+
+    private func importSuccessBanner(result: ImportResult) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundColor(.white)
+            Text("Imported \(result.inserted) transaction\(result.inserted == 1 ? "" : "s")" +
+                (result.skipped > 0 ? " (\(result.skipped) skipped)" : ""))
+                .bodyLarge()
+                .foregroundColor(.white)
+            Spacer()
+            Button(action: { viewModel.lastImportResult = nil }, label: {
+                Image(systemName: "xmark")
+                    .labelSmall()
+                    .foregroundColor(.white.opacity(0.8))
+            })
+            .buttonStyle(.plain)
+        }
+        .padding(AppSpacing.sm)
+        .background(Color.green.opacity(0.85))
+        .cornerRadius(AppRadius.md)
+        .padding(AppSpacing.md)
+        .shadow(radius: 4)
     }
 
     private var previewView: some View {

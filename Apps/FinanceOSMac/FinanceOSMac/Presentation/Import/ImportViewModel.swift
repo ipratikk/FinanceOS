@@ -18,6 +18,7 @@ final class ImportViewModel {
     var ledgers: [Ledger] = []
     var banks: [Bank] = []
     var duplicateTransactionIndices: Set<Int> = []
+    var lastImportResult: ImportResult?
 
     var accountMatcher: AccountMatcher
 
@@ -240,8 +241,13 @@ final class ImportViewModel {
             do {
                 let result = try await performImport(target: target, fileCount: fileCount)
                 importSession.importResult = result
+                lastImportResult = result
                 reset()
                 importSession.isLoading = false
+                Task {
+                    try? await Task.sleep(for: .seconds(4))
+                    lastImportResult = nil
+                }
             } catch {
                 let desc = error.localizedDescription
                 logger.error("Import failed: \(desc, privacy: .public)")

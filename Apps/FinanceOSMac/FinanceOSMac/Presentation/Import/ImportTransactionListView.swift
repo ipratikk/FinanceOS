@@ -99,10 +99,18 @@ struct ImportTransactionListView: View {
             }
 
             if transactions.count > 5 {
-                Text("... and \(transactions.count - 5) more transactions")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .padding(.vertical, 8)
+                HStack {
+                    Text("... and \(transactions.count - 5) more transactions")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    if duplicateIndices.count > 0 {
+                        Text("\(duplicateIndices.count) already imported")
+                            .font(.caption)
+                            .foregroundColor(.orange)
+                    }
+                }
+                .padding(.vertical, 8)
             }
         }
     }

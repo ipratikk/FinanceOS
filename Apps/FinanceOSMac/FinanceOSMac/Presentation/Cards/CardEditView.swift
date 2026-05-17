@@ -177,7 +177,7 @@ struct CardEditView: View {
                             isArchived: card.isArchived
                         )
                         await viewModel.updateCard(updated)
-                        dismiss()
+                        // Sheet dismisses via binding when editingCard is set to nil
                     }
                 }, label: {
                     Text("Save")

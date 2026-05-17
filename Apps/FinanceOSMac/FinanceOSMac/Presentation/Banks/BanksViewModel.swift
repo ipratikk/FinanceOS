@@ -16,6 +16,7 @@ final class BanksViewModel {
     var banks: [Bank] = []
     var isLoading = false
     var editingBank: Bank?
+    var deleteError: String?
 
     init(
         repository: BankRepository
@@ -48,11 +49,13 @@ final class BanksViewModel {
     }
 
     func deleteBank(id: UUID) async {
+        deleteError = nil
         do {
             try await repository.delete(id: id)
             await loadBanks()
+            editingBank = nil
         } catch {
-            print(error)
+            deleteError = error.localizedDescription
         }
     }
 }
