@@ -192,7 +192,8 @@ struct CreateNewTargetSheet: View {
     }
 
     private func autoDetectCardType() {
-        let cardType = BINParser.detectCardType(from: state.last4)
-        state.cardType = cardType
+        let cardNumberToUse = !state.maskedCardNumber.isEmpty ? state.maskedCardNumber : state.last4
+        let detectedType = BINParser.detectCardType(from: cardNumberToUse)
+        state.cardType = detectedType
     }
 }
