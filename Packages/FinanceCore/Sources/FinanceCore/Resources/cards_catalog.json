@@ -1,0 +1,802 @@
+{
+  "version": 2,
+  "generatedAt": "2026-05-17T00:00:00Z",
+  "issuers": [
+    {
+      "id": "hdfc",
+      "name": "HDFC Bank",
+      "country": "IN",
+      "website": "https://www.hdfcbank.com",
+      "brandColor": "#004B8D",
+      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/0/0a/HDFC_bank_logo.svg",
+      "cards": [
+        {
+          "id": "hdfc-regalia-gold",
+          "name": "Regalia Gold Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": true,
+          "aliases": [
+            "Regalia Gold",
+            "HDFC Regalia Gold",
+            "Regalia"
+          ],
+          "binRanges": [
+            {
+              "start": "512456",
+              "end": "512456"
+            },
+            {
+              "start": "553800",
+              "end": "553899"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=200&q=80",
+            "localAssetName": "hdfc_regalia_gold",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#000000",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Rs. 2,500 (waived on Rs. 1 lakh spends)",
+            "joiningBenefit": "Rs. 5,000 credit",
+            "features": [
+              "Lounge access",
+              "Travel insurance",
+              "Concierge services",
+              "5% cashback on dining",
+              "Movie tickets discount",
+              "Airport transfers",
+              "Travel benefits"
+            ],
+            "eligibility": "Age 23-65, Min annual income Rs. 3 lakh"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "REGALIA GOLD",
+              "HDFC REGALIA",
+              "HDFC VISA"
+            ],
+            "issuerName": "HDFC BANK"
+          }
+        },
+        {
+          "id": "hdfc-classic-credit",
+          "name": "HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Mastercard",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "HDFC Credit Card",
+            "HDFC Classic",
+            "HDFC Mastercard"
+          ],
+          "binRanges": [
+            {
+              "start": "510029",
+              "end": "510029"
+            },
+            {
+              "start": "512345",
+              "end": "512345"
+            },
+            {
+              "start": "553712",
+              "end": "553712"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1556742212-5b321e9c0df7?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1556742212-5b321e9c0df7?w=200&q=80",
+            "localAssetName": "hdfc_classic_credit",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#FFFFFF",
+            "textColor": "#FFFFFF",
+            "accentColor": "#004B8D"
+          },
+          "details": {
+            "annualFee": "Free for first year, Rs. 500 thereafter (waived on Rs. 2 lakh spends)",
+            "joiningBenefit": "Nil",
+            "features": [
+              "Cashback on retail purchases",
+              "Rewards points",
+              "EMI conversion",
+              "Credit limit up to 5 lakhs",
+              "Fuel surcharge waiver"
+            ],
+            "eligibility": "Age 21-65, Min annual income Rs. 1.5 lakh"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "HDFC CLASSIC",
+              "HDFC CREDIT",
+              "HDFC MASTERCARD"
+            ],
+            "issuerName": "HDFC BANK"
+          }
+        },
+        {
+          "id": "hdfc-debit-classic",
+          "name": "HDFC Bank Debit Card",
+          "type": "Debit Card",
+          "network": "Mastercard",
+          "variant": "debit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "HDFC Debit Card",
+            "HDFC Classic Debit"
+          ],
+          "binRanges": [
+            {
+              "start": "553200",
+              "end": "553299"
+            },
+            {
+              "start": "676290",
+              "end": "676290"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=200&q=80",
+            "localAssetName": "hdfc_debit_classic",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#FFFFFF",
+            "textColor": "#FFFFFF",
+            "accentColor": "#004B8D"
+          },
+          "details": {
+            "annualFee": "Nil",
+            "joiningBenefit": "Nil",
+            "features": [
+              "ATM withdrawals",
+              "Online shopping",
+              "International usage",
+              "Zero balance",
+              "Contactless payments",
+              "Mobile wallet integration"
+            ],
+            "eligibility": "All account holders"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "HDFC DEBIT",
+              "HDFC ATM",
+              "HDFC MASTERCARD DEBIT"
+            ],
+            "issuerName": "HDFC BANK"
+          }
+        }
+      ]
+    },
+    {
+      "id": "icici",
+      "name": "ICICI Bank",
+      "country": "IN",
+      "website": "https://www.icicibank.com",
+      "brandColor": "#0066CC",
+      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/b/ba/ICICI_Bank_Logo.svg",
+      "cards": [
+        {
+          "id": "icici-coral-credit",
+          "name": "ICICI Bank Coral Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": true,
+          "aliases": [
+            "ICICI Coral",
+            "Coral Credit Card",
+            "ICICI Coral Visa"
+          ],
+          "binRanges": [
+            {
+              "start": "401300",
+              "end": "401399"
+            },
+            {
+              "start": "530930",
+              "end": "530930"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1569892120562-cff2b3b50460?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1569892120562-cff2b3b50460?w=200&q=80",
+            "localAssetName": "icici_coral_credit",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#FF6B35",
+            "secondaryColor": "#FFFFFF",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FF6B35"
+          },
+          "details": {
+            "annualFee": "Rs. 3,000 (waived on Rs. 1 lakh spends)",
+            "joiningBenefit": "Rs. 3,000 credit",
+            "features": [
+              "10% cashback on food & movies",
+              "5% cashback on shopping",
+              "Lounge access",
+              "Travel benefits",
+              "Shopping vouchers",
+              "Dining privileges"
+            ],
+            "eligibility": "Age 23+, Min annual income Rs. 5 lakh"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "ICICI CORAL",
+              "CORAL CREDIT",
+              "ICICI VISA"
+            ],
+            "issuerName": "ICICI BANK"
+          }
+        },
+        {
+          "id": "icici-instant-access",
+          "name": "ICICI Bank Instant Access Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "ICICI Instant Access",
+            "Instant Access Credit",
+            "ICICI Instant"
+          ],
+          "binRanges": [
+            {
+              "start": "401200",
+              "end": "401299"
+            },
+            {
+              "start": "456789",
+              "end": "456789"
+            },
+            {
+              "start": "501061",
+              "end": "501061"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=200&q=80",
+            "localAssetName": "icici_instant_access",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#0066CC",
+            "secondaryColor": "#FFFFFF",
+            "textColor": "#FFFFFF",
+            "accentColor": "#0066CC"
+          },
+          "details": {
+            "annualFee": "Free",
+            "joiningBenefit": "Nil",
+            "features": [
+              "Instant approval",
+              "Cashback on purchases",
+              "Rewards points",
+              "EMI option",
+              "Insurance coverage",
+              "Easy approvals"
+            ],
+            "eligibility": "Age 21+, Min annual income Rs. 1.5 lakh"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "ICICI INSTANT",
+              "INSTANT ACCESS",
+              "ICICI CREDIT"
+            ],
+            "issuerName": "ICICI BANK"
+          }
+        },
+        {
+          "id": "icici-debit-classic",
+          "name": "ICICI Bank Debit Card",
+          "type": "Debit Card",
+          "network": "Visa",
+          "variant": "debit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "ICICI Debit Card",
+            "ICICI Classic Debit"
+          ],
+          "binRanges": [
+            {
+              "start": "421056",
+              "end": "421065"
+            },
+            {
+              "start": "676311",
+              "end": "676311"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1548584328-c9fa89d128fa?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1548584328-c9fa89d128fa?w=200&q=80",
+            "localAssetName": "icici_debit_classic",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#0066CC",
+            "secondaryColor": "#FFFFFF",
+            "textColor": "#FFFFFF",
+            "accentColor": "#0066CC"
+          },
+          "details": {
+            "annualFee": "Nil",
+            "joiningBenefit": "Nil",
+            "features": [
+              "ATM access worldwide",
+              "Online shopping",
+              "Contactless payments",
+              "Insurance",
+              "Mobile payments",
+              "International acceptance"
+            ],
+            "eligibility": "All account holders"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "ICICI DEBIT",
+              "ICICI ATM",
+              "ICICI VISA DEBIT"
+            ],
+            "issuerName": "ICICI BANK"
+          }
+        }
+      ]
+    },
+    {
+      "id": "amex",
+      "name": "American Express India",
+      "country": "IN",
+      "website": "https://www.americanexpress.com/en-in/",
+      "brandColor": "#00579F",
+      "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9d/American_Express_logo.svg",
+      "cards": [
+        {
+          "id": "amex-platinum",
+          "name": "American Express Platinum Card",
+          "type": "Credit Card",
+          "network": "Amex",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": true,
+          "aliases": [
+            "Amex Platinum",
+            "American Express Platinum",
+            "Platinum Card"
+          ],
+          "binRanges": [
+            {
+              "start": "373953",
+              "end": "373953"
+            },
+            {
+              "start": "370040",
+              "end": "370040"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=200&q=80",
+            "localAssetName": "amex_platinum",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#111111",
+            "secondaryColor": "#00579F",
+            "textColor": "#FFFFFF",
+            "accentColor": "#00579F"
+          },
+          "details": {
+            "annualFee": "$695 USD (approx Rs. 57,700)",
+            "joiningBenefit": "Membership credit",
+            "features": [
+              "Dedicated concierge",
+              "Fine dining access",
+              "Hotel upgrades",
+              "Travel insurance premium",
+              "Personal shoppers",
+              "Complimentary airport transfers",
+              "Priority support"
+            ],
+            "eligibility": "High net worth individuals, Annual income $100k+"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "AMEX PLATINUM",
+              "AMERICAN EXPRESS PLATINUM",
+              "PLATINUM CARD"
+            ],
+            "issuerName": "AMERICAN EXPRESS"
+          }
+        },
+        {
+          "id": "amex-gold",
+          "name": "American Express Gold Card",
+          "type": "Credit Card",
+          "network": "Amex",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": true,
+          "aliases": [
+            "Amex Gold",
+            "American Express Gold",
+            "Gold Card"
+          ],
+          "binRanges": [
+            {
+              "start": "378282",
+              "end": "378282"
+            },
+            {
+              "start": "372449",
+              "end": "372449"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1633365459618-c0ffa60884d7?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1633365459618-c0ffa60884d7?w=200&q=80",
+            "localAssetName": "amex_gold",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#FFD700",
+            "secondaryColor": "#00579F",
+            "textColor": "#000000",
+            "accentColor": "#00579F"
+          },
+          "details": {
+            "annualFee": "$295 USD (approx Rs. 24,500)",
+            "joiningBenefit": "Membership credit",
+            "features": [
+              "24/7 Concierge",
+              "Premium travel insurance",
+              "Dining credits",
+              "Airport lounge access",
+              "Upgrade vouchers",
+              "Travel assistance",
+              "Purchase protection"
+            ],
+            "eligibility": "Annual income $25k+, Excellent credit score"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "AMEX GOLD",
+              "AMERICAN EXPRESS GOLD",
+              "GOLD CARD"
+            ],
+            "issuerName": "AMERICAN EXPRESS"
+          }
+        },
+        {
+          "id": "amex-green",
+          "name": "American Express Green Card",
+          "type": "Credit Card",
+          "network": "Amex",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Amex Green",
+            "American Express Green",
+            "Green Card"
+          ],
+          "binRanges": [
+            {
+              "start": "374282",
+              "end": "374282"
+            },
+            {
+              "start": "371449",
+              "end": "371449"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1622667062626-2c6e5c97db56?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1622667062626-2c6e5c97db56?w=200&q=80",
+            "localAssetName": "amex_green",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#00A651",
+            "secondaryColor": "#00579F",
+            "textColor": "#FFFFFF",
+            "accentColor": "#00579F"
+          },
+          "details": {
+            "annualFee": "$95 USD (approx Rs. 7,900)",
+            "joiningBenefit": "Nil",
+            "features": [
+              "Travel insurance",
+              "Purchase protection",
+              "Extended warranty",
+              "Membership rewards",
+              "Emergency assistance",
+              "Travel benefits"
+            ],
+            "eligibility": "Age 18+, Good credit score"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "AMEX GREEN",
+              "AMERICAN EXPRESS GREEN",
+              "GREEN CARD"
+            ],
+            "issuerName": "AMERICAN EXPRESS"
+          }
+        }
+      ]
+    },
+    {
+      "id": "scapia",
+      "name": "Scapia",
+      "country": "IN",
+      "website": "https://www.scapia.com",
+      "brandColor": "#0052A3",
+      "logoUrl": "https://www.scapia.com/images/logo.png",
+      "cards": [
+        {
+          "id": "scapia-credit-premium",
+          "name": "Scapia Premium Credit Card",
+          "type": "Credit Card",
+          "network": "RuPay",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": true,
+          "aliases": [
+            "Scapia Premium",
+            "Scapia Premium Credit",
+            "Scapia RuPay Premium"
+          ],
+          "binRanges": [
+            {
+              "start": "607845",
+              "end": "607845"
+            },
+            {
+              "start": "639343",
+              "end": "639343"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1556740749-b7eca7a6e752?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1556740749-b7eca7a6e752?w=200&q=80",
+            "localAssetName": "scapia_premium_credit",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#0052A3",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Rs. 499 (waived on Rs. 50,000 spends)",
+            "joiningBenefit": "Nil",
+            "features": [
+              "5% cashback on dining",
+              "3% on travel",
+              "Lounge access",
+              "Insurance coverage",
+              "Reward multipliers",
+              "Online shopping benefits"
+            ],
+            "eligibility": "Age 23+, Min annual income Rs. 3 lakh"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "SCAPIA PREMIUM",
+              "SCAPIA CREDIT",
+              "SCAPIA RUPAY"
+            ],
+            "issuerName": "SCAPIA"
+          }
+        },
+        {
+          "id": "scapia-credit-personal",
+          "name": "Scapia Personal Credit Card",
+          "type": "Credit Card",
+          "network": "RuPay",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Scapia Personal",
+            "Scapia Credit",
+            "Scapia RuPay"
+          ],
+          "binRanges": [
+            {
+              "start": "607844",
+              "end": "607844"
+            },
+            {
+              "start": "639342",
+              "end": "639342"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=200&q=80",
+            "localAssetName": "scapia_personal_credit",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#0052A3",
+            "secondaryColor": "#FFFFFF",
+            "textColor": "#FFFFFF",
+            "accentColor": "#0052A3"
+          },
+          "details": {
+            "annualFee": "Free",
+            "joiningBenefit": "Nil",
+            "features": [
+              "Cashback on all purchases",
+              "Rewards program",
+              "Online shopping discount",
+              "Bill payment options",
+              "Easy approval"
+            ],
+            "eligibility": "Age 21+, Min annual income Rs. 1 lakh"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "SCAPIA PERSONAL",
+              "SCAPIA CREDIT",
+              "SCAPIA RUPAY CREDIT"
+            ],
+            "issuerName": "SCAPIA"
+          }
+        },
+        {
+          "id": "scapia-debit",
+          "name": "Scapia RuPay Debit Card",
+          "type": "Debit Card",
+          "network": "RuPay",
+          "variant": "debit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Scapia Debit",
+            "Scapia RuPay Debit",
+            "RuPay Debit"
+          ],
+          "binRanges": [
+            {
+              "start": "607846",
+              "end": "607846"
+            },
+            {
+              "start": "639344",
+              "end": "639344"
+            }
+          ],
+          "image": {
+            "front": "https://images.unsplash.com/photo-1607481107030-8b0e2b1f5a18?w=800&q=80",
+            "thumbnail": "https://images.unsplash.com/photo-1607481107030-8b0e2b1f5a18?w=200&q=80",
+            "localAssetName": "scapia_debit",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#0052A3",
+            "secondaryColor": "#FFFFFF",
+            "textColor": "#FFFFFF",
+            "accentColor": "#0052A3"
+          },
+          "details": {
+            "annualFee": "Nil",
+            "joiningBenefit": "Nil",
+            "features": [
+              "ATM access in India",
+              "Online shopping",
+              "Bill payments",
+              "Mobile recharge",
+              "Insurance",
+              "Domestic transactions"
+            ],
+            "eligibility": "All account holders"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "SCAPIA DEBIT",
+              "SCAPIA ATM",
+              "SCAPIA RUPAY DEBIT"
+            ],
+            "issuerName": "SCAPIA"
+          }
+        }
+      ]
+    }
+  ],
+  "networks": [
+    {
+      "id": "visa",
+      "name": "Visa",
+      "color": "#1A1F71",
+      "website": "https://www.visa.com"
+    },
+    {
+      "id": "mastercard",
+      "name": "Mastercard",
+      "color": "#EB001B",
+      "website": "https://www.mastercard.com"
+    },
+    {
+      "id": "amex",
+      "name": "American Express",
+      "color": "#00579F",
+      "website": "https://www.americanexpress.com"
+    },
+    {
+      "id": "rupay",
+      "name": "RuPay",
+      "color": "#EE3B3B",
+      "website": "https://www.rupaycard.com"
+    },
+    {
+      "id": "diners",
+      "name": "Diners Club",
+      "color": "#0079BE",
+      "website": "https://www.dinersclub.com"
+    }
+  ],
+  "metadata": {
+    "cardCount": 12,
+    "issuerCount": 4,
+    "networkCount": 5,
+    "lastUpdated": "2026-05-17T00:00:00Z",
+    "schema": {
+      "version": "2.0",
+      "issuerFields": [
+        "id",
+        "name",
+        "country",
+        "website",
+        "brandColor",
+        "logoUrl",
+        "cards"
+      ],
+      "cardFields": [
+        "id",
+        "name",
+        "type",
+        "network",
+        "variant",
+        "active",
+        "premiumTier",
+        "aliases",
+        "binRanges",
+        "image",
+        "theme",
+        "details",
+        "parsingHints"
+      ]
+    }
+  }
+}

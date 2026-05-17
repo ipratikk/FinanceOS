@@ -38,6 +38,9 @@ let package = Package(
                     package: "SwiftCSV"
                 ),
                 "FinanceParsers"
+            ],
+            resources: [
+                .process("Resources/")
             ]
         ),
         .testTarget(
