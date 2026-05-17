@@ -167,7 +167,7 @@ struct DashboardView: View {
 
                         HStack(spacing: 6) {
                             Text(formatAmount(txn.amountMinorUnits))
-                                .monoAmount()
+                                .font(.system(size: 14, weight: .semibold, design: .monospaced))
                                 .foregroundColor(txn.transactionType == .debit ? AppColors.debit : AppColors.credit)
 
                             Text(txn.transactionType == .debit ? "Dr" : "Cr")

@@ -146,7 +146,7 @@ struct TransactionListContentView: View {
 
             HStack(spacing: 8) {
                 Text(row.amountText)
-                    .monoAmount()
+                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
                     .foregroundColor(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
 
                 Text(row.transactionType == .debit ? "Dr" : "Cr")

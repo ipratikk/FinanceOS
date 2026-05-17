@@ -73,9 +73,11 @@ struct ImportView: View {
                                         .controlSize(.small)
 
                                     if viewModel.totalFilesToParse > 1 {
-                                        Text("Parsing file \(viewModel.currentFileIndex + 1) of \(viewModel.totalFilesToParse)...")
-                                            .labelSmall()
-                                            .foregroundColor(AppColors.textTertiary)
+                                        Text(
+                                            "Parsing file \(viewModel.currentFileIndex + 1) of \(viewModel.totalFilesToParse)..."
+                                        )
+                                        .labelSmall()
+                                        .foregroundColor(AppColors.textTertiary)
                                     } else {
                                         Text("Parsing statement...")
                                             .labelSmall()
