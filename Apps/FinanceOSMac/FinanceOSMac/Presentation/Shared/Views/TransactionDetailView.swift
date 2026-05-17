@@ -12,20 +12,21 @@ struct TransactionDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Amount")
-                            .captionLarge()
+                        FDSText("Amount", style: .captionLarge, color: .primary)
 
                         HStack(spacing: 8) {
                             FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit)
 
-                            Text(row.transactionType == .debit ? "Dr" : "Cr")
-                                .labelSmall()
-                                .padding(.vertical, 2)
-                                .padding(.horizontal, 6)
-                                .background(row.transactionType == .debit ? AppColors.debit
-                                    .opacity(0.15) : AppColors.credit.opacity(0.15))
-                                .foregroundColor(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
-                                .cornerRadius(AppRadius.sm)
+                            FDSText(
+                                row.transactionType == .debit ? "Dr" : "Cr",
+                                style: .labelSmall,
+                                color: row.transactionType == .debit ? .debit : .credit
+                            )
+                            .padding(.vertical, 2)
+                            .padding(.horizontal, 6)
+                            .background(row.transactionType == .debit ? AppColors.debit
+                                .opacity(0.15) : AppColors.credit.opacity(0.15))
+                            .cornerRadius(AppRadius.sm)
 
                             Spacer()
                         }
@@ -35,36 +36,24 @@ struct TransactionDetailView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Description")
-                            .captionLarge()
-                            .foregroundColor(.gray)
-
-                        Text(row.title)
-                            .bodyLarge()
+                        FDSText("Description", style: .captionLarge, color: .secondary)
+                        FDSText(row.title, style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface)
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Source")
-                            .captionLarge()
-                            .foregroundColor(.gray)
-
-                        Text(row.subtitle)
-                            .bodyLarge()
+                        FDSText("Source", style: .captionLarge, color: .secondary)
+                        FDSText(row.subtitle, style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface)
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Date")
-                            .captionLarge()
-                            .foregroundColor(.gray)
-
-                        Text(formatDate(row.postedAt))
-                            .bodyLarge()
+                        FDSText("Date", style: .captionLarge, color: .secondary)
+                        FDSText(formatDate(row.postedAt), style: .bodyLarge, color: .primary)
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface)
@@ -80,7 +69,7 @@ struct TransactionDetailView: View {
 
     var headerView: some View {
         HStack {
-            Text("Transaction Details").headingMedium()
+            FDSText("Transaction Details", style: .headingMedium)
             Spacer()
             Button(action: { dismiss() }, label: {
                 Image(systemName: "xmark.circle.fill").headingSmall().foregroundColor(.gray)

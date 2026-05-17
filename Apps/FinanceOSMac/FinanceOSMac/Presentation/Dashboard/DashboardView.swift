@@ -51,25 +51,16 @@ struct DashboardView: View {
 
     var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Dashboard")
-                .headingLarge()
-
-            Text("This Month")
-                .labelSmall()
-                .foregroundColor(AppColors.textTertiary)
+            FDSText("Dashboard", style: .headingLarge)
+            FDSText("This Month", style: .labelSmall, color: .tertiary)
         }
     }
 
     func summaryCards(_ totals: SpendingTotals) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Total Debits")
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
-
-                Text(formatAmount(totals.totalDebit))
-                    .headingMedium()
-                    .foregroundColor(AppColors.debit)
+                FDSText("Total Debits", style: .labelSmall, color: .tertiary)
+                FDSText(formatAmount(totals.totalDebit), style: .headingMedium, color: .debit)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -77,13 +68,8 @@ struct DashboardView: View {
             .cornerRadius(AppRadius.md)
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Total Credits")
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
-
-                Text(formatAmount(totals.totalCredit))
-                    .headingMedium()
-                    .foregroundColor(AppColors.credit)
+                FDSText("Total Credits", style: .labelSmall, color: .tertiary)
+                FDSText(formatAmount(totals.totalCredit), style: .headingMedium, color: .credit)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -91,13 +77,8 @@ struct DashboardView: View {
             .cornerRadius(AppRadius.md)
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Transactions")
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
-
-                Text("\(totals.transactionCount)")
-                    .headingMedium()
-                    .foregroundColor(AppColors.accent)
+                FDSText("Transactions", style: .labelSmall, color: .tertiary)
+                FDSText("\(totals.transactionCount)", style: .headingMedium, color: .accent)
             }
             .padding(AppSpacing.sm)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -108,9 +89,7 @@ struct DashboardView: View {
 
     var chartSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("6-Month Trend")
-                .captionLarge()
-                .foregroundColor(.gray)
+            FDSText("6-Month Trend", style: .captionLarge, color: .secondary)
 
             if let viewModel {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
@@ -124,10 +103,7 @@ struct DashboardView: View {
     var recentTransactionsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Recent Activity")
-                    .captionLarge()
-                    .foregroundColor(.gray)
-
+                FDSText("Recent Activity", style: .captionLarge, color: .secondary)
                 Spacer()
 
                 NavigationLink(destination: TransactionsView(
@@ -137,13 +113,9 @@ struct DashboardView: View {
                     )
                 )) {
                     HStack(spacing: 4) {
-                        Text("View All")
-                            .labelSmall()
-
-                        Image(systemName: "chevron.right")
-                            .labelSmall()
+                        FDSText("View All", style: .labelSmall, color: .accent)
+                        Image(systemName: "chevron.right").labelSmall()
                     }
-                    .foregroundColor(AppColors.accent)
                 }
             }
 
@@ -155,13 +127,10 @@ struct DashboardView: View {
                             .frame(width: 8, height: 8)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(txn.description)
-                                .captionLarge()
+                            FDSText(txn.description, style: .captionLarge, color: .primary)
                                 .lineLimit(1)
 
-                            Text(dateString(txn.postedAt))
-                                .labelSmall()
-                                .foregroundColor(AppColors.textTertiary)
+                            FDSText(dateString(txn.postedAt), style: .labelSmall, color: .tertiary)
                         }
 
                         Spacer()
