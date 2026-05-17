@@ -32,13 +32,19 @@ struct CardSelectionView: View {
         return urls[type.lowercased()].flatMap { URL(string: $0) }
     }
 
-    private func bankLogoURL(for issuer: String) -> URL? {
-        let logos: [String: String] = [
-            "HDFC Bank": "https://upload.wikimedia.org/wikipedia/en/0/0a/HDFC_bank_logo.svg",
-            "ICICI Bank": "https://upload.wikimedia.org/wikipedia/en/c/c0/ICICI_Bank_Logo.svg",
-            "American Express": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/American_Express_logo.svg/1200px-American_Express_logo.svg.png"
+    private func bankLogo(for issuer: String) -> NSImage? {
+        let assetNames: [String: String] = [
+            "HDFC Bank": "hdfc-symbol",
+            "ICICI Bank": "icici-symbol"
         ]
-        return logos[issuer].flatMap { URL(string: $0) }
+
+        if let assetName = assetNames[issuer],
+           let nsImage = NSImage(named: assetName)
+        {
+            return nsImage
+        }
+
+        return nil
     }
 
     private func networkColor(for type: String) -> Color {
@@ -164,7 +170,12 @@ struct CardSelectionView: View {
 
                         HStack(spacing: 8) {
                             // Bank Logo
-                            SVGImageView(bankLogoURL(for: card.issuer), width: 40, height: 16)
+                            if let logo = bankLogo(for: card.issuer) {
+                                Image(nsImage: logo)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 40, height: 16)
+                            }
 
                             Spacer()
                             FDSLabel(card.cardType.uppercased(), style: .caption)
