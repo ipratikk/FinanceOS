@@ -1,7 +1,10 @@
 import Foundation
 
 public enum CardDatabase {
-    private static let defaultCards: [CardMetadata] = [
+    private static let defaultCards: [CardMetadata] = CardCatalogLoader.loadCardMetadata().isEmpty ?
+        fallbackCards : CardCatalogLoader.loadCardMetadata()
+
+    private static let fallbackCards: [CardMetadata] = [
         // HDFC Cards
         CardMetadata(
             id: "hdfc-credit-classic",
