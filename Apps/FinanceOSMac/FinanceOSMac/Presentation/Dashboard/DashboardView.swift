@@ -18,35 +18,25 @@ struct DashboardView: View {
 
     var body: some View {
         if let viewModel {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
                     header
-                        .padding(.bottom, AppSpacing.lg)
 
-                    // Net balance — hero metric
                     if let totals = viewModel.currentTotals {
-                        netBalanceSection(totals)
-                            .padding(.bottom, AppSpacing.lg)
-                    }
-
-                    // Summary metrics row
-                    if let totals = viewModel.currentTotals {
+                        heroNet(totals)
                         metricsRow(totals)
-                            .padding(.bottom, AppSpacing.lg)
                     }
 
-                    // Chart
                     if !viewModel.monthlySummaries.isEmpty {
                         chartSection(viewModel)
-                            .padding(.bottom, AppSpacing.lg)
                     }
 
-                    // Recent transactions
                     if !viewModel.recentTransactions.isEmpty {
-                        recentTransactionsSection(viewModel)
+                        recentActivitySection(viewModel)
                     }
                 }
-                .padding(AppSpacing.md)
+                .padding(.horizontal, AppSpacing.xl)
+                .padding(.vertical, AppSpacing.xl)
             }
             .background(AppColors.base)
             .task {
@@ -54,131 +44,139 @@ struct DashboardView: View {
                 isLoading = false
             }
         } else {
-            VStack {
-                ProgressView("Loading Dashboard...")
+            VStack(spacing: AppSpacing.md) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Loading…")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
             .task {
-                let dashboardViewModel = DashboardViewModel(
+                viewModel = DashboardViewModel(
                     spendingService: appContainer.spendingService,
                     transactionRepository: appContainer.transactionRepository
                 )
-                viewModel = dashboardViewModel
             }
         }
     }
 
-    var header: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xxs) {
-            FDSLabel("Dashboard", style: .displayMedium)
-            FDSLabel("This Month", style: .caption)
+    private var header: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text(currentMonth)
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            Text("Dashboard")
+                .font(.system(size: 28, weight: .bold, design: .default))
+                .foregroundStyle(.primary)
         }
     }
 
-    private func netBalanceSection(_ totals: SpendingTotals) -> some View {
-        let net = Int64(totals.totalCredit) - Int64(totals.totalDebit)
-        return VStack(alignment: .leading, spacing: AppSpacing.xs) {
-            FDSLabel("Net", style: .labelSmall)
-            FDSLabel(formatAmount(net), style: .displayLarge)
-                .foregroundColor(net >= 0 ? AppColors.credit : AppColors.debit)
+    private func heroNet(_ totals: SpendingTotals) -> some View {
+        let net = totals.totalCredit - totals.totalDebit
+        return VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text("Net This Month")
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+
+            HStack(alignment: .firstTextBaseline, spacing: AppSpacing.compact) {
+                Text(formatAmount(net))
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(.primary)
+                    .contentTransition(.numericText())
+
+                Image(systemName: net >= 0 ? "arrow.up.right" : "arrow.down.right")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(net >= 0 ? AppColors.credit : AppColors.debit)
+            }
         }
     }
 
     private func metricsRow(_ totals: SpendingTotals) -> some View {
-        HStack(spacing: AppSpacing.md) {
-            metricTile("Debits", formatAmount(totals.totalDebit), color: AppColors.debit)
-            metricTile("Credits", formatAmount(totals.totalCredit), color: AppColors.credit)
-            metricTile("Txns", "\(totals.transactionCount)", color: AppColors.accent)
-        }
-    }
+        HStack(spacing: 0) {
+            FDSMetricTile(
+                "Debits",
+                value: formatAmount(totals.totalDebit),
+                symbol: "arrow.up.right.circle.fill"
+            )
 
-    private func metricTile(_ label: String, _ value: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xxs) {
-            FDSLabel(label, style: .labelSmall)
-                .foregroundColor(AppColors.textTertiary)
-            Text(value)
-                .monoAmount()
-                .foregroundColor(color)
+            Divider()
+                .frame(height: 36)
+                .padding(.horizontal, AppSpacing.md)
+
+            FDSMetricTile(
+                "Credits",
+                value: formatAmount(totals.totalCredit),
+                symbol: "arrow.down.left.circle.fill"
+            )
+
+            Divider()
+                .frame(height: 36)
+                .padding(.horizontal, AppSpacing.md)
+
+            FDSMetricTile(
+                "Transactions",
+                value: "\(totals.transactionCount)",
+                symbol: "list.bullet.rectangle"
+            )
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(AppSpacing.sm)
-        .background(.ultraThinMaterial)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .stroke(AppColors.borderSubtle, lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.md)
+        .padding(.vertical, AppSpacing.md)
     }
 
     private func chartSection(_ viewModel: DashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSLabel("6-Month Trend", style: .headingMedium)
-            SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
+            FDSSectionHeader("6-Month Trend", subtitle: "Credits vs debits")
+
+            FDSGlassSurface(elevation: .card, cornerRadius: AppRadius.lg, padding: AppSpacing.md) {
+                SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
+                    .frame(height: 220)
+            }
         }
-        .padding(AppSpacing.md)
-        .background(.ultraThinMaterial)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .stroke(AppColors.borderSubtle, lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.md)
     }
 
-    private func recentTransactionsSection(_ viewModel: DashboardViewModel) -> some View {
+    private func recentActivitySection(_ viewModel: DashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            HStack {
-                FDSLabel("Recent Activity", style: .headingMedium)
-                Spacer()
-                Button(action: { navigator.navigate(to: .transactions) }) {
-                    HStack(spacing: AppSpacing.xxs) {
-                        FDSLabel("View All", style: .labelSmall)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 12, weight: .semibold))
-                    }
-                    .foregroundColor(AppColors.accent)
-                }
-                .buttonStyle(.plain)
-            }
+            FDSSectionHeader(
+                "Recent Activity",
+                actionLabel: "View All",
+                action: { navigator.navigate(to: .transactions) }
+            )
 
-            VStack(spacing: AppSpacing.xs) {
-                ForEach(Array(viewModel.recentTransactions.prefix(5)), id: \.id) { txn in
-                    transactionRow(txn)
+            VStack(spacing: 0) {
+                ForEach(Array(viewModel.recentTransactions.prefix(6).enumerated()), id: \.element.id) { index, txn in
+                    FDSTransactionRow(
+                        merchant: txn.description,
+                        categorySymbol: categorySymbol(for: txn.description),
+                        subtitle: dateString(txn.postedAt),
+                        amount: formatAmount(txn.amountMinorUnits),
+                        isDebit: txn.transactionType == .debit
+                    )
+                    if index < min(viewModel.recentTransactions.count, 6) - 1 {
+                        Divider()
+                            .opacity(0.3)
+                            .padding(.leading, 60)
+                    }
                 }
+            }
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                    }
             }
         }
-        .padding(AppSpacing.md)
-        .background(.ultraThinMaterial)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .stroke(AppColors.borderSubtle, lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.md)
     }
 
-    private func transactionRow(_ txn: FinanceCore.Transaction) -> some View {
-        HStack(spacing: AppSpacing.md) {
-            Circle()
-                .fill(txn.transactionType == .debit ? AppColors.debit : AppColors.credit)
-                .frame(width: 6, height: 6)
-
-            VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
-                Text(txn.description)
-                    .bodyMedium()
-                    .lineLimit(1)
-                Text(dateString(txn.postedAt))
-                    .caption()
-                    .foregroundColor(AppColors.textTertiary)
-            }
-
-            Spacer()
-
-            FDSAmount(
-                formatAmount(txn.amountMinorUnits),
-                type: txn.transactionType == .debit ? .debit : .credit
-            )
-        }
-        .padding(AppSpacing.sm)
+    private var currentMonth: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: Date()).uppercased()
     }
 
     private func formatAmount(_ minorUnits: Int64) -> String {
@@ -192,13 +190,32 @@ struct DashboardView: View {
 
     private func dateString(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
+        formatter.dateFormat = "MMM d · h:mm a"
         return formatter.string(from: date)
+    }
+
+    private func categorySymbol(for description: String) -> String {
+        let lower = description.lowercased()
+        if lower.contains("salary") || lower.contains("deposit") {
+            return "arrow.down.left.circle.fill"
+        }
+        if lower.contains("food") || lower.contains("foods") || lower.contains("market") {
+            return "fork.knife"
+        }
+        if lower.contains("gas") || lower.contains("shell") {
+            return "fuelpump.fill"
+        }
+        if lower.contains("coffee") || lower.contains("starbucks") {
+            return "cup.and.saucer.fill"
+        }
+        if lower.contains("amazon") || lower.contains("target") || lower.contains("shop") {
+            return "bag.fill"
+        }
+        return "creditcard.fill"
     }
 }
 
 #Preview {
-    let navigator = AppNavigator()
-    return DashboardView()
-        .environment(navigator)
+    DashboardView()
+        .environment(AppNavigator())
 }
