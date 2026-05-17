@@ -144,17 +144,7 @@ struct CardsView: View {
     }
 
     private func bankLogoURL(for issuer: String) -> URL? {
-        let localLogos: [String: String] = [
-            "HDFC Bank": "bank-logos/hdfc",
-            "ICICI Bank": "bank-logos/icici"
-        ]
-
-        if let localAsset = localLogos[issuer],
-           let assetURL = Bundle.module.url(forResource: localAsset, withExtension: nil) {
-            return assetURL
-        }
-
-        return nil
+        CardCatalogLoader.bankLogoURL(for: issuer, size: .large)
     }
 
     func cardRowView(_ ledger: Ledger) -> some View {

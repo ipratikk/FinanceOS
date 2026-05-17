@@ -1,6 +1,31 @@
 import Foundation
 
 public enum CardCatalogLoader {
+    public enum LogoSize {
+        case small
+        case large
+    }
+
+    public static func bankLogoURL(
+        for issuer: String,
+        size: LogoSize = .large
+    ) -> URL? {
+        let logos: [String: (small: String, large: String)] = [
+            "HDFC Bank": (small: "bank-logos/hdfc-small", large: "bank-logos/hdfc"),
+            "ICICI Bank": (small: "bank-logos/icici-small", large: "bank-logos/icici")
+        ]
+
+        let assetName = size == .small ? logos[issuer]?.small : logos[issuer]?.large
+
+        if let assetName = assetName,
+           let assetURL = Bundle.module.url(forResource: assetName, withExtension: nil)
+        {
+            return assetURL
+        }
+
+        return nil
+    }
+
     private static func resolveImageURL(_ path: String) -> String {
         // If already a URL, return as-is
         if path.hasPrefix("http") {
