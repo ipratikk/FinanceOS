@@ -3,8 +3,8 @@ import SwiftUI
 
 struct AccountsView: View {
     @State private var viewModel: AccountsViewModel
-    @State private var selectedAccountId: UUID?
     @State private var accountPendingDelete: Ledger?
+    @Environment(AppNavigator.self) private var navigator
     private let transactionRepository: any TransactionRepository
     private let ledgerRepository: any LedgerRepository
 
@@ -29,9 +29,6 @@ struct AccountsView: View {
             }
         }
         .navigationTitle("Accounts")
-        .sheet(item: $viewModel.editingAccount) { ledger in
-            AccountEditView(account: ledger, viewModel: viewModel)
-        }
         .alert(
             "Delete \"\(accountPendingDelete?.displayName ?? "")\"?",
             isPresented: Binding(
@@ -88,7 +85,7 @@ struct AccountsView: View {
                             }
                         }
                         .contextMenu {
-                            Button("Edit") { viewModel.editingAccount = ledger }
+                            Button("Edit") { navigator.present(.accountEdit(ledger)) }
                             Button("Delete", role: .destructive) {
                                 accountPendingDelete = ledger
                             }

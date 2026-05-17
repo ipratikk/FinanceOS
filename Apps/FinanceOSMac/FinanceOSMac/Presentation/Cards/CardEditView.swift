@@ -4,7 +4,7 @@ import SwiftUI
 
 struct CardEditView: View {
     let card: Ledger
-    let viewModel: CardsViewModel
+    let context: CardEditContext
     @State private var displayName: String
     @State private var last4: String
     @State private var cardType: String
@@ -14,11 +14,10 @@ struct CardEditView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
-    @State private var deleteErrorMessage: String?
 
-    init(card: Ledger, viewModel: CardsViewModel) {
+    init(card: Ledger, context: CardEditContext) {
         self.card = card
-        self.viewModel = viewModel
+        self.context = context
         _displayName = State(initialValue: card.displayName)
         _last4 = State(initialValue: card.last4)
         _cardType = State(initialValue: card.cardType ?? "other")
@@ -94,7 +93,7 @@ struct CardEditView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 FDSLabel("Bank", style: .hint)
                                 Picker("Bank", selection: $bankId) {
-                                    ForEach(viewModel.banks) { bank in
+                                    ForEach(context.banks) { bank in
                                         Text(bank.name).tag(bank.id)
                                     }
                                 }
@@ -109,7 +108,7 @@ struct CardEditView: View {
                                 FDSLabel("Linked Account", style: .hint)
                                 Picker("Account", selection: $linkedLedgerId) {
                                     Text("None").tag(UUID?.none)
-                                    ForEach(viewModel.accounts.filter { $0.bankId == bankId }) { account in
+                                    ForEach(context.accounts.filter { $0.bankId == bankId }) { account in
                                         Text(account.displayName).tag(UUID?(account.id))
                                     }
                                 }
@@ -175,8 +174,10 @@ struct CardEditView: View {
                             linkedLedgerId: linkedLedgerId,
                             isArchived: card.isArchived
                         )
-                        await viewModel.updateCard(updated)
-                        // Sheet dismisses via binding when editingCard is set to nil
+                        await context.updateCard(updated)
+                        if context.deleteError == nil {
+                            dismiss()
+                        }
                     }
                 }, label: {
                     FDSLabel("Save", style: .monoAmount)
@@ -195,11 +196,9 @@ struct CardEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    await viewModel.deleteCard(id: card.id)
-                    if viewModel.deleteError == nil {
+                    await context.deleteCard(id: card.id)
+                    if context.deleteError == nil {
                         dismiss()
-                    } else {
-                        deleteErrorMessage = viewModel.deleteError
                     }
                 }
             }
@@ -207,12 +206,12 @@ struct CardEditView: View {
             Text("This will permanently delete this card and all associated transactions. This cannot be undone.")
         }
         .alert("Delete Failed", isPresented: Binding(
-            get: { deleteErrorMessage != nil },
-            set: { if !$0 { deleteErrorMessage = nil } }
+            get: { context.deleteError != nil },
+            set: { if !$0 { context.clearError() } }
         )) {
-            Button("OK") { deleteErrorMessage = nil }
+            Button("OK") { context.clearError() }
         } message: {
-            if let error = deleteErrorMessage {
+            if let error = context.deleteError {
                 Text(error)
             }
         }

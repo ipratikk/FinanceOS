@@ -4,7 +4,7 @@ import SwiftUI
 
 struct AccountEditView: View {
     let account: Ledger
-    let viewModel: AccountsViewModel
+    let context: AccountEditContext
     @State private var displayName: String
     @State private var last4: String
     @State private var ownerName: String
@@ -14,11 +14,10 @@ struct AccountEditView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var showDeleteConfirm = false
-    @State private var deleteErrorMessage: String?
 
-    init(account: Ledger, viewModel: AccountsViewModel) {
+    init(account: Ledger, context: AccountEditContext) {
         self.account = account
-        self.viewModel = viewModel
+        self.context = context
         _displayName = State(initialValue: account.displayName)
         _last4 = State(initialValue: account.last4)
         _ownerName = State(initialValue: account.ownerName)
@@ -80,7 +79,7 @@ struct AccountEditView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 FDSLabel("Bank", style: .hint)
                                 Picker("Bank", selection: $bankId) {
-                                    ForEach(viewModel.banks) { bank in
+                                    ForEach(context.banks) { bank in
                                         Text(bank.name).tag(bank.id)
                                     }
                                 }
@@ -146,8 +145,10 @@ struct AccountEditView: View {
                             linkedLedgerId: account.linkedLedgerId,
                             isArchived: account.isArchived
                         )
-                        await viewModel.updateAccount(updated)
-                        // Sheet dismisses via binding when editingAccount is set to nil
+                        await context.updateAccount(updated)
+                        if context.deleteError == nil {
+                            dismiss()
+                        }
                     }
                 }, label: {
                     FDSLabel("Save", style: .monoAmount)
@@ -166,11 +167,9 @@ struct AccountEditView: View {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
-                    await viewModel.deleteAccount(id: account.id)
-                    if viewModel.deleteError == nil {
+                    await context.deleteAccount(id: account.id)
+                    if context.deleteError == nil {
                         dismiss()
-                    } else {
-                        deleteErrorMessage = viewModel.deleteError
                     }
                 }
             }
@@ -178,12 +177,12 @@ struct AccountEditView: View {
             Text("This will permanently delete this account and all associated transactions. This cannot be undone.")
         }
         .alert("Delete Failed", isPresented: Binding(
-            get: { deleteErrorMessage != nil },
-            set: { if !$0 { deleteErrorMessage = nil } }
+            get: { context.deleteError != nil },
+            set: { if !$0 { context.clearError() } }
         )) {
-            Button("OK") { deleteErrorMessage = nil }
+            Button("OK") { context.clearError() }
         } message: {
-            if let error = deleteErrorMessage {
+            if let error = context.deleteError {
                 Text(error)
             }
         }

@@ -20,7 +20,6 @@ final class AccountsViewModel {
     var accounts: [Ledger] = []
     var banks: [Bank] = []
     var isLoading = false
-    var editingAccount: Ledger?
     var deleteError: String?
 
     init(
@@ -57,7 +56,6 @@ final class AccountsViewModel {
         do {
             try await ledgerRepository.update(account)
             await loadAccounts()
-            editingAccount = nil
         } catch {
             logger.logError(
                 "Failed to update account: {error}",
@@ -102,7 +100,6 @@ final class AccountsViewModel {
             try await transactionRepository.migrateTransactions(fromAccount: account.id, toCard: card.id)
             try await ledgerRepository.delete(id: account.id)
             await loadAccounts()
-            editingAccount = nil
         } catch {
             logger.logError(
                 "Failed to convert account to card: {error}",
