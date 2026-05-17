@@ -123,9 +123,9 @@ struct CardEditView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 FDSLabel("Linked Account", style: .hint)
                                 Picker("Account", selection: $linkedLedgerId) {
-                                    Text("None").tag(UUID?.none)
+                                    Text("None").tag(nil as UUID?)
                                     ForEach(context.accounts.filter { $0.bankId == bankId }) { account in
-                                        Text(account.displayName).tag(UUID?(account.id))
+                                        Text(account.displayName).tag(account.id as UUID?)
                                     }
                                 }
                                 .pickerStyle(.menu)

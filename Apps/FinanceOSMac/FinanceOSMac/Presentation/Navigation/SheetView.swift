@@ -4,9 +4,9 @@ import SwiftUI
 struct SheetView: View {
     let route: SheetRoute
     let appContainer: AppContainer
+    let navigator: AppNavigator
     @State private var banks: [Bank] = []
     @State private var accounts: [Ledger] = []
-    @Environment(\.cardReloadCallback) var cardReloadCallback
 
     var body: some View {
         Group {
@@ -19,7 +19,7 @@ struct SheetView: View {
                     repository: appContainer.ledgerRepository,
                     banks: banks,
                     accounts: accounts,
-                    onUpdate: cardReloadCallback
+                    onUpdate: navigator.cardReloadCallback
                 )
                 CardEditView(card: ledger, context: context)
             case let .bankEdit(bank):

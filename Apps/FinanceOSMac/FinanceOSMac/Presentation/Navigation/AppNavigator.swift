@@ -9,6 +9,7 @@ final class AppNavigator {
     var sidebarSelection: NavigationItem = .dashboard
     var detailPath = NavigationPath()
     var sheet: SheetRoute?
+    var cardReloadCallback: (() async -> Void)?
 
     func navigate(to item: NavigationItem) {
         sidebarSelection = item
