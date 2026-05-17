@@ -8,17 +8,25 @@ final class CardEditContext {
     let banks: [Bank]
     let accounts: [Ledger]
     var deleteError: String?
+    let onUpdate: (() async -> Void)?
 
-    init(repository: any LedgerRepository, banks: [Bank], accounts: [Ledger]) {
+    init(
+        repository: any LedgerRepository,
+        banks: [Bank],
+        accounts: [Ledger],
+        onUpdate: (() async -> Void)? = nil
+    ) {
         ledgerRepository = repository
         self.banks = banks
         self.accounts = accounts
+        self.onUpdate = onUpdate
     }
 
     func updateCard(_ ledger: Ledger) async {
         do {
             try await ledgerRepository.update(ledger)
             deleteError = nil
+            await onUpdate?()
         } catch {
             deleteError = error.localizedDescription
         }

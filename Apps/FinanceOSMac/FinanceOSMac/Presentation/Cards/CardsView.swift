@@ -29,6 +29,9 @@ struct CardsView: View {
             }
         }
         .navigationTitle("Cards")
+        .environment(\.cardReloadCallback) {
+            await viewModel.loadCards()
+        }
         .alert(
             "Delete \"\(cardPendingDelete?.displayName ?? "")\"?",
             isPresented: Binding(

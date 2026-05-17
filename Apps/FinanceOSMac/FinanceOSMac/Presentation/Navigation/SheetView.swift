@@ -6,6 +6,7 @@ struct SheetView: View {
     let appContainer: AppContainer
     @State private var banks: [Bank] = []
     @State private var accounts: [Ledger] = []
+    @Environment(\.cardReloadCallback) var cardReloadCallback
 
     var body: some View {
         Group {
@@ -17,7 +18,8 @@ struct SheetView: View {
                 let context = CardEditContext(
                     repository: appContainer.ledgerRepository,
                     banks: banks,
-                    accounts: accounts
+                    accounts: accounts,
+                    onUpdate: cardReloadCallback
                 )
                 CardEditView(card: ledger, context: context)
             case let .bankEdit(bank):

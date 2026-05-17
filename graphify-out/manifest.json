@@ -244,8 +244,8 @@
     "hash": "d702b2b7da7161add61968335cbdfb65"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Ledger.swift": {
-    "mtime": 1778969052.983012,
-    "hash": "83ef85ec9faab3735e7126962739965b"
+    "mtime": 1779016585.4281135,
+    "hash": "0efa242597e38e2323d6581fc455b4be"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Bank.swift": {
     "mtime": 1778788921.9198213,
@@ -816,20 +816,20 @@
     "hash": "83023938a08bf946e5861d87fdfe9333"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardSelectionView.swift": {
-    "mtime": 1779014360.4409451,
-    "hash": "7c934fd9f2bbe3b3de7f2521f3bb9a86"
+    "mtime": 1779016573.4852402,
+    "hash": "b624603cfa5cbf88a5f1e64f534cbb69"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsView.swift": {
-    "mtime": 1779014273.4183342,
-    "hash": "921598e96a29d48becfaa6f1062ddc51"
+    "mtime": 1779016062.950708,
+    "hash": "dcc72547e970378e7ee286942a14684d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardEditView.swift": {
     "mtime": 1779009685.2025402,
     "hash": "2812686fa90c228cd490fab546592cee"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift": {
-    "mtime": 1779014362.9612057,
-    "hash": "663cb5fa57a227a7192adea803cdbc3b"
+    "mtime": 1779016058.5009499,
+    "hash": "6079bfebe0827b2f20a1795b4bd9a22c"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Navigation/SheetRoute.swift": {
     "mtime": 1778998512.2859595,
@@ -1084,15 +1084,71 @@
     "hash": "49d6c306cea5da8b8fb9d40b1cad802b"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/icici.svg": {
-    "mtime": 1779013444.1272306,
-    "hash": "b01ce49ca662e4a80ee2377df4ff1cef"
+    "mtime": 1779015995.0290487,
+    "hash": "2f472bf0858d5bdc8773a1af02dcd6fc"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/icici-small.svg": {
     "mtime": 1779013444.1288612,
     "hash": "2ab458a87935350dd11f88f864085c1d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/hdfc.svg": {
-    "mtime": 1779013444.123563,
+    "mtime": 1779015995.02708,
+    "hash": "babc4f123b5b31c56892213eea878794"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Resources/hdfc-symbol.svg": {
+    "mtime": 1779014437.662043,
+    "hash": "49d6c306cea5da8b8fb9d40b1cad802b"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Resources/hdfc-logo.svg": {
+    "mtime": 1779014437.6598785,
     "hash": "72b77175a3ada6990d7e0b41227d4e9b"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Resources/icici-symbol.svg": {
+    "mtime": 1779014437.6658175,
+    "hash": "2ab458a87935350dd11f88f864085c1d"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Resources/icici-logo.svg": {
+    "mtime": 1779014437.6640656,
+    "hash": "b01ce49ca662e4a80ee2377df4ff1cef"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Card network/amex-symbol.imageset/amex-symbol.svg": {
+    "mtime": 1779016266.049286,
+    "hash": "199c6dc02a347649451d3069995d449a"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Card network/visa.imageset/visa.svg": {
+    "mtime": 1779016321.8532,
+    "hash": "d2a369f3b4e2618e259ddd4bc33a670b"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Card network/mastercard.imageset/mastercard.svg": {
+    "mtime": 1779016223.469662,
+    "hash": "e1144a27df51e561102ff11d212a17e4"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Card network/rupay.imageset/rupay.png": {
+    "mtime": 1779016223.469838,
+    "hash": "05067bfcbb3eba380c86f45b21ed06fa"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Card network/diners.imageset/diners.png": {
+    "mtime": 1779016223.469881,
+    "hash": "8a0197b959ce50d3562bf6770a7e4c22"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Banks/icici-symbol.imageset/icici-symbol.svg": {
+    "mtime": 1779016223.469213,
+    "hash": "2ab458a87935350dd11f88f864085c1d"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Banks/hdfc-logo.imageset/hdfc-logo.svg": {
+    "mtime": 1779016223.46948,
+    "hash": "72b77175a3ada6990d7e0b41227d4e9b"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Banks/icici-logo.imageset/icici-logo.svg": {
+    "mtime": 1779016193.995795,
+    "hash": "b01ce49ca662e4a80ee2377df4ff1cef"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Banks/amex-logo.imageset/amex.svg": {
+    "mtime": 1779016266.049144,
+    "hash": "c074814a694a5f774240d77ba15acf96"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Assets.xcassets/Banks/hdfc-symbol.imageset/hdfc-symbol.svg": {
+    "mtime": 1779016193.995654,
+    "hash": "49d6c306cea5da8b8fb9d40b1cad802b"
   }
 }

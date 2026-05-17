@@ -169,7 +169,7 @@ struct CardSelectionView: View {
                                 .scaledToFit()
                                 .frame(width: 24, height: 15)
                                 .padding(2)
-                                .background(Color.white.opacity(0.9))
+                                .background(Color.black.opacity(0.9))
                                 .cornerRadius(3)
                         }
                     }
