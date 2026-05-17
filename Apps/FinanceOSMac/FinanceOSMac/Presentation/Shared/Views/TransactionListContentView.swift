@@ -75,8 +75,7 @@ struct TransactionListContentView: View {
                         HStack(spacing: 4) {
                             Image(systemName: "xmark.circle.fill")
                                 .labelSmall()
-                            Text("Clear filters")
-                                .labelSmall()
+                            FDSText("Clear filters", style: .labelSmall, color: .accent)
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 8)
@@ -138,13 +137,10 @@ struct TransactionListContentView: View {
                 .frame(width: 8, height: 8)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(row.title)
-                    .bodyLarge()
+                FDSText(row.title, style: .bodyLarge, color: .primary)
                     .lineLimit(1)
 
-                Text(row.subtitle)
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
+                FDSText(row.subtitle, style: .labelSmall, color: .tertiary)
             }
 
             Spacer()
@@ -152,14 +148,16 @@ struct TransactionListContentView: View {
             HStack(spacing: 8) {
                 FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit)
 
-                Text(row.transactionType == .debit ? "Dr" : "Cr")
-                    .labelSmall()
-                    .padding(.vertical, 2)
-                    .padding(.horizontal, 6)
-                    .background(row.transactionType == .debit ? AppColors.debit
-                        .opacity(0.15) : AppColors.credit.opacity(0.15))
-                    .foregroundColor(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
-                    .cornerRadius(AppRadius.sm)
+                FDSText(
+                    row.transactionType == .debit ? "Dr" : "Cr",
+                    style: .labelSmall,
+                    color: row.transactionType == .debit ? .debit : .credit
+                )
+                .padding(.vertical, 2)
+                .padding(.horizontal, 6)
+                .background(row.transactionType == .debit ? AppColors.debit
+                    .opacity(0.15) : AppColors.credit.opacity(0.15))
+                .cornerRadius(AppRadius.sm)
             }
         }
         .padding(AppSpacing.sm)
@@ -175,16 +173,15 @@ struct TransactionListContentView: View {
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 8) {
-                Text("No Transactions")
-                    .headingSmall()
+                FDSText("No Transactions", style: .headingSmall, color: .primary)
 
-                Text(
+                FDSText(
                     listState.isFilterActive
                         ? "No transactions match your filters."
-                        : "No transactions found."
+                        : "No transactions found.",
+                    style: .caption,
+                    color: .tertiary
                 )
-                .caption()
-                .foregroundColor(AppColors.textTertiary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
