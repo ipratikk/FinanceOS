@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct BanksView: View {
@@ -31,8 +32,7 @@ struct BanksView: View {
         List(viewModel.banks, id: \.id) { bank in
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(bank.name)
-                        .monoAmount()
+                    FDSText(bank.name, style: .monoAmount)
 
                     Text(bank.providerType.rawValue.uppercased())
                         .labelSmall()
@@ -73,12 +73,9 @@ struct BanksView: View {
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 8) {
-                Text("No Banks")
-                    .headingSmall()
+                FDSText("No Banks", style: .headingSmall)
 
-                Text("Add a bank when importing your first statement")
-                    .caption()
-                    .foregroundColor(AppColors.textTertiary)
+                FDSText("Add a bank when importing your first statement", style: .caption, color: .tertiary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

@@ -6,6 +6,7 @@
 //
 
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct PasswordPromptSheet: View {
@@ -20,28 +21,26 @@ struct PasswordPromptSheet: View {
         NavigationStack {
             Form {
                 Section("PDF Password") {
-                    Text("The file \"\(filename)\" is password-protected.")
-                        .caption()
+                    Group {
+                        FDSText("The file \"\(filename)\" is password-protected.", style: .caption)
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        SecureField("Password", text: $password)
-                            .textFieldStyle(.roundedBorder)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .stroke(isPasswordInvalid ? AppColors.debit : Color.clear, lineWidth: 2)
-                            )
+                        VStack(alignment: .leading, spacing: 4) {
+                            SecureField("Password", text: $password)
+                                .textFieldStyle(.roundedBorder)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(isPasswordInvalid ? AppColors.debit : Color.clear, lineWidth: 2)
+                                )
 
-                        if isPasswordInvalid {
-                            Text("Incorrect password. Please try again.")
-                                .caption()
-                                .foregroundColor(AppColors.debit)
+                            if isPasswordInvalid {
+                                FDSText("Incorrect password. Please try again.", style: .caption, color: .debit)
+                            }
                         }
                     }
                 }
 
                 Section {
                     Toggle("Save password to Keychain", isOn: $saveToKeychain)
-                        .labelSmall()
                 }
             }
             .navigationTitle("Enter Password")

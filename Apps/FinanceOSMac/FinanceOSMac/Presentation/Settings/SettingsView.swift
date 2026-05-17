@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct SettingsView: View {
@@ -47,11 +48,9 @@ struct SettingsView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Settings")
-                .headingLarge()
+            FDSText("Settings", style: .headingLarge)
 
-            Text("App preferences & information")
-                .labelSmall()
+            FDSText("App preferences & information", style: .labelSmall)
         }
         .padding(AppSpacing.md)
         .background(AppColors.base)
@@ -65,8 +64,7 @@ struct SettingsView: View {
                     .monoAmount()
                     .frame(width: 20)
 
-                Text(label)
-                    .captionLarge()
+                FDSText(label, style: .captionLarge)
 
                 Spacer()
             }
@@ -91,9 +89,7 @@ struct SettingsView: View {
             settingsSection("Data", items: [])
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Danger Zone")
-                    .captionLarge()
-                    .foregroundColor(.gray)
+                FDSText("Danger Zone", style: .captionLarge, color: .secondary)
 
                 Button(
                     action: { showConfirmClear = true },
@@ -102,8 +98,7 @@ struct SettingsView: View {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .labelSmall()
 
-                            Text("Clear All Data")
-                                .captionLarge()
+                            FDSText("Clear All Data", style: .captionLarge)
 
                             Spacer()
                         }
@@ -130,9 +125,7 @@ struct SettingsView: View {
             aboutItem("Platform", value: "macOS")
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Links")
-                    .captionLarge()
-                    .foregroundColor(.gray)
+                FDSText("Links", style: .captionLarge, color: .secondary)
 
                 VStack(spacing: 8) {
                     aboutLink("GitHub Repository", icon: "link")
@@ -153,9 +146,7 @@ struct SettingsView: View {
         items: [(String, Binding<Bool>, optional: Bool)]
     ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .captionLarge()
-                .foregroundColor(.gray)
+            FDSText(title, style: .captionLarge, color: .secondary)
 
             VStack(spacing: 8) {
                 ForEach(items.indices, id: \.self) { index in
@@ -175,13 +166,10 @@ struct SettingsView: View {
 
     private func aboutItem(_ label: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(label)
-                .captionLarge()
-                .foregroundColor(.gray)
+            FDSText(label, style: .captionLarge, color: .secondary)
 
             HStack {
-                Text(value)
-                    .caption()
+                FDSText(value, style: .caption)
 
                 Spacer()
 
@@ -209,8 +197,7 @@ struct SettingsView: View {
                 Image(systemName: icon)
                     .labelSmall()
 
-                Text(label)
-                    .caption()
+                FDSText(label, style: .caption)
 
                 Spacer()
 

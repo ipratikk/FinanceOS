@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct SidebarView: View {
@@ -38,10 +39,8 @@ struct SidebarView: View {
 
     var header: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("FinanceOS")
-                .headingLarge()
-            Text("Financial Operating System")
-                .labelSmall()
+            FDSText("FinanceOS", style: .headingLarge)
+            FDSText("Financial Operating System", style: .labelSmall)
         }
         .padding(AppSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -57,8 +56,7 @@ struct SidebarView: View {
                             .headingSmall()
                             .frame(width: 20)
 
-                        Text(item.label)
-                            .bodyLarge()
+                        FDSText(item.label, style: .bodyLarge)
 
                         Spacer()
                     }
@@ -75,26 +73,25 @@ struct SidebarView: View {
 
     var quickAccess: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Quick Access")
-                .captionLarge()
+            FDSText("Quick Access", style: .captionLarge)
 
             let accounts = ledgers.filter { $0.kind == .bankAccount }
             let cards = ledgers.filter { $0.kind == .creditCard }
 
             if !accounts.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Accounts")
-                        .labelSmall()
-                        .foregroundColor(.gray)
+                    FDSText("Accounts", style: .labelSmall, color: .secondary)
 
                     ForEach(accounts.prefix(3), id: \.id) { account in
                         HStack(spacing: 8) {
                             Image(systemName: "building.2")
                                 .labelSmall()
                                 .foregroundColor(.gray)
-                            Text(account.nickname.isEmpty ? account.displayName : account.nickname)
-                                .labelSmall()
-                                .lineLimit(1)
+                            FDSText(
+                                account.nickname.isEmpty ? account.displayName : account.nickname,
+                                style: .labelSmall
+                            )
+                            .lineLimit(1)
                         }
                         .foregroundColor(.gray)
                     }
@@ -103,17 +100,14 @@ struct SidebarView: View {
 
             if !cards.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Cards")
-                        .labelSmall()
-                        .foregroundColor(.gray)
+                    FDSText("Cards", style: .labelSmall, color: .secondary)
 
                     ForEach(cards.prefix(3), id: \.id) { card in
                         HStack(spacing: 8) {
                             Image(systemName: "creditcard")
                                 .labelSmall()
                                 .foregroundColor(.gray)
-                            Text(card.nickname.isEmpty ? card.displayName : card.nickname)
-                                .labelSmall()
+                            FDSText(card.nickname.isEmpty ? card.displayName : card.nickname, style: .labelSmall)
                                 .lineLimit(1)
                         }
                         .foregroundColor(.gray)
@@ -129,8 +123,7 @@ struct SidebarView: View {
                 Image(systemName: "arrow.down.doc.fill")
                     .headingSmall()
 
-                Text("Import Statement")
-                    .bodyLarge()
+                FDSText("Import Statement", style: .bodyLarge)
 
                 Spacer()
             }

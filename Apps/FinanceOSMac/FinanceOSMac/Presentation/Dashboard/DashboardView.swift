@@ -141,8 +141,7 @@ struct DashboardView: View {
                                 type: txn.transactionType == .debit ? .debit : .credit
                             )
 
-                            Text(txn.transactionType == .debit ? "Dr" : "Cr")
-                                .labelSmall()
+                            FDSText(txn.transactionType == .debit ? "Dr" : "Cr", style: .labelSmall)
                                 .padding(.vertical, 2)
                                 .padding(.horizontal, 4)
                                 .background(txn.transactionType == .debit ? AppColors.debit

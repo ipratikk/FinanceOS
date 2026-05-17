@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -47,12 +48,9 @@ struct ImportView: View {
                             .foregroundColor(AppColors.accent)
 
                         VStack(spacing: 4) {
-                            Text("Drop Files Here")
-                                .headingSmall()
+                            FDSText("Drop Files Here", style: .headingSmall)
 
-                            Text("Release to import")
-                                .labelSmall()
-                                .foregroundColor(AppColors.textTertiary)
+                            FDSText("Release to import", style: .labelSmall, color: .tertiary)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -79,9 +77,7 @@ struct ImportView: View {
                                         .labelSmall()
                                         .foregroundColor(AppColors.textTertiary)
                                     } else {
-                                        Text("Parsing statement...")
-                                            .labelSmall()
-                                            .foregroundColor(AppColors.textTertiary)
+                                        FDSText("Parsing statement...", style: .labelSmall, color: .tertiary)
                                     }
                                 }
                                 .frame(maxWidth: .infinity)
@@ -142,12 +138,9 @@ struct ImportView: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Import Statements")
-                .headingMedium()
+            FDSText("Import Statements", style: .headingMedium)
 
-            Text("Upload your bank or credit card statements")
-                .caption()
-                .foregroundColor(AppColors.textTertiary)
+            FDSText("Upload your bank or credit card statements", style: .caption, color: .tertiary)
         }
     }
 
@@ -177,8 +170,7 @@ struct ImportView: View {
                 Image(systemName: "folder.badge.plus")
                     .monoAmount()
 
-                Text("Select Files")
-                    .bodyLarge()
+                FDSText("Select Files", style: .bodyLarge)
             }
             .frame(maxWidth: .infinity)
             .padding(AppSpacing.sm)
@@ -227,8 +219,7 @@ struct ImportView: View {
                     viewModel.parsedStatements = []
                     viewModel.selectedTarget = nil
                 }, label: {
-                    Text("Cancel")
-                        .bodyLarge()
+                    FDSText("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -241,8 +232,7 @@ struct ImportView: View {
                         Image(systemName: "arrow.down.doc.fill")
                             .monoAmount()
 
-                        Text("Import")
-                            .monoAmount()
+                        FDSText("Import", style: .monoAmount)
                     }
                     .frame(maxWidth: .infinity)
                     .foregroundColor(.white)

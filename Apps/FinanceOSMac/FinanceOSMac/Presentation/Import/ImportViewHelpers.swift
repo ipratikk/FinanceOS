@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -11,13 +12,9 @@ struct SourcePickerSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("1. Statement Source")
-                        .captionLarge()
-                        .foregroundColor(.gray)
+                    FDSText("1. Statement Source", style: .captionLarge, color: .secondary)
 
-                    Text("Select your bank")
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
+                    FDSText("Select your bank", style: .labelSmall, color: .tertiary)
                 }
 
                 Spacer()
@@ -36,8 +33,7 @@ struct SourcePickerSection: View {
                             .font(.system(size: 14))
                             .foregroundColor(AppColors.debit)
 
-                        Text(error)
-                            .labelSmall()
+                        FDSText(error, style: .labelSmall)
                             .lineLimit(3)
                     }
                 }
@@ -79,12 +75,9 @@ struct DropZoneView: View {
                     .foregroundColor(AppColors.accent)
 
                 VStack(spacing: 4) {
-                    Text("Drop files here")
-                        .monoAmount()
+                    FDSText("Drop files here", style: .monoAmount)
 
-                    Text("or click button below")
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
+                    FDSText("or click button below", style: .labelSmall, color: .tertiary)
 
                     Text("Supported: \(formatNames)")
                         .labelSmall()
@@ -119,13 +112,9 @@ struct FileSelectionPlaceholder: View {
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 4) {
-                Text("Select a bank above")
-                    .monoAmount()
-                    .foregroundColor(AppColors.textTertiary)
+                FDSText("Select a bank above", style: .monoAmount, color: .tertiary)
 
-                Text("to start importing")
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
+                FDSText("to start importing", style: .labelSmall, color: .tertiary)
             }
         }
         .frame(maxWidth: .infinity)

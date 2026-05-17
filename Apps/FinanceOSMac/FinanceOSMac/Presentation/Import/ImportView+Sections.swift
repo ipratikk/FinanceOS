@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import SwiftUI
 
 struct SupportedSourcesView: View {
@@ -7,8 +8,7 @@ struct SupportedSourcesView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Supported Statements")
-                .captionLarge()
+            FDSText("Supported Statements", style: .captionLarge)
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(viewModel.supportedSources.enumerated()), id: \.offset) { _, source in
                     let isFullySupported = source.bankName == "ICICI" && source.sourceType == .bankAccount
@@ -34,11 +34,9 @@ struct TargetSelectionSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Import To")
-                        .captionLarge()
+                    FDSText("Import To", style: .captionLarge)
 
-                    Text("Select or create target")
-                        .labelSmall()
+                    FDSText("Select or create target", style: .labelSmall)
                 }
 
                 Spacer()

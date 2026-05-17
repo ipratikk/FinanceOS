@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct TransactionFilterView: View {
@@ -13,8 +14,7 @@ struct TransactionFilterView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("Filters")
-                    .headingMedium()
+                FDSText("Filters", style: .headingMedium)
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -31,9 +31,7 @@ struct TransactionFilterView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Transaction Type")
-                            .captionLarge()
-                            .foregroundColor(.gray)
+                        FDSText("Transaction Type", style: .captionLarge, color: .secondary)
 
                         Picker("Type", selection: $listState.typeFilter) {
                             Text("All").tag(TransactionType?.none)
@@ -47,14 +45,11 @@ struct TransactionFilterView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Date Range")
-                            .captionLarge()
-                            .foregroundColor(.gray)
+                        FDSText("Date Range", style: .captionLarge, color: .secondary)
 
                         VStack(spacing: 8) {
                             HStack {
-                                Text("From")
-                                    .labelSmall()
+                                FDSText("From", style: .labelSmall)
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -78,8 +73,7 @@ struct TransactionFilterView: View {
                             .cornerRadius(AppRadius.sm)
 
                             HStack {
-                                Text("To")
-                                    .labelSmall()
+                                FDSText("To", style: .labelSmall)
                                 Spacer()
                                 DatePicker(
                                     "",
@@ -112,9 +106,7 @@ struct TransactionFilterView: View {
                             Image(systemName: "exclamationmark.circle.fill")
                                 .labelSmall()
                                 .foregroundColor(.red)
-                            Text(error)
-                                .labelSmall()
-                                .foregroundColor(.red)
+                            FDSText(error, style: .labelSmall, color: .warning)
                         }
                         .padding(AppSpacing.xs)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -140,8 +132,7 @@ struct TransactionFilterView: View {
                 .cornerRadius(AppRadius.md)
 
                 Button(action: { dismiss() }, label: {
-                    Text("Done")
-                        .monoAmount()
+                    FDSText("Done", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })

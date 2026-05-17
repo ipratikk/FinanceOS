@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct BankEditView: View {
@@ -21,8 +22,7 @@ struct BankEditView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("Edit Bank")
-                    .headingMedium()
+                FDSText("Edit Bank", style: .headingMedium)
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -39,17 +39,13 @@ struct BankEditView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Bank Information")
-                            .captionLarge()
-                            .foregroundColor(.gray)
+                        FDSText("Bank Information", style: .captionLarge, color: .secondary)
 
                         VStack(spacing: 8) {
                             inputField("Name", text: $name)
 
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Provider Type")
-                                    .labelSmall()
-                                    .foregroundColor(.gray)
+                                FDSText("Provider Type", style: .labelSmall, color: .secondary)
                                 Picker("Type", selection: $providerType) {
                                     ForEach(BankProviderType.allCases, id: \.self) { type in
                                         Text(type.rawValue.capitalized).tag(type)
@@ -72,8 +68,7 @@ struct BankEditView: View {
                             HStack {
                                 Image(systemName: "trash.fill")
                                     .labelSmall()
-                                Text("Delete Bank")
-                                    .bodyLarge()
+                                FDSText("Delete Bank", style: .bodyLarge)
                                 Spacer()
                             }
                         })
@@ -108,8 +103,7 @@ struct BankEditView: View {
                         // Sheet dismisses via binding when editingBank is set to nil
                     }
                 }, label: {
-                    Text("Save")
-                        .monoAmount()
+                    FDSText("Save", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
@@ -148,9 +142,7 @@ struct BankEditView: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .labelSmall()
-                .foregroundColor(.gray)
+            FDSText(label, style: .labelSmall, color: .secondary)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)

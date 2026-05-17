@@ -1,5 +1,6 @@
 import Charts
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct AnalyticsView: View {
@@ -49,20 +50,15 @@ struct AnalyticsView: View {
 
     var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Analytics")
-                .headingLarge()
+            FDSText("Analytics", style: .headingLarge)
 
-            Text("Spending insights & trends")
-                .labelSmall()
-                .foregroundColor(AppColors.textTertiary)
+            FDSText("Spending insights & trends", style: .labelSmall, color: .tertiary)
         }
     }
 
     var spendingTrendSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("6-Month Spending Trend")
-                .captionLarge()
-                .foregroundColor(.gray)
+            FDSText("6-Month Spending Trend", style: .captionLarge, color: .secondary)
 
             if let viewModel, !viewModel.monthlySummaries.isEmpty {
                 Chart(viewModel.monthlySummaries, id: \.id) { item in
@@ -103,9 +99,7 @@ struct AnalyticsView: View {
 
     var topMerchantsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Top Merchants")
-                .captionLarge()
-                .foregroundColor(.gray)
+            FDSText("Top Merchants", style: .captionLarge, color: .secondary)
 
             if let viewModel {
                 let merchants = viewModel.topMerchants.prefix(10).map { merchant, amount in
@@ -121,9 +115,7 @@ struct AnalyticsView: View {
 
     var categoriesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Categories")
-                .captionLarge()
-                .foregroundColor(.gray)
+            FDSText("Categories", style: .captionLarge, color: .secondary)
 
             VStack(alignment: .center, spacing: 8) {
                 Image(systemName: "tag.circle.fill")
@@ -131,12 +123,9 @@ struct AnalyticsView: View {
                     .foregroundColor(AppColors.accent.opacity(0.3))
 
                 VStack(spacing: 4) {
-                    Text("Coming Soon")
-                        .monoAmount()
+                    FDSText("Coming Soon", style: .monoAmount)
 
-                    Text("Auto-categorization with smart detection")
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
+                    FDSText("Auto-categorization with smart detection", style: .labelSmall, color: .tertiary)
                 }
             }
             .frame(maxWidth: .infinity)

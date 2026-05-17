@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import SwiftUI
 
 struct ImportTransactionListView: View {
@@ -14,8 +15,7 @@ struct ImportTransactionListView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("New Transactions")
-                        .caption()
+                    FDSText("New Transactions", style: .caption)
                     Text("\(newTransactionCount)")
                         .bodyLarge()
                 }
@@ -23,8 +23,7 @@ struct ImportTransactionListView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("Already Imported")
-                        .caption()
+                    FDSText("Already Imported", style: .caption)
                     Text("\(duplicateIndices.count)")
                         .bodyLarge()
                         .foregroundColor(AppColors.warning)
@@ -57,8 +56,7 @@ struct ImportTransactionListView: View {
                         .frame(width: 8, height: 8)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(txn.description)
-                            .bodyLarge()
+                        FDSText(txn.description, style: .bodyLarge)
                             .lineLimit(1)
                             .opacity(isDuplicate ? 0.5 : 1.0)
 
@@ -67,9 +65,7 @@ struct ImportTransactionListView: View {
                                 .caption()
 
                             if isDuplicate {
-                                Text("Already imported")
-                                    .caption()
-                                    .foregroundColor(AppColors.warning)
+                                FDSText("Already imported", style: .caption, color: .warning)
                             }
 
                             if let points = txn.rewardPoints, points > 0 {

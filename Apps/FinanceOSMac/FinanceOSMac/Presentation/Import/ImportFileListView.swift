@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import SwiftUI
 
 struct ImportFileListView: View {
@@ -7,8 +8,7 @@ struct ImportFileListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Files")
-                .headingSmall()
+            FDSText("Files", style: .headingSmall)
 
             VStack(spacing: 8) {
                 ForEach(fileStatementPairs.indices, id: \.self) { index in
@@ -21,12 +21,10 @@ struct ImportFileListView: View {
                             .frame(width: 16)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(pair.url.lastPathComponent)
-                                .bodyLarge()
+                            FDSText(pair.url.lastPathComponent, style: .bodyLarge)
                                 .lineLimit(1)
 
-                            Text(pair.statement.bankName)
-                                .caption()
+                            FDSText(pair.statement.bankName, style: .caption)
                         }
 
                         Spacer()

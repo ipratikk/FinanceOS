@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct CreateNewTargetSheet: View {
@@ -20,8 +21,7 @@ struct CreateNewTargetSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(isCard ? "Create New Card" : "Create New Account")
-                    .headingMedium()
+                FDSText(isCard ? "Create New Card" : "Create New Account", style: .headingMedium)
                 Spacer()
                 Button(action: { onCancel() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -37,9 +37,7 @@ struct CreateNewTargetSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Basic Information")
-                            .captionLarge()
-                            .foregroundColor(.gray)
+                        FDSText("Basic Information", style: .captionLarge, color: .secondary)
 
                         VStack(spacing: 8) {
                             inputField("Name (Optional)", text: $state.customName)
@@ -65,22 +63,16 @@ struct CreateNewTargetSheet: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Bank")
-                            .captionLarge()
-                            .foregroundColor(.gray)
+                        FDSText("Bank", style: .captionLarge, color: .secondary)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Current Bank")
-                                    .labelSmall()
-                                    .foregroundColor(.gray)
+                                FDSText("Current Bank", style: .labelSmall, color: .secondary)
                                 HStack {
                                     if let bank = selectedBank {
-                                        Text(bank.name)
-                                            .caption()
+                                        FDSText(bank.name, style: .caption)
                                     } else {
-                                        Text(detectedBank)
-                                            .caption()
+                                        FDSText(detectedBank, style: .caption)
                                     }
                                     Spacer()
                                 }
@@ -91,9 +83,11 @@ struct CreateNewTargetSheet: View {
 
                             if !banks.isEmpty {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(selectedBank == nil ? "Select Bank" : "Change Bank")
-                                        .labelSmall()
-                                        .foregroundColor(.gray)
+                                    FDSText(
+                                        selectedBank == nil ? "Select Bank" : "Change Bank",
+                                        style: .labelSmall,
+                                        color: .secondary
+                                    )
                                     Picker("Bank", selection: $state.selectedBankID) {
                                         Text("Select Bank").tag(UUID?.none)
                                         ForEach(banks) { bank in
@@ -120,8 +114,7 @@ struct CreateNewTargetSheet: View {
 
             HStack(spacing: 12) {
                 Button(action: { onCancel() }, label: {
-                    Text("Cancel")
-                        .bodyLarge()
+                    FDSText("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -130,8 +123,7 @@ struct CreateNewTargetSheet: View {
                 .cornerRadius(AppRadius.md)
 
                 Button(action: { onCreate() }, label: {
-                    Text("Create")
-                        .monoAmount()
+                    FDSText("Create", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
@@ -148,9 +140,7 @@ struct CreateNewTargetSheet: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .labelSmall()
-                .foregroundColor(.gray)
+            FDSText(label, style: .labelSmall, color: .secondary)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)

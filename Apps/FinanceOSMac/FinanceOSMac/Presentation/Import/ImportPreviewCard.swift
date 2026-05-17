@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import SwiftUI
 
 struct ImportPreviewCard: View {
@@ -19,13 +20,11 @@ struct ImportPreviewCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Import Summary")
-                .headingSmall()
+            FDSText("Import Summary", style: .headingSmall)
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Total Files")
-                        .caption()
+                    FDSText("Total Files", style: .caption)
                     Text("\(parsedStatements.count)")
                         .bodyLarge()
                 }
@@ -33,8 +32,7 @@ struct ImportPreviewCard: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("Total Transactions")
-                        .caption()
+                    FDSText("Total Transactions", style: .caption)
                     Text("\(totalTransactions)")
                         .bodyLarge()
                 }
@@ -42,8 +40,7 @@ struct ImportPreviewCard: View {
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Total Debits")
-                        .caption()
+                    FDSText("Total Debits", style: .caption)
                     Text(ImportFormatting.formatAmount(totalDebit))
                         .bodyLarge()
                         .foregroundColor(AppColors.debit)
@@ -52,8 +49,7 @@ struct ImportPreviewCard: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("Total Credits")
-                        .caption()
+                    FDSText("Total Credits", style: .caption)
                     Text(ImportFormatting.formatAmount(totalCredit))
                         .bodyLarge()
                         .foregroundColor(AppColors.credit)

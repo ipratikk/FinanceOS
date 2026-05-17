@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct AccountEditView: View {
@@ -29,8 +30,7 @@ struct AccountEditView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("Edit Account")
-                    .headingMedium()
+                FDSText("Edit Account", style: .headingMedium)
                 Spacer()
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
@@ -47,9 +47,7 @@ struct AccountEditView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Account Information")
-                            .captionLarge()
-                            .foregroundColor(.gray)
+                        FDSText("Account Information", style: .captionLarge, color: .secondary)
 
                         VStack(spacing: 8) {
                             inputField("Account Name", text: $displayName)
@@ -57,9 +55,7 @@ struct AccountEditView: View {
                             inputField("Last 4 Digits", text: $last4)
 
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Account Type")
-                                    .labelSmall()
-                                    .foregroundColor(.gray)
+                                FDSText("Account Type", style: .labelSmall, color: .secondary)
                                 Picker("Type", selection: $accountType) {
                                     ForEach(["savings", "checking", "credit"], id: \.self) { type in
                                         Text(type.capitalized).tag(type)
@@ -78,15 +74,11 @@ struct AccountEditView: View {
                     .cornerRadius(AppRadius.md)
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Bank & Nickname")
-                            .captionLarge()
-                            .foregroundColor(.gray)
+                        FDSText("Bank & Nickname", style: .captionLarge, color: .secondary)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Bank")
-                                    .labelSmall()
-                                    .foregroundColor(.gray)
+                                FDSText("Bank", style: .labelSmall, color: .secondary)
                                 Picker("Bank", selection: $bankId) {
                                     ForEach(viewModel.banks) { bank in
                                         Text(bank.name).tag(bank.id)
@@ -111,8 +103,7 @@ struct AccountEditView: View {
                             HStack {
                                 Image(systemName: "trash.fill")
                                     .labelSmall()
-                                Text("Delete Account")
-                                    .bodyLarge()
+                                FDSText("Delete Account", style: .bodyLarge)
                                 Spacer()
                             }
                             .foregroundColor(AppColors.debit)
@@ -130,8 +121,7 @@ struct AccountEditView: View {
 
             HStack(spacing: 12) {
                 Button(action: { dismiss() }, label: {
-                    Text("Cancel")
-                        .bodyLarge()
+                    FDSText("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
                 .foregroundColor(.gray)
@@ -160,8 +150,7 @@ struct AccountEditView: View {
                         // Sheet dismisses via binding when editingAccount is set to nil
                     }
                 }, label: {
-                    Text("Save")
-                        .monoAmount()
+                    FDSText("Save", style: .monoAmount)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 })
@@ -199,9 +188,7 @@ struct AccountEditView: View {
 
     private func inputField(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .labelSmall()
-                .foregroundColor(.gray)
+            FDSText(label, style: .labelSmall, color: .secondary)
             TextField("", text: text)
                 .caption()
                 .padding(AppSpacing.xs)
