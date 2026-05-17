@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(path: "../FinanceCore"),
         .package(path: "../FinanceUI"),
+        .package(path: "../FinanceParsers"),
         .package(
             url: "https://github.com/pointfreeco/swift-snapshot-testing",
             from: "1.17.0"
@@ -27,6 +28,7 @@ let package = Package(
             dependencies: [
                 "FinanceCore",
                 "FinanceUI",
+                "FinanceParsers",
                 .product(
                     name: "SnapshotTesting",
                     package: "swift-snapshot-testing"
