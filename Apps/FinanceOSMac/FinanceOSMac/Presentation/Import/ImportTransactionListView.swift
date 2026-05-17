@@ -16,24 +16,20 @@ struct ImportTransactionListView: View {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSText("New Transactions", style: .caption)
-                    Text("\(newTransactionCount)")
-                        .bodyLarge()
+                    FDSText("\(newTransactionCount)", style: .bodyLarge)
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
                     FDSText("Already Imported", style: .caption)
-                    Text("\(duplicateIndices.count)")
-                        .bodyLarge()
-                        .foregroundColor(AppColors.warning)
+                    FDSText("\(duplicateIndices.count)", style: .bodyLarge, color: .warning)
                 }
             }
 
             Divider()
 
-            Text("Transactions (\(transactions.count))")
-                .headingSmall()
+            FDSText("Transactions (\(transactions.count))", style: .headingSmall)
 
             transactionListContent()
         }
@@ -61,27 +57,25 @@ struct ImportTransactionListView: View {
                             .opacity(isDuplicate ? 0.5 : 1.0)
 
                         HStack(spacing: 8) {
-                            Text(ImportFormatting.formatDate(txn.postedAt))
-                                .caption()
+                            FDSText(ImportFormatting.formatDate(txn.postedAt), style: .caption)
 
                             if isDuplicate {
                                 FDSText("Already imported", style: .caption, color: .warning)
                             }
 
                             if let points = txn.rewardPoints, points > 0 {
-                                Text("+\(points) pts")
-                                    .caption()
-                                    .foregroundColor(AppColors.accent)
+                                FDSText("+\(points) pts", style: .caption, color: .accent)
                             }
                         }
                     }
 
                     Spacer()
 
-                    Text(ImportFormatting.formatAmount(txn.amountMinorUnits))
-                        .bodyLarge()
-                        .foregroundColor(txn.amountMinorUnits < 0 ? AppColors.debit : AppColors.credit)
-                        .opacity(isDuplicate ? 0.5 : 1.0)
+                    FDSAmount(
+                        ImportFormatting.formatAmount(txn.amountMinorUnits),
+                        type: txn.amountMinorUnits < 0 ? .debit : .credit
+                    )
+                    .opacity(isDuplicate ? 0.5 : 1.0)
                 }
                 .padding(AppSpacing.sm)
                 .background(AppColors.surface2)
