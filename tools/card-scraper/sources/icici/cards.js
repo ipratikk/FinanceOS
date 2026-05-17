@@ -19,7 +19,16 @@ const INVALID_IMAGE_PATTERNS = [
 
 const INVALID_CARD_NAMES = [
     "cclandingpage",
-    "dual cards"
+    "dual cards",
+    "credit builder",
+    "against fixed",
+    "call service",
+    "branches",
+    "rewards",
+    "fuel",
+    "culinary",
+    "personal loan",
+    "pre approved"
 ];
 
 const ICICI_NAME_MAPPINGS = {
@@ -235,6 +244,7 @@ async function fetchCardDetails(
             return {
                 description:
                     "",
+                image: null,
                 rewards: [],
                 benefits: [],
                 applyLink:
@@ -263,6 +273,41 @@ async function fetchCardDetails(
             description =
                 description
                     .slice(0, 400);
+        }
+
+        // Extract card image from detail page
+        let cardImage =
+            null;
+
+        const imgSelectors = [
+            'img[src*="/cards/"][src*="-banner"]',
+            'img[src*="/cards/"][src*="-desktop"]',
+            'img[src*="/cards/"][src*="-desk-"]'
+        ];
+
+        for (const selector of imgSelectors) {
+            const imgElement =
+                $(selector).first();
+
+            if (
+                imgElement &&
+                imgElement.length
+            ) {
+                let imageSrc =
+                    imgElement.attr(
+                        "src"
+                    );
+
+                if (imageSrc) {
+                    cardImage =
+                        imageSrc.startsWith(
+                            "http"
+                        )
+                            ? imageSrc
+                            : `https://www.icici.bank.in${imageSrc}`;
+                    break;
+                }
+            }
         }
 
         const rewards =
@@ -330,6 +375,9 @@ async function fetchCardDetails(
 
         return {
             description,
+
+            image:
+                cardImage,
 
             rewards:
                 rewards.slice(0, 5),
@@ -607,9 +655,31 @@ export async function fetchICICICards() {
             continue;
         }
 
-        // Use image from listing - try exact match, then fuzzy match
+        // Skip invalid card names
+        const nameLower =
+            name.toLowerCase();
+
+        if (
+            INVALID_CARD_NAMES.some(
+                invalid =>
+                    nameLower.includes(
+                        invalid
+                    )
+            )
+        ) {
+            continue;
+        }
+
+        // Prefer detail page image, fallback to listing images
         let image =
-            listingImages[name];
+            details.image;
+
+        if (
+            !image
+        ) {
+            image =
+                listingImages[name];
+        }
 
         if (
             !image

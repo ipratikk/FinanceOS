@@ -1,6 +1,6 @@
 const BANK_IMAGE_BASES = {
     HDFC:
-        "https://www.hdfcbank.com",
+        "https://www.hdfc.bank.in",
 
     ICICI:
         "https://www.icici.bank.in"

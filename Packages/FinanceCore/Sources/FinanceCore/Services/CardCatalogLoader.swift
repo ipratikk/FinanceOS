@@ -1,6 +1,22 @@
 import Foundation
 
 public enum CardCatalogLoader {
+    private static func resolveImageURL(_ path: String) -> String {
+        // If already a URL, return as-is
+        if path.hasPrefix("http") {
+            return path
+        }
+
+        // Local asset - resolve from bundle
+        if path.hasPrefix("bank-logos/") {
+            if let assetURL = Bundle.module.url(forResource: path, withExtension: nil) {
+                return assetURL.absoluteString
+            }
+        }
+
+        return path
+    }
+
     public static func loadCardMetadata() -> [CardMetadata] {
         guard let url = Bundle.module.url(forResource: "cards_catalog", withExtension: "json") else {
             return []
@@ -14,6 +30,8 @@ public enum CardCatalogLoader {
             var cards: [CardMetadata] = []
             for issuer in catalog.issuers {
                 for card in issuer.cards {
+                    let imageURL = resolveImageURL(card.image.front)
+
                     let metadata = CardMetadata(
                         id: card.id,
                         issuer: issuer.name,
@@ -23,7 +41,7 @@ public enum CardCatalogLoader {
                         binRanges: card.binRanges.map { bin in
                             CardMetadata.BINRange(start: bin.start, end: bin.end)
                         },
-                        imageURL: card.image.front,
+                        imageURL: imageURL,
                         details: CardMetadata.CardDetails(
                             description: card.details.joiningBenefit ?? card.name,
                             features: card.details.features,

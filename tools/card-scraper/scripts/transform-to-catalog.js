@@ -138,9 +138,17 @@ function transformCard(
         binRanges: [],
 
         image: {
-            front: rawCard.image,
+            front:
+                rawCard.image ??
+                (bank === "hdfc"
+                    ? "bank-logos/hdfc.svg"
+                    : "bank-logos/icici.svg"),
 
-            thumbnail: rawCard.image,
+            thumbnail:
+                rawCard.image ??
+                (bank === "hdfc"
+                    ? "bank-logos/hdfc-small.svg"
+                    : "bank-logos/icici-small.svg"),
 
             localAssetName: id,
 

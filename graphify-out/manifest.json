@@ -1,7 +1,7 @@
 {
   "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/normalizers/creditCardNormalizer.js": {
-    "mtime": 1779007403.5171256,
-    "hash": "103b6a7253046a9dbe8d4b0074bde636"
+    "mtime": 1779011659.797549,
+    "hash": "0c5fbfab2fc204a9b8238fdce84959b8"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/utils/logger.js": {
     "mtime": 1779007403.5116508,
@@ -24,8 +24,8 @@
     "hash": "e4a382fbafe4f740267049b3569dce0f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/scripts/transform-to-catalog.js": {
-    "mtime": 1779008524.2278981,
-    "hash": "507da417ee58380db777b680710e5766"
+    "mtime": 1779012847.0909238,
+    "hash": "76c8fbfc26f781e27e8b997ce44a1014"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/scripts/process-output.js": {
     "mtime": 1779008349.3298388,
@@ -44,8 +44,8 @@
     "hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/icici/cards.js": {
-    "mtime": 1779008334.3153625,
-    "hash": "5639fa0659b0f164fa71890b79ad30b3"
+    "mtime": 1779011977.6450806,
+    "hash": "394c1ef6a378d294f148c6f13a1988d7"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/tools/card-scraper/sources/yesbank/cards.js": {
     "mtime": 1779003752.333679,
@@ -368,8 +368,8 @@
     "hash": "ba0513c915bc64af0f33d175deed95c2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Services/CardCatalogLoader.swift": {
-    "mtime": 1779008460.138964,
-    "hash": "737ed20b7b66da92e6677b21d161fcaf"
+    "mtime": 1779012869.2598531,
+    "hash": "c0210d17474b6aa0c5af05700307ea4f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Services/CardDatabase.swift": {
     "mtime": 1779001124.5346007,
@@ -812,16 +812,16 @@
     "hash": "83023938a08bf946e5861d87fdfe9333"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardSelectionView.swift": {
-    "mtime": 1779008707.3260653,
-    "hash": "e940a7ddc4f28f057c1832669da5ef92"
+    "mtime": 1779010077.8291597,
+    "hash": "8ef94d438e8ce7bc01f2b35c2cfb8f2d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardTransactionsView.swift": {
     "mtime": 1778995365.27747,
     "hash": "c1795596715ab4e1342cf2432e71d4ac"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardEditView.swift": {
-    "mtime": 1779000514.474709,
-    "hash": "e6a0d6965ca97a06b02b953c68035375"
+    "mtime": 1779009685.2025402,
+    "hash": "2812686fa90c228cd490fab546592cee"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift": {
     "mtime": 1778999660.8142686,
@@ -948,8 +948,8 @@
     "hash": "2c39b5acb6512961766e951cda0264d4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/CreateNewTargetSheet.swift": {
-    "mtime": 1779000502.0557954,
-    "hash": "d67e7d4862a64b3e3728b80906f74839"
+    "mtime": 1779009699.9493618,
+    "hash": "e02c15ccd596093f3c5256ba3b6c8cd5"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelTargetCreation.swift": {
     "mtime": 1779000616.0274255,
@@ -1074,5 +1074,25 @@
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/README.md": {
     "mtime": 1778829769.3584032,
     "hash": "ac442cf9a64f668f9c638d48b0522c91"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/icici.svg": {
+    "mtime": 1779012667.5631394,
+    "hash": "3be7b8b182ccd96e48989b4e57311193"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/icici.png": {
+    "mtime": 1779012837.360203,
+    "hash": "44fc626bd6ce43e4bd6f09843c9ae269"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/hdfc-small.png": {
+    "mtime": 1779012937.033573,
+    "hash": "d4d1609088fe7297104ddbd6a8b13563"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/hdfc.png": {
+    "mtime": 1779012837.0103052,
+    "hash": "f6f2236b81d4c3d05b18e82cd4b51711"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Resources/bank-logos/hdfc.svg": {
+    "mtime": 1779012667.2266572,
+    "hash": "3be7b8b182ccd96e48989b4e57311193"
   }
 }
