@@ -37,6 +37,7 @@ struct AccountEditView: View {
                         .headingSmall()
                         .foregroundColor(.gray)
                 })
+                .accessibilityLabel("Close")
             }
             .padding(AppSpacing.md)
             .background(AppColors.base)

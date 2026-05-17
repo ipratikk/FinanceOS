@@ -202,6 +202,7 @@ struct ImportView: View {
                     .foregroundColor(.white.opacity(0.8))
             })
             .buttonStyle(.plain)
+            .accessibilityLabel("Dismiss success message")
         }
         .padding(AppSpacing.sm)
         .background(AppColors.credit.opacity(0.85))

@@ -21,6 +21,7 @@ struct TransactionFilterView: View {
                         .headingSmall()
                         .foregroundColor(.gray)
                 })
+                .accessibilityLabel("Close filters")
             }
             .padding(AppSpacing.md)
             .background(AppColors.base)

@@ -61,6 +61,7 @@ struct TransactionListContentView: View {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(AppColors.textTertiary)
                     })
+                    .accessibilityLabel("Clear search")
                 }
             }
             .padding(AppSpacing.xs)
@@ -93,6 +94,7 @@ struct TransactionListContentView: View {
                         : "line.3.horizontal.decrease.circle"
                     )
                 }
+                .accessibilityLabel(listState.isFilterActive ? "Filters active" : "Open filters")
             }
         }
         .padding(AppSpacing.md)
