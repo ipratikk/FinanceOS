@@ -8,7 +8,7 @@ struct ImportFileListView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Files")
-                .font(.headline)
+                .headingSmall()
 
             VStack(spacing: 8) {
                 ForEach(fileStatementPairs.indices, id: \.self) { index in
@@ -22,19 +22,17 @@ struct ImportFileListView: View {
 
                         VStack(alignment: .leading, spacing: 2) {
                             Text(pair.url.lastPathComponent)
-                                .font(.body)
+                                .bodyLarge()
                                 .lineLimit(1)
 
                             Text(pair.statement.bankName)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .caption()
                         }
 
                         Spacer()
 
                         Text("\(pair.statement.transactions.count) txns")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                            .caption()
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface2)

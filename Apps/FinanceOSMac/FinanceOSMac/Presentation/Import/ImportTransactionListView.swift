@@ -15,30 +15,26 @@ struct ImportTransactionListView: View {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("New Transactions")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .caption()
                     Text("\(newTransactionCount)")
-                        .font(.body)
-                        .fontWeight(.semibold)
+                        .bodyLarge()
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
                     Text("Already Imported")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .caption()
                     Text("\(duplicateIndices.count)")
-                        .font(.body)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.orange)
+                        .bodyLarge()
+                        .foregroundColor(AppColors.warning)
                 }
             }
 
             Divider()
 
             Text("Transactions (\(transactions.count))")
-                .font(.headline)
+                .headingSmall()
 
             transactionListContent()
         }
@@ -62,25 +58,24 @@ struct ImportTransactionListView: View {
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(txn.description)
-                            .font(.body)
+                            .bodyLarge()
                             .lineLimit(1)
                             .opacity(isDuplicate ? 0.5 : 1.0)
 
                         HStack(spacing: 8) {
                             Text(ImportFormatting.formatDate(txn.postedAt))
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .caption()
 
                             if isDuplicate {
                                 Text("Already imported")
-                                    .font(.caption)
-                                    .foregroundColor(.orange)
+                                    .caption()
+                                    .foregroundColor(AppColors.warning)
                             }
 
                             if let points = txn.rewardPoints, points > 0 {
                                 Text("+\(points) pts")
-                                    .font(.caption)
-                                    .foregroundColor(.blue)
+                                    .caption()
+                                    .foregroundColor(AppColors.accent)
                             }
                         }
                     }
@@ -88,9 +83,8 @@ struct ImportTransactionListView: View {
                     Spacer()
 
                     Text(ImportFormatting.formatAmount(txn.amountMinorUnits))
-                        .font(.body)
-                        .fontWeight(.semibold)
-                        .foregroundColor(txn.amountMinorUnits < 0 ? .red : .green)
+                        .bodyLarge()
+                        .foregroundColor(txn.amountMinorUnits < 0 ? AppColors.debit : AppColors.credit)
                         .opacity(isDuplicate ? 0.5 : 1.0)
                 }
                 .padding(AppSpacing.sm)
@@ -101,13 +95,12 @@ struct ImportTransactionListView: View {
             if transactions.count > 5 {
                 HStack {
                     Text("... and \(transactions.count - 5) more transactions")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .caption()
                     Spacer()
                     if duplicateIndices.count > 0 {
                         Text("\(duplicateIndices.count) already imported")
-                            .font(.caption)
-                            .foregroundColor(.orange)
+                            .caption()
+                            .foregroundColor(AppColors.warning)
                     }
                 }
                 .padding(.vertical, 8)

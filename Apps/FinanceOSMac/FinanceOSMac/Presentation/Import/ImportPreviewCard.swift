@@ -20,51 +20,43 @@ struct ImportPreviewCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Import Summary")
-                .font(.headline)
+                .headingSmall()
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Total Files")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .caption()
                     Text("\(parsedStatements.count)")
-                        .font(.body)
-                        .fontWeight(.semibold)
+                        .bodyLarge()
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
                     Text("Total Transactions")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .caption()
                     Text("\(totalTransactions)")
-                        .font(.body)
-                        .fontWeight(.semibold)
+                        .bodyLarge()
                 }
             }
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Total Debits")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .caption()
                     Text(ImportFormatting.formatAmount(totalDebit))
-                        .font(.body)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.red)
+                        .bodyLarge()
+                        .foregroundColor(AppColors.debit)
                 }
 
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
                     Text("Total Credits")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .caption()
                     Text(ImportFormatting.formatAmount(totalCredit))
-                        .font(.body)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.green)
+                        .bodyLarge()
+                        .foregroundColor(AppColors.credit)
                 }
             }
         }

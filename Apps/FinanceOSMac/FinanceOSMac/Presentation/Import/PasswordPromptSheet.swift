@@ -5,6 +5,7 @@
 //  Created by Pratik Goel on 15/05/26.
 //
 
+import FinanceCore
 import SwiftUI
 
 struct PasswordPromptSheet: View {
@@ -20,8 +21,7 @@ struct PasswordPromptSheet: View {
             Form {
                 Section("PDF Password") {
                     Text("The file \"\(filename)\" is password-protected.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .caption()
 
                     VStack(alignment: .leading, spacing: 4) {
                         SecureField("Password", text: $password)
@@ -33,15 +33,15 @@ struct PasswordPromptSheet: View {
 
                         if isPasswordInvalid {
                             Text("Incorrect password. Please try again.")
-                                .font(.caption)
-                                .foregroundColor(.red)
+                                .caption()
+                                .foregroundColor(AppColors.debit)
                         }
                     }
                 }
 
                 Section {
                     Toggle("Save password to Keychain", isOn: $saveToKeychain)
-                        .font(.caption)
+                        .labelSmall()
                 }
             }
             .navigationTitle("Enter Password")
