@@ -213,6 +213,240 @@ function cleanICICIName(
         .join(" ");
 }
 
+async function fetchCardDetails(
+    cardDetailUrl,
+    cardName
+) {
+    try {
+        const response =
+            await fetch(
+                cardDetailUrl,
+                {
+                    headers: {
+                        "User-Agent":
+                            "Mozilla/5.0"
+                    }
+                }
+            );
+
+        if (
+            !response.ok
+        ) {
+            return {
+                description:
+                    "",
+                rewards: [],
+                benefits: [],
+                applyLink:
+                    null,
+                detailsLink:
+                    cardDetailUrl
+            };
+        }
+
+        const html =
+            await response.text();
+
+        const $ =
+            cheerio.load(
+                html
+            );
+
+        let description =
+            $('meta[property="og:description"]')
+                .attr("content") ||
+            "";
+
+        if (
+            description
+        ) {
+            description =
+                description
+                    .slice(0, 400);
+        }
+
+        const rewards =
+            [];
+
+        $(
+            ".icon__benefit img[src*='reward'], " +
+            ".icon__benefit img[src*='points']"
+        )
+            .closest(".icon__benefit")
+            .find("p").each(
+                (_, elem) => {
+                    const text =
+                        $(elem)
+                            .text()
+                            .trim()
+                            .replace(
+                                /\n/g,
+                                " "
+                            )
+                            .replace(
+                                /\s+/g,
+                                " "
+                            );
+
+                    if (
+                        text &&
+                        text.length > 15
+                    ) {
+                        rewards.push(
+                            text
+                        );
+                    }
+                }
+            );
+
+        const benefits =
+            [];
+
+        $(
+            ".benefits__lt .dis__badge p, " +
+            ".product-maximum-benefits .dis__badge p"
+        ).each(
+            (_, elem) => {
+                const text =
+                    $(elem)
+                        .text()
+                        .trim();
+
+                if (
+                    text &&
+                    benefits.length < 5
+                ) {
+                    benefits.push(
+                        text
+                    );
+                }
+            }
+        );
+
+        const applyLink =
+            $('a[href*="buy.icici.bank"]')
+                .first()
+                .attr("href") || null;
+
+        return {
+            description,
+
+            rewards:
+                rewards.slice(0, 5),
+
+            benefits:
+                benefits.slice(0, 5),
+
+            applyLink,
+
+            detailsLink:
+                cardDetailUrl
+        };
+    } catch (error) {
+        return {
+            description:
+                "",
+            rewards: [],
+            benefits: [],
+            applyLink:
+                null,
+            detailsLink:
+                cardDetailUrl
+        };
+    }
+}
+
+const CARD_PAGE_KEYWORDS = [
+    "credit-card",
+    "rupay",
+    "signature",
+    "platinum",
+    "coral",
+    "sapphiro",
+    "rubyx",
+    "emeralde",
+    "hpcl",
+    "adani",
+    "manchester",
+    "mmt",
+    "makemytrip",
+    "emirates",
+    "expressions",
+    "parakram",
+    "times-black",
+    "csk"
+];
+
+function isCardProductPage(
+    url
+) {
+    const lower =
+        url.toLowerCase();
+
+    const hasCardKeyword =
+        CARD_PAGE_KEYWORDS.some(
+            keyword =>
+                lower.includes(
+                    keyword
+                )
+        );
+
+    const isNotServicePage =
+        !lower.includes(
+            "faq"
+        ) &&
+        !lower.includes(
+            "cancel"
+        ) &&
+        !lower.includes(
+            "pin"
+        ) &&
+        !lower.includes(
+            "limit"
+        ) &&
+        !lower.includes(
+            "emi"
+        ) &&
+        !lower.includes(
+            "terms"
+        ) &&
+        !lower.includes(
+            "benefits-and-features"
+        ) &&
+        !lower.includes(
+            "experience"
+        ) &&
+        !lower.includes(
+            "generate"
+        ) &&
+        !lower.includes(
+            "calculator"
+        );
+
+    return hasCardKeyword &&
+        isNotServicePage;
+}
+
+function fuzzyMatch(
+    str1,
+    str2
+) {
+    const a =
+        str1
+            .toLowerCase()
+            .replace(/\W/g, "");
+    const b =
+        str2
+            .toLowerCase()
+            .replace(/\W/g, "");
+
+    return (
+        a.includes(b) ||
+        b.includes(a) ||
+        a === b
+    );
+}
+
 export async function fetchICICICards() {
     console.log(
         "Fetching ICICI listing page..."
@@ -237,8 +471,38 @@ export async function fetchICICICards() {
             html
         );
 
-    const cards =
-        [];
+    // Extract card URLs and images from listing
+    const cardUrls =
+        new Set();
+
+    $('a[href*="/personal-banking/cards/credit-card/"]')
+        .each(
+            (_, elem) => {
+                const href =
+                    $(elem).attr(
+                        "href"
+                    );
+
+                if (
+                    href &&
+                    isCardProductPage(
+                        href
+                    )
+                ) {
+                    cardUrls.add(
+                        href
+                    );
+                }
+            }
+        );
+
+    console.log(
+        `Found ${cardUrls.size} card product pages`
+    );
+
+    // Extract images from listing
+    const listingImages =
+        {};
 
     $("img").each(
         (_, imageElement) => {
@@ -266,7 +530,8 @@ export async function fetchICICICards() {
                 );
 
             if (
-                !name
+                !name ||
+                listingImages[name]
             ) {
                 return;
             }
@@ -278,36 +543,119 @@ export async function fetchICICICards() {
                     ? image
                     : `https://www.icici.bank.in${image}`;
 
-            const container =
-                $(imageElement)
-                    .closest(
-                        "section, div, article, li"
-                    );
-
-            const description =
-                container
-                    .text()
-                    .replace(
-                        /\s+/g,
-                        " "
-                    )
-                    .trim()
-                    .slice(
-                        0,
-                        400
-                    );
-
-            cards.push({
-                name,
-
-                image:
-                    absoluteImage,
-
-                description
-            });
+            listingImages[name] =
+                absoluteImage;
         }
     );
 
+    console.log(
+        `Extracted ${Object.keys(listingImages).length} card images`
+    );
+
+    // Fetch details and metadata for each card
+    const cards =
+        [];
+
+    for (const url of cardUrls) {
+        const fullUrl =
+            url.startsWith(
+                "http"
+            )
+                ? url
+                : `https://www.icici.bank.in${url}`;
+
+        console.log(
+            `Fetching: ${fullUrl}`
+        );
+
+        const details =
+            await fetchCardDetails(
+                fullUrl
+            );
+
+        if (
+            !details.applyLink
+        ) {
+            continue;
+        }
+
+        // Extract name from URL
+        const urlParts =
+            url.split("/");
+
+        const slug =
+            urlParts[
+                urlParts.length - 1
+            ];
+
+        const rawName =
+            slug
+                .replace(
+                    /-/g,
+                    " "
+                )
+                .trim();
+
+        const name =
+            cleanICICIName(
+                rawName
+            );
+
+        if (
+            !name
+        ) {
+            continue;
+        }
+
+        // Use image from listing - try exact match, then fuzzy match
+        let image =
+            listingImages[name];
+
+        if (
+            !image
+        ) {
+            for (const [
+                imgName,
+                imgUrl
+            ] of Object.entries(
+                listingImages
+            )) {
+                if (
+                    fuzzyMatch(
+                        name,
+                        imgName
+                    )
+                ) {
+                    image =
+                        imgUrl;
+                    break;
+                }
+            }
+        }
+
+        cards.push({
+            name,
+
+            image,
+
+            description:
+                details.description,
+
+            rewards:
+                details.rewards,
+
+            benefits:
+                details.benefits,
+
+            applyLink:
+                details.applyLink,
+
+            detailsLink:
+                details.detailsLink
+        });
+    }
+
+    // Deduplicate by name
     const unique =
         Array.from(
             new Map(
