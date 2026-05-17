@@ -59,7 +59,14 @@ struct CardEditView: View {
                                 }
 
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Card Network", style: .hint)
+                                HStack {
+                                    FDSLabel("Card Network", style: .hint)
+                                    Spacer()
+                                    Button(action: { autoDetectCardType() }) {
+                                        FDSLabel("Auto-detect", style: .caption, color: .secondary)
+                                    }
+                                    .disabled(last4.trimmingCharacters(in: .whitespaces).count < 4)
+                                }
                                 Picker("Network", selection: $cardType) {
                                     Text("Visa").tag("visa")
                                     Text("Mastercard").tag("mastercard")
@@ -216,5 +223,9 @@ struct CardEditView: View {
                 .background(AppColors.surface2)
                 .cornerRadius(AppRadius.sm)
         }
+    }
+
+    private func autoDetectCardType() {
+        cardType = BINParser.detectCardType(from: last4)
     }
 }

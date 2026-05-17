@@ -187,6 +187,10 @@
     "mtime": 1778880898.10806,
     "hash": "2e13713a67e1b68f0a1873ddc363c3bb"
   },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Utilities/BINParser.swift": {
+    "mtime": 1778996713.1422079,
+    "hash": "96df9b56e89cfc5c790119d93087fae3"
+  },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Components/InsightCard.swift": {
     "mtime": 1778880898.110046,
     "hash": "44c25b30ab32f2590089b025b4b31920"
@@ -568,8 +572,8 @@
     "hash": "03ad786a5699ac451548382c0437acc2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/HDFCCard/HDFCCardMetadataExtractor.swift": {
-    "mtime": 1778996342.264456,
-    "hash": "b85e2b137523a136f97bf115cb0fa195"
+    "mtime": 1778996713.1667202,
+    "hash": "71a64049753e3abb296640eef6a8cb49"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/Sources/FinanceParsers/Parsers/Amex/AmexCardCSVNormalizer.swift": {
     "mtime": 1778913189.204421,
@@ -716,8 +720,8 @@
     "hash": "c1795596715ab4e1342cf2432e71d4ac"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardEditView.swift": {
-    "mtime": 1778995816.4801795,
-    "hash": "0538b564d769660dd16f8e1238a70d22"
+    "mtime": 1778996706.0558126,
+    "hash": "9e735289c0571c245a8ccc0394145d61"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift": {
     "mtime": 1778995358.1726267,
@@ -820,12 +824,12 @@
     "hash": "2c39b5acb6512961766e951cda0264d4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/CreateNewTargetSheet.swift": {
-    "mtime": 1778995816.4803948,
-    "hash": "4b8bb9c6cef5a4223265b57bd60fd4d5"
+    "mtime": 1778996699.943539,
+    "hash": "2fcac19d1ca4e81dcd2891388bbbcdca"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelTargetCreation.swift": {
-    "mtime": 1778967361.9020083,
-    "hash": "4b5d8b3c4aa83f11435ddb31ae4b542f"
+    "mtime": 1778996534.8143315,
+    "hash": "ffec3648d445c8aef9a083baf564ff45"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift": {
     "mtime": 1778993541.0295966,

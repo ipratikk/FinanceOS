@@ -59,7 +59,14 @@ struct CreateNewTargetSheet: View {
 
                             if isCard {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    FDSLabel("Card Type", style: .hint)
+                                    HStack {
+                                        FDSLabel("Card Type", style: .hint)
+                                        Spacer()
+                                        Button(action: { autoDetectCardType() }) {
+                                            FDSLabel("Auto-detect", style: .caption, color: .secondary)
+                                        }
+                                        .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
+                                    }
                                     Picker("Type", selection: $state.cardType) {
                                         Text("Visa").tag("visa")
                                         Text("Mastercard").tag("mastercard")
@@ -182,5 +189,10 @@ struct CreateNewTargetSheet: View {
                 .background(AppColors.surface2)
                 .cornerRadius(AppRadius.sm)
         }
+    }
+
+    private func autoDetectCardType() {
+        let cardType = BINParser.detectCardType(from: state.last4)
+        state.cardType = cardType
     }
 }
