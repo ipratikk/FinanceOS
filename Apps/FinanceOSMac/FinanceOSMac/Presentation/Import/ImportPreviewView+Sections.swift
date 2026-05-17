@@ -81,7 +81,6 @@ extension ImportPreviewView {
             var state = TargetCreationState()
             state.isCard = isCard
             viewModel.importSession.targetBeingCreated = state
-            showCreateSheet = true
             return
         }
 
@@ -96,7 +95,6 @@ extension ImportPreviewView {
         state.selectedBankID = matchingBank?.id
 
         viewModel.importSession.targetBeingCreated = state
-        showCreateSheet = true
     }
 
     func fileListSection() -> some View {

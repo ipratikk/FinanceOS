@@ -1,7 +1,8 @@
 import FinanceParsers
 import Foundation
 
-public struct TargetCreationState {
+public struct TargetCreationState: Identifiable {
+    public let id = UUID()
     public var customName: String = ""
     public var nickname: String = ""
     public var last4: String = ""
