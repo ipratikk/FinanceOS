@@ -18,4 +18,15 @@ final class EmptyStateSnapshotTests: SnapshotTestable {
         )
         verifyComponentSnapshots(view, size: CGSize(width: 390, height: 300))
     }
+
+    func test_empty_state_with_action() {
+        let view = EmptyStateView(
+            icon: "creditcard",
+            title: "No Cards Yet",
+            subtitle: "Add your first credit card to track spending",
+            action: {},
+            actionLabel: "Add Card"
+        )
+        verifyComponentSnapshots(view, size: CGSize(width: 390, height: 360))
+    }
 }

@@ -21,22 +21,6 @@
       "parallelizable" : true,
       "target" : {
         "containerPath" : "container:FinanceOSMac.xcodeproj",
-        "identifier" : "040BDD3C2FB9E94400059B59",
-        "name" : "FinanceOSMacUITests"
-      }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:FinanceOSMac.xcodeproj",
-        "identifier" : "040BDDE22FB9EC1100059B59",
-        "name" : "FinanceOSMacTests"
-      }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:FinanceOSMac.xcodeproj",
         "identifier" : "041305F92FBA459600133C99",
         "name" : "FinanceOSMacSnapshotTests"
       }

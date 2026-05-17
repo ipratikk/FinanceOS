@@ -1,0 +1,32 @@
+import FinanceCore
+@testable import FinanceOSMac
+import FinanceTesting
+import SnapshotTesting
+import SwiftUI
+import XCTest
+
+final class TransactionListContentViewSnapshotTests: SnapshotTestable {
+    override var record: Bool {
+        false
+    }
+
+    func test_transaction_list_content() {
+        let rows = PreviewTransactions.samples.map { txn in
+            TransactionRow(
+                id: txn.id,
+                title: txn.description,
+                subtitle: "Checking · USD",
+                amountText: String(format: "$%.2f", Double(txn.amountMinorUnits) / 100),
+                transactionType: txn.transactionType,
+                postedAt: txn.postedAt
+            )
+        }
+        let section = TransactionSection(
+            id: "May 2025",
+            title: "May 2025",
+            rows: rows
+        )
+        let view = TransactionListContentView(sections: [section], listState: TransactionListState())
+        verifySnapshots(view)
+    }
+}
