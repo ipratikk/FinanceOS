@@ -29,14 +29,14 @@ public struct TransactionRowView: View {
             HStack(spacing: AppSpacing.md) {
                 Circle()
                     .fill(isDebit ? AppColors.debit : AppColors.credit)
-                    .frame(width: 8, height: 8)
+                    .frame(width: 6, height: 6)
 
-                VStack(alignment: .leading, spacing: AppSpacing.xxs) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
                     Text(description)
-                        .bodyLarge()
+                        .bodyMedium()
                         .lineLimit(1)
 
-                    HStack(spacing: AppSpacing.xs) {
+                    HStack(spacing: AppSpacing.xxs) {
                         Text(date)
                             .caption()
                         Text("·")
@@ -44,21 +44,16 @@ public struct TransactionRowView: View {
                         Text(source)
                             .caption()
                     }
+                    .foregroundColor(AppColors.textTertiary)
                 }
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: AppSpacing.xxs) {
-                    Text(amount)
-                        .monoAmount()
-                        .foregroundColor(isDebit ? AppColors.debit : AppColors.credit)
-
-                    FBadge(isDebit ? "Debit" : "Credit", color: isDebit ? .red : .green)
-                }
+                Text(amount)
+                    .monoAmount()
+                    .foregroundColor(isDebit ? AppColors.debit : AppColors.credit)
             }
-            .padding(AppSpacing.md)
-            .background(AppColors.surface)
-            .cornerRadius(AppRadius.md)
+            .padding(AppSpacing.sm)
         }
         .buttonStyle(.plain)
     }

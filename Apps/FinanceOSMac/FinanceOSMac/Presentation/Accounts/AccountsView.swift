@@ -64,39 +64,31 @@ struct AccountsView: View {
     }
 
     var accountsList: some View {
-        List {
-            ForEach(
-                groupedAccountsByBank.sorted(by: { $0.key < $1.key }),
-                id: \.key
-            ) { bankName, ledgers in
-                Section(bankName) {
-                    ForEach(ledgers, id: \.id) { ledger in
-                        NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
-                            accountRow(ledger)
-                        }
-                        .listRowBackground(AppColors.surface)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
-                        .listRowSeparator(.hidden)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                accountPendingDelete = ledger
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
-                        .contextMenu {
-                            Button("Edit") { navigator.present(.accountEdit(ledger)) }
-                            Button("Delete", role: .destructive) {
-                                accountPendingDelete = ledger
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                ForEach(
+                    groupedAccountsByBank.sorted(by: { $0.key < $1.key }),
+                    id: \.key
+                ) { bankName, ledgers in
+                    VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                        Text(bankName)
+                            .headingSmall()
+                            .foregroundColor(AppColors.textTertiary)
+
+                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                            ForEach(ledgers, id: \.id) { ledger in
+                                NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
+                                    accountRow(ledger)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
                 }
             }
+            .padding(AppSpacing.md)
         }
-        .listStyle(.plain)
         .background(AppColors.base)
-        .scrollContentBackground(.hidden)
     }
 
     private var groupedAccountsByBank: [String: [Ledger]] {
@@ -106,10 +98,11 @@ struct AccountsView: View {
     }
 
     func accountRow(_ ledger: Ledger) -> some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: AppSpacing.md) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxs) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
+                    .lineLimit(1)
 
                 Text((ledger.accountType ?? "").uppercased())
                     .labelSmall()
@@ -119,10 +112,16 @@ struct AccountsView: View {
             Spacer()
 
             Text("••••\(ledger.last4)")
-                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .monoAmount()
                 .foregroundColor(AppColors.accent)
         }
         .padding(AppSpacing.sm)
+        .background(.ultraThinMaterial)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.md)
+                .stroke(AppColors.borderSubtle, lineWidth: 0.5)
+        )
+        .cornerRadius(AppRadius.md)
     }
 
     var emptyState: some View {

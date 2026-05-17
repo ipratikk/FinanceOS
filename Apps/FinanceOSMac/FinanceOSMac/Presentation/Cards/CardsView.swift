@@ -69,41 +69,29 @@ struct CardsView: View {
     }
 
     var cardsList: some View {
-        List {
-            ForEach(
-                groupedCardsByBank.sorted(by: { $0.key < $1.key }),
-                id: \.key
-            ) { bankName, cardRows in
-                Section {
-                    ForEach(cardRows, id: \.card.id) { cardRow in
-                        NavigationLink(value: DetailDestination.cardTransactions(cardRow.card.id)) {
-                            cardRowView(cardRow.card)
-                        }
-                        .listRowBackground(AppColors.surface)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
-                        .listRowSeparator(.hidden)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                cardPendingDelete = cardRow.card
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
-                        .contextMenu {
-                            Button("Edit") { navigator.present(.cardEdit(cardRow.card)) }
-                            Button("Delete", role: .destructive) {
-                                cardPendingDelete = cardRow.card
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                ForEach(
+                    groupedCardsByBank.sorted(by: { $0.key < $1.key }),
+                    id: \.key
+                ) { bankName, cardRows in
+                    VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                        bankSectionHeader(bankName)
+
+                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                            ForEach(cardRows, id: \.card.id) { cardRow in
+                                NavigationLink(value: DetailDestination.cardTransactions(cardRow.card.id)) {
+                                    cardRowView(cardRow.card)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
-                } header: {
-                    bankSectionHeader(bankName)
                 }
             }
+            .padding(AppSpacing.md)
         }
-        .listStyle(.plain)
         .background(AppColors.base)
-        .scrollContentBackground(.hidden)
     }
 
     private var groupedCardsByBank: [String: [CardsViewModel.CardRow]] {
@@ -160,31 +148,32 @@ struct CardsView: View {
     }
 
     func cardRowView(_ ledger: Ledger) -> some View {
-        HStack(spacing: 12) {
-            let supportedCards = CardDatabase.supportedCards()
-            let card = ledger.cardProduct.flatMap { product in
-                supportedCards.first { $0.id == product }
-            } ?? supportedCards.first { $0.name == ledger.displayName }
+        let supportedCards = CardDatabase.supportedCards()
+        let card = ledger.cardProduct.flatMap { product in
+            supportedCards.first { $0.id == product }
+        } ?? supportedCards.first { $0.name == ledger.displayName }
 
+        return HStack(spacing: AppSpacing.md) {
+            // Card image
             AsyncImage(url: URL(string: card?.imageURL ?? "")) { phase in
                 switch phase {
                 case .empty:
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(AppColors.surface2)
-                        .frame(width: 60, height: 38)
+                    RoundedRectangle(cornerRadius: AppRadius.sm)
+                        .fill(AppColors.glass)
+                        .frame(width: 56, height: 36)
                 case let .success(image):
                     image
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 60, height: 38)
-                        .cornerRadius(6)
+                        .frame(width: 56, height: 36)
+                        .cornerRadius(AppRadius.sm)
                 case .failure:
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(AppColors.surface2)
-                        .frame(width: 60, height: 38)
+                    RoundedRectangle(cornerRadius: AppRadius.sm)
+                        .fill(AppColors.glass)
+                        .frame(width: 56, height: 36)
                         .overlay(
                             Image(systemName: "creditcard")
-                                .font(.system(size: 12))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundColor(AppColors.textTertiary)
                         )
                 @unknown default:
@@ -192,17 +181,19 @@ struct CardsView: View {
                 }
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            // Card info
+            VStack(alignment: .leading, spacing: AppSpacing.xxs) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .monoAmount()
+                    .lineLimit(1)
 
-                HStack(spacing: 6) {
+                HStack(spacing: AppSpacing.xxs) {
                     if let cardType = ledger.cardType {
                         if let logo = networkLogo(for: cardType) {
                             Image(nsImage: logo)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 20, height: 10)
+                                .frame(width: 16, height: 8)
                         }
 
                         Text("••••\(ledger.last4)")
@@ -213,20 +204,25 @@ struct CardsView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
+            // Menu
             Menu {
                 Button("Edit") { navigator.present(.cardEdit(ledger)) }
                 Button("Delete", role: .destructive) { cardPendingDelete = ledger }
             } label: {
                 Image(systemName: "ellipsis.circle")
+                    .font(.system(size: 14))
                     .foregroundColor(AppColors.textTertiary)
             }
+            .buttonStyle(.plain)
         }
         .padding(AppSpacing.sm)
+        .background(.ultraThinMaterial)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.md)
+                .stroke(AppColors.borderSubtle, lineWidth: 0.5)
+        )
+        .cornerRadius(AppRadius.md)
         .onAppear {
-            let supportedCards = CardDatabase.supportedCards()
-            let card = ledger.cardProduct.flatMap { product in
-                supportedCards.first { $0.id == product }
-            } ?? supportedCards.first { $0.name == ledger.displayName }
             print(
                 "[CardsView] '\(ledger.displayName)' cardProduct=\(ledger.cardProduct ?? "nil") image=\(card?.imageURL ?? "nil")"
             )
