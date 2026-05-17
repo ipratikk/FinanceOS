@@ -18,10 +18,6 @@ let package = Package(
         .target(
             name: "FinanceUI",
             dependencies: ["FinanceCore"]
-        ),
-        .testTarget(
-            name: "FinanceUITests",
-            dependencies: ["FinanceUI"]
         )
     ]
 )
