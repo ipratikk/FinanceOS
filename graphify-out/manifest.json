@@ -840,12 +840,12 @@
     "hash": "068dc2c78c16f1f91fdc01cc87440101"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMacSnapshotTests/Screens/DashboardViewSnapshotTests.swift": {
-    "mtime": 1779043404.674781,
-    "hash": "160efc85198acaadea9d6a4cdd462f76"
+    "mtime": 1779043546.4402695,
+    "hash": "3d14f545bee66f8786857f2b73650e26"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMacSnapshotTests/Screens/SidebarViewSnapshotTests.swift": {
-    "mtime": 1779043419.233415,
-    "hash": "b3e06de292e2fe6da47b67f7f509c5b7"
+    "mtime": 1779043546.4402695,
+    "hash": "8e748d96fe3b98f7942eb5d3cf372a4d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMacSnapshotTests/Components/TransactionRowSnapshotTests.swift": {
     "mtime": 1779043212.1346695,
@@ -856,8 +856,8 @@
     "hash": "4e49454737ebadfe41cdbf4676e2d387"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMacSnapshotTests/Helpers/XCTestCase+Snapshot.swift": {
-    "mtime": 1779043412.7392385,
-    "hash": "0da3acceb4b9840e8c4a6ca37049b9cb"
+    "mtime": 1779043546.4488099,
+    "hash": "bafcea827e18707b034ae5be1389eec8"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/FinanceOSMacApp.swift": {
     "mtime": 1778876682.6463296,
@@ -1140,8 +1140,8 @@
     "hash": "2655723cd259b3c36fbae1472a6f4bd2"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceTesting/README.md": {
-    "mtime": 1779023039.87929,
-    "hash": "93f54551659a83ce35c94f780642fc7e"
+    "mtime": 1779043469.296301,
+    "hash": "7c653a1abedd812fe5d5f0ae2811dc3b"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceParsers/README.md": {
     "mtime": 1778829769.3584032,

@@ -4,16 +4,16 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-final class ImportFlowSnapshotTests: XCTestCase {
+final class SettingsViewSnapshotTests: XCTestCase {
     let record = false
 
-    func test_import_view() {
-        let view = ImportView()
+    func test_settings_view() {
+        let view = SettingsView()
         verifySnapshots(view, device: .iPhone16Pro, record: record)
     }
 
-    func test_import_view_all_devices() {
-        let view = ImportView()
+    func test_settings_all_devices() {
+        let view = SettingsView()
         verifySnapshotsAcrossDevices(
             view,
             devices: .mobileDevices,
