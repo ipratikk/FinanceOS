@@ -141,7 +141,7 @@ struct DetailRouter: View {
                 )
             )
         case .none:
-            DashboardView()
+            DashboardView(selection: $selection)
         }
     }
 }
