@@ -1,23 +1,27 @@
+import FinanceCore
 @testable import FinanceOSMac
 import FinanceTesting
 import SnapshotTesting
 import SwiftUI
 import XCTest
 
-final class ImportFlowSnapshotTests: XCTestCase {
-    let record = false
-
-    func test_import_view() {
-        let view = ImportView()
-        verifySnapshots(view, device: .iPhone16Pro, record: record)
+final class ImportFlowSnapshotTests: SnapshotTestable {
+    override var record: Bool {
+        false
     }
 
-    func test_import_view_all_devices() {
-        let view = ImportView()
-        verifySnapshotsAcrossDevices(
-            view,
-            devices: .mobileDevices,
-            record: record
+    func test_import_view() {
+        let transactionRepo = MockTransactionRepository()
+        let bankRepo = MockBankRepository()
+        let ledgerRepo = MockLedgerRepository()
+        let pipeline = TransactionImportPipeline(repository: transactionRepo)
+        let viewModel = ImportViewModel(
+            transactionImportPipeline: pipeline,
+            bankRepository: bankRepo,
+            ledgerRepository: ledgerRepo,
+            transactionRepository: transactionRepo
         )
+        let view = ImportView(viewModel: viewModel)
+        verifySnapshots(view)
     }
 }

@@ -1,23 +1,27 @@
+import FinanceCore
 @testable import FinanceOSMac
 import FinanceTesting
 import SnapshotTesting
 import SwiftUI
 import XCTest
 
-final class DashboardViewSnapshotTests: XCTestCase {
-    let record = false
-
-    func test_dashboard_initial() {
-        let view = DashboardView()
-        verifySnapshots(view, device: .iPhone16Pro, record: record)
+final class DashboardViewSnapshotTests: SnapshotTestable {
+    override var record: Bool {
+        false
     }
 
-    func test_dashboard_all_devices() {
-        let view = DashboardView()
-        verifySnapshotsAcrossDevices(
-            view,
-            devices: .mobileDevices,
-            record: record
+    func test_dashboard_initial() {
+        let spending = MockSpendingService()
+        let transactionRepo = MockTransactionRepository()
+        let viewModel = DashboardViewModel(
+            spendingService: spending,
+            transactionRepository: transactionRepo
         )
+        viewModel.currentTotals = PreviewSpendingData.currentTotals
+        viewModel.monthlySummaries = PreviewSpendingData.monthlySummaries
+        viewModel.recentTransactions = PreviewTransactions.samples
+
+        let view = DashboardView(viewModel: viewModel)
+        verifySnapshots(view)
     }
 }

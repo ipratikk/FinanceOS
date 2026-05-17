@@ -5,8 +5,10 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-final class EmptyStateSnapshotTests: XCTestCase {
-    let record = false
+final class EmptyStateSnapshotTests: SnapshotTestable {
+    override var record: Bool {
+        false
+    }
 
     func test_empty_state_view() {
         let view = EmptyStateView(
@@ -14,10 +16,6 @@ final class EmptyStateSnapshotTests: XCTestCase {
             title: "No Transactions",
             subtitle: "Start importing transactions to see them here"
         )
-        verifyComponentSnapshots(
-            view,
-            size: CGSize(width: 390, height: 300),
-            record: record
-        )
+        verifyComponentSnapshots(view, size: CGSize(width: 390, height: 300))
     }
 }

@@ -1,23 +1,31 @@
+import FinanceCore
 @testable import FinanceOSMac
 import FinanceTesting
 import SnapshotTesting
 import SwiftUI
 import XCTest
 
-final class AnalyticsViewSnapshotTests: XCTestCase {
-    let record = false
-
-    func test_analytics_view() {
-        let view = AnalyticsView()
-        verifySnapshots(view, device: .iPhone16Pro, record: record)
+final class AnalyticsViewSnapshotTests: SnapshotTestable {
+    override var record: Bool {
+        false
     }
 
-    func test_analytics_all_devices() {
-        let view = AnalyticsView()
-        verifySnapshotsAcrossDevices(
-            view,
-            devices: .mobileDevices,
-            record: record
+    func test_analytics_view() {
+        let spending = MockSpendingService()
+        let transactionRepo = MockTransactionRepository()
+        let viewModel = AnalyticsViewModel(
+            spendingService: spending,
+            transactionRepository: transactionRepo
         )
+        viewModel.monthlySummaries = PreviewSpendingData.monthlySummaries
+        viewModel.topMerchants = [
+            ("Whole Foods Market", 6543),
+            ("Target", 14567),
+            ("Shell Gas", 4215),
+            ("Starbucks", 625)
+        ]
+
+        let view = AnalyticsView(viewModel: viewModel)
+        verifySnapshots(view)
     }
 }
