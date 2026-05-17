@@ -1,8 +1,8 @@
-import XCTest
-import SwiftUI
-import SnapshotTesting
-import FinanceTesting
 @testable import FinanceOSMac
+import FinanceTesting
+import SnapshotTesting
+import SwiftUI
+import XCTest
 
 /// Snapshot tests for DashboardView.
 final class DashboardViewSnapshotTests: XCTestCase {

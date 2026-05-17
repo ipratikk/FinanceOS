@@ -1,12 +1,12 @@
-import XCTest
-import SwiftUI
-import SnapshotTesting
 import FinanceTesting
+import SnapshotTesting
+import SwiftUI
+import XCTest
 
 extension XCTestCase {
     /// Verify snapshots in light and dark modes.
-    func verifySnapshots<V: View>(
-        _ view: V,
+    func verifySnapshots(
+        _ view: some View,
         device: SnapshotDevice = .iPhone16Pro,
         record: Bool = false,
         file: StaticString = #file,
@@ -36,8 +36,8 @@ extension XCTestCase {
     }
 
     /// Verify snapshots across multiple devices.
-    func verifySnapshotsAcrossDevices<V: View>(
-        _ view: V,
+    func verifySnapshotsAcrossDevices(
+        _ view: some View,
         devices: [SnapshotDevice] = SnapshotDevice.mobileDevices,
         record: Bool = false,
         file: StaticString = #file,
@@ -69,8 +69,8 @@ extension XCTestCase {
     }
 
     /// Verify component snapshot with fixed size.
-    func verifyComponentSnapshots<V: View>(
-        _ view: V,
+    func verifyComponentSnapshots(
+        _ view: some View,
         size: CGSize = CGSize(width: 390, height: 200),
         record: Bool = false,
         file: StaticString = #file,
