@@ -56,6 +56,42 @@ struct CreateNewTargetSheet: View {
                                         state.last4 = String(newValue.prefix(4))
                                     }
                                 }
+
+                            if isCard {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    FDSLabel("Card Type", style: .hint)
+                                    Picker("Type", selection: $state.cardType) {
+                                        Text("Visa").tag("visa")
+                                        Text("Mastercard").tag("mastercard")
+                                        Text("American Express").tag("amex")
+                                        Text("Discover").tag("discover")
+                                        Text("Diners Club").tag("diners")
+                                        Text("Other").tag("other")
+                                    }
+                                    .pickerStyle(.menu)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .padding(AppSpacing.xs)
+                                .background(AppColors.surface2)
+                                .cornerRadius(AppRadius.sm)
+                            }
+
+                            if !isCard {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    FDSLabel("Account Type", style: .hint)
+                                    Picker("Type", selection: $state.accountType) {
+                                        Text("Savings").tag("savings")
+                                        Text("Checking").tag("checking")
+                                        Text("Money Market").tag("money_market")
+                                        Text("Other").tag("other")
+                                    }
+                                    .pickerStyle(.menu)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .padding(AppSpacing.xs)
+                                .background(AppColors.surface2)
+                                .cornerRadius(AppRadius.sm)
+                            }
                         }
                     }
                     .padding(AppSpacing.sm)

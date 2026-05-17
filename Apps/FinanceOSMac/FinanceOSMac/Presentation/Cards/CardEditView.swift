@@ -59,11 +59,14 @@ struct CardEditView: View {
                                 }
 
                             VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Card Type", style: .hint)
-                                Picker("Type", selection: $cardType) {
-                                    ForEach(["credit", "debit", "other"], id: \.self) { type in
-                                        Text(type.capitalized).tag(type)
-                                    }
+                                FDSLabel("Card Network", style: .hint)
+                                Picker("Network", selection: $cardType) {
+                                    Text("Visa").tag("visa")
+                                    Text("Mastercard").tag("mastercard")
+                                    Text("American Express").tag("amex")
+                                    Text("Discover").tag("discover")
+                                    Text("Diners Club").tag("diners")
+                                    Text("Other").tag("other")
                                 }
                                 .pickerStyle(.menu)
                                 .frame(maxWidth: .infinity, alignment: .leading)

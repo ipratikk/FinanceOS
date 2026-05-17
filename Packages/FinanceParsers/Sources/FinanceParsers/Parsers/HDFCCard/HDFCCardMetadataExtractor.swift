@@ -63,14 +63,58 @@ public struct HDFCCardMetadataExtractor: Sendable {
     }
 
     private func extractCardType(from lines: [String]) -> String? {
+        // First try to extract from keywords in statement
         let content = lines.joined(separator: " ").lowercased()
         if content.contains("visa") {
             return "visa"
         } else if content.contains("mastercard") {
             return "mastercard"
-        } else if content.contains("amex") {
+        } else if content.contains("amex") || content.contains("american express") {
             return "amex"
         }
+
+        // Fallback: try to detect from card number using BIN
+        for line in lines.prefix(50) {
+            if line.contains("Card No:") {
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+                if let colonParts = trimmed.components(separatedBy: ":").last {
+                    let cardNum = colonParts.trimmingCharacters(in: .whitespaces)
+                    // Use BIN parser to detect type
+                    // Note: BINParser is in FinanceCore, but we're in FinanceParsers
+                    // So we'll implement simple detection here
+                    return detectTypeFromCardNumber(cardNum)
+                }
+            }
+        }
+
+        return "other"
+    }
+
+    private func detectTypeFromCardNumber(_ cardNumber: String) -> String {
+        let cleaned = cardNumber.filter(\.isNumber)
+        guard cleaned.count >= 4 else { return "other" }
+
+        let firstTwo = String(cleaned.prefix(2))
+        let firstDigit = cleaned.first.map(String.init) ?? ""
+
+        // Amex: starts with 34 or 37
+        if firstTwo == "34" || firstTwo == "37" {
+            return "amex"
+        }
+
+        // Visa: starts with 4
+        if firstDigit == "4" {
+            return "visa"
+        }
+
+        // Mastercard: starts with 51-55 or 2221-2720
+        if let firstTwoNum = Int(firstTwo), (51 ... 55).contains(firstTwoNum) {
+            return "mastercard"
+        }
+        if let firstFourNum = Int(String(cleaned.prefix(4))), (2221 ... 2720).contains(firstFourNum) {
+            return "mastercard"
+        }
+
         return "other"
     }
 
