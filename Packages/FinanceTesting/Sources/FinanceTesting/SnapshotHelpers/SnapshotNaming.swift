@@ -7,9 +7,9 @@ public enum SnapshotNaming {
     public static func named(
         _ baseName: String,
         theme: SnapshotTheme = .light,
-        device: SnapshotDevice = .iPhone16Pro
+        device: SnapshotDevice = .macDefault
     ) -> String {
-        if device == .iPhone16Pro, theme == .light {
+        if device == .macDefault, theme == .light {
             return baseName
         }
         let themeSuffix = theme == .light ? "light" : "dark"
@@ -29,7 +29,7 @@ public enum SnapshotNaming {
     /// Generate snapshot name with only device suffix.
     public static func namedWithDevice(
         _ baseName: String,
-        device: SnapshotDevice = .iPhone16Pro
+        device: SnapshotDevice = .macDefault
     ) -> String {
         let deviceSuffix = device.displayName
         return "\(baseName).\(deviceSuffix)"
@@ -48,7 +48,7 @@ public enum SnapshotNaming {
     /// Generate snapshot names for all themes.
     public static func namedForAllThemes(
         _ baseName: String,
-        device: SnapshotDevice = .iPhone16Pro
+        device: SnapshotDevice = .macDefault
     ) -> [String] {
         [
             named(baseName, theme: .light, device: device),

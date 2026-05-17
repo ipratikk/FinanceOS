@@ -1,0 +1,143 @@
+import FinanceCore
+import Foundation
+
+/// In-memory mock LedgerRepository for snapshot/unit tests.
+public final class MockLedgerRepository: LedgerRepository, @unchecked Sendable {
+    public var ledgers: [Ledger]
+
+    public init(ledgers: [Ledger] = PreviewLedgers.all) {
+        self.ledgers = ledgers
+    }
+
+    public func fetchLedgers() async throws -> [Ledger] {
+        ledgers
+    }
+
+    public func fetchLedgers(bankId: UUID) async throws -> [Ledger] {
+        ledgers.filter { $0.bankId == bankId }
+    }
+
+    public func fetchLedgers(kind: LedgerKind) async throws -> [Ledger] {
+        ledgers.filter { $0.kind == kind }
+    }
+
+    public func fetchLedgers(bankId: UUID, kind: LedgerKind) async throws -> [Ledger] {
+        ledgers.filter { $0.bankId == bankId && $0.kind == kind }
+    }
+
+    public func fetchLedger(id: UUID) async throws -> Ledger? {
+        ledgers.first { $0.id == id }
+    }
+
+    public func insert(_ ledger: Ledger) async throws {
+        ledgers.append(ledger)
+    }
+
+    public func update(_ ledger: Ledger) async throws {
+        if let idx = ledgers.firstIndex(where: { $0.id == ledger.id }) {
+            ledgers[idx] = ledger
+        }
+    }
+
+    public func archive(id: UUID) async throws {
+        // No-op for snapshots
+    }
+
+    public func delete(id: UUID) async throws {
+        ledgers.removeAll { $0.id == id }
+    }
+}
+
+/// In-memory mock BankRepository.
+public final class MockBankRepository: BankRepository, @unchecked Sendable {
+    public var banks: [Bank]
+
+    public init(banks: [Bank] = PreviewBanks.all) {
+        self.banks = banks
+    }
+
+    public func fetchBanks() async throws -> [Bank] {
+        banks
+    }
+
+    public func insert(_ bank: Bank) async throws {
+        banks.append(bank)
+    }
+
+    public func update(_ bank: Bank) async throws {
+        if let idx = banks.firstIndex(where: { $0.id == bank.id }) {
+            banks[idx] = bank
+        }
+    }
+
+    public func delete(id: UUID) async throws {
+        banks.removeAll { $0.id == id }
+    }
+}
+
+/// In-memory mock TransactionRepository.
+public final class MockTransactionRepository: TransactionRepository, @unchecked Sendable {
+    public var transactions: [Transaction]
+
+    public init(transactions: [Transaction] = PreviewTransactions.samples) {
+        self.transactions = transactions
+    }
+
+    public func fetchTransactions() async throws -> [Transaction] {
+        transactions
+    }
+
+    public func fetchTransactionsForAccount(_ accountID: UUID) async throws -> [Transaction] {
+        transactions.filter { $0.accountID == accountID }
+    }
+
+    public func fetchTransactionsForCard(_ cardID: UUID) async throws -> [Transaction] {
+        transactions.filter { $0.cardID == cardID }
+    }
+
+    public func insertTransactions(_ transactions: [Transaction]) async throws -> ImportResult {
+        self.transactions.append(contentsOf: transactions)
+        return ImportResult(inserted: transactions.count, skipped: 0)
+    }
+
+    public func delete(id: UUID) async throws {
+        transactions.removeAll { $0.id == id }
+    }
+
+    public func migrateTransactions(fromCard cardID: UUID, toAccount accountID: UUID) async throws {
+        // No-op for snapshots
+    }
+
+    public func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {
+        // No-op for snapshots
+    }
+}
+
+/// Mock SpendingService for snapshot tests.
+public final class MockSpendingService: SpendingServiceProtocol, @unchecked Sendable {
+    public var summaries: [MonthlySpendingSummary]
+    public var totals: SpendingTotals
+    public var recent: [Transaction]
+
+    public init(
+        summaries: [MonthlySpendingSummary] = PreviewSpendingData.monthlySummaries,
+        totals: SpendingTotals = PreviewSpendingData.currentTotals,
+        recent: [Transaction] = PreviewTransactions.samples
+    ) {
+        self.summaries = summaries
+        self.totals = totals
+        self.recent = recent
+    }
+
+    public func monthlySummary(months: Int) async throws -> [MonthlySpendingSummary] {
+        summaries
+    }
+
+    public func currentMonthTotals() async throws -> SpendingTotals {
+        totals
+    }
+
+    public func recentTransactions(limit: Int) async throws -> [Transaction] {
+        Array(recent.prefix(limit))
+    }
+}

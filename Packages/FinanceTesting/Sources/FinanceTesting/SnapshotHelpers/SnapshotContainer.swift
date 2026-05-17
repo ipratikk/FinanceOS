@@ -4,13 +4,12 @@ import SwiftUI
 /// Applies deterministic environment, sizing, and device configuration.
 public struct SnapshotContainer<Content: View>: View {
     let content: Content
-    let configuration: SnapshotConfiguration
     let device: SnapshotDevice
-    let name: String?
+    let colorScheme: ColorScheme
 
     public var body: some View {
         content
-            .snapshotEnvironment(configuration)
+            .snapshotEnvironment(colorScheme: colorScheme)
             .frame(width: device.size.width, height: device.size.height)
             .background(Color.white)
             .clipped()
@@ -18,26 +17,24 @@ public struct SnapshotContainer<Content: View>: View {
 
     public init(
         _ content: Content,
-        configuration: SnapshotConfiguration = .default,
-        device: SnapshotDevice = .iPhone16Pro,
-        name: String? = nil
+        device: SnapshotDevice = .macDefault,
+        colorScheme: ColorScheme = .light
     ) {
         self.content = content
-        self.configuration = configuration
         self.device = device
-        self.name = name
+        self.colorScheme = colorScheme
     }
 }
 
 /// Wraps a component with standard sizing for snapshot testing.
 public struct ComponentSnapshotContainer<Content: View>: View {
     let content: Content
-    let configuration: SnapshotConfiguration
     let size: CGSize
+    let colorScheme: ColorScheme
 
     public var body: some View {
         content
-            .snapshotEnvironment(configuration)
+            .snapshotEnvironment(colorScheme: colorScheme)
             .frame(width: size.width, height: size.height)
             .background(Color.white)
             .clipped()
@@ -45,11 +42,11 @@ public struct ComponentSnapshotContainer<Content: View>: View {
 
     public init(
         _ content: Content,
-        configuration: SnapshotConfiguration = .default,
-        size: CGSize = CGSize(width: 390, height: 200)
+        size: CGSize = CGSize(width: 390, height: 200),
+        colorScheme: ColorScheme = .light
     ) {
         self.content = content
-        self.configuration = configuration
         self.size = size
+        self.colorScheme = colorScheme
     }
 }

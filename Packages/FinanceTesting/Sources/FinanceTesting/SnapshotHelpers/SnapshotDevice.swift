@@ -1,73 +1,53 @@
 import Foundation
 import SwiftUI
 
-/// Standard device configurations for snapshot testing.
+/// Standard device/window configurations for snapshot testing.
 public enum SnapshotDevice: Sendable {
-    case iPhone16Pro
-    case iPhoneSE
-    case iPadPro
-    case macOS
+    case macSmall // 1024×768 — minimum window
+    case macDefault // 1440×900 — standard
+    case macLarge // 1680×1050 — large window
+    case macFull // 1920×1080 — full HD
 
     /// Display name for snapshot naming.
     public var displayName: String {
         switch self {
-        case .iPhone16Pro:
-            "iPhone16Pro"
-        case .iPhoneSE:
-            "iPhoneSE"
-        case .iPadPro:
-            "iPadPro"
-        case .macOS:
-            "macOS"
+        case .macSmall:
+            "macSmall"
+        case .macDefault:
+            "macDefault"
+        case .macLarge:
+            "macLarge"
+        case .macFull:
+            "macFull"
         }
     }
 
-    /// Size for this device.
+    /// Size for this configuration.
     public var size: CGSize {
         switch self {
-        case .iPhone16Pro:
-            CGSize(width: 393, height: 852)
-        case .iPhoneSE:
-            CGSize(width: 375, height: 667)
-        case .iPadPro:
-            CGSize(width: 1024, height: 1366)
-        case .macOS:
-            CGSize(width: 1200, height: 800)
+        case .macSmall:
+            CGSize(width: 1024, height: 768)
+        case .macDefault:
+            CGSize(width: 1440, height: 900)
+        case .macLarge:
+            CGSize(width: 1680, height: 1050)
+        case .macFull:
+            CGSize(width: 1920, height: 1080)
         }
     }
 
-    /// Safe area insets for this device (top, bottom).
-    public var safeAreaInsets: (top: CGFloat, bottom: CGFloat) {
-        switch self {
-        case .iPhone16Pro:
-            (top: 59, bottom: 34)
-        case .iPhoneSE:
-            (top: 20, bottom: 0)
-        case .iPadPro:
-            (top: 24, bottom: 20)
-        case .macOS:
-            (top: 0, bottom: 0)
-        }
-    }
-
-    /// All standard devices for comprehensive snapshot coverage.
+    /// All configurations.
     public static let allCases: [SnapshotDevice] = [
-        .iPhone16Pro,
-        .iPhoneSE,
-        .iPadPro,
-        .macOS
+        .macSmall,
+        .macDefault,
+        .macLarge,
+        .macFull
     ]
 
-    /// Mobile devices (iPhone, iPad).
-    public static let mobileDevices: [SnapshotDevice] = [
-        .iPhone16Pro,
-        .iPhoneSE,
-        .iPadPro
-    ]
-
-    /// iOS-only devices.
-    public static let iOSDevices: [SnapshotDevice] = [
-        .iPhone16Pro,
-        .iPhoneSE
+    /// Common mac window sizes.
+    public static let macWindows: [SnapshotDevice] = [
+        .macSmall,
+        .macDefault,
+        .macLarge
     ]
 }

@@ -5,11 +5,10 @@ import Foundation
 ///
 /// Key capabilities:
 /// - Deterministic snapshot rendering
-/// - Theme/device-specific snapshots
+/// - Device-specific snapshots
 /// - Preview data factories
 /// - Mock repositories and services
-/// - Snapshot helpers for common patterns
 public enum FinanceTesting {
-    /// Snapshot testing configuration.
-    public static let current = SnapshotConfiguration.default
+    /// Reference date for deterministic snapshots.
+    public static let referenceDate = SnapshotConfiguration.referenceDate
 }

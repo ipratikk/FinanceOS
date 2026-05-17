@@ -1,0 +1,46 @@
+{
+  "configurations" : [
+    {
+      "id" : "199FAE06-4101-4502-A4E7-D03A2C58A428",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:FinanceOSMac.xcodeproj",
+      "identifier" : "049E340F2FB3B1D2002A3820",
+      "name" : "FinanceOSMac"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:FinanceOSMac.xcodeproj",
+        "identifier" : "040BDD3C2FB9E94400059B59",
+        "name" : "FinanceOSMacUITests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:FinanceOSMac.xcodeproj",
+        "identifier" : "040BDDE22FB9EC1100059B59",
+        "name" : "FinanceOSMacTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:FinanceOSMac.xcodeproj",
+        "identifier" : "041305F92FBA459600133C99",
+        "name" : "FinanceOSMacSnapshotTests"
+      }
+    }
+  ],
+  "version" : 1
+}
