@@ -22,6 +22,7 @@ public struct Ledger:
     public let accountType: String?
     public let cardType: String?
     public let cardProduct: String?
+    public let bin: String? // Bank Identification Number for card network auto-detection
     public let linkedLedgerId: UUID?
 
     public let isArchived: Bool
@@ -38,6 +39,7 @@ public struct Ledger:
         accountType: String? = nil,
         cardType: String? = nil,
         cardProduct: String? = nil,
+        bin: String? = nil,
         linkedLedgerId: UUID? = nil,
         isArchived: Bool = false
     ) {
@@ -52,6 +54,7 @@ public struct Ledger:
         self.accountType = accountType
         self.cardType = cardType
         self.cardProduct = cardProduct
+        self.bin = bin
         self.linkedLedgerId = linkedLedgerId
         self.isArchived = isArchived
     }
@@ -70,6 +73,7 @@ public extension Ledger {
         static let accountType = Column(CodingKeys.accountType)
         static let cardType = Column(CodingKeys.cardType)
         static let cardProduct = Column(CodingKeys.cardProduct)
+        static let bin = Column(CodingKeys.bin)
         static let linkedLedgerId = Column(CodingKeys.linkedLedgerId)
         static let isArchived = Column(CodingKeys.isArchived)
     }
@@ -116,6 +120,8 @@ public extension Ledger {
             table.column("cardType", .text)
 
             table.column("cardProduct", .text)
+
+            table.column("bin", .text)
 
             table.column("linkedLedgerId", .text)
                 .indexed()

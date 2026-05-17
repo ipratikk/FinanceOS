@@ -167,10 +167,10 @@ struct CardSelectionView: View {
                             Image(nsImage: logo)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 28, height: 18)
-                                .padding(4)
-                                .background(Color.white)
-                                .cornerRadius(4)
+                                .frame(width: 24, height: 15)
+                                .padding(2)
+                                .background(Color.white.opacity(0.9))
+                                .cornerRadius(3)
                         }
                     }
                     .frame(width: 100, height: 65)
