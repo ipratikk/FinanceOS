@@ -35,6 +35,8 @@ public struct FDSPicker<V: Hashable>: View {
             let isSelected = selection == (option.value as? V)
             Button(action: { selection = option.value as? V }) {
                 FDSPickerRow(option: option, variant: variant, isSelected: isSelected)
+                    .frame(maxWidth: 300)
+                    .clipped()
             }
         }
     }
