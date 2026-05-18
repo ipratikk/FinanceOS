@@ -76,15 +76,15 @@ struct AccountTransactionsView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("BALANCE")
-                        .font(AppTypography.iconSm)
-                        .tracking(0.8)
+                    Text("Balance")
+                        .font(AppTypography.labelMedium)
+                        .tracking(0.5)
                         .foregroundStyle(.tertiary)
 
                     if let balance = ledger.closingBalance {
                         Text(formattedBalance(balance))
                             .font(AppTypography.displaySmall.monospacedDigit())
-                            .foregroundStyle(balance >= 0 ? AppColors.credit : AppColors.debit)
+                            .foregroundStyle(AppColors.accentIce)
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
 

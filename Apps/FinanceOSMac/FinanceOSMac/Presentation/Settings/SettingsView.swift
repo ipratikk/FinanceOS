@@ -59,13 +59,14 @@ struct SettingsView: View {
 
     private var sideTabs: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xl) {
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                Text("SETTINGS")
-                    .labelSmall()
-                    .tracking(0.6)
-                    .foregroundStyle(.tertiary)
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text("Settings")
+                    .font(AppTypography.headingMd)
+                    .foregroundStyle(.primary)
                 Text("Preferences")
-                    .font(AppTypography.displaySmall)
+                    .font(AppTypography.labelMedium)
+                    .tracking(0.5)
+                    .foregroundStyle(.tertiary)
             }
 
             VStack(alignment: .leading, spacing: 1) {
@@ -110,12 +111,12 @@ struct SettingsView: View {
                     Image(systemName: "chevron.right")
                         .font(AppTypography.labelSemibold)
                 }
-                .foregroundStyle(AppColors.debit)
+                .foregroundStyle(AppColors.danger)
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.vertical, AppSpacing.md)
                 .background {
                     RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                        .fill(AppColors.debit.opacity(0.12))
+                        .fill(AppColors.danger.opacity(0.12))
                 }
             }
             .buttonStyle(.plain)
@@ -151,10 +152,9 @@ struct SettingsView: View {
     }
 
     private func sectionTitle(_ title: String) -> some View {
-        Text(title.uppercased())
-            .labelSmall()
-            .tracking(0.6)
-            .foregroundStyle(.tertiary)
+        Text(title)
+            .font(AppTypography.headlineSmall)
+            .foregroundStyle(.primary)
     }
 
     private func toggleRow(_ label: String, symbol: String, binding: Binding<Bool>) -> some View {
@@ -201,7 +201,7 @@ struct SettingsView: View {
             HStack(spacing: AppSpacing.compact) {
                 Image(systemName: symbol)
                     .labelSmall()
-                    .foregroundStyle(AppColors.accent)
+                    .foregroundStyle(AppColors.accentGold)
                     .frame(width: 22)
                 Text(label)
                     .caption()

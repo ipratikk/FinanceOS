@@ -59,12 +59,13 @@ struct CardTransactionsView: View {
     }
 
     private var cardHeader: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .headingMedium()
+                    .font(AppTypography.headlineMd)
+                    .foregroundStyle(.primary)
 
-                HStack(spacing: 8) {
+                HStack(spacing: AppSpacing.compact) {
                     if let cardType = ledger.cardType {
                         if let logo = networkLogo(for: cardType) {
                             Image(nsImage: logo)
@@ -74,25 +75,29 @@ struct CardTransactionsView: View {
                         }
 
                         Text(cardType.uppercased())
-                            .labelSmall()
+                            .font(AppTypography.captionLgMedium)
+                            .foregroundStyle(.secondary)
                     }
 
                     Text("• ••••\(ledger.last4)")
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
+                        .font(AppTypography.captionLgMedium)
+                        .foregroundStyle(.tertiary)
                 }
             }
 
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.md) {
                 Text("Transactions: \(viewModel.sections.map(\.rows.count).reduce(0, +))")
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
+                    .font(AppTypography.captionLg)
+                    .foregroundStyle(.tertiary)
 
                 Spacer()
             }
         }
         .padding(AppSpacing.md)
-        .background(AppColors.surface)
-        .border(AppColors.surface2, width: 1)
+        .background(.regularMaterial)
+        .overlay(
+            RoundedRectangle(cornerRadius: 0)
+                .strokeBorder(AppColors.accentSlate.opacity(0.08), lineWidth: 0.5)
+        )
     }
 }

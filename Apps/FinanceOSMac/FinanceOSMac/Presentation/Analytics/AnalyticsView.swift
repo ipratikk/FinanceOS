@@ -59,37 +59,46 @@ struct AnalyticsView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            Text("ANALYTICS")
-                .labelSmall()
-                .tracking(0.6)
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+            Text("Analytics")
+                .font(AppTypography.headingLg)
+                .foregroundStyle(.primary)
+            Text("Spending trends and merchant insights")
+                .font(AppTypography.labelMedium)
+                .tracking(0.5)
                 .foregroundStyle(.tertiary)
-            Text("Spending Insights")
-                .displayMedium()
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func spendingTrendSection(_ viewModel: AnalyticsViewModel) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader("6-Month Trend", subtitle: "Credits vs debits")
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text("6-Month Trend")
+                    .font(AppTypography.headlineMd)
+                    .foregroundStyle(.primary)
+                Text("Inflows vs outflows over time")
+                    .font(AppTypography.labelMedium)
+                    .foregroundStyle(.tertiary)
+            }
 
             FDSGlassSurface(cornerRadius: AppRadius.lg, padding: AppSpacing.md) {
                 Chart(viewModel.monthlySummaries, id: \.id) { item in
                     BarMark(
                         x: .value("Month", item.id, unit: .month),
-                        y: .value("Debits", Double(item.totalDebit) / 100.0)
+                        y: .value("Outflows", Double(item.totalDebit) / 100.0)
                     )
-                    .foregroundStyle(AppColors.debit.opacity(0.85))
+                    .foregroundStyle(AppColors.danger.opacity(0.85))
                     .cornerRadius(4)
-                    .position(by: .value("Type", "Debits"))
+                    .position(by: .value("Type", "Outflows"))
 
                     BarMark(
                         x: .value("Month", item.id, unit: .month),
-                        y: .value("Credits", Double(item.totalCredit) / 100.0)
+                        y: .value("Inflows", Double(item.totalCredit) / 100.0)
                     )
-                    .foregroundStyle(AppColors.credit.opacity(0.85))
+                    .foregroundStyle(AppColors.success.opacity(0.85))
                     .cornerRadius(4)
-                    .position(by: .value("Type", "Credits"))
+                    .position(by: .value("Type", "Inflows"))
                 }
                 .frame(height: 240)
                 .chartLegend(position: .bottom)
@@ -108,7 +117,14 @@ struct AnalyticsView: View {
 
     private func topMerchantsSection(_ viewModel: AnalyticsViewModel) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader("Top Merchants", subtitle: "Highest debit activity")
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text("Top Merchants")
+                    .font(AppTypography.headlineMd)
+                    .foregroundStyle(.primary)
+                Text("Highest outflow activity")
+                    .font(AppTypography.labelMedium)
+                    .foregroundStyle(.tertiary)
+            }
 
             FDSGlassSurface(cornerRadius: AppRadius.lg, padding: AppSpacing.md) {
                 let merchants = viewModel.topMerchants.prefix(10).map { name, amount in
@@ -122,13 +138,15 @@ struct AnalyticsView: View {
 
     private var categoriesPlaceholder: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader("Categories")
+            Text("Categories")
+                .font(AppTypography.headlineMd)
+                .foregroundStyle(.primary)
 
             FDSGlassSurface(cornerRadius: AppRadius.lg, padding: AppSpacing.xl) {
                 VStack(spacing: AppSpacing.md) {
                     Image(systemName: "tag.circle.fill")
                         .font(AppTypography.displayLargeLight)
-                        .foregroundStyle(AppColors.accent.opacity(0.5))
+                        .foregroundStyle(AppColors.accentSlate.opacity(0.4))
                         .symbolRenderingMode(.hierarchical)
                     VStack(spacing: AppSpacing.tight) {
                         Text("Coming Soon")

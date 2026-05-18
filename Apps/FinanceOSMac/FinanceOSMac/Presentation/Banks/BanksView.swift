@@ -40,9 +40,14 @@ struct BanksView: View {
     private var banksList: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                VStack(alignment: .leading, spacing: AppSpacing.compact) {
-                    FDSLabel("INSTITUTIONS", style: .labelSmall)
-                    FDSLabel("Banks", style: .displayMedium)
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    Text("Banks")
+                        .font(AppTypography.headingLg)
+                        .foregroundStyle(.primary)
+                    Text("Manage connected institutions")
+                        .font(AppTypography.labelMedium)
+                        .tracking(0.5)
+                        .foregroundStyle(.tertiary)
                 }
                 .padding(.horizontal, AppSpacing.xl)
 
@@ -79,13 +84,10 @@ struct BanksView: View {
                     Spacer()
 
                     HStack(spacing: AppSpacing.compact) {
-                        iconButton("plus", color: AppColors.accent) {
+                        iconButton("pencil", color: AppColors.accentSlate) {
                             navigator.present(.bankEdit(bank))
                         }
-                        iconButton("pencil", color: .secondary) {
-                            navigator.present(.bankEdit(bank))
-                        }
-                        iconButton("trash", color: AppColors.debit) {
+                        iconButton("trash", color: AppColors.danger) {
                             bankToDelete = bank
                             showDeleteConfirm = true
                         }
@@ -138,9 +140,14 @@ struct BanksView: View {
     private var loadingState: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                VStack(alignment: .leading, spacing: AppSpacing.compact) {
-                    FDSLabel("INSTITUTIONS", style: .labelSmall)
-                    FDSLabel("Banks", style: .displayMedium)
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    Text("Banks")
+                        .font(AppTypography.headingLg)
+                        .foregroundStyle(.primary)
+                    Text("Manage connected institutions")
+                        .font(AppTypography.labelMedium)
+                        .tracking(0.5)
+                        .foregroundStyle(.tertiary)
                 }
                 .padding(.horizontal, AppSpacing.xl)
 
@@ -181,7 +188,7 @@ struct BanksView: View {
                 .fill(.ultraThinMaterial)
                 .overlay {
                     RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                        .strokeBorder(AppColors.accentGold.opacity(0.08), lineWidth: 0.5)
                 }
         }
     }

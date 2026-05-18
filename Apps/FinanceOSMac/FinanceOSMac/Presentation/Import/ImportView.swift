@@ -55,16 +55,20 @@ struct ImportView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "arrow.down.doc.fill")
                             .font(AppTypography.headingXL)
-                            .foregroundColor(AppColors.accent)
+                            .foregroundStyle(AppColors.accentGold)
 
                         VStack(spacing: 4) {
-                            FDSLabel("Drop Files Here", style: .heading)
+                            Text("Drop Files Here")
+                                .font(AppTypography.headingMd)
+                                .foregroundStyle(.primary)
 
-                            FDSLabel("Release to import", style: .hint)
+                            Text("Release to import")
+                                .font(AppTypography.labelMedium)
+                                .foregroundStyle(.tertiary)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppColors.accent.opacity(0.1))
+                    .background(AppColors.accentGold.opacity(0.1))
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
@@ -147,15 +151,13 @@ struct ImportView: View {
     }
 
     private var headerSection: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            Text("IMPORT")
-                .labelSmall()
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
-            Text("Statements")
-                .displayMedium()
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+            Text("Import")
+                .font(AppTypography.headingLg)
+                .foregroundStyle(.primary)
             Text("Upload bank or credit card statements")
-                .font(AppTypography.captionLg)
+                .font(AppTypography.labelMedium)
+                .tracking(0.5)
                 .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
