@@ -89,34 +89,35 @@ struct AccountsView: View {
     }
 
     private var listHeader: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            Text("ACCOUNTS")
-                .labelSmall()
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("Bank Accounts")
-                .displayMedium()
+                .font(AppTypography.headingLg)
+                .foregroundStyle(.primary)
+            Text("Manage your accounts and balances")
+                .font(AppTypography.labelMedium)
+                .tracking(0.5)
+                .foregroundStyle(.tertiary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func bankSection(bankName: String, ledgers: [Ledger]) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader(bankName, subtitle: "\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text(bankName)
+                    .font(AppTypography.headlineMd)
+                    .foregroundStyle(.primary)
+                Text("\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
+                    .font(AppTypography.labelMedium)
+                    .foregroundStyle(.tertiary)
+            }
 
-            FDSCard {
-                VStack(spacing: 0) {
-                    ForEach(Array(ledgers.enumerated()), id: \.element.id) { index, ledger in
-                        NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
-                            accountRow(ledger)
-                        }
-                        .buttonStyle(.plain)
-
-                        if index < ledgers.count - 1 {
-                            Divider()
-                                .opacity(0.3)
-                                .padding(.leading, 76)
-                        }
+            VStack(spacing: AppSpacing.xs) {
+                ForEach(Array(ledgers.enumerated()), id: \.element.id) { _, ledger in
+                    NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
+                        accountRow(ledger)
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -139,7 +140,7 @@ struct AccountsView: View {
                 width: 44
             )
         } content: {
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .font(AppTypography.bodySmMedium)
                     .foregroundStyle(.primary)
@@ -156,29 +157,23 @@ struct AccountsView: View {
                 .foregroundStyle(.tertiary)
 
                 if let balance {
-                    HStack(spacing: 4) {
-                        Text(balance.formattedBalance)
-                            .font(AppTypography.captionLgSemibold.monospacedDigit())
-                            .foregroundStyle(balance.netMinorUnits >= 0 ? AppColors.credit : AppColors.debit)
-                        if let dateStr = balance.formattedDate {
-                            Text("as of \(dateStr)")
-                                .font(AppTypography.label)
-                                .foregroundStyle(.quaternary)
-                        }
-                    }
+                    Text(balance.formattedBalance)
+                        .font(AppTypography.bodySmMedium.monospacedDigit())
+                        .foregroundStyle(AppColors.accentIce)
+                        .lineLimit(1)
                 }
             }
         } trailing: {
             HStack(spacing: AppSpacing.compact) {
-                iconButton("plus", color: AppColors.accent) {
+                iconButton("plus", color: AppColors.accentGold) {
                     navigator.pendingImportTarget = .ledger(ledger.id)
                     navigator.pendingImportSource = importSource(for: ledger, bank: bank)
                     navigator.navigate(to: .importStatement)
                 }
-                iconButton("pencil", color: .secondary) {
+                iconButton("pencil", color: AppColors.accentSlate) {
                     navigator.present(.accountEdit(ledger))
                 }
-                iconButton("trash", color: AppColors.debit) {
+                iconButton("trash", color: AppColors.danger) {
                     accountPendingDelete = ledger
                 }
             }
