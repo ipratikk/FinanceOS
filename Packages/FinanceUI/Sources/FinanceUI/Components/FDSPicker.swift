@@ -37,6 +37,7 @@ public struct FDSPicker<V: Hashable>: View {
                         isOpen = false
                     }) {
                         FDSPickerRow(option: option, variant: variant, isSelected: isSelected)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .buttonStyle(.plain)
                     if option.id != options.last?.id {
@@ -44,7 +45,6 @@ public struct FDSPicker<V: Hashable>: View {
                     }
                 }
             }
-            .padding(AppSpacing.md)
         }
         .frame(width: 320, height: 300)
         .background(AppColors.base)

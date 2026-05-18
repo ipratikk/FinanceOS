@@ -85,32 +85,21 @@ struct BankEditView: View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             FDSSectionHeader("Bank Information")
 
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
-                field("Bank") {
-                    let bankOptions = Banks.allCases.map { bankCase in
-                        FDSPickerOption(
-                            id: bankCase.rawValue,
-                            value: bankCase,
-                            title: bankCase.displayName,
-                            imageName: bankCase.symbolAssetName
-                        )
-                    }
-                    FDSPicker(
-                        selection: $selectedBank,
-                        options: bankOptions,
-                        variant: .symbolText,
-                        placeholder: "Select bank"
+            field("Bank") {
+                let bankOptions = Banks.allCases.map { bankCase in
+                    FDSPickerOption(
+                        id: bankCase.rawValue,
+                        value: bankCase,
+                        title: bankCase.displayName,
+                        imageName: bankCase.symbolAssetName
                     )
                 }
-            }
-            .padding(AppSpacing.md)
-            .background {
-                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                    .fill(.ultraThinMaterial)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
-                    }
+                FDSPicker(
+                    selection: $selectedBank,
+                    options: bankOptions,
+                    variant: .symbolText,
+                    placeholder: "Select bank"
+                )
             }
         }
     }
