@@ -66,7 +66,8 @@ struct AdaptiveNavigation: View {
 
             BanksView(
                 viewModel: BanksViewModel(
-                    repository: appContainer.bankRepository
+                    repository: appContainer.bankRepository,
+                    ledgerRepository: appContainer.ledgerRepository
                 )
             )
             .tabItem {
@@ -136,7 +137,8 @@ struct DetailRouter: View {
         case .banks:
             BanksView(
                 viewModel: BanksViewModel(
-                    repository: appContainer.bankRepository
+                    repository: appContainer.bankRepository,
+                    ledgerRepository: appContainer.ledgerRepository
                 )
             )
         case .analytics:

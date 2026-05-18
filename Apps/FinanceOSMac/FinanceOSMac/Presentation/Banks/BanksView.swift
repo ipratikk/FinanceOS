@@ -50,31 +50,48 @@ struct BanksView: View {
     }
 
     private func bankRow(_ bank: Bank) -> some View {
-        HStack(spacing: AppSpacing.lg) {
-            FDSImage(
-                imageName: bank.logoAssetName,
-                fallbackSymbol: "building.columns.fill",
-                height: 48,
-                width: 100
-            )
+        let ledgers = viewModel.ledgersByBank[bank.id] ?? []
+        return VStack(alignment: .leading, spacing: AppSpacing.md) {
+            HStack(spacing: AppSpacing.lg) {
+                FDSImage(
+                    imageName: bank.logoAssetName,
+                    fallbackSymbol: "building.columns.fill",
+                    height: 48,
+                    width: 100
+                )
 
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                FDSLabel(bank.name, style: .bodyLarge)
-                FDSLabel(bank.providerType.rawValue.capitalized, style: .caption, color: .secondary)
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    FDSLabel(bank.name, style: .bodyLarge)
+                    FDSLabel(bank.providerType.rawValue.capitalized, style: .caption, color: .secondary)
+                }
+
+                Spacer()
+
+                Menu {
+                    Button("Edit") { navigator.present(.bankEdit(bank)) }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 32, height: 32)
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
             }
 
-            Spacer()
-
-            Menu {
-                Button("Edit") { navigator.present(.bankEdit(bank)) }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 32, height: 32)
+            if !ledgers.isEmpty {
+                Divider().opacity(0.3)
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    ForEach(ledgers) { ledger in
+                        HStack(spacing: AppSpacing.compact) {
+                            Image(systemName: ledger.kind == .creditCard ? "creditcard.fill" : "banknote.fill")
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundStyle(.secondary)
+                            FDSLabel(ledger.displayName, style: .caption, color: .secondary)
+                        }
+                    }
+                }
             }
-            .menuStyle(.borderlessButton)
-            .menuIndicator(.hidden)
         }
         .padding(AppSpacing.lg)
         .background {

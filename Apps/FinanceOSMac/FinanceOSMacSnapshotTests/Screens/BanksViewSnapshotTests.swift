@@ -12,7 +12,8 @@ final class BanksViewSnapshotTests: SnapshotTestable {
 
     func test_banks_view() {
         let bankRepo = MockBankRepository()
-        let viewModel = BanksViewModel(repository: bankRepo)
+        let ledgerRepo = MockLedgerRepository()
+        let viewModel = BanksViewModel(repository: bankRepo, ledgerRepository: ledgerRepo)
         viewModel.banks = PreviewBanks.all
 
         let view = BanksView(viewModel: viewModel)

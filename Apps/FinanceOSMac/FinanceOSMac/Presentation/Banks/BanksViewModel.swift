@@ -12,15 +12,19 @@ import Observation
 @Observable
 final class BanksViewModel {
     private let repository: BankRepository
+    private let ledgerRepository: LedgerRepository
 
     var banks: [Bank] = []
+    var ledgersByBank: [UUID: [Ledger]] = [:]
     var isLoading = false
     var deleteError: String?
 
     init(
-        repository: BankRepository
+        repository: BankRepository,
+        ledgerRepository: LedgerRepository
     ) {
         self.repository = repository
+        self.ledgerRepository = ledgerRepository
     }
 
     func loadBanks() async {
@@ -32,6 +36,11 @@ final class BanksViewModel {
 
         do {
             banks = try await repository.fetchBanks()
+            var ledgerMap: [UUID: [Ledger]] = [:]
+            for bank in banks {
+                ledgerMap[bank.id] = try await ledgerRepository.fetchLedgers(bankId: bank.id)
+            }
+            ledgersByBank = ledgerMap
         } catch {
             print(error)
         }
