@@ -92,14 +92,13 @@ struct BankEditView: View {
                             id: bankCase.rawValue,
                             value: bankCase,
                             title: bankCase.displayName,
-                            symbol: "building.columns.fill",
                             imageName: bankCase.symbolAssetName
                         )
                     }
                     FDSPicker(
                         selection: $selectedBank,
                         options: bankOptions,
-                        variant: .textOnly,
+                        variant: .symbolText,
                         placeholder: "Select bank"
                     )
                 }
