@@ -87,34 +87,35 @@ struct CardsView: View {
     }
 
     private var listHeader: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            Text("CARDS")
-                .labelSmall()
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("Credit Cards")
-                .displayMedium()
+                .font(AppTypography.headingLg)
+                .foregroundStyle(.primary)
+            Text("Manage and track your cards")
+                .font(AppTypography.labelMedium)
+                .tracking(0.5)
+                .foregroundStyle(.tertiary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func bankSection(bankName: String, rows: [CardsViewModel.CardRow]) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader(bankName, subtitle: "\(rows.count) card\(rows.count == 1 ? "" : "s")")
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text(bankName)
+                    .font(AppTypography.headlineMd)
+                    .foregroundStyle(.primary)
+                Text("\(rows.count) card\(rows.count == 1 ? "" : "s")")
+                    .font(AppTypography.labelMedium)
+                    .foregroundStyle(.tertiary)
+            }
 
-            FDSCard {
-                VStack(spacing: 0) {
-                    ForEach(Array(rows.enumerated()), id: \.element.card.id) { index, row in
-                        NavigationLink(value: DetailDestination.cardTransactions(row.card.id)) {
-                            cardRowView(row.card)
-                        }
-                        .buttonStyle(.plain)
-
-                        if index < rows.count - 1 {
-                            Divider()
-                                .opacity(0.3)
-                                .padding(.leading, 100)
-                        }
+            VStack(spacing: AppSpacing.xs) {
+                ForEach(Array(rows.enumerated()), id: \.element.card.id) { _, row in
+                    NavigationLink(value: DetailDestination.cardTransactions(row.card.id)) {
+                        cardRowView(row.card)
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -135,20 +136,20 @@ struct CardsView: View {
         return FDSRow {
             cardArtwork(card: card)
         } content: {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .caption()
+                    .font(AppTypography.bodySmMedium)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
                     if let cardType = ledger.cardType {
                         Text(cardType.uppercased())
-                            .font(AppTypography.labelSemibold)
+                            .font(AppTypography.captionSm)
                             .tracking(0.4)
                     }
                     if !ledger.last4.isEmpty {
-                        Text("· •••• \(ledger.last4)")
+                        Text("•••• \(ledger.last4)")
                             .font(AppTypography.captionSm.monospacedDigit())
                     }
                 }
@@ -156,16 +157,16 @@ struct CardsView: View {
             }
         } trailing: {
             HStack(spacing: AppSpacing.compact) {
-                iconButton("plus", color: AppColors.accent) {
+                iconButton("plus", color: AppColors.accentGold) {
                     let bank = viewModel.banks.first { $0.id == ledger.bankId }
                     navigator.pendingImportTarget = .ledger(ledger.id)
                     navigator.pendingImportSource = importSource(for: ledger, bank: bank)
                     navigator.navigate(to: .importStatement)
                 }
-                iconButton("pencil", color: .secondary) {
+                iconButton("pencil", color: AppColors.accentSlate) {
                     navigator.present(.cardEdit(ledger))
                 }
-                iconButton("trash", color: AppColors.debit) {
+                iconButton("trash", color: AppColors.danger) {
                     cardPendingDelete = ledger
                 }
             }
@@ -220,7 +221,7 @@ struct CardsView: View {
         .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.1), lineWidth: 0.5)
+                .strokeBorder(AppColors.accentGold.opacity(0.1), lineWidth: 0.5)
         }
     }
 

@@ -63,7 +63,7 @@ struct TransactionListContentView: View {
             .padding(.horizontal, AppSpacing.compact)
             .padding(.vertical, 6)
             .background { Capsule(style: .continuous).fill(.ultraThinMaterial) }
-            .overlay { Capsule(style: .continuous).strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5) }
+            .overlay { Capsule(style: .continuous).strokeBorder(AppColors.accentSlate.opacity(0.08), lineWidth: 0.5) }
         }
         .padding(.horizontal, AppSpacing.xl)
         .padding(.top, AppSpacing.md)
@@ -90,7 +90,7 @@ struct TransactionListContentView: View {
                             Text("Clear")
                                 .font(AppTypography.captionLgMedium)
                         }
-                        .foregroundStyle(AppColors.accent)
+                        .foregroundStyle(AppColors.accentGold)
                     }
                     .buttonStyle(.plain)
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
@@ -104,21 +104,22 @@ struct TransactionListContentView: View {
 
     private func typeChip(label: String, type: TransactionType) -> some View {
         let active = listState.typeFilter == type
+        let color = type == .debit ? AppColors.danger : AppColors.success
         return Button {
             listState.typeFilter = active ? nil : type
         } label: {
             Text(label)
                 .font(active ? AppTypography.captionLgSemibold : AppTypography.captionLg)
-                .foregroundStyle(active ? AppColors.accent : Color.secondary)
+                .foregroundStyle(active ? color : Color.secondary)
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.vertical, 5)
                 .background {
                     Capsule(style: .continuous)
-                        .fill(active ? AppColors.accent.opacity(0.15) : Color.clear)
+                        .fill(active ? color.opacity(0.1) : Color.clear)
                         .overlay(
                             Capsule(style: .continuous)
                                 .strokeBorder(
-                                    active ? AppColors.accent.opacity(0.5) : Color.secondary.opacity(0.2),
+                                    active ? color.opacity(0.2) : AppColors.accentSlate.opacity(0.1),
                                     lineWidth: 0.5
                                 )
                         )
@@ -143,16 +144,16 @@ struct TransactionListContentView: View {
                         .font(AppTypography.iconSm)
                 }
             }
-            .foregroundStyle(active ? AppColors.accent : Color.secondary)
+            .foregroundStyle(active ? AppColors.accentGold : Color.secondary)
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, 5)
             .background {
                 Capsule(style: .continuous)
-                    .fill(active ? AppColors.accent.opacity(0.15) : Color.clear)
+                    .fill(active ? AppColors.accentGold.opacity(0.1) : Color.clear)
                     .overlay(
                         Capsule(style: .continuous)
                             .strokeBorder(
-                                active ? AppColors.accent.opacity(0.5) : Color.secondary.opacity(0.2),
+                                active ? AppColors.accentGold.opacity(0.2) : AppColors.accentSlate.opacity(0.1),
                                 lineWidth: 0.5
                             )
                     )
@@ -182,9 +183,9 @@ struct TransactionListContentView: View {
     }
 
     private func sectionHeader(_ title: String) -> some View {
-        Text(title.uppercased())
-            .labelSmall()
-            .tracking(0.6)
+        Text(title)
+            .font(AppTypography.labelMedium)
+            .tracking(0.5)
             .foregroundStyle(.tertiary)
             .padding(.vertical, AppSpacing.compact)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -299,12 +300,12 @@ struct DateFilterPopover: View {
             HStack {
                 Text(preset.label)
                     .font(active ? AppTypography.bodySmSemibold : AppTypography.bodySm)
-                    .foregroundStyle(active ? AppColors.accent : Color.primary)
+                    .foregroundStyle(active ? AppColors.accentGold : Color.primary)
                 Spacer()
                 if active {
                     Image(systemName: "checkmark")
                         .font(AppTypography.captionSmSemibold)
-                        .foregroundStyle(AppColors.accent)
+                        .foregroundStyle(AppColors.accentGold)
                 }
             }
             .padding(.horizontal, AppSpacing.md)
@@ -352,7 +353,7 @@ struct DateFilterPopover: View {
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.compact)
-        .background(AppColors.accent.opacity(0.05))
+        .background(AppColors.accentGold.opacity(0.05))
     }
 
     private func customDateRow(label: String, date: Binding<Date>) -> some View {

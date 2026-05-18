@@ -32,6 +32,16 @@
     "%lld" : {
 
     },
+    "%lld account%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld account%2$@"
+          }
+        }
+      }
+    },
     "%lld already imported" : {
 
     },
@@ -54,6 +64,9 @@
     "•••• %@" : {
 
     },
+    "6-Month Trend" : {
+
+    },
     "ACCOUNT INFORMATION" : {
 
     },
@@ -70,9 +83,6 @@
           }
         }
       }
-    },
-    "ACCOUNTS" : {
-
     },
     "Add a bank when importing your first statement" : {
       "extractionState" : "manual",
@@ -441,6 +451,9 @@
     "FinanceOS" : {
 
     },
+    "Financial Overview" : {
+
+    },
     "From" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -480,6 +493,9 @@
     "Import To" : {
 
     },
+    "Inflows vs outflows over time" : {
+
+    },
     "INSTITUTIONS" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -491,6 +507,9 @@
         }
       }
     },
+    "Last 6 transactions" : {
+
+    },
     "Link Card or Account" : {
 
     },
@@ -500,13 +519,19 @@
     "Loading…" : {
 
     },
+    "Manage your accounts and balances" : {
+
+    },
     "Merchant" : {
 
     },
     "Month" : {
 
     },
-    "Net This Month" : {
+    "Negative" : {
+
+    },
+    "Net Flow This Month" : {
 
     },
     "New Account" : {
@@ -617,7 +642,13 @@
     "Personal" : {
 
     },
+    "Positive" : {
+
+    },
     "Preferences" : {
+
+    },
+    "Recent Activity" : {
 
     },
     "Reset" : {
@@ -766,6 +797,12 @@
 
     },
     "Upload bank or credit card statements" : {
+
+    },
+    "View All" : {
+
+    },
+    "View all transactions" : {
 
     }
   },
