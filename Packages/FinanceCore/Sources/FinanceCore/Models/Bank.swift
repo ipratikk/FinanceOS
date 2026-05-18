@@ -12,6 +12,40 @@ public enum BankProviderType: String, Codable, Sendable, CaseIterable {
     case bank, neobank, credit
 }
 
+public enum Banks: String, Codable, Sendable, CaseIterable {
+    case hdfc, icici, amex, scapia
+
+    public var displayName: String {
+        switch self {
+        case .hdfc:
+            return "HDFC Bank"
+        case .icici:
+            return "ICICI Bank"
+        case .amex:
+            return "American Express"
+        case .scapia:
+            return "Scapia"
+        }
+    }
+
+    public var providerType: BankProviderType {
+        switch self {
+        case .amex, .scapia:
+            return .credit
+        default:
+            return .bank
+        }
+    }
+
+    public var logoAssetName: String {
+        rawValue.lowercased() + "-logo"
+    }
+
+    public var symbolAssetName: String {
+        rawValue.lowercased() + "-symbol"
+    }
+}
+
 public struct Bank:
     Identifiable,
     Codable,
@@ -20,44 +54,37 @@ public struct Bank:
     PersistableRecord
 {
     public let id: UUID
-
-    public let name: String
-
-    public let providerType: BankProviderType
+    public let bank: Banks
 
     public init(
         id: UUID = UUID(),
-        name: String,
-        providerType: BankProviderType = .bank
+        bank: Banks
     ) {
         self.id = id
-        self.name = name
-        self.providerType = providerType
+        self.bank = bank
     }
 }
 
 public extension Bank {
     enum Columns {
         static let id = Column(CodingKeys.id)
-        static let name = Column(CodingKeys.name)
-        static let providerType = Column(CodingKeys.providerType)
-    }
-}
-
-public extension Bank {
-    var logoAssetName: String? {
-        let lowerName = name.lowercased()
-        if lowerName.contains("hdfc") { return "hdfc-logo" }
-        if lowerName.contains("icici") { return "icici-logo" }
-        if lowerName.contains("amex") { return "amex-logo" }
-        return nil
+        static let bank = Column(CodingKeys.bank)
     }
 
-    var symbolAssetName: String? {
-        let lowerName = name.lowercased()
-        if lowerName.contains("hdfc") { return "hdfc-symbol" }
-        if lowerName.contains("icici") { return "icici-symbol" }
-        return nil
+    var name: String {
+        bank.displayName
+    }
+
+    var providerType: BankProviderType {
+        bank.providerType
+    }
+
+    var logoAssetName: String {
+        bank.logoAssetName
+    }
+
+    var symbolAssetName: String {
+        bank.symbolAssetName
     }
 }
 
@@ -73,12 +100,8 @@ public extension Bank {
             table.column("id", .text)
                 .primaryKey()
 
-            table.column("name", .text)
+            table.column("bank", .text)
                 .notNull()
-
-            table.column("providerType", .text)
-                .notNull()
-                .defaults(to: "bank")
         }
     }
 }
