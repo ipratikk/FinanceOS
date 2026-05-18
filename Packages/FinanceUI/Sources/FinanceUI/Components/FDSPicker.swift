@@ -4,7 +4,6 @@ import SwiftUI
 public struct FDSPicker<V: Hashable>: View {
     @Binding var selection: V?
     let options: [FDSPickerOption]
-    let keyPath: KeyPath<FDSPickerOption, V>
     let variant: FDSPickerVariant
     let placeholder: String
     @State private var isOpen = false
@@ -12,13 +11,11 @@ public struct FDSPicker<V: Hashable>: View {
     public init(
         selection: Binding<V?>,
         options: [FDSPickerOption],
-        keyPath: KeyPath<FDSPickerOption, V>,
         variant: FDSPickerVariant = .symbolText,
         placeholder: String = "Select..."
     ) {
         _selection = selection
         self.options = options
-        self.keyPath = keyPath
         self.variant = variant
         self.placeholder = placeholder
     }
@@ -35,8 +32,8 @@ public struct FDSPicker<V: Hashable>: View {
 
     private var optionsMenu: some View {
         ForEach(options) { option in
-            let isSelected = selection == option[keyPath: keyPath]
-            Button(action: { selection = option[keyPath: keyPath] }) {
+            let isSelected = selection == (option.value as? V)
+            Button(action: { selection = option.value as? V }) {
                 FDSPickerRow(option: option, variant: variant, isSelected: isSelected)
             }
         }
@@ -46,7 +43,7 @@ public struct FDSPicker<V: Hashable>: View {
         FDSGlassSurface(elevation: .chip, cornerRadius: AppRadius.md) {
             HStack(spacing: AppSpacing.compact) {
                 if let selectedValue = selection,
-                   let selectedOption = options.first(where: { $0[keyPath: keyPath] == selectedValue })
+                   let selectedOption = options.first(where: { ($0.value as? V) == selectedValue })
                 {
                     FDSPickerRow(option: selectedOption, variant: variant, isSelected: true)
                         .padding(.vertical, AppSpacing.compact)

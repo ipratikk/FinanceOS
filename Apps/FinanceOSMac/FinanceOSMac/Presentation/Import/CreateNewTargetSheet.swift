@@ -125,7 +125,16 @@ struct CreateNewTargetSheet: View {
     }
 
     private func cardTypeField() -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+        let cardTypeOptions = [
+            FDSPickerOption(value: "visa", title: "Visa", symbol: "creditcard.fill"),
+            FDSPickerOption(value: "mastercard", title: "Mastercard", symbol: "creditcard.fill"),
+            FDSPickerOption(value: "amex", title: "American Express", symbol: "creditcard.fill"),
+            FDSPickerOption(value: "discover", title: "Discover", symbol: "creditcard.fill"),
+            FDSPickerOption(value: "diners", title: "Diners Club", symbol: "creditcard.fill"),
+            FDSPickerOption(value: "other", title: "Other", symbol: "creditcard.fill")
+        ]
+
+        return VStack(alignment: .leading, spacing: AppSpacing.tight) {
             HStack {
                 FDSLabel("Card Network", style: .hint)
                 Spacer()
@@ -135,16 +144,12 @@ struct CreateNewTargetSheet: View {
                 .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
             }
 
-            Picker("", selection: $state.cardType) {
-                Text("Visa").tag("visa")
-                Text("Mastercard").tag("mastercard")
-                Text("American Express").tag("amex")
-                Text("Discover").tag("discover")
-                Text("Diners Club").tag("diners")
-                Text("Other").tag("other")
-            }
-            .pickerStyle(.menu)
-            .labelsHidden()
+            FDSPicker(
+                selection: $state.cardType,
+                options: cardTypeOptions,
+                variant: .symbolOnly,
+                placeholder: "Select network"
+            )
 
             Button(action: { showCardSelection = true }) {
                 HStack(spacing: AppSpacing.compact) {
@@ -164,22 +169,35 @@ struct CreateNewTargetSheet: View {
     }
 
     private func accountTypeField() -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+        let accountTypeOptions = [
+            FDSPickerOption(value: "savings", title: "Savings"),
+            FDSPickerOption(value: "checking", title: "Checking"),
+            FDSPickerOption(value: "money_market", title: "Money Market"),
+            FDSPickerOption(value: "other", title: "Other")
+        ]
+
+        return VStack(alignment: .leading, spacing: AppSpacing.tight) {
             FDSLabel("Account Type", style: .hint)
 
-            Picker("", selection: $state.accountType) {
-                Text("Savings").tag("savings")
-                Text("Checking").tag("checking")
-                Text("Money Market").tag("money_market")
-                Text("Other").tag("other")
-            }
-            .pickerStyle(.menu)
-            .labelsHidden()
+            FDSPicker(
+                selection: $state.accountType,
+                options: accountTypeOptions,
+                variant: .textOnly,
+                placeholder: "Select type"
+            )
         }
     }
 
     private func bankField() -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
+        let bankOptions = banks.map { bank in
+            FDSPickerOption(
+                value: bank.id,
+                title: bank.name,
+                symbol: "building.columns.fill"
+            )
+        }
+
+        return VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 FDSLabel("Current Bank", style: .hint)
 
@@ -204,15 +222,12 @@ struct CreateNewTargetSheet: View {
                         style: .hint
                     )
 
-                    Picker("Bank", selection: $state.selectedBankID) {
-                        Text("Select Bank").tag(UUID?.none)
-                        ForEach(banks) { bank in
-                            Text(bank.name).tag(UUID?(bank.id))
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    FDSPicker(
+                        selection: $state.selectedBankID,
+                        options: bankOptions,
+                        variant: .textOnly,
+                        placeholder: "Select bank"
+                    )
                 }
             }
         }
