@@ -123,7 +123,7 @@ struct TransactionListContentView: View {
 
     private func sectionHeader(_ title: String) -> some View {
         Text(title.uppercased())
-            .captionSmall()
+            .labelSmall()
             .tracking(0.6)
             .foregroundStyle(.tertiary)
             .padding(.vertical, AppSpacing.compact)

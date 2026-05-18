@@ -88,7 +88,7 @@ struct CardsView: View {
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("CARDS")
-                .captionSmall()
+                .labelSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Credit Cards")
@@ -142,7 +142,7 @@ struct CardsView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .bodySmall()
+                    .caption()
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 

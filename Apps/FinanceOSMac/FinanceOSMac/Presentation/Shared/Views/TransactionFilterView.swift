@@ -45,7 +45,7 @@ struct TransactionFilterView: View {
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .captionSmall()
+                    .labelSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))

@@ -73,7 +73,7 @@ struct BankEditView: View {
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .captionSmall()
+                    .labelSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
@@ -119,7 +119,7 @@ struct BankEditView: View {
                 Image(systemName: "trash.fill")
                     .font(.system(size: 12, weight: .semibold))
                 Text("Delete Bank")
-                    .bodySmall()
+                    .caption()
                 Spacer()
             }
             .foregroundStyle(AppColors.debit)

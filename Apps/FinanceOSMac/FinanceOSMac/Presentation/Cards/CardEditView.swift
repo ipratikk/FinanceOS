@@ -91,7 +91,7 @@ struct CardEditView: View {
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .captionSmall()
+                    .labelSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
@@ -137,7 +137,7 @@ struct CardEditView: View {
                 Button(action: { showCardSelection = true }) {
                     HStack(spacing: AppSpacing.compact) {
                         Image(systemName: "creditcard.fill")
-                            .captionSmall()
+                            .labelSmall()
                         Text("Browse Card Database")
                             .labelSmall()
                         Spacer()
@@ -189,7 +189,7 @@ struct CardEditView: View {
                 Image(systemName: "trash.fill")
                     .font(.system(size: 12, weight: .semibold))
                 Text("Delete Card")
-                    .bodySmall()
+                    .caption()
                 Spacer()
             }
             .foregroundStyle(AppColors.debit)

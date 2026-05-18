@@ -59,7 +59,7 @@ struct BanksView: View {
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("INSTITUTIONS")
-                .captionSmall()
+                .labelSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Banks")
@@ -77,7 +77,7 @@ struct BanksView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(bank.name)
-                    .bodySmall()
+                    .caption()
                 Text(bank.providerType.rawValue.capitalized)
                     .font(.system(size: 11, weight: .regular))
                     .foregroundStyle(.tertiary)

@@ -71,11 +71,11 @@ struct ImportView: View {
                                         .controlSize(.small)
 
                                     if viewModel.totalFilesToParse > 1 {
-                                        Text(
-                                            "Parsing file \(viewModel.currentFileIndex + 1) of \(viewModel.totalFilesToParse)..."
-                                        )
-                                        .labelSmall()
-                                        .foregroundColor(AppColors.textTertiary)
+                                        let current = viewModel.currentFileIndex + 1
+                                        let total = viewModel.totalFilesToParse
+                                        Text("Parsing file \(current) of \(total)...")
+                                            .labelSmall()
+                                            .foregroundColor(AppColors.textTertiary)
                                     } else {
                                         FDSLabel("Parsing statement...", style: .hint)
                                     }
@@ -139,7 +139,7 @@ struct ImportView: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("IMPORT")
-                .captionSmall()
+                .labelSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Statements")
@@ -176,7 +176,7 @@ struct ImportView: View {
                 .foregroundStyle(AppColors.credit)
             Text("Imported \(result.inserted) transaction\(result.inserted == 1 ? "" : "s")" +
                 (result.skipped > 0 ? " · \(result.skipped) skipped" : ""))
-                .bodySmall()
+                .caption()
                 .foregroundStyle(.primary)
             Spacer()
             Button(action: { viewModel.lastImportResult = nil }) {

@@ -65,7 +65,7 @@ struct DashboardView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text(currentMonth)
-                .captionSmall()
+                .labelSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Dashboard")
@@ -78,7 +78,7 @@ struct DashboardView: View {
         let net = totals.totalCredit - totals.totalDebit
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("Net This Month")
-                .captionSmall()
+                .labelSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
 

@@ -41,7 +41,7 @@ struct TransactionDetailView: View {
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .captionSmall()
+                    .labelSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
@@ -95,7 +95,7 @@ struct TransactionDetailView: View {
                 .foregroundStyle(.tertiary)
             Spacer()
             Text(value)
-                .bodySmall()
+                .caption()
                 .foregroundStyle(.primary)
                 .multilineTextAlignment(.trailing)
         }

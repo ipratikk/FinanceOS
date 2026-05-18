@@ -85,7 +85,7 @@ struct AccountsView: View {
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("ACCOUNTS")
-                .captionSmall()
+                .labelSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Bank Accounts")
@@ -138,7 +138,7 @@ struct AccountsView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .bodySmall()
+                    .caption()
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
@@ -156,7 +156,7 @@ struct AccountsView: View {
             Spacer()
 
             Image(systemName: "chevron.right")
-                .captionSmall()
+                .labelSmall()
                 .foregroundStyle(.tertiary)
         }
         .padding(.horizontal, AppSpacing.md)

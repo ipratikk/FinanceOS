@@ -61,7 +61,7 @@ struct AnalyticsView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("ANALYTICS")
-                .captionSmall()
+                .labelSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Spending Insights")
