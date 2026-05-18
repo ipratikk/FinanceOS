@@ -23,7 +23,10 @@ struct SheetView: View {
                 )
                 CardEditView(card: ledger, context: context)
             case let .bankEdit(bank):
-                let context = BankEditContext(repository: appContainer.bankRepository)
+                let context = BankEditContext(
+                    repository: appContainer.bankRepository,
+                    ledgerRepository: appContainer.ledgerRepository
+                )
                 BankEditView(bank: bank, context: context)
             default:
                 EmptyView()

@@ -5,31 +5,33 @@ import SwiftUI
 @MainActor
 final class BankEditContext {
     let repository: any BankRepository
-    var deleteError: String?
+    let ledgerRepository: any LedgerRepository
+    var linkedLedgers: [Ledger] = []
+    var error: String?
 
-    init(repository: any BankRepository) {
+    init(repository: any BankRepository, ledgerRepository: any LedgerRepository) {
         self.repository = repository
+        self.ledgerRepository = ledgerRepository
     }
 
-    func updateBank(_ bank: Bank) async {
+    func loadLedgers(bankId: UUID) async {
         do {
-            try await repository.update(bank)
-            deleteError = nil
+            linkedLedgers = try await ledgerRepository.fetchLedgers(bankId: bankId)
         } catch {
-            deleteError = error.localizedDescription
+            self.error = error.localizedDescription
         }
     }
 
     func deleteBank(id: UUID) async {
         do {
             try await repository.delete(id: id)
-            deleteError = nil
+            error = nil
         } catch {
-            deleteError = error.localizedDescription
+            self.error = error.localizedDescription
         }
     }
 
     func clearError() {
-        deleteError = nil
+        error = nil
     }
 }

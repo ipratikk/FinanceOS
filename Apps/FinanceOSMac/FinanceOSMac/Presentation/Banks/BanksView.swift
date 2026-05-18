@@ -5,6 +5,8 @@ import SwiftUI
 struct BanksView: View {
     @State private var viewModel: BanksViewModel
     @Environment(AppNavigator.self) private var navigator
+    @State private var bankToDelete: Bank?
+    @State private var showDeleteConfirm = false
 
     init(viewModel: BanksViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -22,8 +24,16 @@ struct BanksView: View {
         }
         .background(AppColors.base)
         .navigationTitle("Banks")
-        .task {
-            await viewModel.loadBanks()
+        .task { await viewModel.loadBanks() }
+        .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                if let bank = bankToDelete {
+                    Task { await viewModel.deleteBank(id: bank.id) }
+                }
+            }
+        } message: {
+            Text("This will delete this bank and all associated cards, accounts, and transactions.")
         }
     }
 
@@ -67,16 +77,18 @@ struct BanksView: View {
 
                 Spacer()
 
-                Menu {
-                    Button("Edit") { navigator.present(.bankEdit(bank)) }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                        .frame(width: 32, height: 32)
+                HStack(spacing: AppSpacing.compact) {
+                    iconButton("plus", color: AppColors.accent) {
+                        navigator.present(.bankEdit(bank))
+                    }
+                    iconButton("pencil", color: .secondary) {
+                        navigator.present(.bankEdit(bank))
+                    }
+                    iconButton("trash", color: AppColors.debit) {
+                        bankToDelete = bank
+                        showDeleteConfirm = true
+                    }
                 }
-                .menuStyle(.borderlessButton)
-                .menuIndicator(.hidden)
             }
 
             if !ledgers.isEmpty {
@@ -102,6 +114,21 @@ struct BanksView: View {
                         .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
                 }
         }
+    }
+
+    private func iconButton(
+        _ symbol: String,
+        color: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 28, height: 28)
+                .background(Circle().fill(color.opacity(0.1)))
+        }
+        .buttonStyle(.plain)
     }
 
     private var emptyState: some View {

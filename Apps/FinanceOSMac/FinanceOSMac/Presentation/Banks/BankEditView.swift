@@ -5,15 +5,9 @@ import SwiftUI
 struct BankEditView: View {
     let bank: Bank
     let context: BankEditContext
-    @State private var selectedBank: Banks?
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteConfirm = false
-
-    init(bank: Bank, context: BankEditContext) {
-        self.bank = bank
-        self.context = context
-        _selectedBank = State(initialValue: bank.bank)
-    }
+    @State private var showLinkSheet = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,53 +16,60 @@ struct BankEditView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                    bankIdentitySection
+                    linkedLedgersSection
                     deleteSection
                 }
                 .padding(AppSpacing.xl)
             }
-
-            Divider().opacity(0.3)
-            footer
         }
         .frame(width: 480, height: 520)
         .background(AppColors.base)
+        .task { await context.loadLedgers(bankId: bank.id) }
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
                     await context.deleteBank(id: bank.id)
-                    if context.deleteError == nil {
-                        dismiss()
-                    }
+                    if context.error == nil { dismiss() }
                 }
             }
         } message: {
             Text("This will delete this bank and all associated cards, accounts, and transactions.")
         }
-        .alert("Delete Failed", isPresented: Binding(
-            get: { context.deleteError != nil },
+        .alert("Error", isPresented: Binding(
+            get: { context.error != nil },
             set: { if !$0 { context.clearError() } }
         )) {
             Button("OK") { context.clearError() }
         } message: {
-            if let error = context.deleteError {
-                Text(error)
-            }
+            if let error = context.error { Text(error) }
         }
     }
 
     private var header: some View {
         HStack(spacing: AppSpacing.compact) {
-            FDSMerchantAvatar(name: bank.name, symbol: "building.columns.fill", size: 32)
+            FDSImage(
+                imageName: bank.symbolAssetName,
+                fallbackSymbol: "building.columns.fill",
+                height: 32,
+                width: 32
+            )
             VStack(alignment: .leading, spacing: 0) {
-                Text("Edit Bank")
-                    .bodyMedium()
-                Text(bank.name)
+                Text(bank.name).bodyMedium()
+                Text(bank.providerType.rawValue.capitalized)
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
             }
             Spacer()
+            Button(action: { showLinkSheet = true }) {
+                Image(systemName: "plus")
+                    .labelSmall()
+                    .foregroundStyle(AppColors.accent)
+                    .frame(width: 22, height: 22)
+                    .background(Circle().fill(AppColors.accent.opacity(0.12)))
+            }
+            .buttonStyle(.plain)
+            .help("Link Card or Account")
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
                     .labelSmall()
@@ -81,25 +82,65 @@ struct BankEditView: View {
         .padding(AppSpacing.md)
     }
 
-    private var bankIdentitySection: some View {
+    private var linkedLedgersSection: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader("Bank Information")
+            let cards = context.linkedLedgers.filter { $0.kind == .creditCard }
+            let accounts = context.linkedLedgers.filter { $0.kind == .bankAccount }
 
-            field("Bank") {
-                let bankOptions = Banks.allCases.map { bankCase in
-                    FDSPickerOption(
-                        id: bankCase.rawValue,
-                        value: bankCase,
-                        title: bankCase.displayName,
-                        imageName: bankCase.symbolAssetName
-                    )
+            if !cards.isEmpty {
+                FDSSectionHeader("Cards")
+                ledgerList(cards, symbol: "creditcard.fill")
+            }
+
+            if !accounts.isEmpty {
+                FDSSectionHeader("Accounts")
+                ledgerList(accounts, symbol: "banknote.fill")
+            }
+
+            if context.linkedLedgers.isEmpty {
+                VStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "creditcard")
+                        .font(.system(size: 32, weight: .light))
+                        .foregroundStyle(.tertiary)
+                    Text("No linked cards or accounts")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.tertiary)
+                    Text("Tap + to link a card or account")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.quaternary)
                 }
-                FDSPicker(
-                    selection: $selectedBank,
-                    options: bankOptions,
-                    variant: .symbolText,
-                    placeholder: "Select bank"
-                )
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, AppSpacing.xl)
+            }
+        }
+    }
+
+    private func ledgerList(_ ledgers: [Ledger], symbol: String) -> some View {
+        VStack(spacing: AppSpacing.compact) {
+            ForEach(ledgers) { ledger in
+                HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: symbol)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(ledger.displayName).bodyMedium()
+                        if !ledger.last4.isEmpty {
+                            Text("•••• \(ledger.last4)")
+                                .font(.system(size: 11))
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(AppSpacing.md)
+                .background {
+                    RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                                .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                        }
+                }
             }
         }
     }
@@ -122,36 +163,5 @@ struct BankEditView: View {
             }
         }
         .buttonStyle(.plain)
-    }
-
-    private var footer: some View {
-        HStack(spacing: AppSpacing.compact) {
-            FDSLiquidButton("Cancel", variant: .subtle) { dismiss() }
-            Spacer()
-            FDSLiquidButton("Save", variant: .primary) {
-                guard let bankSelection = selectedBank else { return }
-                Task {
-                    let updated = Bank(id: bank.id, bank: bankSelection)
-                    await context.updateBank(updated)
-                    if context.deleteError == nil {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .padding(AppSpacing.md)
-    }
-
-    private func field(
-        _ label: String,
-        @ViewBuilder content: () -> some View
-    ) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
-            content()
-        }
     }
 }
