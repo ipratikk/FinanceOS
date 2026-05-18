@@ -32,7 +32,7 @@ public struct FDSListRow<Trailing: View>: View {
             if let icon {
                 icon
                     .frame(width: 32, height: 32)
-                    .foregroundColor(AppColors.accentBlue)
+                    .foregroundColor(AppColors.accentSlate)
             }
 
             VStack(alignment: .leading, spacing: 2) {
@@ -53,10 +53,10 @@ public struct FDSListRow<Trailing: View>: View {
         }
         .padding(12)
         .background(.ultraThinMaterial)
-        .background(AppColors.surface.opacity(0.5))
+        .background(AppColors.surface.opacity(0.4))
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(AppColors.accentCyan.opacity(isSelected ? 0.2 : 0.1), lineWidth: 0.5)
+                .strokeBorder(AppColors.accentGold.opacity(isSelected ? 0.15 : 0.06), lineWidth: 0.5)
         )
         .cornerRadius(8)
         .contentShape(Rectangle())

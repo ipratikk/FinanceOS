@@ -19,7 +19,7 @@ public struct FDSEmptyState: View {
         VStack(spacing: AppSpacing.md) {
             Image(systemName: symbol)
                 .font(.system(size: 48, weight: .light))
-                .foregroundStyle(AppColors.accentCyan.opacity(0.5))
+                .foregroundStyle(AppColors.accentSlate.opacity(0.4))
                 .symbolRenderingMode(.hierarchical)
 
             VStack(spacing: AppSpacing.tight) {

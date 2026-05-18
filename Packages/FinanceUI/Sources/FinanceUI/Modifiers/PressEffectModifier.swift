@@ -6,11 +6,11 @@ public struct PressEffectModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .scaleEffect(isPressed ? 0.98 : 1.0)
-            .opacity(isPressed ? 0.9 : 1.0)
+            .scaleEffect(isPressed ? 0.97 : 1.0)
+            .opacity(isPressed ? 0.85 : 1.0)
             .shadow(
-                color: AppColors.accentCyan.opacity(isPressed ? 0.2 : 0),
-                radius: isPressed ? 12 : 0,
+                color: AppColors.accentGold.opacity(isPressed ? 0.1 : 0),
+                radius: isPressed ? 6 : 0,
                 x: 0,
                 y: 0
             )

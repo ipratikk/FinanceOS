@@ -6,27 +6,17 @@ public struct CardStyleModifier: ViewModifier {
         content
             .padding(AppSpacing.md)
             .background(.ultraThinMaterial)
-            .background(AppColors.surface.opacity(0.6))
+            .background(AppColors.surface.opacity(0.5))
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.md)
-                    .stroke(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                AppColors.accentCyan.opacity(0.2),
-                                AppColors.accentCyan.opacity(0.1)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1
-                    )
+                    .stroke(AppColors.accentGold.opacity(0.12), lineWidth: 0.5)
             )
             .cornerRadius(AppRadius.md)
             .shadow(
-                color: AppColors.accentCyan.opacity(0.1),
-                radius: 20,
+                color: Color.black.opacity(0.2),
+                radius: 12,
                 x: 0,
-                y: 10
+                y: 4
             )
     }
 }

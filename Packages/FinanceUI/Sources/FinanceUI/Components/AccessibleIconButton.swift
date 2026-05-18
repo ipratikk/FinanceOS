@@ -45,7 +45,7 @@ public struct AccessibleIconButton: View {
 
     private var foregroundColor: Color {
         switch style {
-        case .primary: return AppColors.accentBlue
+        case .primary: return AppColors.accentGold
         case .secondary: return AppColors.textSecondary
         case .destructive: return AppColors.danger
         }

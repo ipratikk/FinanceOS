@@ -20,28 +20,35 @@ public enum AppColors {
     public static let border = Color(red: 0.165, green: 0.165, blue: 0.180) // #2A2A2E
     public static let borderAccent = Color(red: 0.227, green: 0.227, blue: 0.251) // #3A3A40
 
-    // MARK: - Neon Accent Colors (cyberpunk fintech aesthetic)
+    // MARK: - Primary Accents (refined luxury fintech)
 
-    public static let accentCyan = Color(red: 0.0, green: 0.941, blue: 1.0) // #00F0FF — primary action, data highlight
-    public static let accentBlue = Color(red: 0.2, green: 0.6, blue: 1.0) // #3399FF — secondary, charts
-    public static let accentPurple = Color(red: 0.8, green: 0.2, blue: 1.0) // #CC33FF — tertiary, badges
-    public static let accentPink = Color(red: 1.0, green: 0.106, blue: 0.616) // #FF1B9D — alerts, warnings
-    public static let accentLime = Color(red: 0.4, green: 1.0, blue: 0.0) // #66FF00 — positive, gains
-    public static let accentOrange = Color(red: 1.0, green: 0.4, blue: 0.0) // #FF6600 — negative, losses
+    public static let accentGold = Color(red: 0.749, green: 0.616, blue: 0.341) // #BF9D57 — primary action, luxury
+    public static let accentSlate = Color(red: 0.431, green: 0.498, blue: 0.616) // #6E7F9D — secondary, professional
+    public static let accentIce = Color(red: 0.635, green: 0.816, blue: 0.886) // #A2D0E2 — data, clean
+    public static let accentMuted = Color(red: 0.451, green: 0.451, blue: 0.498) // #73737F — tertiary, subtle
 
-    // MARK: - Semantic colors
+    // MARK: - Semantic Colors (refined, not bright)
 
-    public static let accent = accentBlue // Default primary accent
-    public static let success = Color(red: 0.0, green: 0.847, blue: 0.4) // #00D966 — positive states
-    public static let danger = Color(red: 1.0, green: 0.2, blue: 0.2) // #FF3333 — destructive actions
-    public static let info = Color(red: 0.0, green: 0.706, blue: 1.0) // #00B4FF — information
+    public static let accent = accentGold // Default primary accent
+    public static let success = Color(red: 0.384, green: 0.671, blue: 0.522) // #62AB85 — positive, muted green
+    public static let danger = Color(red: 0.761, green: 0.408, blue: 0.373) // #C26A5F — destructive, warm red
+    public static let info = accentSlate // Informational color
+    public static let warning = Color(red: 0.796, green: 0.604, blue: 0.325) // #CB9A53 — caution, warm tone
 
     // MARK: - Legacy semantic colors (mapped for backwards compatibility)
 
     public static let credit = success // Positive transaction
-    public static let debit = accentOrange // Negative transaction
-    public static let warning = Color(red: 1.0, green: 0.722, blue: 0.0) // #FFB800 — caution states
-    public static let purple = accentPurple
+    public static let debit = danger // Negative transaction
+    public static let purple = accentSlate // Fallback color
+
+    // MARK: - Deprecated neon colors (removed for classy aesthetic)
+
+    public static let accentCyan = accentIce // Replaced
+    public static let accentBlue = accentSlate // Replaced
+    public static let accentPurple = accentMuted // Replaced
+    public static let accentPink = danger // Replaced
+    public static let accentLime = success // Replaced
+    public static let accentOrange = warning // Replaced
 
     // MARK: - Text
 

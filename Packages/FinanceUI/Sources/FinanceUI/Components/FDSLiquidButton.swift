@@ -72,41 +72,32 @@ public struct FDSLiquidButton: View {
         switch variant {
         case .primary:
             RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            AppColors.accentBlue,
-                            AppColors.accentCyan
-                        ]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .opacity(isHovered ? 1.0 : 0.9)
+                .fill(AppColors.accentGold)
+                .opacity(isHovered ? 0.95 : 0.85)
         case .secondary:
             RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
                 .fill(.ultraThinMaterial)
                 .overlay {
                     RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                        .fill(AppColors.accentCyan.opacity(isHovered ? 0.1 : 0.0))
+                        .fill(AppColors.accentGold.opacity(isHovered ? 0.08 : 0.0))
                 }
         case .subtle:
             RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .fill(Color.white.opacity(isHovered ? 0.06 : 0.0))
+                .fill(Color.white.opacity(isHovered ? 0.04 : 0.0))
         case .destructive:
             RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .fill(AppColors.danger.opacity(isHovered ? 0.25 : 0.15))
+                .fill(AppColors.danger.opacity(isHovered ? 0.2 : 0.12))
         }
     }
 
     private var stroke: Color {
         switch variant {
         case .primary:
-            AppColors.accentCyan.opacity(0.3)
+            AppColors.accentGold.opacity(0.2)
         case .destructive:
-            AppColors.danger.opacity(0.2)
+            AppColors.danger.opacity(0.15)
         case .secondary:
-            AppColors.accentCyan.opacity(0.12)
+            AppColors.accentGold.opacity(0.1)
         case .subtle:
             .clear
         }
@@ -115,7 +106,7 @@ public struct FDSLiquidButton: View {
     private var foreground: Color {
         switch variant {
         case .primary:
-            .black
+            Color(red: 0.06, green: 0.06, blue: 0.07) // Dark text on gold
         case .secondary, .subtle:
             AppColors.textPrimary
         case .destructive:

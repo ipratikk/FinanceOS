@@ -7,11 +7,11 @@ public struct HoverEffectModifier: ViewModifier {
     public func body(content: Content) -> some View {
         #if os(macOS)
         content
-            .scaleEffect(isHovered ? 1.02 : 1.0)
-            .background(AppColors.glass.opacity(isHovered ? 1.0 : 0))
+            .scaleEffect(isHovered ? 1.01 : 1.0)
+            .background(AppColors.glass.opacity(isHovered ? 0.5 : 0))
             .shadow(
-                color: AppColors.accentCyan.opacity(isHovered ? 0.15 : 0),
-                radius: isHovered ? 16 : 0,
+                color: AppColors.accentGold.opacity(isHovered ? 0.08 : 0),
+                radius: isHovered ? 8 : 0,
                 x: 0,
                 y: 0
             )
