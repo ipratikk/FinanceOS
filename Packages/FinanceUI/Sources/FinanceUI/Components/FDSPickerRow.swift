@@ -59,6 +59,7 @@ struct FDSPickerRow: View {
         .padding(.vertical, AppSpacing.compact)
         .padding(.horizontal, AppSpacing.md)
         .background(isSelected ? AppColors.accent.opacity(0.08) : .clear)
+        .clipped()
     }
 
     private var logoOnlyVariant: some View {
@@ -81,6 +82,7 @@ struct FDSPickerRow: View {
         .frame(maxWidth: .infinity)
         .padding(AppSpacing.md)
         .background(isSelected ? AppColors.accent.opacity(0.08) : .clear)
+        .clipped()
     }
 
     private var textOnlyVariant: some View {
@@ -108,6 +110,7 @@ struct FDSPickerRow: View {
         .padding(.vertical, AppSpacing.compact)
         .padding(.horizontal, AppSpacing.md)
         .background(isSelected ? AppColors.accent.opacity(0.08) : .clear)
+        .clipped()
     }
 }
 
