@@ -200,8 +200,8 @@ struct CreateNewTargetSheet: View {
                 id: bank.id,
                 value: bank.id,
                 title: bank.name,
-                symbol: bank.logoAssetName == nil ? "building.columns.fill" : nil,
-                imageName: bank.logoAssetName
+                symbol: "building.columns.fill",
+                imageName: bank.symbolAssetName
             )
         }
 

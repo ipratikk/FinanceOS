@@ -308,8 +308,8 @@
     "hash": "0efa242597e38e2323d6581fc455b4be"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Bank.swift": {
-    "mtime": 1778788921.9198213,
-    "hash": "bdb5b7b33cc8df46ca81b6af494eabac"
+    "mtime": 1779079281.099532,
+    "hash": "590b6f0c1283b6b98d5bacfe905d6715"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Transaction.swift": {
     "mtime": 1778965523.9223778,
@@ -1108,8 +1108,8 @@
     "hash": "dcc72547e970378e7ee286942a14684d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardEditView.swift": {
-    "mtime": 1779077788.315011,
-    "hash": "a0f654067dadccee60a7cf4b1d1bfd4a"
+    "mtime": 1779079296.566234,
+    "hash": "9c4314583b0ad9d7c2369ef9c7989138"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift": {
     "mtime": 1779077788.3153,
@@ -1236,8 +1236,8 @@
     "hash": "2c39b5acb6512961766e951cda0264d4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/CreateNewTargetSheet.swift": {
-    "mtime": 1779078632.613727,
-    "hash": "3ab8c14787261e75ff26ac87512cbb0e"
+    "mtime": 1779079292.9845698,
+    "hash": "f9e5fec9261c8d2ab0b1b54e16068fe6"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelTargetCreation.swift": {
     "mtime": 1779077788.3207853,
@@ -1296,8 +1296,8 @@
     "hash": "9775e099c18a6c4bab48d42f363cbc91"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Banks/BanksView.swift": {
-    "mtime": 1779077788.3241215,
-    "hash": "818e188f1b7014cc11ab67cded1e7ffd"
+    "mtime": 1779079286.7356918,
+    "hash": "e478dcb81e685e4221ed52d4f0f493be"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Banks/BankEditContext.swift": {
     "mtime": 1779077788.3243172,

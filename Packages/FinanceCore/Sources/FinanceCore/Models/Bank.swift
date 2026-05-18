@@ -52,6 +52,13 @@ public extension Bank {
         if lowerName.contains("amex") { return "amex-logo" }
         return nil
     }
+
+    var symbolAssetName: String? {
+        let lowerName = name.lowercased()
+        if lowerName.contains("hdfc") { return "hdfc-symbol" }
+        if lowerName.contains("icici") { return "icici-symbol" }
+        return nil
+    }
 }
 
 public extension Bank {
