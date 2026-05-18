@@ -54,6 +54,13 @@ public enum AppTypography {
 
     public static let amountLarge = Font.system(size: 36, weight: .bold, design: .default)
     public static let amountMedium = Font.system(size: 28, weight: .bold, design: .default)
+    public static let amountSmall = Font.system(size: 28, weight: .bold, design: .default)
+
+    // MARK: - Heading (Large Display)
+
+    public static let headingXL = Font.system(size: 48, weight: .semibold, design: .default)
+    public static let headingLg = Font.system(size: 44, weight: .bold, design: .default)
+    public static let headingMd = Font.system(size: 40, weight: .semibold, design: .default)
 
     // MARK: - Monospace (Debug, Technical)
 

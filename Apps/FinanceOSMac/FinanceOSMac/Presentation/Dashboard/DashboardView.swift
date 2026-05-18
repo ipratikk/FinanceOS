@@ -48,7 +48,7 @@ struct DashboardView: View {
                 ProgressView()
                     .controlSize(.small)
                 Text("Loading…")
-                    .font(.system(size: 11))
+                    .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -69,7 +69,7 @@ struct DashboardView: View {
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Dashboard")
-                .font(.system(size: 28, weight: .bold, design: .default))
+                .font(AppTypography.amountMedium)
                 .foregroundStyle(.primary)
         }
     }
@@ -84,13 +84,13 @@ struct DashboardView: View {
 
             HStack(alignment: .firstTextBaseline, spacing: AppSpacing.compact) {
                 Text(formatAmount(net))
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .font(AppTypography.headingLg)
                     .monospacedDigit()
                     .foregroundStyle(.primary)
                     .contentTransition(.numericText())
 
                 Image(systemName: net >= 0 ? "arrow.up.right" : "arrow.down.right")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(AppTypography.headlineMd)
                     .foregroundStyle(net >= 0 ? AppColors.credit : AppColors.debit)
             }
         }
