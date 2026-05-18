@@ -126,11 +126,11 @@ struct CreateNewTargetSheet: View {
 
     private func cardTypeField() -> some View {
         let cardTypeOptions = [
-            FDSPickerOption(id: "visa", value: "visa", title: "Visa", symbol: "creditcard.fill"),
-            FDSPickerOption(id: "mastercard", value: "mastercard", title: "Mastercard", symbol: "creditcard.fill"),
-            FDSPickerOption(id: "amex", value: "amex", title: "American Express", symbol: "creditcard.fill"),
+            FDSPickerOption(id: "visa", value: "visa", title: "Visa", imageName: "visa"),
+            FDSPickerOption(id: "mastercard", value: "mastercard", title: "Mastercard", imageName: "mastercard"),
+            FDSPickerOption(id: "amex", value: "amex", title: "American Express", imageName: "amex-symbol"),
             FDSPickerOption(id: "discover", value: "discover", title: "Discover", symbol: "creditcard.fill"),
-            FDSPickerOption(id: "diners", value: "diners", title: "Diners Club", symbol: "creditcard.fill"),
+            FDSPickerOption(id: "diners", value: "diners", title: "Diners Club", imageName: "diners"),
             FDSPickerOption(id: "other", value: "other", title: "Other", symbol: "creditcard.fill")
         ]
 
@@ -196,11 +196,19 @@ struct CreateNewTargetSheet: View {
 
     private func bankField() -> some View {
         let bankOptions = banks.map { bank in
-            FDSPickerOption(
+            let logoName: String? = {
+                let lowerName = bank.name.lowercased()
+                if lowerName.contains("hdfc") { return "hdfc-logo" }
+                if lowerName.contains("icici") { return "icici-logo" }
+                if lowerName.contains("amex") { return "amex-logo" }
+                return nil
+            }()
+            return FDSPickerOption(
                 id: bank.id,
                 value: bank.id,
                 title: bank.name,
-                symbol: "building.columns.fill"
+                symbol: logoName == nil ? "building.columns.fill" : nil,
+                imageName: logoName
             )
         }
 
