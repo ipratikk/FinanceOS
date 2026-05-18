@@ -5,25 +5,35 @@ import SwiftUI
 struct CardEditView: View {
     let card: Ledger
     let context: CardEditContext
-    @State private var displayName: String
     @State private var last4: String
     @State private var cardType: String
     @State private var nickname: String
     @State private var bankId: UUID
     @State private var linkedLedgerId: UUID?
+    @State private var cardProduct: String?
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteConfirm = false
     @State private var showCardSelection = false
 
+    private var selectedCatalogCard: CardMetadata? {
+        guard let cardProduct else { return nil }
+        return CardDatabase.supportedCards().first { $0.id == cardProduct }
+    }
+
+    private var bankName: String? {
+        guard let bank = context.banks.first(where: { $0.id == bankId }) else { return nil }
+        return bank.name
+    }
+
     init(card: Ledger, context: CardEditContext) {
         self.card = card
         self.context = context
-        _displayName = State(initialValue: card.displayName)
         _last4 = State(initialValue: card.last4)
         _cardType = State(initialValue: card.cardType ?? "other")
-        _nickname = State(initialValue: card.nickname)
+        _nickname = State(initialValue: card.nickname.isEmpty ? card.displayName : card.nickname)
         _bankId = State(initialValue: card.bankId)
         _linkedLedgerId = State(initialValue: card.linkedLedgerId)
+        _cardProduct = State(initialValue: card.cardProduct)
     }
 
     var body: some View {
@@ -70,6 +80,7 @@ struct CardEditView: View {
             CardSelectionView(
                 onSelect: { selected in
                     cardType = selected.cardType
+                    cardProduct = selected.id
                     showCardSelection = false
                 },
                 onDismiss: { showCardSelection = false }
@@ -97,6 +108,8 @@ struct CardEditView: View {
                     .background(Circle().fill(.ultraThinMaterial))
             }
             .buttonStyle(.plain)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
         }
         .padding(AppSpacing.md)
     }
@@ -109,13 +122,18 @@ struct CardEditView: View {
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
-                field("Card Name") { FDSTextInput("Name", text: $displayName) }
-                field("Last 4 Digits") {
-                    FDSTextInput("Last 4", text: $last4)
-                        .onChange(of: last4) { _, value in
-                            if value.count > 4 { last4 = String(value.prefix(4)) }
-                        }
-                }
+                catalogCardWidget
+
+                field("Nickname") { FDSTextInput("e.g. Travel Card", text: $nickname) }
+
+                FDSCreditCardDisplay(
+                    cardName: selectedCatalogCard?.name,
+                    bankName: bankName,
+                    cardNetwork: cardType,
+                    encryptedCardNumber: .constant(""),
+                    last4: $last4
+                )
+
                 fieldWithAction(
                     "Card Network",
                     actionLabel: "Auto-detect",
@@ -137,27 +155,60 @@ struct CardEditView: View {
                             set: { if let value = $0 { cardType = value } }
                         ),
                         options: cardTypeOptions,
-                        variant: .logoOnly,
+                        variant: .symbolText,
                         placeholder: "Select network"
                     )
                 }
+            }
+        }
+    }
 
-                Button(action: { showCardSelection = true }) {
-                    HStack(spacing: AppSpacing.compact) {
-                        Image(systemName: "creditcard.fill")
-                            .labelSmall()
-                        Text("Browse Card Database")
-                            .labelSmall()
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .semibold))
-                    }
+    @ViewBuilder private var catalogCardWidget: some View {
+        if let catalogCard = selectedCatalogCard {
+            HStack(spacing: AppSpacing.md) {
+                catalogArtwork(catalogCard)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(catalogCard.name)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                    catalogNetworkBadge(catalogCard.cardType)
+                }
+                Spacer(minLength: AppSpacing.compact)
+                Button("Change") { showCardSelection = true }
+                    .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(AppColors.accent)
-                    .padding(.horizontal, AppSpacing.compact)
-                    .padding(.vertical, 6)
+                    .buttonStyle(.plain)
+                Button { cardProduct = nil } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.quaternary)
                 }
                 .buttonStyle(.plain)
             }
+            .padding(AppSpacing.compact)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                    .fill(AppColors.accent.opacity(0.07))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                            .strokeBorder(AppColors.accent.opacity(0.2), lineWidth: 0.5)
+                    )
+            }
+        } else {
+            Button(action: { showCardSelection = true }) {
+                HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "creditcard.fill").labelSmall()
+                    Text("Browse Card Database").labelSmall()
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold))
+                }
+                .foregroundStyle(AppColors.accent)
+                .padding(.horizontal, AppSpacing.compact)
+                .padding(.vertical, 6)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -175,7 +226,6 @@ struct CardEditView: View {
                             id: bank.id,
                             value: bank.id,
                             title: bank.name,
-                            symbol: "building.columns.fill",
                             imageName: bank.symbolAssetName
                         )
                     }
@@ -185,27 +235,36 @@ struct CardEditView: View {
                             set: { if let value = $0 { bankId = value } }
                         ),
                         options: bankOptions,
-                        variant: .textOnly,
+                        variant: .symbolText,
                         placeholder: "Select bank"
                     )
                 }
                 field("Linked Account") {
                     let filtered = context.accounts.filter { $0.bankId == bankId }
                     let allOptions: [FDSPickerOption] = {
-                        var options = [FDSPickerOption(id: "none", value: nil as UUID?, title: "None")]
+                        var options = [FDSPickerOption(
+                            id: "none",
+                            value: nil as UUID?,
+                            title: "None",
+                            symbol: "minus.circle"
+                        )]
                         options += filtered.map { account in
-                            FDSPickerOption(id: account.id, value: account.id, title: account.displayName)
+                            FDSPickerOption(
+                                id: account.id,
+                                value: account.id,
+                                title: account.displayName,
+                                symbol: "banknote.fill"
+                            )
                         }
                         return options
                     }()
                     return FDSPicker(
                         selection: $linkedLedgerId,
                         options: allOptions,
-                        variant: .textOnly,
+                        variant: .symbolText,
                         placeholder: "Select account"
                     )
                 }
-                field("Nickname (Optional)") { FDSTextInput("Nickname", text: $nickname) }
             }
         }
     }
@@ -236,18 +295,19 @@ struct CardEditView: View {
             Spacer()
             FDSLiquidButton("Save", variant: .primary) {
                 Task {
+                    let derivedName = selectedCatalogCard?.name ?? (nickname.isEmpty ? card.displayName : nickname)
                     let updated = Ledger(
                         id: card.id,
                         bankId: bankId,
                         kind: card.kind,
-                        displayName: displayName,
+                        displayName: derivedName,
                         last4: last4,
                         nickname: nickname,
                         ownerName: card.ownerName,
                         createdAt: card.createdAt,
                         accountType: card.accountType,
                         cardType: cardType,
-                        cardProduct: card.cardProduct,
+                        cardProduct: cardProduct,
                         linkedLedgerId: linkedLedgerId,
                         isArchived: card.isArchived
                     )
@@ -298,5 +358,41 @@ struct CardEditView: View {
             }
             content()
         }
+    }
+}
+
+private extension CardEditView {
+    func catalogArtwork(_ card: CardMetadata) -> some View {
+        Group {
+            if let urlString = card.imageURL, let url = URL(string: urlString) {
+                AsyncImage(url: url) { phase in
+                    if case let .success(image) = phase { image.resizable().scaledToFit() }
+                    else { catalogArtworkPlaceholder }
+                }
+            } else {
+                catalogArtworkPlaceholder
+            }
+        }
+        .frame(width: 72, height: 46)
+        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+        .overlay { RoundedRectangle(cornerRadius: 5, style: .continuous).strokeBorder(
+            Color.white.opacity(0.12),
+            lineWidth: 0.5
+        ) }
+    }
+
+    var catalogArtworkPlaceholder: some View {
+        RoundedRectangle(cornerRadius: 5, style: .continuous).fill(.ultraThinMaterial)
+            .overlay {
+                Image(systemName: "creditcard.fill").font(.system(size: 16, weight: .light)).foregroundStyle(.tertiary)
+            }
+    }
+
+    func catalogNetworkBadge(_ type: String) -> some View {
+        Text(type.uppercased())
+            .font(.system(size: 9, weight: .semibold)).tracking(0.4)
+            .foregroundStyle(AppColors.accent)
+            .padding(.horizontal, 5).padding(.vertical, 2)
+            .background { Capsule(style: .continuous).fill(AppColors.accent.opacity(0.12)) }
     }
 }

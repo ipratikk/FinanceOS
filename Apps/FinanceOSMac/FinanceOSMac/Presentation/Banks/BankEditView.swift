@@ -69,6 +69,8 @@ struct BankEditView: View {
                     .background(Circle().fill(AppColors.accent.opacity(0.12)))
             }
             .buttonStyle(.plain)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
             .help("Link Card or Account")
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
@@ -78,6 +80,8 @@ struct BankEditView: View {
                     .background(Circle().fill(.ultraThinMaterial))
             }
             .buttonStyle(.plain)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
         }
         .padding(AppSpacing.md)
     }

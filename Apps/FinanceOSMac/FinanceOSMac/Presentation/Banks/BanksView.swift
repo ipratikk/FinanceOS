@@ -61,58 +61,52 @@ struct BanksView: View {
 
     private func bankRow(_ bank: Bank) -> some View {
         let ledgers = viewModel.ledgersByBank[bank.id] ?? []
-        return VStack(alignment: .leading, spacing: AppSpacing.md) {
-            HStack(spacing: AppSpacing.lg) {
-                FDSImage(
-                    imageName: bank.logoAssetName,
-                    fallbackSymbol: "building.columns.fill",
-                    height: 48,
-                    width: 100
-                )
+        return FDSCard {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                HStack(spacing: AppSpacing.lg) {
+                    FDSImage(
+                        imageName: bank.logoAssetName,
+                        fallbackSymbol: "building.columns.fill",
+                        height: 48,
+                        width: 100
+                    )
 
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                    FDSLabel(bank.name, style: .bodyLarge)
-                    FDSLabel(bank.providerType.rawValue.capitalized, style: .caption, color: .secondary)
+                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                        FDSLabel(bank.name, style: .bodyLarge)
+                        FDSLabel(bank.providerType.rawValue.capitalized, style: .caption, color: .secondary)
+                    }
+
+                    Spacer()
+
+                    HStack(spacing: AppSpacing.compact) {
+                        iconButton("plus", color: AppColors.accent) {
+                            navigator.present(.bankEdit(bank))
+                        }
+                        iconButton("pencil", color: .secondary) {
+                            navigator.present(.bankEdit(bank))
+                        }
+                        iconButton("trash", color: AppColors.debit) {
+                            bankToDelete = bank
+                            showDeleteConfirm = true
+                        }
+                    }
                 }
 
-                Spacer()
-
-                HStack(spacing: AppSpacing.compact) {
-                    iconButton("plus", color: AppColors.accent) {
-                        navigator.present(.bankEdit(bank))
-                    }
-                    iconButton("pencil", color: .secondary) {
-                        navigator.present(.bankEdit(bank))
-                    }
-                    iconButton("trash", color: AppColors.debit) {
-                        bankToDelete = bank
-                        showDeleteConfirm = true
-                    }
-                }
-            }
-
-            if !ledgers.isEmpty {
-                Divider().opacity(0.3)
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                    ForEach(ledgers) { ledger in
-                        HStack(spacing: AppSpacing.compact) {
-                            Image(systemName: ledger.kind == .creditCard ? "creditcard.fill" : "banknote.fill")
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundStyle(.secondary)
-                            FDSLabel(ledger.displayName, style: .caption, color: .secondary)
+                if !ledgers.isEmpty {
+                    Divider().opacity(0.3)
+                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                        ForEach(ledgers) { ledger in
+                            HStack(spacing: AppSpacing.compact) {
+                                Image(systemName: ledger.kind == .creditCard ? "creditcard.fill" : "banknote.fill")
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(.secondary)
+                                FDSLabel(ledger.displayName, style: .caption, color: .secondary)
+                            }
                         }
                     }
                 }
             }
-        }
-        .padding(AppSpacing.lg)
-        .background {
-            RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .overlay {
-                    RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
-                }
+            .padding(AppSpacing.lg)
         }
     }
 
@@ -129,24 +123,16 @@ struct BanksView: View {
                 .background(Circle().fill(color.opacity(0.1)))
         }
         .buttonStyle(.plain)
+        .frame(minWidth: 44, minHeight: 44)
+        .contentShape(Rectangle())
     }
 
     private var emptyState: some View {
-        VStack(spacing: AppSpacing.md) {
-            Image(systemName: "building.columns")
-                .font(.system(size: 48, weight: .light))
-                .foregroundStyle(.tertiary)
-                .symbolRenderingMode(.hierarchical)
-
-            VStack(spacing: AppSpacing.tight) {
-                Text("No Banks")
-                    .bodyLarge()
-                Text("Add a bank when importing your first statement")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.tertiary)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        FDSEmptyState(
+            symbol: "building.columns",
+            title: "No Banks",
+            subtitle: "Add a bank when importing your first statement"
+        )
     }
 
     private var loadingState: some View {

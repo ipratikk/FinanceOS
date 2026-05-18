@@ -86,6 +86,8 @@ struct AccountEditView: View {
                     .background(Circle().fill(.ultraThinMaterial))
             }
             .buttonStyle(.plain)
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
         }
         .padding(AppSpacing.md)
     }
@@ -102,13 +104,35 @@ struct AccountEditView: View {
                 field("Owner Name") { FDSTextInput("Owner", text: $ownerName) }
                 field("Last 4 Digits") { FDSTextInput("Last 4", text: $last4) }
                 field("Account Type") {
-                    Picker("", selection: $accountType) {
-                        ForEach(["savings", "checking", "credit"], id: \.self) {
-                            Text($0.capitalized).tag($0)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
+                    let accountTypeOptions = [
+                        FDSPickerOption(
+                            id: "savings",
+                            value: "savings",
+                            title: "Savings",
+                            symbol: "building.columns.fill"
+                        ),
+                        FDSPickerOption(
+                            id: "checking",
+                            value: "checking",
+                            title: "Checking",
+                            symbol: "checkmark.rectangle.fill"
+                        ),
+                        FDSPickerOption(
+                            id: "credit",
+                            value: "credit",
+                            title: "Credit",
+                            symbol: "creditcard.fill"
+                        )
+                    ]
+                    FDSPicker(
+                        selection: Binding(
+                            get: { accountType },
+                            set: { if let value = $0 { accountType = value } }
+                        ),
+                        options: accountTypeOptions,
+                        variant: .symbolText,
+                        placeholder: "Select type"
+                    )
                 }
             }
         }
@@ -123,13 +147,23 @@ struct AccountEditView: View {
                     .foregroundStyle(.tertiary)
 
                 field("Bank") {
-                    Picker("", selection: $bankId) {
-                        ForEach(context.banks) { bank in
-                            Text(bank.name).tag(bank.id)
-                        }
+                    let bankOptions = context.banks.map { bank in
+                        FDSPickerOption(
+                            id: bank.id,
+                            value: bank.id,
+                            title: bank.name,
+                            imageName: bank.symbolAssetName
+                        )
                     }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
+                    FDSPicker(
+                        selection: Binding(
+                            get: { bankId },
+                            set: { if let value = $0 { bankId = value } }
+                        ),
+                        options: bankOptions,
+                        variant: .symbolText,
+                        placeholder: "Select bank"
+                    )
                 }
                 field("Nickname (Optional)") { FDSTextInput("Nickname", text: $nickname) }
             }
@@ -175,7 +209,9 @@ struct AccountEditView: View {
                         cardType: account.cardType,
                         cardProduct: account.cardProduct,
                         linkedLedgerId: account.linkedLedgerId,
-                        isArchived: account.isArchived
+                        isArchived: account.isArchived,
+                        closingBalance: account.closingBalance,
+                        closingBalanceAsOf: account.closingBalanceAsOf
                     )
                     await context.updateAccount(updated)
                     if context.deleteError == nil { dismiss() }

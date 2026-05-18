@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceParsers
 import FinanceUI
 import SwiftUI
 
@@ -60,6 +61,11 @@ struct AccountsView: View {
                 Text(error)
             }
         }
+        .onAppear {
+            navigator.accountReloadCallback = {
+                await viewModel.loadAccounts()
+            }
+        }
         .task {
             await viewModel.loadAccounts()
         }
@@ -97,27 +103,21 @@ struct AccountsView: View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             FDSSectionHeader(bankName, subtitle: "\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
 
-            VStack(spacing: 0) {
-                ForEach(Array(ledgers.enumerated()), id: \.element.id) { index, ledger in
-                    NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
-                        accountRow(ledger)
-                    }
-                    .buttonStyle(.plain)
+            FDSCard {
+                VStack(spacing: 0) {
+                    ForEach(Array(ledgers.enumerated()), id: \.element.id) { index, ledger in
+                        NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
+                            accountRow(ledger)
+                        }
+                        .buttonStyle(.plain)
 
-                    if index < ledgers.count - 1 {
-                        Divider()
-                            .opacity(0.3)
-                            .padding(.leading, 64)
+                        if index < ledgers.count - 1 {
+                            Divider()
+                                .opacity(0.3)
+                                .padding(.leading, 76)
+                        }
                     }
                 }
-            }
-            .background {
-                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                    .fill(.ultraThinMaterial)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
-                    }
             }
         }
     }
@@ -129,16 +129,19 @@ struct AccountsView: View {
     }
 
     private func accountRow(_ ledger: Ledger) -> some View {
-        HStack(spacing: AppSpacing.md) {
-            FDSMerchantAvatar(
-                name: bankName(for: ledger),
-                symbol: "building.columns.fill",
-                size: 36
+        let bank = viewModel.banks.first { $0.id == ledger.bankId }
+        let balance = viewModel.balancesByAccount[ledger.id]
+        return FDSRow {
+            FDSImage(
+                imageName: bank?.symbolAssetName,
+                fallbackSymbol: "building.columns.fill",
+                height: 44,
+                width: 44
             )
-
-            VStack(alignment: .leading, spacing: 2) {
+        } content: {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .caption()
+                    .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
@@ -151,16 +154,63 @@ struct AccountsView: View {
                     }
                 }
                 .foregroundStyle(.tertiary)
+
+                if let balance {
+                    HStack(spacing: 4) {
+                        Text(balance.formattedBalance)
+                            .font(.system(size: 12, weight: .semibold).monospacedDigit())
+                            .foregroundStyle(balance.netMinorUnits >= 0 ? AppColors.credit : AppColors.debit)
+                        if let dateStr = balance.formattedDate {
+                            Text("as of \(dateStr)")
+                                .font(.system(size: 10, weight: .regular))
+                                .foregroundStyle(.quaternary)
+                        }
+                    }
+                }
             }
-
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .labelSmall()
-                .foregroundStyle(.tertiary)
+        } trailing: {
+            HStack(spacing: AppSpacing.compact) {
+                iconButton("plus", color: AppColors.accent) {
+                    navigator.pendingImportTarget = .ledger(ledger.id)
+                    navigator.pendingImportSource = importSource(for: ledger, bank: bank)
+                    navigator.navigate(to: .importStatement)
+                }
+                iconButton("pencil", color: .secondary) {
+                    navigator.present(.accountEdit(ledger))
+                }
+                iconButton("trash", color: AppColors.debit) {
+                    accountPendingDelete = ledger
+                }
+            }
         }
-        .padding(.horizontal, AppSpacing.md)
-        .padding(.vertical, AppSpacing.compact)
+    }
+
+    private func importSource(for ledger: Ledger, bank: Bank?) -> StatementSource? {
+        guard let bankEnum = bank?.bank else { return nil }
+        switch (bankEnum, ledger.kind) {
+        case (.hdfc, .bankAccount): return .hdfcBank
+        case (.hdfc, .creditCard): return .hdfcCard
+        case (.icici, .bankAccount): return .iciciBank
+        case (.icici, .creditCard): return .iciciCard
+        case (.amex, _): return .amex
+        default: return nil
+        }
+    }
+
+    private func iconButton(
+        _ symbol: String,
+        color: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 28, height: 28)
+                .background(Circle().fill(color.opacity(0.1)))
+        }
+        .buttonStyle(.plain)
+        .frame(minWidth: 44, minHeight: 44)
         .contentShape(Rectangle())
     }
 
@@ -169,21 +219,11 @@ struct AccountsView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: AppSpacing.md) {
-            Image(systemName: "building.columns")
-                .font(.system(size: 48, weight: .light))
-                .foregroundStyle(.tertiary)
-                .symbolRenderingMode(.hierarchical)
-
-            VStack(spacing: AppSpacing.tight) {
-                Text("No Accounts")
-                    .bodyLarge()
-                Text("Import a statement to get started")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.tertiary)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        FDSEmptyState(
+            symbol: "building.columns",
+            title: "No Accounts",
+            subtitle: "Import a statement to get started"
+        )
     }
 
     private var loadingState: some View {
