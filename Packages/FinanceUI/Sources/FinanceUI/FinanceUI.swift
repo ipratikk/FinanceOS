@@ -48,3 +48,8 @@ public typealias Empty = EmptyStateView
 public typealias Skeleton = LoadingSkeletonView
 public typealias Chart = ChartContainer
 public typealias Insight = InsightCard
+
+// Picker
+public typealias Picker = FDSPicker
+public typealias PickerOption = FDSPickerOption
+public typealias PickerVariant = FDSPickerVariant
