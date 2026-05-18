@@ -122,16 +122,38 @@ struct CardEditView: View {
                     actionDisabled: last4.trimmingCharacters(in: .whitespaces).count < 4,
                     action: autoDetectCardType
                 ) {
-                    Picker("", selection: $cardType) {
-                        Text("Visa").tag("visa")
-                        Text("Mastercard").tag("mastercard")
-                        Text("American Express").tag("amex")
-                        Text("Discover").tag("discover")
-                        Text("Diners Club").tag("diners")
-                        Text("Other").tag("other")
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
+                    let cardTypeOptions = [
+                        FDSPickerOption(id: "visa", value: "visa", title: "Visa", symbol: "creditcard.fill"),
+                        FDSPickerOption(
+                            id: "mastercard",
+                            value: "mastercard",
+                            title: "Mastercard",
+                            symbol: "creditcard.fill"
+                        ),
+                        FDSPickerOption(
+                            id: "amex",
+                            value: "amex",
+                            title: "American Express",
+                            symbol: "creditcard.fill"
+                        ),
+                        FDSPickerOption(
+                            id: "discover",
+                            value: "discover",
+                            title: "Discover",
+                            symbol: "creditcard.fill"
+                        ),
+                        FDSPickerOption(id: "diners", value: "diners", title: "Diners Club", symbol: "creditcard.fill"),
+                        FDSPickerOption(id: "other", value: "other", title: "Other", symbol: "creditcard.fill")
+                    ]
+                    FDSPicker(
+                        selection: Binding(
+                            get: { cardType },
+                            set: { if let value = $0 { cardType = value } }
+                        ),
+                        options: cardTypeOptions,
+                        variant: .symbolOnly,
+                        placeholder: "Select network"
+                    )
                 }
 
                 Button(action: { showCardSelection = true }) {
@@ -162,21 +184,39 @@ struct CardEditView: View {
                     .foregroundStyle(.tertiary)
 
                 field("Bank") {
-                    Picker("", selection: $bankId) {
-                        ForEach(context.banks) { Text($0.name).tag($0.id) }
+                    let bankOptions = context.banks.map { bank in
+                        FDSPickerOption(
+                            id: bank.id,
+                            value: bank.id,
+                            title: bank.name,
+                            symbol: "building.columns.fill"
+                        )
                     }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
+                    FDSPicker(
+                        selection: Binding(
+                            get: { bankId },
+                            set: { if let value = $0 { bankId = value } }
+                        ),
+                        options: bankOptions,
+                        variant: .textOnly,
+                        placeholder: "Select bank"
+                    )
                 }
                 field("Linked Account") {
-                    Picker("", selection: $linkedLedgerId) {
-                        Text("None").tag(nil as UUID?)
-                        ForEach(context.accounts.filter { $0.bankId == bankId }) {
-                            Text($0.displayName).tag($0.id as UUID?)
+                    let filtered = context.accounts.filter { $0.bankId == bankId }
+                    let allOptions: [FDSPickerOption] = {
+                        var options = [FDSPickerOption(id: "none", value: nil as UUID?, title: "None")]
+                        options += filtered.map { account in
+                            FDSPickerOption(id: account.id, value: account.id, title: account.displayName)
                         }
-                    }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
+                        return options
+                    }()
+                    return FDSPicker(
+                        selection: $linkedLedgerId,
+                        options: allOptions,
+                        variant: .textOnly,
+                        placeholder: "Select account"
+                    )
                 }
                 field("Nickname (Optional)") { FDSTextInput("Nickname", text: $nickname) }
             }

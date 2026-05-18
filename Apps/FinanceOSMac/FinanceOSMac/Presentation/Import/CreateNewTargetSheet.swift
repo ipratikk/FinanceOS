@@ -126,12 +126,12 @@ struct CreateNewTargetSheet: View {
 
     private func cardTypeField() -> some View {
         let cardTypeOptions = [
-            FDSPickerOption(value: "visa", title: "Visa", symbol: "creditcard.fill"),
-            FDSPickerOption(value: "mastercard", title: "Mastercard", symbol: "creditcard.fill"),
-            FDSPickerOption(value: "amex", title: "American Express", symbol: "creditcard.fill"),
-            FDSPickerOption(value: "discover", title: "Discover", symbol: "creditcard.fill"),
-            FDSPickerOption(value: "diners", title: "Diners Club", symbol: "creditcard.fill"),
-            FDSPickerOption(value: "other", title: "Other", symbol: "creditcard.fill")
+            FDSPickerOption(id: "visa", value: "visa", title: "Visa", symbol: "creditcard.fill"),
+            FDSPickerOption(id: "mastercard", value: "mastercard", title: "Mastercard", symbol: "creditcard.fill"),
+            FDSPickerOption(id: "amex", value: "amex", title: "American Express", symbol: "creditcard.fill"),
+            FDSPickerOption(id: "discover", value: "discover", title: "Discover", symbol: "creditcard.fill"),
+            FDSPickerOption(id: "diners", value: "diners", title: "Diners Club", symbol: "creditcard.fill"),
+            FDSPickerOption(id: "other", value: "other", title: "Other", symbol: "creditcard.fill")
         ]
 
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
@@ -145,7 +145,10 @@ struct CreateNewTargetSheet: View {
             }
 
             FDSPicker(
-                selection: $state.cardType,
+                selection: Binding(
+                    get: { state.cardType },
+                    set: { if let value = $0 { state.cardType = value } }
+                ),
                 options: cardTypeOptions,
                 variant: .symbolOnly,
                 placeholder: "Select network"
@@ -170,17 +173,20 @@ struct CreateNewTargetSheet: View {
 
     private func accountTypeField() -> some View {
         let accountTypeOptions = [
-            FDSPickerOption(value: "savings", title: "Savings"),
-            FDSPickerOption(value: "checking", title: "Checking"),
-            FDSPickerOption(value: "money_market", title: "Money Market"),
-            FDSPickerOption(value: "other", title: "Other")
+            FDSPickerOption(id: "savings", value: "savings", title: "Savings"),
+            FDSPickerOption(id: "checking", value: "checking", title: "Checking"),
+            FDSPickerOption(id: "money_market", value: "money_market", title: "Money Market"),
+            FDSPickerOption(id: "other", value: "other", title: "Other")
         ]
 
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
             FDSLabel("Account Type", style: .hint)
 
             FDSPicker(
-                selection: $state.accountType,
+                selection: Binding(
+                    get: { state.accountType },
+                    set: { if let value = $0 { state.accountType = value } }
+                ),
                 options: accountTypeOptions,
                 variant: .textOnly,
                 placeholder: "Select type"
@@ -191,6 +197,7 @@ struct CreateNewTargetSheet: View {
     private func bankField() -> some View {
         let bankOptions = banks.map { bank in
             FDSPickerOption(
+                id: bank.id,
                 value: bank.id,
                 title: bank.name,
                 symbol: "building.columns.fill"
