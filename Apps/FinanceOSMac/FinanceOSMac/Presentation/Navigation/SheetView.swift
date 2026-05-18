@@ -43,7 +43,11 @@ struct SheetView: View {
                 banks = try await banksFetch
                 accounts = try await accountsFetch
             } catch {
-                FinanceLogger.ui.logError("Failed to fetch data for sheet: {error}", caughtError: error, ["error": error.localizedDescription])
+                FinanceLogger.ui.logError(
+                    "Failed to fetch data for sheet: {error}",
+                    caughtError: error,
+                    ["error": error.localizedDescription]
+                )
             }
         }
     }

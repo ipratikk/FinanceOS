@@ -15,7 +15,12 @@ public struct FinanceCard<Content: View>: View {
             .padding(padding)
             .background(AppColors.surface)
             .cornerRadius(AppRadius.md)
-            .shadow(color: .black.opacity(AppShadow.cardOpacity), radius: AppShadow.cardRadius / 2, y: 2)
+            .shadow(
+                color: AppShadows.standard.color,
+                radius: AppShadows.standard.radius,
+                x: AppShadows.standard.x,
+                y: AppShadows.standard.y
+            )
     }
 }
 

@@ -31,12 +31,12 @@ public struct MemoizedComputation<T: Equatable>: ViewModifier {
     }
 }
 
-extension View {
-    public func memoized<T: Equatable>(
-        _ compute: @escaping () -> T,
+public extension View {
+    func memoized(
+        _ compute: @escaping () -> some Equatable,
         dependencies: [AnyHashable]
     ) -> some View {
-        self.modifier(MemoizedComputation(compute: compute, dependencies: dependencies))
+        modifier(MemoizedComputation(compute: compute, dependencies: dependencies))
     }
 }
 

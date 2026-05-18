@@ -68,16 +68,16 @@ extension DateFormatter {
 extension View {
     /// RTL-safe horizontal alignment.
     func rtlLeading() -> some View {
-        self.frame(maxWidth: .infinity, alignment: .leading)
+        frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// RTL-safe trailing alignment.
     func rtlTrailing() -> some View {
-        self.frame(maxWidth: .infinity, alignment: .trailing)
+        frame(maxWidth: .infinity, alignment: .trailing)
     }
 
     /// RTL-safe horizontal flip for icons/images if needed.
     func rtlMirror() -> some View {
-        self.environment(\.layoutDirection, .rightToLeft)
+        environment(\.layoutDirection, .rightToLeft)
     }
 }

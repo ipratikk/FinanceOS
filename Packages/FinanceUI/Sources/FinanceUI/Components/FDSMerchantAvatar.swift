@@ -91,7 +91,7 @@ public struct FDSMerchantAvatar: View {
         }
         .overlay {
             Circle()
-                .strokeBorder(Color.white.opacity(0.08), lineWidth: 0.5)
+                .strokeBorder(AppColors.accentCyan.opacity(0.15), lineWidth: 0.5)
         }
     }
 
@@ -101,13 +101,13 @@ public struct FDSMerchantAvatar: View {
 
     private static func deterministicTint(for name: String) -> Color {
         let hues: [Color] = [
-            Color(red: 0.31, green: 0.56, blue: 0.96), // blue
-            Color(red: 0.65, green: 0.33, blue: 0.96), // purple
-            Color(red: 0.13, green: 0.77, blue: 0.36), // green
-            Color(red: 0.96, green: 0.62, blue: 0.07), // amber
-            Color(red: 0.96, green: 0.27, blue: 0.51), // pink
-            Color(red: 0.07, green: 0.74, blue: 0.83), // cyan
-            Color(red: 0.93, green: 0.40, blue: 0.20) // orange
+            AppColors.accentCyan,
+            AppColors.accentBlue,
+            AppColors.accentPurple,
+            AppColors.accentPink,
+            AppColors.accentLime,
+            AppColors.accentOrange,
+            AppColors.success
         ]
         let hash = abs(name.hashValue)
         return hues[hash % hues.count]

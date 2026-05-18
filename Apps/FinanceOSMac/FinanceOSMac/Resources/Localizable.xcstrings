@@ -1,192 +1,64 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Banks" : {
-      "extractionState" : "manual",
+    "" : {
+
+    },
+    "—" : {
+
+    },
+    "... and %lld more transactions" : {
+
+    },
+    "·" : {
+
+    },
+    "· •••• %@" : {
+
+    },
+    "%@ · •••• %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Banks"
+            "state" : "new",
+            "value" : "%1$@ · •••• %2$@"
           }
         }
       }
     },
-    "INSTITUTIONS" : {
-      "extractionState" : "manual",
+    "%@ Information" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld already imported" : {
+
+    },
+    "%lld txns" : {
+
+    },
+    "• %@ %@%@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "INSTITUTIONS"
+            "state" : "new",
+            "value" : "• %1$@ %2$@%3$@"
           }
         }
       }
     },
-    "No Banks" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Banks"
-          }
-        }
-      }
+    "• ••••%@" : {
+
     },
-    "Add a bank when importing your first statement" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add a bank when importing your first statement"
-          }
-        }
-      }
+    "•••• %@" : {
+
     },
-    "Delete Bank?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete Bank?"
-          }
-        }
-      }
+    "ACCOUNT INFORMATION" : {
+
     },
-    "This will delete this bank and all associated cards, accounts, and transactions." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This will delete this bank and all associated cards, accounts, and transactions."
-          }
-        }
-      }
-    },
-    "Credit Cards" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Credit Cards"
-          }
-        }
-      }
-    },
-    "Cards" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cards"
-          }
-        }
-      }
-    },
-    "No Cards" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Cards"
-          }
-        }
-      }
-    },
-    "Import a statement to get started" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import a statement to get started"
-          }
-        }
-      }
-    },
-    "Edit Card" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit Card"
-          }
-        }
-      }
-    },
-    "CARD INFORMATION" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CARD INFORMATION"
-          }
-        }
-      }
-    },
-    "BANK & ACCOUNT" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BANK & ACCOUNT"
-          }
-        }
-      }
-    },
-    "Bank" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bank"
-          }
-        }
-      }
-    },
-    "Nickname" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nickname"
-          }
-        }
-      }
-    },
-    "Delete Card" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete Card"
-          }
-        }
-      }
-    },
-    "This will permanently delete this card and all associated transactions." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This will permanently delete this card and all associated transactions."
-          }
-        }
-      }
+    "Account not found" : {
+
     },
     "Accounts" : {
       "extractionState" : "manual",
@@ -199,189 +71,16 @@
         }
       }
     },
-    "Bank Accounts" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bank Accounts"
-          }
-        }
-      }
+    "ACCOUNTS" : {
+
     },
-    "No Accounts" : {
+    "Add a bank when importing your first statement" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Accounts"
-          }
-        }
-      }
-    },
-    "No Transactions" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Transactions"
-          }
-        }
-      }
-    },
-    "No transactions match your filters." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No transactions match your filters."
-          }
-        }
-      }
-    },
-    "No transactions found." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No transactions found."
-          }
-        }
-      }
-    },
-    "Search transactions" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search transactions"
-          }
-        }
-      }
-    },
-    "Debit" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Debit"
-          }
-        }
-      }
-    },
-    "Credit" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Credit"
-          }
-        }
-      }
-    },
-    "Date" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date"
-          }
-        }
-      }
-    },
-    "Clear" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear"
-          }
-        }
-      }
-    },
-    "Filters" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filters"
-          }
-        }
-      }
-    },
-    "Cancel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel"
-          }
-        }
-      }
-    },
-    "Done" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Done"
-          }
-        }
-      }
-    },
-    "Spending Insights" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spending Insights"
-          }
-        }
-      }
-    },
-    "ANALYTICS" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ANALYTICS"
-          }
-        }
-      }
-    },
-    "Reset" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset"
-          }
-        }
-      }
-    },
-    "TRANSACTION TYPE" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TRANSACTION TYPE"
+            "value" : "Add a bank when importing your first statement"
           }
         }
       }
@@ -397,16 +96,189 @@
         }
       }
     },
-    "DATE RANGE" : {
+    "Amount" : {
+
+    },
+    "ANALYTICS" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DATE RANGE"
+            "value" : "ANALYTICS"
           }
         }
       }
+    },
+    "as of %@" : {
+
+    },
+    "Auto-categorization with smart detection" : {
+
+    },
+    "BALANCE" : {
+
+    },
+    "Bank" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bank"
+          }
+        }
+      }
+    },
+    "BANK & ACCOUNT" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BANK & ACCOUNT"
+          }
+        }
+      }
+    },
+    "BANK & NICKNAME" : {
+
+    },
+    "Bank Accounts" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bank Accounts"
+          }
+        }
+      }
+    },
+    "Bank%@" : {
+
+    },
+    "Banks" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Banks"
+          }
+        }
+      }
+    },
+    "Browse Card Database" : {
+
+    },
+    "Cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "CARD INFORMATION" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CARD INFORMATION"
+          }
+        }
+      }
+    },
+    "Card not found" : {
+
+    },
+    "Cards" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cards"
+          }
+        }
+      }
+    },
+    "CARDS" : {
+
+    },
+    "Change" : {
+
+    },
+    "Clear" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear"
+          }
+        }
+      }
+    },
+    "Clear All Data" : {
+
+    },
+    "Clear All Data?" : {
+
+    },
+    "Clear Selection" : {
+
+    },
+    "Close" : {
+
+    },
+    "Coming Soon" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Create New Account..." : {
+
+    },
+    "Create New Card..." : {
+
+    },
+    "Credit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credit"
+          }
+        }
+      }
+    },
+    "Credit Cards" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credit Cards"
+          }
+        }
+      }
+    },
+    "CREDITED" : {
+
+    },
+    "Credits" : {
+
+    },
+    "CSV and XLSX for CSV-based statements; TXT for delimited text (HDFC); PDF for scanned statements." : {
+
     },
     "Custom" : {
       "extractionState" : "manual",
@@ -415,28 +287,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Custom"
-          }
-        }
-      }
-    },
-    "From" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "From"
-          }
-        }
-      }
-    },
-    "To" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "To"
           }
         }
       }
@@ -452,13 +302,152 @@
         }
       }
     },
-    "Statements" : {
+    "Date" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Statements"
+            "value" : "Date"
+          }
+        }
+      }
+    },
+    "DATE RANGE" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DATE RANGE"
+          }
+        }
+      }
+    },
+    "Debit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debit"
+          }
+        }
+      }
+    },
+    "DEBITED" : {
+
+    },
+    "Debits" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Delete \"%@\"?" : {
+
+    },
+    "Delete %@" : {
+
+    },
+    "Delete %@?" : {
+
+    },
+    "Delete Account" : {
+
+    },
+    "Delete Account?" : {
+
+    },
+    "Delete Bank" : {
+
+    },
+    "Delete Bank?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Bank?"
+          }
+        }
+      }
+    },
+    "Delete Card" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Card"
+          }
+        }
+      }
+    },
+    "Delete Card?" : {
+
+    },
+    "Delete Failed" : {
+
+    },
+    "Delete Transaction?" : {
+
+    },
+    "Done" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
+    "Edit %@" : {
+
+    },
+    "Edit Account" : {
+
+    },
+    "Edit Card" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Card"
+          }
+        }
+      }
+    },
+    "Enter Password" : {
+
+    },
+    "Error" : {
+
+    },
+    "Filters" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filters"
+          }
+        }
+      }
+    },
+    "FinanceOS" : {
+
+    },
+    "From" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From"
           }
         }
       }
@@ -473,6 +462,311 @@
           }
         }
       }
+    },
+    "Import a statement to get started" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import a statement to get started"
+          }
+        }
+      }
+    },
+    "Import Statement" : {
+
+    },
+    "Import To" : {
+
+    },
+    "INSTITUTIONS" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "INSTITUTIONS"
+          }
+        }
+      }
+    },
+    "Link Card or Account" : {
+
+    },
+    "Loading transactions..." : {
+
+    },
+    "Loading…" : {
+
+    },
+    "Merchant" : {
+
+    },
+    "Month" : {
+
+    },
+    "Net This Month" : {
+
+    },
+    "New Account" : {
+
+    },
+    "New Card" : {
+
+    },
+    "Nickname" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nickname"
+          }
+        }
+      }
+    },
+    "No Accounts" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Accounts"
+          }
+        }
+      }
+    },
+    "No Banks" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Banks"
+          }
+        }
+      }
+    },
+    "No Cards" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Cards"
+          }
+        }
+      }
+    },
+    "No linked cards or accounts" : {
+
+    },
+    "No Transactions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Transactions"
+          }
+        }
+      }
+    },
+    "No transactions found." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No transactions found."
+          }
+        }
+      }
+    },
+    "No transactions match your filters." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No transactions match your filters."
+          }
+        }
+      }
+    },
+    "OK" : {
+
+    },
+    "Operation Failed" : {
+
+    },
+    "Parsing file %lld of %lld..." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Parsing file %1$lld of %2$lld..."
+          }
+        }
+      }
+    },
+    "PDF Password" : {
+
+    },
+    "Personal" : {
+
+    },
+    "Preferences" : {
+
+    },
+    "Reset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        }
+      }
+    },
+    "Save password to Keychain" : {
+
+    },
+    "Search cards" : {
+
+    },
+    "Search transactions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search transactions"
+          }
+        }
+      }
+    },
+    "Select a bank..." : {
+
+    },
+    "Select Card" : {
+
+    },
+    "SETTINGS" : {
+
+    },
+    "Source" : {
+
+    },
+    "Spending Insights" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spending Insights"
+          }
+        }
+      }
+    },
+    "Spending Trend" : {
+
+    },
+    "Statements" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statements"
+          }
+        }
+      }
+    },
+    "Supported: %@" : {
+
+    },
+    "Tap + to link a card or account" : {
+
+    },
+    "This will delete this bank and all associated cards, accounts, and transactions." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This will delete this bank and all associated cards, accounts, and transactions."
+          }
+        }
+      }
+    },
+    "This will permanently delete \"%@\"." : {
+
+    },
+    "This will permanently delete all data including banks, accounts, cards, and transactions." : {
+
+    },
+    "This will permanently delete this %@ and all associated transactions. This cannot be undone." : {
+
+    },
+    "This will permanently delete this account and all associated transactions." : {
+
+    },
+    "This will permanently delete this account and all associated transactions. This cannot be undone." : {
+
+    },
+    "This will permanently delete this card and all associated transactions." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This will permanently delete this card and all associated transactions."
+          }
+        }
+      }
+    },
+    "To" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To"
+          }
+        }
+      }
+    },
+    "Top Merchants" : {
+
+    },
+    "Transaction" : {
+
+    },
+    "TRANSACTION TYPE" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TRANSACTION TYPE"
+          }
+        }
+      }
+    },
+    "Transactions" : {
+
+    },
+    "Transactions: %lld" : {
+
+    },
+    "Type" : {
+
+    },
+    "Upload bank or credit card statements" : {
+
     }
   },
   "version" : "1.0"

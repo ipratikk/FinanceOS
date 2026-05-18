@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 public struct HoverEffectModifier: ViewModifier {
@@ -8,6 +9,12 @@ public struct HoverEffectModifier: ViewModifier {
         content
             .scaleEffect(isHovered ? 1.02 : 1.0)
             .background(AppColors.glass.opacity(isHovered ? 1.0 : 0))
+            .shadow(
+                color: AppColors.accentCyan.opacity(isHovered ? 0.15 : 0),
+                radius: isHovered ? 16 : 0,
+                x: 0,
+                y: 0
+            )
             .animation(AppAnimation.hover, value: isHovered)
             .onContinuousHover { phase in
                 switch phase {

@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Standard accessible icon button with guaranteed 44pt hit target.
@@ -44,18 +45,18 @@ public struct AccessibleIconButton: View {
 
     private var foregroundColor: Color {
         switch style {
-        case .primary: return .blue
-        case .secondary: return .secondary
-        case .destructive: return .red
+        case .primary: return AppColors.accentBlue
+        case .secondary: return AppColors.textSecondary
+        case .destructive: return AppColors.danger
         }
     }
 }
 
 // MARK: - Convenient Initializers
 
-extension AccessibleIconButton {
+public extension AccessibleIconButton {
     /// Close button (common pattern).
-    public static func close(action: @escaping () -> Void) -> AccessibleIconButton {
+    static func close(action: @escaping () -> Void) -> AccessibleIconButton {
         AccessibleIconButton(
             Image(systemName: "xmark"),
             label: "Close",
@@ -66,7 +67,7 @@ extension AccessibleIconButton {
     }
 
     /// Add/plus button.
-    public static func add(label: String = "Add", action: @escaping () -> Void) -> AccessibleIconButton {
+    static func add(label: String = "Add", action: @escaping () -> Void) -> AccessibleIconButton {
         AccessibleIconButton(
             Image(systemName: "plus"),
             label: label,
@@ -77,7 +78,7 @@ extension AccessibleIconButton {
     }
 
     /// Edit/pencil button.
-    public static func edit(action: @escaping () -> Void) -> AccessibleIconButton {
+    static func edit(action: @escaping () -> Void) -> AccessibleIconButton {
         AccessibleIconButton(
             Image(systemName: "pencil"),
             label: "Edit",
@@ -88,7 +89,7 @@ extension AccessibleIconButton {
     }
 
     /// Delete/trash button.
-    public static func delete(action: @escaping () -> Void) -> AccessibleIconButton {
+    static func delete(action: @escaping () -> Void) -> AccessibleIconButton {
         AccessibleIconButton(
             Image(systemName: "trash"),
             label: "Delete",
@@ -103,10 +104,10 @@ extension AccessibleIconButton {
 
 #Preview {
     HStack(spacing: 16) {
-        AccessibleIconButton.add { }
-        AccessibleIconButton.edit { }
-        AccessibleIconButton.delete { }
-        AccessibleIconButton.close { }
+        AccessibleIconButton.add {}
+        AccessibleIconButton.edit {}
+        AccessibleIconButton.delete {}
+        AccessibleIconButton.close {}
     }
     .padding()
 }

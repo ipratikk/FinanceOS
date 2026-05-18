@@ -16,4 +16,8 @@ public enum AppSpacing {
     // New 8pt-aligned aliases for Phase 2+ views
     public static let tight: CGFloat = 4 // Tighter gaps, replaces xxxs
     public static let compact: CGFloat = 8 // Use instead of xs for clarity
+
+    // Component-specific targets
+    public static let hitTarget: CGFloat = 44
+    public static let minTouchTarget: CGFloat = 44
 }

@@ -33,13 +33,24 @@ public struct FDSGlassSurface<Content: View>: View {
                 if let material = elevation.material {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(material)
+                        .background(AppColors.surface.opacity(0.3))
                 } else {
                     Color.clear
                 }
             }
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(Color.white.opacity(strokeOpacity), lineWidth: 0.5)
+                    .strokeBorder(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                AppColors.accentCyan.opacity(strokeOpacity * 2),
+                                AppColors.accentBlue.opacity(strokeOpacity)
+                            ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 0.5
+                    )
             }
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
     }

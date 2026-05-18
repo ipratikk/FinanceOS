@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Standard list row component for all lists (accounts, cards, banks, etc.).
@@ -28,10 +29,10 @@ public struct FDSListRow<Trailing: View>: View {
 
     public var body: some View {
         HStack(spacing: 12) {
-            if let icon = icon {
+            if let icon {
                 icon
                     .frame(width: 32, height: 32)
-                    .foregroundColor(.blue)
+                    .foregroundColor(AppColors.accentBlue)
             }
 
             VStack(alignment: .leading, spacing: 2) {
@@ -39,7 +40,7 @@ public struct FDSListRow<Trailing: View>: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.primary)
 
-                if let subtitle = subtitle {
+                if let subtitle {
                     Text(subtitle)
                         .font(.system(size: 12, weight: .regular))
                         .foregroundColor(.secondary)
@@ -51,7 +52,12 @@ public struct FDSListRow<Trailing: View>: View {
             trailing
         }
         .padding(12)
-        .background(Color(UIColor.systemGray6))
+        .background(.ultraThinMaterial)
+        .background(AppColors.surface.opacity(0.5))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .strokeBorder(AppColors.accentCyan.opacity(isSelected ? 0.2 : 0.1), lineWidth: 0.5)
+        )
         .cornerRadius(8)
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap ?? {})
@@ -62,8 +68,8 @@ public struct FDSListRow<Trailing: View>: View {
 
 // MARK: - Convenience Initializer (No Trailing Content)
 
-extension FDSListRow where Trailing == EmptyView {
-    public init(
+public extension FDSListRow where Trailing == EmptyView {
+    init(
         title: String,
         subtitle: String? = nil,
         icon: Image? = nil,

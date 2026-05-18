@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 // MARK: - Hit Target Enforcement Modifier
@@ -13,9 +14,9 @@ public struct HitTargetModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     /// Ensures this view has minimum 44pt touch target in both dimensions.
-    public func minHitTarget() -> some View {
+    func minHitTarget() -> some View {
         modifier(HitTargetModifier())
     }
 }
@@ -31,9 +32,9 @@ public struct FullWidthTapModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     /// Makes entire container (including padding) tappable.
-    public func fullWidthTap() -> some View {
+    func fullWidthTap() -> some View {
         modifier(FullWidthTapModifier())
     }
 }
@@ -54,9 +55,9 @@ public struct AccessibleIconButtonModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     /// Makes icon button accessible with label and optional hint.
-    public func accessibleIconButton(label: String, hint: String? = nil) -> some View {
+    func accessibleIconButton(label: String, hint: String? = nil) -> some View {
         modifier(AccessibleIconButtonModifier(label: label, hint: hint))
     }
 }
@@ -77,9 +78,9 @@ public struct AccessibleInteractiveModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     /// Marks container as interactive with accessibility semantics.
-    public func accessibleInteractive(label: String? = nil, isSelected: Bool = false) -> some View {
+    func accessibleInteractive(label: String? = nil, isSelected: Bool = false) -> some View {
         modifier(AccessibleInteractiveModifier(label: label, isSelected: isSelected))
     }
 }
@@ -95,9 +96,9 @@ public struct DynamicTypeSafeModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     /// Makes text Dynamic Type safe (scales but remains readable).
-    public func dynamicTypeSafe() -> some View {
+    func dynamicTypeSafe() -> some View {
         modifier(DynamicTypeSafeModifier())
     }
 }

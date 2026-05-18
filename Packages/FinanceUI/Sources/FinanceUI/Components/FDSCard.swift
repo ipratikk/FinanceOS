@@ -28,12 +28,29 @@ public struct FDSCard<Content: View>: View {
         content
             .background {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(AppColors.surface.opacity(0.5))
+                    .background(.ultraThinMaterial)
                     .overlay {
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .strokeBorder(Color.white.opacity(isHovered ? 0.10 : 0.05), lineWidth: 0.5)
+                            .strokeBorder(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        AppColors.accentCyan.opacity(isHovered ? 0.25 : 0.15),
+                                        AppColors.accentCyan.opacity(isHovered ? 0.15 : 0.08)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 0.5
+                            )
                     }
             }
+            .shadow(
+                color: AppColors.accentCyan.opacity(isHovered ? 0.15 : 0.05),
+                radius: isHovered ? 16 : 8,
+                x: 0,
+                y: isHovered ? 8 : 4
+            )
             .onHover { isHovered = $0 }
     }
 }

@@ -79,7 +79,13 @@ public extension Logger {
         line: Int = #line,
         _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        let formatted = _formatContextualMessage(
+            message,
+            file: file,
+            function: function,
+            line: line,
+            attributes: attributes
+        )
         trace("\(formatted)")
     }
 
@@ -90,7 +96,13 @@ public extension Logger {
         line: Int = #line,
         _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        let formatted = _formatContextualMessage(
+            message,
+            file: file,
+            function: function,
+            line: line,
+            attributes: attributes
+        )
         debug("\(formatted)")
     }
 
@@ -101,7 +113,13 @@ public extension Logger {
         line: Int = #line,
         _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        let formatted = _formatContextualMessage(
+            message,
+            file: file,
+            function: function,
+            line: line,
+            attributes: attributes
+        )
         info("\(formatted)")
     }
 
@@ -112,7 +130,13 @@ public extension Logger {
         line: Int = #line,
         _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        let formatted = _formatContextualMessage(
+            message,
+            file: file,
+            function: function,
+            line: line,
+            attributes: attributes
+        )
         notice("\(formatted)")
     }
 
@@ -123,7 +147,13 @@ public extension Logger {
         line: Int = #line,
         _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        let formatted = _formatContextualMessage(
+            message,
+            file: file,
+            function: function,
+            line: line,
+            attributes: attributes
+        )
         warning("\(formatted)")
     }
 
@@ -142,7 +172,13 @@ public extension Logger {
             mutableAttrs["errorCode"] = nsError.code
             mutableAttrs["errorDomain"] = nsError.domain
         }
-        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: mutableAttrs)
+        let formatted = _formatContextualMessage(
+            message,
+            file: file,
+            function: function,
+            line: line,
+            attributes: mutableAttrs
+        )
         error("\(formatted)")
     }
 
@@ -153,7 +189,13 @@ public extension Logger {
         line: Int = #line,
         _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        let formatted = _formatContextualMessage(
+            message,
+            file: file,
+            function: function,
+            line: line,
+            attributes: attributes
+        )
         critical("\(formatted)")
     }
 

@@ -10,7 +10,7 @@ public actor ImageCache {
     // MARK: - Public API
 
     public func image(for url: URL?) -> Image? {
-        guard let url = url else { return nil }
+        guard let url else { return nil }
         return cache[url]
     }
 

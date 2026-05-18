@@ -10,7 +10,7 @@ public protocol FinanceUIModule {
 public typealias Colors = AppColors
 public typealias Spacing = AppSpacing
 public typealias Radius = AppRadius
-public typealias Shadow = AppShadow
+public typealias Shadow = AppShadows
 public typealias Animation = AppAnimation
 
 // MARK: - Re-export all public types

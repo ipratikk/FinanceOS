@@ -20,13 +20,28 @@ public enum AppColors {
     public static let border = Color(red: 0.165, green: 0.165, blue: 0.180) // #2A2A2E
     public static let borderAccent = Color(red: 0.227, green: 0.227, blue: 0.251) // #3A3A40
 
+    // MARK: - Neon Accent Colors (cyberpunk fintech aesthetic)
+
+    public static let accentCyan = Color(red: 0.0, green: 0.941, blue: 1.0) // #00F0FF — primary action, data highlight
+    public static let accentBlue = Color(red: 0.2, green: 0.6, blue: 1.0) // #3399FF — secondary, charts
+    public static let accentPurple = Color(red: 0.8, green: 0.2, blue: 1.0) // #CC33FF — tertiary, badges
+    public static let accentPink = Color(red: 1.0, green: 0.106, blue: 0.616) // #FF1B9D — alerts, warnings
+    public static let accentLime = Color(red: 0.4, green: 1.0, blue: 0.0) // #66FF00 — positive, gains
+    public static let accentOrange = Color(red: 1.0, green: 0.4, blue: 0.0) // #FF6600 — negative, losses
+
     // MARK: - Semantic colors
 
-    public static let accent = Color(red: 0.310, green: 0.565, blue: 0.965) // #4F90F6 — softer blue for glass
-    public static let credit = Color(red: 0.133, green: 0.773, blue: 0.368) // #22C55E
-    public static let debit = Color(red: 0.937, green: 0.267, blue: 0.267) // #EF4444
-    public static let warning = Color(red: 0.961, green: 0.620, blue: 0.067) // #F59E0B
-    public static let purple = Color(red: 0.659, green: 0.333, blue: 0.968) // #A855F7
+    public static let accent = accentBlue // Default primary accent
+    public static let success = Color(red: 0.0, green: 0.847, blue: 0.4) // #00D966 — positive states
+    public static let danger = Color(red: 1.0, green: 0.2, blue: 0.2) // #FF3333 — destructive actions
+    public static let info = Color(red: 0.0, green: 0.706, blue: 1.0) // #00B4FF — information
+
+    // MARK: - Legacy semantic colors (mapped for backwards compatibility)
+
+    public static let credit = success // Positive transaction
+    public static let debit = accentOrange // Negative transaction
+    public static let warning = Color(red: 1.0, green: 0.722, blue: 0.0) // #FFB800 — caution states
+    public static let purple = accentPurple
 
     // MARK: - Text
 

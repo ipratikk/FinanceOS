@@ -2,7 +2,7 @@ import Foundation
 
 /// Centralized formatter caching to eliminate repeated NumberFormatter/DateFormatter allocation.
 /// Formatters are expensive; cache them as static singletons.
-public struct FormatterCache {
+public enum FormatterCache {
     // MARK: - Currency Formatter (INR)
 
     public static let currencyINR: NumberFormatter = {
@@ -73,19 +73,16 @@ public struct FormatterCache {
 
     // MARK: - ISO8601 Formatter
 
-    public static let iso8601: ISO8601DateFormatter = {
-        ISO8601DateFormatter()
-    }()
+    public static let iso8601: ISO8601DateFormatter = ISO8601DateFormatter()
 
     // MARK: - Utility Methods
 
     /// Format currency amount with specified code.
     public static func formatCurrency(_ amount: Decimal, currencyCode: String = "INR") -> String {
-        let formatter: NumberFormatter
-        switch currencyCode {
-        case "USD": formatter = currencyUSD
-        case "EUR": formatter = currencyEUR
-        default: formatter = currencyINR
+        let formatter: NumberFormatter = switch currencyCode {
+        case "USD": currencyUSD
+        case "EUR": currencyEUR
+        default: currencyINR
         }
         return formatter.string(from: amount as NSNumber) ?? "N/A"
     }

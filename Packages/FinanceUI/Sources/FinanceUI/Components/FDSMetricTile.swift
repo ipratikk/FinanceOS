@@ -58,7 +58,7 @@ public struct FDSMetricTile: View {
             Text(value)
                 .font(.system(size: prominent ? 32 : 22, weight: .semibold, design: .rounded))
                 .monospacedDigit()
-                .foregroundStyle(.primary)
+                .foregroundStyle(AppColors.accentCyan)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
 
