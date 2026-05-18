@@ -139,11 +139,11 @@ struct ImportView: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("IMPORT")
-                .font(.system(size: 11, weight: .semibold))
+                .captionSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Statements")
-                .font(.system(size: 28, weight: .bold))
+                .displayMedium()
             Text("Upload bank or credit card statements")
                 .font(.system(size: 12))
                 .foregroundStyle(.tertiary)
@@ -172,11 +172,11 @@ struct ImportView: View {
     private func importSuccessBanner(result: ImportResult) -> some View {
         HStack(spacing: AppSpacing.compact) {
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 14, weight: .semibold))
+                .bodyMedium()
                 .foregroundStyle(AppColors.credit)
             Text("Imported \(result.inserted) transaction\(result.inserted == 1 ? "" : "s")" +
                 (result.skipped > 0 ? " · \(result.skipped) skipped" : ""))
-                .font(.system(size: 13, weight: .medium))
+                .bodySmall()
                 .foregroundStyle(.primary)
             Spacer()
             Button(action: { viewModel.lastImportResult = nil }) {

@@ -28,7 +28,7 @@ struct CreateNewTargetSheet: View {
                 Button(action: { onCancel() }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .headingSmall()
-                        .foregroundColor(.gray)
+                        .foregroundStyle(AppColors.textSecondary)
                 })
             }
             .padding(AppSpacing.md)
@@ -37,160 +37,64 @@ struct CreateNewTargetSheet: View {
             Divider()
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Basic Information", style: .subheading)
+                VStack(alignment: .leading, spacing: AppSpacing.md) {
+                    FDSGlassSurface(cornerRadius: AppRadius.lg) {
+                        VStack(alignment: .leading, spacing: AppSpacing.md) {
+                            Text("BASIC INFORMATION")
+                                .font(.system(size: 10, weight: .semibold))
+                                .tracking(0.6)
+                                .foregroundStyle(.tertiary)
 
-                        VStack(spacing: 8) {
-                            inputField("Name (Optional)", text: $state.customName)
+                            VStack(spacing: AppSpacing.sm) {
+                                inputField("Name (Optional)", text: $state.customName)
 
-                            if !isCard {
-                                inputField("Owner Name", text: $state.ownerName)
-                            }
-
-                            if isCard {
-                                inputField("Nickname", text: $state.nickname)
-                            }
-
-                            inputField("Last 4 Digits", text: $state.last4)
-                                .onChange(of: state.last4) { _, newValue in
-                                    if newValue.count > 4 {
-                                        state.last4 = String(newValue.prefix(4))
-                                    }
+                                if !isCard {
+                                    inputField("Owner Name", text: $state.ownerName)
                                 }
 
-                            if isCard {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        HStack {
-                                            FDSLabel("Card Type", style: .hint)
-                                            Spacer()
-                                            Button(action: { autoDetectCardType() }) {
-                                                FDSLabel("Auto-detect", style: .caption, color: .secondary)
-                                            }
-                                            .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
-                                        }
-                                        Picker("Type", selection: $state.cardType) {
-                                            Text("Visa").tag("visa")
-                                            Text("Mastercard").tag("mastercard")
-                                            Text("American Express").tag("amex")
-                                            Text("Discover").tag("discover")
-                                            Text("Diners Club").tag("diners")
-                                            Text("Other").tag("other")
-                                        }
-                                        .pickerStyle(.menu)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    }
-                                    .padding(AppSpacing.xs)
-                                    .background(AppColors.surface2)
-                                    .cornerRadius(AppRadius.sm)
-
-                                    Button(action: { showCardSelection = true }) {
-                                        HStack {
-                                            Image(systemName: "creditcard.fill")
-                                                .labelSmall()
-                                            FDSLabel("Browse Card Database", style: .bodyMedium)
-                                            Spacer()
-                                            Image(systemName: "chevron.right")
-                                                .labelSmall()
-                                        }
-                                        .foregroundColor(AppColors.accent)
-                                        .padding(AppSpacing.xs)
-                                    }
+                                if isCard {
+                                    inputField("Nickname", text: $state.nickname)
                                 }
-                            }
 
-                            if !isCard {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    FDSLabel("Account Type", style: .hint)
-                                    Picker("Type", selection: $state.accountType) {
-                                        Text("Savings").tag("savings")
-                                        Text("Checking").tag("checking")
-                                        Text("Money Market").tag("money_market")
-                                        Text("Other").tag("other")
+                                inputField("Last 4 Digits", text: $state.last4)
+                                    .onChange(of: state.last4) { _, newValue in
+                                        if newValue.count > 4 {
+                                            state.last4 = String(newValue.prefix(4))
+                                        }
                                     }
-                                    .pickerStyle(.menu)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                                if isCard {
+                                    cardTypeField()
                                 }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
+
+                                if !isCard {
+                                    accountTypeField()
+                                }
                             }
                         }
                     }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Bank", style: .subheading)
+                    FDSGlassSurface(cornerRadius: AppRadius.lg) {
+                        VStack(alignment: .leading, spacing: AppSpacing.md) {
+                            Text("BANK & ACCOUNT")
+                                .font(.system(size: 10, weight: .semibold))
+                                .tracking(0.6)
+                                .foregroundStyle(.tertiary)
 
-                        VStack(spacing: 8) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Current Bank", style: .hint)
-                                HStack {
-                                    if let bank = selectedBank {
-                                        FDSLabel(bank.name, style: .caption)
-                                    } else {
-                                        FDSLabel(detectedBank, style: .caption)
-                                    }
-                                    Spacer()
-                                }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
-                            }
-
-                            if !banks.isEmpty {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    FDSLabel(
-                                        selectedBank == nil ? "Select Bank" : "Change Bank",
-                                        style: .labelSmall,
-                                        color: .secondary
-                                    )
-                                    Picker("Bank", selection: $state.selectedBankID) {
-                                        Text("Select Bank").tag(UUID?.none)
-                                        ForEach(banks) { bank in
-                                            Text(bank.name).tag(UUID?(bank.id))
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
-                            }
+                            bankField()
                         }
                     }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
                 }
                 .padding(AppSpacing.md)
             }
 
-            Divider()
+            Divider().opacity(0.3)
 
-            HStack(spacing: 12) {
-                Button(action: { onCancel() }, label: {
-                    FDSLabel("Cancel", style: .bodyLarge)
-                        .frame(maxWidth: .infinity)
-                })
-                .foregroundColor(.gray)
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface)
-                .cornerRadius(AppRadius.md)
-
-                Button(action: { onCreate() }, label: {
-                    FDSLabel("Create", style: .monoAmount)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                })
-                .padding(AppSpacing.sm)
-                .background(AppColors.accent)
-                .cornerRadius(AppRadius.md)
-                .disabled(state.last4.trimmingCharacters(in: .whitespaces).isEmpty)
+            HStack(spacing: AppSpacing.compact) {
+                FDSLiquidButton("Cancel", variant: .subtle) { onCancel() }
+                Spacer()
+                FDSLiquidButton("Create", variant: .primary) { onCreate() }
+                    .disabled(state.last4.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .padding(AppSpacing.md)
         }
@@ -224,5 +128,118 @@ struct CreateNewTargetSheet: View {
         let cardNumberToUse = !state.maskedCardNumber.isEmpty ? state.maskedCardNumber : state.last4
         let detectedType = BINParser.detectCardType(from: cardNumberToUse)
         state.cardType = detectedType
+    }
+
+    private func cardTypeField() -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            HStack {
+                Text("CARD NETWORK")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+                Spacer()
+                Button(action: { autoDetectCardType() }) {
+                    Text("Auto-detect")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(
+                            state.last4.trimmingCharacters(in: .whitespaces).count < 4
+                                ? AnyShapeStyle(.tertiary)
+                                : AnyShapeStyle(AppColors.accent)
+                        )
+                        .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
+                }
+                .buttonStyle(.plain)
+            }
+
+            Picker("", selection: $state.cardType) {
+                Text("Visa").tag("visa")
+                Text("Mastercard").tag("mastercard")
+                Text("American Express").tag("amex")
+                Text("Discover").tag("discover")
+                Text("Diners Club").tag("diners")
+                Text("Other").tag("other")
+            }
+            .pickerStyle(.menu)
+            .labelsHidden()
+
+            Button(action: { showCardSelection = true }) {
+                HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "creditcard.fill")
+                        .font(.system(size: 11, weight: .semibold))
+                    Text("Browse Card Database")
+                        .font(.system(size: 12, weight: .medium))
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .semibold))
+                }
+                .foregroundStyle(AppColors.accent)
+                .padding(.horizontal, AppSpacing.compact)
+                .padding(.vertical, 6)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func accountTypeField() -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text("ACCOUNT TYPE")
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+
+            Picker("", selection: $state.accountType) {
+                Text("Savings").tag("savings")
+                Text("Checking").tag("checking")
+                Text("Money Market").tag("money_market")
+                Text("Other").tag("other")
+            }
+            .pickerStyle(.menu)
+            .labelsHidden()
+        }
+    }
+
+    private func bankField() -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                Text("CURRENT BANK")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+
+                HStack {
+                    if let bank = selectedBank {
+                        Text(bank.name)
+                            .font(.system(size: 12, weight: .regular))
+                    } else {
+                        Text(detectedBank)
+                            .font(.system(size: 12, weight: .regular))
+                    }
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+                .padding(AppSpacing.xs)
+                .background(AppColors.surface2)
+                .cornerRadius(AppRadius.sm)
+            }
+
+            if !banks.isEmpty {
+                VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                    Text(selectedBank == nil ? "SELECT BANK" : "CHANGE BANK")
+                        .font(.system(size: 10, weight: .semibold))
+                        .tracking(0.6)
+                        .foregroundStyle(.tertiary)
+
+                    Picker("Bank", selection: $state.selectedBankID) {
+                        Text("Select Bank").tag(UUID?.none)
+                        ForEach(banks) { bank in
+                            Text(bank.name).tag(UUID?(bank.id))
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+        }
     }
 }

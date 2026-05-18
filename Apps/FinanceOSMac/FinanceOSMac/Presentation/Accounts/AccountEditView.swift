@@ -72,7 +72,7 @@ struct AccountEditView: View {
             FDSMerchantAvatar(name: account.displayName, symbol: "building.columns.fill", size: 32)
             VStack(alignment: .leading, spacing: 0) {
                 Text("Edit Account")
-                    .font(.system(size: 14, weight: .semibold))
+                    .bodyMedium()
                 Text(account.displayName)
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
@@ -80,7 +80,7 @@ struct AccountEditView: View {
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .semibold))
+                    .captionSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
@@ -142,7 +142,7 @@ struct AccountEditView: View {
                 Image(systemName: "trash.fill")
                     .font(.system(size: 12, weight: .semibold))
                 Text("Delete Account")
-                    .font(.system(size: 13, weight: .medium))
+                    .bodySmall()
                 Spacer()
             }
             .foregroundStyle(AppColors.debit)

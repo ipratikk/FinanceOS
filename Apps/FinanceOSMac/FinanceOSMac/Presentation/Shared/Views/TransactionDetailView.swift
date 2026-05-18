@@ -32,7 +32,7 @@ struct TransactionDetailView: View {
             )
             VStack(alignment: .leading, spacing: 0) {
                 Text("Transaction")
-                    .font(.system(size: 14, weight: .semibold))
+                    .bodyMedium()
                 Text(row.title)
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
@@ -41,7 +41,7 @@ struct TransactionDetailView: View {
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .semibold))
+                    .captionSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
@@ -64,7 +64,7 @@ struct TransactionDetailView: View {
                     .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
 
                 Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
-                    .font(.system(size: 14, weight: .semibold))
+                    .bodyMedium()
                     .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
             }
         }
@@ -95,7 +95,7 @@ struct TransactionDetailView: View {
                 .foregroundStyle(.tertiary)
             Spacer()
             Text(value)
-                .font(.system(size: 13, weight: .medium))
+                .bodySmall()
                 .foregroundStyle(.primary)
                 .multilineTextAlignment(.trailing)
         }

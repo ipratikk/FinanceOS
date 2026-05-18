@@ -59,11 +59,11 @@ struct BanksView: View {
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("INSTITUTIONS")
-                .font(.system(size: 11, weight: .semibold))
+                .captionSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Banks")
-                .font(.system(size: 28, weight: .bold))
+                .displayMedium()
         }
     }
 
@@ -77,7 +77,7 @@ struct BanksView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(bank.name)
-                    .font(.system(size: 13, weight: .medium))
+                    .bodySmall()
                 Text(bank.providerType.rawValue.capitalized)
                     .font(.system(size: 11, weight: .regular))
                     .foregroundStyle(.tertiary)
@@ -110,7 +110,7 @@ struct BanksView: View {
 
             VStack(spacing: AppSpacing.tight) {
                 Text("No Banks")
-                    .font(.system(size: 16, weight: .semibold))
+                    .bodyLarge()
                 Text("Add a bank when importing your first statement")
                     .font(.system(size: 12))
                     .foregroundStyle(.tertiary)

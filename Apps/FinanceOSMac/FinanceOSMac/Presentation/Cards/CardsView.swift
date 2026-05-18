@@ -88,11 +88,11 @@ struct CardsView: View {
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("CARDS")
-                .font(.system(size: 11, weight: .semibold))
+                .captionSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Credit Cards")
-                .font(.system(size: 28, weight: .bold))
+                .displayMedium()
         }
     }
 
@@ -142,7 +142,7 @@ struct CardsView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(.system(size: 13, weight: .medium))
+                    .bodySmall()
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
@@ -208,7 +208,7 @@ struct CardsView: View {
             .fill(.ultraThinMaterial)
             .overlay {
                 Image(systemName: "creditcard.fill")
-                    .font(.system(size: 14, weight: .semibold))
+                    .bodyMedium()
                     .foregroundStyle(.tertiary)
             }
     }
@@ -222,7 +222,7 @@ struct CardsView: View {
 
             VStack(spacing: AppSpacing.tight) {
                 Text("No Cards")
-                    .font(.system(size: 16, weight: .semibold))
+                    .bodyLarge()
                 Text("Import a statement to get started")
                     .font(.system(size: 12))
                     .foregroundStyle(.tertiary)

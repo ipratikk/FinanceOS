@@ -42,7 +42,7 @@ struct SidebarView: View {
 
             VStack(alignment: .leading, spacing: 0) {
                 Text("FinanceOS")
-                    .font(.system(size: 14, weight: .semibold))
+                    .bodyMedium()
                     .foregroundStyle(.primary)
                 Text("Personal")
                     .font(.system(size: 10, weight: .regular))
@@ -68,7 +68,7 @@ struct SidebarView: View {
                         .frame(width: 18)
 
                     Text("Import Statement")
-                        .font(.system(size: 12, weight: .medium))
+                        .labelSmall()
                         .foregroundStyle(.secondary)
 
                     Spacer()

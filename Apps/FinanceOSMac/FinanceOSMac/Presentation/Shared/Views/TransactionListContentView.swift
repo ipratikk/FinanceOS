@@ -96,7 +96,7 @@ struct TransactionListContentView: View {
                     ? "line.3.horizontal.decrease.circle.fill"
                     : "line.3.horizontal.decrease.circle"
                 )
-                .font(.system(size: 14, weight: .medium))
+                .bodyMedium()
                 .foregroundStyle(listState.isFilterActive ? AppColors.accent : .secondary)
             }
             .buttonStyle(.plain)
@@ -123,7 +123,7 @@ struct TransactionListContentView: View {
 
     private func sectionHeader(_ title: String) -> some View {
         Text(title.uppercased())
-            .font(.system(size: 11, weight: .semibold))
+            .captionSmall()
             .tracking(0.6)
             .foregroundStyle(.tertiary)
             .padding(.vertical, AppSpacing.compact)
@@ -176,7 +176,7 @@ struct TransactionListContentView: View {
 
             VStack(spacing: AppSpacing.tight) {
                 Text("No Transactions")
-                    .font(.system(size: 16, weight: .semibold))
+                    .bodyLarge()
                 Text(
                     listState.isFilterActive
                         ? "No transactions match your filters."

@@ -83,7 +83,7 @@ struct CardEditView: View {
             FDSMerchantAvatar(name: card.displayName, symbol: "creditcard.fill", size: 32)
             VStack(alignment: .leading, spacing: 0) {
                 Text("Edit Card")
-                    .font(.system(size: 14, weight: .semibold))
+                    .bodyMedium()
                 Text(card.displayName)
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
@@ -91,7 +91,7 @@ struct CardEditView: View {
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .semibold))
+                    .captionSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
@@ -137,9 +137,9 @@ struct CardEditView: View {
                 Button(action: { showCardSelection = true }) {
                     HStack(spacing: AppSpacing.compact) {
                         Image(systemName: "creditcard.fill")
-                            .font(.system(size: 11, weight: .semibold))
+                            .captionSmall()
                         Text("Browse Card Database")
-                            .font(.system(size: 12, weight: .medium))
+                            .labelSmall()
                         Spacer()
                         Image(systemName: "chevron.right")
                             .font(.system(size: 10, weight: .semibold))
@@ -189,7 +189,7 @@ struct CardEditView: View {
                 Image(systemName: "trash.fill")
                     .font(.system(size: 12, weight: .semibold))
                 Text("Delete Card")
-                    .font(.system(size: 13, weight: .medium))
+                    .bodySmall()
                 Spacer()
             }
             .foregroundStyle(AppColors.debit)

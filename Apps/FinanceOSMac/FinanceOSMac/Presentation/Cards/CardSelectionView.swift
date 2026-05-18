@@ -80,7 +80,7 @@ struct CardSelectionView: View {
                 Button(action: onDismiss) {
                     Image(systemName: "xmark.circle.fill")
                         .headingSmall()
-                        .foregroundColor(.gray)
+                        .foregroundStyle(AppColors.textSecondary)
                 }
             }
             .padding(AppSpacing.md)
@@ -104,7 +104,7 @@ struct CardSelectionView: View {
                             Image(systemName: "chevron.down")
                                 .font(.system(size: 10))
                         }
-                        .foregroundColor(.white)
+                        .foregroundStyle(AppColors.textPrimary)
                         .padding(AppSpacing.xs)
                         .background(AppColors.accent)
                         .cornerRadius(AppRadius.sm)

@@ -51,7 +51,7 @@ struct LedgerEditView: View {
                 Button(action: { dismiss() }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .headingSmall()
-                        .foregroundColor(.gray)
+                        .foregroundStyle(AppColors.textSecondary)
                 })
                 .accessibilityLabel("Close")
             }
@@ -65,7 +65,7 @@ struct LedgerEditView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("\(ledger.kind.displayName) Information")
                             .captionLarge()
-                            .foregroundColor(.gray)
+                            .foregroundStyle(AppColors.textSecondary)
 
                         VStack(spacing: 8) {
                             inputField("Display Name", text: $displayName)
@@ -118,7 +118,7 @@ struct LedgerEditView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Bank\(ledger.kind == .creditCard ? " & Account" : "")")
                             .captionLarge()
-                            .foregroundColor(.gray)
+                            .foregroundStyle(AppColors.textSecondary)
 
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
@@ -186,7 +186,7 @@ struct LedgerEditView: View {
                     FDSLabel("Cancel", style: .bodyLarge)
                         .frame(maxWidth: .infinity)
                 })
-                .foregroundColor(.gray)
+                .foregroundStyle(AppColors.textSecondary)
                 .padding(AppSpacing.sm)
                 .background(AppColors.surface)
                 .cornerRadius(AppRadius.md)
@@ -198,7 +198,7 @@ struct LedgerEditView: View {
                 }, label: {
                     FDSLabel("Save", style: .monoAmount)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
+                        .foregroundStyle(AppColors.textPrimary)
                 })
                 .padding(AppSpacing.sm)
                 .background(AppColors.accent)

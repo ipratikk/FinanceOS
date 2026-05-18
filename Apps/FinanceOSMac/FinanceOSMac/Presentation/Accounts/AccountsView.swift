@@ -85,11 +85,11 @@ struct AccountsView: View {
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("ACCOUNTS")
-                .font(.system(size: 11, weight: .semibold))
+                .captionSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Bank Accounts")
-                .font(.system(size: 28, weight: .bold))
+                .displayMedium()
         }
     }
 
@@ -138,7 +138,7 @@ struct AccountsView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(.system(size: 13, weight: .medium))
+                    .bodySmall()
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
@@ -156,7 +156,7 @@ struct AccountsView: View {
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.system(size: 11, weight: .semibold))
+                .captionSmall()
                 .foregroundStyle(.tertiary)
         }
         .padding(.horizontal, AppSpacing.md)
@@ -177,7 +177,7 @@ struct AccountsView: View {
 
             VStack(spacing: AppSpacing.tight) {
                 Text("No Accounts")
-                    .font(.system(size: 16, weight: .semibold))
+                    .bodyLarge()
                 Text("Import a statement to get started")
                     .font(.system(size: 12))
                     .foregroundStyle(.tertiary)

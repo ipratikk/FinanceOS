@@ -57,7 +57,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xl) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 Text("SETTINGS")
-                    .font(.system(size: 11, weight: .semibold))
+                    .captionSmall()
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
                 Text("Preferences")
@@ -101,7 +101,7 @@ struct SettingsView: View {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.system(size: 12, weight: .semibold))
                     Text("Clear All Data")
-                        .font(.system(size: 13, weight: .medium))
+                        .bodySmall()
                     Spacer()
                     Image(systemName: "chevron.right")
                         .font(.system(size: 10, weight: .semibold))
@@ -148,7 +148,7 @@ struct SettingsView: View {
 
     private func sectionTitle(_ title: String) -> some View {
         Text(title.uppercased())
-            .font(.system(size: 11, weight: .semibold))
+            .captionSmall()
             .tracking(0.6)
             .foregroundStyle(.tertiary)
     }
@@ -156,11 +156,11 @@ struct SettingsView: View {
     private func toggleRow(_ label: String, symbol: String, binding: Binding<Bool>) -> some View {
         HStack {
             Image(systemName: symbol)
-                .font(.system(size: 13, weight: .medium))
+                .bodySmall()
                 .foregroundStyle(.secondary)
                 .frame(width: 22)
             Text(label)
-                .font(.system(size: 13, weight: .medium))
+                .bodySmall()
             Spacer()
             Toggle("", isOn: binding)
                 .labelsHidden()
@@ -196,11 +196,11 @@ struct SettingsView: View {
         Button(action: {}) {
             HStack(spacing: AppSpacing.compact) {
                 Image(systemName: symbol)
-                    .font(.system(size: 12, weight: .medium))
+                    .labelSmall()
                     .foregroundStyle(AppColors.accent)
                     .frame(width: 22)
                 Text(label)
-                    .font(.system(size: 13, weight: .medium))
+                    .bodySmall()
                     .foregroundStyle(.primary)
                 Spacer()
                 Image(systemName: "arrow.up.right")

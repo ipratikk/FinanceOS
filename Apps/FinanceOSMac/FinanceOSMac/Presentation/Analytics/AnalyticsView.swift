@@ -61,11 +61,11 @@ struct AnalyticsView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text("ANALYTICS")
-                .font(.system(size: 11, weight: .semibold))
+                .captionSmall()
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Text("Spending Insights")
-                .font(.system(size: 28, weight: .bold))
+                .displayMedium()
         }
     }
 
@@ -132,7 +132,7 @@ struct AnalyticsView: View {
                         .symbolRenderingMode(.hierarchical)
                     VStack(spacing: AppSpacing.tight) {
                         Text("Coming Soon")
-                            .font(.system(size: 14, weight: .semibold))
+                            .bodyMedium()
                         Text("Auto-categorization with smart detection")
                             .font(.system(size: 11))
                             .foregroundStyle(.tertiary)

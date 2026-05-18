@@ -41,11 +41,11 @@ struct TransactionFilterView: View {
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
             Text("Filters")
-                .font(.system(size: 14, weight: .semibold))
+                .bodyMedium()
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .semibold))
+                    .captionSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
@@ -131,7 +131,7 @@ struct TransactionFilterView: View {
             Image(systemName: "exclamationmark.circle.fill")
                 .font(.system(size: 12, weight: .semibold))
             Text(message)
-                .font(.system(size: 12, weight: .medium))
+                .labelSmall()
             Spacer()
         }
         .foregroundStyle(AppColors.debit)
