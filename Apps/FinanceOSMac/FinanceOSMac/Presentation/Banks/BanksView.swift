@@ -71,7 +71,8 @@ struct BanksView: View {
         HStack(spacing: AppSpacing.md) {
             FDSMerchantAvatar(
                 name: bank.name,
-                symbol: "building.columns.fill",
+                symbol: bank.logoAssetName == nil ? "building.columns.fill" : nil,
+                imageName: bank.logoAssetName,
                 size: 36
             )
 

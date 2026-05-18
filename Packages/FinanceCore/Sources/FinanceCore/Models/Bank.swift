@@ -45,6 +45,16 @@ public extension Bank {
 }
 
 public extension Bank {
+    var logoAssetName: String? {
+        let lowerName = name.lowercased()
+        if lowerName.contains("hdfc") { return "hdfc-logo" }
+        if lowerName.contains("icici") { return "icici-logo" }
+        if lowerName.contains("amex") { return "amex-logo" }
+        return nil
+    }
+}
+
+public extension Bank {
     static let databaseTableName = "banks"
 
     static func createTable(

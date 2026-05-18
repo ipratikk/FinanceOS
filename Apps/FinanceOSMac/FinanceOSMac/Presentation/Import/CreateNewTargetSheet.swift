@@ -196,19 +196,12 @@ struct CreateNewTargetSheet: View {
 
     private func bankField() -> some View {
         let bankOptions = banks.map { bank in
-            let logoName: String? = {
-                let lowerName = bank.name.lowercased()
-                if lowerName.contains("hdfc") { return "hdfc-logo" }
-                if lowerName.contains("icici") { return "icici-logo" }
-                if lowerName.contains("amex") { return "amex-logo" }
-                return nil
-            }()
-            return FDSPickerOption(
+            FDSPickerOption(
                 id: bank.id,
                 value: bank.id,
                 title: bank.name,
-                symbol: logoName == nil ? "building.columns.fill" : nil,
-                imageName: logoName
+                symbol: bank.logoAssetName == nil ? "building.columns.fill" : nil,
+                imageName: bank.logoAssetName
             )
         }
 
