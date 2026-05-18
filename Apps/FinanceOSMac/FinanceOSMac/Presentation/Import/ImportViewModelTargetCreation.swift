@@ -16,7 +16,7 @@ extension ImportViewModel {
         customName: String? = nil,
         nickname: String = "",
         last4: String = "",
-        bankID: UUID? = nil,
+        selectedBank: Banks? = nil,
         ownerName: String = "",
         accountType: String = "savings",
         cardType: String = "other",
@@ -24,14 +24,14 @@ extension ImportViewModel {
         isCard: Bool? = nil
     ) async {
         guard let statement = importSession.parsedStatements.first else {
-            importSession.errorMessage = "No parsed statements available"
+            importSession.errorMessage = ImportError.importFailed(reason: "No parsed statements available").userMessage
             return
         }
 
         do {
             let bank = try await resolveOrCreateBank(
                 for: statement,
-                providedBankID: bankID
+                selectedBank: selectedBank
             )
             let params = TargetParams(
                 bank: bank,
@@ -55,22 +55,31 @@ extension ImportViewModel {
 
     private func resolveOrCreateBank(
         for statement: ParsedStatement,
-        providedBankID: UUID?
+        selectedBank: Banks?
     ) async throws -> Bank {
-        let detectedBankName = statement.bankName
-        if let providedBankID,
-           let found = try await bankRepository.fetchBanks()
-           .first(where: { $0.id == providedBankID })
-        {
-            return found
+        if let bankCase = selectedBank {
+            let existingBanks = try await bankRepository.fetchBanks()
+            if let existing = existingBanks.first(where: { $0.bank == bankCase }) {
+                return existing
+            }
+            let newBank = Bank(bank: bankCase)
+            try await bankRepository.insert(newBank)
+            return newBank
         }
+        let detectedBankName = statement.bankName
         let existingBanks = try await bankRepository.fetchBanks()
         if let existingBank = existingBanks.first(where: { $0.name == detectedBankName }) {
             return existingBank
         }
-        let newBank = Bank(name: detectedBankName, providerType: .bank)
-        try await bankRepository.insert(newBank)
-        return newBank
+        let matchingBankCase = Banks.allCases.first { bankCase in
+            ImportFormatting.fuzzyMatch(bankCase.displayName, detectedBankName)
+        }
+        if let bankCase = matchingBankCase {
+            let newBank = Bank(bank: bankCase)
+            try await bankRepository.insert(newBank)
+            return newBank
+        }
+        throw BankResolutionError(detected: detectedBankName)
     }
 
     private func createCard(

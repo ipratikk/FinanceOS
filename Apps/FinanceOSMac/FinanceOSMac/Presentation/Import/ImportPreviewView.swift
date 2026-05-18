@@ -49,7 +49,6 @@ struct ImportPreviewView: View {
                     get: { viewModel.importSession.targetBeingCreated ?? TargetCreationState() },
                     set: { viewModel.importSession.targetBeingCreated = $0 }
                 ),
-                banks: viewModel.banks,
                 detectedBank: viewModel.importSession.currentParsedStatement?.bankName ?? "Unknown",
                 onCancel: {
                     viewModel.importSession.targetBeingCreated = nil
@@ -61,7 +60,7 @@ struct ImportPreviewView: View {
                                 customName: state.customName,
                                 nickname: state.nickname,
                                 last4: state.last4,
-                                bankID: state.selectedBankID,
+                                selectedBank: state.selectedBank,
                                 ownerName: state.ownerName,
                                 accountType: state.accountType,
                                 cardType: state.cardType,

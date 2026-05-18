@@ -19,12 +19,7 @@ enum DatabaseSeeder {
             return
         }
 
-        let banks = [
-            Bank(name: "HDFC", providerType: .bank),
-            Bank(name: "ICICI", providerType: .bank),
-            Bank(name: "Amex", providerType: .credit),
-            Bank(name: "Scapia", providerType: .bank)
-        ]
+        let banks = Banks.allCases.map { Bank(bank: $0) }
 
         for bank in banks {
             try bank.insert(database)

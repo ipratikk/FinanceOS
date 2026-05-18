@@ -54,3 +54,21 @@ public extension FinanceError {
         nil
     }
 }
+
+// MARK: - Bank Errors
+
+public struct BankResolutionError: FinanceError, Sendable {
+    public let category = ErrorCategory.matching
+    public let severity: ErrorSeverity
+    public let technicalMessage: String
+    public let userMessage: String
+    public let recoverySuggestion: String?
+    public let isRetryable = true
+
+    public init(detected: String) {
+        technicalMessage = "Could not match detected bank '\(detected)' to known institution"
+        userMessage = "Unable to identify bank '\(detected)'. Please select one from the list."
+        recoverySuggestion = "Select a bank manually from the available options"
+        severity = .error
+    }
+}

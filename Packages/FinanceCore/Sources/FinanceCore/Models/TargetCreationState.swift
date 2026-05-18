@@ -8,7 +8,7 @@ public struct TargetCreationState: Identifiable {
     public var last4: String = ""
     public var maskedCardNumber: String = ""
     public var ownerName: String = ""
-    public var selectedBankID: UUID?
+    public var selectedBank: Banks?
     public var isCard: Bool = false
     public var accountType: String = "savings"
     public var cardType: String = "other"

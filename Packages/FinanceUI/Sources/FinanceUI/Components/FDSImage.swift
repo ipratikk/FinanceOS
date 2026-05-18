@@ -31,19 +31,20 @@ public struct FDSImage: View {
                 Image(imageName)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: width * 0.7, height: height * 0.7)
+                    .frame(width: width, height: height)
+                    .clipped()
             } else if let symbol = fallbackSymbol, !symbol.isEmpty {
                 Image(systemName: symbol)
                     .resizable()
                     .scaledToFit()
+                    .frame(width: width, height: height)
                     .foregroundStyle(.secondary)
             } else {
-                // Ensure there's always some content so type inference succeeds
                 Rectangle()
                     .fill(Color.clear)
+                    .frame(width: width, height: height)
             }
         }
         .frame(width: width, height: height)
-        .clipped()
     }
 }

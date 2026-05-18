@@ -30,58 +30,37 @@ struct BanksView: View {
     private var banksList: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                listHeader
+                VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                    FDSLabel("INSTITUTIONS", style: .labelSmall)
+                    FDSLabel("Banks", style: .displayMedium)
+                }
+                .padding(.horizontal, AppSpacing.xl)
 
-                VStack(spacing: 0) {
-                    ForEach(Array(viewModel.banks.enumerated()), id: \.element.id) { index, bank in
+                VStack(spacing: AppSpacing.md) {
+                    ForEach(viewModel.banks) { bank in
                         bankRow(bank)
-                        if index < viewModel.banks.count - 1 {
-                            Divider()
-                                .opacity(0.3)
-                                .padding(.leading, 64)
-                        }
                     }
                 }
-                .background {
-                    RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                                .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
-                        }
-                }
+                .padding(.horizontal, AppSpacing.xl)
+
+                Spacer()
             }
-            .padding(.horizontal, AppSpacing.xl)
             .padding(.vertical, AppSpacing.xl)
         }
     }
 
-    private var listHeader: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            Text("INSTITUTIONS")
-                .labelSmall()
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
-            Text("Banks")
-                .displayMedium()
-        }
-    }
-
     private func bankRow(_ bank: Bank) -> some View {
-        HStack(spacing: AppSpacing.md) {
-            FDSMerchantAvatar(
-                name: bank.name,
-                symbol: "building.columns.fill",
+        HStack(spacing: AppSpacing.lg) {
+            FDSImage(
                 imageName: bank.logoAssetName,
-                size: 36
+                fallbackSymbol: "building.columns.fill",
+                height: 48,
+                width: 100
             )
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(bank.name)
-                    .caption()
-                Text(bank.providerType.rawValue.capitalized)
-                    .font(.system(size: 11, weight: .regular))
-                    .foregroundStyle(.tertiary)
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                FDSLabel(bank.name, style: .bodyLarge)
+                FDSLabel(bank.providerType.rawValue.capitalized, style: .caption, color: .secondary)
             }
 
             Spacer()
@@ -90,16 +69,22 @@ struct BanksView: View {
                 Button("Edit") { navigator.present(.bankEdit(bank)) }
             } label: {
                 Image(systemName: "ellipsis")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.tertiary)
-                    .frame(width: 28, height: 28)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 32, height: 32)
             }
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
-            .fixedSize()
         }
-        .padding(.horizontal, AppSpacing.md)
-        .padding(.vertical, AppSpacing.compact)
+        .padding(AppSpacing.lg)
+        .background {
+            RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay {
+                    RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                }
+        }
     }
 
     private var emptyState: some View {
@@ -121,38 +106,53 @@ struct BanksView: View {
     }
 
     private var loadingState: some View {
-        ScrollView {
-            VStack(spacing: AppSpacing.compact) {
-                ForEach(0 ..< 3, id: \.self) { _ in
-                    skeletonRow
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                    FDSLabel("INSTITUTIONS", style: .labelSmall)
+                    FDSLabel("Banks", style: .displayMedium)
                 }
+                .padding(.horizontal, AppSpacing.xl)
+
+                VStack(spacing: AppSpacing.md) {
+                    ForEach(0 ..< 3, id: \.self) { _ in
+                        skeletonRow
+                    }
+                }
+                .padding(.horizontal, AppSpacing.xl)
+
+                Spacer()
             }
-            .padding(.horizontal, AppSpacing.xl)
             .padding(.vertical, AppSpacing.xl)
         }
     }
 
     private var skeletonRow: some View {
-        HStack(spacing: AppSpacing.md) {
-            Circle()
+        HStack(spacing: AppSpacing.lg) {
+            RoundedRectangle(cornerRadius: 6)
                 .fill(Color.white.opacity(0.04))
-                .frame(width: 36, height: 36)
-            VStack(alignment: .leading, spacing: 4) {
+                .frame(width: 100, height: 48)
+
+            VStack(alignment: .leading, spacing: 6) {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.white.opacity(0.04))
+                    .frame(height: 13)
+                    .frame(maxWidth: 180)
                 RoundedRectangle(cornerRadius: 3)
                     .fill(Color.white.opacity(0.04))
                     .frame(height: 11)
-                    .frame(maxWidth: 160)
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(Color.white.opacity(0.04))
-                    .frame(height: 9)
-                    .frame(maxWidth: 110)
+                    .frame(maxWidth: 120)
             }
             Spacer()
         }
-        .padding(AppSpacing.md)
+        .padding(AppSpacing.lg)
         .background {
-            RoundedRectangle(cornerRadius: AppRadius.lg)
+            RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
                 .fill(.ultraThinMaterial)
+                .overlay {
+                    RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                }
         }
     }
 }

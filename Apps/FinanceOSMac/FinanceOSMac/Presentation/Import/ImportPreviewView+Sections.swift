@@ -89,10 +89,10 @@ extension ImportPreviewView {
         state.initializeFromStatement(statement)
 
         let detected = statement.bankName.isEmpty ? "Unknown" : statement.bankName
-        let matchingBank = viewModel.banks.first { bank in
-            ImportFormatting.fuzzyMatch(bank.name, detected)
+        let matchingBankCase = Banks.allCases.first { bankCase in
+            ImportFormatting.fuzzyMatch(bankCase.displayName, detected)
         }
-        state.selectedBankID = matchingBank?.id
+        state.selectedBank = matchingBankCase
 
         viewModel.importSession.targetBeingCreated = state
     }
