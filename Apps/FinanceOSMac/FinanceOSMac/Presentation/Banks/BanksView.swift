@@ -98,7 +98,7 @@ struct BanksView: View {
                         ForEach(ledgers) { ledger in
                             HStack(spacing: AppSpacing.compact) {
                                 Image(systemName: ledger.kind == .creditCard ? "creditcard.fill" : "banknote.fill")
-                                    .font(.system(size: 11, weight: .semibold))
+                                    .font(AppTypography.captionSmSemibold)
                                     .foregroundStyle(.secondary)
                                 FDSLabel(ledger.displayName, style: .caption, color: .secondary)
                             }

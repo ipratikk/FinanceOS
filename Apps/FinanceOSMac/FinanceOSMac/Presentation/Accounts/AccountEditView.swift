@@ -74,7 +74,7 @@ struct AccountEditView: View {
                 Text("Edit Account")
                     .bodyMedium()
                 Text(account.displayName)
-                    .font(.system(size: 11))
+                    .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
             }
             Spacer()
@@ -96,7 +96,7 @@ struct AccountEditView: View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 Text("ACCOUNT INFORMATION")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
@@ -142,7 +142,7 @@ struct AccountEditView: View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 Text("BANK & NICKNAME")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
@@ -174,7 +174,7 @@ struct AccountEditView: View {
         Button(action: { showDeleteConfirm = true }) {
             HStack(spacing: AppSpacing.compact) {
                 Image(systemName: "trash.fill")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                 Text("Delete Account")
                     .caption()
                 Spacer()
@@ -227,7 +227,7 @@ struct AccountEditView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+                .font(AppTypography.labelSemibold)
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             content()

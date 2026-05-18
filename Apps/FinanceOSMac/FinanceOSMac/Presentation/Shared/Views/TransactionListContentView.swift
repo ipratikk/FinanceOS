@@ -221,7 +221,7 @@ struct TransactionListContentView: View {
     private var emptyState: some View {
         VStack(spacing: AppSpacing.md) {
             Image(systemName: "list.bullet")
-                .font(.system(size: 48, weight: .light))
+                .font(AppTypography.headingXLLight)
                 .foregroundStyle(.tertiary)
                 .symbolRenderingMode(.hierarchical)
 

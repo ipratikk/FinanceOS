@@ -59,6 +59,7 @@ public enum AppTypography {
     // MARK: - Heading (Large Display)
 
     public static let headingXL = Font.system(size: 48, weight: .semibold, design: .default)
+    public static let headingXLLight = Font.system(size: 48, weight: .light, design: .default)
     public static let headingLg = Font.system(size: 44, weight: .bold, design: .default)
     public static let headingMd = Font.system(size: 40, weight: .semibold, design: .default)
 
