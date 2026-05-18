@@ -146,7 +146,7 @@ struct CreateNewTargetSheet: View {
                     set: { if let value = $0 { state.cardType = value } }
                 ),
                 options: cardTypeOptions,
-                variant: .logoOnly,
+                variant: .symbolText,
                 placeholder: "Select network"
             )
 
@@ -169,10 +169,30 @@ struct CreateNewTargetSheet: View {
 
     private func accountTypeField() -> some View {
         let accountTypeOptions = [
-            FDSPickerOption(id: "savings", value: "savings", title: "Savings"),
-            FDSPickerOption(id: "checking", value: "checking", title: "Checking"),
-            FDSPickerOption(id: "money_market", value: "money_market", title: "Money Market"),
-            FDSPickerOption(id: "other", value: "other", title: "Other")
+            FDSPickerOption(
+                id: "savings",
+                value: "savings",
+                title: "Savings",
+                symbol: "building.columns.fill"
+            ),
+            FDSPickerOption(
+                id: "checking",
+                value: "checking",
+                title: "Checking",
+                symbol: "checkmark.rectangle.fill"
+            ),
+            FDSPickerOption(
+                id: "money_market",
+                value: "money_market",
+                title: "Money Market",
+                symbol: "chart.line.uptrend.xyaxis"
+            ),
+            FDSPickerOption(
+                id: "other",
+                value: "other",
+                title: "Other",
+                symbol: "banknote.fill"
+            )
         ]
 
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
@@ -184,7 +204,7 @@ struct CreateNewTargetSheet: View {
                     set: { if let value = $0 { state.accountType = value } }
                 ),
                 options: accountTypeOptions,
-                variant: .textOnly,
+                variant: .symbolText,
                 placeholder: "Select type"
             )
         }
@@ -196,42 +216,19 @@ struct CreateNewTargetSheet: View {
                 id: bankCase.rawValue,
                 value: bankCase,
                 title: bankCase.displayName,
-                symbol: "building.columns.fill",
                 imageName: bankCase.symbolAssetName
             )
         }
 
-        return VStack(alignment: .leading, spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("Current Bank", style: .hint)
+        return VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            FDSLabel("Bank", style: .hint)
 
-                HStack {
-                    if let selected = selectedBankCase {
-                        FDSLabel(selected.displayName, style: .caption)
-                    } else {
-                        FDSLabel(detectedBank, style: .caption)
-                    }
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity)
-                .padding(AppSpacing.xs)
-                .background(AppColors.surface2)
-                .cornerRadius(AppRadius.sm)
-            }
-
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel(
-                    selectedBankCase == nil ? "Select Bank" : "Change Bank",
-                    style: .hint
-                )
-
-                FDSPicker(
-                    selection: $selectedBankCase,
-                    options: bankOptions,
-                    variant: .textOnly,
-                    placeholder: "Select bank"
-                )
-            }
+            FDSPicker(
+                selection: $selectedBankCase,
+                options: bankOptions,
+                variant: .symbolText,
+                placeholder: detectedBank.isEmpty ? "Select bank" : "Detected: \(detectedBank)"
+            )
         }
     }
 }
