@@ -25,11 +25,11 @@ struct FDSPickerRow: View {
 
     private var symbolTextVariant: some View {
         HStack(spacing: AppSpacing.compact) {
-            FDSMerchantAvatar(
-                name: option.title,
-                symbol: option.symbol,
+            FDSImage(
                 imageName: option.imageName,
-                size: 28
+                fallbackSymbol: option.symbol,
+                height: 28,
+                width: 28
             )
 
             VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
@@ -63,11 +63,11 @@ struct FDSPickerRow: View {
 
     private var symbolOnlyVariant: some View {
         VStack(spacing: AppSpacing.sm) {
-            FDSMerchantAvatar(
-                name: option.title,
-                symbol: option.symbol,
+            FDSImage(
                 imageName: option.imageName,
-                size: 36
+                fallbackSymbol: option.symbol,
+                height: 36,
+                width: 36
             )
 
             FDSLabel(option.title, style: .caption)
