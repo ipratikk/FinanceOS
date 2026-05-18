@@ -153,7 +153,7 @@ struct SettingsView: View {
 
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
-            .font(AppTypography.headlineSmall)
+            .font(AppTypography.headlineSm)
             .foregroundStyle(.primary)
     }
 

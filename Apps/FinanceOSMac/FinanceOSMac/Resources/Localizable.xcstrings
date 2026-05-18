@@ -45,6 +45,16 @@
     "%lld already imported" : {
 
     },
+    "%lld card%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld card%2$@"
+          }
+        }
+      }
+    },
     "%lld txns" : {
 
     },
@@ -109,6 +119,9 @@
     "Amount" : {
 
     },
+    "Analytics" : {
+
+    },
     "ANALYTICS" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -126,7 +139,7 @@
     "Auto-categorization with smart detection" : {
 
     },
-    "BALANCE" : {
+    "Balance" : {
 
     },
     "Bank" : {
@@ -218,7 +231,7 @@
         }
       }
     },
-    "CARDS" : {
+    "Categories" : {
 
     },
     "Change" : {
@@ -414,6 +427,9 @@
         }
       }
     },
+    "Drop Files Here" : {
+
+    },
     "Edit %@" : {
 
     },
@@ -465,6 +481,12 @@
         }
       }
     },
+    "Highest outflow activity" : {
+
+    },
+    "Import" : {
+
+    },
     "IMPORT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -493,6 +515,9 @@
     "Import To" : {
 
     },
+    "Inflows" : {
+
+    },
     "Inflows vs outflows over time" : {
 
     },
@@ -517,6 +542,12 @@
 
     },
     "Loading…" : {
+
+    },
+    "Manage and track your cards" : {
+
+    },
+    "Manage connected institutions" : {
 
     },
     "Manage your accounts and balances" : {
@@ -626,6 +657,9 @@
     "Operation Failed" : {
 
     },
+    "Outflows" : {
+
+    },
     "Parsing file %lld of %lld..." : {
       "localizations" : {
         "en" : {
@@ -649,6 +683,9 @@
 
     },
     "Recent Activity" : {
+
+    },
+    "Release to import" : {
 
     },
     "Reset" : {
@@ -685,7 +722,7 @@
     "Select Card" : {
 
     },
-    "SETTINGS" : {
+    "Settings" : {
 
     },
     "Source" : {
@@ -703,6 +740,9 @@
       }
     },
     "Spending Trend" : {
+
+    },
+    "Spending trends and merchant insights" : {
 
     },
     "Statements" : {
