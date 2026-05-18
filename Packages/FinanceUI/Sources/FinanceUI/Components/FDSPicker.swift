@@ -38,6 +38,7 @@ public struct FDSPicker<V: Hashable>: View {
                     }) {
                         FDSPickerRow(option: option, variant: variant, isSelected: isSelected)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     if option.id != options.last?.id {
@@ -52,29 +53,31 @@ public struct FDSPicker<V: Hashable>: View {
 
     private var triggerView: some View {
         Button(action: { isOpen.toggle() }) {
-            FDSGlassSurface(elevation: .chip, cornerRadius: AppRadius.md) {
-                HStack(spacing: AppSpacing.compact) {
-                    if let selectedValue = selection,
-                       let selectedOption = options.first(where: { ($0.value as? V) == selectedValue })
-                    {
-                        FDSPickerRow(option: selectedOption, variant: variant, isSelected: true)
-                            .padding(.vertical, AppSpacing.compact)
-                            .padding(.horizontal, AppSpacing.md)
-                    } else {
-                        HStack(spacing: AppSpacing.compact) {
-                            FDSLabel(placeholder, style: .hint)
-                            Spacer()
-                        }
-                        .padding(.vertical, AppSpacing.compact)
-                        .padding(.horizontal, AppSpacing.md)
-                    }
-
-                    Image(systemName: "chevron.up.chevron.down")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(AppColors.textTertiary)
-                        .padding(.trailing, AppSpacing.compact)
+            HStack(spacing: AppSpacing.compact) {
+                if let selectedValue = selection,
+                   let selectedOption = options.first(where: { ($0.value as? V) == selectedValue })
+                {
+                    FDSPickerRow(option: selectedOption, variant: variant, isSelected: false)
+                } else {
+                    FDSLabel(placeholder, style: .hint)
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(AppColors.textTertiary)
+                    .padding(.trailing, AppSpacing.compact)
+            }
+            .padding(.vertical, AppSpacing.compact)
+            .padding(.horizontal, AppSpacing.md)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                    }
             }
         }
         .buttonStyle(.plain)
