@@ -77,3 +77,13 @@ custom_rules:
     message: "Use AppSpacing tokens (xs, sm, md, lg, xl, xxl)"
     severity: warning
     excluded: "Tests"
+
+  # Text() only allowed in Picker selections, use FDSLabel everywhere else
+  direct_text_in_bodies:
+    name: "Direct Text() outside Picker"
+    description: "Use FDSLabel for text display, Text() only in Picker selections"
+    regex: "(VStack|HStack|ZStack|ScrollView|Group).*Text\\("
+    message: "Use FDSLabel instead of Text() for display text"
+    severity: warning
+    excluded: "Tests|Previews"
+

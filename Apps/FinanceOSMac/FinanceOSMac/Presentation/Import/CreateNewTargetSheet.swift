@@ -40,10 +40,7 @@ struct CreateNewTargetSheet: View {
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
                     FDSGlassSurface(cornerRadius: AppRadius.lg) {
                         VStack(alignment: .leading, spacing: AppSpacing.md) {
-                            Text("BASIC INFORMATION")
-                                .font(.system(size: 10, weight: .semibold))
-                                .tracking(0.6)
-                                .foregroundStyle(.tertiary)
+                            FDSLabel("BASIC INFORMATION", style: .subheading)
 
                             VStack(spacing: AppSpacing.sm) {
                                 inputField("Name (Optional)", text: $state.customName)
@@ -76,10 +73,7 @@ struct CreateNewTargetSheet: View {
 
                     FDSGlassSurface(cornerRadius: AppRadius.lg) {
                         VStack(alignment: .leading, spacing: AppSpacing.md) {
-                            Text("BANK & ACCOUNT")
-                                .font(.system(size: 10, weight: .semibold))
-                                .tracking(0.6)
-                                .foregroundStyle(.tertiary)
+                            FDSLabel("BANK & ACCOUNT", style: .subheading)
 
                             bankField()
                         }
@@ -133,22 +127,12 @@ struct CreateNewTargetSheet: View {
     private func cardTypeField() -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             HStack {
-                Text("CARD NETWORK")
-                    .font(.system(size: 10, weight: .semibold))
-                    .tracking(0.6)
-                    .foregroundStyle(.tertiary)
+                FDSLabel("Card Network", style: .hint)
                 Spacer()
                 Button(action: { autoDetectCardType() }) {
-                    Text("Auto-detect")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundStyle(
-                            state.last4.trimmingCharacters(in: .whitespaces).count < 4
-                                ? AnyShapeStyle(.tertiary)
-                                : AnyShapeStyle(AppColors.accent)
-                        )
-                        .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
+                    FDSLabel("Auto-detect", style: .caption, color: .secondary)
                 }
-                .buttonStyle(.plain)
+                .disabled(state.last4.trimmingCharacters(in: .whitespaces).count < 4)
             }
 
             Picker("", selection: $state.cardType) {
@@ -166,8 +150,7 @@ struct CreateNewTargetSheet: View {
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: "creditcard.fill")
                         .font(.system(size: 11, weight: .semibold))
-                    Text("Browse Card Database")
-                        .font(.system(size: 12, weight: .medium))
+                    FDSLabel("Browse Card Database", style: .bodyMedium)
                     Spacer()
                     Image(systemName: "chevron.right")
                         .font(.system(size: 10, weight: .semibold))
@@ -182,10 +165,7 @@ struct CreateNewTargetSheet: View {
 
     private func accountTypeField() -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            Text("ACCOUNT TYPE")
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
+            FDSLabel("Account Type", style: .hint)
 
             Picker("", selection: $state.accountType) {
                 Text("Savings").tag("savings")
@@ -201,18 +181,13 @@ struct CreateNewTargetSheet: View {
     private func bankField() -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                Text("CURRENT BANK")
-                    .font(.system(size: 10, weight: .semibold))
-                    .tracking(0.6)
-                    .foregroundStyle(.tertiary)
+                FDSLabel("Current Bank", style: .hint)
 
                 HStack {
                     if let bank = selectedBank {
-                        Text(bank.name)
-                            .font(.system(size: 12, weight: .regular))
+                        FDSLabel(bank.name, style: .caption)
                     } else {
-                        Text(detectedBank)
-                            .font(.system(size: 12, weight: .regular))
+                        FDSLabel(detectedBank, style: .caption)
                     }
                     Spacer()
                 }
@@ -224,10 +199,10 @@ struct CreateNewTargetSheet: View {
 
             if !banks.isEmpty {
                 VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                    Text(selectedBank == nil ? "SELECT BANK" : "CHANGE BANK")
-                        .font(.system(size: 10, weight: .semibold))
-                        .tracking(0.6)
-                        .foregroundStyle(.tertiary)
+                    FDSLabel(
+                        selectedBank == nil ? "Select Bank" : "Change Bank",
+                        style: .hint
+                    )
 
                     Picker("Bank", selection: $state.selectedBankID) {
                         Text("Select Bank").tag(UUID?.none)
