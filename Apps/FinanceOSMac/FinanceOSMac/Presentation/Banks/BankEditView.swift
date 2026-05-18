@@ -8,8 +8,6 @@ struct BankEditView: View {
     @State private var name: String
     @State private var providerType: BankProviderType
     @Environment(\.dismiss) var dismiss
-    @Environment(AppNavigator.self) private var navigator
-
     @State private var showDeleteConfirm = false
 
     init(bank: Bank, context: BankEditContext) {
@@ -20,102 +18,22 @@ struct BankEditView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                FDSLabel("Edit Bank", style: .headingMedium)
-                Spacer()
-                Button(action: { dismiss() }, label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .headingSmall()
-                        .foregroundColor(.gray)
-                })
-                .accessibilityLabel("Close")
-            }
-            .padding(AppSpacing.md)
-            .background(AppColors.base)
+        VStack(spacing: 0) {
+            header
+            Divider().opacity(0.3)
 
-            Divider()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Bank Information", style: .subheading)
-
-                        VStack(spacing: 8) {
-                            inputField("Name", text: $name)
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Provider Type", style: .hint)
-                                Picker("Type", selection: $providerType) {
-                                    ForEach(BankProviderType.allCases, id: \.self) { type in
-                                        Text(type.rawValue.capitalized).tag(type)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
-                        }
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(spacing: 8) {
-                        Button(action: { showDeleteConfirm = true }, label: {
-                            HStack {
-                                Image(systemName: "trash.fill")
-                                    .labelSmall()
-                                FDSLabel("Delete Bank", style: .bodyLarge)
-                                Spacer()
-                            }
-                        })
-                        .foregroundColor(AppColors.debit)
-                        .padding(AppSpacing.sm)
-                        .frame(maxWidth: .infinity)
-                        .background(AppColors.debit.opacity(0.1))
-                        .cornerRadius(AppRadius.md)
-                    }
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                    bankIdentitySection
+                    deleteSection
                 }
-                .padding(AppSpacing.md)
+                .padding(AppSpacing.xl)
             }
 
-            Divider()
-
-            HStack(spacing: 12) {
-                Button("Cancel", action: { dismiss() })
-                    .foregroundColor(.gray)
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-                    .frame(maxWidth: .infinity)
-
-                Button(action: {
-                    Task {
-                        let updated = Bank(
-                            id: bank.id,
-                            name: name,
-                            providerType: providerType
-                        )
-                        await context.updateBank(updated)
-                        if context.deleteError == nil {
-                            dismiss()
-                        }
-                    }
-                }, label: {
-                    FDSLabel("Save", style: .monoAmount)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                })
-                .padding(AppSpacing.sm)
-                .background(AppColors.accent)
-                .cornerRadius(AppRadius.md)
-            }
-            .padding(AppSpacing.md)
+            Divider().opacity(0.3)
+            footer
         }
-        .frame(maxHeight: .infinity, alignment: .topLeading)
+        .frame(width: 480, height: 520)
         .background(AppColors.base)
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
@@ -128,8 +46,7 @@ struct BankEditView: View {
                 }
             }
         } message: {
-            Text("This will delete this bank and all associated cards, " +
-                "accounts, and transactions. This cannot be undone.")
+            Text("This will delete this bank and all associated cards, accounts, and transactions.")
         }
         .alert("Delete Failed", isPresented: Binding(
             get: { context.deleteError != nil },
@@ -143,13 +60,106 @@ struct BankEditView: View {
         }
     }
 
-    private func inputField(_ label: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            FDSLabel(label, style: .hint)
-            FDSTextInput("", text: text, style: .bodyMedium)
-                .padding(AppSpacing.xs)
-                .background(AppColors.surface2)
-                .cornerRadius(AppRadius.sm)
+    private var header: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSMerchantAvatar(name: bank.name, symbol: "building.columns.fill", size: 32)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Edit Bank")
+                    .font(.system(size: 14, weight: .semibold))
+                Text(bank.name)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+            }
+            Spacer()
+            Button(action: { dismiss() }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 22, height: 22)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(AppSpacing.md)
+    }
+
+    private var bankIdentitySection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader("Bank Information")
+
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                field("Name") {
+                    FDSTextInput("Bank name", text: $name)
+                }
+                field("Provider Type") {
+                    Picker("", selection: $providerType) {
+                        ForEach(BankProviderType.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                }
+            }
+            .padding(AppSpacing.md)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                    }
+            }
+        }
+    }
+
+    private var deleteSection: some View {
+        Button(action: { showDeleteConfirm = true }) {
+            HStack(spacing: AppSpacing.compact) {
+                Image(systemName: "trash.fill")
+                    .font(.system(size: 12, weight: .semibold))
+                Text("Delete Bank")
+                    .font(.system(size: 13, weight: .medium))
+                Spacer()
+            }
+            .foregroundStyle(AppColors.debit)
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.compact)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                    .fill(AppColors.debit.opacity(0.12))
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var footer: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSLiquidButton("Cancel", variant: .subtle) { dismiss() }
+            Spacer()
+            FDSLiquidButton("Save", variant: .primary) {
+                Task {
+                    let updated = Bank(id: bank.id, name: name, providerType: providerType)
+                    await context.updateBank(updated)
+                    if context.deleteError == nil {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .padding(AppSpacing.md)
+    }
+
+    private func field(
+        _ label: String,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            content()
         }
     }
 }

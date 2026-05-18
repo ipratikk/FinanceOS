@@ -12,7 +12,6 @@ struct CardEditView: View {
     @State private var bankId: UUID
     @State private var linkedLedgerId: UUID?
     @Environment(\.dismiss) var dismiss
-
     @State private var showDeleteConfirm = false
     @State private var showCardSelection = false
 
@@ -28,198 +27,34 @@ struct CardEditView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                FDSLabel("Edit Card", style: .headingMedium)
-                Spacer()
-                Button(action: { dismiss() }, label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .headingSmall()
-                        .foregroundColor(.gray)
-                })
-                .accessibilityLabel("Close")
-            }
-            .padding(AppSpacing.md)
-            .background(AppColors.base)
+        VStack(spacing: 0) {
+            header
+            Divider().opacity(0.3)
 
-            Divider()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Card Information", style: .subheading)
-
-                        VStack(spacing: 8) {
-                            inputField("Card Name", text: $displayName)
-                            inputField("Last 4 Digits", text: $last4)
-                                .onChange(of: last4) { _, newValue in
-                                    if newValue.count > 4 {
-                                        last4 = String(newValue.prefix(4))
-                                    }
-                                }
-
-                            VStack(alignment: .leading, spacing: 8) {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    HStack {
-                                        FDSLabel("Card Network", style: .hint)
-                                        Spacer()
-                                        Button(action: { autoDetectCardType() }) {
-                                            FDSLabel("Auto-detect", style: .caption, color: .secondary)
-                                        }
-                                        .disabled(last4.trimmingCharacters(in: .whitespaces).count < 4)
-                                    }
-                                    Picker("Network", selection: $cardType) {
-                                        Text("Visa").tag("visa")
-                                        Text("Mastercard").tag("mastercard")
-                                        Text("American Express").tag("amex")
-                                        Text("Discover").tag("discover")
-                                        Text("Diners Club").tag("diners")
-                                        Text("Other").tag("other")
-                                    }
-                                    .pickerStyle(.menu)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
-
-                                Button(action: { showCardSelection = true }) {
-                                    HStack {
-                                        Image(systemName: "creditcard.fill")
-                                            .labelSmall()
-                                        FDSLabel("Browse Card Database", style: .bodyMedium)
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .labelSmall()
-                                    }
-                                    .foregroundColor(AppColors.accent)
-                                    .padding(AppSpacing.xs)
-                                }
-                            }
-                        }
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Bank & Account", style: .subheading)
-
-                        VStack(spacing: 8) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Bank", style: .hint)
-                                Picker("Bank", selection: $bankId) {
-                                    ForEach(context.banks) { bank in
-                                        Text(bank.name).tag(bank.id)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Linked Account", style: .hint)
-                                Picker("Account", selection: $linkedLedgerId) {
-                                    Text("None").tag(nil as UUID?)
-                                    ForEach(context.accounts.filter { $0.bankId == bankId }) { account in
-                                        Text(account.displayName).tag(account.id as UUID?)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
-
-                            inputField("Nickname (Optional)", text: $nickname)
-                        }
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(spacing: 8) {
-                        Button(action: { showDeleteConfirm = true }, label: {
-                            HStack {
-                                Image(systemName: "trash.fill")
-                                    .labelSmall()
-                                FDSLabel("Delete Card", style: .bodyLarge)
-                                Spacer()
-                            }
-                            .foregroundColor(AppColors.debit)
-                            .padding(AppSpacing.sm)
-                            .frame(maxWidth: .infinity)
-                            .background(AppColors.debit.opacity(0.1))
-                            .cornerRadius(AppRadius.md)
-                        })
-                    }
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                    cardSection
+                    bankSection
+                    deleteSection
                 }
-                .padding(AppSpacing.md)
+                .padding(AppSpacing.xl)
             }
 
-            Divider()
-
-            HStack(spacing: 12) {
-                Button(action: { dismiss() }, label: {
-                    FDSLabel("Cancel", style: .bodyLarge)
-                        .frame(maxWidth: .infinity)
-                })
-                .foregroundColor(.gray)
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface)
-                .cornerRadius(AppRadius.md)
-
-                Button(action: {
-                    Task {
-                        let updated = Ledger(
-                            id: card.id,
-                            bankId: bankId,
-                            kind: card.kind,
-                            displayName: displayName,
-                            last4: last4,
-                            nickname: nickname,
-                            ownerName: card.ownerName,
-                            createdAt: card.createdAt,
-                            accountType: card.accountType,
-                            cardType: cardType,
-                            cardProduct: card.cardProduct,
-                            linkedLedgerId: linkedLedgerId,
-                            isArchived: card.isArchived
-                        )
-                        await context.updateCard(updated)
-                        if context.deleteError == nil {
-                            dismiss()
-                        }
-                    }
-                }, label: {
-                    FDSLabel("Save", style: .monoAmount)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                })
-                .padding(AppSpacing.sm)
-                .background(AppColors.accent)
-                .cornerRadius(AppRadius.md)
-            }
-            .padding(AppSpacing.md)
+            Divider().opacity(0.3)
+            footer
         }
-        .frame(maxHeight: .infinity, alignment: .topLeading)
+        .frame(width: 540, height: 720)
         .background(AppColors.base)
         .alert("Delete Card?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
                     await context.deleteCard(id: card.id)
-                    if context.deleteError == nil {
-                        dismiss()
-                    }
+                    if context.deleteError == nil { dismiss() }
                 }
             }
         } message: {
-            Text("This will permanently delete this card and all associated transactions. This cannot be undone.")
+            Text("This will permanently delete this card and all associated transactions.")
         }
         .alert("Delete Failed", isPresented: Binding(
             get: { context.deleteError != nil },
@@ -233,8 +68,8 @@ struct CardEditView: View {
         }
         .sheet(isPresented: $showCardSelection) {
             CardSelectionView(
-                onSelect: { card in
-                    cardType = card.cardType
+                onSelect: { selected in
+                    cardType = selected.cardType
                     showCardSelection = false
                 },
                 onDismiss: { showCardSelection = false }
@@ -243,17 +78,198 @@ struct CardEditView: View {
         }
     }
 
-    private func inputField(_ label: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            FDSLabel(label, style: .hint)
-            FDSTextInput("", text: text, style: .bodyMedium)
-                .padding(AppSpacing.xs)
-                .background(AppColors.surface2)
-                .cornerRadius(AppRadius.sm)
+    private var header: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSMerchantAvatar(name: card.displayName, symbol: "creditcard.fill", size: 32)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Edit Card")
+                    .font(.system(size: 14, weight: .semibold))
+                Text(card.displayName)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+            }
+            Spacer()
+            Button(action: { dismiss() }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 22, height: 22)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
+            .buttonStyle(.plain)
         }
+        .padding(AppSpacing.md)
+    }
+
+    private var cardSection: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                Text("CARD INFORMATION")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+
+                field("Card Name") { FDSTextInput("Name", text: $displayName) }
+                field("Last 4 Digits") {
+                    FDSTextInput("Last 4", text: $last4)
+                        .onChange(of: last4) { _, value in
+                            if value.count > 4 { last4 = String(value.prefix(4)) }
+                        }
+                }
+                fieldWithAction(
+                    "Card Network",
+                    actionLabel: "Auto-detect",
+                    actionDisabled: last4.trimmingCharacters(in: .whitespaces).count < 4,
+                    action: autoDetectCardType
+                ) {
+                    Picker("", selection: $cardType) {
+                        Text("Visa").tag("visa")
+                        Text("Mastercard").tag("mastercard")
+                        Text("American Express").tag("amex")
+                        Text("Discover").tag("discover")
+                        Text("Diners Club").tag("diners")
+                        Text("Other").tag("other")
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                }
+
+                Button(action: { showCardSelection = true }) {
+                    HStack(spacing: AppSpacing.compact) {
+                        Image(systemName: "creditcard.fill")
+                            .font(.system(size: 11, weight: .semibold))
+                        Text("Browse Card Database")
+                            .font(.system(size: 12, weight: .medium))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 10, weight: .semibold))
+                    }
+                    .foregroundStyle(AppColors.accent)
+                    .padding(.horizontal, AppSpacing.compact)
+                    .padding(.vertical, 6)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var bankSection: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                Text("BANK & ACCOUNT")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+
+                field("Bank") {
+                    Picker("", selection: $bankId) {
+                        ForEach(context.banks) { Text($0.name).tag($0.id) }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                }
+                field("Linked Account") {
+                    Picker("", selection: $linkedLedgerId) {
+                        Text("None").tag(nil as UUID?)
+                        ForEach(context.accounts.filter { $0.bankId == bankId }) {
+                            Text($0.displayName).tag($0.id as UUID?)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                }
+                field("Nickname (Optional)") { FDSTextInput("Nickname", text: $nickname) }
+            }
+        }
+    }
+
+    private var deleteSection: some View {
+        Button(action: { showDeleteConfirm = true }) {
+            HStack(spacing: AppSpacing.compact) {
+                Image(systemName: "trash.fill")
+                    .font(.system(size: 12, weight: .semibold))
+                Text("Delete Card")
+                    .font(.system(size: 13, weight: .medium))
+                Spacer()
+            }
+            .foregroundStyle(AppColors.debit)
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.compact)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                    .fill(AppColors.debit.opacity(0.12))
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var footer: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSLiquidButton("Cancel", variant: .subtle) { dismiss() }
+            Spacer()
+            FDSLiquidButton("Save", variant: .primary) {
+                Task {
+                    let updated = Ledger(
+                        id: card.id,
+                        bankId: bankId,
+                        kind: card.kind,
+                        displayName: displayName,
+                        last4: last4,
+                        nickname: nickname,
+                        ownerName: card.ownerName,
+                        createdAt: card.createdAt,
+                        accountType: card.accountType,
+                        cardType: cardType,
+                        cardProduct: card.cardProduct,
+                        linkedLedgerId: linkedLedgerId,
+                        isArchived: card.isArchived
+                    )
+                    await context.updateCard(updated)
+                    if context.deleteError == nil { dismiss() }
+                }
+            }
+        }
+        .padding(AppSpacing.md)
     }
 
     private func autoDetectCardType() {
         cardType = BINParser.detectCardType(from: last4)
+    }
+
+    private func field(
+        _ label: String,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            content()
+        }
+    }
+
+    private func fieldWithAction(
+        _ label: String,
+        actionLabel: String,
+        actionDisabled: Bool,
+        action: @escaping () -> Void,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            HStack {
+                Text(label.uppercased())
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+                Spacer()
+                Button(actionLabel, action: action)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(actionDisabled ? AnyShapeStyle(.tertiary) : AnyShapeStyle(AppColors.accent))
+                    .disabled(actionDisabled)
+                    .buttonStyle(.plain)
+            }
+            content()
+        }
     }
 }

@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct CardsView: View {
@@ -28,6 +29,7 @@ struct CardsView: View {
                 cardsList
             }
         }
+        .background(AppColors.base)
         .navigationTitle("Cards")
         .onAppear {
             navigator.cardReloadCallback = {
@@ -49,9 +51,7 @@ struct CardsView: View {
                 }
             }
         } message: {
-            Text(
-                "This will permanently delete this card and all associated transactions. This cannot be undone."
-            )
+            Text("This will permanently delete this card and all associated transactions.")
         }
         .alert("Delete Failed", isPresented: Binding(
             get: { viewModel.deleteError != nil },
@@ -68,30 +68,61 @@ struct CardsView: View {
         }
     }
 
-    var cardsList: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
+    private var cardsList: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                listHeader
+
                 ForEach(
                     groupedCardsByBank.sorted(by: { $0.key < $1.key }),
                     id: \.key
                 ) { bankName, cardRows in
-                    VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                        bankSectionHeader(bankName)
+                    bankSection(bankName: bankName, rows: cardRows)
+                }
+            }
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.vertical, AppSpacing.xl)
+        }
+    }
 
-                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                            ForEach(cardRows, id: \.card.id) { cardRow in
-                                NavigationLink(value: DetailDestination.cardTransactions(cardRow.card.id)) {
-                                    cardRowView(cardRow.card)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
+    private var listHeader: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text("CARDS")
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            Text("Credit Cards")
+                .font(.system(size: 28, weight: .bold))
+        }
+    }
+
+    private func bankSection(bankName: String, rows: [CardsViewModel.CardRow]) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader(bankName, subtitle: "\(rows.count) card\(rows.count == 1 ? "" : "s")")
+
+            VStack(spacing: 0) {
+                ForEach(Array(rows.enumerated()), id: \.element.card.id) { index, row in
+                    NavigationLink(value: DetailDestination.cardTransactions(row.card.id)) {
+                        cardRowView(row.card)
+                    }
+                    .buttonStyle(.plain)
+
+                    if index < rows.count - 1 {
+                        Divider()
+                            .opacity(0.3)
+                            .padding(.leading, 88)
                     }
                 }
             }
-            .padding(AppSpacing.md)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                    }
+            }
         }
-        .background(AppColors.base)
     }
 
     private var groupedCardsByBank: [String: [CardsViewModel.CardRow]] {
@@ -100,180 +131,139 @@ struct CardsView: View {
         }
     }
 
-    private func networkLogo(for cardType: String) -> NSImage? {
-        let assetNames: [String: String] = [
-            "visa": "visa",
-            "mastercard": "mastercard",
-            "amex": "amex",
-            "rupay": "rupay",
-            "diners": "diners"
-        ]
-
-        if let assetName = assetNames[cardType.lowercased()],
-           let nsImage = NSImage(named: assetName)
-        {
-            return nsImage
-        }
-
-        return nil
-    }
-
-    private func bankSectionHeader(_ bankName: String) -> some View {
-        HStack(spacing: 8) {
-            if let logo = bankLogo(for: bankName) {
-                Image(nsImage: logo)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 20)
-            }
-
-            Text(bankName)
-                .headingSmall()
-        }
-    }
-
-    private func bankLogo(for issuer: String) -> NSImage? {
-        let assetNames: [String: String] = [
-            "HDFC Bank": "hdfc-logo",
-            "ICICI Bank": "icici-logo"
-        ]
-
-        if let assetName = assetNames[issuer],
-           let nsImage = NSImage(named: assetName)
-        {
-            return nsImage
-        }
-
-        return nil
-    }
-
-    func cardRowView(_ ledger: Ledger) -> some View {
+    private func cardRowView(_ ledger: Ledger) -> some View {
         let supportedCards = CardDatabase.supportedCards()
         let card = ledger.cardProduct.flatMap { product in
             supportedCards.first { $0.id == product }
         } ?? supportedCards.first { $0.name == ledger.displayName }
 
         return HStack(spacing: AppSpacing.md) {
-            // Card image
-            AsyncImage(url: URL(string: card?.imageURL ?? "")) { phase in
-                switch phase {
-                case .empty:
-                    RoundedRectangle(cornerRadius: AppRadius.sm)
-                        .fill(AppColors.glass)
-                        .frame(width: 56, height: 36)
-                case let .success(image):
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 56, height: 36)
-                        .cornerRadius(AppRadius.sm)
-                case .failure:
-                    RoundedRectangle(cornerRadius: AppRadius.sm)
-                        .fill(AppColors.glass)
-                        .frame(width: 56, height: 36)
-                        .overlay(
-                            Image(systemName: "creditcard")
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundColor(AppColors.textTertiary)
-                        )
-                @unknown default:
-                    EmptyView()
-                }
-            }
+            cardArtwork(card: card)
 
-            // Card info
-            VStack(alignment: .leading, spacing: AppSpacing.xxs) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .monoAmount()
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
 
-                HStack(spacing: AppSpacing.xxs) {
+                HStack(spacing: 4) {
                     if let cardType = ledger.cardType {
-                        if let logo = networkLogo(for: cardType) {
-                            Image(nsImage: logo)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 16, height: 8)
-                        }
-
-                        Text("••••\(ledger.last4)")
-                            .labelSmall()
-                            .foregroundColor(AppColors.textTertiary)
+                        Text(cardType.uppercased())
+                            .font(.system(size: 10, weight: .semibold))
+                            .tracking(0.4)
+                    }
+                    if !ledger.last4.isEmpty {
+                        Text("· •••• \(ledger.last4)")
+                            .font(.system(size: 11, weight: .regular).monospacedDigit())
                     }
                 }
+                .foregroundStyle(.tertiary)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Menu
+            Spacer()
+
             Menu {
                 Button("Edit") { navigator.present(.cardEdit(ledger)) }
                 Button("Delete", role: .destructive) { cardPendingDelete = ledger }
             } label: {
-                Image(systemName: "ellipsis.circle")
-                    .font(.system(size: 14))
-                    .foregroundColor(AppColors.textTertiary)
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.tertiary)
+                    .frame(width: 28, height: 28)
             }
-            .buttonStyle(.plain)
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .fixedSize()
         }
-        .padding(AppSpacing.sm)
-        .background(.ultraThinMaterial)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .stroke(AppColors.borderSubtle, lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.md)
-        .onAppear {
-            print(
-                "[CardsView] '\(ledger.displayName)' cardProduct=\(ledger.cardProduct ?? "nil") image=\(card?.imageURL ?? "nil")"
-            )
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.compact)
+        .contentShape(Rectangle())
+    }
+
+    private func cardArtwork(card: CardMetadata?) -> some View {
+        Group {
+            if let urlString = card?.imageURL, let url = URL(string: urlString) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case let .success(image):
+                        image.resizable().scaledToFit()
+                    default:
+                        artworkPlaceholder
+                    }
+                }
+            } else {
+                artworkPlaceholder
+            }
+        }
+        .frame(width: 56, height: 36)
+        .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.1), lineWidth: 0.5)
         }
     }
 
-    var emptyState: some View {
-        VStack(spacing: 16) {
+    private var artworkPlaceholder: some View {
+        RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
+            .fill(.ultraThinMaterial)
+            .overlay {
+                Image(systemName: "creditcard.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.tertiary)
+            }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: AppSpacing.md) {
             Image(systemName: "creditcard")
                 .font(.system(size: 48, weight: .light))
-                .foregroundColor(AppColors.textTertiary)
+                .foregroundStyle(.tertiary)
+                .symbolRenderingMode(.hierarchical)
 
-            VStack(spacing: 8) {
+            VStack(spacing: AppSpacing.tight) {
                 Text("No Cards")
-                    .headingSmall()
-
+                    .font(.system(size: 16, weight: .semibold))
                 Text("Import a statement to get started")
-                    .caption()
-                    .foregroundColor(AppColors.textTertiary)
+                    .font(.system(size: 12))
+                    .foregroundStyle(.tertiary)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    var loadingState: some View {
-        VStack(spacing: 8) {
-            ForEach(0 ..< 3, id: \.self) { _ in
-                HStack(spacing: 12) {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(AppColors.surface2)
-                        .frame(width: 40, height: 40)
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(AppColors.surface2)
-                            .frame(height: 12)
-                            .frame(maxWidth: 120)
-
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(AppColors.surface2)
-                            .frame(height: 10)
-                            .frame(maxWidth: 80)
-                    }
-
-                    Spacer()
+    private var loadingState: some View {
+        ScrollView {
+            VStack(spacing: AppSpacing.compact) {
+                ForEach(0 ..< 3, id: \.self) { _ in
+                    skeletonRow
                 }
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface)
-                .cornerRadius(AppRadius.md)
             }
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.vertical, AppSpacing.xl)
+        }
+    }
+
+    private var skeletonRow: some View {
+        HStack(spacing: AppSpacing.md) {
+            RoundedRectangle(cornerRadius: AppRadius.sm)
+                .fill(Color.white.opacity(0.04))
+                .frame(width: 56, height: 36)
+            VStack(alignment: .leading, spacing: 4) {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.white.opacity(0.04))
+                    .frame(height: 11)
+                    .frame(maxWidth: 160)
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.white.opacity(0.04))
+                    .frame(height: 9)
+                    .frame(maxWidth: 110)
+            }
+            Spacer()
         }
         .padding(AppSpacing.md)
+        .background {
+            RoundedRectangle(cornerRadius: AppRadius.lg)
+                .fill(.ultraThinMaterial)
+        }
     }
 }

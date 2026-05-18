@@ -12,141 +12,145 @@ struct TransactionFilterView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                FDSLabel("Filters", style: .headingMedium)
-                Spacer()
-                Button(action: { dismiss() }, label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .headingSmall()
-                        .foregroundColor(.gray)
-                })
-                .accessibilityLabel("Close filters")
-            }
-            .padding(AppSpacing.md)
-            .background(AppColors.base)
+        VStack(spacing: 0) {
+            header
+            Divider().opacity(0.3)
 
-            Divider()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Transaction Type", style: .subheading)
-
-                        Picker("Type", selection: $listState.typeFilter) {
-                            Text("All").tag(TransactionType?.none)
-                            Text("Debit").tag(TransactionType?.some(.debit))
-                            Text("Credit").tag(TransactionType?.some(.credit))
-                        }
-                        .pickerStyle(.segmented)
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        FDSLabel("Date Range", style: .subheading)
-
-                        VStack(spacing: 8) {
-                            HStack {
-                                FDSLabel("From", style: .hint)
-                                Spacer()
-                                DatePicker(
-                                    "",
-                                    selection: Binding(
-                                        get: { listState.startDate ?? Date() },
-                                        set: { listState.startDate = $0 }
-                                    ),
-                                    displayedComponents: [.date]
-                                )
-                                .labelsHidden()
-                                if listState.startDate != nil {
-                                    Button("Clear") {
-                                        listState.startDate = nil
-                                    }
-                                    .labelSmall()
-                                    .foregroundColor(.blue)
-                                }
-                            }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
-
-                            HStack {
-                                FDSLabel("To", style: .hint)
-                                Spacer()
-                                DatePicker(
-                                    "",
-                                    selection: Binding(
-                                        get: { listState.endDate ?? Date() },
-                                        set: { listState.endDate = $0 }
-                                    ),
-                                    displayedComponents: [.date]
-                                )
-                                .labelsHidden()
-                                if listState.endDate != nil {
-                                    Button("Clear") {
-                                        listState.endDate = nil
-                                    }
-                                    .labelSmall()
-                                    .foregroundColor(.blue)
-                                }
-                            }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
-                        }
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                    typeSection
+                    dateSection
                     if let error = dateRangeError {
-                        HStack(spacing: 8) {
-                            Image(systemName: "exclamationmark.circle.fill")
-                                .labelSmall()
-                                .foregroundColor(.red)
-                            FDSLabel(error, style: .hint)
-                        }
-                        .padding(AppSpacing.xs)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        errorBanner(error)
                     }
                 }
-                .padding(AppSpacing.md)
+                .padding(AppSpacing.xl)
             }
 
-            Divider()
-
-            HStack(spacing: 12) {
-                Button(action: { listState.reset() }, label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.clockwise")
-                        Text("Reset")
-                    }
-                    .bodyLarge()
-                    .frame(maxWidth: .infinity)
-                })
-                .foregroundColor(.blue)
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface)
-                .cornerRadius(AppRadius.md)
-
-                Button(action: { dismiss() }, label: {
-                    FDSLabel("Done", style: .monoAmount)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                })
-                .padding(AppSpacing.sm)
-                .background(AppColors.accent)
-                .cornerRadius(AppRadius.md)
-            }
-            .padding(AppSpacing.md)
+            Divider().opacity(0.3)
+            footer
         }
-        .frame(maxHeight: .infinity, alignment: .topLeading)
+        .frame(width: 480, height: 560)
         .background(AppColors.base)
     }
-}
 
-#Preview {
-    TransactionFilterView(listState: TransactionListState())
+    private var header: some View {
+        HStack(spacing: AppSpacing.compact) {
+            Image(systemName: "line.3.horizontal.decrease.circle.fill")
+                .font(.system(size: 18, weight: .regular))
+                .foregroundStyle(AppColors.accent)
+                .symbolRenderingMode(.hierarchical)
+            Text("Filters")
+                .font(.system(size: 14, weight: .semibold))
+            Spacer()
+            Button(action: { dismiss() }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 22, height: 22)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(AppSpacing.md)
+    }
+
+    private var typeSection: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                Text("TRANSACTION TYPE")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+
+                Picker("Type", selection: $listState.typeFilter) {
+                    Text("All").tag(TransactionType?.none)
+                    Text("Debit").tag(TransactionType?.some(.debit))
+                    Text("Credit").tag(TransactionType?.some(.credit))
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+            }
+        }
+    }
+
+    private var dateSection: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                Text("DATE RANGE")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+
+                dateRow(label: "From", date: Binding(
+                    get: { listState.startDate ?? Date() },
+                    set: { listState.startDate = $0 }
+                ), isSet: listState.startDate != nil) {
+                    listState.startDate = nil
+                }
+
+                dateRow(label: "To", date: Binding(
+                    get: { listState.endDate ?? Date() },
+                    set: { listState.endDate = $0 }
+                ), isSet: listState.endDate != nil) {
+                    listState.endDate = nil
+                }
+            }
+        }
+    }
+
+    private func dateRow(
+        label: String,
+        date: Binding<Date>,
+        isSet: Bool,
+        onClear: @escaping () -> Void
+    ) -> some View {
+        HStack {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+
+            Spacer()
+
+            DatePicker("", selection: date, displayedComponents: [.date])
+                .labelsHidden()
+                .controlSize(.small)
+
+            if isSet {
+                Button("Clear", action: onClear)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(AppColors.accent)
+                    .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private func errorBanner(_ message: String) -> some View {
+        HStack(spacing: AppSpacing.compact) {
+            Image(systemName: "exclamationmark.circle.fill")
+                .font(.system(size: 12, weight: .semibold))
+            Text(message)
+                .font(.system(size: 12, weight: .medium))
+            Spacer()
+        }
+        .foregroundStyle(AppColors.debit)
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.compact)
+        .background {
+            RoundedRectangle(cornerRadius: AppRadius.md)
+                .fill(AppColors.debit.opacity(0.12))
+        }
+    }
+
+    private var footer: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSLiquidButton("Reset", symbol: "arrow.clockwise", variant: .subtle) {
+                listState.reset()
+            }
+            Spacer()
+            FDSLiquidButton("Done", variant: .primary) { dismiss() }
+        }
+        .padding(AppSpacing.md)
+    }
 }

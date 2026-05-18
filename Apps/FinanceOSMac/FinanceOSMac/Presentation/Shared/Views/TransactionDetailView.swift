@@ -7,77 +7,98 @@ struct TransactionDetailView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            headerView
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Amount", style: .subheading)
+        VStack(spacing: 0) {
+            header
+            Divider().opacity(0.3)
 
-                        HStack(spacing: 8) {
-                            FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit)
-
-                            FDSLabel(
-                                row.transactionType == .debit ? "Dr" : "Cr",
-                                style: .labelSmall,
-                                color: row.transactionType == .debit ? .debit : .credit
-                            )
-                            .padding(.vertical, 2)
-                            .padding(.horizontal, 6)
-                            .background(row.transactionType == .debit ? AppColors.debit
-                                .opacity(0.15) : AppColors.credit.opacity(0.15))
-                            .cornerRadius(AppRadius.sm)
-
-                            Spacer()
-                        }
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Description", style: .subheading)
-                        FDSLabel(row.title, style: .bodyLarge, color: .primary)
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Source", style: .subheading)
-                        FDSLabel(row.subtitle, style: .bodyLarge, color: .primary)
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Date", style: .subheading)
-                        FDSLabel(formatDate(row.postedAt), style: .bodyLarge, color: .primary)
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    Spacer()
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                    heroAmount
+                    detailsSection
                 }
-                .padding(AppSpacing.md)
+                .padding(AppSpacing.xl)
             }
         }
+        .frame(width: 480, height: 560)
         .background(AppColors.base)
     }
 
-    var headerView: some View {
-        HStack {
-            FDSLabel("Transaction Details", style: .headingMedium)
+    private var header: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSMerchantAvatar(
+                name: row.title,
+                symbol: row.transactionType == .debit ? "arrow.up.right.circle.fill" : "arrow.down.left.circle.fill",
+                size: 32
+            )
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Transaction")
+                    .font(.system(size: 14, weight: .semibold))
+                Text(row.title)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+            }
             Spacer()
-            Button(action: { dismiss() }, label: {
-                Image(systemName: "xmark.circle.fill").headingSmall().foregroundColor(.gray)
-            })
-            .accessibilityLabel("Close")
+            Button(action: { dismiss() }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 22, height: 22)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
+            .buttonStyle(.plain)
         }
         .padding(AppSpacing.md)
-        .background(AppColors.base)
+    }
+
+    private var heroAmount: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text(row.transactionType == .debit ? "DEBITED" : "CREDITED")
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+
+            HStack(alignment: .firstTextBaseline, spacing: AppSpacing.compact) {
+                Text(row.amountText)
+                    .font(.system(size: 36, weight: .bold, design: .rounded).monospacedDigit())
+                    .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
+
+                Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
+            }
+        }
+    }
+
+    private var detailsSection: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(spacing: 0) {
+                detailRow(label: "Merchant", value: row.title)
+                Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                detailRow(label: "Source", value: row.subtitle)
+                Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                detailRow(label: "Date", value: formatDate(row.postedAt))
+                Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                detailRow(
+                    label: "Type",
+                    value: row.transactionType == .debit ? "Debit" : "Credit"
+                )
+            }
+        }
+    }
+
+    private func detailRow(label: String, value: String) -> some View {
+        HStack {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            Spacer()
+            Text(value)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.trailing)
+        }
     }
 
     private func formatDate(_ date: Date) -> String {
@@ -86,17 +107,4 @@ struct TransactionDetailView: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
-}
-
-#Preview {
-    TransactionDetailView(
-        row: TransactionRow(
-            id: UUID(),
-            title: "Coffee",
-            subtitle: "Chase Checking",
-            amountText: "-USD 5.00",
-            transactionType: .debit,
-            postedAt: Date()
-        )
-    )
 }

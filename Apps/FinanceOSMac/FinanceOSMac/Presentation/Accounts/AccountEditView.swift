@@ -12,7 +12,6 @@ struct AccountEditView: View {
     @State private var nickname: String
     @State private var bankId: UUID
     @Environment(\.dismiss) var dismiss
-
     @State private var showDeleteConfirm = false
 
     init(account: Ledger, context: AccountEditContext) {
@@ -27,154 +26,34 @@ struct AccountEditView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                FDSLabel("Edit Account", style: .headingMedium)
-                Spacer()
-                Button(action: { dismiss() }, label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .headingSmall()
-                        .foregroundColor(.gray)
-                })
-                .accessibilityLabel("Close")
-            }
-            .padding(AppSpacing.md)
-            .background(AppColors.base)
+        VStack(spacing: 0) {
+            header
+            Divider().opacity(0.3)
 
-            Divider()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Account Information", style: .subheading)
-
-                        VStack(spacing: 8) {
-                            inputField("Account Name", text: $displayName)
-                            inputField("Owner Name", text: $ownerName)
-                            inputField("Last 4 Digits", text: $last4)
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Account Type", style: .hint)
-                                Picker("Type", selection: $accountType) {
-                                    ForEach(["savings", "checking", "credit"], id: \.self) { type in
-                                        Text(type.capitalized).tag(type)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
-                        }
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        FDSLabel("Bank & Nickname", style: .subheading)
-
-                        VStack(spacing: 8) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                FDSLabel("Bank", style: .hint)
-                                Picker("Bank", selection: $bankId) {
-                                    ForEach(context.banks) { bank in
-                                        Text(bank.name).tag(bank.id)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
-
-                            inputField("Nickname (Optional)", text: $nickname)
-                        }
-                    }
-                    .padding(AppSpacing.sm)
-                    .background(AppColors.surface)
-                    .cornerRadius(AppRadius.md)
-
-                    VStack(spacing: 8) {
-                        Button(action: { showDeleteConfirm = true }, label: {
-                            HStack {
-                                Image(systemName: "trash.fill")
-                                    .labelSmall()
-                                FDSLabel("Delete Account", style: .bodyLarge)
-                                Spacer()
-                            }
-                            .foregroundColor(AppColors.debit)
-                            .padding(AppSpacing.sm)
-                            .frame(maxWidth: .infinity)
-                            .background(AppColors.debit.opacity(0.1))
-                            .cornerRadius(AppRadius.md)
-                        })
-                    }
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                    accountSection
+                    bankSection
+                    deleteSection
                 }
-                .padding(AppSpacing.md)
+                .padding(AppSpacing.xl)
             }
 
-            Divider()
-
-            HStack(spacing: 12) {
-                Button(action: { dismiss() }, label: {
-                    FDSLabel("Cancel", style: .bodyLarge)
-                        .frame(maxWidth: .infinity)
-                })
-                .foregroundColor(.gray)
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface)
-                .cornerRadius(AppRadius.md)
-
-                Button(action: {
-                    Task {
-                        let updated = Ledger(
-                            id: account.id,
-                            bankId: bankId,
-                            kind: account.kind,
-                            displayName: displayName,
-                            last4: last4,
-                            nickname: nickname,
-                            ownerName: ownerName,
-                            createdAt: account.createdAt,
-                            accountType: accountType,
-                            cardType: account.cardType,
-                            cardProduct: account.cardProduct,
-                            linkedLedgerId: account.linkedLedgerId,
-                            isArchived: account.isArchived
-                        )
-                        await context.updateAccount(updated)
-                        if context.deleteError == nil {
-                            dismiss()
-                        }
-                    }
-                }, label: {
-                    FDSLabel("Save", style: .monoAmount)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                })
-                .padding(AppSpacing.sm)
-                .background(AppColors.accent)
-                .cornerRadius(AppRadius.md)
-            }
-            .padding(AppSpacing.md)
+            Divider().opacity(0.3)
+            footer
         }
-        .frame(maxHeight: .infinity, alignment: .topLeading)
+        .frame(width: 520, height: 680)
         .background(AppColors.base)
         .alert("Delete Account?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 Task {
                     await context.deleteAccount(id: account.id)
-                    if context.deleteError == nil {
-                        dismiss()
-                    }
+                    if context.deleteError == nil { dismiss() }
                 }
             }
         } message: {
-            Text("This will permanently delete this account and all associated transactions. This cannot be undone.")
+            Text("This will permanently delete this account and all associated transactions.")
         }
         .alert("Delete Failed", isPresented: Binding(
             get: { context.deleteError != nil },
@@ -188,13 +67,134 @@ struct AccountEditView: View {
         }
     }
 
-    private func inputField(_ label: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            FDSLabel(label, style: .hint)
-            FDSTextInput("", text: text, style: .bodyMedium)
-                .padding(AppSpacing.xs)
-                .background(AppColors.surface2)
-                .cornerRadius(AppRadius.sm)
+    private var header: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSMerchantAvatar(name: account.displayName, symbol: "building.columns.fill", size: 32)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Edit Account")
+                    .font(.system(size: 14, weight: .semibold))
+                Text(account.displayName)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+            }
+            Spacer()
+            Button(action: { dismiss() }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 22, height: 22)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(AppSpacing.md)
+    }
+
+    private var accountSection: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                Text("ACCOUNT INFORMATION")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+
+                field("Account Name") { FDSTextInput("Name", text: $displayName) }
+                field("Owner Name") { FDSTextInput("Owner", text: $ownerName) }
+                field("Last 4 Digits") { FDSTextInput("Last 4", text: $last4) }
+                field("Account Type") {
+                    Picker("", selection: $accountType) {
+                        ForEach(["savings", "checking", "credit"], id: \.self) {
+                            Text($0.capitalized).tag($0)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                }
+            }
+        }
+    }
+
+    private var bankSection: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                Text("BANK & NICKNAME")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+
+                field("Bank") {
+                    Picker("", selection: $bankId) {
+                        ForEach(context.banks) { bank in
+                            Text(bank.name).tag(bank.id)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                }
+                field("Nickname (Optional)") { FDSTextInput("Nickname", text: $nickname) }
+            }
+        }
+    }
+
+    private var deleteSection: some View {
+        Button(action: { showDeleteConfirm = true }) {
+            HStack(spacing: AppSpacing.compact) {
+                Image(systemName: "trash.fill")
+                    .font(.system(size: 12, weight: .semibold))
+                Text("Delete Account")
+                    .font(.system(size: 13, weight: .medium))
+                Spacer()
+            }
+            .foregroundStyle(AppColors.debit)
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.compact)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                    .fill(AppColors.debit.opacity(0.12))
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var footer: some View {
+        HStack(spacing: AppSpacing.compact) {
+            FDSLiquidButton("Cancel", variant: .subtle) { dismiss() }
+            Spacer()
+            FDSLiquidButton("Save", variant: .primary) {
+                Task {
+                    let updated = Ledger(
+                        id: account.id,
+                        bankId: bankId,
+                        kind: account.kind,
+                        displayName: displayName,
+                        last4: last4,
+                        nickname: nickname,
+                        ownerName: ownerName,
+                        createdAt: account.createdAt,
+                        accountType: accountType,
+                        cardType: account.cardType,
+                        cardProduct: account.cardProduct,
+                        linkedLedgerId: account.linkedLedgerId,
+                        isArchived: account.isArchived
+                    )
+                    await context.updateAccount(updated)
+                    if context.deleteError == nil { dismiss() }
+                }
+            }
+        }
+        .padding(AppSpacing.md)
+    }
+
+    private func field(
+        _ label: String,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            content()
         }
     }
 }

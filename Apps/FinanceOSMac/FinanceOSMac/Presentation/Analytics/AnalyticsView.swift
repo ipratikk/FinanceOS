@@ -18,21 +18,22 @@ struct AnalyticsView: View {
 
     var body: some View {
         if let viewModel {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
                     header
 
                     if !viewModel.monthlySummaries.isEmpty {
-                        spendingTrendSection
+                        spendingTrendSection(viewModel)
                     }
 
                     if !viewModel.topMerchants.isEmpty {
-                        topMerchantsSection
+                        topMerchantsSection(viewModel)
                     }
 
-                    categoriesSection
+                    categoriesPlaceholder
                 }
-                .padding(AppSpacing.md)
+                .padding(.horizontal, AppSpacing.xl)
+                .padding(.vertical, AppSpacing.xl)
             }
             .background(AppColors.base)
             .task {
@@ -40,112 +41,105 @@ struct AnalyticsView: View {
                 isLoading = false
             }
         } else {
-            VStack {
-                ProgressView("Loading Analytics...")
+            VStack(spacing: AppSpacing.md) {
+                ProgressView().controlSize(.small)
+                Text("Loading…")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
             .task {
-                let analyticsViewModel = AnalyticsViewModel(
+                viewModel = AnalyticsViewModel(
                     spendingService: appContainer.spendingService,
                     transactionRepository: appContainer.transactionRepository
                 )
-                viewModel = analyticsViewModel
             }
         }
     }
 
-    var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            FDSLabel("Analytics", style: .headingLarge)
-
-            FDSLabel("Spending insights & trends", style: .hint)
+    private var header: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text("ANALYTICS")
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            Text("Spending Insights")
+                .font(.system(size: 28, weight: .bold))
         }
     }
 
-    var spendingTrendSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            FDSLabel("6-Month Spending Trend", style: .subheading)
+    private func spendingTrendSection(_ viewModel: AnalyticsViewModel) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader("6-Month Trend", subtitle: "Credits vs debits")
 
-            if let viewModel, !viewModel.monthlySummaries.isEmpty {
+            FDSGlassSurface(cornerRadius: AppRadius.lg, padding: AppSpacing.md) {
                 Chart(viewModel.monthlySummaries, id: \.id) { item in
                     BarMark(
                         x: .value("Month", item.id, unit: .month),
                         y: .value("Debits", Double(item.totalDebit) / 100.0)
                     )
-                    .foregroundStyle(AppColors.debit.opacity(0.8))
+                    .foregroundStyle(AppColors.debit.opacity(0.85))
+                    .cornerRadius(4)
                     .position(by: .value("Type", "Debits"))
 
                     BarMark(
                         x: .value("Month", item.id, unit: .month),
                         y: .value("Credits", Double(item.totalCredit) / 100.0)
                     )
-                    .foregroundStyle(AppColors.credit.opacity(0.8))
+                    .foregroundStyle(AppColors.credit.opacity(0.85))
+                    .cornerRadius(4)
                     .position(by: .value("Type", "Credits"))
                 }
-                .frame(height: 200)
+                .frame(height: 240)
                 .chartLegend(position: .bottom)
                 .chartXAxis {
                     AxisMarks(format: .dateTime.month(.abbreviated))
                 }
                 .chartYAxis {
                     AxisMarks { _ in
-                        AxisGridLine()
-                            .foregroundStyle(AppColors.surface2)
+                        AxisGridLine().foregroundStyle(Color.white.opacity(0.06))
+                        AxisValueLabel()
                     }
                 }
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface2)
-                .cornerRadius(AppRadius.md)
             }
         }
-        .padding(AppSpacing.sm)
-        .background(AppColors.surface)
-        .cornerRadius(AppRadius.md)
     }
 
-    var topMerchantsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            FDSLabel("Top Merchants", style: .subheading)
+    private func topMerchantsSection(_ viewModel: AnalyticsViewModel) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader("Top Merchants", subtitle: "Highest debit activity")
 
-            if let viewModel {
-                let merchants = viewModel.topMerchants.prefix(10).map { merchant, amount in
-                    (name: merchant, amount: Double(amount) / 100.0)
+            FDSGlassSurface(cornerRadius: AppRadius.lg, padding: AppSpacing.md) {
+                let merchants = viewModel.topMerchants.prefix(10).map { name, amount in
+                    (name: name, amount: Double(amount) / 100.0)
                 }
                 TopMerchantsChart(merchants: Array(merchants))
+                    .frame(height: 240)
             }
         }
-        .padding(AppSpacing.sm)
-        .background(AppColors.surface)
-        .cornerRadius(AppRadius.md)
     }
 
-    var categoriesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            FDSLabel("Categories", style: .subheading)
+    private var categoriesPlaceholder: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader("Categories")
 
-            VStack(alignment: .center, spacing: 8) {
-                Image(systemName: "tag.circle.fill")
-                    .font(.system(size: 40, weight: .thin))
-                    .foregroundColor(AppColors.accent.opacity(0.3))
-
-                VStack(spacing: 4) {
-                    FDSLabel("Coming Soon", style: .monoAmount)
-
-                    FDSLabel("Auto-categorization with smart detection", style: .hint)
+            FDSGlassSurface(cornerRadius: AppRadius.lg, padding: AppSpacing.xl) {
+                VStack(spacing: AppSpacing.md) {
+                    Image(systemName: "tag.circle.fill")
+                        .font(.system(size: 32, weight: .regular))
+                        .foregroundStyle(AppColors.accent.opacity(0.5))
+                        .symbolRenderingMode(.hierarchical)
+                    VStack(spacing: AppSpacing.tight) {
+                        Text("Coming Soon")
+                            .font(.system(size: 14, weight: .semibold))
+                        Text("Auto-categorization with smart detection")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.tertiary)
+                    }
                 }
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
-            .padding(AppSpacing.xl)
-            .background(AppColors.surface2)
-            .cornerRadius(AppRadius.md)
         }
-        .padding(AppSpacing.sm)
-        .background(AppColors.surface)
-        .cornerRadius(AppRadius.md)
     }
-}
-
-#Preview {
-    AnalyticsView()
 }

@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct AccountsView: View {
@@ -28,6 +29,7 @@ struct AccountsView: View {
                 accountsList
             }
         }
+        .background(AppColors.base)
         .navigationTitle("Accounts")
         .alert(
             "Delete \"\(accountPendingDelete?.displayName ?? "")\"?",
@@ -63,32 +65,61 @@ struct AccountsView: View {
         }
     }
 
-    var accountsList: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
+    private var accountsList: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                listHeader
+
                 ForEach(
                     groupedAccountsByBank.sorted(by: { $0.key < $1.key }),
                     id: \.key
                 ) { bankName, ledgers in
-                    VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                        Text(bankName)
-                            .headingSmall()
-                            .foregroundColor(AppColors.textTertiary)
+                    bankSection(bankName: bankName, ledgers: ledgers)
+                }
+            }
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.vertical, AppSpacing.xl)
+        }
+    }
 
-                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                            ForEach(ledgers, id: \.id) { ledger in
-                                NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
-                                    accountRow(ledger)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
+    private var listHeader: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text("ACCOUNTS")
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            Text("Bank Accounts")
+                .font(.system(size: 28, weight: .bold))
+        }
+    }
+
+    private func bankSection(bankName: String, ledgers: [Ledger]) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader(bankName, subtitle: "\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
+
+            VStack(spacing: 0) {
+                ForEach(Array(ledgers.enumerated()), id: \.element.id) { index, ledger in
+                    NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
+                        accountRow(ledger)
+                    }
+                    .buttonStyle(.plain)
+
+                    if index < ledgers.count - 1 {
+                        Divider()
+                            .opacity(0.3)
+                            .padding(.leading, 64)
                     }
                 }
             }
-            .padding(AppSpacing.md)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
+                    }
+            }
         }
-        .background(AppColors.base)
     }
 
     private var groupedAccountsByBank: [String: [Ledger]] {
@@ -97,78 +128,97 @@ struct AccountsView: View {
         }
     }
 
-    func accountRow(_ ledger: Ledger) -> some View {
+    private func accountRow(_ ledger: Ledger) -> some View {
         HStack(spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: AppSpacing.xxs) {
+            FDSMerchantAvatar(
+                name: bankName(for: ledger),
+                symbol: "building.columns.fill",
+                size: 36
+            )
+
+            VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .monoAmount()
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
 
-                Text((ledger.accountType ?? "").uppercased())
-                    .labelSmall()
-                    .foregroundColor(AppColors.textTertiary)
+                HStack(spacing: 4) {
+                    Text((ledger.accountType ?? "Account").capitalized)
+                        .font(.system(size: 11, weight: .regular))
+                    if !ledger.last4.isEmpty {
+                        Text("· •••• \(ledger.last4)")
+                            .font(.system(size: 11, weight: .regular).monospacedDigit())
+                    }
+                }
+                .foregroundStyle(.tertiary)
             }
 
             Spacer()
 
-            Text("••••\(ledger.last4)")
-                .monoAmount()
-                .foregroundColor(AppColors.accent)
+            Image(systemName: "chevron.right")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(.tertiary)
         }
-        .padding(AppSpacing.sm)
-        .background(.ultraThinMaterial)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .stroke(AppColors.borderSubtle, lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.md)
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.compact)
+        .contentShape(Rectangle())
     }
 
-    var emptyState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "building.2")
+    private func bankName(for ledger: Ledger) -> String {
+        viewModel.banks.first { $0.id == ledger.bankId }?.name ?? "Bank"
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: AppSpacing.md) {
+            Image(systemName: "building.columns")
                 .font(.system(size: 48, weight: .light))
-                .foregroundColor(AppColors.textTertiary)
+                .foregroundStyle(.tertiary)
+                .symbolRenderingMode(.hierarchical)
 
-            VStack(spacing: 8) {
+            VStack(spacing: AppSpacing.tight) {
                 Text("No Accounts")
-                    .headingSmall()
-
+                    .font(.system(size: 16, weight: .semibold))
                 Text("Import a statement to get started")
-                    .caption()
-                    .foregroundColor(AppColors.textTertiary)
+                    .font(.system(size: 12))
+                    .foregroundStyle(.tertiary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
 
-    var loadingState: some View {
-        VStack(spacing: 8) {
-            ForEach(0 ..< 3, id: \.self) { _ in
-                HStack(spacing: 12) {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(AppColors.surface2)
-                        .frame(width: 40, height: 40)
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(AppColors.surface2)
-                            .frame(height: 12)
-                            .frame(maxWidth: 120)
-
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(AppColors.surface2)
-                            .frame(height: 10)
-                            .frame(maxWidth: 80)
-                    }
-
-                    Spacer()
+    private var loadingState: some View {
+        ScrollView {
+            VStack(spacing: AppSpacing.compact) {
+                ForEach(0 ..< 3, id: \.self) { _ in
+                    skeletonRow
                 }
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface)
-                .cornerRadius(AppRadius.md)
             }
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.vertical, AppSpacing.xl)
+        }
+    }
+
+    private var skeletonRow: some View {
+        HStack(spacing: AppSpacing.md) {
+            Circle()
+                .fill(Color.white.opacity(0.04))
+                .frame(width: 36, height: 36)
+            VStack(alignment: .leading, spacing: 4) {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.white.opacity(0.04))
+                    .frame(height: 11)
+                    .frame(maxWidth: 160)
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Color.white.opacity(0.04))
+                    .frame(height: 9)
+                    .frame(maxWidth: 110)
+            }
+            Spacer()
         }
         .padding(AppSpacing.md)
+        .background {
+            RoundedRectangle(cornerRadius: AppRadius.lg)
+                .fill(.ultraThinMaterial)
+        }
     }
 }

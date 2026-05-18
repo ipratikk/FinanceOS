@@ -137,72 +137,68 @@ struct ImportView: View {
     }
 
     private var headerSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FDSLabel("Import Statements", style: .headingMedium)
-
-            FDSLabel("Upload your bank or credit card statements", style: .caption)
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            Text("IMPORT")
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            Text("Statements")
+                .font(.system(size: 28, weight: .bold))
+            Text("Upload bank or credit card statements")
+                .font(.system(size: 12))
+                .foregroundStyle(.tertiary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var filePickerButton: some View {
-        Button(action: {
+        FDSLiquidButton("Select Files", symbol: "folder.badge.plus", variant: .primary) {
             let panel = NSOpenPanel()
-
             let allowedFormats = selectedSource?.allowedFormats ?? []
-            var types: [UTType] = []
-            for format in allowedFormats {
-                types.append(format.utType)
-            }
-
-            panel.allowedContentTypes = types
+            panel.allowedContentTypes = allowedFormats.map(\.utType)
             panel.canChooseFiles = true
             panel.canChooseDirectories = false
             panel.allowsMultipleSelection = true
 
-            let result = panel.runModal()
-
-            if result == .OK, !panel.urls.isEmpty {
+            if panel.runModal() == .OK, !panel.urls.isEmpty {
                 viewModel.setFileURLs(panel.urls)
                 viewModel.parseFiles()
             }
-        }, label: {
-            HStack(spacing: 8) {
-                Image(systemName: "folder.badge.plus")
-                    .monoAmount()
-
-                FDSLabel("Select Files", style: .bodyLarge)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(AppSpacing.sm)
-            .foregroundColor(.white)
-        })
-        .background(AppColors.accent)
-        .cornerRadius(AppRadius.md)
+        }
         .disabled(selectedSource == nil)
+        .frame(maxWidth: .infinity)
     }
 
     private func importSuccessBanner(result: ImportResult) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: AppSpacing.compact) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundColor(.white)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(AppColors.credit)
             Text("Imported \(result.inserted) transaction\(result.inserted == 1 ? "" : "s")" +
-                (result.skipped > 0 ? " (\(result.skipped) skipped)" : ""))
-                .bodyLarge()
-                .foregroundColor(.white)
+                (result.skipped > 0 ? " · \(result.skipped) skipped" : ""))
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.primary)
             Spacer()
-            Button(action: { viewModel.lastImportResult = nil }, label: {
+            Button(action: { viewModel.lastImportResult = nil }) {
                 Image(systemName: "xmark")
-                    .labelSmall()
-                    .foregroundColor(.white.opacity(0.8))
-            })
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 20, height: 20)
+                    .background(Circle().fill(.ultraThinMaterial))
+            }
             .buttonStyle(.plain)
-            .accessibilityLabel("Dismiss success message")
         }
-        .padding(AppSpacing.sm)
-        .background(AppColors.credit.opacity(0.85))
-        .cornerRadius(AppRadius.md)
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.compact)
+        .background {
+            Capsule(style: .continuous)
+                .fill(.thickMaterial)
+                .overlay {
+                    Capsule(style: .continuous)
+                        .strokeBorder(AppColors.credit.opacity(0.3), lineWidth: 0.5)
+                }
+        }
         .padding(AppSpacing.md)
-        .shadow(radius: 4)
     }
 
     private var previewView: some View {
@@ -211,35 +207,22 @@ struct ImportView: View {
                 ImportPreviewView(viewModel: viewModel)
             }
 
-            Divider()
+            Divider().opacity(0.3)
 
-            HStack(spacing: 12) {
-                Button(action: {
+            HStack(spacing: AppSpacing.compact) {
+                FDSLiquidButton("Cancel", variant: .subtle) {
                     viewModel.fileURLs = []
                     viewModel.parsedStatements = []
                     viewModel.selectedTarget = nil
-                }, label: {
-                    FDSLabel("Cancel", style: .bodyLarge)
-                        .frame(maxWidth: .infinity)
-                })
-                .foregroundColor(.gray)
-                .padding(AppSpacing.sm)
-                .background(AppColors.surface)
-                .cornerRadius(AppRadius.md)
-
-                Button(action: viewModel.importTransactions, label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: "arrow.down.doc.fill")
-                            .monoAmount()
-
-                        FDSLabel("Import", style: .monoAmount)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.white)
-                })
-                .padding(AppSpacing.sm)
-                .background(AppColors.accent)
-                .cornerRadius(AppRadius.md)
+                }
+                Spacer()
+                FDSLiquidButton(
+                    "Import",
+                    symbol: "arrow.down.doc.fill",
+                    variant: .primary
+                ) {
+                    viewModel.importTransactions()
+                }
                 .disabled(viewModel.selectedTarget == nil || viewModel.isLoading)
                 .keyboardShortcut(.defaultAction)
             }

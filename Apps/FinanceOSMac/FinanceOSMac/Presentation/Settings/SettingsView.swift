@@ -4,221 +4,213 @@ import SwiftUI
 
 struct SettingsView: View {
     @State private var selectedTab: SettingsTab = .general
-    @State private var darkMode = true
-    @State private var showNotifications = true
+    @State private var notifications = true
     @State private var autoRefresh = true
     @State private var showConfirmClear = false
 
-    enum SettingsTab {
-        case general
-        case about
+    enum SettingsTab: CaseIterable {
+        case general, about
+
+        var label: String {
+            switch self {
+            case .general: "General"
+            case .about: "About"
+            }
+        }
+
+        var symbol: String {
+            switch self {
+            case .general: "gearshape"
+            case .about: "info.circle"
+            }
+        }
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
+        HStack(spacing: 0) {
+            sideTabs
 
-            HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 8) {
-                    settingTabButton("General", icon: "gear", tab: .general)
-                    settingTabButton("About", icon: "info.circle", tab: .about)
-                    Spacer()
-                }
-                .padding(AppSpacing.md)
-                .background(AppColors.surface)
-                .frame(width: 180)
+            Divider().opacity(0.3)
 
-                Divider()
-
-                ScrollView {
-                    Group {
-                        if selectedTab == .general {
-                            generalSettings
-                        } else {
-                            aboutSettings
-                        }
+            ScrollView(showsIndicators: false) {
+                Group {
+                    if selectedTab == .general {
+                        generalSettings
+                    } else {
+                        aboutSettings
                     }
-                    .padding(AppSpacing.md)
                 }
+                .padding(AppSpacing.xl)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
         .background(AppColors.base)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .alert("Clear All Data?", isPresented: $showConfirmClear) {
             Button("Cancel", role: .cancel) {}
-            Button("Clear", role: .destructive) {
-                // TODO: Implement actual data clearing logic
-            }
+            Button("Clear", role: .destructive) {}
         } message: {
-            Text(
-                "This will permanently delete all data including banks, accounts, cards, and transactions. This action cannot be undone."
-            )
+            Text("This will permanently delete all data including banks, accounts, cards, and transactions.")
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            FDSLabel("Settings", style: .headingLarge)
-
-            FDSLabel("App preferences & information", style: .hint)
-        }
-        .padding(AppSpacing.md)
-        .background(AppColors.base)
-        .border(AppColors.surface2, width: 1)
-    }
-
-    private func settingTabButton(_ label: String, icon: String, tab: SettingsTab) -> some View {
-        Button(action: { selectedTab = tab }, label: {
-            HStack(spacing: 8) {
-                Image(systemName: icon)
-                    .monoAmount()
-                    .frame(width: 20)
-
-                FDSLabel(label, style: .subheading)
-
-                Spacer()
+    private var sideTabs: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xl) {
+            VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                Text("SETTINGS")
+                    .font(.system(size: 11, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(.tertiary)
+                Text("Preferences")
+                    .font(.system(size: 22, weight: .bold))
             }
-            .foregroundColor(selectedTab == tab ? .white : Color(
-                red: 0.447, green: 0.447, blue: 0.478
-            ))
-            .padding(AppSpacing.xs)
-            .background(selectedTab == tab ? AppColors.accent
-                .opacity(0.2) : Color.clear)
-            .cornerRadius(AppRadius.sm)
-        })
+
+            VStack(alignment: .leading, spacing: 1) {
+                ForEach(SettingsTab.allCases, id: \.self) { tab in
+                    FDSSidebarItem(
+                        tab.label,
+                        symbol: tab.symbol,
+                        isSelected: selectedTab == tab,
+                        action: { selectedTab = tab }
+                    )
+                }
+            }
+
+            Spacer()
+        }
+        .padding(AppSpacing.xl)
+        .frame(width: 220)
+        .background(.regularMaterial)
     }
 
     private var generalSettings: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            settingsSection("Display", items: [
-                ("Dark Mode", $darkMode, optional: false),
-                ("Notifications", $showNotifications, optional: false),
-                ("Auto-Refresh", $autoRefresh, optional: false)
-            ])
+        VStack(alignment: .leading, spacing: AppSpacing.xl) {
+            sectionTitle("General")
 
-            settingsSection("Data", items: [])
-
-            VStack(alignment: .leading, spacing: 8) {
-                FDSLabel("Danger Zone", style: .subheading)
-
-                Button(
-                    action: { showConfirmClear = true },
-                    label: {
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .labelSmall()
-
-                            FDSLabel("Clear All Data", style: .subheading)
-
-                            Spacer()
-                        }
-                    }
-                )
-                .foregroundColor(AppColors.debit)
-                .padding(AppSpacing.sm)
-                .frame(maxWidth: .infinity)
-                .background(AppColors.debit.opacity(0.1))
-                .cornerRadius(AppRadius.md)
+            FDSGlassSurface(cornerRadius: AppRadius.lg) {
+                VStack(spacing: 0) {
+                    toggleRow("Notifications", symbol: "bell.fill", binding: $notifications)
+                    Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                    toggleRow("Auto-Refresh", symbol: "arrow.clockwise", binding: $autoRefresh)
+                }
             }
-            .padding(AppSpacing.sm)
-            .background(AppColors.surface)
-            .cornerRadius(AppRadius.md)
 
-            Spacer()
+            sectionTitle("Danger Zone")
+
+            Button(action: { showConfirmClear = true }) {
+                HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 12, weight: .semibold))
+                    Text("Clear All Data")
+                        .font(.system(size: 13, weight: .medium))
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .semibold))
+                }
+                .foregroundStyle(AppColors.debit)
+                .padding(.horizontal, AppSpacing.md)
+                .padding(.vertical, AppSpacing.md)
+                .background {
+                    RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
+                        .fill(AppColors.debit.opacity(0.12))
+                }
+            }
+            .buttonStyle(.plain)
         }
     }
 
     private var aboutSettings: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            aboutItem("Version", value: "1.0.0")
-            aboutItem("Build", value: "2026.05.16")
-            aboutItem("Platform", value: "macOS")
+        VStack(alignment: .leading, spacing: AppSpacing.xl) {
+            sectionTitle("About")
 
-            VStack(alignment: .leading, spacing: 8) {
-                FDSLabel("Links", style: .subheading)
-
-                VStack(spacing: 8) {
-                    aboutLink("GitHub Repository", icon: "link")
-                    aboutLink("Report a Bug", icon: "ladybug.fill")
-                    aboutLink("Privacy Policy", icon: "lock.fill")
+            FDSGlassSurface(cornerRadius: AppRadius.lg) {
+                VStack(spacing: 0) {
+                    infoRow("Version", value: "1.0.0", copyable: true)
+                    Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                    infoRow("Build", value: "2026.05.16", copyable: true)
+                    Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                    infoRow("Platform", value: "macOS", copyable: false)
                 }
             }
-            .padding(AppSpacing.sm)
-            .background(AppColors.surface)
-            .cornerRadius(AppRadius.md)
 
+            sectionTitle("Links")
+
+            FDSGlassSurface(cornerRadius: AppRadius.lg, padding: 0) {
+                VStack(spacing: 0) {
+                    linkRow("GitHub Repository", symbol: "link")
+                    Divider().opacity(0.3)
+                    linkRow("Report a Bug", symbol: "ladybug.fill")
+                    Divider().opacity(0.3)
+                    linkRow("Privacy Policy", symbol: "lock.fill")
+                }
+            }
+        }
+    }
+
+    private func sectionTitle(_ title: String) -> some View {
+        Text(title.uppercased())
+            .font(.system(size: 11, weight: .semibold))
+            .tracking(0.6)
+            .foregroundStyle(.tertiary)
+    }
+
+    private func toggleRow(_ label: String, symbol: String, binding: Binding<Bool>) -> some View {
+        HStack {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.secondary)
+                .frame(width: 22)
+            Text(label)
+                .font(.system(size: 13, weight: .medium))
             Spacer()
+            Toggle("", isOn: binding)
+                .labelsHidden()
+                .toggleStyle(.switch)
+                .controlSize(.small)
         }
     }
 
-    private func settingsSection(
-        _ title: String,
-        items: [(String, Binding<Bool>, optional: Bool)]
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FDSLabel(title, style: .subheading)
-
-            VStack(spacing: 8) {
-                ForEach(items.indices, id: \.self) { index in
-                    let (label, binding, _) = items[index]
-                    Toggle(label, isOn: binding)
-                        .caption()
-                        .padding(AppSpacing.xs)
-                        .background(AppColors.surface2)
-                        .cornerRadius(AppRadius.sm)
-                }
-            }
-        }
-        .padding(AppSpacing.sm)
-        .background(AppColors.surface)
-        .cornerRadius(AppRadius.md)
-    }
-
-    private func aboutItem(_ label: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FDSLabel(label, style: .subheading)
-
-            HStack {
-                FDSLabel(value, style: .caption)
-
-                Spacer()
-
+    private func infoRow(_ label: String, value: String, copyable: Bool) -> some View {
+        HStack {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.6)
+                .foregroundStyle(.tertiary)
+            Spacer()
+            Text(value)
+                .font(.system(size: 13, weight: .medium).monospacedDigit())
+            if copyable {
                 Button(action: {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(value, forType: .string)
-                }, label: {
+                }) {
                     Image(systemName: "doc.on.doc")
                         .font(.system(size: 11))
-                        .foregroundColor(AppColors.accent)
-                })
+                        .foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
             }
-            .padding(AppSpacing.xs)
-            .background(AppColors.surface2)
-            .cornerRadius(AppRadius.sm)
         }
-        .padding(AppSpacing.sm)
-        .background(AppColors.surface)
-        .cornerRadius(AppRadius.md)
     }
 
-    private func aboutLink(_ label: String, icon: String) -> some View {
-        Button(action: {}, label: {
-            HStack(spacing: 8) {
-                Image(systemName: icon)
-                    .labelSmall()
-
-                FDSLabel(label, style: .caption)
-
+    private func linkRow(_ label: String, symbol: String) -> some View {
+        Button(action: {}) {
+            HStack(spacing: AppSpacing.compact) {
+                Image(systemName: symbol)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(AppColors.accent)
+                    .frame(width: 22)
+                Text(label)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.primary)
                 Spacer()
-
                 Image(systemName: "arrow.up.right")
-                    .labelSmall()
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(.tertiary)
             }
-            .foregroundColor(AppColors.accent)
-            .padding(AppSpacing.xs)
-            .background(AppColors.surface2)
-            .cornerRadius(AppRadius.sm)
-        })
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.md)
+        }
+        .buttonStyle(.plain)
     }
 }
 
