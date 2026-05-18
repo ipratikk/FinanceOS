@@ -5,14 +5,102 @@ import SwiftUI
 struct CreateNewTargetSheet: View {
     @Binding var state: TargetCreationState
     let detectedBank: String
+    let availableAccounts: [Ledger]
     let onCancel: () -> Void
     let onCreate: () -> Void
 
     @State private var showCardSelection = false
-    @State private var selectedBankCase: Banks?
 
     var isCard: Bool {
         state.isCard
+    }
+
+    private var selectedCatalogCard: CardMetadata? {
+        guard !state.cardProduct.isEmpty else { return nil }
+        return CardDatabase.supportedCards().first { $0.id == state.cardProduct }
+    }
+
+    @ViewBuilder private var catalogCardWidget: some View {
+        if let catalogCard = selectedCatalogCard {
+            HStack(spacing: AppSpacing.md) {
+                catalogArtwork(catalogCard)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(catalogCard.name)
+                        .font(AppTypography.bodySmSemibold)
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                    catalogNetworkBadge(catalogCard.cardType)
+                }
+                Spacer(minLength: AppSpacing.compact)
+                Button("Change") { showCardSelection = true }
+                    .font(AppTypography.captionSmMedium)
+                    .foregroundStyle(AppColors.accent)
+                    .buttonStyle(.plain)
+                Button { state.cardProduct = "" } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(AppTypography.bodyMd)
+                        .foregroundStyle(.quaternary)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(AppSpacing.compact)
+            .background {
+                RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                    .fill(AppColors.accent.opacity(0.07))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
+                            .strokeBorder(AppColors.accent.opacity(0.2), lineWidth: 0.5)
+                    )
+            }
+        } else {
+            Button(action: { showCardSelection = true }) {
+                HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "creditcard.fill").font(AppTypography.captionSmSemibold)
+                    Text("Browse Card Database").font(AppTypography.captionLg)
+                    Spacer()
+                    Image(systemName: "chevron.right").font(AppTypography.labelSemibold)
+                }
+                .foregroundStyle(AppColors.accent)
+                .padding(.horizontal, AppSpacing.compact)
+                .padding(.vertical, 6)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func catalogArtwork(_ card: CardMetadata) -> some View {
+        Group {
+            if let urlString = card.imageURL, let url = URL(string: urlString) {
+                AsyncImage(url: url) { phase in
+                    if case let .success(image) = phase { image.resizable().scaledToFit() }
+                    else { catalogArtworkPlaceholder }
+                }
+            } else {
+                catalogArtworkPlaceholder
+            }
+        }
+        .frame(width: 56, height: 36)
+        .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+        .overlay { RoundedRectangle(cornerRadius: 4, style: .continuous).strokeBorder(
+            Color.white.opacity(0.12),
+            lineWidth: 0.5
+        ) }
+    }
+
+    private var catalogArtworkPlaceholder: some View {
+        RoundedRectangle(cornerRadius: 4, style: .continuous).fill(.ultraThinMaterial)
+            .overlay {
+                Image(systemName: "creditcard.fill").font(AppTypography.bodyMdLight).foregroundStyle(.tertiary)
+            }
+    }
+
+    private func catalogNetworkBadge(_ type: String) -> some View {
+        Text(type.uppercased())
+            .font(AppTypography.iconSm).tracking(0.4)
+            .foregroundStyle(AppColors.accent)
+            .padding(.horizontal, 5).padding(.vertical, 2)
+            .background { Capsule(style: .continuous).fill(AppColors.accent.opacity(0.12)) }
     }
 
     var body: some View {
@@ -38,28 +126,27 @@ struct CreateNewTargetSheet: View {
                             FDSLabel("BASIC INFORMATION", style: .subheading)
 
                             VStack(spacing: AppSpacing.sm) {
-                                inputField("Name (Optional)", text: $state.customName)
-
-                                if !isCard {
-                                    inputField("Owner Name", text: $state.ownerName)
-                                }
-
                                 if isCard {
+                                    inputField("Card Name (Optional)", text: $state.customName)
                                     inputField("Nickname", text: $state.nickname)
-                                }
-
-                                inputField("Last 4 Digits", text: $state.last4)
-                                    .onChange(of: state.last4) { _, newValue in
-                                        if newValue.count > 4 {
-                                            state.last4 = String(newValue.prefix(4))
-                                        }
-                                    }
-
-                                if isCard {
+                                    catalogCardWidget
+                                    FDSCreditCardDisplay(
+                                        cardName: selectedCatalogCard?.name,
+                                        bankName: nil,
+                                        cardNetwork: state.cardType,
+                                        encryptedCardNumber: $state.encryptedCardNumber,
+                                        last4: $state.last4
+                                    )
                                     cardTypeField()
-                                }
-
-                                if !isCard {
+                                } else {
+                                    inputField("Account Name (Optional)", text: $state.customName)
+                                    inputField("Owner Name", text: $state.ownerName)
+                                    inputField("Last 4 Digits", text: $state.last4)
+                                        .onChange(of: state.last4) { _, newValue in
+                                            if newValue.count > 4 {
+                                                state.last4 = String(newValue.prefix(4))
+                                            }
+                                        }
                                     accountTypeField()
                                 }
                             }
@@ -92,9 +179,11 @@ struct CreateNewTargetSheet: View {
         .sheet(isPresented: $showCardSelection) {
             CardSelectionView(
                 onSelect: { card in
+                    if state.customName.trimmingCharacters(in: .whitespaces).isEmpty {
+                        state.customName = card.name
+                    }
                     state.cardType = card.cardType
                     state.cardProduct = card.id
-                    print("[CreateNewTargetSheet] Selected card: '\(card.name)' (id=\(card.id))")
                     showCardSelection = false
                 },
                 onDismiss: { showCardSelection = false }
@@ -162,6 +251,7 @@ struct CreateNewTargetSheet: View {
                 .foregroundStyle(AppColors.accent)
                 .padding(.horizontal, AppSpacing.compact)
                 .padding(.vertical, 6)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         }
@@ -211,23 +301,37 @@ struct CreateNewTargetSheet: View {
     }
 
     private func bankField() -> some View {
-        let bankOptions = Banks.allCases.map { bankCase in
-            FDSPickerOption(
-                id: bankCase.rawValue,
-                value: bankCase,
-                title: bankCase.displayName,
-                imageName: bankCase.symbolAssetName
-            )
+        let bankOptions = Banks.allCases.map {
+            FDSPickerOption(id: $0.rawValue, value: $0, title: $0.displayName, imageName: $0.symbolAssetName)
         }
+        return VStack(alignment: .leading, spacing: AppSpacing.md) {
+            VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                FDSLabel("Bank", style: .hint)
+                FDSPicker(
+                    selection: Binding(get: { state.selectedBank }, set: { state.selectedBank = $0 }),
+                    options: bankOptions,
+                    variant: .symbolText,
+                    placeholder: detectedBank.isEmpty ? "Select bank" : "Detected: \(detectedBank)"
+                )
+            }
+            if isCard, !availableAccounts.isEmpty {
+                linkedAccountField
+            }
+        }
+    }
 
+    private var linkedAccountField: some View {
+        let none = FDSPickerOption(id: "none", value: nil as UUID?, title: "None", symbol: "minus.circle")
+        let options: [FDSPickerOption] = [none] + availableAccounts.map {
+            FDSPickerOption(id: $0.id, value: UUID?($0.id), title: $0.displayName, symbol: "banknote.fill")
+        }
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            FDSLabel("Bank", style: .hint)
-
+            FDSLabel("Linked Account (Optional)", style: .hint)
             FDSPicker(
-                selection: $selectedBankCase,
-                options: bankOptions,
+                selection: $state.linkedLedgerId,
+                options: options,
                 variant: .symbolText,
-                placeholder: detectedBank.isEmpty ? "Select bank" : "Detected: \(detectedBank)"
+                placeholder: "Select account"
             )
         }
     }

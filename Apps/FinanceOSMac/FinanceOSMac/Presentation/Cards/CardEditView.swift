@@ -96,7 +96,7 @@ struct CardEditView: View {
                 Text("Edit Card")
                     .bodyMedium()
                 Text(card.displayName)
-                    .font(.system(size: 11))
+                    .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
             }
             Spacer()
@@ -118,7 +118,7 @@ struct CardEditView: View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 Text("CARD INFORMATION")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
@@ -169,14 +169,14 @@ struct CardEditView: View {
                 catalogArtwork(catalogCard)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(catalogCard.name)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(AppTypography.bodySmSemibold)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
                     catalogNetworkBadge(catalogCard.cardType)
                 }
                 Spacer(minLength: AppSpacing.compact)
                 Button("Change") { showCardSelection = true }
-                    .font(.system(size: 11, weight: .medium))
+                    .font(AppTypography.captionSmMedium)
                     .foregroundStyle(AppColors.accent)
                     .buttonStyle(.plain)
                 Button { cardProduct = nil } label: {
@@ -201,7 +201,7 @@ struct CardEditView: View {
                     Image(systemName: "creditcard.fill").labelSmall()
                     Text("Browse Card Database").labelSmall()
                     Spacer()
-                    Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold))
+                    Image(systemName: "chevron.right").font(AppTypography.labelSemibold)
                 }
                 .foregroundStyle(AppColors.accent)
                 .padding(.horizontal, AppSpacing.compact)
@@ -216,7 +216,7 @@ struct CardEditView: View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 Text("BANK & ACCOUNT")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
@@ -273,7 +273,7 @@ struct CardEditView: View {
         Button(action: { showDeleteConfirm = true }) {
             HStack(spacing: AppSpacing.compact) {
                 Image(systemName: "trash.fill")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                 Text("Delete Card")
                     .caption()
                 Spacer()
@@ -329,7 +329,7 @@ struct CardEditView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+                .font(AppTypography.labelSemibold)
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             content()
@@ -346,12 +346,12 @@ struct CardEditView: View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             HStack {
                 Text(label.uppercased())
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
                 Spacer()
                 Button(actionLabel, action: action)
-                    .font(.system(size: 10, weight: .medium))
+                    .font(AppTypography.labelMedium)
                     .foregroundStyle(actionDisabled ? AnyShapeStyle(.tertiary) : AnyShapeStyle(AppColors.accent))
                     .disabled(actionDisabled)
                     .buttonStyle(.plain)
@@ -384,13 +384,13 @@ private extension CardEditView {
     var catalogArtworkPlaceholder: some View {
         RoundedRectangle(cornerRadius: 5, style: .continuous).fill(.ultraThinMaterial)
             .overlay {
-                Image(systemName: "creditcard.fill").font(.system(size: 16, weight: .light)).foregroundStyle(.tertiary)
+                Image(systemName: "creditcard.fill").font(AppTypography.headlineSmLight).foregroundStyle(.tertiary)
             }
     }
 
     func catalogNetworkBadge(_ type: String) -> some View {
         Text(type.uppercased())
-            .font(.system(size: 9, weight: .semibold)).tracking(0.4)
+            .font(AppTypography.iconSm).tracking(0.4)
             .foregroundStyle(AppColors.accent)
             .padding(.horizontal, 5).padding(.vertical, 2)
             .background { Capsule(style: .continuous).fill(AppColors.accent.opacity(0.12)) }
