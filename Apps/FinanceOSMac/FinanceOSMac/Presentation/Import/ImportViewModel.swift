@@ -72,7 +72,8 @@ final class ImportViewModel {
         transactionImportPipeline: TransactionImportPipeline,
         bankRepository: any BankRepository,
         ledgerRepository: any LedgerRepository,
-        transactionRepository: any TransactionRepository
+        transactionRepository: any TransactionRepository,
+        initialTarget: TransactionImportTarget? = nil
     ) {
         importSession = ImportSession()
         self.transactionImportPipeline = transactionImportPipeline
@@ -83,6 +84,9 @@ final class ImportViewModel {
             ledgerRepository: ledgerRepository,
             bankRepository: bankRepository
         )
+        if let initialTarget {
+            importSession.selectedTarget = initialTarget
+        }
     }
 
     func setFileURLs(_ urls: [URL]) {

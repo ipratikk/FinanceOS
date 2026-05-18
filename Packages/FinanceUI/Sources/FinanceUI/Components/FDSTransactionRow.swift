@@ -19,6 +19,7 @@ public struct FDSTransactionRow: View {
     let amount: String
     let isDebit: Bool
     let accountChip: AccountChipData?
+    let runningBalance: String?
 
     public struct AccountChipData {
         public let bankName: String
@@ -39,7 +40,8 @@ public struct FDSTransactionRow: View {
         subtitle: String,
         amount: String,
         isDebit: Bool,
-        accountChip: AccountChipData? = nil
+        accountChip: AccountChipData? = nil,
+        runningBalance: String? = nil
     ) {
         self.merchant = merchant
         self.categorySymbol = categorySymbol
@@ -48,6 +50,7 @@ public struct FDSTransactionRow: View {
         self.amount = amount
         self.isDebit = isDebit
         self.accountChip = accountChip
+        self.runningBalance = runningBalance
     }
 
     public var body: some View {
@@ -76,10 +79,14 @@ public struct FDSTransactionRow: View {
             VStack(alignment: .trailing, spacing: 2) {
                 Text(amount)
                     .font(.system(size: 13, weight: .semibold).monospacedDigit())
-                    .foregroundStyle(isDebit ? .primary : AppColors.credit)
+                    .foregroundStyle(isDebit ? AppColors.debit : AppColors.credit)
                     .lineLimit(1)
 
-                if let chip = accountChip {
+                if let balance = runningBalance {
+                    Text(balance)
+                        .font(.system(size: 10, weight: .regular).monospacedDigit())
+                        .foregroundStyle(.tertiary)
+                } else if let chip = accountChip {
                     HStack(spacing: 3) {
                         Text(chip.bankName)
                             .font(.system(size: 10, weight: .medium))

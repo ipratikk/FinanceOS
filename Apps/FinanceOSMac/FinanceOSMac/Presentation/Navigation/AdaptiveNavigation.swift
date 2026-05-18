@@ -149,11 +149,14 @@ struct DetailRouter: View {
                     transactionImportPipeline: appContainer.transactionImportPipeline,
                     bankRepository: appContainer.bankRepository,
                     ledgerRepository: appContainer.ledgerRepository,
-                    transactionRepository: appContainer.transactionRepository
+                    transactionRepository: appContainer.transactionRepository,
+                    initialTarget: navigator.pendingImportTarget
                 )
             )
         case .settings:
-            SettingsView()
+            SettingsView(onClearAll: {
+                try? await appContainer.bankRepository.deleteAll()
+            })
         }
     }
 
@@ -164,7 +167,8 @@ struct DetailRouter: View {
             AccountTransactionsDestinationView(
                 ledgerId: ledgerId,
                 transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                ledgerRepository: appContainer.ledgerRepository,
+                bankRepository: appContainer.bankRepository
             )
         case let .cardTransactions(ledgerId):
             CardTransactionsDestinationView(

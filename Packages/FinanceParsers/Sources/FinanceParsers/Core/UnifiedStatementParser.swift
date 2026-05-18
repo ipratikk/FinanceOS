@@ -7,6 +7,7 @@ public struct UnifiedStatementParser: Sendable {
         let startTime = Date()
 
         let fileContent = try String(contentsOf: fileURL, encoding: .utf8)
+        let rawRows = try CSVReader.readRows(from: fileURL, delimiter: ",")
         let rows = try loadRows(from: fileURL, source: detectedSource)
         guard !rows.isEmpty else {
             throw TransactionImportError.malformedFile("No data rows found")
@@ -18,6 +19,7 @@ public struct UnifiedStatementParser: Sendable {
         let statement = try buildStatement(
             from: dataRows,
             allRows: rows,
+            rawRows: rawRows,
             headerRow: headerRow,
             source: detectedSource,
             fileContent: fileContent
@@ -82,6 +84,7 @@ public struct UnifiedStatementParser: Sendable {
     private func buildStatement(
         from dataRows: [[String]],
         allRows: [[String]],
+        rawRows: [[String]],
         headerRow: [String],
         source: StatementSource,
         fileContent: String
@@ -120,7 +123,7 @@ public struct UnifiedStatementParser: Sendable {
             }
         case .iciciBank:
             let extractor = ICICIMetadataExtractor()
-            metadata = extractor.extract(from: allRows)
+            metadata = extractor.extract(from: rawRows)
             accountLast4 = metadata?.accountNumber
             let mapper = ICICIBankCSVMapper()
             let normalizer = ICICIBankCSVNormalizer()

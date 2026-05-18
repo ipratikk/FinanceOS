@@ -15,7 +15,8 @@ final class AccountTransactionsViewSnapshotTests: SnapshotTestable {
         let ledgerRepo = MockLedgerRepository()
         let viewModel = AccountTransactionsViewModel(
             transactionRepository: transactionRepo,
-            ledgerRepository: ledgerRepo
+            ledgerRepository: ledgerRepo,
+            bankRepository: MockBankRepository()
         )
         viewModel.transactionRows = PreviewTransactions.samples.map { txn in
             TransactionRow(

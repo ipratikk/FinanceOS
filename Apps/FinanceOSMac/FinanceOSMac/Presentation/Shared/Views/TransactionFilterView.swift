@@ -6,11 +6,6 @@ struct TransactionFilterView: View {
     @Bindable var listState: TransactionListState
     @Environment(\.dismiss) var dismiss
 
-    var dateRangeError: String? {
-        guard let start = listState.startDate, let end = listState.endDate else { return nil }
-        return end < start ? "End date must be after start date" : nil
-    }
-
     var body: some View {
         VStack(spacing: 0) {
             header
@@ -20,9 +15,6 @@ struct TransactionFilterView: View {
                 VStack(alignment: .leading, spacing: AppSpacing.xl) {
                     typeSection
                     dateSection
-                    if let error = dateRangeError {
-                        errorBanner(error)
-                    }
                 }
                 .padding(AppSpacing.xl)
             }
@@ -37,11 +29,10 @@ struct TransactionFilterView: View {
     private var header: some View {
         HStack(spacing: AppSpacing.compact) {
             Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                .font(.system(size: 18, weight: .regular))
+                .font(AppTypography.headlineMdRegular)
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
-            Text("Filters")
-                .bodyMedium()
+            Text("Filters").bodyMedium()
             Spacer()
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark")
@@ -59,7 +50,7 @@ struct TransactionFilterView: View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 Text("TRANSACTION TYPE")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
@@ -78,69 +69,41 @@ struct TransactionFilterView: View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 Text("DATE RANGE")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
-                dateRow(label: "From", date: Binding(
-                    get: { listState.startDate ?? Date() },
-                    set: { listState.startDate = $0 }
-                ), isSet: listState.startDate != nil) {
-                    listState.startDate = nil
+                ForEach(DateRangeFilter.standardPresets, id: \.label) { preset in
+                    presetRow(preset)
                 }
 
-                dateRow(label: "To", date: Binding(
-                    get: { listState.endDate ?? Date() },
-                    set: { listState.endDate = $0 }
-                ), isSet: listState.endDate != nil) {
-                    listState.endDate = nil
+                Divider().opacity(0.3)
+
+                ForEach(listState.availableFinancialYears, id: \.self) { year in
+                    presetRow(.financialYear(year))
                 }
             }
         }
     }
 
-    private func dateRow(
-        label: String,
-        date: Binding<Date>,
-        isSet: Bool,
-        onClear: @escaping () -> Void
-    ) -> some View {
-        HStack {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
-
-            Spacer()
-
-            DatePicker("", selection: date, displayedComponents: [.date])
-                .labelsHidden()
-                .controlSize(.small)
-
-            if isSet {
-                Button("Clear", action: onClear)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(AppColors.accent)
-                    .buttonStyle(.plain)
+    private func presetRow(_ preset: DateRangeFilter) -> some View {
+        Button {
+            listState.dateRangeFilter = listState.dateRangeFilter == preset ? nil : preset
+        } label: {
+            HStack {
+                Text(preset.label)
+                    .font(AppTypography.bodySm)
+                    .foregroundStyle(.primary)
+                Spacer()
+                if listState.dateRangeFilter == preset {
+                    Image(systemName: "checkmark")
+                        .font(AppTypography.captionLgSemibold)
+                        .foregroundStyle(AppColors.accent)
+                }
             }
+            .padding(.vertical, 4)
         }
-    }
-
-    private func errorBanner(_ message: String) -> some View {
-        HStack(spacing: AppSpacing.compact) {
-            Image(systemName: "exclamationmark.circle.fill")
-                .font(.system(size: 12, weight: .semibold))
-            Text(message)
-                .labelSmall()
-            Spacer()
-        }
-        .foregroundStyle(AppColors.debit)
-        .padding(.horizontal, AppSpacing.md)
-        .padding(.vertical, AppSpacing.compact)
-        .background {
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .fill(AppColors.debit.opacity(0.12))
-        }
+        .buttonStyle(.plain)
     }
 
     private var footer: some View {

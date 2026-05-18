@@ -124,6 +124,10 @@ public struct ICICIMetadataExtractor: Sendable {
                         details.balance = amt
                     }
                 }
+                // Savings is the primary account type — stop here
+                if details.accountType == "Savings" {
+                    break
+                }
             }
         }
 
@@ -174,8 +178,10 @@ public struct ICICIMetadataExtractor: Sendable {
         guard let dateStr else { return nil }
 
         let formatters = [
-            "MMMM dd  yyyy",
+            "MMMM dd yyyy",
+            "MMMM d yyyy",
             "MMM dd yyyy",
+            "MMM d yyyy",
             "dd-MMM-yyyy",
             "dd/MM/yyyy"
         ]

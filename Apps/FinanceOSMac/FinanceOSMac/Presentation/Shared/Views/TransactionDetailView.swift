@@ -34,7 +34,7 @@ struct TransactionDetailView: View {
                 Text("Transaction")
                     .bodyMedium()
                 Text(row.title)
-                    .font(.system(size: 11))
+                    .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
             }
@@ -54,13 +54,13 @@ struct TransactionDetailView: View {
     private var heroAmount: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             Text(row.transactionType == .debit ? "DEBITED" : "CREDITED")
-                .font(.system(size: 10, weight: .semibold))
+                .font(AppTypography.labelSemibold)
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
 
             HStack(alignment: .firstTextBaseline, spacing: AppSpacing.compact) {
                 Text(row.amountText)
-                    .font(.system(size: 36, weight: .bold, design: .rounded).monospacedDigit())
+                    .font(AppTypography.amountLarge.monospacedDigit())
                     .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
 
                 Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
@@ -90,7 +90,7 @@ struct TransactionDetailView: View {
     private func detailRow(label: String, value: String) -> some View {
         HStack {
             Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+                .font(AppTypography.labelSemibold)
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Spacer()

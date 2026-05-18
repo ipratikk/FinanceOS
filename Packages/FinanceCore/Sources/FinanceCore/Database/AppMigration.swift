@@ -21,5 +21,14 @@ enum AppMigration {
 
             FinanceLogger.migration.info("v1: All tables created")
         }
+
+        migrator.registerMigration("v2_ledger_closing_balance") { database in
+            FinanceLogger.migration.info("Running migration: v2_ledger_closing_balance")
+            try database.alter(table: Ledger.databaseTableName) { table in
+                table.add(column: "closingBalance", .integer)
+                table.add(column: "closingBalanceAsOf", .datetime)
+            }
+            FinanceLogger.migration.info("v2: closingBalance + closingBalanceAsOf added to ledgers")
+        }
     }
 }

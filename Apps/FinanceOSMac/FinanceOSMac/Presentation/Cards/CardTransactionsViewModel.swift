@@ -43,9 +43,10 @@ final class CardTransactionsViewModel {
             transactionRows = makeTransactionRows(
                 transactions: transactions
             )
+            listState.updateAvailableYears(from: transactionRows)
 
         } catch {
-            print(error)
+            FinanceLogger.ui.logError("Failed to load transactions for {cardID}", caughtError: error, ["cardID": cardID.uuidString])
         }
     }
 
@@ -83,10 +84,10 @@ final class CardTransactionsViewModel {
         currencyCode: String,
         transactionType: TransactionType
     ) -> String {
-        let wholeUnits = minorUnits / 100
-        let fractionalUnits = minorUnits % 100
+        let whole = minorUnits / 100
+        let frac = minorUnits % 100
         let sign = transactionType == .debit ? "-" : "+"
-
-        return "\(sign)\(currencyCode) \(wholeUnits).\(String(format: "%02d", fractionalUnits))"
+        let symbol = CurrencySymbol.symbol(for: currencyCode)
+        return "\(sign)\(symbol)\(whole).\(String(format: "%02d", frac))"
     }
 }

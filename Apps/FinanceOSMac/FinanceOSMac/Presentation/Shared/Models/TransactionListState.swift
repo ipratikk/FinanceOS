@@ -6,11 +6,21 @@ import Observation
 final class TransactionListState {
     var searchQuery: String = ""
     var typeFilter: TransactionType?
-    var startDate: Date?
-    var endDate: Date?
+    var dateRangeFilter: DateRangeFilter?
+    var availableFinancialYears: [Int] = []
 
     var isFilterActive: Bool {
-        typeFilter != nil || startDate != nil || endDate != nil
+        typeFilter != nil || dateRangeFilter != nil
+    }
+
+    func updateAvailableYears(from rows: [TransactionRow]) {
+        let cal = Calendar.current
+        let years = Set(rows.map { row -> Int in
+            let month = cal.component(.month, from: row.postedAt)
+            let year = cal.component(.year, from: row.postedAt)
+            return month >= 4 ? year : year - 1
+        })
+        availableFinancialYears = years.sorted(by: >)
     }
 
     func sections(from rows: [TransactionRow]) -> [TransactionSection] {
@@ -24,51 +34,49 @@ final class TransactionListState {
             filtered = filtered.filter { $0.transactionType == typeFilter }
         }
 
-        if let startDate {
-            filtered = filtered.filter { $0.postedAt >= startDate }
+        if let range = dateRangeFilter?.dateRange {
+            if let from = range.from {
+                filtered = filtered.filter { $0.postedAt >= from }
+            }
+            if let endDate = range.endDate {
+                let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: endDate) ?? endDate
+                filtered = filtered.filter { $0.postedAt < nextDay }
+            }
         }
 
-        if let endDate {
-            let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: endDate) ?? endDate
-            filtered = filtered.filter { $0.postedAt < nextDay }
-        }
-
-        let grouped = Dictionary(grouping: filtered) { row in
-            let components = Calendar.current.dateComponents([.year, .month], from: row.postedAt)
-            let year = components.year ?? 0
-            let month = components.month ?? 0
-            return String(format: "%04d-%02d", year, month)
+        let grouped = Dictionary(grouping: filtered) { row -> String in
+            let comps = Calendar.current.dateComponents([.year, .month], from: row.postedAt)
+            return String(format: "%04d-%02d", comps.year ?? 0, comps.month ?? 0)
         }
 
         let sections = grouped.map { key, rows in
-            let date = dateFromMonthKey(key)
-            let title = formatMonthTitle(date)
-            let sortedRows = rows.sorted { $0.postedAt > $1.postedAt }
-            return TransactionSection(id: key, title: title, rows: sortedRows)
+            TransactionSection(
+                id: key,
+                title: formatMonthTitle(dateFromMonthKey(key)),
+                rows: rows.sorted { $0.postedAt > $1.postedAt }
+            )
         }
-
         return sections.sorted { $0.id > $1.id }
     }
 
     func reset() {
         searchQuery = ""
         typeFilter = nil
-        startDate = nil
-        endDate = nil
+        dateRangeFilter = nil
     }
 
     private func dateFromMonthKey(_ key: String) -> Date {
-        let components = key.split(separator: "-").map { Int($0) ?? 0 }
-        var dateComponents = DateComponents()
-        dateComponents.year = !components.isEmpty ? components[0] : Calendar.current.component(.year, from: Date())
-        dateComponents.month = components.count > 1 ? components[1] : 1
-        dateComponents.day = 1
-        return Calendar.current.date(from: dateComponents) ?? Date()
+        let parts = key.split(separator: "-").map { Int($0) ?? 0 }
+        var comps = DateComponents()
+        comps.year = parts.first ?? Calendar.current.component(.year, from: Date())
+        comps.month = parts.count > 1 ? parts[1] : 1
+        comps.day = 1
+        return Calendar.current.date(from: comps) ?? Date()
     }
 
     private func formatMonthTitle(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: date)
+        let fmt = DateFormatter()
+        fmt.dateFormat = "MMMM yyyy"
+        return fmt.string(from: date)
     }
 }

@@ -53,3 +53,9 @@ public typealias Insight = InsightCard
 public typealias Picker = FDSPicker
 public typealias PickerOption = FDSPickerOption
 public typealias PickerVariant = FDSPickerVariant
+
+/// Credit Card Display
+public typealias CreditCardDisplay = FDSCreditCardDisplay
+
+/// Structural
+public typealias AvatarSize = FDSAvatarSize

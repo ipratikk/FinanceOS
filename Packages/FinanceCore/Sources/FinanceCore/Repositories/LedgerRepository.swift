@@ -9,6 +9,7 @@ public protocol LedgerRepository: Sendable {
 
     func insert(_ ledger: Ledger) async throws
     func update(_ ledger: Ledger) async throws
+    func updateClosingBalance(id: UUID, balance: Int64, asOf: Date) async throws
     func archive(id: UUID) async throws
     func delete(id: UUID) async throws
 }

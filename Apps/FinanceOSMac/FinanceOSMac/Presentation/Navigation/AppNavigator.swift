@@ -1,3 +1,5 @@
+import FinanceCore
+import FinanceParsers
 import SwiftUI
 
 /// Centralized navigation coordinator for the entire FinanceOS app.
@@ -10,6 +12,10 @@ final class AppNavigator {
     var detailPath = NavigationPath()
     var sheet: SheetRoute?
     var cardReloadCallback: (() async -> Void)?
+    var accountReloadCallback: (() async -> Void)?
+
+    var pendingImportTarget: TransactionImportTarget?
+    var pendingImportSource: StatementSource?
 
     func navigate(to item: NavigationItem) {
         sidebarSelection = item

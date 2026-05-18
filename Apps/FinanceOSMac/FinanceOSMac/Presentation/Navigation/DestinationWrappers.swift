@@ -5,6 +5,7 @@ struct AccountTransactionsDestinationView: View {
     let ledgerId: UUID
     let transactionRepository: any TransactionRepository
     let ledgerRepository: any LedgerRepository
+    let bankRepository: any BankRepository
 
     @State private var ledger: Ledger?
     @State private var isLoading = true
@@ -16,7 +17,8 @@ struct AccountTransactionsDestinationView: View {
                     ledger: ledger,
                     viewModel: AccountTransactionsViewModel(
                         transactionRepository: transactionRepository,
-                        ledgerRepository: ledgerRepository
+                        ledgerRepository: ledgerRepository,
+                        bankRepository: bankRepository
                     )
                 )
                 .navigationTitle(ledger.displayName)
@@ -36,7 +38,7 @@ struct AccountTransactionsDestinationView: View {
             let ledgers = try await ledgerRepository.fetchLedgers()
             ledger = ledgers.first(where: { $0.id == ledgerId })
         } catch {
-            print("Error loading ledger: \(error)")
+            FinanceLogger.ui.logError("Error loading ledger: {error}", caughtError: error, ["error": error.localizedDescription])
         }
         isLoading = false
     }
@@ -76,7 +78,7 @@ struct CardTransactionsDestinationView: View {
             let ledgers = try await ledgerRepository.fetchLedgers()
             ledger = ledgers.first(where: { $0.id == ledgerId })
         } catch {
-            print("Error loading ledger: \(error)")
+            FinanceLogger.ui.logError("Error loading ledger: {error}", caughtError: error, ["error": error.localizedDescription])
         }
         isLoading = false
     }

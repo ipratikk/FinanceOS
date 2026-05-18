@@ -242,11 +242,11 @@ struct CreateNewTargetSheet: View {
             Button(action: { showCardSelection = true }) {
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: "creditcard.fill")
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(AppTypography.captionSmSemibold)
                     FDSLabel("Browse Card Database", style: .bodyMedium)
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 10, weight: .semibold))
+                        .font(AppTypography.labelSemibold)
                 }
                 .foregroundStyle(AppColors.accent)
                 .padding(.horizontal, AppSpacing.compact)

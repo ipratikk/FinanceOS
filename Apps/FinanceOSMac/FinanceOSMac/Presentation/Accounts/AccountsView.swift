@@ -141,16 +141,16 @@ struct AccountsView: View {
         } content: {
             VStack(alignment: .leading, spacing: 3) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(AppTypography.bodySmMedium)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
                     Text((ledger.accountType ?? "Account").capitalized)
-                        .font(.system(size: 11, weight: .regular))
+                        .font(AppTypography.captionSm)
                     if !ledger.last4.isEmpty {
                         Text("· •••• \(ledger.last4)")
-                            .font(.system(size: 11, weight: .regular).monospacedDigit())
+                            .font(AppTypography.captionSm.monospacedDigit())
                     }
                 }
                 .foregroundStyle(.tertiary)
@@ -158,11 +158,11 @@ struct AccountsView: View {
                 if let balance {
                     HStack(spacing: 4) {
                         Text(balance.formattedBalance)
-                            .font(.system(size: 12, weight: .semibold).monospacedDigit())
+                            .font(AppTypography.captionLgSemibold.monospacedDigit())
                             .foregroundStyle(balance.netMinorUnits >= 0 ? AppColors.credit : AppColors.debit)
                         if let dateStr = balance.formattedDate {
                             Text("as of \(dateStr)")
-                                .font(.system(size: 10, weight: .regular))
+                                .font(AppTypography.label)
                                 .foregroundStyle(.quaternary)
                         }
                     }
@@ -204,7 +204,7 @@ struct AccountsView: View {
     ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 12, weight: .semibold))
+                .font(AppTypography.captionLgSemibold)
                 .foregroundStyle(color)
                 .frame(width: 28, height: 28)
                 .background(Circle().fill(color.opacity(0.1)))

@@ -5,10 +5,15 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct ImportView: View {
-    let viewModel: ImportViewModel
+    @State private var viewModel: ImportViewModel
+
+    init(viewModel: ImportViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
 
     @State private var selectedSource: StatementSource?
     @State private var isTargeted = false
+    @Environment(AppNavigator.self) private var navigator
 
     var body: some View {
         Group {
@@ -26,6 +31,11 @@ struct ImportView: View {
             }
         }
         .onAppear {
+            if let source = navigator.pendingImportSource {
+                selectedSource = source
+                navigator.pendingImportSource = nil
+            }
+            navigator.pendingImportTarget = nil
             Task {
                 await viewModel.loadTargetsOnAppear()
             }
@@ -44,7 +54,7 @@ struct ImportView: View {
                 if isTargeted {
                     VStack(spacing: 16) {
                         Image(systemName: "arrow.down.doc.fill")
-                            .font(.system(size: 48, weight: .semibold))
+                            .font(AppTypography.headingXL)
                             .foregroundColor(AppColors.accent)
 
                         VStack(spacing: 4) {
@@ -145,7 +155,7 @@ struct ImportView: View {
             Text("Statements")
                 .displayMedium()
             Text("Upload bank or credit card statements")
-                .font(.system(size: 12))
+                .font(AppTypography.captionLg)
                 .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -181,7 +191,7 @@ struct ImportView: View {
             Spacer()
             Button(action: { viewModel.lastImportResult = nil }) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .foregroundStyle(.secondary)
                     .frame(width: 20, height: 20)
                     .background(Circle().fill(.ultraThinMaterial))

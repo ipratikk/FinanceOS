@@ -36,6 +36,8 @@ struct MockBankRepository: BankRepository {
     func update(_ bank: Bank) async throws {}
 
     func delete(id: UUID) async throws {}
+
+    func deleteAll() async throws {}
 }
 
 struct MockLedgerRepository: LedgerRepository {
@@ -62,6 +64,8 @@ struct MockLedgerRepository: LedgerRepository {
     func insert(_ ledger: Ledger) async throws {}
 
     func update(_ ledger: Ledger) async throws {}
+
+    func updateClosingBalance(id: UUID, balance: Int64, asOf: Date) async throws {}
 
     func archive(id: UUID) async throws {}
 

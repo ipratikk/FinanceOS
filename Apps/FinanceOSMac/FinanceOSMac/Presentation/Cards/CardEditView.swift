@@ -181,7 +181,7 @@ struct CardEditView: View {
                     .buttonStyle(.plain)
                 Button { cardProduct = nil } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 14))
+                        .font(AppTypography.captionLg)
                         .foregroundStyle(.quaternary)
                 }
                 .buttonStyle(.plain)

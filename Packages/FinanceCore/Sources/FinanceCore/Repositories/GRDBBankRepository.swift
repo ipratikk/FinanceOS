@@ -35,4 +35,10 @@ public final class GRDBBankRepository:
     public func delete(id: UUID) async throws {
         try await grdbDelete(Bank.self, key: id, in: dbQueue)
     }
+
+    public func deleteAll() async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: "DELETE FROM \(Bank.databaseTableName)")
+        }
+    }
 }

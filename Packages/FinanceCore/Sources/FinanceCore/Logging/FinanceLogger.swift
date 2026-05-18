@@ -5,6 +5,7 @@
 //  Created by Pratik Goel on 13/05/26.
 //
 
+import Foundation
 import OSLog
 
 public enum FinanceLogger {
@@ -67,73 +68,129 @@ public enum FinanceLogger {
 }
 
 public extension Logger {
-    /// Format message with metadata dictionary, replacing {key} placeholders.
-    /// Messages are logged with .public privacy level.
-    /// Example: logger.logTrace("Parsing {file}", ["file": fileName])
+    // MARK: - Production-Grade Logging with Context
+
+    /// Log trace level with full context (file, function, line, metadata).
+    /// Example: logger.logTrace("Fetching user", file: #file, function: #function, line: #line, ["userID": "123"])
     func logTrace(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible] = [:]
+        _ message: StaticString,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line,
+        _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let msg = _formatMessage(staticMsg, metadata)
-        trace("\(msg, privacy: .public)")
+        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        trace("\(formatted)")
     }
 
     func logDebug(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible] = [:]
+        _ message: StaticString,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line,
+        _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let msg = _formatMessage(staticMsg, metadata)
-        debug("\(msg, privacy: .public)")
+        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        debug("\(formatted)")
     }
 
     func logInfo(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible] = [:]
+        _ message: StaticString,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line,
+        _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let msg = _formatMessage(staticMsg, metadata)
-        info("\(msg, privacy: .public)")
+        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        info("\(formatted)")
     }
 
     func logNotice(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible] = [:]
+        _ message: StaticString,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line,
+        _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let msg = _formatMessage(staticMsg, metadata)
-        notice("\(msg, privacy: .public)")
+        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        notice("\(formatted)")
     }
 
     func logWarning(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible] = [:]
+        _ message: StaticString,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line,
+        _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let msg = _formatMessage(staticMsg, metadata)
-        warning("\(msg, privacy: .public)")
+        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        warning("\(formatted)")
     }
 
     func logError(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible] = [:]
+        _ message: StaticString,
+        caughtError: Error? = nil,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line,
+        _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let msg = _formatMessage(staticMsg, metadata)
-        error("\(msg, privacy: .public)")
+        var mutableAttrs = attributes
+        if let err = caughtError {
+            mutableAttrs["error"] = err.localizedDescription
+            let nsError = err as NSError
+            mutableAttrs["errorCode"] = nsError.code
+            mutableAttrs["errorDomain"] = nsError.domain
+        }
+        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: mutableAttrs)
+        error("\(formatted)")
     }
 
     func logCritical(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible] = [:]
+        _ message: StaticString,
+        file: String = #file,
+        function: String = #function,
+        line: Int = #line,
+        _ attributes: [String: CustomStringConvertible] = [:]
     ) {
-        let msg = _formatMessage(staticMsg, metadata)
-        critical("\(msg, privacy: .public)")
+        let formatted = _formatContextualMessage(message, file: file, function: function, line: line, attributes: attributes)
+        critical("\(formatted)")
     }
 
-    private func _formatMessage(
-        _ staticMsg: StaticString,
-        _ metadata: [String: CustomStringConvertible]
+    // MARK: - Private Formatting
+
+    private func _formatContextualMessage(
+        _ message: StaticString,
+        file: String,
+        function: String,
+        line: Int,
+        attributes: [String: CustomStringConvertible]
     ) -> String {
-        var msg = staticMsg.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
-        for (key, value) in metadata {
+        // Extract filename from full path
+        let filename = (file as NSString).lastPathComponent
+
+        // Convert StaticString to String
+        var msg = message.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
+
+        // Replace {key} placeholders with attribute values
+        for (key, value) in attributes {
             msg = msg.replacingOccurrences(of: "{\(key)}", with: String(describing: value))
         }
-        return msg
+
+        // Get thread info for concurrency debugging
+        let threadName = Thread.current.isMainThread ? "main" : "bg"
+
+        // Format with context: [file:line function] message {attrs}
+        let contextualMsg = "[\(filename):\(line) \(function) <\(threadName)>] \(msg)"
+
+        // Add remaining attributes that weren't interpolated
+        if !attributes.isEmpty {
+            let unusedAttrs = attributes
+                .map { "\($0.key)=\($0.value)" }
+                .joined(separator: " ")
+            return "\(contextualMsg) {\(unusedAttrs)}"
+        }
+
+        return contextualMsg
     }
 }

@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceParsers
 import FinanceUI
 import SwiftUI
 
@@ -100,27 +101,21 @@ struct CardsView: View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             FDSSectionHeader(bankName, subtitle: "\(rows.count) card\(rows.count == 1 ? "" : "s")")
 
-            VStack(spacing: 0) {
-                ForEach(Array(rows.enumerated()), id: \.element.card.id) { index, row in
-                    NavigationLink(value: DetailDestination.cardTransactions(row.card.id)) {
-                        cardRowView(row.card)
-                    }
-                    .buttonStyle(.plain)
+            FDSCard {
+                VStack(spacing: 0) {
+                    ForEach(Array(rows.enumerated()), id: \.element.card.id) { index, row in
+                        NavigationLink(value: DetailDestination.cardTransactions(row.card.id)) {
+                            cardRowView(row.card)
+                        }
+                        .buttonStyle(.plain)
 
-                    if index < rows.count - 1 {
-                        Divider()
-                            .opacity(0.3)
-                            .padding(.leading, 88)
+                        if index < rows.count - 1 {
+                            Divider()
+                                .opacity(0.3)
+                                .padding(.leading, 100)
+                        }
                     }
                 }
-            }
-            .background {
-                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                    .fill(.ultraThinMaterial)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
-                    }
             }
         }
     }
@@ -137,9 +132,9 @@ struct CardsView: View {
             supportedCards.first { $0.id == product }
         } ?? supportedCards.first { $0.name == ledger.displayName }
 
-        return HStack(spacing: AppSpacing.md) {
+        return FDSRow {
             cardArtwork(card: card)
-
+        } content: {
             VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .caption()
@@ -149,34 +144,60 @@ struct CardsView: View {
                 HStack(spacing: 4) {
                     if let cardType = ledger.cardType {
                         Text(cardType.uppercased())
-                            .font(.system(size: 10, weight: .semibold))
+                            .font(AppTypography.labelSemibold)
                             .tracking(0.4)
                     }
                     if !ledger.last4.isEmpty {
                         Text("· •••• \(ledger.last4)")
-                            .font(.system(size: 11, weight: .regular).monospacedDigit())
+                            .font(AppTypography.captionSm.monospacedDigit())
                     }
                 }
                 .foregroundStyle(.tertiary)
             }
-
-            Spacer()
-
-            Menu {
-                Button("Edit") { navigator.present(.cardEdit(ledger)) }
-                Button("Delete", role: .destructive) { cardPendingDelete = ledger }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.tertiary)
-                    .frame(width: 28, height: 28)
+        } trailing: {
+            HStack(spacing: AppSpacing.compact) {
+                iconButton("plus", color: AppColors.accent) {
+                    let bank = viewModel.banks.first { $0.id == ledger.bankId }
+                    navigator.pendingImportTarget = .ledger(ledger.id)
+                    navigator.pendingImportSource = importSource(for: ledger, bank: bank)
+                    navigator.navigate(to: .importStatement)
+                }
+                iconButton("pencil", color: .secondary) {
+                    navigator.present(.cardEdit(ledger))
+                }
+                iconButton("trash", color: AppColors.debit) {
+                    cardPendingDelete = ledger
+                }
             }
-            .menuStyle(.borderlessButton)
-            .menuIndicator(.hidden)
-            .fixedSize()
         }
-        .padding(.horizontal, AppSpacing.md)
-        .padding(.vertical, AppSpacing.compact)
+    }
+
+    private func importSource(for ledger: Ledger, bank: Bank?) -> StatementSource? {
+        guard let bankEnum = bank?.bank else { return nil }
+        switch (bankEnum, ledger.kind) {
+        case (.hdfc, .bankAccount): return .hdfcBank
+        case (.hdfc, .creditCard): return .hdfcCard
+        case (.icici, .bankAccount): return .iciciBank
+        case (.icici, .creditCard): return .iciciCard
+        case (.amex, _): return .amex
+        default: return nil
+        }
+    }
+
+    private func iconButton(
+        _ symbol: String,
+        color: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(AppTypography.captionLgSemibold)
+                .foregroundStyle(color)
+                .frame(width: 28, height: 28)
+                .background(Circle().fill(color.opacity(0.1)))
+        }
+        .buttonStyle(.plain)
+        .frame(minWidth: 44, minHeight: 44)
         .contentShape(Rectangle())
     }
 
@@ -195,7 +216,7 @@ struct CardsView: View {
                 artworkPlaceholder
             }
         }
-        .frame(width: 56, height: 36)
+        .frame(width: 68, height: 44)
         .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
@@ -214,21 +235,11 @@ struct CardsView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: AppSpacing.md) {
-            Image(systemName: "creditcard")
-                .font(.system(size: 48, weight: .light))
-                .foregroundStyle(.tertiary)
-                .symbolRenderingMode(.hierarchical)
-
-            VStack(spacing: AppSpacing.tight) {
-                Text("No Cards")
-                    .bodyLarge()
-                Text("Import a statement to get started")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.tertiary)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        FDSEmptyState(
+            symbol: "creditcard",
+            title: "No Cards",
+            subtitle: "Import a statement to get started"
+        )
     }
 
     private var loadingState: some View {
@@ -247,7 +258,7 @@ struct CardsView: View {
         HStack(spacing: AppSpacing.md) {
             RoundedRectangle(cornerRadius: AppRadius.sm)
                 .fill(Color.white.opacity(0.04))
-                .frame(width: 56, height: 36)
+                .frame(width: 68, height: 44)
             VStack(alignment: .leading, spacing: 4) {
                 RoundedRectangle(cornerRadius: 3)
                     .fill(Color.white.opacity(0.04))

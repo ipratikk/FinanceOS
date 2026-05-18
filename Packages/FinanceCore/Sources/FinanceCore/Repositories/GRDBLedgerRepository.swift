@@ -119,11 +119,30 @@ public final class GRDBLedgerRepository:
         }
     }
 
+    public func updateClosingBalance(id: UUID, balance: Int64, asOf: Date) async throws {
+        try await dbQueue.write { database in
+            try database.execute(
+                sql: """
+                    UPDATE ledgers
+                    SET closingBalance = ?, closingBalanceAsOf = ?
+                    WHERE id = ?
+                      AND (closingBalanceAsOf IS NULL OR closingBalanceAsOf < ?)
+                """,
+                arguments: [balance, asOf, id, asOf]
+            )
+
+            self.logger.logInfo(
+                "Updated closing balance",
+                ["ledgerId": id.uuidString, "balance": String(balance)]
+            )
+        }
+    }
+
     public func archive(id: UUID) async throws {
         try await dbQueue.write { database in
             try database.execute(
                 sql: "UPDATE ledgers SET isArchived = 1 WHERE id = ?",
-                arguments: [id.uuidString]
+                arguments: [id]
             )
 
             self.logger.logInfo(

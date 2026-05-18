@@ -30,7 +30,7 @@ struct SourcePickerSection: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
                         Image(systemName: "exclamationmark.circle.fill")
-                            .font(.system(size: 14))
+                            .font(AppTypography.captionLg)
                             .foregroundColor(AppColors.debit)
 
                         FDSLabel(error, style: .hint)
@@ -71,7 +71,7 @@ struct DropZoneView: View {
         return VStack(spacing: 12) {
             VStack(spacing: 12) {
                 Image(systemName: "arrow.down.doc.fill")
-                    .font(.system(size: 40, weight: .semibold))
+                    .font(AppTypography.headingMd)
                     .foregroundColor(AppColors.accent)
 
                 VStack(spacing: 4) {
@@ -108,7 +108,7 @@ struct FileSelectionPlaceholder: View {
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: "arrow.down.doc.fill")
-                .font(.system(size: 40, weight: .semibold))
+                .font(AppTypography.headingMd)
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 4) {

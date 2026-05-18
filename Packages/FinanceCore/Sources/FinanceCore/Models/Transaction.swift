@@ -115,6 +115,7 @@ public extension Transaction {
                 .defaults(to: "debit")
 
             table.column("sourceFingerprint", .text)
+                .unique()
 
             table.check(
                 sql: """

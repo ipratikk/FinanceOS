@@ -42,18 +42,23 @@ run_cli() {
     | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
-txns = d.get('transactions', [])
-total_dr = sum(t.get('debitAmount', 0) for t in txns)
-total_cr = sum(t.get('creditAmount', 0) for t in txns)
+stmt = d.get('statement', d)
+txns = stmt.get('transactions', [])
+total_dr = sum(t.get('amountMinorUnits', 0) for t in txns if t.get('amountMinorUnits', 0) > 0)
+total_cr = sum(abs(t.get('amountMinorUnits', 0)) for t in txns if t.get('amountMinorUnits', 0) < 0)
 print(f'Txns={len(txns)} Dr={total_dr/100:.2f} Cr={total_cr/100:.2f}')
 if txns:
     print('First 3:')
     for t in txns[:3]:
-        print(f\"  {t.get('date','?')} {t.get('description','?')[:40]}\")
+        fp = t.get('sourceFingerprint', '')
+        date = fp.split('|')[0] if fp else '?'
+        print(f\"  {date} {t.get('description','?')[:40]}\")
     if len(txns) > 3:
         print('Last 3:')
         for t in txns[-3:]:
-            print(f\"  {t.get('date','?')} {t.get('description','?')[:40]}\")
+            fp = t.get('sourceFingerprint', '')
+            date = fp.split('|')[0] if fp else '?'
+            print(f\"  {date} {t.get('description','?')[:40]}\")
 "
 }
 

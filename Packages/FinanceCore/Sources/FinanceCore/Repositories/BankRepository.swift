@@ -12,4 +12,5 @@ public protocol BankRepository: Sendable {
     func insert(_ bank: Bank) async throws
     func update(_ bank: Bank) async throws
     func delete(id: UUID) async throws
+    func deleteAll() async throws
 }

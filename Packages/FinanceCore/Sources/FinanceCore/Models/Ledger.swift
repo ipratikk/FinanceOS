@@ -26,6 +26,8 @@ public struct Ledger:
     public let linkedLedgerId: UUID?
 
     public let isArchived: Bool
+    public let closingBalance: Int64?
+    public let closingBalanceAsOf: Date?
 
     public init(
         id: UUID = UUID(),
@@ -41,7 +43,9 @@ public struct Ledger:
         cardProduct: String? = nil,
         bin: String? = nil,
         linkedLedgerId: UUID? = nil,
-        isArchived: Bool = false
+        isArchived: Bool = false,
+        closingBalance: Int64? = nil,
+        closingBalanceAsOf: Date? = nil
     ) {
         self.id = id
         self.bankId = bankId
@@ -57,6 +61,8 @@ public struct Ledger:
         self.bin = bin
         self.linkedLedgerId = linkedLedgerId
         self.isArchived = isArchived
+        self.closingBalance = closingBalance
+        self.closingBalanceAsOf = closingBalanceAsOf
     }
 }
 
@@ -76,6 +82,8 @@ public extension Ledger {
         static let bin = Column(CodingKeys.bin)
         static let linkedLedgerId = Column(CodingKeys.linkedLedgerId)
         static let isArchived = Column(CodingKeys.isArchived)
+        static let closingBalance = Column(CodingKeys.closingBalance)
+        static let closingBalanceAsOf = Column(CodingKeys.closingBalanceAsOf)
     }
 }
 
@@ -130,6 +138,10 @@ public extension Ledger {
             table.column("isArchived", .integer)
                 .notNull()
                 .defaults(to: false)
+
+            table.column("closingBalance", .integer)
+
+            table.column("closingBalanceAsOf", .datetime)
 
             table.check(
                 sql: "kind IN ('bankAccount','creditCard','loan','wallet','crypto','investment')"

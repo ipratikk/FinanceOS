@@ -44,12 +44,24 @@ extension ImportViewModel {
                 .bankAccount
             }
 
+            let statement = importSession.parsedStatements[index]
             let result = try await transactionImportPipeline.execute(
-                statement: importSession.parsedStatements[index],
+                statement: statement,
                 target: target,
                 ledgerKind: ledgerKind,
                 context: context
             )
+
+            if case let .ledger(ledgerId) = target,
+               let closingBalance = statement.metadata?.closingBalance,
+               let statementDate = statement.metadata?.generatedAt
+            {
+                try? await ledgerRepository.updateClosingBalance(
+                    id: ledgerId,
+                    balance: closingBalance,
+                    asOf: statementDate
+                )
+            }
 
             totalInserted += result.inserted
             totalSkipped += result.skipped

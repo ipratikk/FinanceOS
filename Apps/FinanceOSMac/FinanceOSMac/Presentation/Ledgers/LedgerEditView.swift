@@ -81,33 +81,69 @@ struct LedgerEditView: View {
 
                                 VStack(alignment: .leading, spacing: 4) {
                                     FDSLabel("Account Type", style: .hint)
-                                    Picker("Type", selection: $accountType) {
-                                        ForEach(["savings", "checking", "credit"], id: \.self) { type in
-                                            Text(type.capitalized).tag(type)
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    FDSPicker(
+                                        selection: Binding(
+                                            get: { accountType },
+                                            set: { if let value = $0 { accountType = value } }
+                                        ),
+                                        options: [
+                                            FDSPickerOption(
+                                                id: "savings",
+                                                value: "savings",
+                                                title: "Savings",
+                                                symbol: "building.columns.fill"
+                                            ),
+                                            FDSPickerOption(
+                                                id: "checking",
+                                                value: "checking",
+                                                title: "Checking",
+                                                symbol: "checkmark.rectangle.fill"
+                                            ),
+                                            FDSPickerOption(
+                                                id: "credit",
+                                                value: "credit",
+                                                title: "Credit",
+                                                symbol: "creditcard.fill"
+                                            )
+                                        ],
+                                        variant: .symbolText,
+                                        placeholder: "Select type"
+                                    )
                                 }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
                             }
 
                             if ledger.kind == .creditCard {
                                 VStack(alignment: .leading, spacing: 4) {
                                     FDSLabel("Card Type", style: .hint)
-                                    Picker("Type", selection: $cardType) {
-                                        ForEach(["credit", "debit", "other"], id: \.self) { type in
-                                            Text(type.capitalized).tag(type)
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    FDSPicker(
+                                        selection: Binding(
+                                            get: { cardType },
+                                            set: { if let value = $0 { cardType = value } }
+                                        ),
+                                        options: [
+                                            FDSPickerOption(
+                                                id: "credit",
+                                                value: "credit",
+                                                title: "Credit",
+                                                symbol: "creditcard.fill"
+                                            ),
+                                            FDSPickerOption(
+                                                id: "debit",
+                                                value: "debit",
+                                                title: "Debit",
+                                                symbol: "creditcard"
+                                            ),
+                                            FDSPickerOption(
+                                                id: "other",
+                                                value: "other",
+                                                title: "Other",
+                                                symbol: "questionmark.circle"
+                                            )
+                                        ],
+                                        variant: .symbolText,
+                                        placeholder: "Select type"
+                                    )
                                 }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
                             }
                         }
                     }
@@ -123,33 +159,50 @@ struct LedgerEditView: View {
                         VStack(spacing: 8) {
                             VStack(alignment: .leading, spacing: 4) {
                                 FDSLabel("Bank", style: .hint)
-                                Picker("Bank", selection: $bankId) {
-                                    ForEach(banks) { bank in
-                                        Text(bank.name).tag(bank.id)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                FDSPicker(
+                                    selection: Binding(
+                                        get: { bankId },
+                                        set: { if let value = $0 { bankId = value } }
+                                    ),
+                                    options: banks.map { bank in
+                                        FDSPickerOption(
+                                            id: bank.id,
+                                            value: bank.id,
+                                            title: bank.name,
+                                            imageName: bank.symbolAssetName
+                                        )
+                                    },
+                                    variant: .symbolText,
+                                    placeholder: "Select bank"
+                                )
                             }
-                            .padding(AppSpacing.xs)
-                            .background(AppColors.surface2)
-                            .cornerRadius(AppRadius.sm)
 
                             if ledger.kind == .creditCard {
                                 VStack(alignment: .leading, spacing: 4) {
                                     FDSLabel("Linked Account", style: .hint)
-                                    Picker("Account", selection: $linkedLedgerId) {
-                                        Text("None").tag(UUID?.none)
-                                        ForEach(linkedLedgers) { acct in
-                                            Text(acct.displayName).tag(UUID?(acct.id))
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    FDSPicker(
+                                        selection: $linkedLedgerId,
+                                        options: {
+                                            var options = [FDSPickerOption(
+                                                id: "none",
+                                                value: nil as UUID?,
+                                                title: "None",
+                                                symbol: "minus.circle"
+                                            )]
+                                            options += linkedLedgers.map { acct in
+                                                FDSPickerOption(
+                                                    id: acct.id,
+                                                    value: UUID?(acct.id),
+                                                    title: acct.displayName,
+                                                    symbol: "banknote.fill"
+                                                )
+                                            }
+                                            return options
+                                        }(),
+                                        variant: .symbolText,
+                                        placeholder: "Select account"
+                                    )
                                 }
-                                .padding(AppSpacing.xs)
-                                .background(AppColors.surface2)
-                                .cornerRadius(AppRadius.sm)
                             }
 
                             inputField("Nickname (Optional)", text: $nickname)

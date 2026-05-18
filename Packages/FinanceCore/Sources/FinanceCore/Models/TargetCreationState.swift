@@ -1,18 +1,20 @@
 import FinanceParsers
 import Foundation
 
-public struct TargetCreationState: Identifiable {
+public struct TargetCreationState: Identifiable, Equatable {
     public let id = UUID()
     public var customName: String = ""
     public var nickname: String = ""
     public var last4: String = ""
     public var maskedCardNumber: String = ""
+    public var encryptedCardNumber: String = ""
     public var ownerName: String = ""
     public var selectedBank: Banks?
     public var isCard: Bool = false
     public var accountType: String = "savings"
     public var cardType: String = "other"
     public var cardProduct: String = ""
+    public var linkedLedgerId: UUID?
 
     public init() {}
 
@@ -25,7 +27,7 @@ public struct TargetCreationState: Identifiable {
         if isCard {
             cardType = statement.metadata?.cardType ?? "other"
         } else {
-            accountType = statement.metadata?.accountType ?? "savings"
+            accountType = (statement.metadata?.accountType ?? "savings").lowercased()
         }
 
         let displayName = statement.accountName.isEmpty ? statement.bankName : statement.accountName

@@ -5,12 +5,8 @@ import SwiftUI
 struct ImportPreviewView: View {
     let viewModel: ImportViewModel
 
-    var targetBeingCreatedBinding: Binding<TargetCreationState?> {
-        Binding(
-            get: { viewModel.importSession.targetBeingCreated },
-            set: { viewModel.importSession.targetBeingCreated = $0 }
-        )
-    }
+    @State private var isShowingCreationSheet = false
+    @State private var sheetCreationState = TargetCreationState()
 
     var body: some View {
         ScrollView {
@@ -43,35 +39,42 @@ struct ImportPreviewView: View {
             }
             .padding()
         }
-        .sheet(item: targetBeingCreatedBinding) { _ in
+        .sheet(isPresented: $isShowingCreationSheet) {
             CreateNewTargetSheet(
-                state: Binding(
-                    get: { viewModel.importSession.targetBeingCreated ?? TargetCreationState() },
-                    set: { viewModel.importSession.targetBeingCreated = $0 }
-                ),
+                state: $sheetCreationState,
                 detectedBank: viewModel.importSession.currentParsedStatement?.bankName ?? "Unknown",
+                availableAccounts: viewModel.ledgers.filter { $0.kind == .bankAccount },
                 onCancel: {
+                    isShowingCreationSheet = false
                     viewModel.importSession.targetBeingCreated = nil
                 },
                 onCreate: {
+                    let state = sheetCreationState
+                    isShowingCreationSheet = false
+                    viewModel.importSession.targetBeingCreated = nil
                     Task {
-                        if let state = viewModel.importSession.targetBeingCreated {
-                            await viewModel.createTargetFromDetected(
-                                customName: state.customName,
-                                nickname: state.nickname,
-                                last4: state.last4,
-                                selectedBank: state.selectedBank,
-                                ownerName: state.ownerName,
-                                accountType: state.accountType,
-                                cardType: state.cardType,
-                                cardProduct: state.cardProduct,
-                                isCard: state.isCard
-                            )
-                        }
-                        viewModel.importSession.targetBeingCreated = nil
+                        await viewModel.createTargetFromDetected(
+                            customName: state.customName,
+                            nickname: state.nickname,
+                            last4: state.last4,
+                            selectedBank: state.selectedBank,
+                            ownerName: state.ownerName,
+                            accountType: state.accountType,
+                            cardType: state.cardType,
+                            cardProduct: state.cardProduct,
+                            encryptedCardNumber: state.encryptedCardNumber,
+                            linkedLedgerId: state.linkedLedgerId,
+                            isCard: state.isCard
+                        )
                     }
                 }
             )
+        }
+        .onChange(of: viewModel.importSession.targetBeingCreated) { _, newValue in
+            if let newValue {
+                sheetCreationState = newValue
+                isShowingCreationSheet = true
+            }
         }
     }
 }

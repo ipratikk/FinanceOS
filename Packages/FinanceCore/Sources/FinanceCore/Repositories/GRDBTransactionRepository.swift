@@ -79,18 +79,24 @@ public final class GRDBTransactionRepository:
         try await dbQueue.write { database in
             var inserted = 0
             var skipped = 0
+            var batchFingerprints = Set<String>()
 
             for (idx, transaction) in transactions.enumerated() {
+                if let fp = transaction.sourceFingerprint {
+                    guard batchFingerprints.insert(fp).inserted else {
+                        skipped += 1
+                        continue
+                    }
+                }
+
                 do {
                     try transaction.insert(database)
                     inserted += 1
                 } catch let error as GRDB.DatabaseError where error.resultCode == .SQLITE_CONSTRAINT {
                     skipped += 1
-
-                    let ledgerDesc = transaction.ledgerId?.uuidString ?? "unknown"
                     self.logger.logNotice(
                         "Duplicate transaction skipped: {ledgerId}",
-                        ["ledgerId": ledgerDesc, "index": String(idx)]
+                        ["ledgerId": transaction.ledgerId?.uuidString ?? "unknown", "index": String(idx)]
                     )
                 }
             }
@@ -108,7 +114,7 @@ public final class GRDBTransactionRepository:
         try await dbQueue.write { database in
             try database.execute(sql: """
                 DELETE FROM transactions WHERE "id" = ?
-            """, arguments: [id.uuidString])
+            """, arguments: [id])
 
             self.logger.logInfo(
                 "Transaction deleted",
@@ -123,7 +129,7 @@ public final class GRDBTransactionRepository:
                 UPDATE transactions
                 SET "accountID" = ?, "cardID" = NULL
                 WHERE "cardID" = ?
-            """, arguments: [accountID.uuidString, cardID.uuidString])
+            """, arguments: [accountID, cardID])
 
             self.logger.logInfo(
                 "Migrated txns from card to account",
@@ -138,7 +144,7 @@ public final class GRDBTransactionRepository:
                 UPDATE transactions
                 SET "cardID" = ?, "accountID" = NULL
                 WHERE "accountID" = ?
-            """, arguments: [cardID.uuidString, accountID.uuidString])
+            """, arguments: [cardID, accountID])
 
             self.logger.logInfo(
                 "Migrated txns from account to card",

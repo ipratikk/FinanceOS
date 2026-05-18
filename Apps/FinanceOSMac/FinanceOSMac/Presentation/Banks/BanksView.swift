@@ -117,7 +117,7 @@ struct BanksView: View {
     ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 12, weight: .semibold))
+                .font(AppTypography.captionLgSemibold)
                 .foregroundStyle(color)
                 .frame(width: 28, height: 28)
                 .background(Circle().fill(color.opacity(0.1)))

@@ -36,7 +36,7 @@ struct SidebarView: View {
     private var brandHeader: some View {
         HStack(spacing: AppSpacing.compact) {
             Image(systemName: "circle.hexagongrid.fill")
-                .font(.system(size: 18, weight: .regular))
+                .font(AppTypography.headlineMdRegular)
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
 
@@ -45,7 +45,7 @@ struct SidebarView: View {
                     .bodyMedium()
                     .foregroundStyle(.primary)
                 Text("Personal")
-                    .font(.system(size: 10, weight: .regular))
+                    .font(AppTypography.label)
                     .foregroundStyle(.tertiary)
             }
 
@@ -63,7 +63,7 @@ struct SidebarView: View {
             Button(action: { navigator.navigate(to: .importStatement) }) {
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: "arrow.down.doc")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(AppTypography.captionLgSemibold)
                         .foregroundStyle(AppColors.accent)
                         .frame(width: 18)
 

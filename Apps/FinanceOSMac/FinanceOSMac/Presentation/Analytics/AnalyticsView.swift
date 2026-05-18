@@ -44,7 +44,7 @@ struct AnalyticsView: View {
             VStack(spacing: AppSpacing.md) {
                 ProgressView().controlSize(.small)
                 Text("Loading…")
-                    .font(.system(size: 11))
+                    .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -127,14 +127,14 @@ struct AnalyticsView: View {
             FDSGlassSurface(cornerRadius: AppRadius.lg, padding: AppSpacing.xl) {
                 VStack(spacing: AppSpacing.md) {
                     Image(systemName: "tag.circle.fill")
-                        .font(.system(size: 32, weight: .regular))
+                        .font(AppTypography.displayLargeLight)
                         .foregroundStyle(AppColors.accent.opacity(0.5))
                         .symbolRenderingMode(.hierarchical)
                     VStack(spacing: AppSpacing.tight) {
                         Text("Coming Soon")
                             .bodyMedium()
                         Text("Auto-categorization with smart detection")
-                            .font(.system(size: 11))
+                            .font(AppTypography.captionSm)
                             .foregroundStyle(.tertiary)
                     }
                 }

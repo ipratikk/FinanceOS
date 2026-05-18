@@ -21,6 +21,8 @@ extension ImportViewModel {
         accountType: String = "savings",
         cardType: String = "other",
         cardProduct: String = "",
+        encryptedCardNumber: String = "",
+        linkedLedgerId: UUID? = nil,
         isCard: Bool? = nil
     ) async {
         guard let statement = importSession.parsedStatements.first else {
@@ -42,7 +44,13 @@ extension ImportViewModel {
             )
             let isCardTarget = isCard ?? (statement.cardLast4 != nil)
             if isCardTarget {
-                try await createCard(params, cardType: cardType, cardProduct: cardProduct)
+                try await createCard(
+                    params,
+                    cardType: cardType,
+                    cardProduct: cardProduct,
+                    encryptedCardNumber: encryptedCardNumber,
+                    linkedLedgerId: linkedLedgerId
+                )
             } else {
                 try await createAccount(params, ownerName: ownerName, accountType: accountType)
             }
@@ -85,7 +93,9 @@ extension ImportViewModel {
     private func createCard(
         _ params: TargetParams,
         cardType: String,
-        cardProduct: String = ""
+        cardProduct: String = "",
+        encryptedCardNumber: String = "",
+        linkedLedgerId: UUID? = nil
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
         let displayName = customNameTrimmed ?? params.statement.bankName
@@ -101,12 +111,16 @@ extension ImportViewModel {
             nickname: params.nickname,
             ownerName: "",
             cardType: cardType,
-            cardProduct: cardProduct.isEmpty ? nil : cardProduct
+            cardProduct: cardProduct.isEmpty ? nil : cardProduct,
+            linkedLedgerId: linkedLedgerId
         )
         try await ledgerRepository.insert(ledger)
         ledgers = try await ledgerRepository.fetchLedgers()
         importSession.selectedTarget = .ledger(ledger.id)
-        logger.info("Created credit card: \(cardDisplayName)")
+        logger
+            .info(
+                "Created credit card: \(cardDisplayName) [encrypted: \(encryptedCardNumber.isEmpty ? "not provided" : "provided")]"
+            )
     }
 
     private func createAccount(

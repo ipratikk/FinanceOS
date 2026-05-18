@@ -1,6 +1,25 @@
 import FinanceCore
 import SwiftUI
 
+/// Semantic avatar sizes for the Finance Design System.
+public enum FDSAvatarSize {
+    case xSmall
+    case small
+    case medium
+    case large
+    case hero
+
+    public var value: CGFloat {
+        switch self {
+        case .xSmall: return 20
+        case .small: return 28
+        case .medium: return 36
+        case .large: return 44
+        case .hero: return 64
+        }
+    }
+}
+
 /// Circular merchant/institution avatar.
 ///
 /// Hierarchy:
@@ -27,6 +46,20 @@ public struct FDSMerchantAvatar: View {
         self.symbol = symbol
         self.imageName = imageName
         self.size = size
+        self.tint = tint ?? Self.deterministicTint(for: name)
+    }
+
+    public init(
+        name: String,
+        symbol: String? = nil,
+        imageName: String? = nil,
+        avatarSize: FDSAvatarSize,
+        tint: Color? = nil
+    ) {
+        self.name = name
+        self.symbol = symbol
+        self.imageName = imageName
+        size = avatarSize.value
         self.tint = tint ?? Self.deterministicTint(for: name)
     }
 
