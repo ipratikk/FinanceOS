@@ -122,24 +122,15 @@ struct CardEditView: View {
                     actionDisabled: last4.trimmingCharacters(in: .whitespaces).count < 4,
                     action: autoDetectCardType
                 ) {
-                    let cardTypeOptions = [
-                        FDSPickerOption(id: "visa", value: "visa", title: "Visa", imageName: "visa"),
+                    let cardTypeOptions = CardNetwork.allCases.map { network in
                         FDSPickerOption(
-                            id: "mastercard",
-                            value: "mastercard",
-                            title: "Mastercard",
-                            imageName: "mastercard"
-                        ),
-                        FDSPickerOption(id: "amex", value: "amex", title: "American Express", imageName: "amex-symbol"),
-                        FDSPickerOption(
-                            id: "discover",
-                            value: "discover",
-                            title: "Discover",
-                            symbol: "creditcard.fill"
-                        ),
-                        FDSPickerOption(id: "diners", value: "diners", title: "Diners Club", imageName: "diners"),
-                        FDSPickerOption(id: "other", value: "other", title: "Other", symbol: "creditcard.fill")
-                    ]
+                            id: network.rawValue,
+                            value: network.rawValue,
+                            title: network.displayName,
+                            symbol: network.logoAssetName == nil ? "creditcard.fill" : nil,
+                            imageName: network.logoAssetName
+                        )
+                    }
                     FDSPicker(
                         selection: Binding(
                             get: { cardType },

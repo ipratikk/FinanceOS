@@ -308,8 +308,8 @@
     "hash": "0efa242597e38e2323d6581fc455b4be"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Bank.swift": {
-    "mtime": 1779079281.099532,
-    "hash": "590b6f0c1283b6b98d5bacfe905d6715"
+    "mtime": 1779079361.311563,
+    "hash": "6aaae0aaad25c45b83afff0dcf5efd70"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Models/Transaction.swift": {
     "mtime": 1778965523.9223778,
@@ -1108,8 +1108,8 @@
     "hash": "dcc72547e970378e7ee286942a14684d"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardEditView.swift": {
-    "mtime": 1779079296.566234,
-    "hash": "9c4314583b0ad9d7c2369ef9c7989138"
+    "mtime": 1779079370.9463863,
+    "hash": "6980a6b7c6ad0d59f6ed42df830a54d8"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Cards/CardsView.swift": {
     "mtime": 1779077788.3153,
@@ -1236,8 +1236,8 @@
     "hash": "2c39b5acb6512961766e951cda0264d4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/CreateNewTargetSheet.swift": {
-    "mtime": 1779079292.9845698,
-    "hash": "f9e5fec9261c8d2ab0b1b54e16068fe6"
+    "mtime": 1779079368.1121953,
+    "hash": "8172b9284d2e15d612a0df4def1dec25"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModelTargetCreation.swift": {
     "mtime": 1779077788.3207853,
@@ -1296,8 +1296,8 @@
     "hash": "9775e099c18a6c4bab48d42f363cbc91"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Banks/BanksView.swift": {
-    "mtime": 1779079286.7356918,
-    "hash": "e478dcb81e685e4221ed52d4f0f493be"
+    "mtime": 1779079365.1940808,
+    "hash": "aff726986166a18c4e472a04404e867c"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Banks/BankEditContext.swift": {
     "mtime": 1779077788.3243172,

@@ -125,14 +125,15 @@ struct CreateNewTargetSheet: View {
     }
 
     private func cardTypeField() -> some View {
-        let cardTypeOptions = [
-            FDSPickerOption(id: "visa", value: "visa", title: "Visa", imageName: "visa"),
-            FDSPickerOption(id: "mastercard", value: "mastercard", title: "Mastercard", imageName: "mastercard"),
-            FDSPickerOption(id: "amex", value: "amex", title: "American Express", imageName: "amex-symbol"),
-            FDSPickerOption(id: "discover", value: "discover", title: "Discover", symbol: "creditcard.fill"),
-            FDSPickerOption(id: "diners", value: "diners", title: "Diners Club", imageName: "diners"),
-            FDSPickerOption(id: "other", value: "other", title: "Other", symbol: "creditcard.fill")
-        ]
+        let cardTypeOptions = CardNetwork.allCases.map { network in
+            FDSPickerOption(
+                id: network.rawValue,
+                value: network.rawValue,
+                title: network.displayName,
+                symbol: network.logoAssetName == nil ? "creditcard.fill" : nil,
+                imageName: network.logoAssetName
+            )
+        }
 
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
             HStack {
