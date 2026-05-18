@@ -31,7 +31,7 @@ public struct FDSImage: View {
                 Image(imageName)
                     .resizable()
                     .scaledToFit()
-                    .padding(width * 0.15)
+                    .frame(width: width * 0.7, height: height * 0.7)
             } else if let symbol = fallbackSymbol, !symbol.isEmpty {
                 Image(systemName: symbol)
                     .resizable()
