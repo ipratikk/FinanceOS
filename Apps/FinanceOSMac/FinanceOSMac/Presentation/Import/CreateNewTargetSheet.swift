@@ -4,17 +4,12 @@ import SwiftUI
 
 struct CreateNewTargetSheet: View {
     @Binding var state: TargetCreationState
-    let banks: [Bank]
     let detectedBank: String
     let onCancel: () -> Void
     let onCreate: () -> Void
 
     @State private var showCardSelection = false
-
-    var selectedBank: Bank? {
-        guard let id = state.selectedBankID else { return nil }
-        return banks.first { $0.id == id }
-    }
+    @State private var selectedBankCase: Banks?
 
     var isCard: Bool {
         state.isCard
@@ -130,8 +125,8 @@ struct CreateNewTargetSheet: View {
                 id: network.rawValue,
                 value: network.rawValue,
                 title: network.displayName,
-                symbol: network.logoAssetName == nil ? "creditcard.fill" : nil,
-                imageName: network.logoAssetName
+                symbol: network.symbolAssetName == nil ? "creditcard.fill" : nil,
+                imageName: network.symbolAssetName
             )
         }
 
@@ -151,7 +146,7 @@ struct CreateNewTargetSheet: View {
                     set: { if let value = $0 { state.cardType = value } }
                 ),
                 options: cardTypeOptions,
-                variant: .symbolOnly,
+                variant: .logoOnly,
                 placeholder: "Select network"
             )
 
@@ -196,13 +191,13 @@ struct CreateNewTargetSheet: View {
     }
 
     private func bankField() -> some View {
-        let bankOptions = banks.map { bank in
+        let bankOptions = Banks.allCases.map { bankCase in
             FDSPickerOption(
-                id: bank.id,
-                value: bank.id,
-                title: bank.name,
+                id: bankCase.rawValue,
+                value: bankCase,
+                title: bankCase.displayName,
                 symbol: "building.columns.fill",
-                imageName: bank.symbolAssetName
+                imageName: bankCase.symbolAssetName
             )
         }
 
@@ -211,8 +206,8 @@ struct CreateNewTargetSheet: View {
                 FDSLabel("Current Bank", style: .hint)
 
                 HStack {
-                    if let bank = selectedBank {
-                        FDSLabel(bank.name, style: .caption)
+                    if let selected = selectedBankCase {
+                        FDSLabel(selected.displayName, style: .caption)
                     } else {
                         FDSLabel(detectedBank, style: .caption)
                     }
@@ -224,20 +219,18 @@ struct CreateNewTargetSheet: View {
                 .cornerRadius(AppRadius.sm)
             }
 
-            if !banks.isEmpty {
-                VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                    FDSLabel(
-                        selectedBank == nil ? "Select Bank" : "Change Bank",
-                        style: .hint
-                    )
+            VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                FDSLabel(
+                    selectedBankCase == nil ? "Select Bank" : "Change Bank",
+                    style: .hint
+                )
 
-                    FDSPicker(
-                        selection: $state.selectedBankID,
-                        options: bankOptions,
-                        variant: .textOnly,
-                        placeholder: "Select bank"
-                    )
-                }
+                FDSPicker(
+                    selection: $selectedBankCase,
+                    options: bankOptions,
+                    variant: .textOnly,
+                    placeholder: "Select bank"
+                )
             }
         }
     }

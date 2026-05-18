@@ -127,8 +127,8 @@ struct CardEditView: View {
                             id: network.rawValue,
                             value: network.rawValue,
                             title: network.displayName,
-                            symbol: network.logoAssetName == nil ? "creditcard.fill" : nil,
-                            imageName: network.logoAssetName
+                            symbol: network.symbolAssetName == nil ? "creditcard.fill" : nil,
+                            imageName: network.symbolAssetName
                         )
                     }
                     FDSPicker(
@@ -137,7 +137,7 @@ struct CardEditView: View {
                             set: { if let value = $0 { cardType = value } }
                         ),
                         options: cardTypeOptions,
-                        variant: .symbolOnly,
+                        variant: .logoOnly,
                         placeholder: "Select network"
                     )
                 }

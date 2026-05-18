@@ -2,8 +2,8 @@ import FinanceCore
 import SwiftUI
 
 public enum FDSPickerVariant {
+    case logoOnly
     case symbolText
-    case symbolOnly
     case textOnly
 }
 
@@ -14,10 +14,10 @@ struct FDSPickerRow: View {
 
     var body: some View {
         switch variant {
+        case .logoOnly:
+            logoOnlyVariant
         case .symbolText:
             symbolTextVariant
-        case .symbolOnly:
-            symbolOnlyVariant
         case .textOnly:
             textOnlyVariant
         }
@@ -61,7 +61,7 @@ struct FDSPickerRow: View {
         .background(isSelected ? AppColors.accent.opacity(0.08) : .clear)
     }
 
-    private var symbolOnlyVariant: some View {
+    private var logoOnlyVariant: some View {
         VStack(spacing: AppSpacing.sm) {
             FDSImage(
                 imageName: option.imageName,
@@ -132,7 +132,7 @@ struct FDSPickerRow: View {
                 title: "Visa",
                 symbol: "creditcard.fill"
             ),
-            variant: .symbolOnly,
+            variant: .logoOnly,
             isSelected: false
         )
 
