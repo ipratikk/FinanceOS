@@ -21,51 +21,63 @@ public struct FDSPicker<V: Hashable>: View {
     }
 
     public var body: some View {
-        Menu {
-            optionsMenu
-        } label: {
-            triggerView
-        }
-        .menuStyle(.borderlessButton)
-        .fixedSize(horizontal: false, vertical: true)
+        triggerView
+            .popover(isPresented: $isOpen) {
+                optionsList
+            }
     }
 
-    private var optionsMenu: some View {
-        ForEach(options) { option in
-            let isSelected = selection == (option.value as? V)
-            Button(action: { selection = option.value as? V }) {
-                FDSPickerRow(option: option, variant: variant, isSelected: isSelected)
-                    .frame(maxWidth: 300)
-                    .clipped()
+    private var optionsList: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 0) {
+                ForEach(options) { option in
+                    let isSelected = selection == (option.value as? V)
+                    Button(action: {
+                        selection = option.value as? V
+                        isOpen = false
+                    }) {
+                        FDSPickerRow(option: option, variant: variant, isSelected: isSelected)
+                    }
+                    .buttonStyle(.plain)
+                    if option.id != options.last?.id {
+                        Divider().opacity(0.3)
+                    }
+                }
             }
+            .padding(AppSpacing.md)
         }
+        .frame(width: 320, height: 300)
+        .background(AppColors.base)
     }
 
     private var triggerView: some View {
-        FDSGlassSurface(elevation: .chip, cornerRadius: AppRadius.md) {
-            HStack(spacing: AppSpacing.compact) {
-                if let selectedValue = selection,
-                   let selectedOption = options.first(where: { ($0.value as? V) == selectedValue })
-                {
-                    FDSPickerRow(option: selectedOption, variant: variant, isSelected: true)
+        Button(action: { isOpen.toggle() }) {
+            FDSGlassSurface(elevation: .chip, cornerRadius: AppRadius.md) {
+                HStack(spacing: AppSpacing.compact) {
+                    if let selectedValue = selection,
+                       let selectedOption = options.first(where: { ($0.value as? V) == selectedValue })
+                    {
+                        FDSPickerRow(option: selectedOption, variant: variant, isSelected: true)
+                            .padding(.vertical, AppSpacing.compact)
+                            .padding(.horizontal, AppSpacing.md)
+                    } else {
+                        HStack(spacing: AppSpacing.compact) {
+                            FDSLabel(placeholder, style: .hint)
+                            Spacer()
+                        }
                         .padding(.vertical, AppSpacing.compact)
                         .padding(.horizontal, AppSpacing.md)
-                } else {
-                    HStack(spacing: AppSpacing.compact) {
-                        FDSLabel(placeholder, style: .hint)
-                        Spacer()
                     }
-                    .padding(.vertical, AppSpacing.compact)
-                    .padding(.horizontal, AppSpacing.md)
-                }
 
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(AppColors.textTertiary)
-                    .padding(.trailing, AppSpacing.compact)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(AppColors.textTertiary)
+                        .padding(.trailing, AppSpacing.compact)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .buttonStyle(.plain)
     }
 }
 
