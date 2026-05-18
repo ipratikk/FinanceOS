@@ -37,7 +37,7 @@ struct CardSelectionView: View {
     private var header: some View {
         HStack(spacing: AppSpacing.compact) {
             Image(systemName: "creditcard.fill")
-                .font(.system(size: 16, weight: .semibold))
+                .font(AppTypography.headlineSm)
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
             Text("Select Card")
@@ -60,15 +60,15 @@ struct CardSelectionView: View {
     private var searchBar: some View {
         HStack(spacing: AppSpacing.compact) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 12, weight: .semibold))
+                .font(AppTypography.captionLgSemibold)
                 .foregroundStyle(.tertiary)
             TextField("Search cards", text: $searchText)
-                .font(.system(size: 13))
+                .font(AppTypography.bodySm)
                 .textFieldStyle(.plain)
             if !searchText.isEmpty {
                 Button(action: { searchText = "" }) {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 12))
+                        .font(AppTypography.captionLg)
                         .foregroundStyle(.tertiary)
                 }
                 .buttonStyle(.plain)
@@ -98,7 +98,7 @@ struct CardSelectionView: View {
     private func issuerChip(_ label: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(label)
-                .font(.system(size: 12, weight: selected ? .semibold : .regular))
+                .font(selected ? AppTypography.captionLgSemibold : AppTypography.captionLg)
                 .foregroundStyle(selected ? AppColors.accent : Color.secondary)
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.vertical, 5)
@@ -140,13 +140,13 @@ struct CardSelectionView: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(card.name)
-                        .font(.system(size: 13, weight: .medium))
+                        .font(AppTypography.bodySmMedium)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
 
                     HStack(spacing: 6) {
                         Text(card.issuer)
-                            .font(.system(size: 11, weight: .regular))
+                            .font(AppTypography.captionSm)
                             .foregroundStyle(.secondary)
                         Text("·")
                             .foregroundStyle(.quaternary)
@@ -157,7 +157,7 @@ struct CardSelectionView: View {
                 Spacer(minLength: AppSpacing.compact)
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 18))
+                    .font(AppTypography.headlineMdRegular)
                     .foregroundStyle(isSelected ? AppColors.accent : Color.secondary.opacity(0.4))
             }
             .padding(AppSpacing.md)
@@ -206,14 +206,14 @@ struct CardSelectionView: View {
             .fill(.ultraThinMaterial)
             .overlay {
                 Image(systemName: "creditcard.fill")
-                    .font(.system(size: 20, weight: .light))
+                    .font(AppTypography.headlineLgLight)
                     .foregroundStyle(.tertiary)
             }
     }
 
     private func networkBadge(for card: CardMetadata) -> some View {
         Text(card.cardType.uppercased())
-            .font(.system(size: 9, weight: .semibold))
+            .font(AppTypography.iconSm)
             .tracking(0.4)
             .foregroundStyle(networkColor(for: card.cardType))
             .padding(.horizontal, 5)

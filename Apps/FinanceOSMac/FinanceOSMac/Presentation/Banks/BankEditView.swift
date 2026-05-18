@@ -57,7 +57,7 @@ struct BankEditView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text(bank.name).bodyMedium()
                 Text(bank.providerType.rawValue.capitalized)
-                    .font(.system(size: 11))
+                    .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
             }
             Spacer()
@@ -104,13 +104,13 @@ struct BankEditView: View {
             if context.linkedLedgers.isEmpty {
                 VStack(spacing: AppSpacing.compact) {
                     Image(systemName: "creditcard")
-                        .font(.system(size: 32, weight: .light))
+                        .font(AppTypography.displayLargeLight)
                         .foregroundStyle(.tertiary)
                     Text("No linked cards or accounts")
-                        .font(.system(size: 12))
+                        .font(AppTypography.captionLg)
                         .foregroundStyle(.tertiary)
                     Text("Tap + to link a card or account")
-                        .font(.system(size: 11))
+                        .font(AppTypography.captionSm)
                         .foregroundStyle(.quaternary)
                 }
                 .frame(maxWidth: .infinity)
@@ -124,13 +124,13 @@ struct BankEditView: View {
             ForEach(ledgers) { ledger in
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: symbol)
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(AppTypography.captionLgSemibold)
                         .foregroundStyle(.secondary)
                     VStack(alignment: .leading, spacing: 0) {
                         Text(ledger.displayName).bodyMedium()
                         if !ledger.last4.isEmpty {
                             Text("•••• \(ledger.last4)")
-                                .font(.system(size: 11))
+                                .font(AppTypography.captionSm)
                                 .foregroundStyle(.tertiary)
                         }
                     }
@@ -153,7 +153,7 @@ struct BankEditView: View {
         Button(action: { showDeleteConfirm = true }) {
             HStack(spacing: AppSpacing.compact) {
                 Image(systemName: "trash.fill")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                 Text("Delete Bank")
                     .caption()
                 Spacer()

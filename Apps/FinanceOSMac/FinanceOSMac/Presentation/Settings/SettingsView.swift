@@ -8,6 +8,8 @@ struct SettingsView: View {
     @State private var autoRefresh = true
     @State private var showConfirmClear = false
 
+    var onClearAll: (() async -> Void)?
+
     enum SettingsTab: CaseIterable {
         case general, about
 
@@ -47,7 +49,9 @@ struct SettingsView: View {
         .background(AppColors.base)
         .alert("Clear All Data?", isPresented: $showConfirmClear) {
             Button("Cancel", role: .cancel) {}
-            Button("Clear", role: .destructive) {}
+            Button("Clear", role: .destructive) {
+                Task { await onClearAll?() }
+            }
         } message: {
             Text("This will permanently delete all data including banks, accounts, cards, and transactions.")
         }
@@ -61,7 +65,7 @@ struct SettingsView: View {
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
                 Text("Preferences")
-                    .font(.system(size: 22, weight: .bold))
+                    .font(AppTypography.displaySmall)
             }
 
             VStack(alignment: .leading, spacing: 1) {
@@ -99,12 +103,12 @@ struct SettingsView: View {
             Button(action: { showConfirmClear = true }) {
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(AppTypography.captionLgSemibold)
                     Text("Clear All Data")
                         .caption()
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 10, weight: .semibold))
+                        .font(AppTypography.labelSemibold)
                 }
                 .foregroundStyle(AppColors.debit)
                 .padding(.horizontal, AppSpacing.md)
@@ -172,19 +176,19 @@ struct SettingsView: View {
     private func infoRow(_ label: String, value: String, copyable: Bool) -> some View {
         HStack {
             Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+                .font(AppTypography.labelSemibold)
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
             Spacer()
             Text(value)
-                .font(.system(size: 13, weight: .medium).monospacedDigit())
+                .font(AppTypography.bodySmMedium.monospacedDigit())
             if copyable {
                 Button(action: {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(value, forType: .string)
                 }) {
                     Image(systemName: "doc.on.doc")
-                        .font(.system(size: 11))
+                        .font(AppTypography.captionSm)
                         .foregroundStyle(.tertiary)
                 }
                 .buttonStyle(.plain)
@@ -204,7 +208,7 @@ struct SettingsView: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 Image(systemName: "arrow.up.right")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.labelSemibold)
                     .foregroundStyle(.tertiary)
             }
             .padding(.horizontal, AppSpacing.md)

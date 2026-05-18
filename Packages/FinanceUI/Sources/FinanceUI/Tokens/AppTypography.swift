@@ -7,6 +7,8 @@ public enum AppTypography {
     // MARK: - Display (Hero/Marketing)
 
     public static let displayLarge = Font.system(size: 32, weight: .bold, design: .default)
+    public static let displayLargeLight = Font.system(size: 32, weight: .light, design: .default)
+    public static let displaySmall = Font.system(size: 22, weight: .bold, design: .default)
 
     // MARK: - Headline (Section Headers, Titles)
 
@@ -17,6 +19,7 @@ public enum AppTypography {
     public static let headlineMdRegular = Font.system(size: 18, weight: .regular, design: .default)
     public static let headlineSm = Font.system(size: 16, weight: .semibold, design: .default)
     public static let headlineSmLight = Font.system(size: 16, weight: .light, design: .default)
+    public static let subheadline = Font.system(size: 15, weight: .semibold, design: .default)
 
     // MARK: - Body (Primary Content)
 
