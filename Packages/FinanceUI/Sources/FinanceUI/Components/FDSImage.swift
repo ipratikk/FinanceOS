@@ -1,33 +1,28 @@
 import FinanceCore
 import SwiftUI
 
-/// Circular merchant/institution avatar.
+/// Image rendering with fallback sf symbol
 ///
 /// Hierarchy:
 /// 1. Logo image if available
 /// 2. SF Symbol if category-known
-/// 3. Tinted initial (first letter, deterministic hue)
 ///
-/// Use for transactions, accounts, cards — anywhere brand recognition matters.
-public struct FDSMerchantAvatar: View {
-    let name: String
-    let symbol: String?
+public struct FDSImage: View {
     let imageName: String?
-    let size: CGFloat
-    let tint: Color
+    let fallbackSymbol: String?
+    let height: CGFloat
+    let width: CGFloat
 
     public init(
-        name: String,
-        symbol: String? = nil,
         imageName: String? = nil,
-        size: CGFloat = 32,
-        tint: Color? = nil
+        fallbackSymbol: String? = nil,
+        height: CGFloat = 32,
+        width: CGFloat = 32
     ) {
-        self.name = name
-        self.symbol = symbol
         self.imageName = imageName
-        self.size = size
-        self.tint = tint ?? Self.deterministicTint(for: name)
+        self.fallbackSymbol = fallbackSymbol
+        self.height = height
+        self.width = width
     }
 
     public var body: some View {
@@ -36,47 +31,18 @@ public struct FDSMerchantAvatar: View {
                 Image(imageName)
                     .resizable()
                     .scaledToFit()
-                    .padding(size * 0.18)
-            } else if let symbol {
+            } else if let symbol = fallbackSymbol, !symbol.isEmpty {
                 Image(systemName: symbol)
-                    .font(.system(size: size * 0.42, weight: .semibold))
-                    .foregroundStyle(tint.opacity(0.9))
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(.secondary)
             } else {
-                Text(initial)
-                    .font(.system(size: size * 0.42, weight: .semibold, design: .rounded))
-                    .foregroundStyle(tint.opacity(0.95))
+                // Ensure there's always some content so type inference succeeds
+                Rectangle()
+                    .fill(Color.clear)
             }
         }
-        .frame(width: size, height: size)
-        .background {
-            Circle()
-                .fill(.ultraThinMaterial)
-                .overlay {
-                    Circle()
-                        .fill(tint.opacity(0.10))
-                }
-        }
-        .overlay {
-            Circle()
-                .strokeBorder(Color.white.opacity(0.08), lineWidth: 0.5)
-        }
-    }
-
-    private var initial: String {
-        String(name.trimmingCharacters(in: .whitespaces).prefix(1)).uppercased()
-    }
-
-    private static func deterministicTint(for name: String) -> Color {
-        let hues: [Color] = [
-            Color(red: 0.31, green: 0.56, blue: 0.96), // blue
-            Color(red: 0.65, green: 0.33, blue: 0.96), // purple
-            Color(red: 0.13, green: 0.77, blue: 0.36), // green
-            Color(red: 0.96, green: 0.62, blue: 0.07), // amber
-            Color(red: 0.96, green: 0.27, blue: 0.51), // pink
-            Color(red: 0.07, green: 0.74, blue: 0.83), // cyan
-            Color(red: 0.93, green: 0.40, blue: 0.20) // orange
-        ]
-        let hash = abs(name.hashValue)
-        return hues[hash % hues.count]
+        .frame(width: width, height: height)
+        .clipped()
     }
 }
