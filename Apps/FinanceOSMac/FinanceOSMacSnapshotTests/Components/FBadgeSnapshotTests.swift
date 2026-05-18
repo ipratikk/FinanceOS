@@ -7,7 +7,7 @@ import XCTest
 
 final class FBadgeSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        false
+        true
     }
 
     func test_badge_default() {

@@ -7,7 +7,7 @@ import XCTest
 
 final class LedgerEditViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        false
+        true
     }
 
     func test_ledger_edit_view() {

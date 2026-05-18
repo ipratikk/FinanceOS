@@ -7,7 +7,7 @@ import XCTest
 
 final class CreateNewTargetSheetSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        false
+        true
     }
 
     func test_create_account_target() {
