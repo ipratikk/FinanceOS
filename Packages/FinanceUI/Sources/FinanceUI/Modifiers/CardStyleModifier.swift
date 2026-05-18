@@ -4,19 +4,19 @@ import SwiftUI
 public struct CardStyleModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content
-            .padding(AppSpacing.md)
+            .padding(AppSpacing.lg)
             .background(.ultraThinMaterial)
-            .background(AppColors.surface.opacity(0.5))
+            .background(AppColors.surface.opacity(0.7))
             .overlay(
-                RoundedRectangle(cornerRadius: AppRadius.md)
-                    .stroke(AppColors.accentGold.opacity(0.12), lineWidth: 0.5)
+                RoundedRectangle(cornerRadius: AppRadius.lg)
+                    .stroke(AppColors.accent.opacity(0.15), lineWidth: 0.5)
             )
-            .cornerRadius(AppRadius.md)
+            .cornerRadius(AppRadius.lg)
             .shadow(
-                color: Color.black.opacity(0.2),
-                radius: 12,
+                color: Color.black.opacity(0.3),
+                radius: 16,
                 x: 0,
-                y: 4
+                y: 8
             )
     }
 }

@@ -10,8 +10,8 @@ public struct HoverEffectModifier: ViewModifier {
             .scaleEffect(isHovered ? 1.01 : 1.0)
             .background(AppColors.glass.opacity(isHovered ? 0.5 : 0))
             .shadow(
-                color: AppColors.accentGold.opacity(isHovered ? 0.08 : 0),
-                radius: isHovered ? 8 : 0,
+                color: AppColors.accent.opacity(isHovered ? 0.12 : 0),
+                radius: isHovered ? 12 : 0,
                 x: 0,
                 y: 0
             )
