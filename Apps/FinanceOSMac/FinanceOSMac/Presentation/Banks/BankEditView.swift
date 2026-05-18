@@ -5,16 +5,14 @@ import SwiftUI
 struct BankEditView: View {
     let bank: Bank
     let context: BankEditContext
-    @State private var name: String
-    @State private var providerType: BankProviderType
+    @State private var selectedBank: Banks?
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteConfirm = false
 
     init(bank: Bank, context: BankEditContext) {
         self.bank = bank
         self.context = context
-        _name = State(initialValue: bank.name)
-        _providerType = State(initialValue: bank.providerType)
+        _selectedBank = State(initialValue: bank.bank)
     }
 
     var body: some View {
@@ -88,17 +86,22 @@ struct BankEditView: View {
             FDSSectionHeader("Bank Information")
 
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                field("Name") {
-                    FDSTextInput("Bank name", text: $name)
-                }
-                field("Provider Type") {
-                    Picker("", selection: $providerType) {
-                        ForEach(BankProviderType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
-                        }
+                field("Bank") {
+                    let bankOptions = Banks.allCases.map { bankCase in
+                        FDSPickerOption(
+                            id: bankCase.rawValue,
+                            value: bankCase,
+                            title: bankCase.displayName,
+                            symbol: "building.columns.fill",
+                            imageName: bankCase.symbolAssetName
+                        )
                     }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
+                    FDSPicker(
+                        selection: $selectedBank,
+                        options: bankOptions,
+                        variant: .textOnly,
+                        placeholder: "Select bank"
+                    )
                 }
             }
             .padding(AppSpacing.md)
@@ -138,8 +141,9 @@ struct BankEditView: View {
             FDSLiquidButton("Cancel", variant: .subtle) { dismiss() }
             Spacer()
             FDSLiquidButton("Save", variant: .primary) {
+                guard let bankSelection = selectedBank else { return }
                 Task {
-                    let updated = Bank(id: bank.id, name: name, providerType: providerType)
+                    let updated = Bank(id: bank.id, bank: bankSelection)
                     await context.updateBank(updated)
                     if context.deleteError == nil {
                         dismiss()
