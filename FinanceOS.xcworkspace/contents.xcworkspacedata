@@ -5,6 +5,15 @@
       location = "group:Packages/FinanceCore">
    </FileRef>
    <FileRef
+      location = "group:Packages/FinanceUI">
+   </FileRef>
+   <FileRef
+      location = "group:Packages/FinanceTesting">
+   </FileRef>
+   <FileRef
       location = "group:Apps/FinanceOSMac/FinanceOSMac.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Apps/FinanceOSMac/FinanceOSMac.xctestplan">
    </FileRef>
 </Workspace>

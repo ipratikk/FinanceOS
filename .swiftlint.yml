@@ -10,6 +10,8 @@ opt_in_rules:
   - first_where
   - sorted_first_last
   - unused_import
+  - prefer_self_type_over_type_of_self
+  - comma_spacing
 
 included:
   - Apps
@@ -24,7 +26,64 @@ line_length:
   error: 160
 
 type_body_length:
-  warning: 300
+  warning: 250
+  error: 300
 
 file_length:
-  warning: 500
+  warning: 400
+  error: 500
+
+function_body_length:
+  warning: 50
+  error: 75
+
+identifier_name:
+  min_length:
+    warning: 1
+
+custom_rules:
+  # Enforce token-driven design: no hardcoded Color.white
+  hardcoded_white_color:
+    name: "Hardcoded Color.white"
+    description: "Use AppColors tokens instead of Color.white"
+    regex: "Color\\.white(?!\\()"
+    message: "Use AppColors.textPrimary or appropriate AppColors token"
+    severity: error
+    excluded: "Tests"
+
+  # Enforce token-driven design: no direct font system calls
+  hardcoded_font_system:
+    name: "Hardcoded font(.system(size:))"
+    description: "Use typography modifiers instead of .font(.system(size:))"
+    regex: "\\.font\\(\\.system\\(size:"
+    message: "Use typography modifiers like .bodyMedium(), .captionSmall(), etc"
+    severity: warning
+    excluded: "Tests"
+
+  # Enforce AppColors: no direct Color.black
+  hardcoded_black_color:
+    name: "Hardcoded Color.black"
+    description: "Use AppColors tokens instead of Color.black"
+    regex: "Color\\.black"
+    message: "Use appropriate AppColors token"
+    severity: error
+    excluded: "Tests"
+
+  # Enforce AppSpacing: no magic numbers in padding/spacing
+  magic_spacing_numbers:
+    name: "Magic spacing numbers"
+    description: "Use AppSpacing enum instead of hardcoded values"
+    regex: "\\.padding\\([0-9]{2,}\\)"
+    message: "Use AppSpacing tokens (xs, sm, md, lg, xl, xxl)"
+    severity: warning
+    excluded: "Tests"
+
+  # Text() only allowed in Picker selections, use FDSLabel everywhere else
+  direct_text_in_bodies:
+    name: "Direct Text() outside Picker"
+    description: "Use FDSLabel for text display, Text() only in Picker selections"
+    regex: "(VStack|HStack|ZStack|ScrollView|Group).*Text\\("
+    message: "Use FDSLabel instead of Text() for display text"
+    severity: warning
+    excluded: "Tests|Previews"
+

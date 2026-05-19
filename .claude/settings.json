@@ -1,0 +1,13 @@
+{
+  "skillOverrides": {
+    "parser-debug": "user-invocable-only",
+    "refactor": "user-invocable-only",
+    "review": "user-invocable-only",
+    "lint": "user-invocable-only",
+    "build": "user-invocable-only",
+    "commit": "user-invocable-only"
+  },
+  "autoMemoryEnabled": false,
+  "hooks": {
+  }
+}

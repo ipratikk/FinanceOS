@@ -1,0 +1,3324 @@
+{
+  "version": 3,
+  "generatedAt": "2026-05-17T10:23:43.026Z",
+  "issuers": [
+    {
+      "id": "hdfc",
+      "name": "HDFC Bank",
+      "country": "IN",
+      "website": "https://www.hdfcbank.com",
+      "brandColor": "#004B8D",
+      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/0/0a/HDFC_bank_logo.svg",
+      "cards": [
+        {
+          "id": "hdfc-millennia-credit-card",
+          "name": "Millennia Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Millennia Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/millennia-credit-card/images/millennia-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/millennia-credit-card/images/millennia-credit-card.png",
+            "localAssetName": "hdfc-millennia-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Millennia Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "5% Cashback On Amazon, Flipkart, Myntra, Swiggy, Zomato And More.",
+              " ₹1000 Worth Gift Voucher On Spends Of ₹1 Lakh Per Calendar Quarter",
+              "Get 10% Additional Discount On Swiggy Dineout"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "millennia credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-moneyback-credit-card",
+          "name": "MoneyBack+ Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "MoneyBack+ Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/moneyback-plus-credit-card/images/moneyback-plus-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/moneyback-plus-credit-card/images/moneyback-plus-credit-card.png",
+            "localAssetName": "hdfc-moneyback-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "The Most Rewarding Card for Household Spends",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "The Most Rewarding Card for Household Spends",
+            "features": [
+              "10x Cashpoints(2.5% Valueback) At Select Merchants",
+              "Gift Voucher Worth Upto ₹500 On Spends On ₹50,000 Per Calendar Quarter",
+              "10% Additional Discount On Swiggy Dineout"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "moneyback+ credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-indianoil-credit-card",
+          "name": "IndianOil Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "IndianOil Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/iocl.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/iocl.png",
+            "localAssetName": "hdfc-indianoil-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "IndianOil Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "Earn Up To 50 Litres Of Free Fuel Annually",
+              "Earn 5% Of Your Spends As Fuel Points At Indianoil Outlets",
+              "Earn 5% Of Your Spends As Fuel Points On Groceries And Bill Payments"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "indianoil credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-pixel-play-credit-card",
+          "name": "Pixel Play Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Pixel Play Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/pixel-play-b.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/pixel-play-b.png",
+            "localAssetName": "hdfc-pixel-play-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "The Born Digital Range of Credit Cards ",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "The Born Digital Range of Credit Cards ",
+            "features": [
+              "Up To 5% Cashback On Select Categories ",
+              "Customisable Design & Billing Cycle",
+              "Manage Card Easily On Payzapp "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "pixel play credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-freedom-credit-card",
+          "name": "Freedom Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Freedom Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/freedom-credit-card/freedom-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/freedom-credit-card/freedom-credit-card.png",
+            "localAssetName": "hdfc-freedom-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Freedom Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "10x Cashpoints On Select Merchants",
+              "Get Additional 10% Off Via Swiggy Dineout",
+              "Up To 50 Days Of Interest Free Period"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "freedom credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-swiggy-hdfc-bank-credit-card",
+          "name": "Swiggy HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Swiggy HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/swiggy-hdfc-bank-credit-card/images/card-facia-swiggy.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/swiggy-hdfc-bank-credit-card/images/card-facia-swiggy.png",
+            "localAssetName": "hdfc-swiggy-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Delightful Rewards. Ready For You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Delightful Rewards. Ready For You",
+            "features": [
+              "10% Cashback On Swiggy App",
+              "3 Months Swiggy One Membership",
+              "5% Cashback On Amazon, Flipkart And 100s Of Merchants"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "swiggy hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-infinia-metal-edition",
+          "name": "INFINIA Metal Edition",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "INFINIA Metal Edition"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/infinia-credit-card/images/infinia-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/infinia-credit-card/images/infinia-credit-card.png",
+            "localAssetName": "hdfc-infinia-metal-edition",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "By Invite Only",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "By Invite Only",
+            "features": [
+              "Complimentary Club Marriott Membership",
+              "Stay & Dining Benefits At Itc Hotels",
+              "7 Global Personal Concierge Service"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "infinia metal edition"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-diners-club-black-metal-edition-credit-c",
+          "name": "Diners Club Black Metal Edition Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Diners Club Black Metal Edition Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/diners-club-black-credit-card/diners-club-black.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/diners-club-black-credit-card/diners-club-black.png",
+            "localAssetName": "hdfc-diners-club-black-metal-edition-credit-c",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Global Belonging, Ready for You. ",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Global Belonging, Ready for You. ",
+            "features": [
+              "10,000 Points On Quarterly Spends Of ₹4l ",
+              "6 Complimentary Golf Games",
+              "Unlimited Airport Lounge Access"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "diners club black metal edition credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-tata-neu-plus-credit-card",
+          "name": "Tata Neu Plus Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Tata Neu Plus Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/tata-neu-p.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/tata-neu-p.png",
+            "localAssetName": "hdfc-tata-neu-plus-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Extraordinary Rewards, Ready for You.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Extraordinary Rewards, Ready for You.",
+            "features": [
+              "2% Back As Neucoins On Tata Neu And Partner Tata Brand Spends",
+              "Additional 5% Back As Neucoins On Selected Tata Neu Spends, Post Registering For Tata Neupass",
+              "1% Back As Neucoins On Other Eligible Non Upi Spends"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "tata neu plus credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-marriott-bonvoy-hdfc-bank-credit-card",
+          "name": "Marriott Bonvoy HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Marriott Bonvoy HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/marriott-bonvoy-credit/images/Card-Facia-Marriott-Bonvoy.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/marriott-bonvoy-credit/images/Card-Facia-Marriott-Bonvoy.png",
+            "localAssetName": "hdfc-marriott-bonvoy-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "UNMATCHED LUXURY. READY FOR YOU.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "UNMATCHED LUXURY. READY FOR YOU.",
+            "features": [
+              "Complimentary Stay At Marriott Bonvoy",
+              "Earn Up To 15,000 Points",
+              "Marriott Bonvoy Silver Elite Status"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "marriott bonvoy hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-irctc-hdfc-bank-credit-card",
+          "name": "IRCTC HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "IRCTC HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/irctc-credit-card/images/Card-Facia-IRCTC.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/irctc-credit-card/images/Card-Facia-IRCTC.png",
+            "localAssetName": "hdfc-irctc-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "There's a train ride in every swipe",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "There's a train ride in every swipe",
+            "features": [
+              "5 Reward Points On Irctc Website And App",
+              "Gift Voucher Worth ₹500",
+              "Complimentary Access To Irctc Executive Lounge"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "irctc hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-diners-club-privilege-credit-card",
+          "name": "Diners Club Privilege Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Diners Club Privilege Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/diners-privilege-credit-card/images/diners-club-privilege.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/diners-privilege-credit-card/images/diners-club-privilege.png",
+            "localAssetName": "hdfc-diners-club-privilege-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Global Belonging Ready for You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Global Belonging Ready for You",
+            "features": [
+              "‘buy One, Get One’ On  Bookmyshow",
+              "5x Reward Points On Swiggy & Zomato",
+              "8 Free Airport Lounge Access Worldwide"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "diners club privilege credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-tata-neu-infinity-hdfc-bank-credit-card",
+          "name": "Tata Neu Infinity HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Tata Neu Infinity HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/tata-neu-i.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/tata-neu-i.png",
+            "localAssetName": "hdfc-tata-neu-infinity-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Extraordinary Rewards. Ready for You.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Extraordinary Rewards. Ready for You.",
+            "features": [
+              "5% Back As Neucoins On Tata Neu And Partner Tata Brand Spends",
+              "Additional 5% Back As Neucoins On Selected Tata Neu Spends, Post Registering For Tata Neupass",
+              "1.5% Back As Neucoins On Other Eligible Non Upi Spends"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "tata neu infinity hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-shoppers-stop-black-hdfc-bank-credit-car",
+          "name": "Shoppers Stop Black HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Shoppers Stop Black HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/shoppers-stop-black-hdfc-bank-credit-card/images/shoppers-stop-black-hdfc-bank-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/shoppers-stop-black-hdfc-bank-credit-card/images/shoppers-stop-black-hdfc-bank-credit-card.png",
+            "localAssetName": "hdfc-shoppers-stop-black-hdfc-bank-credit-car",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Rewarding Style. Ready for You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Rewarding Style. Ready for You",
+            "features": [
+              "7% Reward Points On Shoppers Stop Purchases",
+              "Welcome Voucher Worth ₹1,500",
+              "Shoppers Stop Black Membership"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "shoppers stop black hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-shoppers-stop-hdfc-bank-credit-card",
+          "name": "Shoppers Stop HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Shoppers Stop HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/shoppers-stop-credit-card/Images/Card-Facia-Shoppers-Stop-Blue.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/shoppers-stop-credit-card/Images/Card-Facia-Shoppers-Stop-Blue.png",
+            "localAssetName": "hdfc-shoppers-stop-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Rewarding Style, Ready for you",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Rewarding Style, Ready for you",
+            "features": [
+              "3% Reward Points On Shoppers Stop Purchases",
+              "Welcome Voucher Worth ₹500",
+              "Shoppers Stop Silver Edge Membership"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "shoppers stop hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-paytm-hdfc-bank-select-credit-card",
+          "name": "Paytm HDFC Bank Select Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Paytm HDFC Bank Select Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-paytm-hdfc-bank-select-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "CashBack on Every Purchase",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "CashBack on Every Purchase",
+            "features": [
+              "Up To 5% Cashback On Every Purchase",
+              "Paytm First Membership",
+              "8 Free Airport Lounge Accesses"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank select credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-paytm-hdfc-bank-credit-card",
+          "name": "Paytm HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Paytm HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-paytm-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Unlimited CashBack Every Time",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Unlimited CashBack Every Time",
+            "features": [
+              "Up To 3% Cashback On Every Purchase",
+              "Paytm First Membership",
+              "Upto 50 Days Of Credit Free Period"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-paytm-hdfc-bank-mobile-credit-card",
+          "name": "Paytm HDFC Bank Mobile Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Paytm HDFC Bank Mobile Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-paytm-hdfc-bank-mobile-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Your Mobile is Your Credit Card ",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Your Mobile is Your Credit Card ",
+            "features": [
+              "Up To 2% Unlimited Cashback",
+              "Upgrade To A Paytm Hdfc Bank Credit Card",
+              "Easy Card Customisation"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank mobile credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-pixel-go-credit-card",
+          "name": "Pixel Go Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Pixel Go Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/pixel-go.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/pixel-go.png",
+            "localAssetName": "hdfc-pixel-go-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "The Born Digital Range of Credit Cards",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "The Born Digital Range of Credit Cards",
+            "features": [
+              "1% Cashback On Select Transactions",
+              "Shop Now, Pay Later In Emis",
+              "25% Off On Restaurants Via Swiggy Dineout"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "pixel go credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-hdfc-bank-upi-rupay-credit-card",
+          "name": "HDFC Bank UPI RuPay Credit Card",
+          "type": "Credit Card",
+          "network": "RuPay",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "HDFC Bank UPI RuPay Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/upi-rupay.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/upi-rupay.png",
+            "localAssetName": "hdfc-hdfc-bank-upi-rupay-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "HDFC Bank UPI RuPay Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "Up To 3% Cashpoints On Daily, Utility & Other Spends ",
+              "Interest Free Credit Period ",
+              "Renewal Fee Waiver  "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "hdfc bank upi rupay credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-paytm-hdfc-bank-digital-credit-card",
+          "name": "Paytm HDFC Bank Digital Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Paytm HDFC Bank Digital Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-paytm-hdfc-bank-digital-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Digital Experience Curated for You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Digital Experience Curated for You",
+            "features": [
+              "Up To 2% Cashback On Scan & Pay",
+              "Card Personalisation As Per Preference",
+              "Fuel Surcharge Waiver"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "paytm hdfc bank digital credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-easy-emi-card",
+          "name": "Easy EMI Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Easy EMI Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/easy-emi/images/easy-emi-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/easy-emi/images/easy-emi-credit-card.png",
+            "localAssetName": "hdfc-easy-emi-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Live Better Every Day.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Live Better Every Day.",
+            "features": [
+              "5% Cashback On Amazon, Flipkart & More",
+              "Fuel Surcharge Waiver",
+              "Gift Vouchers Worth ₹1000"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "easy emi card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-hdfc-bank-times-card-credit-platinum",
+          "name": "HDFC Bank Times Card Credit Platinum",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "HDFC Bank Times Card Credit Platinum"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/platinum-times-credit-card/images/platinum-times-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/platinum-times-credit-card/images/platinum-times-credit-card.png",
+            "localAssetName": "hdfc-hdfc-bank-times-card-credit-platinum",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Great Times Ready for You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Great Times Ready for You",
+            "features": [
+              "Free Annual Membership Valued At ₹999",
+              "Up To 20% Off On Travel & Shopping",
+              "50% Off On Movie Tickets"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "hdfc bank times card credit platinum"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-hdfc-bank-times-card-credit",
+          "name": "HDFC Bank Times Card Credit",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "HDFC Bank Times Card Credit"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/titanium-times-card-credit-card/images/titanium-times-card-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/titanium-times-card-credit-card/images/titanium-times-card-credit-card.png",
+            "localAssetName": "hdfc-hdfc-bank-times-card-credit",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "HDFC Bank Times Card Credit",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "Free Annual Membership Valued At ₹999",
+              "50% Off On Movie Tickets At Bookmyshow",
+              "3 Reward Points For Every ₹150 Spent"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "hdfc bank times card credit"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-all-miles-credit-card",
+          "name": "All Miles Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "All Miles Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-all-miles-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Save on Every Mile",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Save on Every Mile",
+            "features": [
+              "Access To Over 600 Premium Airport Lounges ",
+              "3 Reward Points For Every ₹150 Spent ",
+              "Fuel Surcharge Waiver "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "all miles credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-bharat-credit-card",
+          "name": "Bharat Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Bharat Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-bharat-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "CashBack for Enhanced Savings",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "CashBack for Enhanced Savings",
+            "features": [
+              "5% Cashback On Irctc, Bill Payments & Fuel",
+              "Up To 50 Days Of Interest Free Period",
+              "Revolving Credit At Nominal Rates"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "bharat credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-diners-club-premium-credit-card",
+          "name": "Diners Club Premium Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Diners Club Premium Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-diners-club-premium-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Exclusive Experience for You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Exclusive Experience for You",
+            "features": [
+              "Complimentary Access To 1000+ Lounges Worldwide",
+              "Insurance Cover Up To ₹1 Crore*",
+              "Up To 5% Cashback On Smartbuy"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "diners club premium credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-diners-club-rewardz-credit-card",
+          "name": "Diners Club Rewardz Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Diners Club Rewardz Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-diners-club-rewardz-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "More Rewards on Purchases",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "More Rewards on Purchases",
+            "features": [
+              "Up To 5% Cashback On Smartbuy",
+              "Welcome & Renewal Benefits Of 1000 Points",
+              "24x7 Concierge Service"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "diners club rewardz credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-doctors-regalia-credit-card",
+          "name": "Doctor's Regalia Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Doctor's Regalia Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-doctors-regalia-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Safety and Convenience Ready for You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Safety and Convenience Ready for You",
+            "features": [
+              "Insurance Coverage Up To ₹20 Lakh* ",
+              "15,000 Reward Points On ₹8 Lakh Spends* ",
+              "Complimentary Airport Lounge Access "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "doctor's regalia credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-doctors-superia-credit-card",
+          "name": "Doctors Superia Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Doctors Superia Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-doctors-superia-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Designed for Exclusive Experience",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Designed for Exclusive Experience",
+            "features": [
+              "3 Reward Points For Every 200 Spent",
+              "50% More Points On Dining Out",
+              "Welcome & Renewal Benefits"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "doctors superia credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-jetprivilege-hdfc-bank-select--titanium",
+          "name": "JetPrivilege HDFC Bank Select / Titanium",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "JetPrivilege HDFC Bank Select / Titanium"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-jetprivilege-hdfc-bank-select--titanium",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Flying Experience Made Rewarding",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Flying Experience Made Rewarding",
+            "features": [
+              "Welcome & Renewal Benefits Worth ₹250",
+              "Fuel Surcharge Waiver",
+              "Add On Cards For Your Family"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "jetprivilege hdfc bank select / titanium"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-platinum-edge-credit-card",
+          "name": "Platinum Edge Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Platinum Edge Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-platinum-edge-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Earn CashBack and Extra Points on Dining ",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Earn CashBack and Extra Points on Dining ",
+            "features": [
+              "2 Reward Points For Every ₹200 Spent ",
+              "50% Extra Points On Dining Out ",
+              "Fuel Surcharge Waiver "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "platinum edge credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-platinum-plus-credit-card",
+          "name": "Platinum Plus Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Platinum Plus Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-platinum-plus-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "More Rewards and Fuel Surcharge Waivers",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "More Rewards and Fuel Surcharge Waivers",
+            "features": [
+              "2 Reward Points For Every ₹200 Spent",
+              "Up To 3 Add On Cards",
+              "Fuel Surcharge Waiver"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "platinum plus credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-solitaire-credit-card",
+          "name": "Solitaire Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Solitaire Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-solitaire-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Exclusive Rewards and Shopping Vouchers ",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Exclusive Rewards and Shopping Vouchers ",
+            "features": [
+              "3 Reward Points For Every ₹200 Spent",
+              "Shopping Vouchers Worth ₹1,000",
+              "Fuel Surcharge Waiver"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "solitaire credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-superia-credit-card",
+          "name": "Superia Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Superia Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-superia-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Fly More and Earn Dining Rewards",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Fly More and Earn Dining Rewards",
+            "features": [
+              "Save On Domestic Flights With Air India & More",
+              "Welcome & Renewal Benefits",
+              "50% Extra Points On Dining Out"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "superia credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-teachers-platinum-credit-card",
+          "name": "Teachers Platinum Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Teachers Platinum Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-teachers-platinum-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Special Weekend and Utility Bill Rewards",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Special Weekend and Utility Bill Rewards",
+            "features": [
+              "500 Reward Points On Teacher's Day* ",
+              "Pay Utility Bills With Smartpay ",
+              "3x Reward Points On Weekends"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "teachers platinum credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-titanium-edge-credit-card-",
+          "name": "Titanium Edge Credit Card ",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Titanium Edge Credit Card "
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-titanium-edge-credit-card-",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "CashBack & Dining Rewards Combined ",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "CashBack & Dining Rewards Combined ",
+            "features": [
+              "Cashback Deals On Daily Purchases ",
+              "Up To 50 Days Of Interest Free Period ",
+              "50% More Points At Premium Restaurants "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "titanium edge credit card "
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-visa-signature-credit-card",
+          "name": "Visa Signature Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Visa Signature Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-visa-signature-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Global Lounge Access with Fuel Waivers",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Global Lounge Access with Fuel Waivers",
+            "features": [
+              "Access To Over 600+ Lounges Worldwide",
+              "2 Reward Points For Every ₹200 Spent ",
+              "Fuel Surcharge Waiver Up To ₹250 "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "visa signature credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-world-mastercard-credit-card",
+          "name": "World MasterCard Credit Card",
+          "type": "Credit Card",
+          "network": "Mastercard",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "World MasterCard Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-world-mastercard-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Travel Round the Globe with Ease",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Travel Round the Globe with Ease",
+            "features": [
+              "Complimentary Priority Pass Membership",
+              "Up To 3 Add On Cards For Family",
+              "2 Reward Points For Every ₹ 200 Spent"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "world mastercard credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-regalia-first-credit-card",
+          "name": "Regalia First Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Regalia First Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-regalia-first-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Curated Luxury Experience",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Curated Luxury Experience",
+            "features": [
+              "Up To 15% Off At Partner Restaurants",
+              "Comprehensive Insurance Coverage*",
+              "Complimentary Priority Pass Membership"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "regalia first credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-diners-clubmiles-credit-card",
+          "name": "Diners ClubMiles Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Diners ClubMiles Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-diners-clubmiles-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Travel in Style",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Travel in Style",
+            "features": [
+              "Up To 6 Complimentary Lounge Access*",
+              "Air Accident Coverage Of ₹1 Crore",
+              "Up To 15% Off At Partner Restaurants"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "diners clubmiles credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-regalia-credit-card",
+          "name": "Regalia Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Regalia Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-regalia-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Flying Experience Made Comfortable",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Flying Experience Made Comfortable",
+            "features": [
+              "15,000 Reward Points On ₹8 Lakh Spends",
+              "International & Domestic Airport Lounge Access",
+              "24x7 Concierge Services"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "regalia credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-intermiles-hdfc-bank-diners-club-credit-",
+          "name": "InterMiles HDFC Bank Diners Club Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "InterMiles HDFC Bank Diners Club Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-intermiles-hdfc-bank-diners-club-credit-",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Welcome Bonuses & Travel Discounts",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Welcome Bonuses & Travel Discounts",
+            "features": [
+              "Welcome Bonus Of Up To 25,000 Intermiles",
+              "Free Intermiles Gold Tier Membership",
+              "Flight & Hotel Discount Vouchers Worth ₹5,000"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "intermiles hdfc bank diners club credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-intermiles-hdfc-bank-signature-credit-ca",
+          "name": "InterMiles HDFC Bank Signature Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "InterMiles HDFC Bank Signature Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-intermiles-hdfc-bank-signature-credit-ca",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "InterMiles Rewards and Silver Membership",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "InterMiles Rewards and Silver Membership",
+            "features": [
+              "Welcome Benefit Of Up To 8,000 Intermiles",
+              "6 Intermiles For Every ₹150 Spent",
+              "Free Intermiles Silver Tier Membership"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "intermiles hdfc bank signature credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-intermiles-hdfc-bank-platinum-credit-car",
+          "name": "InterMiles HDFC Bank Platinum Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "InterMiles HDFC Bank Platinum Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-intermiles-hdfc-bank-platinum-credit-car",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Travel More, Earn Rewards",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Travel More, Earn Rewards",
+            "features": [
+              "Welcome Benefit Of Up To 3,000 Intermiles",
+              "8 Complimentary Domestic Airport Lounges Access",
+              "Up To 20% Savings On Dining Out"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "intermiles hdfc bank platinum credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-diners-club-black-credit-card",
+          "name": "Diners Club Black Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Diners Club Black Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-diners-club-black-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Exclusivity Ready for You",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Exclusivity Ready for You",
+            "features": [
+              "Free Annual Memberships To Club Marriott, Forbes & More",
+              "Up To 10x Rewards Points On Smartbuy ",
+              "Unlimited Free Access To Airport Lounges"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "diners club black credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-moneyback-credit-card",
+          "name": "MoneyBack Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "MoneyBack Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-moneyback-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "More Rewards for More Savings",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "More Rewards for More Savings",
+            "features": [
+              "2 Reward Points For Every ₹200 Spent",
+              "Welcome Benefit Of 500 Cashpoints",
+              "Smartemi & Annual Spend Benefit"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "moneyback credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-regalia-gold-credit-card",
+          "name": "Regalia Gold Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Regalia Gold Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/regalia-gold-credit-card/images/regalia-gold-credit-card.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/credit-cards/regalia-gold-credit-card/images/regalia-gold-credit-card.png",
+            "localAssetName": "hdfc-regalia-gold-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Experience the Golden Side of Life",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Experience the Golden Side of Life",
+            "features": [
+              "Gift Voucher Worth ₹2,500*",
+              "Complimentary Memberships ",
+              "5x Reward Points On Top Brands "
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "regalia gold credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-hdfc-bank-h-o-g-diners-club-credit-card",
+          "name": "HDFC Bank H-O-G Diners Club Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "HDFC Bank H-O-G Diners Club Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/harley-hog.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/harley-hog.png",
+            "localAssetName": "hdfc-hdfc-bank-h-o-g-diners-club-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "The card can be no longer applied.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "The card can be no longer applied.",
+            "features": [
+              "Annual Memberships To Club Marriott, Mmt Black, Etc.",
+              "Harley Vouchers Worth ₹2,500",
+              "10x Reward Points On Harley Purchases"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "hdfc bank h-o-g diners club credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-hdfc-bank-harley-davidson-diners-club-cr",
+          "name": "HDFC Bank Harley-Davidson Diners Club Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "HDFC Bank Harley-Davidson Diners Club Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/harley.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/harley.png",
+            "localAssetName": "hdfc-hdfc-bank-harley-davidson-diners-club-cr",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "The card can be no longer applied.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "The card can be no longer applied.",
+            "features": [
+              "Buy One, Get One Ticket Via Bookmyshow",
+              "5x Reward Points With Swiggy & Zomato",
+              "Harley Vouchers Worth ₹750"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "hdfc bank harley-davidson diners club credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-bizblack-metal-edition-business-credit-c",
+          "name": "BizBlack Metal Edition Business Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "BizBlack Metal Edition Business Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizblack-metal-edition.jpg",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizblack-metal-edition.jpg",
+            "localAssetName": "hdfc-bizblack-metal-edition-business-credit-c",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "BizBlack Metal Edition Business Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "No Interest Up To 55 Days",
+              "5 Reward Points For Every ₹150 Spent",
+              "Complimentary Annual Club Marriott Membership"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "bizblack metal edition business credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-bizfirst-business-credit-card",
+          "name": "BizFirst Business Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "BizFirst Business Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizfirst.jpg",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizfirst.jpg",
+            "localAssetName": "hdfc-bizfirst-business-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "BizFirst Business Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "Up To 3% Cashpoints On Emi, Utility & More",
+              "₹250 Gift Voucher On Card Activation",
+              "Save 20% Via Swiggy Dineout"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "bizfirst business credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-pine-labs-hdfc-bank-credit-card",
+          "name": "Pine Labs HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Pine Labs HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-pine-labs-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "India's Premier Business Credit Card for Rewards",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "India's Premier Business Credit Card for Rewards",
+            "features": [
+              "Up To 5% Reward Points On Business Essentials ",
+              "Up To 50 Days Of Free Credit Period",
+              "2500 Reward Points As Milestone Benefit"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "pine labs hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-bizgrow-business-credit-card",
+          "name": "BizGrow Business Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "BizGrow Business Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizgrow.jpg",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizgrow.jpg",
+            "localAssetName": "hdfc-bizgrow-business-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "BizGrow Business Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "Business Insurance Benefits Up To ₹5 Lakh",
+              "2000 Cashpoints For ₹1 Lakh Quarterly Spends",
+              "1% Fuel Surcharge Waiver"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "bizgrow business credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-bizpower-business-credit-card",
+          "name": "BizPower Business Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "BizPower Business Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizpower.jpg",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/business-credit-cards/bizpower.jpg",
+            "localAssetName": "hdfc-bizpower-business-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "BizPower Business Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "5x Reward Points On Bill Payments",
+              "Free Amazon Prime Annual Membership & More",
+              "Domestic & International Airport Lounge Access"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "bizpower business credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-phonepe-hdfc-bank-ultimo-credit-card",
+          "name": "PhonePe HDFC Bank Ultimo Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "PhonePe HDFC Bank Ultimo Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-phonepe-hdfc-bank-ultimo-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "PhonePe HDFC Bank Ultimo Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "10% Reward Points On Select Phonepe Categories",
+              "5% Reward Points On Select Online Brands",
+              "1% Reward Points On All Scan & Pay Transactions"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "phonepe hdfc bank ultimo credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-phonepe-hdfc-bank-uno-credit-card",
+          "name": "PhonePe HDFC Bank Uno Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "PhonePe HDFC Bank Uno Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-phonepe-hdfc-bank-uno-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "PhonePe HDFC Bank Uno Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "",
+            "features": [
+              "2% Reward Points On Select Phonepe Categories",
+              "1% Reward Points On Select Online Brands",
+              "1% Reward Points On All Scan & Pay Transactions"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "phonepe hdfc bank uno credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        },
+        {
+          "id": "hdfc-regalia-activ-hdfc-bank-credit-card",
+          "name": "Regalia Activ HDFC Bank Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Regalia Activ HDFC Bank Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "thumbnail": "https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/cards/card-facias/credit-card/card-facias-gen.png",
+            "localAssetName": "hdfc-regalia-activ-hdfc-bank-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#004B8D",
+            "secondaryColor": "#D4AF37",
+            "textColor": "#FFFFFF",
+            "accentColor": "#D4AF37"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "India's Premier Business Credit Card for Rewards",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "India's Premier Business Credit Card for Rewards",
+            "features": [
+              "Upto 8 Complimentary Airport Lounge Access",
+              "Bonus 10,000 Reward Points On Rs. 5 Lakhs Spends",
+              "Earn 4 Reward Points On Every Rs.150 Spent On Retail Goods"
+            ],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "regalia activ hdfc bank credit card"
+            ],
+            "issuerName": "HDFC"
+          }
+        }
+      ]
+    },
+    {
+      "id": "icici",
+      "name": "ICICI Bank",
+      "country": "IN",
+      "website": "https://www.icici.bank.in",
+      "brandColor": "#003D7A",
+      "logoUrl": "https://upload.wikimedia.org/wikipedia/en/c/c0/ICICI_Bank_Logo.svg",
+      "cards": [
+        {
+          "id": "icici-amazon-pay-credit-card",
+          "name": "Amazon Pay Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Amazon Pay Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/amazon/amazon-card-banner.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/amazon/amazon-card-banner.webp",
+            "localAssetName": "icici-amazon-pay-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Apply for the Amazon Pay ICICI Bank Credit Card and enjoy cashback on every purchase. Unlock exclusive rewards and start saving instantly.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Apply for the Amazon Pay ICICI Bank Credit Card and enjoy cashback on every purchase. Unlock exclusive rewards and start saving instantly.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "amazon pay credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-coral-credit-card",
+          "name": "Coral Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Coral Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/hpcl-coral/coral-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/hpcl-coral/coral-desktop.webp",
+            "localAssetName": "icici-coral-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Apply for the ICICI Bank HPCL Coral Credit Card and get 25% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Apply for the ICICI Bank HPCL Coral Credit Card and get 25% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "coral credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-csk-credit-card",
+          "name": "CSK Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "CSK Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/csk/csk-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/csk/csk-desktop.webp",
+            "localAssetName": "icici-csk-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits, rewards, and exciting offers for loyal fans. Apply now!",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Get the Chennai Super Kings Credit Card by ICICI Bank & enjoy exclusive benefits, rewards, and exciting offers for loyal fans. Apply now!",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "csk credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-emeralde-credit-card",
+          "name": "Emeralde Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Emeralde Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/emeralde.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/emeralde.webp",
+            "localAssetName": "icici-emeralde-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Upgrade to a premium lifestyle with the ICICI Bank Emeralde Credit Card—featuring unlimited lounge access, golf sessions, movie offers, travel benefits, and reward points.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Upgrade to a premium lifestyle with the ICICI Bank Emeralde Credit Card—featuring unlimited lounge access, golf sessions, movie offers, travel benefits, and reward points.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "emeralde credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-expressions-credit-card",
+          "name": "Expressions Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Expressions Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/expressions-desk.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/expressions-desk.webp",
+            "localAssetName": "icici-expressions-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Expressions Credit Card - Personalise your card with unique designs. Enjoy rewards, complimentary lounge access, fuel waivers, and discounts on movies. ",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Expressions Credit Card - Personalise your card with unique designs. Enjoy rewards, complimentary lounge access, fuel waivers, and discounts on movies. ",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "expressions credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-hpcl-super-saver",
+          "name": "Hpcl Super Saver",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Hpcl Super Saver"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/hpcl-supersaver.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/hpcl-supersaver.webp",
+            "localAssetName": "icici-hpcl-super-saver",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Apply for the ICICI Bank HPCL Super Saver Credit Card and get 5% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Apply for the ICICI Bank HPCL Super Saver Credit Card and get 5% cashback on fuel spends. Enjoy fuel savings, rewards, and exclusive lifestyle benefits.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "hpcl super saver"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-makemytrip-icici-credit-card",
+          "name": "Makemytrip Icici Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Makemytrip Icici Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/mmt-credit-card/makemytrip-desk-banner.png",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/mmt-credit-card/makemytrip-desk-banner.png",
+            "localAssetName": "icici-makemytrip-icici-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Unlock exclusive travel perks with the MakeMyTrip ICICI Bank Credit Card. Get 6% myCash travel, MMTBLACK Gold membership, and low forex markup fees.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Unlock exclusive travel perks with the MakeMyTrip ICICI Bank Credit Card. Get 6% myCash travel, MMTBLACK Gold membership, and low forex markup fees.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "makemytrip icici credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-manchester-united-platinum-credit-card",
+          "name": "Manchester United Platinum Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Manchester United Platinum Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-platinum-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-platinum-desktop.webp",
+            "localAssetName": "icici-manchester-united-platinum-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Get the ICICI Bank Manchester United Platinum Credit Card. Enjoy exclusive football rewards, lounge access, and dining discounts. Apply for your card today!",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Get the ICICI Bank Manchester United Platinum Credit Card. Enjoy exclusive football rewards, lounge access, and dining discounts. Apply for your card today!",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "manchester united platinum credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-manchester-united-signature-credit-card",
+          "name": "Manchester United Signature Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Manchester United Signature Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-signature-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/manchester-united/manchester-signature-desktop.webp",
+            "localAssetName": "icici-manchester-united-signature-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "ICICI Bank Manchester United Signature Credit Card",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "ICICI Bank Manchester United Signature Credit Card",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "manchester united signature credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-parakram-credit-card",
+          "name": "Parakram Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Parakram Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/parakram-select.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/parakram-select.webp",
+            "localAssetName": "icici-parakram-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Experience a world of unlimited rewards and benefits with ICICI Bank's Parakram Credit Card. Apply now and take your finances to new heights!",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Experience a world of unlimited rewards and benefits with ICICI Bank's Parakram Credit Card. Apply now and take your finances to new heights!",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "parakram credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-platinum-card",
+          "name": "Platinum Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Platinum Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "localAssetName": "icici-platinum-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Apply for Adani One ICICI Bank Platinum Credit Card & get complimentary domestic lounge visits per year. Enjoy hotel vouchers, lounge access & airport benefits",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Apply for Adani One ICICI Bank Platinum Credit Card & get complimentary domestic lounge visits per year. Enjoy hotel vouchers, lounge access & airport benefits",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "platinum card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-platinum-chip-credit-card",
+          "name": "Platinum Chip Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Platinum Chip Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "localAssetName": "icici-platinum-chip-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "The ICICI Bank Platinum Chip Credit Card offers great value with benefits like anti-fraud protection, payback rewards, fuel surcharge waiver, and more. Easy to manage and no-frills.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "The ICICI Bank Platinum Chip Credit Card offers great value with benefits like anti-fraud protection, payback rewards, fuel surcharge waiver, and more. Easy to manage and no-frills.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "platinum chip credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-platinum-credit-card",
+          "name": "Platinum Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Platinum Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/credit-card/platinum-chip/platinum-desktop.webp",
+            "localAssetName": "icici-platinum-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Travel smarter with the MakeMyTrip ICICI Bank Platinum Card. Earn myCash on every spend, get exclusive hotel discounts and domestic lounge access. No annual fee!",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Travel smarter with the MakeMyTrip ICICI Bank Platinum Card. Earn myCash on every spend, get exclusive hotel discounts and domestic lounge access. No annual fee!",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "platinum credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-rubyx-credit-card",
+          "name": "Rubyx Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Rubyx Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/rubyx-02.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/credit-card/desktop/rubyx-02.webp",
+            "localAssetName": "icici-rubyx-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Apply online for the ICICI Bank Rubyx Credit Card and enjoy premium travel, lifestyle, dining, and entertainment privileges with exclusive rewards..",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Apply online for the ICICI Bank Rubyx Credit Card and enjoy premium travel, lifestyle, dining, and entertainment privileges with exclusive rewards..",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "rubyx credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-rupay-credit-card",
+          "name": "Rupay Credit Card",
+          "type": "Credit Card",
+          "network": "RuPay",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Rupay Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/sapphiro-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/sapphiro-desktop.webp",
+            "localAssetName": "icici-rupay-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Apply for ICICI Bank RuPay Credit Card Online – enjoy seamless payments, UPI-link convenience, nationwide acceptance and secure banking experience with tailored features.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Apply for ICICI Bank RuPay Credit Card Online – enjoy seamless payments, UPI-link convenience, nationwide acceptance and secure banking experience with tailored features.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "rupay credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-sapphiro-credit-card",
+          "name": "Sapphiro Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Sapphiro Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/sapphiro-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/sapphiro-credit-card/sapphiro-desktop.webp",
+            "localAssetName": "icici-sapphiro-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Apply online for the ICICI Bank Sapphiro Credit Card and enjoy airport lounge access, welcome vouchers, milestone rewards, BookMyShow discounts, and concierge services.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Apply online for the ICICI Bank Sapphiro Credit Card and enjoy airport lounge access, welcome vouchers, milestone rewards, BookMyShow discounts, and concierge services.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "sapphiro credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-signature-credit-card",
+          "name": "Signature Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Signature Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/adani-one/adani-one-signature-desktop.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank-revamp/images/cards/adani-one/adani-one-signature-desktop.webp",
+            "localAssetName": "icici-signature-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Signature Credit Cards from ICICI Bank and MakeMyTrip Card are designed to complement your lifestyle. Our products extend several offers ranging from travel.",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Signature Credit Cards from ICICI Bank and MakeMyTrip Card are designed to complement your lifestyle. Our products extend several offers ranging from travel.",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "signature credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        },
+        {
+          "id": "icici-times-black-credit-card",
+          "name": "Times Black Credit Card",
+          "type": "Credit Card",
+          "network": "Visa",
+          "variant": "credit",
+          "active": true,
+          "premiumTier": false,
+          "aliases": [
+            "Times Black Credit Card"
+          ],
+          "binRanges": [],
+          "image": {
+            "front": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/credit-card/times-black-banner.webp",
+            "thumbnail": "https://www.icici.bank.in/content/dam/icicibank/india/managed-assets/revamp-page-images/cards/credit-card/times-black-banner.webp",
+            "localAssetName": "icici-times-black-credit-card",
+            "aspectRatio": "16:10"
+          },
+          "theme": {
+            "primaryColor": "#003D7A",
+            "secondaryColor": "#FFD700",
+            "textColor": "#FFFFFF",
+            "accentColor": "#FFD700"
+          },
+          "details": {
+            "annualFee": "Check issuer website",
+            "joiningBenefit": "Get dining discounts, movie offers, and free memberships with the Times Black ICICI Bank Credit Card. Start saving on your lifestyle expenses. Apply now!",
+            "interestRate": "Check issuer website",
+            "gracePeriod": "45 days",
+            "description": "Get dining discounts, movie offers, and free memberships with the Times Black ICICI Bank Credit Card. Start saving on your lifestyle expenses. Apply now!",
+            "features": [],
+            "eligibility": "Age 21+, Employed"
+          },
+          "parsingHints": {
+            "statementAliases": [
+              "times black credit card"
+            ],
+            "issuerName": "ICICI"
+          }
+        }
+      ]
+    }
+  ],
+  "networks": [
+    {
+      "id": "visa",
+      "name": "Visa",
+      "color": "#1434CB",
+      "website": "https://www.visa.com"
+    },
+    {
+      "id": "mastercard",
+      "name": "Mastercard",
+      "color": "#EB001B",
+      "website": "https://www.mastercard.com"
+    },
+    {
+      "id": "rupay",
+      "name": "RuPay",
+      "color": "#1C2653",
+      "website": "https://www.rupayindia.com"
+    }
+  ],
+  "metadata": {
+    "cardCount": 76,
+    "issuerCount": 2,
+    "networkCount": 3,
+    "lastUpdated": "2026-05-17T10:23:43.027Z"
+  }
+}

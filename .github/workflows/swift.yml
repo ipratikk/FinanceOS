@@ -1,0 +1,36 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: "6.1"
+
+    - name: Build FinanceCore Package
+      run: swift build --package-path Packages/FinanceCore -v
+
+    - name: Build FinanceParsers Package
+      run: swift build --package-path Packages/FinanceParsers -v
+
+    - name: Build FinanceUI Package
+      run: swift build --package-path Packages/FinanceUI -v
+
+    - name: Build macOS App
+      run: xcodebuild build -scheme FinanceOSMac -quiet
+
+    - name: Run FinanceCore Tests
+      run: swift test --package-path Packages/FinanceCore -v
+
+    - name: Run FinanceParsers Tests
+      run: swift test --package-path Packages/FinanceParsers -v

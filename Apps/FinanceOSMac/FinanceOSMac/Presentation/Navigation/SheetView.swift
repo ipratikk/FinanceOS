@@ -1,0 +1,56 @@
+import FinanceCore
+import SwiftUI
+
+struct SheetView: View {
+    let route: SheetRoute
+    let appContainer: AppContainer
+    let navigator: AppNavigator
+    @State private var banks: [Bank] = []
+    @State private var accounts: [Ledger] = []
+
+    var body: some View {
+        Group {
+            switch route {
+            case let .accountEdit(ledger):
+                let context = AccountEditContext(
+                    repository: appContainer.ledgerRepository,
+                    banks: banks,
+                    onUpdate: navigator.accountReloadCallback
+                )
+                AccountEditView(account: ledger, context: context)
+            case let .cardEdit(ledger):
+                let context = CardEditContext(
+                    repository: appContainer.ledgerRepository,
+                    banks: banks,
+                    accounts: accounts,
+                    onUpdate: navigator.cardReloadCallback
+                )
+                CardEditView(card: ledger, context: context)
+            case let .bankEdit(bank):
+                let context = BankEditContext(
+                    repository: appContainer.bankRepository,
+                    ledgerRepository: appContainer.ledgerRepository
+                )
+                BankEditView(bank: bank, context: context)
+            case let .transactionDetail(row):
+                TransactionDetailView(row: row)
+            default:
+                EmptyView()
+            }
+        }
+        .task {
+            do {
+                async let banksFetch = appContainer.bankRepository.fetchBanks()
+                async let accountsFetch = appContainer.ledgerRepository.fetchLedgers(kind: .bankAccount)
+                banks = try await banksFetch
+                accounts = try await accountsFetch
+            } catch {
+                FinanceLogger.ui.logError(
+                    "Failed to fetch data for sheet: {error}",
+                    caughtError: error,
+                    ["error": error.localizedDescription]
+                )
+            }
+        }
+    }
+}

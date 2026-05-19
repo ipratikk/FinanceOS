@@ -1,0 +1,213 @@
+import Foundation
+
+#if canImport(PDFKit)
+import PDFKit
+#endif
+
+/// Extracts row-ordered text lines from a PDF page.
+///
+/// Implementations may use PDFKit character bounds, OCR, or any other
+/// strategy. The contract is: return lines in top-down reading order,
+/// with horizontally-adjacent tokens joined into a single line per row.
+public protocol PDFTextExtractor: Sendable {
+    #if canImport(PDFKit)
+    func extractLines(from page: PDFPage) -> [String]
+    #endif
+}
+
+#if canImport(Vision) && canImport(AppKit) && canImport(PDFKit)
+import AppKit
+import Vision
+
+/// Vision-based OCR extractor. Renders the page to a high-resolution
+/// raster, runs `VNRecognizeTextRequest` in accurate mode, then groups
+/// recognized observations into rows by normalized Y coordinate.
+public struct VisionPDFTextExtractor: PDFTextExtractor {
+    private let renderScale: CGFloat
+    private let yTolerance: CGFloat
+
+    public init(renderScale: CGFloat = 3.0, yTolerance: CGFloat = 0.015) {
+        self.renderScale = renderScale
+        self.yTolerance = yTolerance
+    }
+
+    public func extractLines(from page: PDFPage) -> [String] {
+        guard let cgImage = renderPage(page) else {
+            return []
+        }
+        let observations = recognizeText(in: cgImage)
+        return groupIntoRows(observations)
+    }
+
+    /// Extract text with column information preserved.
+    /// Each line is formatted as tab-separated columns: "col1\tcol2\tcol3..."
+    /// This allows downstream parsers to distinguish columns (debit/credit/balance).
+    public func extractLinesWithColumns(from page: PDFPage) -> [String] {
+        guard let cgImage = renderPage(page) else {
+            return []
+        }
+        let observations = recognizeText(in: cgImage)
+        return groupIntoRowsWithColumns(observations)
+    }
+
+    private func renderPage(_ page: PDFPage) -> CGImage? {
+        let pageRect = page.bounds(for: .mediaBox)
+        let width = Int(pageRect.width * renderScale)
+        let height = Int(pageRect.height * renderScale)
+        guard width > 0, height > 0 else { return nil }
+
+        // CGBitmapContext is thread-safe and does not require an AppKit run
+        // loop. NSImage.lockFocus only works reliably on the main thread,
+        // which fails silently inside an async parser running on a Swift
+        // concurrency worker thread.
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue
+        guard let ctx = CGContext(
+            data: nil,
+            width: width,
+            height: height,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: colorSpace,
+            bitmapInfo: bitmapInfo
+        ) else { return nil }
+
+        ctx.setFillColor(CGColor.white)
+        ctx.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        ctx.scaleBy(x: renderScale, y: renderScale)
+        page.draw(with: .mediaBox, to: ctx)
+
+        return ctx.makeImage()
+    }
+
+    private func recognizeText(in cgImage: CGImage) -> [Observation] {
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = false
+
+        do {
+            try handler.perform([request])
+        } catch {
+            return []
+        }
+
+        guard let results = request.results else {
+            return []
+        }
+        var out: [Observation] = []
+        out.reserveCapacity(results.count)
+        for result in results {
+            guard let top = result.topCandidates(1).first else { continue }
+            let box = result.boundingBox
+            out.append(Observation(text: top.string, y: box.origin.y, x: box.origin.x))
+        }
+        return out
+    }
+
+    private func groupIntoRows(_ observations: [Observation]) -> [String] {
+        var buckets: [(y: CGFloat, items: [Observation])] = []
+        for obs in observations {
+            if let idx = buckets.firstIndex(where: { abs($0.y - obs.y) <= yTolerance }) {
+                buckets[idx].items.append(obs)
+            } else {
+                buckets.append((y: obs.y, items: [obs]))
+            }
+        }
+        // Vision normalized Y: 1.0 = top of page, 0.0 = bottom.
+        buckets.sort { $0.y > $1.y }
+
+        var lines: [String] = []
+        lines.reserveCapacity(buckets.count)
+        for bucket in buckets {
+            // Sort observations left-to-right within row, preserving reading order
+            let sorted = bucket.items.sorted { $0.x < $1.x }
+            let joined = sorted.map(\.text).joined(separator: " ")
+            let trimmed = joined.trimmingCharacters(in: .whitespaces)
+            if !trimmed.isEmpty {
+                lines.append(trimmed)
+            }
+        }
+        return lines
+    }
+
+    private func groupIntoRowsWithColumns(_ observations: [Observation]) -> [String] {
+        // Group by Y-coordinate (rows)
+        var rowBuckets: [(y: CGFloat, items: [Observation])] = []
+        for obs in observations {
+            if let idx = rowBuckets.firstIndex(where: { abs($0.y - obs.y) <= yTolerance }) {
+                rowBuckets[idx].items.append(obs)
+            } else {
+                rowBuckets.append((y: obs.y, items: [obs]))
+            }
+        }
+        rowBuckets.sort { $0.y > $1.y }
+
+        // Detect column boundaries from X-coordinates across entire page
+        var xPositions: [CGFloat] = []
+        for bucket in rowBuckets {
+            for obs in bucket.items {
+                xPositions.append(obs.x)
+            }
+        }
+        let columnBoundaries = detectColumnBoundaries(from: xPositions)
+
+        var lines: [String] = []
+        lines.reserveCapacity(rowBuckets.count)
+
+        for bucket in rowBuckets {
+            let sorted = bucket.items.sorted { $0.x < $1.x }
+            // Group observations into columns based on detected boundaries
+            var columns: [[String]] = Array(repeating: [], count: columnBoundaries.count + 1)
+
+            for obs in sorted {
+                var colIdx = 0
+                for (idx, boundary) in columnBoundaries.enumerated() {
+                    if obs.x < boundary {
+                        colIdx = idx
+                        break
+                    }
+                    colIdx = idx + 1
+                }
+                if colIdx < columns.count {
+                    columns[colIdx].append(obs.text)
+                }
+            }
+
+            // Join columns with tab separator, rows within columns with space
+            let columnTexts = columns.map { $0.joined(separator: " ") }
+            let line = columnTexts.joined(separator: "\t")
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if !trimmed.isEmpty {
+                lines.append(trimmed)
+            }
+        }
+        return lines
+    }
+
+    /// Detect column boundaries by finding gaps in X-coordinate distribution.
+    private func detectColumnBoundaries(from xPositions: [CGFloat]) -> [CGFloat] {
+        guard xPositions.count > 1 else { return [] }
+
+        let sorted = xPositions.sorted()
+        var gaps: [(position: CGFloat, gap: CGFloat)] = []
+
+        for i in 1 ..< sorted.count {
+            let gap = sorted[i] - sorted[i - 1]
+            if gap > 0.02 { // Significant gap (2% of normalized page width)
+                gaps.append((position: sorted[i - 1], gap: gap))
+            }
+        }
+
+        // Use largest gaps as column boundaries
+        let topGaps = gaps.sorted { $0.gap > $1.gap }.prefix(6).sorted { $0.position < $1.position }
+        return topGaps.map { $0.position + (sorted[1] - sorted[0]) / 2 }
+    }
+
+    private struct Observation {
+        let text: String
+        let y: CGFloat
+        let x: CGFloat
+    }
+}
+#endif

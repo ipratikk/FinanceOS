@@ -48,3 +48,18 @@ Library/
 
 # XCTest
 xcresult/
+
+# Local agent / Codex tooling
+.agents/
+.codex/
+.codex-plugins/
+.claude/settings.local.json
+.graphify_python
+skills-lock.json
+
+# Claude Code session artifacts
+.claude/session-status.md
+.claude/session-*.jsonl
+.claude/logs/
+.claude/plans/
+.claude/worktrees/
