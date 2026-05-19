@@ -10,7 +10,6 @@ struct ImportPreviewView: View {
     @State private var sheetCreationState = TargetCreationState()
     @State private var importedExpanded = false
     @State private var duplicatesExpanded = false
-    @State private var transactionListStyle: ImportTransactionListView.Style = .table
 
     var body: some View {
         VStack(spacing: 0) {
@@ -68,7 +67,6 @@ struct ImportPreviewView: View {
                         badgeCount: importedTransactions.count,
                         transactions: importedTransactions,
                         duplicateIndices: [],
-                        style: $transactionListStyle,
                         isExpanded: $importedExpanded
                     )
                 }
@@ -79,7 +77,6 @@ struct ImportPreviewView: View {
                         badgeCount: duplicateTransactions.count,
                         transactions: duplicateTransactions,
                         duplicateIndices: Set(0 ..< duplicateTransactions.count),
-                        style: $transactionListStyle,
                         isExpanded: $duplicatesExpanded
                     )
                 }

@@ -8,7 +8,6 @@ struct ImportTransactionSection: View {
     let badgeCount: Int
     let transactions: [ParsedTransaction]
     let duplicateIndices: Set<Int>
-    @Binding var style: ImportTransactionListView.Style
     @Binding var isExpanded: Bool
 
     private let collapsedRowLimit: Int = 5
@@ -41,35 +40,10 @@ struct ImportTransactionSection: View {
 
             Spacer()
 
-            styleSwitcher
-
             viewAllButton
         }
         .padding(AppSpacing.md)
         .background(DesignTokens.Background.surfaceGlass)
-    }
-
-    // MARK: - Style Switcher
-
-    private var styleSwitcher: some View {
-        HStack(spacing: 4) {
-            Button(action: { style = .list }) {
-                Image(systemName: "list.bullet")
-                    .font(.system(size: 14, weight: style == .list ? .semibold : .regular))
-                    .foregroundColor(style == .list ? AppColors.accent : DesignTokens.Text.secondary)
-            }
-            .buttonStyle(.plain)
-
-            Divider()
-                .frame(height: 16)
-
-            Button(action: { style = .table }) {
-                Image(systemName: "tablecells")
-                    .font(.system(size: 14, weight: style == .table ? .semibold : .regular))
-                    .foregroundColor(style == .table ? AppColors.accent : DesignTokens.Text.secondary)
-            }
-            .buttonStyle(.plain)
-        }
     }
 
     // MARK: - View All Button
@@ -92,7 +66,6 @@ struct ImportTransactionSection: View {
             ImportTransactionListView(
                 transactions: transactions,
                 duplicateIndices: duplicateIndices,
-                style: style,
                 scrollable: true,
                 rowLimit: nil
             )
@@ -100,7 +73,6 @@ struct ImportTransactionSection: View {
             ImportTransactionListView(
                 transactions: transactions,
                 duplicateIndices: duplicateIndices,
-                style: style,
                 scrollable: true,
                 rowLimit: collapsedRowLimit
             )
@@ -109,7 +81,6 @@ struct ImportTransactionSection: View {
 }
 
 #Preview {
-    @Previewable @State var style: ImportTransactionListView.Style = .table
     @Previewable @State var expanded = true
 
     let txns = [
@@ -141,7 +112,6 @@ struct ImportTransactionSection: View {
         badgeCount: 12,
         transactions: txns,
         duplicateIndices: [],
-        style: $style,
         isExpanded: $expanded
     )
     .padding()
