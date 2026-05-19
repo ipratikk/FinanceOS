@@ -3,6 +3,7 @@ import FinanceCore
 import FinanceParsers
 import FinanceUI
 import SwiftUI
+import UniformTypeIdentifiers
 
 extension ImportView {
     // MARK: - Step 1: Source Selection

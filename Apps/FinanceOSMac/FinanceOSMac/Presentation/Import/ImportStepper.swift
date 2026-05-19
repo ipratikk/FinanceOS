@@ -43,7 +43,7 @@ struct ImportStepper: View {
                     .fill(
                         isCurrent
                             ? AppColors.accent
-                            : (isComplete ? AppColors.success : DesignTokens.Background.surface)
+                            : (isComplete ? AppColors.success : AppColors.surface)
                     )
                     .frame(width: 28, height: 28)
 
