@@ -14,7 +14,7 @@ struct ImportSourceGrid: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: AppSpacing.section) {
             sourceSection("Banks", sourceType: .bankAccount)
             sourceSection("Cards", sourceType: .creditCard)
         }
@@ -24,7 +24,7 @@ struct ImportSourceGrid: View {
     private func sourceSection(_ title: String, sourceType: StatementSourceType) -> some View {
         let sectionSources = sources.filter { $0.sourceType == sourceType }
         if !sectionSources.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 Text(title)
                     .font(AppTypography.headingSmall)
                     .foregroundColor(DesignTokens.Text.primary)
