@@ -14,7 +14,7 @@ final class BankEditViewSnapshotTests: SnapshotTestable {
         let bankRepo = MockBankRepository()
         let ledgerRepo = MockLedgerRepository()
         let context = BankEditContext(repository: bankRepo, ledgerRepository: ledgerRepo)
-        let view = BankEditView(bank: PreviewBanks.chase(), context: context)
+        let view = BankEditView(bank: PreviewBanks.hdfc(), context: context)
         verifySnapshots(view)
     }
 }

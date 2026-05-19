@@ -3,21 +3,18 @@ import Foundation
 
 /// Preview/test data for banks.
 public enum PreviewBanks {
-    public static let bankId = UUID(uuidString: "00000000-0000-0000-0000-000000000099")!
+    public static let hdfcId = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+    public static let amexId = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-    public static func chase() -> Bank {
-        Bank(id: bankId, name: "Chase", providerType: .bank)
+    public static func hdfc() -> Bank {
+        Bank(id: hdfcId, bank: .hdfc)
     }
 
     public static func amex() -> Bank {
-        Bank(
-            id: UUID(uuidString: "00000000-0000-0000-0000-0000000000A1")!,
-            name: "American Express",
-            providerType: .credit
-        )
+        Bank(id: amexId, bank: .amex)
     }
 
     public static var all: [Bank] {
-        [chase(), amex()]
+        [hdfc(), amex()]
     }
 }

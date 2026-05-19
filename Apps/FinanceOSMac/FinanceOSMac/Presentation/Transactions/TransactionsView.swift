@@ -62,7 +62,10 @@ struct TransactionsView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 12) {
-                            ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { date, transactions in
+                            ForEach(
+                                groupedTransactions.sorted(by: { $0.key > $1.key }),
+                                id: \.key
+                            ) { date, transactions in
                                 sectionHeader(date)
                                 VStack(spacing: 8) {
                                     ForEach(transactions, id: \.id) { txn in

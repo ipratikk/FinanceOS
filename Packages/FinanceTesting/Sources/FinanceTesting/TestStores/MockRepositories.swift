@@ -41,7 +41,25 @@ public final class MockLedgerRepository: LedgerRepository, @unchecked Sendable {
 
     public func updateClosingBalance(id: UUID, balance: Int64, asOf: Date) async throws {
         if let idx = ledgers.firstIndex(where: { $0.id == id }) {
-            ledgers[idx].closingBalance = balance
+            var updated = ledgers[idx]
+            ledgers[idx] = Ledger(
+                id: updated.id,
+                bankId: updated.bankId,
+                kind: updated.kind,
+                displayName: updated.displayName,
+                last4: updated.last4,
+                nickname: updated.nickname,
+                ownerName: updated.ownerName,
+                createdAt: updated.createdAt,
+                accountType: updated.accountType,
+                cardType: updated.cardType,
+                cardProduct: updated.cardProduct,
+                bin: updated.bin,
+                linkedLedgerId: updated.linkedLedgerId,
+                isArchived: updated.isArchived,
+                closingBalance: balance,
+                closingBalanceAsOf: asOf
+            )
         }
     }
 
