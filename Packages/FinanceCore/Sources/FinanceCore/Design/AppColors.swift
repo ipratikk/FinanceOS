@@ -20,20 +20,21 @@ public enum AppColors {
     public static let glass = Color.white.opacity(0.02) // minimal tint
     public static let borderGlass = Color.white.opacity(0.08) // flat border
 
-    // MARK: - Primary Accents
+    // MARK: - Primary Accents (Apple System Colors)
 
-    public static let accentGreen = Color(red: 0.204, green: 0.784, blue: 0.349) // #34C759 — Primary accent
-    public static let accentBlue = Color(red: 0.039, green: 0.518, blue: 1.0) // #0A84FF — Secondary accent
-    public static let accentPurple = Color(red: 0.369, green: 0.361, blue: 0.902) // #5E5CE6 — Tertiary accent
-    public static let accentGold = accentGreen // Mapped for compatibility
-    public static let accentSlate = accentGreen // Mapped for compatibility
+    public static let accentGreen = Color(red: 0.188, green: 0.827, blue: 0.345) // #30D158 — Emerald (primary)
+    public static let accentOrange = Color(red: 1.0, green: 0.62, blue: 0.04) // #FF9F0A — Gold (secondary)
+    public static let accentBlue = Color(red: 0.039, green: 0.518, blue: 1.0) // #0A84FF — Cobalt
+    public static let accentPurple = Color(red: 0.749, green: 0.345, blue: 0.949) // #BF5AF2 — Plum
+    public static let accentGold = accentOrange // Mapped for compatibility
+    public static let accentSlate = accentBlue // Mapped for compatibility
     public static let accentIce = accentBlue // Mapped for compatibility
     public static let accentMuted = Color(red: 0.557, green: 0.557, blue: 0.576) // #8E8E93 — muted gray
 
-    // MARK: - Semantic Colors
+    // MARK: - Semantic Colors (Apple System)
 
-    public static let accent = accentGreen // Default primary accent — bright green
-    public static let success = accentGreen // Positive transaction
+    public static let accent = accentGreen // Default primary accent — emerald green
+    public static let success = Color(red: 0.188, green: 0.827, blue: 0.345) // #30D158 — Apple Green
     public static let danger = Color(red: 1.0, green: 0.231, blue: 0.188) // #FF3B30 — Apple Red
     public static let info = accentBlue // Informational color
     public static let warning = Color(red: 1.0, green: 0.584, blue: 0) // #FF9500 — Apple Orange
@@ -51,7 +52,6 @@ public enum AppColors {
     public static let accentPurpleDeprecated = accentPurple // Replaced
     public static let accentPink = danger // Replaced
     public static let accentLime = success // Replaced
-    public static let accentOrange = warning // Replaced
 
     // MARK: - Text (Apple System)
 
