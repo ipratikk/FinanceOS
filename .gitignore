@@ -63,3 +63,4 @@ skills-lock.json
 .claude/logs/
 .claude/plans/
 .claude/worktrees/
+graphify-out/
