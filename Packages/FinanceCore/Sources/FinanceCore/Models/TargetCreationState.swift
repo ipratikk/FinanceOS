@@ -20,7 +20,9 @@ public struct TargetCreationState: Identifiable, Equatable {
 
     public mutating func initializeFromStatement(_ statement: ParsedStatement) {
         last4 = isCard ? (statement.cardLast4 ?? "") : (statement.accountLast4 ?? "")
-        maskedCardNumber = isCard ? (statement.metadata?.fullAccountNumber ?? "") : ""
+        let maskedCard = isCard ? (statement.metadata?.fullAccountNumber ?? "") : ""
+        maskedCardNumber = maskedCard
+        encryptedCardNumber = maskedCard
 
         ownerName = statement.metadata?.customerName ?? ""
 
