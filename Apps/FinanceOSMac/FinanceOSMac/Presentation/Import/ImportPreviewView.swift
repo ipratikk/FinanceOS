@@ -61,17 +61,17 @@ struct ImportPreviewView: View {
 
             Divider()
 
-            VStack(spacing: 0) {
-                // New Transactions Section
-                if !importedTransactions.isEmpty {
-                    sectionHeader(
-                        title: "New Transactions",
-                        badgeCount: importedTransactions.count,
-                        onViewAllToggle: { importedExpanded.toggle() }
-                    )
-                    Divider()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    // New Transactions Section
+                    if !importedTransactions.isEmpty {
+                        sectionHeader(
+                            title: "New Transactions",
+                            badgeCount: importedTransactions.count,
+                            onViewAllToggle: { importedExpanded.toggle() }
+                        )
+                        Divider()
 
-                    ScrollView {
                         ImportTransactionListView(
                             transactions: importedTransactions,
                             duplicateIndices: [],
@@ -81,22 +81,21 @@ struct ImportPreviewView: View {
                         )
                         .padding(AppSpacing.lg)
                     }
-                }
 
-                // Already Imported Section
-                if !duplicateTransactions.isEmpty {
-                    if !importedTransactions.isEmpty {
+                    // Already Imported Section
+                    if !duplicateTransactions.isEmpty {
+                        if !importedTransactions.isEmpty {
+                            Divider()
+                                .padding(.vertical, AppSpacing.md)
+                        }
+
+                        sectionHeader(
+                            title: "Already imported",
+                            badgeCount: duplicateTransactions.count,
+                            onViewAllToggle: { duplicatesExpanded.toggle() }
+                        )
                         Divider()
-                    }
 
-                    sectionHeader(
-                        title: "Already imported",
-                        badgeCount: duplicateTransactions.count,
-                        onViewAllToggle: { duplicatesExpanded.toggle() }
-                    )
-                    Divider()
-
-                    ScrollView {
                         ImportTransactionListView(
                             transactions: duplicateTransactions,
                             duplicateIndices: Set(0 ..< duplicateTransactions.count),
