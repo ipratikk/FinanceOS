@@ -8,6 +8,8 @@ struct ImportPreviewView: View {
 
     @State private var isShowingCreationSheet = false
     @State private var sheetCreationState = TargetCreationState()
+    @State private var importedExpanded = false
+    @State private var duplicatesExpanded = false
     @State private var transactionListStyle: ImportTransactionListView.Style = .table
 
     var body: some View {
@@ -59,30 +61,30 @@ struct ImportPreviewView: View {
 
             Divider()
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    if !importedTransactions.isEmpty {
-                        ImportTransactionListView(
-                            transactions: importedTransactions,
-                            duplicateIndices: [],
-                            style: transactionListStyle,
-                            scrollable: false,
-                            rowLimit: nil
-                        )
-                    }
-
-                    if !duplicateTransactions.isEmpty {
-                        ImportTransactionListView(
-                            transactions: duplicateTransactions,
-                            duplicateIndices: Set(0 ..< duplicateTransactions.count),
-                            style: transactionListStyle,
-                            scrollable: false,
-                            rowLimit: nil
-                        )
-                    }
+            VStack(alignment: .leading, spacing: 16) {
+                if !importedTransactions.isEmpty {
+                    ImportTransactionSection(
+                        title: "New Transactions",
+                        badgeCount: importedTransactions.count,
+                        transactions: importedTransactions,
+                        duplicateIndices: [],
+                        style: $transactionListStyle,
+                        isExpanded: $importedExpanded
+                    )
                 }
-                .padding(AppSpacing.lg)
+
+                if !duplicateTransactions.isEmpty {
+                    ImportTransactionSection(
+                        title: "Already imported",
+                        badgeCount: duplicateTransactions.count,
+                        transactions: duplicateTransactions,
+                        duplicateIndices: Set(0 ..< duplicateTransactions.count),
+                        style: $transactionListStyle,
+                        isExpanded: $duplicatesExpanded
+                    )
+                }
             }
+            .padding(AppSpacing.lg)
 
             confirmBar
         }
