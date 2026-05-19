@@ -109,7 +109,54 @@ extension ImportPreviewView {
         let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
         return ImportTransactionListView(
             transactions: allTransactions,
-            duplicateIndices: viewModel.duplicateTransactionIndices
+            duplicateIndices: viewModel.duplicateTransactionIndices,
+            style: transactionListStyle
+        )
+    }
+
+    var confirmBar: some View {
+        let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
+        let newCount = allTransactions.count - viewModel.duplicateTransactionIndices.count
+        let dupCount = viewModel.duplicateTransactionIndices.count
+
+        return HStack(spacing: AppSpacing.md) {
+            Text("\(newCount) new · \(dupCount) duplicate")
+                .font(AppTypography.labelSmall)
+                .foregroundColor(DesignTokens.Text.secondary)
+
+            Spacer()
+
+            Button(action: { viewModel.backToUpload() }) {
+                Text("Cancel")
+                    .font(AppTypography.labelMedium)
+                    .foregroundColor(DesignTokens.Text.primary)
+                    .padding(.horizontal, AppSpacing.md)
+                    .padding(.vertical, AppSpacing.sm)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppRadius.sm)
+                            .stroke(DesignTokens.Text.secondary.opacity(0.3), lineWidth: 1)
+                    )
+            }
+            .buttonStyle(.plain)
+
+            Button(action: { viewModel.importTransactions() }) {
+                Text("Import \(newCount) transaction\(newCount == 1 ? "" : "s")")
+                    .font(AppTypography.labelMedium)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, AppSpacing.md)
+                    .padding(.vertical, AppSpacing.sm)
+                    .background(newCount > 0 ? AppColors.accent : Color.gray)
+                    .cornerRadius(AppRadius.sm)
+            }
+            .buttonStyle(.plain)
+            .disabled(newCount == 0 || viewModel.selectedTarget == nil)
+        }
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.vertical, AppSpacing.md)
+        .background(DesignTokens.Background.surfaceGlass)
+        .overlay(
+            Divider(),
+            alignment: .top
         )
     }
 }

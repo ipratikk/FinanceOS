@@ -1,12 +1,13 @@
+import FinanceCore
 import SwiftUI
 
 /// Liquid Glass button with multiple variants.
 ///
 /// Variants:
-/// - `.primary` — emerald fill with gleam edge
-/// - `.ghost` — glass pill, primary text
-/// - `.danger` — red-tinted glass pill
-/// - `.link` — bare accent text with hover pill
+/// - `.primary` — emerald fill (AppColors.accentGreen) with gleam edge
+/// - `.ghost`   — .regularMaterial glass pill, primary text
+/// - `.danger`  — DesignTokens.Semantic.danger-tinted glass pill
+/// - `.link`    — bare AppColors.accent text with hover pill
 public struct FDSLiquidButton: View {
     let title: String
     let symbol: String?
@@ -42,20 +43,20 @@ public struct FDSLiquidButton: View {
                 Text(title)
                     .font(.system(size: 13, weight: .semibold))
             }
-            .foregroundColor(foreground)
+            .foregroundColor(foregroundColor)
             .padding(.horizontal, variant == .link ? 0 : 12)
             .padding(.vertical, variant == .link ? 0 : 8)
             .background {
                 if variant != .link {
-                    background
+                    buttonBackground
                 }
             }
             .scaleEffect(isPressed ? 0.97 : 1.0)
         }
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
-        .animation(.easeOut(duration: 0.12), value: isHovered)
-        .animation(.easeInOut(duration: 0.18), value: isPressed)
+        .animation(AppAnimation.hover, value: isHovered)
+        .animation(AppAnimation.easeFast, value: isPressed)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in isPressed = true }
@@ -63,69 +64,76 @@ public struct FDSLiquidButton: View {
         )
     }
 
+    // MARK: - Background
+
+    //
+    // primary  — AppColors.accentGreen solid capsule with glass gleam border
+    // ghost    — .regularMaterial capsule with glass tint and gleam border
+    // danger   — DesignTokens.Semantic.danger at 18% opacity
+    // link     — no background
+
     @ViewBuilder
-    private var background: some View {
+    private var buttonBackground: some View {
         switch variant {
         case .primary:
             Capsule()
-                .fill(Color(red: 0.188, green: 0.827, blue: 0.345))
+                .fill(AppColors.accentGreen)
                 .overlay {
                     Capsule()
-                        .strokeBorder(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.16),
-                                    Color.white.opacity(0.06),
-                                    .clear,
-                                    Color.black.opacity(0.20)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
-                            lineWidth: 1
-                        )
+                        .strokeBorder(gleamGradient, lineWidth: 1)
                 }
         case .ghost:
             Capsule()
                 .fill(.regularMaterial)
                 .overlay {
                     Capsule()
-                        .fill(Color.white.opacity(0.06))
+                        .fill(DesignTokens.Background.surfaceGlass)
                 }
                 .overlay {
                     Capsule()
-                        .strokeBorder(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.16),
-                                    Color.white.opacity(0.06),
-                                    .clear,
-                                    Color.black.opacity(0.20)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
-                            lineWidth: 1
-                        )
+                        .strokeBorder(gleamGradient, lineWidth: 1)
                 }
         case .danger:
             Capsule()
-                .fill(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.18))
+                .fill(AppColors.danger.opacity(0.18))
         case .link:
             EmptyView()
         }
     }
 
-    private var foreground: Color {
+    // MARK: - Foreground Colors
+
+    //
+    // primary  — near-black text on bright green fill
+    // ghost    — DesignTokens.Text.primary (near-white)
+    // danger   — AppColors.danger (red)
+    // link     — AppColors.accent (emerald)
+
+    private var foregroundColor: Color {
         switch variant {
         case .primary:
-            Color(red: 0.1, green: 0.1, blue: 0.11)
+            return Color(red: 0.1, green: 0.1, blue: 0.11)
         case .ghost:
-            Color(red: 0.945, green: 0.953, blue: 0.965)
+            return DesignTokens.Text.primary
         case .danger:
-            Color(red: 1.0, green: 0.27, blue: 0.23)
+            return AppColors.danger
         case .link:
-            Color(red: 0.188, green: 0.827, blue: 0.345)
+            return AppColors.accent
         }
+    }
+
+    // MARK: - Shared Gleam Border Gradient
+
+    private var gleamGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                DesignTokens.Edge.topGleam,
+                DesignTokens.Edge.topGleamMid,
+                .clear,
+                DesignTokens.Edge.bottomShadow
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 }

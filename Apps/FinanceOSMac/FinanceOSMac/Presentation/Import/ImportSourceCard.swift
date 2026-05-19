@@ -1,0 +1,112 @@
+import FinanceCore
+import FinanceParsers
+import FinanceUI
+import SwiftUI
+
+struct ImportSourceCard: View {
+    let source: StatementSource
+    let matchedBank: Banks?
+    let isSelected: Bool
+    let onSelect: (StatementSource) -> Void
+
+    private var formatLabel: String {
+        source.allowedFormats
+            .map { $0.rawValue.uppercased() }
+            .joined(separator: " · ")
+    }
+
+    var body: some View {
+        Button(action: { onSelect(source) }) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 12) {
+                    bankLogoView
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(source.bankName)
+                            .font(AppTypography.bodyMd)
+                            .foregroundColor(DesignTokens.Text.primary)
+
+                        Text(source.sourceType.rawValue)
+                            .font(AppTypography.labelSmall)
+                            .foregroundColor(DesignTokens.Text.tertiary)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(DesignTokens.Text.secondary)
+                }
+
+                Text(formatLabel)
+                    .font(AppTypography.labelSmall)
+                    .foregroundColor(DesignTokens.Text.quaternary)
+            }
+            .padding(AppSpacing.md)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                isSelected
+                    ? AppColors.accent.opacity(0.1)
+                    : DesignTokens.Background.surfaceGlass
+            )
+            .cornerRadius(AppRadius.md)
+            .overlay(
+                RoundedRectangle(cornerRadius: AppRadius.md)
+                    .strokeBorder(
+                        isSelected ? AppColors.accent : DesignTokens.Border.subtle,
+                        lineWidth: 1
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+        .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var bankLogoView: some View {
+        if let bank = matchedBank {
+            RoundedRectangle(cornerRadius: AppRadius.sm)
+                .fill(bank.tintColor.opacity(0.2))
+                .frame(width: 40, height: 40)
+                .overlay(
+                    Text(bank.shortCode)
+                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .foregroundColor(bank.tintColor)
+                )
+        } else {
+            RoundedRectangle(cornerRadius: AppRadius.sm)
+                .fill(DesignTokens.Background.surfaceGlass)
+                .frame(width: 40, height: 40)
+                .overlay(
+                    Image(systemName: "building.columns")
+                        .font(.system(size: 16))
+                        .foregroundColor(DesignTokens.Text.tertiary)
+                )
+        }
+    }
+}
+
+#Preview {
+    VStack(spacing: 12) {
+        ImportSourceCard(
+            source: .hdfcBank,
+            matchedBank: .hdfc,
+            isSelected: false,
+            onSelect: { _ in }
+        )
+        ImportSourceCard(
+            source: .hdfcCard,
+            matchedBank: .hdfc,
+            isSelected: true,
+            onSelect: { _ in }
+        )
+        ImportSourceCard(
+            source: .amex,
+            matchedBank: .amex,
+            isSelected: false,
+            onSelect: { _ in }
+        )
+    }
+    .padding()
+    .background(AppColors.base)
+}

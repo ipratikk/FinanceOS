@@ -49,8 +49,8 @@ struct DashboardView: View {
                 ProgressView()
                     .controlSize(.small)
                 Text("Loading…")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .font(AppTypography.captionSmMedium)
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
@@ -66,12 +66,12 @@ struct DashboardView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Overview")
-                .font(.system(size: 30, weight: .semibold))
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                .font(DesignTokens.Typography.screenTitle)
+                .foregroundColor(DesignTokens.Text.primary)
             Text(currentMonth)
-                .font(.system(size: 12, weight: .medium))
+                .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                .foregroundColor(DesignTokens.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -81,37 +81,25 @@ struct DashboardView: View {
         return FDSCard(cornerRadius: 18, padded: false) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Net Flow This Month")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(AppTypography.captionLgMedium)
                     .tracking(0.3)
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .foregroundColor(DesignTokens.Text.secondary)
 
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     Text(formatAmount(net))
-                        .font(.system(size: 48, weight: .semibold, design: .default))
+                        .netHeroAmount()
                         .monospacedDigit()
-                        .foregroundColor(net >= 0 ? Color(red: 0.19, green: 0.82, blue: 0.35) : Color(
-                            red: 1.0,
-                            green: 0.27,
-                            blue: 0.23
-                        ))
+                        .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
                         .contentTransition(.numericText())
 
                     VStack(alignment: .leading, spacing: 2) {
                         Image(systemName: net >= 0 ? "arrow.up.right" : "arrow.down.right")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(net >= 0 ? Color(red: 0.19, green: 0.82, blue: 0.35) : Color(
-                                red: 1.0,
-                                green: 0.27,
-                                blue: 0.23
-                            ))
+                            .font(AppTypography.captionLgSemibold)
+                            .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
 
                         Text(net >= 0 ? "Positive" : "Negative")
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundColor(net >= 0 ? Color(red: 0.19, green: 0.82, blue: 0.35) : Color(
-                                red: 1.0,
-                                green: 0.27,
-                                blue: 0.23
-                            ))
+                            .font(AppTypography.captionSmMedium)
+                            .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
                     }
                 }
             }
@@ -125,21 +113,21 @@ struct DashboardView: View {
                 "Income",
                 value: formatAmount(totals.totalCredit),
                 symbol: "arrow.down.left.circle.fill",
-                color: Color(red: 0.19, green: 0.82, blue: 0.35)
+                color: AppColors.success
             )
 
             metricCard(
                 "Spending",
                 value: formatAmount(totals.totalDebit),
                 symbol: "arrow.up.right.circle.fill",
-                color: Color(red: 1.0, green: 0.27, blue: 0.23)
+                color: AppColors.danger
             )
 
             metricCard(
                 "Transactions",
                 value: "\(totals.transactionCount)",
                 symbol: "list.bullet",
-                color: Color(red: 0.518, green: 0.541, blue: 0.580)
+                color: DesignTokens.Text.tertiary
             )
         }
     }
@@ -149,17 +137,17 @@ struct DashboardView: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 6) {
                     Image(systemName: symbol)
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(AppTypography.captionLgSemibold)
                         .foregroundColor(color.opacity(0.6))
 
                     Text(label.uppercased())
-                        .font(.system(size: 10, weight: .semibold))
+                        .font(AppTypography.captionSmSemibold)
                         .tracking(0.2)
-                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                        .foregroundColor(DesignTokens.Text.secondary)
                 }
 
                 Text(value)
-                    .font(.system(size: 16, weight: .semibold, design: .default))
+                    .font(AppTypography.headingSmall)
                     .monospacedDigit()
                     .foregroundColor(color)
             }
@@ -172,11 +160,11 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("6-Month Trend")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    .font(AppTypography.headingSmall)
+                    .foregroundColor(DesignTokens.Text.primary)
                 Text("Inflows vs outflows over time")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .font(AppTypography.captionLgMedium)
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -192,17 +180,17 @@ struct DashboardView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Recent Activity")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                        .font(AppTypography.headingSmall)
+                        .foregroundColor(DesignTokens.Text.primary)
                     Text("Last 6 transactions")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                        .font(AppTypography.captionLgMedium)
+                        .foregroundColor(DesignTokens.Text.secondary)
                 }
                 Spacer()
                 Button(action: { navigator.navigate(to: .transactions) }) {
                     Text("View All →")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(Color(red: 1.0, green: 0.62, blue: 0.04))
+                        .font(AppTypography.captionLgSemibold)
+                        .foregroundColor(AppColors.accentOrange)
                 }
                 .help("View all transactions")
             }

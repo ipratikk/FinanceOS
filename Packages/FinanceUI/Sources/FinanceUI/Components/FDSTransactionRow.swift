@@ -1,15 +1,16 @@
 import FinanceCore
 import SwiftUI
 
-/// Visual-first transaction row.
+/// Transaction row cell with merchant logo, running balance, and account chip.
+/// Designed for list and custom containers.
 ///
 /// Layout:
 /// ```
 /// [merchant avatar]  Merchant Name             ₹65.43
-///                    Category · 12:30 PM     [Chip]
+///                    Category · 12:30 PM     [Chip / Balance]
 /// ```
 ///
-/// Replaces text-heavy old TransactionRowView. Information-dense,
+/// Replaces text-heavy TransactionRowView. Information-dense,
 /// scannable, logo/symbol-driven.
 public struct FDSTransactionRow: View {
     let merchant: String
@@ -20,6 +21,7 @@ public struct FDSTransactionRow: View {
     let isDebit: Bool
     let accountChip: AccountChipData?
     let runningBalance: String?
+    let onTap: (() -> Void)?
 
     public struct AccountChipData {
         public let bankName: String
@@ -41,7 +43,8 @@ public struct FDSTransactionRow: View {
         amount: String,
         isDebit: Bool,
         accountChip: AccountChipData? = nil,
-        runningBalance: String? = nil
+        runningBalance: String? = nil,
+        onTap: (() -> Void)? = nil
     ) {
         self.merchant = merchant
         self.categorySymbol = categorySymbol
@@ -51,9 +54,18 @@ public struct FDSTransactionRow: View {
         self.isDebit = isDebit
         self.accountChip = accountChip
         self.runningBalance = runningBalance
+        self.onTap = onTap
     }
 
     public var body: some View {
+        Button(action: { onTap?() }) {
+            rowContent
+        }
+        .buttonStyle(.plain)
+        .disabled(onTap == nil)
+    }
+
+    private var rowContent: some View {
         HStack(spacing: AppSpacing.md) {
             FDSMerchantAvatar(
                 name: merchant,
@@ -64,12 +76,12 @@ public struct FDSTransactionRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(merchant)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(DesignTokens.Typography.txnRow)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
                 Text(subtitle)
-                    .font(.system(size: 11, weight: .regular))
+                    .font(DesignTokens.Typography.caption)
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
             }
@@ -78,20 +90,20 @@ public struct FDSTransactionRow: View {
 
             VStack(alignment: .trailing, spacing: 2) {
                 Text(amount)
-                    .font(.system(size: 13, weight: .semibold).monospacedDigit())
+                    .font(DesignTokens.Typography.txnRow.monospacedDigit())
                     .foregroundStyle(isDebit ? AppColors.debit : AppColors.credit)
                     .lineLimit(1)
 
                 if let balance = runningBalance {
                     Text(balance)
-                        .font(.system(size: 10, weight: .regular).monospacedDigit())
+                        .font(DesignTokens.Typography.caption.monospacedDigit())
                         .foregroundStyle(.tertiary)
                 } else if let chip = accountChip {
                     HStack(spacing: 3) {
                         Text(chip.bankName)
-                            .font(.system(size: 10, weight: .medium))
+                            .font(DesignTokens.Typography.label)
                         Text("· \(chip.last4)")
-                            .font(.system(size: 10, weight: .regular).monospacedDigit())
+                            .font(DesignTokens.Typography.caption.monospacedDigit())
                     }
                     .foregroundStyle(.tertiary)
                 }

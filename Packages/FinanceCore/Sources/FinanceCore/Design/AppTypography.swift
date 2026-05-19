@@ -62,6 +62,11 @@ public enum AppTypography {
     public static let iconMd = Font.system(size: 16)
     public static let iconSm = Font.system(size: 14)
     public static let iconXs = Font.system(size: 12)
+
+    // MARK: - Specialized
+
+    public static let netHeroAmount: Font = .system(size: 48, weight: .semibold)
+    public static let maskedAccount: Font = .system(size: 10, weight: .regular, design: .monospaced)
 }
 
 // MARK: - View Extension Modifiers

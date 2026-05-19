@@ -9,6 +9,15 @@ let logger = FinanceLogger.importPipeline
 @MainActor
 @Observable
 final class ImportViewModel {
+    enum Step: Int, Equatable {
+        case source = 0
+        case upload = 1
+        case review = 2
+    }
+
+    private(set) var currentStep: Step = .source
+    var isDraggedOver: Bool = false
+
     let importSession: ImportSession
     let transactionImportPipeline: TransactionImportPipeline
     let bankRepository: any BankRepository
@@ -105,6 +114,11 @@ final class ImportViewModel {
             .info("Source changed to \(source?.displayName ?? "none", privacy: .public), cleared files and statements")
     }
 
+    func parseFiles(_ urls: [URL]) {
+        setFileURLs(urls)
+        parseFiles()
+    }
+
     func parseFiles() {
         logger.info("parseFiles() called, scheduling Task")
         Task {
@@ -146,6 +160,8 @@ final class ImportViewModel {
             importSession.parsedStatements = statements
             await loadTargetsOnAppear()
             await autoSelectMatchingTarget()
+            // Auto-advance to review step after successful parse
+            currentStep = .review
             importSession.isLoading = false
             currentFileIndex = 0
             totalFilesToParse = 0

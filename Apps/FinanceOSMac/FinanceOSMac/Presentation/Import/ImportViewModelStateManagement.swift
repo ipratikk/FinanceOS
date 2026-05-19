@@ -262,4 +262,27 @@ extension ImportViewModel {
         banks = []
         duplicateTransactionIndices = []
     }
+
+    // MARK: - Step Navigation
+
+    func selectSourceAndAdvance(_ source: StatementSource) {
+        setSource(source)
+        currentStep = .upload
+    }
+
+    func advanceToReview() {
+        currentStep = .review
+    }
+
+    func resetToSource() {
+        reset()
+        currentStep = .source
+    }
+
+    func backToUpload() {
+        parsedStatements = []
+        selectedTarget = nil
+        duplicateTransactionIndices = []
+        currentStep = .upload
+    }
 }

@@ -32,7 +32,7 @@ struct SidebarView: View {
 
             footerImport
         }
-        .frame(minWidth: 232, idealWidth: 232, maxWidth: 240)
+        .frame(minWidth: DesignTokens.Layout.sidebarWidth, idealWidth: DesignTokens.Layout.sidebarWidth, maxWidth: 240)
         .background(.regularMaterial)
         .colorScheme(.dark)
     }
@@ -175,5 +175,5 @@ private struct Triangle: Shape {
 #Preview {
     SidebarView()
         .environment(AppNavigator())
-        .frame(width: 232, height: 600)
+        .frame(width: DesignTokens.Layout.sidebarWidth, height: 600)
 }

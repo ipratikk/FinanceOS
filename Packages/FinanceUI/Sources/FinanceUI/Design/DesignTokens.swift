@@ -1,8 +1,32 @@
+import FinanceCore
 import SwiftUI
 
 // MARK: - Design Tokens — macOS Tahoe Liquid Glass
 
+//
+// Canonical token hierarchy:
+//   App* (FinanceCore) — spacing, radius, animation, shadow, color
+//   DesignTokens       — FinanceUI-specific semantic color, typography,
+//                        glass surfaces, elevation, density, and layout.
+//
+// Views should use AppSpacing, AppRadius, AppAnimation, AppShadows directly.
+// DesignTokens.Spacing / .Radius / .Animation / .Shadow are thin facade
+// typealiases pointing to the App* canonical values.
+//
+// Do NOT add new spacing/radius/animation values here; extend App* in FinanceCore.
+
 public enum DesignTokens {
+    // MARK: - Re-exported App* Tokens (canonical from FinanceCore)
+
+    /// Use AppSpacing directly. This typealias keeps DesignTokens-qualified call sites compiling.
+    public typealias Spacing = AppSpacing
+    /// Use AppRadius directly. This typealias keeps DesignTokens-qualified call sites compiling.
+    public typealias Radius = AppRadius
+    /// Use AppAnimation directly. This typealias keeps DesignTokens-qualified call sites compiling.
+    public typealias Animation = AppAnimation
+    /// Use AppShadows directly. This typealias keeps DesignTokens-qualified call sites compiling.
+    public typealias Shadow = AppShadows
+
     // MARK: - Wallpaper & Backgrounds (Liquid Glass)
 
     public enum Background {
@@ -15,7 +39,11 @@ public enum DesignTokens {
         /// white 4% — inset rows, sheet hero
         public static let surfaceGlassThin = Color.white.opacity(0.04)
         /// chrome glass for sidebar/toolbar
-        public static let chromeGlass = Color(red: 20 / 255, green: 22 / 255, blue: 30 / 255).opacity(0.65)
+        public static let chromeGlass = Color(
+            red: 20 / 255,
+            green: 22 / 255,
+            blue: 30 / 255
+        ).opacity(0.65)
         /// black 25% — text input / select backgrounds (recessed)
         public static let inputWell = Color.black.opacity(0.25)
     }
@@ -37,22 +65,30 @@ public enum DesignTokens {
         public static let gray = Color(red: 0.60, green: 0.60, blue: 0.62) // #98989D
     }
 
-    // MARK: - Semantic
+    // MARK: - Semantic Colors
+
+    //
+    // `success` = credit/green, `error` = debit/danger/red.
+    // Use these for status badges, state indicators, and feedback UI.
+    // For transaction amounts use AppColors.credit / AppColors.debit directly.
 
     public enum Semantic {
-        /// System.green — positive amounts, success states
-        public static let credit = System.green
-        /// System.red — negative amounts, debits
-        public static let debit = System.red
-        /// System.red — destructive actions
-        public static let danger = System.red
-        /// System.orange — caution states
-        public static let warning = System.orange
-        /// System.blue — informational
-        public static let info = System.blue
-        /// User-tweakable accent (default: System.orange)
-        /// Can be overridden to System.blue (cobalt), System.purple (plum), System.green (emerald)
-        public static let accent = System.orange
+        /// AppColors.credit — positive amounts, success states (System green)
+        public static let credit = AppColors.credit
+        /// AppColors.debit — negative amounts (System red)
+        public static let debit = AppColors.debit
+        /// AppColors.danger — destructive actions (System red)
+        public static let danger = AppColors.danger
+        /// AppColors.warning — caution states (#FF9500)
+        public static let warning = AppColors.warning
+        /// AppColors.info — informational (#0A84FF)
+        public static let info = AppColors.info
+        /// User-tweakable accent (default: AppColors.accentGreen)
+        public static let accent = AppColors.accent
+        /// AppColors.success — maps to System green. Use for success badges, confirmations.
+        public static let success = AppColors.success
+        /// AppColors.danger — maps to System red. Use for error badges, validation failures.
+        public static let error = AppColors.danger
     }
 
     // MARK: - Text
@@ -88,31 +124,11 @@ public enum DesignTokens {
         public static let bottomShadow = Color.black.opacity(0.20)
     }
 
-    // MARK: - Spacing (8pt grid)
-
-    public enum Spacing {
-        public static let xs: CGFloat = 4
-        public static let sm: CGFloat = 8
-        public static let md: CGFloat = 12
-        public static let lg: CGFloat = 16
-        public static let xl: CGFloat = 24
-        public static let xl2: CGFloat = 32
-        public static let xl3: CGFloat = 48
-    }
-
-    // MARK: - Corner Radius (concentric)
-
-    public enum Radius {
-        public static let xs: CGFloat = 6 // Chips, inputs
-        public static let sm: CGFloat = 9 // Sidebar items, small buttons
-        public static let md: CGFloat = 12 // Tiles, secondary cards
-        public static let card: CGFloat = 18 // Standard cards
-        public static let hero: CGFloat = 22 // Hero surfaces (dashboard net flow, ledger detail)
-        public static let sheet: CGFloat = 20 // Modal sheets
-        public static let capsule: CGFloat = .infinity // Pills, chips, buttons, search inputs
-    }
-
     // MARK: - Typography
+
+    //
+    // Views should prefer AppTypography View extensions (.bodyLarge(), .caption() etc.)
+    // These statics are kept for components that need raw Font values.
 
     public enum Typography {
         /// Display/Hero amounts
@@ -141,29 +157,55 @@ public enum DesignTokens {
         public static let caption = Font.system(size: 11.5, weight: .regular, design: .default)
     }
 
-    // MARK: - Materials
+    // MARK: - Elevation (Shadow Lift Tiers)
 
-    public enum Material {
-        /// .regularMaterial — cards, pills, chips, buttons
-        public static let glass: SwiftUI.Material = .regularMaterial
-        /// .thickMaterial — sheets, menus
-        public static let glassThick: SwiftUI.Material = .thickMaterial
-        /// .thinMaterial — lightweight surfaces
-        public static let glassThin: SwiftUI.Material = .thinMaterial
-        /// chrome for sidebar/toolbar (regularMaterial with overlay)
-        public static let chrome: SwiftUI.Material = .regularMaterial
+    //
+    // Three-level elevation system mapping to AppShadows.
+    // lift1 = subtle resting state, lift2 = hovered/active, lift3 = floating.
+
+    public enum Elevation {
+        /// Resting elevation — cards, rows (AppShadows.subtle)
+        public static let lift1 = AppShadows.subtle
+        /// Active / hovered elevation — cards on hover (AppShadows.standard)
+        public static let lift2 = AppShadows.standard
+        /// Floating elevation — popovers, menus (AppShadows.elevated)
+        public static let lift3 = AppShadows.elevated
     }
 
-    // MARK: - Motion
+    // MARK: - Density Modes
 
-    public enum Motion {
-        /// 120ms easeOut — hover transitions
-        public static let fast = SwiftUI.Animation.easeOut(duration: 0.12)
-        /// 180ms easeInOut — sheet appearance, default
-        public static let standard = SwiftUI.Animation.easeInOut(duration: 0.18)
-        /// spring — chip activations, toggles
-        public static let spring = SwiftUI.Animation.spring(response: 0.25, dampingFraction: 0.85)
-        /// cubic bezier — sheet pop-in
-        public static let sheetIn = SwiftUI.Animation.timingCurve(0.18, 0.70, 0.30, 1.0, duration: 0.22)
+    //
+    // Switch layouts between `standard` (default) and `compact` density.
+    // Each mode provides a complete spacing map.
+    // Usage: `DesignTokens.Density.compact.spacing.md`
+
+    public enum Density {
+        case standard
+        case compact
+
+        public var spacing: SpacingMap {
+            switch self {
+            case .standard:
+                return SpacingMap(xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32)
+            case .compact:
+                return SpacingMap(xs: 2, sm: 4, md: 8, lg: 12, xl: 16, xxl: 24)
+            }
+        }
+
+        public struct SpacingMap {
+            public let xs: CGFloat
+            public let sm: CGFloat
+            public let md: CGFloat
+            public let lg: CGFloat
+            public let xl: CGFloat
+            public let xxl: CGFloat
+        }
+    }
+
+    // MARK: - Layout Constants
+
+    public enum Layout {
+        /// Standard sidebar width (232pt). Replaces any hardcoded literal 232.
+        public static let sidebarWidth: CGFloat = 232
     }
 }

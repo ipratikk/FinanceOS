@@ -12,33 +12,30 @@ final class TransactionRowSnapshotTests: SnapshotTestable {
     }
 
     func test_transaction_row_debit() {
-        let view = TransactionRowView(
-            description: "Whole Foods Market",
+        let view = FDSTransactionRow(
+            merchant: "Whole Foods Market",
+            subtitle: "May 18 · Checking",
             amount: "$65.43",
-            date: "May 18",
-            source: "Checking",
             isDebit: true
         )
         verifyComponentSnapshots(view, size: CGSize(width: 390, height: 60))
     }
 
     func test_transaction_row_credit() {
-        let view = TransactionRowView(
-            description: "Salary Deposit",
+        let view = FDSTransactionRow(
+            merchant: "Salary Deposit",
+            subtitle: "May 18 · Checking",
             amount: "$5,000.00",
-            date: "May 18",
-            source: "Checking",
             isDebit: false
         )
         verifyComponentSnapshots(view, size: CGSize(width: 390, height: 60))
     }
 
     func test_transaction_row_long_description() {
-        let view = TransactionRowView(
-            description: "Amazon Marketplace Purchase Order #12345",
+        let view = FDSTransactionRow(
+            merchant: "Amazon Marketplace Purchase Order #12345",
+            subtitle: "May 18 · Amex Premium",
             amount: "$145.67",
-            date: "May 18",
-            source: "Amex Premium",
             isDebit: true
         )
         verifyComponentSnapshots(view, size: CGSize(width: 390, height: 60))

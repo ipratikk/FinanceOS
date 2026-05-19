@@ -41,7 +41,7 @@ public typealias Label = FLabel
 public typealias Card = FinanceCard
 public typealias Metric = MetricCard
 public typealias Glass = GlassPanel
-public typealias TransactionRow = TransactionRowView
+public typealias TransactionRow = FDSTransactionRow
 public typealias SearchBar = FinanceSearchBar
 public typealias Section = SectionHeader
 public typealias Empty = EmptyStateView
@@ -56,6 +56,9 @@ public typealias PickerVariant = FDSPickerVariant
 
 /// Credit Card Display
 public typealias CreditCardDisplay = FDSCreditCardDisplay
+
+/// Button
+public typealias FinanceButton = FDSLiquidButton
 
 /// Structural
 public typealias AvatarSize = FDSAvatarSize

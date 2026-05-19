@@ -42,17 +42,13 @@ struct SourcePickerSection: View {
                 .cornerRadius(AppRadius.sm)
             }
 
-            Picker("Source", selection: $selectedSource) {
-                Text("Select a bank...").tag(nil as StatementSource?)
-                ForEach(StatementSource.allCases, id: \.self) { source in
-                    Text(source.displayName).tag(Optional(source))
+            ImportSourceGrid(
+                sources: StatementSource.allCases,
+                selectedSource: selectedSource,
+                onSelectSource: { source in
+                    selectedSource = selectedSource == source ? nil : source
                 }
-            }
-            .pickerStyle(.menu)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(AppSpacing.xs)
-            .background(AppColors.surface2)
-            .cornerRadius(AppRadius.sm)
+            )
         }
         .padding(AppSpacing.sm)
         .background(AppColors.surface)

@@ -89,12 +89,12 @@ struct CardsView: View {
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Credit Cards")
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                .font(AppTypography.headingXL)
+                .foregroundColor(DesignTokens.Text.primary)
             Text("Manage and track your cards")
-                .font(.system(size: 12, weight: .medium))
+                .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                .foregroundColor(DesignTokens.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -120,21 +120,21 @@ struct CardsView: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    .font(AppTypography.bodySmSemibold)
+                    .foregroundColor(DesignTokens.Text.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
                     if let cardType = ledger.cardType {
                         Text(cardType.uppercased())
-                            .font(.system(size: 10, weight: .regular))
+                            .font(AppTypography.captionSmMedium)
                             .tracking(0.2)
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                            .foregroundColor(DesignTokens.Text.secondary)
                     }
                     if !ledger.last4.isEmpty {
                         Text("•••• \(ledger.last4)")
-                            .font(.system(size: 10, weight: .regular, design: .monospaced))
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                            .maskedAccount()
+                            .foregroundColor(DesignTokens.Text.secondary)
                     }
                 }
             }
@@ -148,18 +148,18 @@ struct CardsView: View {
         HStack(spacing: 12) {
             Spacer()
 
-            actionIconButton("plus", color: Color(red: 0.518, green: 0.541, blue: 0.580)) {
+            actionIconButton("plus", color: DesignTokens.Text.tertiary) {
                 let bank = viewModel.banks.first { $0.id == ledger.bankId }
                 navigator.pendingImportTarget = .ledger(ledger.id)
                 navigator.pendingImportSource = importSource(for: ledger, bank: bank)
                 navigator.navigate(to: .importStatement)
             }
 
-            actionIconButton("pencil", color: Color(red: 0.518, green: 0.541, blue: 0.580)) {
+            actionIconButton("pencil", color: DesignTokens.Text.tertiary) {
                 navigator.present(.cardEdit(ledger))
             }
 
-            actionIconButton("trash", color: Color(red: 1.0, green: 0.27, blue: 0.23)) {
+            actionIconButton("trash", color: AppColors.danger) {
                 cardPendingDelete = ledger
             }
         }
@@ -180,11 +180,11 @@ extension CardsView {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(bankName)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    .font(AppTypography.bodyMdSemibold)
+                    .foregroundColor(DesignTokens.Text.primary)
                 Text("\(rows.count) card\(rows.count == 1 ? "" : "s")")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .font(AppTypography.captionLgMedium)
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
 
             VStack(spacing: 4) {
@@ -223,7 +223,7 @@ extension CardsView {
     ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 12, weight: .semibold))
+                .font(AppTypography.captionLgSemibold)
                 .foregroundColor(color)
                 .frame(width: 28, height: 28)
                 .background(Circle().fill(color.opacity(0.15)))
@@ -248,15 +248,15 @@ extension CardsView {
     private var skeletonRow: some View {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 6)
-                .fill(Color.white.opacity(0.04))
+                .fill(DesignTokens.Background.surfaceGlassThin)
                 .frame(width: 56, height: 36)
             VStack(alignment: .leading, spacing: 4) {
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(Color.white.opacity(0.04))
+                    .fill(DesignTokens.Background.surfaceGlassThin)
                     .frame(height: 11)
                     .frame(maxWidth: 160)
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(Color.white.opacity(0.04))
+                    .fill(DesignTokens.Background.surfaceGlassThin)
                     .frame(height: 9)
                     .frame(maxWidth: 110)
             }
@@ -265,7 +265,7 @@ extension CardsView {
         .padding(12)
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color.white.opacity(0.06))
+                .fill(DesignTokens.Background.surfaceGlass)
         }
     }
 }

@@ -1,6 +1,7 @@
 @testable import FinanceOSMac
 import FinanceParsers
 import FinanceTesting
+import FinanceUI
 import SnapshotTesting
 import SwiftUI
 import XCTest
