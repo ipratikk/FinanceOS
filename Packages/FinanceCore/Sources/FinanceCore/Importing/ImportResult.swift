@@ -1,4 +1,4 @@
-public struct ImportResult: Sendable {
+public struct ImportResult: Sendable, Equatable {
     public let inserted: Int
     public let skipped: Int
 
