@@ -91,3 +91,11 @@ struct CardTransactionsDestinationView: View {
         isLoading = false
     }
 }
+
+struct LedgerDetailDestinationView: View {
+    let ledgerId: UUID
+
+    var body: some View {
+        LedgerDetailView(ledgerId: ledgerId)
+    }
+}

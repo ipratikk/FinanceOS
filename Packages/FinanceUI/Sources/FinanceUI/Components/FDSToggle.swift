@@ -8,7 +8,7 @@ public struct FDSToggle: View {
     @Binding var isOn: Bool
 
     public init(isOn: Binding<Bool>) {
-        self._isOn = isOn
+        _isOn = isOn
     }
 
     public var body: some View {
@@ -24,7 +24,7 @@ public struct FDSToggle: View {
                                         Color.white.opacity(0.16),
                                         Color.white.opacity(0.06),
                                         .clear,
-                                        Color.black.opacity(0.20),
+                                        Color.black.opacity(0.20)
                                     ],
                                     startPoint: .top,
                                     endPoint: .bottom
@@ -32,7 +32,7 @@ public struct FDSToggle: View {
                                 : LinearGradient(
                                     colors: [
                                         Color.white.opacity(0.0),
-                                        Color.white.opacity(0.0),
+                                        Color.white.opacity(0.0)
                                     ],
                                     startPoint: .top,
                                     endPoint: .bottom
@@ -55,7 +55,7 @@ public struct FDSToggle: View {
                                 LinearGradient(
                                     colors: [
                                         Color.white.opacity(0.30),
-                                        Color.black.opacity(0.10),
+                                        Color.black.opacity(0.10)
                                     ],
                                     startPoint: .top,
                                     endPoint: .bottom

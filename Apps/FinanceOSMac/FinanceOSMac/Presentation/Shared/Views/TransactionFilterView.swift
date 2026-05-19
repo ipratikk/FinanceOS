@@ -108,7 +108,7 @@ struct TransactionFilterView: View {
 
     private var footer: some View {
         HStack(spacing: AppSpacing.compact) {
-            FDSLiquidButton("Reset", symbol: "arrow.clockwise", variant: .subtle) {
+            FDSLiquidButton("Reset", symbol: "arrow.clockwise", variant: .ghost) {
                 listState.reset()
             }
             Spacer()

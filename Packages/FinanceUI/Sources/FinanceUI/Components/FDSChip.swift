@@ -48,7 +48,7 @@ public struct FDSChip: View {
                                                 Color.white.opacity(0.16),
                                                 Color.white.opacity(0.06),
                                                 .clear,
-                                                Color.black.opacity(0.20),
+                                                Color.black.opacity(0.20)
                                             ],
                                             startPoint: .top,
                                             endPoint: .bottom
@@ -71,7 +71,7 @@ public struct FDSChip: View {
                                                 Color.white.opacity(0.16),
                                                 Color.white.opacity(0.06),
                                                 .clear,
-                                                Color.black.opacity(0.20),
+                                                Color.black.opacity(0.20)
                                             ],
                                             startPoint: .top,
                                             endPoint: .bottom

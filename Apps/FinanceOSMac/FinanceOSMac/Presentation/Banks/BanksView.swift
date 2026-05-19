@@ -22,7 +22,7 @@ struct BanksView: View {
                 banksList
             }
         }
-        .background(AppColors.base)
+        .background(Color(red: 0.039, green: 0.047, blue: 0.067))
         .navigationTitle("Banks")
         .task { await viewModel.loadBanks() }
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
@@ -39,76 +39,81 @@ struct BanksView: View {
 
     private var banksList: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Banks")
-                        .font(AppTypography.headingLg)
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                     Text("Manage connected institutions")
-                        .font(AppTypography.labelMedium)
-                        .tracking(0.5)
-                        .foregroundStyle(.tertiary)
+                        .font(.system(size: 12, weight: .medium))
+                        .tracking(0.3)
+                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
-                .padding(.horizontal, AppSpacing.xl)
+                .padding(.horizontal, 32)
 
-                VStack(spacing: AppSpacing.md) {
+                VStack(spacing: 12) {
                     ForEach(viewModel.banks) { bank in
                         bankRow(bank)
                     }
                 }
-                .padding(.horizontal, AppSpacing.xl)
+                .padding(.horizontal, 32)
 
                 Spacer()
             }
-            .padding(.vertical, AppSpacing.xl)
+            .padding(.vertical, 24)
         }
     }
 
     private func bankRow(_ bank: Bank) -> some View {
         let ledgers = viewModel.ledgersByBank[bank.id] ?? []
-        return FDSCard {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
-                HStack(spacing: AppSpacing.lg) {
-                    FDSImage(
-                        imageName: bank.logoAssetName,
-                        fallbackSymbol: "building.columns.fill",
-                        height: 48,
-                        width: 100
-                    )
+        return FDSCard(cornerRadius: 12, padded: false) {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 16) {
+                    FDSBankMark(bank.bank)
+                        .frame(width: 44, height: 44)
 
-                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                        FDSLabel(bank.name, style: .bodyLarge)
-                        FDSLabel(bank.providerType.rawValue.capitalized, style: .caption, color: .secondary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(bank.name)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                        Text(bank.providerType.rawValue.capitalized)
+                            .font(.system(size: 12, weight: .regular))
+                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                     }
 
                     Spacer()
 
-                    HStack(spacing: AppSpacing.compact) {
-                        iconButton("pencil", color: AppColors.accentSlate) {
+                    HStack(spacing: 8) {
+                        iconButton("pencil", color: Color(red: 0.518, green: 0.541, blue: 0.580)) {
                             navigator.present(.bankEdit(bank))
                         }
-                        iconButton("trash", color: AppColors.danger) {
+                        iconButton("trash", color: Color(red: 1.0, green: 0.27, blue: 0.23)) {
                             bankToDelete = bank
                             showDeleteConfirm = true
                         }
                     }
                 }
+                .padding(12)
 
                 if !ledgers.isEmpty {
-                    Divider().opacity(0.3)
-                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    Divider().opacity(0.2)
+                    VStack(alignment: .leading, spacing: 4) {
                         ForEach(ledgers) { ledger in
-                            HStack(spacing: AppSpacing.compact) {
+                            HStack(spacing: 8) {
                                 Image(systemName: ledger.kind == .creditCard ? "creditcard.fill" : "banknote.fill")
-                                    .font(AppTypography.captionSmSemibold)
-                                    .foregroundStyle(.secondary)
-                                FDSLabel(ledger.displayName, style: .caption, color: .secondary)
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                                Text(ledger.displayName)
+                                    .font(.system(size: 12, weight: .regular))
+                                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                             }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
                         }
                     }
+                    .padding(.vertical, 8)
                 }
             }
-            .padding(AppSpacing.lg)
         }
     }
 
@@ -119,13 +124,13 @@ struct BanksView: View {
     ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(AppTypography.captionLgSemibold)
-                .foregroundStyle(color)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(color)
                 .frame(width: 28, height: 28)
-                .background(Circle().fill(color.opacity(0.1)))
+                .background(Circle().fill(color.opacity(0.15)))
         }
         .buttonStyle(.plain)
-        .frame(minWidth: 44, minHeight: 44)
+        .frame(minWidth: 32, minHeight: 32)
         .contentShape(Rectangle())
     }
 
@@ -139,36 +144,36 @@ struct BanksView: View {
 
     private var loadingState: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Banks")
-                        .font(AppTypography.headingLg)
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                     Text("Manage connected institutions")
-                        .font(AppTypography.labelMedium)
-                        .tracking(0.5)
-                        .foregroundStyle(.tertiary)
+                        .font(.system(size: 12, weight: .medium))
+                        .tracking(0.3)
+                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
-                .padding(.horizontal, AppSpacing.xl)
+                .padding(.horizontal, 32)
 
-                VStack(spacing: AppSpacing.md) {
+                VStack(spacing: 12) {
                     ForEach(0 ..< 3, id: \.self) { _ in
                         skeletonRow
                     }
                 }
-                .padding(.horizontal, AppSpacing.xl)
+                .padding(.horizontal, 32)
 
                 Spacer()
             }
-            .padding(.vertical, AppSpacing.xl)
+            .padding(.vertical, 24)
         }
     }
 
     private var skeletonRow: some View {
-        HStack(spacing: AppSpacing.lg) {
+        HStack(spacing: 16) {
             RoundedRectangle(cornerRadius: 6)
                 .fill(Color.white.opacity(0.04))
-                .frame(width: 100, height: 48)
+                .frame(width: 44, height: 44)
 
             VStack(alignment: .leading, spacing: 6) {
                 RoundedRectangle(cornerRadius: 3)
@@ -182,13 +187,13 @@ struct BanksView: View {
             }
             Spacer()
         }
-        .padding(AppSpacing.lg)
+        .padding(12)
         .background {
-            RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                .fill(.ultraThinMaterial)
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white.opacity(0.06))
                 .overlay {
-                    RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                        .strokeBorder(AppColors.accentGold.opacity(0.08), lineWidth: 0.5)
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
                 }
         }
     }

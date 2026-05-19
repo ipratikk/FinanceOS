@@ -55,7 +55,7 @@ struct ImportView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "arrow.down.doc.fill")
                             .font(AppTypography.headingXL)
-                            .foregroundStyle(AppColors.accentGold)
+                            .foregroundStyle(Color(red: 1.0, green: 0.6, blue: 0.0))
 
                         VStack(spacing: 4) {
                             Text("Drop Files Here")
@@ -68,7 +68,7 @@ struct ImportView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(AppColors.accentGold.opacity(0.1))
+                    .background(Color(red: 1.0, green: 0.6, blue: 0.0).opacity(0.1))
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
@@ -96,7 +96,7 @@ struct ImportView: View {
                                 }
                                 .frame(maxWidth: .infinity)
                                 .padding(AppSpacing.lg)
-                                .background(AppColors.surface)
+                                .background(Color.white.opacity(0.06))
                                 .cornerRadius(AppRadius.md)
                             } else {
                                 if selectedSource != nil {
@@ -118,7 +118,7 @@ struct ImportView: View {
                     }
                 }
             }
-            .background(AppColors.base)
+            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
         }
         .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
             guard let source = selectedSource else { return false }
@@ -222,7 +222,7 @@ struct ImportView: View {
             Divider().opacity(0.3)
 
             HStack(spacing: AppSpacing.compact) {
-                FDSLiquidButton("Cancel", variant: .subtle) {
+                FDSLiquidButton("Cancel", variant: .ghost) {
                     viewModel.fileURLs = []
                     viewModel.parsedStatements = []
                     viewModel.selectedTarget = nil

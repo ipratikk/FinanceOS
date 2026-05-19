@@ -30,7 +30,7 @@ struct AccountsView: View {
                 accountsList
             }
         }
-        .background(AppColors.base)
+        .background(Color(red: 0.039, green: 0.047, blue: 0.067))
         .navigationTitle("Accounts")
         .alert(
             "Delete \"\(accountPendingDelete?.displayName ?? "")\"?",
@@ -73,7 +73,7 @@ struct AccountsView: View {
 
     private var accountsList: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: AppSpacing.xl) {
+            VStack(alignment: .leading, spacing: 24) {
                 listHeader
 
                 ForEach(
@@ -83,20 +83,20 @@ struct AccountsView: View {
                     bankSection(bankName: bankName, ledgers: ledgers)
                 }
             }
-            .padding(.horizontal, AppSpacing.xl)
-            .padding(.vertical, AppSpacing.xl)
+            .padding(.horizontal, 32)
+            .padding(.vertical, 24)
         }
     }
 
     private var listHeader: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+        VStack(alignment: .leading, spacing: 4) {
             Text("Bank Accounts")
-                .font(AppTypography.headingLg)
-                .foregroundStyle(.primary)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
             Text("Manage your accounts and balances")
-                .font(AppTypography.labelMedium)
-                .tracking(0.5)
-                .foregroundStyle(.tertiary)
+                .font(.system(size: 12, weight: .medium))
+                .tracking(0.3)
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -112,17 +112,17 @@ struct AccountsView: View {
 
 extension AccountsView {
     private func bankSection(bankName: String, ledgers: [Ledger]) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(bankName)
-                    .font(AppTypography.headlineMd)
-                    .foregroundStyle(.primary)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 Text("\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
-                    .font(AppTypography.labelMedium)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             }
 
-            VStack(spacing: AppSpacing.xs) {
+            VStack(spacing: 4) {
                 ForEach(Array(ledgers.enumerated()), id: \.element.id) { _, ledger in
                     NavigationLink(value: DetailDestination.accountTransactions(ledger.id)) {
                         accountRow(ledger)
@@ -140,111 +140,74 @@ extension AccountsView {
     }
 
     private func accountRow(_ ledger: Ledger) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            accountRowHeader(ledger)
-            Divider().opacity(0.3).padding(.horizontal, AppSpacing.lg)
-            accountRowActions(ledger)
+        FDSCard(cornerRadius: 12, padded: false) {
+            VStack(alignment: .leading, spacing: 0) {
+                accountRowHeader(ledger)
+                Divider().opacity(0.2).padding(.horizontal, 12)
+                accountRowActions(ledger)
+            }
         }
-        .background(.regularMaterial)
-        .background(AppColors.surface.opacity(0.7))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.lg)
-                .stroke(AppColors.accent.opacity(0.15), lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.lg)
-        .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 2)
     }
 
     private func accountRowHeader(_ ledger: Ledger) -> some View {
         let bank = viewModel.banks.first { $0.id == ledger.bankId }
         let balance = viewModel.balancesByAccount[ledger.id]
 
-        return HStack(spacing: AppSpacing.lg) {
-            FDSImage(
-                imageName: bank?.symbolAssetName,
-                fallbackSymbol: "building.columns.fill",
-                height: 52,
-                width: 52
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(AppColors.accent.opacity(0.1))
-            )
+        return HStack(spacing: 16) {
+            FDSBankMark(bank?.bank ?? .hdfc)
+                .frame(width: 40, height: 40)
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(AppTypography.bodyLg)
-                    .foregroundStyle(.primary)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
                     Text((ledger.accountType ?? "Account").capitalized)
-                        .font(AppTypography.captionSm)
+                        .font(.system(size: 10, weight: .regular))
                     if !ledger.last4.isEmpty {
                         Text("•••• \(ledger.last4)")
-                            .font(AppTypography.captionSm.monospacedDigit())
+                            .font(.system(size: 10, weight: .regular, design: .monospaced))
                     }
                 }
-                .foregroundStyle(.secondary)
-
-                if let balance {
-                    Text(balance.formattedBalance)
-                        .font(AppTypography.bodySmMedium.monospacedDigit())
-                        .foregroundStyle(AppColors.accent)
-                }
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             }
 
             Spacer()
 
-            if let balance = viewModel.balancesByAccount[ledger.id] {
+            if let balance {
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("Balance")
-                        .font(AppTypography.captionSm)
-                        .foregroundStyle(.tertiary)
                     Text(balance.formattedBalance)
-                        .font(AppTypography.headlineSm)
-                        .foregroundStyle(AppColors.accent)
+                        .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                        .foregroundColor(Color(red: 0.19, green: 0.82, blue: 0.35))
                 }
             }
         }
-        .padding(AppSpacing.lg)
+        .padding(12)
     }
 
     private func accountRowActions(_ ledger: Ledger) -> some View {
         let bank = viewModel.banks.first { $0.id == ledger.bankId }
 
-        return HStack(spacing: AppSpacing.md) {
+        return HStack(spacing: 12) {
             Spacer()
 
-            Button(
-                action: {
-                    navigator.pendingImportTarget = .ledger(ledger.id)
-                    navigator.pendingImportSource = importSource(for: ledger, bank: bank)
-                    navigator.navigate(to: .importStatement)
-                },
-                label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 16, weight: .semibold))
-                        Text("Import")
-                            .font(AppTypography.captionLgMedium)
-                    }
-                    .foregroundStyle(AppColors.accent)
-                }
-            )
-            .buttonStyle(.plain)
-            .frame(height: 36)
+            actionIconButton("plus", color: Color(red: 0.518, green: 0.541, blue: 0.580)) {
+                navigator.pendingImportTarget = .ledger(ledger.id)
+                navigator.pendingImportSource = importSource(for: ledger, bank: bank)
+                navigator.navigate(to: .importStatement)
+            }
 
-            actionIconButton("pencil", color: AppColors.accent) {
+            actionIconButton("pencil", color: Color(red: 0.518, green: 0.541, blue: 0.580)) {
                 navigator.present(.accountEdit(ledger))
             }
 
-            actionIconButton("trash", color: AppColors.danger) {
+            actionIconButton("trash", color: Color(red: 1.0, green: 0.27, blue: 0.23)) {
                 accountPendingDelete = ledger
             }
         }
-        .padding(AppSpacing.md)
+        .padding(8)
     }
 
     private func importSource(for ledger: Ledger, bank: Bank?) -> StatementSource? {
@@ -266,33 +229,33 @@ extension AccountsView {
     ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(AppTypography.captionLgSemibold)
-                .foregroundStyle(color)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(color)
                 .frame(width: 28, height: 28)
-                .background(Circle().fill(color.opacity(0.1)))
+                .background(Circle().fill(color.opacity(0.15)))
         }
         .buttonStyle(.plain)
-        .frame(minWidth: 44, minHeight: 44)
+        .frame(minWidth: 32, minHeight: 32)
         .contentShape(Rectangle())
     }
 
     private var loadingState: some View {
         ScrollView {
-            VStack(spacing: AppSpacing.compact) {
+            VStack(spacing: 4) {
                 ForEach(0 ..< 3, id: \.self) { _ in
                     skeletonRow
                 }
             }
-            .padding(.horizontal, AppSpacing.xl)
-            .padding(.vertical, AppSpacing.xl)
+            .padding(.horizontal, 32)
+            .padding(.vertical, 24)
         }
     }
 
     private var skeletonRow: some View {
-        HStack(spacing: AppSpacing.md) {
-            Circle()
+        HStack(spacing: 12) {
+            RoundedRectangle(cornerRadius: 6)
                 .fill(Color.white.opacity(0.04))
-                .frame(width: 36, height: 36)
+                .frame(width: 40, height: 40)
             VStack(alignment: .leading, spacing: 4) {
                 RoundedRectangle(cornerRadius: 3)
                     .fill(Color.white.opacity(0.04))
@@ -305,10 +268,10 @@ extension AccountsView {
             }
             Spacer()
         }
-        .padding(AppSpacing.md)
+        .padding(12)
         .background {
-            RoundedRectangle(cornerRadius: AppRadius.lg)
-                .fill(.ultraThinMaterial)
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white.opacity(0.06))
         }
     }
 }

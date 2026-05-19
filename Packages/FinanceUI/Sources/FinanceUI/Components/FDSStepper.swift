@@ -16,7 +16,7 @@ public struct FDSStepper: View {
         max: Int = 31
     ) {
         self.label = label
-        self._value = value
+        _value = value
         self.min = min
         self.max = max
     }

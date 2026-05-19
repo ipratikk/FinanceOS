@@ -23,7 +23,7 @@ public struct FDSInput: View {
         isSecure: Bool = false
     ) {
         self.placeholder = placeholder
-        self._text = text
+        _text = text
         self.prefix = prefix
         self.suffix = suffix
         self.isMono = isMono

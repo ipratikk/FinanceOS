@@ -32,6 +32,8 @@ struct SheetView: View {
                     ledgerRepository: appContainer.ledgerRepository
                 )
                 BankEditView(bank: bank, context: context)
+            case let .transactionDetail(row):
+                TransactionDetailView(row: row)
             default:
                 EmptyView()
             }

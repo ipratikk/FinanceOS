@@ -26,7 +26,7 @@ struct GlassSurface: ViewModifier {
                                 Color.white.opacity(0.16),
                                 Color.white.opacity(0.06),
                                 .clear,
-                                Color.black.opacity(0.20),
+                                Color.black.opacity(0.20)
                             ],
                             startPoint: .top,
                             endPoint: .bottom
@@ -83,7 +83,7 @@ extension View {
                             Color.white.opacity(0.16),
                             Color.white.opacity(0.06),
                             .clear,
-                            Color.black.opacity(0.20),
+                            Color.black.opacity(0.20)
                         ],
                         startPoint: .top,
                         endPoint: .bottom

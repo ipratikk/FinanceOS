@@ -5,26 +5,58 @@ import SwiftUI
 struct BankEditView: View {
     let bank: Bank
     let context: BankEditContext
+    @State private var name: String
+    @State private var providerType: String
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteConfirm = false
-    @State private var showLinkSheet = false
+
+    init(bank: Bank, context: BankEditContext) {
+        self.bank = bank
+        self.context = context
+        _name = State(initialValue: bank.name)
+        _providerType = State(initialValue: bank.providerType.rawValue)
+    }
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            Divider().opacity(0.3)
+        FDSSheet(
+            title: "Edit Bank",
+            subtitle: bank.name,
+            onDismiss: { dismiss() }
+        ) {
+            VStack(alignment: .leading, spacing: 20) {
+                FDSCard(cornerRadius: 12, padded: false) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("BANK INFORMATION")
+                            .font(.system(size: 10, weight: .semibold))
+                            .tracking(0.2)
+                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                    linkedLedgersSection
-                    deleteSection
+                        fieldInput("Bank Name", text: $name)
+                        Divider().opacity(0.2)
+                        fieldInput("Provider Type", text: $providerType)
+                    }
+                    .padding(12)
                 }
-                .padding(AppSpacing.xl)
+
+                FDSCard(cornerRadius: 12, padded: false) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Button(action: { showDeleteConfirm = true }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "trash.fill")
+                                    .font(.system(size: 12, weight: .semibold))
+                                Text("Delete Bank")
+                                    .font(.system(size: 13, weight: .semibold))
+                                Spacer()
+                            }
+                            .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(12)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
             }
         }
-        .frame(width: 480, height: 520)
-        .background(AppColors.base)
-        .task { await context.loadLedgers(bankId: bank.id) }
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -34,138 +66,22 @@ struct BankEditView: View {
                 }
             }
         } message: {
-            Text("This will delete this bank and all associated cards, accounts, and transactions.")
-        }
-        .alert("Error", isPresented: Binding(
-            get: { context.error != nil },
-            set: { if !$0 { context.clearError() } }
-        )) {
-            Button("OK") { context.clearError() }
-        } message: {
-            if let error = context.error { Text(error) }
+            Text("This will permanently delete this bank and all associated accounts/cards/transactions.")
         }
     }
 
-    private var header: some View {
-        HStack(spacing: AppSpacing.compact) {
-            FDSImage(
-                imageName: bank.symbolAssetName,
-                fallbackSymbol: "building.columns.fill",
-                height: 32,
-                width: 32
-            )
-            VStack(alignment: .leading, spacing: 0) {
-                Text(bank.name).bodyMedium()
-                Text(bank.providerType.rawValue.capitalized)
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(.tertiary)
-            }
-            Spacer()
-            Button(action: { showLinkSheet = true }) {
-                Image(systemName: "plus")
-                    .labelSmall()
-                    .foregroundStyle(AppColors.accent)
-                    .frame(width: 22, height: 22)
-                    .background(Circle().fill(AppColors.accent.opacity(0.12)))
-            }
-            .buttonStyle(.plain)
-            .frame(minWidth: 44, minHeight: 44)
-            .contentShape(Rectangle())
-            .help("Link Card or Account")
-            Button(action: { dismiss() }) {
-                Image(systemName: "xmark")
-                    .labelSmall()
-                    .foregroundStyle(.secondary)
-                    .frame(width: 22, height: 22)
-                    .background(Circle().fill(.ultraThinMaterial))
-            }
-            .buttonStyle(.plain)
-            .frame(minWidth: 44, minHeight: 44)
-            .contentShape(Rectangle())
+    private func fieldInput(_ label: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.2)
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+            TextField("", text: text)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                .padding(8)
+                .background(Color.black.opacity(0.25))
+                .cornerRadius(6)
         }
-        .padding(AppSpacing.md)
-    }
-
-    private var linkedLedgersSection: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            let cards = context.linkedLedgers.filter { $0.kind == .creditCard }
-            let accounts = context.linkedLedgers.filter { $0.kind == .bankAccount }
-
-            if !cards.isEmpty {
-                FDSSectionHeader("Cards")
-                ledgerList(cards, symbol: "creditcard.fill")
-            }
-
-            if !accounts.isEmpty {
-                FDSSectionHeader("Accounts")
-                ledgerList(accounts, symbol: "banknote.fill")
-            }
-
-            if context.linkedLedgers.isEmpty {
-                VStack(spacing: AppSpacing.compact) {
-                    Image(systemName: "creditcard")
-                        .font(AppTypography.displayLargeLight)
-                        .foregroundStyle(.tertiary)
-                    Text("No linked cards or accounts")
-                        .font(AppTypography.captionLg)
-                        .foregroundStyle(.tertiary)
-                    Text("Tap + to link a card or account")
-                        .font(AppTypography.captionSm)
-                        .foregroundStyle(.quaternary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, AppSpacing.xl)
-            }
-        }
-    }
-
-    private func ledgerList(_ ledgers: [Ledger], symbol: String) -> some View {
-        VStack(spacing: AppSpacing.compact) {
-            ForEach(ledgers) { ledger in
-                HStack(spacing: AppSpacing.compact) {
-                    Image(systemName: symbol)
-                        .font(AppTypography.captionLgSemibold)
-                        .foregroundStyle(.secondary)
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(ledger.displayName).bodyMedium()
-                        if !ledger.last4.isEmpty {
-                            Text("•••• \(ledger.last4)")
-                                .font(AppTypography.captionSm)
-                                .foregroundStyle(.tertiary)
-                        }
-                    }
-                    Spacer()
-                }
-                .padding(AppSpacing.md)
-                .background {
-                    RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
-                                .strokeBorder(Color.white.opacity(0.05), lineWidth: 0.5)
-                        }
-                }
-            }
-        }
-    }
-
-    private var deleteSection: some View {
-        Button(action: { showDeleteConfirm = true }) {
-            HStack(spacing: AppSpacing.compact) {
-                Image(systemName: "trash.fill")
-                    .font(AppTypography.captionLgSemibold)
-                Text("Delete Bank")
-                    .caption()
-                Spacer()
-            }
-            .foregroundStyle(AppColors.debit)
-            .padding(.horizontal, AppSpacing.md)
-            .padding(.vertical, AppSpacing.compact)
-            .background {
-                RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                    .fill(AppColors.debit.opacity(0.12))
-            }
-        }
-        .buttonStyle(.plain)
     }
 }

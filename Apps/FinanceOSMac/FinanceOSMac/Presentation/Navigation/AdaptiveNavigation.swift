@@ -176,6 +176,8 @@ struct DetailRouter: View {
                 transactionRepository: appContainer.transactionRepository,
                 ledgerRepository: appContainer.ledgerRepository
             )
+        case let .ledgerDetail(ledgerId):
+            LedgerDetailDestinationView(ledgerId: ledgerId)
         }
     }
 }

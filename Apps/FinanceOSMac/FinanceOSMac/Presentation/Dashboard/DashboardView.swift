@@ -19,7 +19,7 @@ struct DashboardView: View {
     var body: some View {
         if let viewModel {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                VStack(alignment: .leading, spacing: 24) {
                     header
 
                     if let totals = viewModel.currentTotals {
@@ -35,24 +35,25 @@ struct DashboardView: View {
                         recentActivitySection(viewModel)
                     }
                 }
-                .padding(.horizontal, AppSpacing.xl)
-                .padding(.vertical, AppSpacing.xl)
+                .padding(.horizontal, 40)
+                .padding(.vertical, 24)
+                .frame(maxWidth: 1080)
             }
-            .background(AppColors.base)
+            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
             .task {
                 await viewModel.load()
                 isLoading = false
             }
         } else {
-            VStack(spacing: AppSpacing.md) {
+            VStack(spacing: 12) {
                 ProgressView()
                     .controlSize(.small)
                 Text("Loading…")
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(AppColors.base)
+            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
             .task {
                 viewModel = DashboardViewModel(
                     spendingService: appContainer.spendingService,
@@ -63,173 +64,173 @@ struct DashboardView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xs) {
-            Text("Financial Overview")
-                .font(AppTypography.headingLg)
-                .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Overview")
+                .font(.system(size: 30, weight: .semibold))
+                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
             Text(currentMonth)
-                .font(AppTypography.labelMedium)
-                .tracking(0.5)
-                .foregroundStyle(.tertiary)
+                .font(.system(size: 12, weight: .medium))
+                .tracking(0.3)
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func heroNet(_ totals: SpendingTotals) -> some View {
         let net = totals.totalCredit - totals.totalDebit
-        return VStack(alignment: .leading, spacing: AppSpacing.md) {
-            Text("Net Flow This Month")
-                .font(AppTypography.labelMedium)
-                .tracking(0.5)
-                .foregroundStyle(.tertiary)
+        return FDSCard(cornerRadius: 18, padded: false) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Net Flow This Month")
+                    .font(.system(size: 12, weight: .medium))
+                    .tracking(0.3)
+                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
 
-            HStack(alignment: .firstTextBaseline, spacing: AppSpacing.sm) {
-                Text(formatAmount(net))
-                    .font(AppTypography.displayLarge)
-                    .monospacedDigit()
-                    .foregroundStyle(AppColors.accentGold)
-                    .contentTransition(.numericText())
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    Text(formatAmount(net))
+                        .font(.system(size: 48, weight: .semibold, design: .default))
+                        .monospacedDigit()
+                        .foregroundColor(net >= 0 ? Color(red: 0.19, green: 0.82, blue: 0.35) : Color(
+                            red: 1.0,
+                            green: 0.27,
+                            blue: 0.23
+                        ))
+                        .contentTransition(.numericText())
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Image(systemName: net >= 0 ? "arrow.up.right" : "arrow.down.right")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(net >= 0 ? AppColors.success : AppColors.danger)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Image(systemName: net >= 0 ? "arrow.up.right" : "arrow.down.right")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(net >= 0 ? Color(red: 0.19, green: 0.82, blue: 0.35) : Color(
+                                red: 1.0,
+                                green: 0.27,
+                                blue: 0.23
+                            ))
 
-                    Text(net >= 0 ? "Positive" : "Negative")
-                        .font(AppTypography.captionSm)
-                        .foregroundStyle(net >= 0 ? AppColors.success : AppColors.danger)
+                        Text(net >= 0 ? "Positive" : "Negative")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundColor(net >= 0 ? Color(red: 0.19, green: 0.82, blue: 0.35) : Color(
+                                red: 1.0,
+                                green: 0.27,
+                                blue: 0.23
+                            ))
+                    }
                 }
             }
+            .padding(20)
         }
-        .padding(AppSpacing.lg)
-        .background(.ultraThinMaterial)
-        .background(AppColors.surface.opacity(0.3))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .stroke(AppColors.accentGold.opacity(0.1), lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.md)
     }
 
     private func metricsRow(_ totals: SpendingTotals) -> some View {
-        HStack(spacing: AppSpacing.md) {
+        HStack(spacing: 12) {
             metricCard(
-                "Inflows",
+                "Income",
                 value: formatAmount(totals.totalCredit),
-                symbol: "arrow.down.left.circle",
-                color: AppColors.success
+                symbol: "arrow.down.left.circle.fill",
+                color: Color(red: 0.19, green: 0.82, blue: 0.35)
             )
 
             metricCard(
-                "Outflows",
+                "Spending",
                 value: formatAmount(totals.totalDebit),
-                symbol: "arrow.up.right.circle",
-                color: AppColors.danger
+                symbol: "arrow.up.right.circle.fill",
+                color: Color(red: 1.0, green: 0.27, blue: 0.23)
             )
 
             metricCard(
                 "Transactions",
                 value: "\(totals.transactionCount)",
                 symbol: "list.bullet",
-                color: AppColors.accentSlate
+                color: Color(red: 0.518, green: 0.541, blue: 0.580)
             )
         }
     }
 
     private func metricCard(_ label: String, value: String, symbol: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            HStack(spacing: AppSpacing.xs) {
-                Image(systemName: symbol)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(color.opacity(0.6))
+        FDSCard(cornerRadius: 12, padded: false) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 6) {
+                    Image(systemName: symbol)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(color.opacity(0.6))
 
-                Text(label.uppercased())
-                    .font(AppTypography.labelMedium)
-                    .tracking(0.4)
-                    .foregroundStyle(.tertiary)
+                    Text(label.uppercased())
+                        .font(.system(size: 10, weight: .semibold))
+                        .tracking(0.2)
+                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                }
+
+                Text(value)
+                    .font(.system(size: 16, weight: .semibold, design: .default))
+                    .monospacedDigit()
+                    .foregroundColor(color)
             }
-
-            Text(value)
-                .font(AppTypography.headlineMd)
-                .monospacedDigit()
-                .foregroundStyle(color)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(AppSpacing.md)
-        .background(.ultraThinMaterial)
-        .background(AppColors.surface.opacity(0.2))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppRadius.md)
-                .stroke(color.opacity(0.08), lineWidth: 0.5)
-        )
-        .cornerRadius(AppRadius.md)
     }
 
     private func chartSection(_ viewModel: DashboardViewModel) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("6-Month Trend")
-                    .font(AppTypography.headlineMd)
-                    .foregroundStyle(.primary)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 Text("Inflows vs outflows over time")
-                    .font(AppTypography.labelMedium)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             }
 
-            FDSGlassSurface(elevation: .card, cornerRadius: AppRadius.lg, padding: AppSpacing.md) {
+            FDSCard(cornerRadius: 12, padded: false) {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
                     .frame(height: 240)
+                    .padding(12)
             }
         }
     }
 
     private func recentActivitySection(_ viewModel: DashboardViewModel) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Recent Activity")
-                        .font(AppTypography.headlineMd)
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                     Text("Last 6 transactions")
-                        .font(AppTypography.labelMedium)
-                        .foregroundStyle(.tertiary)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
                 Spacer()
                 Button(action: { navigator.navigate(to: .transactions) }) {
-                    Text("View All")
-                        .font(AppTypography.labelMedium)
-                        .foregroundStyle(AppColors.accentGold)
+                    Text("View All →")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(Color(red: 1.0, green: 0.62, blue: 0.04))
                 }
                 .help("View all transactions")
             }
 
-            VStack(spacing: AppSpacing.xs) {
-                ForEach(Array(viewModel.recentTransactions.prefix(6).enumerated()), id: \.element.id) { index, txn in
-                    VStack(spacing: 0) {
-                        FDSTransactionRow(
-                            merchant: txn.description,
-                            categorySymbol: categorySymbol(for: txn.description),
-                            subtitle: dateString(txn.postedAt),
-                            amount: formatAmount(txn.amountMinorUnits),
-                            isDebit: txn.transactionType == .debit
-                        )
-                        .padding(AppSpacing.md)
+            FDSCard(cornerRadius: 12, padded: false) {
+                VStack(spacing: 0) {
+                    ForEach(
+                        Array(viewModel.recentTransactions.prefix(6).enumerated()),
+                        id: \.element.id
+                    ) { index, txn in
+                        VStack(spacing: 0) {
+                            FDSTransactionRow(
+                                merchant: txn.description,
+                                categorySymbol: categorySymbol(for: txn.description),
+                                subtitle: dateString(txn.postedAt),
+                                amount: formatAmount(txn.amountMinorUnits),
+                                isDebit: txn.transactionType == .debit
+                            )
+                            .padding(12)
 
-                        if index < min(viewModel.recentTransactions.count, 6) - 1 {
-                            Divider()
-                                .opacity(0.1)
+                            if index < min(viewModel.recentTransactions.count, 6) - 1 {
+                                Divider()
+                                    .opacity(0.2)
+                            }
                         }
                     }
-                    .background(.ultraThinMaterial)
-                    .background(AppColors.surface.opacity(0.2))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppRadius.sm)
-                            .stroke(AppColors.accentSlate.opacity(0.05), lineWidth: 0.5)
-                    )
-                    .cornerRadius(AppRadius.sm)
                 }
             }
-            .padding(AppSpacing.xs)
         }
     }
 

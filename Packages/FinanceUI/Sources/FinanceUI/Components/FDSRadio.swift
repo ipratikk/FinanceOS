@@ -7,7 +7,7 @@ public struct FDSRadio: View {
     @Binding var isSelected: Bool
 
     public init(isSelected: Binding<Bool>) {
-        self._isSelected = isSelected
+        _isSelected = isSelected
     }
 
     public var body: some View {
@@ -23,7 +23,7 @@ public struct FDSRadio: View {
                                         Color.white.opacity(0.16),
                                         Color.white.opacity(0.06),
                                         .clear,
-                                        Color.black.opacity(0.20),
+                                        Color.black.opacity(0.20)
                                     ],
                                     startPoint: .top,
                                     endPoint: .bottom

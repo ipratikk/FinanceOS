@@ -7,98 +7,75 @@ struct TransactionDetailView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        VStack(spacing: 0) {
-            header
-            Divider().opacity(0.3)
+        FDSSheet(
+            title: "Transaction Details",
+            subtitle: row.title,
+            onDismiss: { dismiss() }
+        ) {
+            VStack(alignment: .leading, spacing: 20) {
+                heroAmount
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                    heroAmount
-                    detailsSection
+                FDSCard(cornerRadius: 12, padded: false) {
+                    VStack(spacing: 0) {
+                        detailRow(label: "Merchant", value: row.title)
+                        Divider().opacity(0.2).padding(.vertical, 8)
+                        detailRow(label: "Source", value: row.subtitle)
+                        Divider().opacity(0.2).padding(.vertical, 8)
+                        detailRow(label: "Date", value: formatDate(row.postedAt))
+                        Divider().opacity(0.2).padding(.vertical, 8)
+                        detailRow(
+                            label: "Type",
+                            value: row.transactionType == .debit ? "Debit" : "Credit"
+                        )
+                    }
+                    .padding(12)
                 }
-                .padding(AppSpacing.xl)
             }
         }
-        .frame(width: 480, height: 560)
-        .background(AppColors.base)
-    }
-
-    private var header: some View {
-        HStack(spacing: AppSpacing.compact) {
-            FDSMerchantAvatar(
-                name: row.title,
-                symbol: row.transactionType == .debit ? "arrow.up.right.circle.fill" : "arrow.down.left.circle.fill",
-                size: 32
-            )
-            VStack(alignment: .leading, spacing: 0) {
-                Text("Transaction")
-                    .bodyMedium()
-                Text(row.title)
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-            }
-            Spacer()
-            Button(action: { dismiss() }) {
-                Image(systemName: "xmark")
-                    .labelSmall()
-                    .foregroundStyle(.secondary)
-                    .frame(width: 22, height: 22)
-                    .background(Circle().fill(.ultraThinMaterial))
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(AppSpacing.md)
     }
 
     private var heroAmount: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+        VStack(alignment: .center, spacing: 8) {
             Text(row.transactionType == .debit ? "DEBITED" : "CREDITED")
-                .font(AppTypography.labelSemibold)
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(0.2)
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
 
-            HStack(alignment: .firstTextBaseline, spacing: AppSpacing.compact) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(row.amountText)
-                    .font(AppTypography.amountLarge.monospacedDigit())
-                    .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
+                    .font(.system(size: 40, weight: .semibold, design: .default))
+                    .monospacedDigit()
+                    .foregroundColor(row.transactionType == .debit ? Color(red: 1.0, green: 0.27, blue: 0.23) : Color(
+                        red: 0.19,
+                        green: 0.82,
+                        blue: 0.35
+                    ))
 
                 Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
-                    .bodyMedium()
-                    .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(row.transactionType == .debit ? Color(red: 1.0, green: 0.27, blue: 0.23) : Color(
+                        red: 0.19,
+                        green: 0.82,
+                        blue: 0.35
+                    ))
             }
-        }
-    }
-
-    private var detailsSection: some View {
-        FDSGlassSurface(cornerRadius: AppRadius.lg) {
-            VStack(spacing: 0) {
-                detailRow(label: "Merchant", value: row.title)
-                Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
-                detailRow(label: "Source", value: row.subtitle)
-                Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
-                detailRow(label: "Date", value: formatDate(row.postedAt))
-                Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
-                detailRow(
-                    label: "Type",
-                    value: row.transactionType == .debit ? "Debit" : "Credit"
-                )
-            }
+            .frame(maxWidth: .infinity, alignment: .center)
         }
     }
 
     private func detailRow(label: String, value: String) -> some View {
         HStack {
             Text(label.uppercased())
-                .font(AppTypography.labelSemibold)
-                .tracking(0.6)
-                .foregroundStyle(.tertiary)
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.2)
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             Spacer()
             Text(value)
-                .caption()
-                .foregroundStyle(.primary)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 .multilineTextAlignment(.trailing)
         }
+        .padding(12)
     }
 
     private func formatDate(_ date: Date) -> String {

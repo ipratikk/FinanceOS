@@ -31,9 +31,7 @@ struct SettingsView: View {
     var body: some View {
         HStack(spacing: 0) {
             sideTabs
-
-            Divider().opacity(0.3)
-
+            Divider().opacity(0.2)
             ScrollView(showsIndicators: false) {
                 Group {
                     if selectedTab == .general {
@@ -42,11 +40,11 @@ struct SettingsView: View {
                         aboutSettings
                     }
                 }
-                .padding(AppSpacing.xl)
+                .padding(16)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
-        .background(AppColors.base)
+        .background(Color(red: 0.039, green: 0.047, blue: 0.067))
         .alert("Clear All Data?", isPresented: $showConfirmClear) {
             Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {
@@ -58,18 +56,18 @@ struct SettingsView: View {
     }
 
     private var sideTabs: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xl) {
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+        VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Settings")
-                    .font(AppTypography.headingMd)
-                    .foregroundStyle(.primary)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 Text("Preferences")
-                    .font(AppTypography.labelMedium)
+                    .font(.system(size: 10, weight: .semibold))
                     .tracking(0.5)
-                    .foregroundStyle(.tertiary)
+                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
             }
 
-            VStack(alignment: .leading, spacing: 1) {
+            VStack(alignment: .leading, spacing: 0) {
                 ForEach(SettingsTab.allCases, id: \.self) { tab in
                     FDSSidebarItem(
                         tab.label,
@@ -82,69 +80,70 @@ struct SettingsView: View {
 
             Spacer()
         }
-        .padding(AppSpacing.xl)
+        .padding(16)
         .frame(width: 220)
         .background(.regularMaterial)
     }
 
     private var generalSettings: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xl) {
+        VStack(alignment: .leading, spacing: 24) {
             sectionTitle("General")
 
-            FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     toggleRow("Notifications", symbol: "bell.fill", binding: $notifications)
-                    Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                    Divider().opacity(0.2).padding(.vertical, 8)
                     toggleRow("Auto-Refresh", symbol: "arrow.clockwise", binding: $autoRefresh)
                 }
+                .padding(12)
             }
 
             sectionTitle("Danger Zone")
 
             Button(action: { showConfirmClear = true }) {
-                HStack(spacing: AppSpacing.compact) {
+                HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(AppTypography.captionLgSemibold)
+                        .font(.system(size: 13, weight: .semibold))
                     Text("Clear All Data")
-                        .caption()
+                        .font(.system(size: 13, weight: .semibold))
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(AppTypography.labelSemibold)
-                }
-                .foregroundStyle(AppColors.danger)
-                .padding(.horizontal, AppSpacing.md)
-                .padding(.vertical, AppSpacing.md)
-                .background {
-                    RoundedRectangle(cornerRadius: AppRadius.lg, style: .continuous)
-                        .fill(AppColors.danger.opacity(0.12))
+                        .font(.system(size: 13, weight: .semibold))
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.18))
+            .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
+            .cornerRadius(8)
             .buttonStyle(.plain)
         }
     }
 
     private var aboutSettings: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xl) {
+        VStack(alignment: .leading, spacing: 24) {
             sectionTitle("About")
 
-            FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     infoRow("Version", value: "1.0.0", copyable: true)
-                    Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                    Divider().opacity(0.2).padding(.vertical, 8)
                     infoRow("Build", value: "2026.05.16", copyable: true)
-                    Divider().opacity(0.3).padding(.vertical, AppSpacing.compact)
+                    Divider().opacity(0.2).padding(.vertical, 8)
                     infoRow("Platform", value: "macOS", copyable: false)
                 }
+                .padding(12)
             }
 
             sectionTitle("Links")
 
-            FDSGlassSurface(cornerRadius: AppRadius.lg, padding: 0) {
+            FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     linkRow("GitHub Repository", symbol: "link")
-                    Divider().opacity(0.3)
+                    Divider().opacity(0.2)
                     linkRow("Report a Bug", symbol: "ladybug.fill")
-                    Divider().opacity(0.3)
+                    Divider().opacity(0.2)
                     linkRow("Privacy Policy", symbol: "lock.fill")
                 }
             }
@@ -153,66 +152,65 @@ struct SettingsView: View {
 
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
-            .font(AppTypography.headlineSm)
-            .foregroundStyle(.primary)
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
     }
 
     private func toggleRow(_ label: String, symbol: String, binding: Binding<Bool>) -> some View {
-        HStack {
+        HStack(spacing: 12) {
             Image(systemName: symbol)
-                .caption()
-                .foregroundStyle(.secondary)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 .frame(width: 22)
             Text(label)
-                .caption()
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
             Spacer()
-            Toggle("", isOn: binding)
-                .labelsHidden()
-                .toggleStyle(.switch)
-                .controlSize(.small)
+            FDSToggle(isOn: binding)
         }
     }
 
     private func infoRow(_ label: String, value: String, copyable: Bool) -> some View {
-        HStack {
+        HStack(spacing: 12) {
             Text(label.uppercased())
-                .font(AppTypography.labelSemibold)
+                .font(.system(size: 10, weight: .semibold))
                 .tracking(0.6)
-                .foregroundStyle(.tertiary)
+                .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
             Spacer()
             Text(value)
-                .font(AppTypography.bodySmMedium.monospacedDigit())
+                .font(.system(size: 13, weight: .medium, design: .monospaced))
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             if copyable {
                 Button(action: {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(value, forType: .string)
                 }) {
                     Image(systemName: "doc.on.doc")
-                        .font(AppTypography.captionSm)
-                        .foregroundStyle(.tertiary)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
                 .buttonStyle(.plain)
             }
         }
+        .padding(12)
     }
 
     private func linkRow(_ label: String, symbol: String) -> some View {
         Button(action: {}) {
-            HStack(spacing: AppSpacing.compact) {
+            HStack(spacing: 8) {
                 Image(systemName: symbol)
-                    .labelSmall()
-                    .foregroundStyle(AppColors.accentGold)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(red: 1.0, green: 0.62, blue: 0.04))
                     .frame(width: 22)
                 Text(label)
-                    .caption()
-                    .foregroundStyle(.primary)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 Spacer()
                 Image(systemName: "arrow.up.right")
-                    .font(AppTypography.labelSemibold)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             }
-            .padding(.horizontal, AppSpacing.md)
-            .padding(.vertical, AppSpacing.md)
+            .padding(12)
         }
         .buttonStyle(.plain)
     }

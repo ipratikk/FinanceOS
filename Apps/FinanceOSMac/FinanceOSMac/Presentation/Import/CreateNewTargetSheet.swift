@@ -167,7 +167,7 @@ struct CreateNewTargetSheet: View {
             Divider().opacity(0.3)
 
             HStack(spacing: AppSpacing.compact) {
-                FDSLiquidButton("Cancel", variant: .subtle) { onCancel() }
+                FDSLiquidButton("Cancel", variant: .ghost) { onCancel() }
                 Spacer()
                 FDSLiquidButton("Create", variant: .primary) { onCreate() }
                     .disabled(state.last4.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -210,10 +210,19 @@ struct CreateNewTargetSheet: View {
 
     private func cardTypeField() -> some View {
         let cardTypeOptions = CardNetwork.allCases.map { network in
-            FDSPickerOption(
+            let displayName: String = switch network {
+            case .visa: "Visa"
+            case .mastercard: "Mastercard"
+            case .amex: "American Express"
+            case .discover: "Discover"
+            case .diners: "Diners Club"
+            case .rupay: "RuPay"
+            case .other: "Other"
+            }
+            return FDSPickerOption(
                 id: network.rawValue,
                 value: network.rawValue,
-                title: network.displayName,
+                title: displayName,
                 symbol: network.symbolAssetName == nil ? "creditcard.fill" : nil,
                 imageName: network.symbolAssetName
             )

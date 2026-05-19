@@ -15,7 +15,7 @@ public enum DesignTokens {
         /// white 4% — inset rows, sheet hero
         public static let surfaceGlassThin = Color.white.opacity(0.04)
         /// chrome glass for sidebar/toolbar
-        public static let chromeGlass = Color(red: 20/255, green: 22/255, blue: 30/255).opacity(0.65)
+        public static let chromeGlass = Color(red: 20 / 255, green: 22 / 255, blue: 30 / 255).opacity(0.65)
         /// black 25% — text input / select backgrounds (recessed)
         public static let inputWell = Color.black.opacity(0.25)
     }
@@ -23,18 +23,18 @@ public enum DesignTokens {
     // MARK: - Apple System Colors (HIG dark mode)
 
     public enum System {
-        public static let red = Color(red: 1.0, green: 0.27, blue: 0.23)      // #FF453A
-        public static let orange = Color(red: 1.0, green: 0.62, blue: 0.04)   // #FF9F0A
-        public static let yellow = Color(red: 1.0, green: 0.84, blue: 0.04)   // #FFD60A
-        public static let green = Color(red: 0.19, green: 0.82, blue: 0.35)   // #30D158
-        public static let mint = Color(red: 0.40, green: 0.83, blue: 0.81)    // #66D4CF
-        public static let teal = Color(red: 0.25, green: 0.78, blue: 0.88)    // #40C8E0
-        public static let cyan = Color(red: 0.39, green: 0.82, blue: 1.0)     // #64D2FF
-        public static let blue = Color(red: 0.04, green: 0.52, blue: 1.0)     // #0A84FF
-        public static let indigo = Color(red: 0.37, green: 0.36, blue: 0.90)  // #5E5CE6
-        public static let purple = Color(red: 0.75, green: 0.35, blue: 0.95)  // #BF5AF2
-        public static let pink = Color(red: 1.0, green: 0.22, blue: 0.37)     // #FF375F
-        public static let gray = Color(red: 0.60, green: 0.60, blue: 0.62)    // #98989D
+        public static let red = Color(red: 1.0, green: 0.27, blue: 0.23) // #FF453A
+        public static let orange = Color(red: 1.0, green: 0.62, blue: 0.04) // #FF9F0A
+        public static let yellow = Color(red: 1.0, green: 0.84, blue: 0.04) // #FFD60A
+        public static let green = Color(red: 0.19, green: 0.82, blue: 0.35) // #30D158
+        public static let mint = Color(red: 0.40, green: 0.83, blue: 0.81) // #66D4CF
+        public static let teal = Color(red: 0.25, green: 0.78, blue: 0.88) // #40C8E0
+        public static let cyan = Color(red: 0.39, green: 0.82, blue: 1.0) // #64D2FF
+        public static let blue = Color(red: 0.04, green: 0.52, blue: 1.0) // #0A84FF
+        public static let indigo = Color(red: 0.37, green: 0.36, blue: 0.90) // #5E5CE6
+        public static let purple = Color(red: 0.75, green: 0.35, blue: 0.95) // #BF5AF2
+        public static let pink = Color(red: 1.0, green: 0.22, blue: 0.37) // #FF375F
+        public static let gray = Color(red: 0.60, green: 0.60, blue: 0.62) // #98989D
     }
 
     // MARK: - Semantic
@@ -103,19 +103,19 @@ public enum DesignTokens {
     // MARK: - Corner Radius (concentric)
 
     public enum Radius {
-        public static let xs: CGFloat = 6          // Chips, inputs
-        public static let sm: CGFloat = 9          // Sidebar items, small buttons
-        public static let md: CGFloat = 12         // Tiles, secondary cards
-        public static let card: CGFloat = 18       // Standard cards
-        public static let hero: CGFloat = 22       // Hero surfaces (dashboard net flow, ledger detail)
-        public static let sheet: CGFloat = 20      // Modal sheets
-        public static let capsule: CGFloat = .infinity  // Pills, chips, buttons, search inputs
+        public static let xs: CGFloat = 6 // Chips, inputs
+        public static let sm: CGFloat = 9 // Sidebar items, small buttons
+        public static let md: CGFloat = 12 // Tiles, secondary cards
+        public static let card: CGFloat = 18 // Standard cards
+        public static let hero: CGFloat = 22 // Hero surfaces (dashboard net flow, ledger detail)
+        public static let sheet: CGFloat = 20 // Modal sheets
+        public static let capsule: CGFloat = .infinity // Pills, chips, buttons, search inputs
     }
 
     // MARK: - Typography
 
     public enum Typography {
-        // Display/Hero amounts
+        /// Display/Hero amounts
         public static let heroAmount = Font.system(size: 60, weight: .semibold, design: .default)
             .monospacedDigit()
         public static let ledgerAmount = Font.system(size: 38, weight: .semibold, design: .default)
@@ -128,7 +128,7 @@ public enum DesignTokens {
         public static let sectionTitle = Font.system(size: 17, weight: .semibold, design: .default)
         public static let sheetTitle = Font.system(size: 19, weight: .semibold, design: .default)
 
-        // Metric cards
+        /// Metric cards
         public static let metricValue = Font.system(size: 28, weight: .semibold, design: .default)
             .monospacedDigit()
 

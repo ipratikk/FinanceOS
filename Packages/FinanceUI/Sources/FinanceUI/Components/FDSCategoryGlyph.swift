@@ -39,7 +39,7 @@ public struct FDSCategoryGlyph: View {
                             Color.white.opacity(0.16),
                             Color.white.opacity(0.06),
                             .clear,
-                            Color.black.opacity(0.20),
+                            Color.black.opacity(0.20)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -69,7 +69,7 @@ public struct FDSCategoryGlyph: View {
             "salary": 142,
             "income": 142,
             "fee": 12,
-            "other": 220,
+            "other": 220
         ]
 
         for (key, hue) in hueMap {

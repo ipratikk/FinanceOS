@@ -66,7 +66,7 @@ public struct FDSCardArt: View {
                             Color.white.opacity(0.16),
                             Color.white.opacity(0.06),
                             .clear,
-                            Color.black.opacity(0.20),
+                            Color.black.opacity(0.20)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -83,12 +83,20 @@ public struct FDSCardArt: View {
 #Preview {
     HStack(spacing: 12) {
         FDSCardArt("HDFC Visa", network: "VISA", last4: "1234")
-        FDSCardArt("ICICI Mastercard", network: "MC", last4: "5678",
-                   gradientStart: Color(red: 0.8, green: 0.2, blue: 0),
-                   gradientEnd: Color(red: 1.0, green: 0.4, blue: 0))
-        FDSCardArt("Amex Platinum", network: "AMEX", last4: "9999",
-                   gradientStart: Color(red: 0.0, green: 0.2, blue: 0.5),
-                   gradientEnd: Color(red: 0.0, green: 0.4, blue: 0.7))
+        FDSCardArt(
+            "ICICI Mastercard",
+            network: "MC",
+            last4: "5678",
+            gradientStart: Color(red: 0.8, green: 0.2, blue: 0),
+            gradientEnd: Color(red: 1.0, green: 0.4, blue: 0)
+        )
+        FDSCardArt(
+            "Amex Platinum",
+            network: "AMEX",
+            last4: "9999",
+            gradientStart: Color(red: 0.0, green: 0.2, blue: 0.5),
+            gradientEnd: Color(red: 0.0, green: 0.4, blue: 0.7)
+        )
     }
     .padding()
 }

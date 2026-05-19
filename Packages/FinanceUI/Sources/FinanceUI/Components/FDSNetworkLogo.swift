@@ -86,8 +86,8 @@ public struct FDSNetworkLogo: View {
     }
 }
 
-extension CardNetwork {
-    public var displayName: String {
+public extension CardNetwork {
+    var displayName: String {
         switch self {
         case .visa: "Visa"
         case .mastercard: "Mastercard"

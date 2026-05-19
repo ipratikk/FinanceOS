@@ -16,30 +16,33 @@ public struct FDSSelect<T: Hashable>: View {
         optionLabel: @escaping (T) -> String
     ) {
         self.label = label
-        self._selection = selection
+        _selection = selection
         self.options = options
         self.optionLabel = optionLabel
     }
 
     public var body: some View {
-        HStack(spacing: 12) {
-            Picker("", selection: $selection) {
-                ForEach(options, id: \.self) { option in
-                    Text(optionLabel(option))
-                        .tag(option)
+        Menu {
+            ForEach(options, id: \.self) { option in
+                Button(optionLabel(option)) {
+                    selection = option
                 }
             }
-            .pickerStyle(.menu)
+        } label: {
+            HStack(spacing: 12) {
+                Text(optionLabel(selection))
+                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                Spacer()
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+            }
             .frame(maxWidth: .infinity, alignment: .leading)
-
-            Image(systemName: "chevron.down")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+            .padding(.horizontal, 12)
+            .frame(height: 34)
+            .background(Color.black.opacity(0.25))
+            .cornerRadius(8)
         }
-        .padding(.horizontal, 12)
-        .frame(height: 34)
-        .background(Color.black.opacity(0.25))
-        .cornerRadius(8)
     }
 }
 
