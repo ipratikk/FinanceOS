@@ -49,9 +49,9 @@ public struct ICICICardMetadataExtractor: Sendable {
                 }
             }
 
-            if row.count == 1 && trimmed.count == 16 {
+            if row.count == 1, trimmed.count == 16 {
                 let cardPattern = trimmed.uppercased()
-                if cardPattern.contains("X") && trimmed.hasSuffix(String(trimmed.suffix(4))) {
+                if cardPattern.contains("X") {
                     let last4 = String(trimmed.suffix(4))
                     if last4.allSatisfy(\.isNumber) {
                         return last4
