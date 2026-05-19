@@ -273,7 +273,7 @@ final class ImportViewModel {
                 let result = try await performImport(target: target, fileCount: fileCount)
                 importSession.importResult = result
                 lastImportResult = result
-                reset()
+                resetToSource()
                 importSession.isLoading = false
                 Task {
                     try? await Task.sleep(for: .seconds(4))
