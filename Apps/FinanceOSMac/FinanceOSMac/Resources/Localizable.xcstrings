@@ -7,7 +7,7 @@
     "—" : {
 
     },
-    "... and %lld more transactions" : {
+    "… and %lld more" : {
 
     },
     "·" : {
@@ -75,12 +75,12 @@
         }
       }
     },
-    "%lld new · %lld duplicate" : {
+    "%lld new · %lld duplicate%@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$lld new · %2$lld duplicate"
+            "value" : "%1$lld new · %2$lld duplicate%3$@"
           }
         }
       }
@@ -594,6 +594,9 @@
     "Import To" : {
 
     },
+    "Importing %@" : {
+
+    },
     "Inflows" : {
 
     },
@@ -610,6 +613,9 @@
           }
         }
       }
+    },
+    "into %@" : {
+
     },
     "Last 6 transactions" : {
 
@@ -822,7 +828,13 @@
     "Select Card" : {
 
     },
+    "Select destination below" : {
+
+    },
     "Settings" : {
+
+    },
+    "Show Less" : {
 
     },
     "Spending Insights" : {
@@ -937,6 +949,9 @@
 
     },
     "Type" : {
+
+    },
+    "View All" : {
 
     },
     "View All →" : {
