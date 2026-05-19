@@ -13,6 +13,26 @@
     "·" : {
 
     },
+    "%@ · %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "%@ · %lld rows · %lld new, %lld duplicate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$lld rows · %3$lld new, %4$lld duplicate"
+          }
+        }
+      }
+    },
     "%@ · •••• %@" : {
       "localizations" : {
         "en" : {
@@ -22,6 +42,9 @@
           }
         }
       }
+    },
+    "%@ · up to 25 MB" : {
+
     },
     "%@ Information" : {
 
@@ -52,6 +75,16 @@
         }
       }
     },
+    "%lld new · %lld duplicate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld new · %2$lld duplicate"
+          }
+        }
+      }
+    },
     "%lld total" : {
 
     },
@@ -75,6 +108,12 @@
 
     },
     "•••• %@" : {
+
+    },
+    "+" : {
+
+    },
+    "−" : {
 
     },
     "⌘I" : {
@@ -250,6 +289,12 @@
 
     },
     "Change" : {
+
+    },
+    "Change source" : {
+
+    },
+    "Choose file" : {
 
     },
     "Clear" : {
@@ -437,6 +482,9 @@
     "Delete Transaction?" : {
 
     },
+    "Description" : {
+
+    },
     "Done" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -448,7 +496,10 @@
         }
       }
     },
-    "Drop Files Here" : {
+    "Drag your file here" : {
+
+    },
+    "Drop your statement" : {
 
     },
     "Edit %@" : {
@@ -502,9 +553,6 @@
     "Highest outflow activity" : {
 
     },
-    "Import" : {
-
-    },
     "IMPORT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -512,6 +560,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "IMPORT"
+          }
+        }
+      }
+    },
+    "Import %lld transaction%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import %1$lld transaction%2$@"
           }
         }
       }
@@ -678,6 +736,9 @@
     "Operation Failed" : {
 
     },
+    "or" : {
+
+    },
     "Outflows" : {
 
     },
@@ -694,6 +755,9 @@
         }
       }
     },
+    "Parsing statement..." : {
+
+    },
     "PDF Password" : {
 
     },
@@ -706,10 +770,16 @@
     "Preferences" : {
 
     },
+    "Re-upload" : {
+
+    },
     "Recent Activity" : {
 
     },
-    "Release to import" : {
+    "Reference" : {
+
+    },
+    "Release to upload" : {
 
     },
     "Reset" : {
@@ -722,6 +792,9 @@
           }
         }
       }
+    },
+    "Review parsed transactions" : {
+
     },
     "Save password to Keychain" : {
 
@@ -740,7 +813,7 @@
         }
       }
     },
-    "Select a bank..." : {
+    "Select a source" : {
 
     },
     "Select Bank" : {
@@ -750,9 +823,6 @@
 
     },
     "Settings" : {
-
-    },
-    "Source" : {
 
     },
     "Spending Insights" : {
@@ -772,6 +842,9 @@
     "Spending trends and merchant insights" : {
 
     },
+    "Start over" : {
+
+    },
     "Statements" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -784,6 +857,9 @@
       }
     },
     "Statistics" : {
+
+    },
+    "Status" : {
 
     },
     "Supported: %@" : {
@@ -861,9 +937,6 @@
 
     },
     "Type" : {
-
-    },
-    "Upload bank or credit card statements" : {
 
     },
     "View All →" : {

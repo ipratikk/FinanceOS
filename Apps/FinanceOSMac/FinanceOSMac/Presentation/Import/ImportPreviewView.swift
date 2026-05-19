@@ -1,13 +1,16 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import SwiftUI
 
 struct ImportPreviewView: View {
     let viewModel: ImportViewModel
-    var transactionListStyle: ImportTransactionListView.Style = .list
 
     @State private var isShowingCreationSheet = false
     @State private var sheetCreationState = TargetCreationState()
+    @State private var importedExpanded = true
+    @State private var duplicatesExpanded = false
+    @State private var transactionListStyle: ImportTransactionListView.Style = .table
 
     var body: some View {
         VStack(spacing: 0) {
@@ -33,19 +36,37 @@ struct ImportPreviewView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    fileListSection()
-                    Divider()
-                    aggregatedSummarySection()
-                    Divider()
-                    targetSelectionSection
-                    Divider()
-                }
-                .padding()
-            }
-            .frame(maxHeight: 200)
+                    ImportStatementHeading(
+                        fileURLs: viewModel.fileURLs,
+                        ledgerName: selectedLedgerDisplay
+                    )
 
-            aggregatedTransactionListSection()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    targetSelectionSection
+
+                    if !importedTransactions.isEmpty {
+                        ImportTransactionSection(
+                            title: "Imported Transactions",
+                            badgeCount: importedTransactions.count,
+                            transactions: importedTransactions,
+                            duplicateIndices: [],
+                            style: $transactionListStyle,
+                            isExpanded: $importedExpanded
+                        )
+                    }
+
+                    if !duplicateTransactions.isEmpty {
+                        ImportTransactionSection(
+                            title: "Duplicate Transactions",
+                            badgeCount: duplicateTransactions.count,
+                            transactions: duplicateTransactions,
+                            duplicateIndices: Set(0 ..< duplicateTransactions.count),
+                            style: $transactionListStyle,
+                            isExpanded: $duplicatesExpanded
+                        )
+                    }
+                }
+                .padding(AppSpacing.lg)
+            }
 
             confirmBar
         }
@@ -86,5 +107,31 @@ struct ImportPreviewView: View {
                 isShowingCreationSheet = true
             }
         }
+    }
+
+    // MARK: - Computed Properties
+
+    private var allTransactions: [ParsedTransaction] {
+        viewModel.parsedStatements.flatMap(\.transactions)
+    }
+
+    private var importedTransactions: [ParsedTransaction] {
+        allTransactions.enumerated().compactMap { index, txn in
+            viewModel.duplicateTransactionIndices.contains(index) ? nil : txn
+        }
+    }
+
+    private var duplicateTransactions: [ParsedTransaction] {
+        allTransactions.enumerated().compactMap { index, txn in
+            viewModel.duplicateTransactionIndices.contains(index) ? txn : nil
+        }
+    }
+
+    private var selectedLedgerDisplay: String? {
+        guard let target = viewModel.selectedTarget else { return nil }
+        if case let .ledger(id) = target {
+            return viewModel.ledgers.first { $0.id == id }?.displayName
+        }
+        return nil
     }
 }

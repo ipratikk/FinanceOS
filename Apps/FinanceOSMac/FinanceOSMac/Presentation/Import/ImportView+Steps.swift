@@ -217,8 +217,7 @@ extension ImportView {
             Divider()
 
             ImportPreviewView(
-                viewModel: viewModel,
-                transactionListStyle: .table
+                viewModel: viewModel
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }

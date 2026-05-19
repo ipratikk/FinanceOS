@@ -16,17 +16,23 @@ struct ImportTransactionListView: View {
     let transactions: [ParsedTransaction]
     let duplicateIndices: Set<Int>
     let style: Style
+    let scrollable: Bool
+    let rowLimit: Int?
 
     // MARK: - Init
 
     init(
         transactions: [ParsedTransaction],
         duplicateIndices: Set<Int> = [],
-        style: Style = .list
+        style: Style = .list,
+        scrollable: Bool = true,
+        rowLimit: Int? = nil
     ) {
         self.transactions = transactions
         self.duplicateIndices = duplicateIndices
         self.style = style
+        self.scrollable = scrollable
+        self.rowLimit = rowLimit
     }
 
     // MARK: - Body
@@ -71,14 +77,40 @@ struct ImportTransactionListView: View {
 
     // MARK: - Table View
 
+    @ViewBuilder
     private var tableView: some View {
+        if scrollable {
+            ScrollView {
+                tableViewContent
+            }
+        } else {
+            tableViewContent
+        }
+    }
+
+    private var tableViewContent: some View {
         VStack(spacing: 0) {
             tableHeader
             Divider()
             tableRows
+            ellipsisIndicator
         }
         .background(AppColors.base)
         .cornerRadius(AppRadius.md)
+    }
+
+    @ViewBuilder
+    private var ellipsisIndicator: some View {
+        if let limit = rowLimit, transactions.count > limit {
+            HStack {
+                Text("… and \(transactions.count - limit) more")
+                    .font(AppTypography.labelSmall)
+                    .foregroundColor(DesignTokens.Text.quaternary)
+                Spacer()
+            }
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.sm)
+        }
     }
 
     private var tableHeader: some View {
@@ -114,14 +146,13 @@ struct ImportTransactionListView: View {
     }
 
     private var tableRows: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                ForEach(transactions.indices, id: \.self) { index in
-                    tableRow(at: index)
+        let visibleTransactions = Array(transactions.prefix(rowLimit ?? transactions.count))
+        return VStack(spacing: 0) {
+            ForEach(visibleTransactions.indices, id: \.self) { index in
+                tableRow(at: index)
 
-                    if index < transactions.count - 1 {
-                        Divider()
-                    }
+                if index < visibleTransactions.count - 1 {
+                    Divider()
                 }
             }
         }
@@ -179,14 +210,15 @@ struct ImportTransactionListView: View {
         .foregroundColor(isDebit ? AppColors.debit : AppColors.credit)
     }
 
-    // MARK: - List Content (unchanged)
+    // MARK: - List Content
 
     private var listContent: some View {
-        let firstFive = Array(transactions.prefix(5))
+        let effectiveLimit = rowLimit ?? transactions.count
+        let visibleTransactions = Array(transactions.prefix(effectiveLimit))
 
         return VStack(spacing: 8) {
-            ForEach(firstFive.indices, id: \.self) { index in
-                let txn = firstFive[index]
+            ForEach(visibleTransactions.indices, id: \.self) { index in
+                let txn = visibleTransactions[index]
                 let isDuplicate = duplicateIndices.contains(index)
 
                 HStack(spacing: 12) {
@@ -225,10 +257,11 @@ struct ImportTransactionListView: View {
                 .cornerRadius(AppRadius.md)
             }
 
-            if transactions.count > 5 {
+            if transactions.count > effectiveLimit {
                 HStack {
-                    Text("... and \(transactions.count - 5) more transactions")
-                        .caption()
+                    Text("… and \(transactions.count - effectiveLimit) more")
+                        .font(AppTypography.labelSmall)
+                        .foregroundColor(DesignTokens.Text.quaternary)
                     Spacer()
                     if duplicateIndices.count > 0 {
                         Text("\(duplicateIndices.count) already imported")

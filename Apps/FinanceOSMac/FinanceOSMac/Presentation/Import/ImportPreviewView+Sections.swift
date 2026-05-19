@@ -98,30 +98,13 @@ extension ImportPreviewView {
         viewModel.importSession.targetBeingCreated = state
     }
 
-    func fileListSection() -> some View {
-        ImportFileListView(fileStatementPairs: viewModel.fileStatementPairs)
-    }
-
-    func aggregatedSummarySection() -> some View {
-        ImportPreviewCard(parsedStatements: viewModel.parsedStatements)
-    }
-
-    func aggregatedTransactionListSection() -> some View {
-        let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
-        return ImportTransactionListView(
-            transactions: allTransactions,
-            duplicateIndices: viewModel.duplicateTransactionIndices,
-            style: transactionListStyle
-        )
-    }
-
     var confirmBar: some View {
         let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
         let newCount = allTransactions.count - viewModel.duplicateTransactionIndices.count
         let dupCount = viewModel.duplicateTransactionIndices.count
 
         return HStack(spacing: AppSpacing.md) {
-            Text("\(newCount) new · \(dupCount) duplicate")
+            Text("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
                 .font(AppTypography.labelSmall)
                 .foregroundColor(DesignTokens.Text.secondary)
 
