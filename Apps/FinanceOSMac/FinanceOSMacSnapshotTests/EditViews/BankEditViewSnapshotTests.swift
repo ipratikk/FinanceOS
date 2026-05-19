@@ -7,7 +7,7 @@ import XCTest
 
 final class BankEditViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_bank_edit_view() {

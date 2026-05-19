@@ -7,7 +7,7 @@ import XCTest
 
 final class FLabelSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_label_basic() {

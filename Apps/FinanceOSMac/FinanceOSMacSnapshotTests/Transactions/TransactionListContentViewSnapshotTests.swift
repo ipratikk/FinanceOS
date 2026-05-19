@@ -7,7 +7,7 @@ import XCTest
 
 final class TransactionListContentViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_transaction_list_content() {

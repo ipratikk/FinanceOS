@@ -7,7 +7,7 @@ import XCTest
 
 final class DashboardViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_dashboard_initial() {

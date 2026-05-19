@@ -6,7 +6,7 @@ import XCTest
 
 final class SettingsViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_settings_view() {

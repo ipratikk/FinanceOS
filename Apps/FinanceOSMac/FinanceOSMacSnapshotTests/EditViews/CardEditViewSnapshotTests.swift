@@ -7,7 +7,7 @@ import XCTest
 
 final class CardEditViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_card_edit_view() {

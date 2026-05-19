@@ -6,7 +6,7 @@ import XCTest
 
 final class PasswordPromptSheetSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_password_prompt_initial() {

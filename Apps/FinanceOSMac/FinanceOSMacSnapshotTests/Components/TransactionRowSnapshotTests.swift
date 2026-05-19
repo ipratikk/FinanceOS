@@ -1,13 +1,14 @@
 import FinanceCore
 @testable import FinanceOSMac
 import FinanceTesting
+import FinanceUI
 import SnapshotTesting
 import SwiftUI
 import XCTest
 
 final class TransactionRowSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_transaction_row_debit() {

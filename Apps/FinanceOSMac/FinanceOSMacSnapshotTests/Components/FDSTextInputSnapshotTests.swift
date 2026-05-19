@@ -7,7 +7,7 @@ import XCTest
 
 final class FDSTextInputSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_text_input_empty() {
