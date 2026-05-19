@@ -14,14 +14,31 @@ struct ImportSourceGrid: View {
     ]
 
     var body: some View {
-        LazyVGrid(columns: columns, spacing: AppSpacing.md) {
-            ForEach(sources, id: \.self) { source in
-                ImportSourceCard(
-                    source: source,
-                    matchedBank: Banks.matching(bankName: source.bankName),
-                    isSelected: selectedSource == source,
-                    onSelect: onSelectSource
-                )
+        VStack(alignment: .leading, spacing: 20) {
+            sourceSection("Banks", sourceType: .bankAccount)
+            sourceSection("Cards", sourceType: .creditCard)
+        }
+    }
+
+    @ViewBuilder
+    private func sourceSection(_ title: String, sourceType: StatementSourceType) -> some View {
+        let sectionSources = sources.filter { $0.sourceType == sourceType }
+        if !sectionSources.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(title)
+                    .font(AppTypography.headingSmall)
+                    .foregroundColor(DesignTokens.Text.primary)
+
+                LazyVGrid(columns: columns, spacing: AppSpacing.md) {
+                    ForEach(sectionSources, id: \.self) { source in
+                        ImportSourceCard(
+                            source: source,
+                            matchedBank: Banks.matching(bankName: source.bankName),
+                            isSelected: selectedSource == source,
+                            onSelect: onSelectSource
+                        )
+                    }
+                }
             }
         }
     }

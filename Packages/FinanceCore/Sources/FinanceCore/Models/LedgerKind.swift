@@ -24,4 +24,21 @@ public enum LedgerKind: String, Codable, Sendable, CaseIterable, Hashable {
             return "Investment"
         }
     }
+
+    public var symbol: String {
+        switch self {
+        case .bankAccount:
+            return "building.2"
+        case .creditCard:
+            return "creditcard"
+        case .loan:
+            return "dollarsign.circle"
+        case .wallet:
+            return "wallet.pass"
+        case .crypto:
+            return "bitcoinsign"
+        case .investment:
+            return "chart.pie"
+        }
+    }
 }

@@ -3,10 +3,6 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
     case hdfcCard
     case iciciBank
     case iciciCard
-    case axisBank
-    case axisCard
-    case sbiBank
-    case sbiCard
     case amex
 
     public var displayName: String {
@@ -19,14 +15,6 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
             return "ICICI Bank"
         case .iciciCard:
             return "ICICI Card"
-        case .axisBank:
-            return "Axis Bank"
-        case .axisCard:
-            return "Axis Card"
-        case .sbiBank:
-            return "SBI Bank"
-        case .sbiCard:
-            return "SBI Card"
         case .amex:
             return "American Express"
         }
@@ -42,14 +30,6 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
             return [.csv]
         case .iciciCard:
             return [.csv]
-        case .axisBank:
-            return [.csv]
-        case .axisCard:
-            return [.csv]
-        case .sbiBank:
-            return [.csv]
-        case .sbiCard:
-            return [.csv]
         case .amex:
             return [.csv]
         }
@@ -61,10 +41,6 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
             return "HDFC"
         case .iciciBank, .iciciCard:
             return "ICICI"
-        case .axisBank, .axisCard:
-            return "Axis"
-        case .sbiBank, .sbiCard:
-            return "SBI"
         case .amex:
             return "Amex"
         }
@@ -72,9 +48,9 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
 
     public var sourceType: StatementSourceType {
         switch self {
-        case .hdfcBank, .iciciBank, .axisBank, .sbiBank:
+        case .hdfcBank, .iciciBank:
             return .bankAccount
-        case .hdfcCard, .iciciCard, .axisCard, .sbiCard, .amex:
+        case .hdfcCard, .iciciCard, .amex:
             return .creditCard
         }
     }

@@ -22,7 +22,7 @@ struct ImportSourceCard: View {
                     bankLogoView
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(source.bankName)
+                        Text(matchedBank?.displayName ?? source.bankName)
                             .font(AppTypography.bodyMd)
                             .foregroundColor(DesignTokens.Text.primary)
 
@@ -65,14 +65,10 @@ struct ImportSourceCard: View {
     @ViewBuilder
     private var bankLogoView: some View {
         if let bank = matchedBank {
-            RoundedRectangle(cornerRadius: AppRadius.sm)
-                .fill(bank.tintColor.opacity(0.2))
+            Image(bank.symbolAssetName)
+                .resizable()
+                .scaledToFit()
                 .frame(width: 40, height: 40)
-                .overlay(
-                    Text(bank.shortCode)
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
-                        .foregroundColor(bank.tintColor)
-                )
         } else {
             RoundedRectangle(cornerRadius: AppRadius.sm)
                 .fill(DesignTokens.Background.surfaceGlass)
