@@ -41,11 +41,11 @@ public struct FDSNetworkLogo: View {
     private var mastercardLogo: some View {
         HStack(spacing: 2) {
             Circle()
-                .fill(Color(red: 1.0, green: 0.27, blue: 0.23))
+                .fill(AppColors.danger)
                 .frame(width: 10, height: 10)
 
             Circle()
-                .fill(Color(red: 1.0, green: 0.62, blue: 0.04))
+                .fill(AppColors.accent)
                 .frame(width: 10, height: 10)
         }
         .frame(width: 20, height: 10)
@@ -78,10 +78,10 @@ public struct FDSNetworkLogo: View {
         HStack(spacing: 1) {
             Text("Ru")
                 .font(.system(size: 7, weight: .bold))
-                .foregroundColor(Color(red: 0.19, green: 0.82, blue: 0.35))
+                .foregroundColor(AppColors.accent)
             Text("Pay")
                 .font(.system(size: 7, weight: .bold))
-                .foregroundColor(Color(red: 1.0, green: 0.62, blue: 0.04))
+                .foregroundColor(AppColors.accent)
         }
     }
 }

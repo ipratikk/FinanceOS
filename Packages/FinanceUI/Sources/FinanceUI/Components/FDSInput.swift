@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Recessed text input field with optional prefix/suffix.
@@ -35,7 +36,7 @@ public struct FDSInput: View {
             if let prefix {
                 Text(prefix)
                     .font(.system(size: 13, weight: .regular, design: isMono ? .monospaced : .default))
-                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                    .foregroundColor(AppColors.textTertiary)
             }
 
             if isSecure {
@@ -51,23 +52,22 @@ public struct FDSInput: View {
             if let suffix {
                 Text(suffix)
                     .font(.system(size: 12, weight: .regular, design: isMono ? .monospaced : .default))
-                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                    .foregroundColor(AppColors.textTertiary)
             }
         }
         .padding(.horizontal, 12)
         .frame(height: 34)
-        .background(Color.black.opacity(0.25))
+        .background(AppColors.surface2)
         .cornerRadius(8)
         .overlay {
             if isFocused {
                 RoundedRectangle(cornerRadius: 8)
                     .strokeBorder(
-                        Color(red: 1.0, green: 0.62, blue: 0.04).opacity(0.50),
-                        lineWidth: 3
+                        AppColors.accent.opacity(0.5),
+                        lineWidth: 2
                     )
             }
         }
-        .shadow(color: .black.opacity(0.25), radius: 0, y: 1)
     }
 }
 

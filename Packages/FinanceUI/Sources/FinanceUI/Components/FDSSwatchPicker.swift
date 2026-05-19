@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// 12-cell color swatch picker grid (1:1 aspect).
@@ -44,7 +45,7 @@ public struct FDSSwatchPicker: View {
                             if selectedColor == color {
                                 Circle()
                                     .strokeBorder(
-                                        Color(red: 1.0, green: 0.62, blue: 0.04),
+                                        AppColors.accent,
                                         lineWidth: 2.5
                                     )
                             }

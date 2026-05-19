@@ -1,8 +1,9 @@
+import FinanceCore
 import SwiftUI
 
 /// 20×20 radio button.
 ///
-/// Off: recessed dark well. On: filled accent + white dot.
+/// Off: subtle border. On: filled green accent + white dot.
 public struct FDSRadio: View {
     @Binding var isSelected: Bool
 
@@ -13,33 +14,18 @@ public struct FDSRadio: View {
     public var body: some View {
         ZStack {
             Circle()
-                .fill(isSelected ? Color(red: 1.0, green: 0.62, blue: 0.04) : Color.black.opacity(0.25))
+                .fill(isSelected ? AppColors.accent : AppColors.surface2)
                 .overlay {
                     Circle()
                         .strokeBorder(
-                            isSelected
-                                ? LinearGradient(
-                                    colors: [
-                                        Color.white.opacity(0.16),
-                                        Color.white.opacity(0.06),
-                                        .clear,
-                                        Color.black.opacity(0.20)
-                                    ],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                                : LinearGradient(
-                                    colors: [.clear, .clear],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                ),
-                            lineWidth: 1
+                            isSelected ? AppColors.accent : AppColors.border,
+                            lineWidth: 0.5
                         )
                 }
 
             if isSelected {
                 Circle()
-                    .fill(Color.white)
+                    .fill(AppColors.base)
                     .frame(width: 8, height: 8)
             }
         }
