@@ -8,7 +8,7 @@ struct ImportPreviewView: View {
 
     @State private var isShowingCreationSheet = false
     @State private var sheetCreationState = TargetCreationState()
-    @State private var importedExpanded = true
+    @State private var importedExpanded = false
     @State private var duplicatesExpanded = false
     @State private var transactionListStyle: ImportTransactionListView.Style = .table
 
@@ -61,31 +61,52 @@ struct ImportPreviewView: View {
 
             Divider()
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    if !importedTransactions.isEmpty {
-                        ImportTransactionSection(
-                            title: "Imported Transactions",
-                            badgeCount: importedTransactions.count,
+            VStack(spacing: 0) {
+                // New Transactions Section
+                if !importedTransactions.isEmpty {
+                    sectionHeader(
+                        title: "New Transactions",
+                        badgeCount: importedTransactions.count,
+                        onViewAllToggle: { importedExpanded.toggle() }
+                    )
+                    Divider()
+
+                    ScrollView {
+                        ImportTransactionListView(
                             transactions: importedTransactions,
                             duplicateIndices: [],
-                            style: $transactionListStyle,
-                            isExpanded: $importedExpanded
+                            style: transactionListStyle,
+                            scrollable: false,
+                            rowLimit: importedExpanded ? nil : 5
                         )
-                    }
-
-                    if !duplicateTransactions.isEmpty {
-                        ImportTransactionSection(
-                            title: "Duplicate Transactions",
-                            badgeCount: duplicateTransactions.count,
-                            transactions: duplicateTransactions,
-                            duplicateIndices: Set(0 ..< duplicateTransactions.count),
-                            style: $transactionListStyle,
-                            isExpanded: $duplicatesExpanded
-                        )
+                        .padding(AppSpacing.lg)
                     }
                 }
-                .padding(AppSpacing.lg)
+
+                // Already Imported Section
+                if !duplicateTransactions.isEmpty {
+                    if !importedTransactions.isEmpty {
+                        Divider()
+                    }
+
+                    sectionHeader(
+                        title: "Already imported",
+                        badgeCount: duplicateTransactions.count,
+                        onViewAllToggle: { duplicatesExpanded.toggle() }
+                    )
+                    Divider()
+
+                    ScrollView {
+                        ImportTransactionListView(
+                            transactions: duplicateTransactions,
+                            duplicateIndices: Set(0 ..< duplicateTransactions.count),
+                            style: transactionListStyle,
+                            scrollable: false,
+                            rowLimit: duplicatesExpanded ? nil : 5
+                        )
+                        .padding(AppSpacing.lg)
+                    }
+                }
             }
 
             confirmBar
@@ -127,6 +148,61 @@ struct ImportPreviewView: View {
                 isShowingCreationSheet = true
             }
         }
+    }
+
+    // MARK: - Section Header
+
+    private func sectionHeader(
+        title: String,
+        badgeCount: Int,
+        onViewAllToggle: @escaping () -> Void
+    ) -> some View {
+        HStack(spacing: AppSpacing.md) {
+            HStack(spacing: 8) {
+                Text(title)
+                    .font(AppTypography.headingSmall)
+                    .foregroundColor(DesignTokens.Text.primary)
+
+                FBadge(String(badgeCount), color: .blue)
+            }
+
+            Spacer()
+
+            HStack(spacing: 4) {
+                Button(action: { transactionListStyle = .list }) {
+                    Image(systemName: "list.bullet")
+                        .font(.system(size: 14, weight: transactionListStyle == .list ? .semibold : .regular))
+                        .foregroundColor(
+                            transactionListStyle == .list ? AppColors.accent : DesignTokens.Text.secondary
+                        )
+                }
+                .buttonStyle(.plain)
+
+                Divider()
+                    .frame(height: 16)
+
+                Button(action: { transactionListStyle = .table }) {
+                    Image(systemName: "tablecells")
+                        .font(.system(size: 14, weight: transactionListStyle == .table ? .semibold : .regular))
+                        .foregroundColor(
+                            transactionListStyle == .table ? AppColors.accent : DesignTokens.Text.secondary
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+
+            Button(action: onViewAllToggle) {
+                Text(
+                    (title == "New Transactions" ? importedExpanded : duplicatesExpanded) ? "Show Less" : "View All"
+                )
+                .font(AppTypography.labelMedium)
+                .foregroundColor(AppColors.accent)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+        }
+        .padding(AppSpacing.md)
+        .background(DesignTokens.Background.surfaceGlass)
     }
 
     // MARK: - Computed Properties

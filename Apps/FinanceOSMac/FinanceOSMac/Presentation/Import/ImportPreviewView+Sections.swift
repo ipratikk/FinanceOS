@@ -68,10 +68,6 @@ extension ImportPreviewView {
                 Text(displayText)
                     .font(AppTypography.labelMedium)
                     .foregroundColor(DesignTokens.Text.primary)
-                Spacer()
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(DesignTokens.Text.secondary)
             }
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, AppSpacing.sm)
