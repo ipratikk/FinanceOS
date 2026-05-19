@@ -75,7 +75,7 @@ extension ImportPreviewView {
             }
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, AppSpacing.sm)
-            .background(DesignTokens.Background.surface)
+            .background(DesignTokens.Background.surfaceGlass)
             .cornerRadius(AppRadius.sm)
         }
     }
