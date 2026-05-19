@@ -1324,8 +1324,8 @@
     "hash": "12a688c806c41479f1fcd3b824f3627f"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewModel.swift": {
-    "mtime": 1779202654.1758523,
-    "hash": "a5a4af1f64ce0bc6d9f7812801d248f0"
+    "mtime": 1779207678.3991156,
+    "hash": "6f0d4e8adc56e9156fbd7cd2fe3282b8"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportTransactionSection.swift": {
     "mtime": 1779204430.1889875,
@@ -1348,8 +1348,8 @@
     "hash": "f0511a8727c008187ccec522bdfb85a5"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView.swift": {
-    "mtime": 1779206730.791597,
-    "hash": "9a607b074b2654e89f9bd6966a40e224"
+    "mtime": 1779208833.6815782,
+    "hash": "93290cb4160a5a510594e3e7f38f14dc"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportStepper.swift": {
     "mtime": 1779207604.6787014,
@@ -1360,8 +1360,8 @@
     "hash": "4d2c2575a7fce9b82ffc543fae4f7e3c"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportPreviewView+Sections.swift": {
-    "mtime": 1779206805.9192169,
-    "hash": "b1b572b2f8624f14b7d785275d43c093"
+    "mtime": 1779207900.144685,
+    "hash": "ffb331814940ce3fe87d56e0389c7a2c"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportFileListView.swift": {
     "mtime": 1779183640.0176852,
@@ -1380,7 +1380,7 @@
     "hash": "76cf9a8ac4578c03254ec131e62d9aa7"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportSourceGrid.swift": {
-    "mtime": 1779207381.9827552,
+    "mtime": 1779207759.4183223,
     "hash": "d634fa576ef21edabdf34caf98a1d6e4"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Import/ImportViewHelpers.swift": {
