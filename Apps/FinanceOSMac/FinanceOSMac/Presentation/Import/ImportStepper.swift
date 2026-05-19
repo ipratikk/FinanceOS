@@ -8,6 +8,12 @@ struct ImportStepper: View {
 
     var body: some View {
         HStack(spacing: 16) {
+            Text("Import Statements")
+                .font(AppTypography.headingXL)
+                .foregroundColor(DesignTokens.Text.primary)
+
+            Spacer()
+
             HStack(spacing: 8) {
                 stepButton(
                     1,
@@ -28,16 +34,9 @@ struct ImportStepper: View {
                 stepButton(3, label: "Review", isComplete: false, isCurrent: step == .review, target: .review)
             }
             .frame(maxWidth: 280)
-
-            Spacer()
-
-            Text("Import")
-                .font(AppTypography.headingSmall)
-                .foregroundColor(DesignTokens.Text.primary)
         }
         .padding(.horizontal, AppSpacing.lg)
         .padding(.vertical, AppSpacing.md)
-        .background(DesignTokens.Background.surfaceGlass)
     }
 
     private func stepButton(
