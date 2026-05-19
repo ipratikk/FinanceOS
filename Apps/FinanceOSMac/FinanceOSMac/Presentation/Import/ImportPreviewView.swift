@@ -34,15 +34,35 @@ struct ImportPreviewView: View {
                 .padding(.top, AppSpacing.md)
             }
 
+            // Header with Review heading and Import to dropdown
+            HStack(spacing: AppSpacing.md) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Review parsed transactions")
+                        .font(AppTypography.headingMd)
+                        .foregroundColor(DesignTokens.Text.primary)
+
+                    if !viewModel.parsedStatements.isEmpty {
+                        let newCount = viewModel.parsedStatements.count - viewModel.duplicateTransactionIndices.count
+                        let dupCount = viewModel.duplicateTransactionIndices.count
+                        let fileName = viewModel.fileURLs.first?.lastPathComponent ?? "File"
+                        let total = viewModel.parsedStatements.count
+                        Text("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
+                            .font(AppTypography.labelSmall)
+                            .foregroundColor(DesignTokens.Text.tertiary)
+                    }
+                }
+
+                Spacer()
+
+                targetSelectionMenu
+            }
+            .padding(AppSpacing.lg)
+            .background(DesignTokens.Background.surfaceGlass)
+
+            Divider()
+
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    ImportStatementHeading(
-                        fileURLs: viewModel.fileURLs,
-                        ledgerName: selectedLedgerDisplay
-                    )
-
-                    targetSelectionSection
-
                     if !importedTransactions.isEmpty {
                         ImportTransactionSection(
                             title: "Imported Transactions",

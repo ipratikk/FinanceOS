@@ -4,76 +4,79 @@ import FinanceUI
 import SwiftUI
 
 extension ImportPreviewView {
-    var targetSelectionSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Import To")
-                .font(.headline)
-
-            Menu {
-                if viewModel.selectedTarget != nil {
-                    Button(action: {
-                        viewModel.selectedTarget = nil
-                    }) {
-                        Text("Clear Selection")
-                    }
-                    Divider()
+    var targetSelectionMenu: some View {
+        Menu {
+            if viewModel.selectedTarget != nil {
+                Button(action: {
+                    viewModel.selectedTarget = nil
+                }) {
+                    Text("Clear Selection")
                 }
+                Divider()
+            }
 
-                let accounts = viewModel.ledgers.filter { $0.kind == .bankAccount }
-                if !accounts.isEmpty {
-                    Menu("Accounts") {
-                        ForEach(accounts) { account in
-                            Button(action: {
-                                viewModel.selectedTarget = .ledger(account.id)
-                            }) {
-                                if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
-                                    Label(account.displayName, systemImage: "checkmark")
-                                } else {
-                                    Text(account.displayName)
-                                }
+            let accounts = viewModel.ledgers.filter { $0.kind == .bankAccount }
+            if !accounts.isEmpty {
+                Menu("Accounts") {
+                    ForEach(accounts) { account in
+                        Button(action: {
+                            viewModel.selectedTarget = .ledger(account.id)
+                        }) {
+                            if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
+                                Label(account.displayName, systemImage: "checkmark")
+                            } else {
+                                Text(account.displayName)
                             }
                         }
                     }
-                }
-                Button(action: { initializeCreateSheet(isCard: false) }) {
-                    Text("Create New Account...")
-                }
-
-                let cards = viewModel.ledgers.filter { $0.kind == .creditCard }
-                if !cards.isEmpty {
-                    Menu("Cards") {
-                        ForEach(cards) { card in
-                            Button(action: {
-                                viewModel.selectedTarget = .ledger(card.id)
-                            }) {
-                                if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
-                                    Label(card.displayName, systemImage: "checkmark")
-                                } else {
-                                    Text(card.displayName)
-                                }
-                            }
-                        }
-                    }
-                }
-                Button(action: { initializeCreateSheet(isCard: true) }) {
-                    Text("Create New Card...")
-                }
-            } label: {
-                let displayText: String = {
-                    if let target = viewModel.selectedTarget {
-                        if case let .ledger(id) = target {
-                            return viewModel.ledgers.first { $0.id == id }?.displayName ?? "Ledger"
-                        }
-                    }
-                    return "Select Account or Card..."
-                }()
-
-                HStack {
-                    Text(displayText)
-                    Spacer()
-                    Image(systemName: "chevron.down")
                 }
             }
+            Button(action: { initializeCreateSheet(isCard: false) }) {
+                Text("Create New Account...")
+            }
+
+            let cards = viewModel.ledgers.filter { $0.kind == .creditCard }
+            if !cards.isEmpty {
+                Menu("Cards") {
+                    ForEach(cards) { card in
+                        Button(action: {
+                            viewModel.selectedTarget = .ledger(card.id)
+                        }) {
+                            if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
+                                Label(card.displayName, systemImage: "checkmark")
+                            } else {
+                                Text(card.displayName)
+                            }
+                        }
+                    }
+                }
+            }
+            Button(action: { initializeCreateSheet(isCard: true) }) {
+                Text("Create New Card...")
+            }
+        } label: {
+            let displayText: String = {
+                if let target = viewModel.selectedTarget {
+                    if case let .ledger(id) = target {
+                        return viewModel.ledgers.first { $0.id == id }?.displayName ?? "Ledger"
+                    }
+                }
+                return "Select Account or Card..."
+            }()
+
+            HStack(spacing: 6) {
+                Text(displayText)
+                    .font(AppTypography.labelMedium)
+                    .foregroundColor(DesignTokens.Text.primary)
+                Spacer()
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(DesignTokens.Text.secondary)
+            }
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.sm)
+            .background(DesignTokens.Background.surface)
+            .cornerRadius(AppRadius.sm)
         }
     }
 

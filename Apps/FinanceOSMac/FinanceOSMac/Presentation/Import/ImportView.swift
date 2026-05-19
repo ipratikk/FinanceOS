@@ -17,9 +17,19 @@ struct ImportView: View {
             // Stepper at top
             ImportStepper(
                 step: viewModel.currentStep,
-                onStartOver: viewModel.resetToSource
+                onStepSelect: { step in
+                    switch step {
+                    case .source:
+                        viewModel.resetToSource()
+                    case .upload:
+                        if viewModel.currentStep == .review {
+                            viewModel.backToUpload()
+                        }
+                    case .review:
+                        break
+                    }
+                }
             )
-            .padding(AppSpacing.lg)
 
             // Step content
             Group {

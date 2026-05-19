@@ -4,65 +4,79 @@ import SwiftUI
 
 struct ImportStepper: View {
     let step: ImportViewModel.Step
-    let onStartOver: () -> Void
+    let onStepSelect: (ImportViewModel.Step) -> Void
 
     var body: some View {
-        HStack(spacing: 8) {
-            HStack(spacing: 12) {
-                stepIndicator(1, label: "Source", isComplete: step.rawValue > 0, isCurrent: step == .source)
+        HStack(spacing: 16) {
+            HStack(spacing: 8) {
+                stepButton(
+                    1,
+                    label: "Source",
+                    isComplete: step.rawValue > 0,
+                    isCurrent: step == .source,
+                    target: .source
+                )
                 stepRule(isComplete: step.rawValue > 0)
-                stepIndicator(2, label: "Upload", isComplete: step.rawValue > 1, isCurrent: step == .upload)
+                stepButton(
+                    2,
+                    label: "Upload",
+                    isComplete: step.rawValue > 1,
+                    isCurrent: step == .upload,
+                    target: .upload
+                )
                 stepRule(isComplete: step.rawValue > 1)
-                stepIndicator(3, label: "Review", isComplete: false, isCurrent: step == .review)
+                stepButton(3, label: "Review", isComplete: false, isCurrent: step == .review, target: .review)
             }
+            .frame(maxWidth: 280)
 
             Spacer()
 
-            Button(action: onStartOver) {
-                Text("Start over")
-                    .font(AppTypography.labelMedium)
-            }
-            .buttonStyle(.plain)
-            .foregroundColor(AppColors.accent)
-            .contentShape(Rectangle())
+            Text("Import")
+                .font(AppTypography.headingSmall)
+                .foregroundColor(DesignTokens.Text.primary)
         }
-        .padding(AppSpacing.lg)
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.vertical, AppSpacing.md)
         .background(DesignTokens.Background.surfaceGlass)
-        .cornerRadius(AppRadius.md)
     }
 
-    private func stepIndicator(
+    private func stepButton(
         _ number: Int,
         label: String,
         isComplete: Bool,
-        isCurrent: Bool
+        isCurrent: Bool,
+        target: ImportViewModel.Step
     ) -> some View {
-        VStack(spacing: 4) {
-            ZStack {
-                Circle()
-                    .fill(
-                        isCurrent
-                            ? AppColors.accent
-                            : (isComplete ? AppColors.success : AppColors.surface)
-                    )
-                    .frame(width: 28, height: 28)
+        Button(action: { onStepSelect(target) }) {
+            VStack(spacing: 2) {
+                ZStack {
+                    Circle()
+                        .fill(
+                            isCurrent
+                                ? AppColors.accent
+                                : (isComplete ? AppColors.success : AppColors.surface)
+                        )
+                        .frame(width: 20, height: 20)
 
-                if isComplete {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.white)
-                } else {
-                    Text("\(number)")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(isCurrent ? .black : DesignTokens.Text.tertiary)
+                    if isComplete {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundColor(.white)
+                    } else {
+                        Text("\(number)")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(isCurrent ? .black : DesignTokens.Text.tertiary)
+                    }
                 }
-            }
 
-            Text(label)
-                .font(AppTypography.labelSmall)
-                .foregroundColor(isCurrent ? AppColors.accent : DesignTokens.Text.secondary)
+                Text(label)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundColor(isCurrent ? AppColors.accent : DesignTokens.Text.secondary)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
+        .contentShape(Rectangle())
     }
 
     private func stepRule(isComplete: Bool) -> some View {
@@ -75,9 +89,9 @@ struct ImportStepper: View {
 
 #Preview {
     VStack(spacing: 16) {
-        ImportStepper(step: .source, onStartOver: {})
-        ImportStepper(step: .upload, onStartOver: {})
-        ImportStepper(step: .review, onStartOver: {})
+        ImportStepper(step: .source, onStepSelect: { _ in })
+        ImportStepper(step: .upload, onStepSelect: { _ in })
+        ImportStepper(step: .review, onStepSelect: { _ in })
     }
     .padding()
 }

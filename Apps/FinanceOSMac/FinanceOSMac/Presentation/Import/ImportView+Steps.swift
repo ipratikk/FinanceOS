@@ -190,43 +190,6 @@ extension ImportView {
 
     var reviewStep: some View {
         VStack(spacing: 0) {
-            // Header with re-upload button
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Review parsed transactions")
-                        .font(AppTypography.headingMd)
-                        .foregroundColor(DesignTokens.Text.primary)
-
-                    if !viewModel.parsedStatements.isEmpty {
-                        let newCount = viewModel.parsedStatements.count - viewModel.duplicateTransactionIndices.count
-                        let dupCount = viewModel.duplicateTransactionIndices.count
-                        let fileName = viewModel.fileURLs.first?.lastPathComponent ?? "File"
-                        let total = viewModel.parsedStatements.count
-                        Text("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
-                            .font(AppTypography.labelSmall)
-                            .foregroundColor(DesignTokens.Text.tertiary)
-                    }
-                }
-
-                Spacer()
-
-                Button(action: viewModel.backToUpload) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 12, weight: .semibold))
-                        Text("Re-upload")
-                    }
-                    .font(AppTypography.labelMedium)
-                    .foregroundColor(AppColors.accent)
-                }
-                .buttonStyle(.plain)
-                .contentShape(Rectangle())
-            }
-            .padding(AppSpacing.lg)
-            .background(DesignTokens.Background.surfaceGlass)
-
-            Divider()
-
             ImportPreviewView(
                 viewModel: viewModel
             )
