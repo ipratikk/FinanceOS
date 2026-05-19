@@ -15,7 +15,7 @@ final class ImportViewModel {
         case review = 2
     }
 
-    private(set) var currentStep: Step = .source
+    var currentStep: Step = .source
     var isDraggedOver: Bool = false
 
     let importSession: ImportSession
