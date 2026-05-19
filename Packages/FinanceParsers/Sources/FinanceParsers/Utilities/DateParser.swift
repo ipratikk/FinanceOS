@@ -18,7 +18,7 @@ public enum DateParser {
     }
 
     public static func parseICICICard(_ string: String) -> Date? {
-        parse(string, formats: ["MM/dd/yyyy"])
+        parse(string, formats: ["dd/MM/yyyy"])
     }
 
     public static func parseHDFCBank(_ string: String) -> Date? {
