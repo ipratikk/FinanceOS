@@ -93,7 +93,7 @@ struct ImportTransactionSection: View {
                 transactions: transactions,
                 duplicateIndices: duplicateIndices,
                 style: style,
-                scrollable: false,
+                scrollable: true,
                 rowLimit: nil
             )
         } else {
@@ -101,7 +101,7 @@ struct ImportTransactionSection: View {
                 transactions: transactions,
                 duplicateIndices: duplicateIndices,
                 style: style,
-                scrollable: false,
+                scrollable: true,
                 rowLimit: collapsedRowLimit
             )
         }
