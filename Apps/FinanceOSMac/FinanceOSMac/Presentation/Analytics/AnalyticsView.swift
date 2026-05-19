@@ -35,7 +35,7 @@ struct AnalyticsView: View {
                 .padding(.horizontal, 32)
                 .padding(.vertical, 24)
             }
-            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+            .background(AppColors.base)
             .task {
                 await viewModel.load()
                 isLoading = false
@@ -48,7 +48,7 @@ struct AnalyticsView: View {
                     .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+            .background(AppColors.base)
             .task {
                 viewModel = AnalyticsViewModel(
                     spendingService: appContainer.spendingService,

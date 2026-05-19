@@ -30,7 +30,7 @@ struct AccountsView: View {
                 accountsList
             }
         }
-        .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+        .background(AppColors.base)
         .navigationTitle("Accounts")
         .alert(
             "Delete \"\(accountPendingDelete?.displayName ?? "")\"?",

@@ -1,19 +1,19 @@
+import FinanceCore
 import SwiftUI
 
-/// Liquid Glass button with multiple variants.
+/// Simple flat button with multiple variants.
 ///
 /// Variants:
-/// - `.primary` — solid accent fill, dark foreground, gleam edge
-/// - `.ghost` — glass pill, primary text
-/// - `.danger` — red-tinted glass pill
-/// - `.link` — bare accent text with hover pill
+/// - `.primary` — solid green fill
+/// - `.ghost` — outline style, light text
+/// - `.danger` — red background/outline
+/// - `.link` — text only
 public struct FDSLiquidButton: View {
     let title: String
     let symbol: String?
     let variant: Variant
     let action: () -> Void
 
-    @State private var isHovered = false
     @State private var isPressed = false
 
     public enum Variant {
@@ -50,12 +50,10 @@ public struct FDSLiquidButton: View {
                     background
                 }
             }
-            .scaleEffect(isPressed ? 0.97 : 1.0)
+            .opacity(isPressed ? 0.8 : 1.0)
         }
         .buttonStyle(.plain)
-        .onHover { isHovered = $0 }
-        .animation(.easeOut(duration: 0.12), value: isHovered)
-        .animation(.easeInOut(duration: 0.18), value: isPressed)
+        .animation(.easeInOut(duration: 0.15), value: isPressed)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in isPressed = true }
@@ -67,50 +65,15 @@ public struct FDSLiquidButton: View {
     private var background: some View {
         switch variant {
         case .primary:
-            Capsule()
-                .fill(Color(red: 1.0, green: 0.62, blue: 0.04))
-                .overlay {
-                    Capsule()
-                        .strokeBorder(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.16),
-                                    Color.white.opacity(0.06),
-                                    .clear,
-                                    Color.black.opacity(0.20)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
-                            lineWidth: 1
-                        )
-                }
+            Capsule().fill(AppColors.accent)
         case .ghost:
             Capsule()
-                .fill(.regularMaterial)
-                .overlay {
-                    Capsule()
-                        .fill(Color.white.opacity(0.06))
-                }
-                .overlay {
-                    Capsule()
-                        .strokeBorder(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.16),
-                                    Color.white.opacity(0.06),
-                                    .clear,
-                                    Color.black.opacity(0.20)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
-                            lineWidth: 1
-                        )
-                }
+                .fill(AppColors.surface2)
+                .overlay(Capsule().strokeBorder(AppColors.border, lineWidth: 0.5))
         case .danger:
             Capsule()
-                .fill(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.18))
+                .fill(AppColors.danger.opacity(0.15))
+                .overlay(Capsule().strokeBorder(AppColors.danger.opacity(0.3), lineWidth: 0.5))
         case .link:
             EmptyView()
         }
@@ -119,13 +82,13 @@ public struct FDSLiquidButton: View {
     private var foreground: Color {
         switch variant {
         case .primary:
-            Color(red: 0.1, green: 0.1, blue: 0.11)
+            AppColors.base
         case .ghost:
-            Color(red: 0.945, green: 0.953, blue: 0.965)
+            AppColors.textPrimary
         case .danger:
-            Color(red: 1.0, green: 0.27, blue: 0.23)
+            AppColors.danger
         case .link:
-            Color(red: 1.0, green: 0.62, blue: 0.04)
+            AppColors.accent
         }
     }
 }

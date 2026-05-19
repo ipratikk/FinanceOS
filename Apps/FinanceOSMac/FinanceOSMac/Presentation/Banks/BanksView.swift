@@ -22,7 +22,7 @@ struct BanksView: View {
                 banksList
             }
         }
-        .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+        .background(AppColors.base)
         .navigationTitle("Banks")
         .task { await viewModel.loadBanks() }
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {

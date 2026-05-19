@@ -30,7 +30,7 @@ struct LedgerDetailView: View {
                     .padding(.vertical, 24)
                     .frame(maxWidth: 1080)
                 }
-                .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+                .background(AppColors.base)
             } else if isLoading {
                 VStack(spacing: 12) {
                     ProgressView()
@@ -40,14 +40,14 @@ struct LedgerDetailView: View {
                         .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+                .background(AppColors.base)
             } else {
                 VStack {
                     Text("Ledger not found")
                         .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+                .background(AppColors.base)
             }
         }
         .navigationTitle(ledger?.displayName ?? "Ledger")

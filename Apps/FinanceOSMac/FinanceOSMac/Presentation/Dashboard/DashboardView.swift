@@ -39,7 +39,7 @@ struct DashboardView: View {
                 .padding(.vertical, 24)
                 .frame(maxWidth: 1080)
             }
-            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+            .background(AppColors.base)
             .task {
                 await viewModel.load()
                 isLoading = false
@@ -53,7 +53,7 @@ struct DashboardView: View {
                     .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+            .background(AppColors.base)
             .task {
                 viewModel = DashboardViewModel(
                     spendingService: appContainer.spendingService,

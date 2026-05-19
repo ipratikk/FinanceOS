@@ -23,32 +23,16 @@ public struct FDSCategoryGlyph: View {
 
         ZStack {
             RoundedRectangle(cornerRadius: size * 0.31, style: .continuous)
-                .fill(.regularMaterial)
+                .fill(bgColor.opacity(0.3))
 
             RoundedRectangle(cornerRadius: size * 0.31, style: .continuous)
-                .fill(bgColor.opacity(0.6))
+                .strokeBorder(bgColor.opacity(0.5), lineWidth: 0.5)
 
             Image(systemName: icon)
                 .font(.system(size: size * 0.45, weight: .semibold))
                 .foregroundColor(fgColor)
-
-            RoundedRectangle(cornerRadius: size * 0.31, style: .continuous)
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [
-                            Color.white.opacity(0.16),
-                            Color.white.opacity(0.06),
-                            .clear,
-                            Color.black.opacity(0.20)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: 1
-                )
         }
         .frame(width: size, height: size)
-        .shadow(color: .black.opacity(0.15), radius: 3, y: 1)
     }
 
     private func categoryHue(for category: String) -> Double {

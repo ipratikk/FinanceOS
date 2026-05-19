@@ -31,7 +31,7 @@ struct TransactionsView: View {
                         .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+                .background(AppColors.base)
             } else if viewModel.transactionRows.isEmpty {
                 VStack(spacing: 12) {
                     Image(systemName: "creditcard.fill")
@@ -45,7 +45,7 @@ struct TransactionsView: View {
                         .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+                .background(AppColors.base)
             } else {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 24) {
@@ -68,7 +68,7 @@ struct TransactionsView: View {
                     .padding(.horizontal, 32)
                     .padding(.vertical, 24)
                 }
-                .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+                .background(AppColors.base)
             }
         }
         .navigationTitle("Transactions")
@@ -93,7 +93,7 @@ struct TransactionsView: View {
             .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+            .background(AppColors.base)
     }
 
     private func transactionRow(_ txn: TransactionRow) -> some View {

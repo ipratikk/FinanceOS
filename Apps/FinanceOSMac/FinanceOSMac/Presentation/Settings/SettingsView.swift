@@ -44,7 +44,7 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
-        .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+        .background(AppColors.base)
         .alert("Clear All Data?", isPresented: $showConfirmClear) {
             Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {

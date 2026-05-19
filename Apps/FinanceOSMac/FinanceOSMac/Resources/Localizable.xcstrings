@@ -52,7 +52,13 @@
         }
       }
     },
+    "%lld total" : {
+
+    },
     "%lld txns" : {
+
+    },
+    "%lld%%" : {
 
     },
     "• %@ %@%@" : {
@@ -69,6 +75,12 @@
 
     },
     "•••• %@" : {
+
+    },
+    "⌘I" : {
+
+    },
+    "⌘K" : {
 
     },
     "6-Month Trend" : {
@@ -150,6 +162,9 @@
         }
       }
     },
+    "BANK" : {
+
+    },
     "BANK & ACCOUNT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -161,9 +176,6 @@
         }
       }
     },
-    "BANK & NICKNAME" : {
-
-    },
     "Bank Accounts" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -174,6 +186,9 @@
           }
         }
       }
+    },
+    "BANK INFORMATION" : {
+
     },
     "Bank%@" : {
 
@@ -202,6 +217,9 @@
           }
         }
       }
+    },
+    "CARD DETAILS" : {
+
     },
     "CARD INFORMATION" : {
       "extractionState" : "manual",
@@ -291,6 +309,9 @@
         }
       }
     },
+    "Credit Utilization" : {
+
+    },
     "CREDITED" : {
 
     },
@@ -321,6 +342,9 @@
           }
         }
       }
+    },
+    "Database healthy · 2,148 txns" : {
+
     },
     "Date" : {
       "extractionState" : "manual",
@@ -430,9 +454,6 @@
     "Edit %@" : {
 
     },
-    "Edit Account" : {
-
-    },
     "Edit Card" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -464,7 +485,7 @@
     "FinanceOS" : {
 
     },
-    "Financial Overview" : {
+    "Find anything…" : {
 
     },
     "From" : {
@@ -506,7 +527,10 @@
         }
       }
     },
-    "Import Statement" : {
+    "Import statement" : {
+
+    },
+    "Import statements to get started" : {
 
     },
     "Import To" : {
@@ -532,7 +556,7 @@
     "Last 6 transactions" : {
 
     },
-    "Link Card or Account" : {
+    "Ledger not found" : {
 
     },
     "Loading transactions..." : {
@@ -612,9 +636,6 @@
         }
       }
     },
-    "No linked cards or accounts" : {
-
-    },
     "No Transactions" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -648,6 +669,9 @@
         }
       }
     },
+    "No transactions yet" : {
+
+    },
     "OK" : {
 
     },
@@ -655,6 +679,9 @@
 
     },
     "Outflows" : {
+
+    },
+    "Overview" : {
 
     },
     "Parsing file %lld of %lld..." : {
@@ -670,7 +697,7 @@
     "PDF Password" : {
 
     },
-    "Personal" : {
+    "Personal · INR" : {
 
     },
     "Positive" : {
@@ -716,6 +743,9 @@
     "Select a bank..." : {
 
     },
+    "Select Bank" : {
+
+    },
     "Select Card" : {
 
     },
@@ -753,10 +783,10 @@
         }
       }
     },
-    "Supported: %@" : {
+    "Statistics" : {
 
     },
-    "Tap + to link a card or account" : {
+    "Supported: %@" : {
 
     },
     "This will delete this bank and all associated cards, accounts, and transactions." : {
@@ -785,6 +815,9 @@
     "This will permanently delete this account and all associated transactions. This cannot be undone." : {
 
     },
+    "This will permanently delete this bank and all associated accounts/cards/transactions." : {
+
+    },
     "This will permanently delete this card and all associated transactions." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -810,9 +843,6 @@
     "Top Merchants" : {
 
     },
-    "Transaction" : {
-
-    },
     "TRANSACTION TYPE" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -827,6 +857,9 @@
     "Transactions" : {
 
     },
+    "Transactions list" : {
+
+    },
     "Transactions: %lld" : {
 
     },
@@ -836,7 +869,7 @@
     "Upload bank or credit card statements" : {
 
     },
-    "View All" : {
+    "View All →" : {
 
     },
     "View all transactions" : {

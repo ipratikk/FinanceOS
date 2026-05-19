@@ -1,8 +1,9 @@
+import FinanceCore
 import SwiftUI
 
 /// Segmented control in a capsule container.
 ///
-/// 2–N segments. Active segment: white 0.10 fill + gleam. Spring animation.
+/// 2–N segments. Active segment: light fill. Spring animation.
 public struct FDSChoiceGroup<T: Hashable>: View {
     @Binding var selection: T
     let options: [T]
@@ -26,33 +27,14 @@ public struct FDSChoiceGroup<T: Hashable>: View {
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(
                             selection == option
-                                ? Color(red: 0.945, green: 0.953, blue: 0.965)
-                                : Color(red: 0.741, green: 0.761, blue: 0.800)
+                                ? AppColors.textPrimary
+                                : AppColors.textSecondary
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 32)
                         .background {
                             if selection == option {
-                                ZStack {
-                                    Capsule()
-                                        .fill(.regularMaterial)
-                                    Capsule()
-                                        .fill(Color.white.opacity(0.10))
-                                    Capsule()
-                                        .strokeBorder(
-                                            LinearGradient(
-                                                colors: [
-                                                    Color.white.opacity(0.16),
-                                                    Color.white.opacity(0.06),
-                                                    .clear,
-                                                    Color.black.opacity(0.20)
-                                                ],
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                            ),
-                                            lineWidth: 1
-                                        )
-                                }
+                                Capsule().fill(AppColors.surface2)
                             }
                         }
                 }
@@ -60,7 +42,7 @@ public struct FDSChoiceGroup<T: Hashable>: View {
             }
         }
         .padding(4)
-        .background(Color.white.opacity(0.06))
+        .background(AppColors.surface)
         .cornerRadius(18)
         .animation(.spring(response: 0.25, dampingFraction: 0.85), value: selection)
     }

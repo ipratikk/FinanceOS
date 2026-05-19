@@ -1,23 +1,17 @@
+import FinanceCore
 import SwiftUI
 
-/// Liquid Glass card container for the Finance Design System.
+/// Flat card container for the Finance Design System.
 ///
-/// Uses glassSurface modifier with specular edge gleam. Owns material, gleam highlight,
-/// corner radius, and drop shadow. Callers control internal padding and layout.
-///
-/// Usage:
-/// ```swift
-/// FDSCard {
-///     VStack { ... }
-/// }
-/// ```
+/// Clean, minimal design with subtle border. No glass effects or shadows.
+/// Callers control internal padding and layout.
 public struct FDSCard<Content: View>: View {
     private let content: Content
     private let cornerRadius: CGFloat
     private let padded: Bool
 
     public init(
-        cornerRadius: CGFloat = 18,
+        cornerRadius: CGFloat = 12,
         padded: Bool = true,
         @ViewBuilder content: () -> Content
     ) {
@@ -30,33 +24,12 @@ public struct FDSCard<Content: View>: View {
         content
             .padding(padded ? 16 : 0)
             .background {
-                ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(.regularMaterial)
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(Color.white.opacity(0.06))
-                }
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(AppColors.surface2)
             }
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(0.16),
-                                Color.white.opacity(0.06),
-                                .clear,
-                                Color.black.opacity(0.20)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        ),
-                        lineWidth: 1
-                    )
+                    .strokeBorder(AppColors.border, lineWidth: 0.5)
             }
-            .shadow(
-                color: .black.opacity(0.25),
-                radius: 12,
-                y: 4
-            )
     }
 }

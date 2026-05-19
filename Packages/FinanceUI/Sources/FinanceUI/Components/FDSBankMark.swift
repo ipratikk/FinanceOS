@@ -17,32 +17,16 @@ public struct FDSBankMark: View {
     public var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: size * 0.25, style: .continuous)
-                .fill(.regularMaterial)
+                .fill(bank.tintColor.opacity(0.2))
 
             RoundedRectangle(cornerRadius: size * 0.25, style: .continuous)
-                .fill(bank.tintColor.opacity(0.15))
+                .strokeBorder(bank.tintColor.opacity(0.3), lineWidth: 0.5)
 
             Text(bank.shortCode)
                 .font(.system(size: size * 0.4, weight: .semibold, design: .default))
-                .foregroundColor(.white)
-
-            RoundedRectangle(cornerRadius: size * 0.25, style: .continuous)
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [
-                            Color.white.opacity(0.16),
-                            Color.white.opacity(0.06),
-                            .clear,
-                            Color.black.opacity(0.20)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: 1
-                )
+                .foregroundColor(bank.tintColor)
         }
         .frame(width: size, height: size)
-        .shadow(color: .black.opacity(0.15), radius: 4, y: 1)
     }
 }
 

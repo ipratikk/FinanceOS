@@ -1,17 +1,16 @@
+import FinanceCore
 import SwiftUI
 
 /// Filter chip with active/inactive states and color tones.
 ///
-/// Inactive: glass pill with secondary text.
+/// Inactive: dark pill with secondary text.
 /// Active: accent tinted fill + accent text.
-/// Tones: credit (green), debit (red), accent (orange).
+/// Tones: credit (green), debit (red), accent (green).
 public struct FDSChip: View {
     let label: String
     let isActive: Bool
     let tone: Tone
     let action: () -> Void
-
-    @State private var isHovered = false
 
     public enum Tone {
         case credit, debit, accent
@@ -40,61 +39,26 @@ public struct FDSChip: View {
                     if isActive {
                         Capsule()
                             .fill(accentColor.opacity(0.18))
-                            .overlay {
-                                Capsule()
-                                    .strokeBorder(
-                                        LinearGradient(
-                                            colors: [
-                                                Color.white.opacity(0.16),
-                                                Color.white.opacity(0.06),
-                                                .clear,
-                                                Color.black.opacity(0.20)
-                                            ],
-                                            startPoint: .top,
-                                            endPoint: .bottom
-                                        ),
-                                        lineWidth: 1
-                                    )
-                            }
+                            .overlay(Capsule().strokeBorder(accentColor.opacity(0.4), lineWidth: 0.5))
                     } else {
                         Capsule()
-                            .fill(.regularMaterial)
-                            .overlay {
-                                Capsule()
-                                    .fill(Color.white.opacity(0.06))
-                            }
-                            .overlay {
-                                Capsule()
-                                    .strokeBorder(
-                                        LinearGradient(
-                                            colors: [
-                                                Color.white.opacity(0.16),
-                                                Color.white.opacity(0.06),
-                                                .clear,
-                                                Color.black.opacity(0.20)
-                                            ],
-                                            startPoint: .top,
-                                            endPoint: .bottom
-                                        ),
-                                        lineWidth: 1
-                                    )
-                            }
+                            .fill(AppColors.surface2)
+                            .overlay(Capsule().strokeBorder(AppColors.border, lineWidth: 0.5))
                     }
                 }
         }
         .buttonStyle(.plain)
-        .onHover { isHovered = $0 }
         .animation(.spring(response: 0.25, dampingFraction: 0.85), value: isActive)
     }
 
     private var accentColor: Color {
         switch tone {
         case .credit:
-            Color(red: 0.19, green: 0.82, blue: 0.35)
+            AppColors.success
         case .debit:
-            Color(red: 1.0, green: 0.27, blue: 0.23)
+            AppColors.danger
         case .accent:
-            Color(red: 1.0, green: 0.62, blue: 0.04)
+            AppColors.accent
         }
     }
 
@@ -102,7 +66,7 @@ public struct FDSChip: View {
         if isActive {
             return accentColor
         } else {
-            return Color(red: 0.741, green: 0.761, blue: 0.800)
+            return AppColors.textSecondary
         }
     }
 }

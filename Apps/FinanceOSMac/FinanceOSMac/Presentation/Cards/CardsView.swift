@@ -30,7 +30,7 @@ struct CardsView: View {
                 cardsList
             }
         }
-        .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+        .background(AppColors.base)
         .navigationTitle("Cards")
         .onAppear {
             navigator.cardReloadCallback = {

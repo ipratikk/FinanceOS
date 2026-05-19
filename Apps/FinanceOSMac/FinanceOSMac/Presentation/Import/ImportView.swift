@@ -118,7 +118,7 @@ struct ImportView: View {
                     }
                 }
             }
-            .background(Color(red: 0.039, green: 0.047, blue: 0.067))
+            .background(AppColors.base)
         }
         .onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
             guard let source = selectedSource else { return false }

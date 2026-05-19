@@ -1,9 +1,10 @@
+import FinanceCore
 import SwiftUI
 
 /// Modal sheet primitive for edit flows.
 ///
-/// Backdrop: black 35% + ultraThinMaterial blur. Sheet: glass surface with gleam,
-/// header (title + close X), scrollable body, footer (destructive + cancel + primary).
+/// Backdrop: black 35%. Sheet: flat dark surface with border,
+/// header (title + close X), scrollable body, footer (cancel + primary).
 /// Animation: scale 0.985 + opacity fade-in. Escape key + backdrop click dismiss.
 public struct FDSSheet<Content: View>: View {
     let title: String
@@ -95,35 +96,17 @@ public struct FDSSheet<Content: View>: View {
             .frame(maxWidth: 580)
             .frame(maxHeight: .infinity)
             .background {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.thickMaterial)
-
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(Color.white.opacity(0.06))
-                }
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(AppColors.surface2)
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(0.16),
-                                Color.white.opacity(0.06),
-                                .clear,
-                                Color.black.opacity(0.20)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        ),
-                        lineWidth: 1
-                    )
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(AppColors.border, lineWidth: 0.5)
             }
-            .shadow(color: .black.opacity(0.30), radius: 32, y: 16)
             .scaleEffect(0.985)
             .opacity(0.95)
             .transition(.scale(scale: 0.985).combined(with: .opacity))
-            .animation(.timingCurve(0.18, 0.70, 0.30, 1.0, duration: 0.22), value: UUID())
+            .animation(.easeOut(duration: 0.2), value: UUID())
         }
     }
 }
