@@ -101,6 +101,16 @@ struct AccountsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    private var emptyState: some View {
+        FDSEmptyState(
+            symbol: "building.columns",
+            title: "No Accounts",
+            subtitle: "Import a statement to get started"
+        )
+    }
+}
+
+extension AccountsView {
     private func bankSection(bankName: String, ledgers: [Ledger]) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
@@ -130,19 +140,41 @@ struct AccountsView: View {
     }
 
     private func accountRow(_ ledger: Ledger) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            accountRowHeader(ledger)
+            Divider().opacity(0.3).padding(.horizontal, AppSpacing.lg)
+            accountRowActions(ledger)
+        }
+        .background(.regularMaterial)
+        .background(AppColors.surface.opacity(0.7))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.lg)
+                .stroke(AppColors.accent.opacity(0.15), lineWidth: 0.5)
+        )
+        .cornerRadius(AppRadius.lg)
+        .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 2)
+    }
+
+    private func accountRowHeader(_ ledger: Ledger) -> some View {
         let bank = viewModel.banks.first { $0.id == ledger.bankId }
         let balance = viewModel.balancesByAccount[ledger.id]
-        return FDSRow {
+
+        return HStack(spacing: AppSpacing.lg) {
             FDSImage(
                 imageName: bank?.symbolAssetName,
                 fallbackSymbol: "building.columns.fill",
-                height: 44,
-                width: 44
+                height: 52,
+                width: 52
             )
-        } content: {
-            VStack(alignment: .leading, spacing: 6) {
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(AppColors.accent.opacity(0.1))
+            )
+
+            VStack(alignment: .leading, spacing: 8) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(AppTypography.bodySmMedium)
+                    .font(AppTypography.bodyLg)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
@@ -150,34 +182,69 @@ struct AccountsView: View {
                     Text((ledger.accountType ?? "Account").capitalized)
                         .font(AppTypography.captionSm)
                     if !ledger.last4.isEmpty {
-                        Text("· •••• \(ledger.last4)")
+                        Text("•••• \(ledger.last4)")
                             .font(AppTypography.captionSm.monospacedDigit())
                     }
                 }
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.secondary)
 
                 if let balance {
                     Text(balance.formattedBalance)
                         .font(AppTypography.bodySmMedium.monospacedDigit())
-                        .foregroundStyle(AppColors.accentIce)
-                        .lineLimit(1)
+                        .foregroundStyle(AppColors.accent)
                 }
             }
-        } trailing: {
-            HStack(spacing: AppSpacing.compact) {
-                iconButton("plus", color: AppColors.accentGold) {
-                    navigator.pendingImportTarget = .ledger(ledger.id)
-                    navigator.pendingImportSource = importSource(for: ledger, bank: bank)
-                    navigator.navigate(to: .importStatement)
-                }
-                iconButton("pencil", color: AppColors.accentSlate) {
-                    navigator.present(.accountEdit(ledger))
-                }
-                iconButton("trash", color: AppColors.danger) {
-                    accountPendingDelete = ledger
+
+            Spacer()
+
+            if let balance = viewModel.balancesByAccount[ledger.id] {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("Balance")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(.tertiary)
+                    Text(balance.formattedBalance)
+                        .font(AppTypography.headlineSm)
+                        .foregroundStyle(AppColors.accent)
                 }
             }
         }
+        .padding(AppSpacing.lg)
+    }
+
+    private func accountRowActions(_ ledger: Ledger) -> some View {
+        let bank = viewModel.banks.first { $0.id == ledger.bankId }
+
+        return HStack(spacing: AppSpacing.md) {
+            Spacer()
+
+            Button(
+                action: {
+                    navigator.pendingImportTarget = .ledger(ledger.id)
+                    navigator.pendingImportSource = importSource(for: ledger, bank: bank)
+                    navigator.navigate(to: .importStatement)
+                },
+                label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 16, weight: .semibold))
+                        Text("Import")
+                            .font(AppTypography.captionLgMedium)
+                    }
+                    .foregroundStyle(AppColors.accent)
+                }
+            )
+            .buttonStyle(.plain)
+            .frame(height: 36)
+
+            actionIconButton("pencil", color: AppColors.accent) {
+                navigator.present(.accountEdit(ledger))
+            }
+
+            actionIconButton("trash", color: AppColors.danger) {
+                accountPendingDelete = ledger
+            }
+        }
+        .padding(AppSpacing.md)
     }
 
     private func importSource(for ledger: Ledger, bank: Bank?) -> StatementSource? {
@@ -192,7 +259,7 @@ struct AccountsView: View {
         }
     }
 
-    private func iconButton(
+    private func actionIconButton(
         _ symbol: String,
         color: Color,
         action: @escaping () -> Void
@@ -207,18 +274,6 @@ struct AccountsView: View {
         .buttonStyle(.plain)
         .frame(minWidth: 44, minHeight: 44)
         .contentShape(Rectangle())
-    }
-
-    private func bankName(for ledger: Ledger) -> String {
-        viewModel.banks.first { $0.id == ledger.bankId }?.name ?? "Bank"
-    }
-
-    private var emptyState: some View {
-        FDSEmptyState(
-            symbol: "building.columns",
-            title: "No Accounts",
-            subtitle: "Import a statement to get started"
-        )
     }
 
     private var loadingState: some View {

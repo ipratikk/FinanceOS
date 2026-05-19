@@ -5,4 +5,5 @@ import Foundation
 enum DetailDestination: Hashable {
     case accountTransactions(UUID)
     case cardTransactions(UUID)
+    case ledgerDetail(UUID)
 }

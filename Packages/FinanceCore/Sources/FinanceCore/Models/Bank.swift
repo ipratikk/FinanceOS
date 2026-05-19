@@ -7,6 +7,7 @@
 
 import Foundation
 import GRDB
+import SwiftUI
 
 public enum BankProviderType: String, Codable, Sendable, CaseIterable {
     case bank, neobank, credit
@@ -43,6 +44,24 @@ public enum Banks: String, Codable, Sendable, CaseIterable {
 
     public var symbolAssetName: String {
         rawValue.lowercased() + "-symbol"
+    }
+
+    public var shortCode: String {
+        switch self {
+        case .hdfc: return "HDFC"
+        case .icici: return "ICICI"
+        case .amex: return "AMEX"
+        case .scapia: return "SCA"
+        }
+    }
+
+    public var tintColor: Color {
+        switch self {
+        case .hdfc: return Color(red: 0.0, green: 0.298, blue: 0.592)      // HDFC blue
+        case .icici: return Color(red: 0.969, green: 0.58, blue: 0.0)      // ICICI orange
+        case .amex: return Color(red: 0.0, green: 0.471, blue: 0.753)      // Amex blue
+        case .scapia: return Color(red: 1.0, green: 0.42, blue: 0.21)      // Scapia orange
+        }
     }
 }
 

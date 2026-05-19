@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct ContentView: View {
@@ -6,17 +7,21 @@ struct ContentView: View {
     private let appContainer = AppContainer.shared
 
     var body: some View {
-        Group {
-            #if os(macOS)
-            NavigationSplitView(columnVisibility: .constant(.all)) {
-                SidebarView()
-            } detail: {
-                DetailRouter(appContainer: appContainer)
+        ZStack {
+            Wallpaper()
+
+            Group {
+                #if os(macOS)
+                NavigationSplitView(columnVisibility: .constant(.all)) {
+                    SidebarView()
+                } detail: {
+                    DetailRouter(appContainer: appContainer)
+                }
+                .navigationSplitViewStyle(.balanced)
+                #else
+                AdaptiveNavigation()
+                #endif
             }
-            .navigationSplitViewStyle(.balanced)
-            #else
-            AdaptiveNavigation()
-            #endif
         }
         .environment(navigator)
         .sheet(item: $navigator.sheet) { route in

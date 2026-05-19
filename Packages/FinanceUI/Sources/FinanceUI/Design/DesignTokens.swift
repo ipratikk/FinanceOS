@@ -1,77 +1,94 @@
-import FinanceCore
 import SwiftUI
 
-// MARK: - Design Tokens
+// MARK: - Design Tokens — macOS Tahoe Liquid Glass
 
-/// Neon-accent color tokens from DESIGN_SYSTEM.md.
-/// Backgrounds and neutrals live in AppColors (FinanceCore).
 public enum DesignTokens {
-    // MARK: - Neon Backgrounds (cyberpunk palette)
+    // MARK: - Wallpaper & Backgrounds (Liquid Glass)
 
     public enum Background {
-        /// #0D0D14 — page background
-        public static let midnight = Color(red: 0.051, green: 0.051, blue: 0.078)
-        /// #141420 — card/container background
-        public static let surface = Color(red: 0.078, green: 0.078, blue: 0.125)
-        /// #1A1A28 — hover / elevated state
-        public static let elevated = Color(red: 0.102, green: 0.102, blue: 0.157)
-        /// #0D0D14 at 0.7 — modal backdrop
-        public static let overlay = Color(red: 0.051, green: 0.051, blue: 0.078).opacity(0.7)
+        /// #0A0C11 — solid base before wallpaper tint
+        public static let wallpaperBase = Color(red: 0.039, green: 0.047, blue: 0.067)
+        /// white 6% — glass tint over wallpaper (cards, chips, inputs)
+        public static let surfaceGlass = Color.white.opacity(0.06)
+        /// white 10% — hover / active glass
+        public static let surfaceGlassThick = Color.white.opacity(0.10)
+        /// white 4% — inset rows, sheet hero
+        public static let surfaceGlassThin = Color.white.opacity(0.04)
+        /// chrome glass for sidebar/toolbar
+        public static let chromeGlass = Color(red: 20/255, green: 22/255, blue: 30/255).opacity(0.65)
+        /// black 25% — text input / select backgrounds (recessed)
+        public static let inputWell = Color.black.opacity(0.25)
     }
 
-    // MARK: - Neon Accents
+    // MARK: - Apple System Colors (HIG dark mode)
 
-    public enum Accent {
-        /// #00F0FF — primary action, data highlight
-        public static let cyan = Color(red: 0, green: 0.941, blue: 1.0)
-        /// #3399FF — secondary, charts
-        public static let blue = Color(red: 0.2, green: 0.6, blue: 1.0)
-        /// #CC33FF — tertiary, badges
-        public static let purple = Color(red: 0.8, green: 0.2, blue: 1.0)
-        /// #FF1B9D — alerts, warnings
-        public static let pink = Color(red: 1.0, green: 0.106, blue: 0.616)
-        /// #66FF00 — positive, gains
-        public static let lime = Color(red: 0.4, green: 1.0, blue: 0)
-        /// #FF6600 — negative, losses
-        public static let orange = Color(red: 1.0, green: 0.4, blue: 0)
+    public enum System {
+        public static let red = Color(red: 1.0, green: 0.27, blue: 0.23)      // #FF453A
+        public static let orange = Color(red: 1.0, green: 0.62, blue: 0.04)   // #FF9F0A
+        public static let yellow = Color(red: 1.0, green: 0.84, blue: 0.04)   // #FFD60A
+        public static let green = Color(red: 0.19, green: 0.82, blue: 0.35)   // #30D158
+        public static let mint = Color(red: 0.40, green: 0.83, blue: 0.81)    // #66D4CF
+        public static let teal = Color(red: 0.25, green: 0.78, blue: 0.88)    // #40C8E0
+        public static let cyan = Color(red: 0.39, green: 0.82, blue: 1.0)     // #64D2FF
+        public static let blue = Color(red: 0.04, green: 0.52, blue: 1.0)     // #0A84FF
+        public static let indigo = Color(red: 0.37, green: 0.36, blue: 0.90)  // #5E5CE6
+        public static let purple = Color(red: 0.75, green: 0.35, blue: 0.95)  // #BF5AF2
+        public static let pink = Color(red: 1.0, green: 0.22, blue: 0.37)     // #FF375F
+        public static let gray = Color(red: 0.60, green: 0.60, blue: 0.62)    // #98989D
     }
 
     // MARK: - Semantic
 
     public enum Semantic {
-        /// #00D966 — positive states
-        public static let success = Color(red: 0, green: 0.851, blue: 0.4)
-        /// #FF3333 — destructive actions
-        public static let danger = Color(red: 1.0, green: 0.2, blue: 0.2)
-        /// #FFB800 — caution states
-        public static let warning = Color(red: 1.0, green: 0.722, blue: 0)
-        /// #00B4FF — informational
-        public static let info = Color(red: 0, green: 0.706, blue: 1.0)
+        /// System.green — positive amounts, success states
+        public static let credit = System.green
+        /// System.red — negative amounts, debits
+        public static let debit = System.red
+        /// System.red — destructive actions
+        public static let danger = System.red
+        /// System.orange — caution states
+        public static let warning = System.orange
+        /// System.blue — informational
+        public static let info = System.blue
+        /// User-tweakable accent (default: System.orange)
+        /// Can be overridden to System.blue (cobalt), System.purple (plum), System.green (emerald)
+        public static let accent = System.orange
     }
 
     // MARK: - Text
 
     public enum Text {
-        /// #FFFFFF
-        public static let primary = Color.white
-        /// #B3B3C4
-        public static let secondary = Color(red: 0.702, green: 0.702, blue: 0.769)
-        /// #808090
-        public static let tertiary = Color(red: 0.502, green: 0.502, blue: 0.565)
+        /// #F1F3F6
+        public static let primary = Color(red: 0.945, green: 0.953, blue: 0.965)
+        /// #BDC2CC
+        public static let secondary = Color(red: 0.741, green: 0.761, blue: 0.800)
+        /// #858A94
+        public static let tertiary = Color(red: 0.518, green: 0.541, blue: 0.580)
+        /// #555A64
+        public static let quaternary = Color(red: 0.333, green: 0.353, blue: 0.392)
     }
 
-    // MARK: - Borders
+    // MARK: - Borders & Edge Highlights
 
     public enum Border {
-        /// rgba(42, 42, 62, 0.3)
-        public static let subtle = Color(red: 0.165, green: 0.165, blue: 0.243).opacity(0.3)
-        /// rgba(0, 240, 255, 0.2) — accent cyan border
-        public static let strong = Accent.cyan.opacity(0.2)
-        /// rgba(0, 240, 255, 0.4) — focused
-        public static let focus = Accent.cyan.opacity(0.4)
+        /// white 6% — subtle borders
+        public static let subtle = Color.white.opacity(0.06)
+        /// white 10% — stronger borders
+        public static let strong = Color.white.opacity(0.10)
+        /// accent 50% — focus ring
+        public static let focus = Semantic.accent.opacity(0.50)
     }
 
-    // MARK: - Spacing (8pt grid, per DESIGN_SYSTEM.md)
+    public enum Edge {
+        /// white 16% — specular highlight on top edge of glass surfaces
+        public static let topGleam = Color.white.opacity(0.16)
+        /// white 6% — mid highlight
+        public static let topGleamMid = Color.white.opacity(0.06)
+        /// black 20% — bottom shadow for depth
+        public static let bottomShadow = Color.black.opacity(0.20)
+    }
+
+    // MARK: - Spacing (8pt grid)
 
     public enum Spacing {
         public static let xs: CGFloat = 4
@@ -83,53 +100,70 @@ public enum DesignTokens {
         public static let xl3: CGFloat = 48
     }
 
+    // MARK: - Corner Radius (concentric)
+
+    public enum Radius {
+        public static let xs: CGFloat = 6          // Chips, inputs
+        public static let sm: CGFloat = 9          // Sidebar items, small buttons
+        public static let md: CGFloat = 12         // Tiles, secondary cards
+        public static let card: CGFloat = 18       // Standard cards
+        public static let hero: CGFloat = 22       // Hero surfaces (dashboard net flow, ledger detail)
+        public static let sheet: CGFloat = 20      // Modal sheets
+        public static let capsule: CGFloat = .infinity  // Pills, chips, buttons, search inputs
+    }
+
     // MARK: - Typography
 
     public enum Typography {
-        // Display
-        public static let displayXL = Font.system(size: 48, weight: .bold, design: .default)
-        public static let displayL = Font.system(size: 40, weight: .bold, design: .default)
-        // Headline
-        public static let headlineL = Font.system(size: 32, weight: .semibold, design: .default)
-        public static let headlineM = Font.system(size: 24, weight: .semibold, design: .default)
-        // Title
-        public static let titleL = Font.system(size: 20, weight: .semibold, design: .default)
-        public static let titleM = Font.system(size: 18, weight: .semibold, design: .default)
-        // Body
-        public static let bodyL = Font.system(size: 16, weight: .regular, design: .default)
-        public static let bodyM = Font.system(size: 14, weight: .regular, design: .default)
-        public static let bodyS = Font.system(size: 13, weight: .regular, design: .default)
-        // Label
-        public static let labelM = Font.system(size: 12, weight: .medium, design: .default)
-        public static let labelS = Font.system(size: 11, weight: .medium, design: .default)
-        /// Caption
-        public static let caption = Font.system(size: 10, weight: .regular, design: .default)
-        /// Mono (amounts)
-        public static let monoAmount = Font.system(size: 20, weight: .semibold, design: .monospaced)
-        // Icons
-        public static let iconMd = Font.system(size: 16, weight: .regular)
-        public static let iconSm = Font.system(size: 14, weight: .regular)
+        // Display/Hero amounts
+        public static let heroAmount = Font.system(size: 60, weight: .semibold, design: .default)
+            .monospacedDigit()
+        public static let ledgerAmount = Font.system(size: 38, weight: .semibold, design: .default)
+            .monospacedDigit()
+        public static let txnAmount = Font.system(size: 40, weight: .semibold, design: .default)
+            .monospacedDigit()
+
+        // Screen & Section titles
+        public static let screenTitle = Font.system(size: 30, weight: .semibold, design: .default)
+        public static let sectionTitle = Font.system(size: 17, weight: .semibold, design: .default)
+        public static let sheetTitle = Font.system(size: 19, weight: .semibold, design: .default)
+
+        // Metric cards
+        public static let metricValue = Font.system(size: 28, weight: .semibold, design: .default)
+            .monospacedDigit()
+
+        // Body text
+        public static let body = Font.system(size: 14, weight: .regular, design: .default)
+        public static let txnRow = Font.system(size: 13.5, weight: .medium, design: .default)
+
+        // Labels & captions
+        public static let label = Font.system(size: 11, weight: .semibold, design: .default)
+        public static let caption = Font.system(size: 11.5, weight: .regular, design: .default)
     }
 
-    // MARK: - Corner Radius
+    // MARK: - Materials
 
-    public enum Radius {
-        public static let sm: CGFloat = 4
-        public static let md: CGFloat = 8
-        public static let lg: CGFloat = 12
-        public static let card: CGFloat = 16
-        public static let button: CGFloat = 12
+    public enum Material {
+        /// .regularMaterial — cards, pills, chips, buttons
+        public static let glass: SwiftUI.Material = .regularMaterial
+        /// .thickMaterial — sheets, menus
+        public static let glassThick: SwiftUI.Material = .thickMaterial
+        /// .thinMaterial — lightweight surfaces
+        public static let glassThin: SwiftUI.Material = .thinMaterial
+        /// chrome for sidebar/toolbar (regularMaterial with overlay)
+        public static let chrome: SwiftUI.Material = .regularMaterial
     }
 
-    // MARK: - Animation
+    // MARK: - Motion
 
-    public enum Anim {
-        public static let standard = SwiftUI.Animation.easeInOut(duration: 0.3)
-        public static let hover = SwiftUI.Animation.easeOut(duration: 0.15)
-        public static let microSpring = SwiftUI.Animation.spring(
-            response: 0.2,
-            dampingFraction: 0.8
-        )
-        public static let press = SwiftUI.Animation.easeInOut(duration: 0.08)
+    public enum Motion {
+        /// 120ms easeOut — hover transitions
+        public static let fast = SwiftUI.Animation.easeOut(duration: 0.12)
+        /// 180ms easeInOut — sheet appearance, default
+        public static let standard = SwiftUI.Animation.easeInOut(duration: 0.18)
+        /// spring — chip activations, toggles
+        public static let spring = SwiftUI.Animation.spring(response: 0.25, dampingFraction: 0.85)
+        /// cubic bezier — sheet pop-in
+        public static let sheetIn = SwiftUI.Animation.timingCurve(0.18, 0.70, 0.30, 1.0, duration: 0.22)
     }
 }

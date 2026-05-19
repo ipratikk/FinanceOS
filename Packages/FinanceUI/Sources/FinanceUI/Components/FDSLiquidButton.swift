@@ -1,13 +1,12 @@
-import FinanceCore
 import SwiftUI
 
-/// Native macOS-style button with liquid material backing.
+/// Liquid Glass button with multiple variants.
 ///
 /// Variants:
-/// - `.primary` — filled accent, key action
-/// - `.secondary` — material chip, neutral
-/// - `.subtle` — text-only with hover, low emphasis
-/// - `.destructive` — red accent
+/// - `.primary` — solid accent fill, dark foreground, gleam edge
+/// - `.ghost` — glass pill, primary text
+/// - `.danger` — red-tinted glass pill
+/// - `.link` — bare accent text with hover pill
 public struct FDSLiquidButton: View {
     let title: String
     let symbol: String?
@@ -18,13 +17,13 @@ public struct FDSLiquidButton: View {
     @State private var isPressed = false
 
     public enum Variant {
-        case primary, secondary, subtle, destructive
+        case primary, ghost, danger, link
     }
 
     public init(
         _ title: String,
         symbol: String? = nil,
-        variant: Variant = .secondary,
+        variant: Variant = .ghost,
         action: @escaping () -> Void
     ) {
         self.title = title
@@ -35,7 +34,7 @@ public struct FDSLiquidButton: View {
 
     public var body: some View {
         Button(action: action) {
-            HStack(spacing: AppSpacing.compact) {
+            HStack(spacing: 6) {
                 if let symbol {
                     Image(systemName: symbol)
                         .font(.system(size: 13, weight: .semibold))
@@ -43,23 +42,20 @@ public struct FDSLiquidButton: View {
                 Text(title)
                     .font(.system(size: 13, weight: .semibold))
             }
-            .padding(.horizontal, AppSpacing.md)
-            .padding(.vertical, AppSpacing.compact)
+            .foregroundColor(foreground)
+            .padding(.horizontal, variant == .link ? 0 : 12)
+            .padding(.vertical, variant == .link ? 0 : 8)
             .background {
-                background
+                if variant != .link {
+                    background
+                }
             }
-            .overlay {
-                RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                    .strokeBorder(stroke, lineWidth: 0.5)
-            }
-            .foregroundStyle(foreground)
-            .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous))
             .scaleEffect(isPressed ? 0.97 : 1.0)
         }
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
-        .animation(.spring(response: 0.25, dampingFraction: 0.85), value: isHovered)
-        .animation(.spring(response: 0.18, dampingFraction: 0.7), value: isPressed)
+        .animation(.easeOut(duration: 0.12), value: isHovered)
+        .animation(.easeInOut(duration: 0.18), value: isPressed)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in isPressed = true }
@@ -71,46 +67,65 @@ public struct FDSLiquidButton: View {
     private var background: some View {
         switch variant {
         case .primary:
-            RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .fill(AppColors.accentGold)
-                .opacity(isHovered ? 0.95 : 0.85)
-        case .secondary:
-            RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .fill(.ultraThinMaterial)
+            Capsule()
+                .fill(Color(red: 1.0, green: 0.62, blue: 0.04))
                 .overlay {
-                    RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                        .fill(AppColors.accentGold.opacity(isHovered ? 0.08 : 0.0))
+                    Capsule()
+                        .strokeBorder(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.16),
+                                    Color.white.opacity(0.06),
+                                    .clear,
+                                    Color.black.opacity(0.20),
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ),
+                            lineWidth: 1
+                        )
                 }
-        case .subtle:
-            RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .fill(Color.white.opacity(isHovered ? 0.04 : 0.0))
-        case .destructive:
-            RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .fill(AppColors.danger.opacity(isHovered ? 0.2 : 0.12))
-        }
-    }
-
-    private var stroke: Color {
-        switch variant {
-        case .primary:
-            AppColors.accentGold.opacity(0.2)
-        case .destructive:
-            AppColors.danger.opacity(0.15)
-        case .secondary:
-            AppColors.accentGold.opacity(0.1)
-        case .subtle:
-            .clear
+        case .ghost:
+            Capsule()
+                .fill(.regularMaterial)
+                .overlay {
+                    Capsule()
+                        .fill(Color.white.opacity(0.06))
+                }
+                .overlay {
+                    Capsule()
+                        .strokeBorder(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.16),
+                                    Color.white.opacity(0.06),
+                                    .clear,
+                                    Color.black.opacity(0.20),
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ),
+                            lineWidth: 1
+                        )
+                }
+        case .danger:
+            Capsule()
+                .fill(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.18))
+        case .link:
+            EmptyView()
         }
     }
 
     private var foreground: Color {
         switch variant {
         case .primary:
-            Color(red: 0.06, green: 0.06, blue: 0.07) // Dark text on gold
-        case .secondary, .subtle:
-            AppColors.textPrimary
-        case .destructive:
-            AppColors.danger
+            Color(red: 0.1, green: 0.1, blue: 0.11)
+        case .ghost:
+            Color(red: 0.945, green: 0.953, blue: 0.965)
+        case .danger:
+            Color(red: 1.0, green: 0.27, blue: 0.23)
+        case .link:
+            Color(red: 1.0, green: 0.62, blue: 0.04)
         }
     }
 }

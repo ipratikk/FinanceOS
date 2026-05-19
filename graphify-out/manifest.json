@@ -240,8 +240,8 @@
     "hash": "a4a05305b4ad0bfb60621b3e7a0656e1"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Design/AppColors.swift": {
-    "mtime": 1779136001.8959517,
-    "hash": "b7047b2b1f8eec270c2ab70c593679e9"
+    "mtime": 1779138717.206936,
+    "hash": "a3b8c7dabee0b588214dd5dd760fc4af"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceCore/Sources/FinanceCore/Design/AppColorsExtensions.swift": {
     "mtime": 1779132088.585542,
@@ -472,12 +472,12 @@
     "hash": "9ed5cf23b2a3b22df0fbdc629093d5ff"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceUI/Sources/FinanceUI/Modifiers/HoverEffectModifier.swift": {
-    "mtime": 1779136015.0825763,
-    "hash": "c3e0ea00a45ebc9ef6a5caf6cce506c7"
+    "mtime": 1779138746.710224,
+    "hash": "14f879f86ad69b143fef89499afb508e"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceUI/Sources/FinanceUI/Modifiers/CardStyleModifier.swift": {
-    "mtime": 1779136006.6974795,
-    "hash": "8b5c688b2d9285799d61b5b0ed0dc0c9"
+    "mtime": 1779138749.3353941,
+    "hash": "0d66c52e1b51e521c84e384f934ad083"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/Packages/FinanceUI/Sources/FinanceUI/Modifiers/PressEffectModifier.swift": {
     "mtime": 1779136018.7480738,
@@ -1342,6 +1342,10 @@
   "/Users/pragoel/Documents/GitHub/FinanceOS/Apps/FinanceOSMac/FinanceOSMac/Presentation/Analytics/AnalyticsViewModel.swift": {
     "mtime": 1779130339.8535419,
     "hash": "01edc94a317d966dc841b3e3caf21c9e"
+  },
+  "/Users/pragoel/Documents/GitHub/FinanceOS/web-app.html": {
+    "mtime": 1779138658.6798859,
+    "hash": "79a596a30cfb5da52996c01d8404b1e5"
   },
   "/Users/pragoel/Documents/GitHub/FinanceOS/ARCHITECTURE.md": {
     "mtime": 1778965034.414111,

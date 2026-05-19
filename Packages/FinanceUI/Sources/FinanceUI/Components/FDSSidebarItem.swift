@@ -1,10 +1,10 @@
-import FinanceCore
 import SwiftUI
 
-/// Native macOS sidebar item. Thin, icon-first, hover-reactive.
+/// Liquid Glass sidebar navigation item.
 ///
-/// Active state: floating glass capsule, soft glow, spatial.
-/// No giant pills, no thick rectangles — feels like Arc/Raycast/Finder.
+/// Active state: glass surface with gleam, accent icon.
+/// Hover state: subtle white fill with gleam highlight.
+/// Default: secondary text, no fill.
 public struct FDSSidebarItem: View {
     let title: String
     let symbol: String
@@ -30,54 +30,90 @@ public struct FDSSidebarItem: View {
 
     public var body: some View {
         Button(action: action) {
-            HStack(spacing: AppSpacing.compact) {
+            HStack(spacing: 8) {
                 Image(systemName: symbol)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
-                    .foregroundStyle(isSelected ? AppColors.accent : .secondary)
+                    .foregroundColor(
+                        isSelected
+                            ? Color(red: 1.0, green: 0.62, blue: 0.04)
+                            : Color(red: 0.741, green: 0.761, blue: 0.800)
+                    )
                     .symbolRenderingMode(.hierarchical)
                     .frame(width: 18)
 
                 Text(title)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? .primary : .secondary)
+                    .foregroundColor(
+                        isSelected || isHovered
+                            ? Color(red: 0.945, green: 0.953, blue: 0.965)
+                            : Color(red: 0.741, green: 0.761, blue: 0.800)
+                    )
 
                 Spacer(minLength: 4)
 
                 if let badge {
                     Text(badge)
                         .font(.system(size: 10, weight: .semibold).monospacedDigit())
-                        .foregroundStyle(.tertiary)
+                        .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
                 }
             }
-            .padding(.horizontal, AppSpacing.compact)
+            .padding(.horizontal, 8)
             .padding(.vertical, 5)
             .background {
                 if isSelected {
-                    RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                        .fill(.ultraThinMaterial)
+                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        .fill(.regularMaterial)
                         .overlay {
-                            RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                                .fill(Color.white.opacity(0.04))
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .fill(Color.white.opacity(0.10))
                         }
                         .overlay {
-                            RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                                .strokeBorder(Color.white.opacity(0.08), lineWidth: 0.5)
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .strokeBorder(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.white.opacity(0.16),
+                                            Color.white.opacity(0.06),
+                                            .clear,
+                                            Color.black.opacity(0.20),
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ),
+                                    lineWidth: 1
+                                )
                         }
                 } else if isHovered {
-                    RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                        .fill(Color.white.opacity(0.04))
+                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        .fill(Color.white.opacity(0.06))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .strokeBorder(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.white.opacity(0.16),
+                                            Color.white.opacity(0.06),
+                                            .clear,
+                                            Color.black.opacity(0.20),
+                                        ],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ),
+                                    lineWidth: 1
+                                )
+                        }
                 }
             }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
-        .animation(.spring(response: 0.25, dampingFraction: 0.85), value: isHovered)
-        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: isSelected)
+        .animation(.easeOut(duration: 0.12), value: isHovered)
+        .animation(.spring(response: 0.25, dampingFraction: 0.85), value: isSelected)
     }
 }
 
-/// Sidebar section header — subtle, all-caps, low weight.
+/// Sidebar section header — uppercase, tracked, quaternary text.
 public struct FDSSidebarSectionHeader: View {
     let title: String
 
@@ -87,12 +123,12 @@ public struct FDSSidebarSectionHeader: View {
 
     public var body: some View {
         Text(title.uppercased())
-            .font(.system(size: 10, weight: .semibold))
-            .tracking(0.8)
-            .foregroundStyle(.tertiary)
-            .padding(.horizontal, AppSpacing.compact)
-            .padding(.top, AppSpacing.md)
-            .padding(.bottom, AppSpacing.tight)
+            .font(.system(size: 10.5, weight: .semibold))
+            .tracking(0.08)
+            .foregroundColor(Color(red: 0.333, green: 0.353, blue: 0.392))
+            .padding(.horizontal, 8)
+            .padding(.top, 12)
+            .padding(.bottom, 6)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
