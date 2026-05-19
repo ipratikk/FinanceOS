@@ -61,9 +61,16 @@ struct TransactionsView: View {
                             Spacer()
                         }
 
-                        Text("Transactions list")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                        VStack(alignment: .leading, spacing: 12) {
+                            ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { date, transactions in
+                                sectionHeader(date)
+                                VStack(spacing: 8) {
+                                    ForEach(transactions, id: \.id) { txn in
+                                        transactionRow(txn)
+                                    }
+                                }
+                            }
+                        }
                     }
                     .padding(.horizontal, 32)
                     .padding(.vertical, 24)
@@ -84,6 +91,12 @@ struct TransactionsView: View {
         }
         .task {
             await viewModel.loadTransactions()
+        }
+    }
+
+    private var groupedTransactions: [Date: [TransactionRow]] {
+        Dictionary(grouping: viewModel.transactionRows) { txn in
+            Calendar.current.startOfDay(for: txn.postedAt)
         }
     }
 
