@@ -62,9 +62,6 @@
         }
       }
     },
-    "%lld already imported" : {
-
-    },
     "%lld card%@" : {
       "localizations" : {
         "en" : {

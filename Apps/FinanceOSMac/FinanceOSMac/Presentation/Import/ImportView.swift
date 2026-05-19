@@ -43,14 +43,20 @@ struct ImportView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-
-            // Success banner
-            if let result = viewModel.lastImportResult {
-                importSuccessBanner(result: result)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
         }
         .animation(.easeInOut(duration: 0.2), value: viewModel.currentStep)
+        .onChange(of: viewModel.lastImportResult) { _, newValue in
+            if let result = newValue {
+                navigator.toastPresenter.show(
+                    message: "Imported \(result.inserted) transaction\(result.inserted == 1 ? "" : "s")" +
+                        (result.skipped > 0 ? " · \(result.skipped) skipped" : ""),
+                    type: .success,
+                    position: .top,
+                    horizontalAlignment: .trailing,
+                    duration: 4.0
+                )
+            }
+        }
         .onAppear {
             if let source = navigator.pendingImportSource {
                 viewModel.selectSourceAndAdvance(source)
@@ -61,40 +67,6 @@ struct ImportView: View {
                 await viewModel.loadTargetsOnAppear()
             }
         }
-    }
-
-    private func importSuccessBanner(result: ImportResult) -> some View {
-        HStack(spacing: AppSpacing.compact) {
-            Image(systemName: "checkmark.circle.fill")
-                .bodyMedium()
-                .foregroundStyle(AppColors.credit)
-            Text(
-                "Imported \(result.inserted) transaction\(result.inserted == 1 ? "" : "s")" +
-                    (result.skipped > 0 ? " · \(result.skipped) skipped" : "")
-            )
-            .caption()
-            .foregroundStyle(.primary)
-            Spacer()
-            Button(action: { viewModel.lastImportResult = nil }) {
-                Image(systemName: "xmark")
-                    .font(AppTypography.labelSemibold)
-                    .foregroundStyle(.secondary)
-                    .frame(width: 20, height: 20)
-                    .background(Circle().fill(.ultraThinMaterial))
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(.horizontal, AppSpacing.md)
-        .padding(.vertical, AppSpacing.compact)
-        .background {
-            Capsule(style: .continuous)
-                .fill(.thickMaterial)
-                .overlay {
-                    Capsule(style: .continuous)
-                        .strokeBorder(AppColors.credit.opacity(0.3), lineWidth: 0.5)
-                }
-        }
-        .padding(AppSpacing.md)
     }
 }
 

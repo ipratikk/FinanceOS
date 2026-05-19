@@ -28,7 +28,10 @@ struct ImportTransactionListView: View {
     // MARK: - Body
 
     var body: some View {
-        tableView
+        VStack {
+            tableHeader
+            tableView
+        }
     }
 
     // MARK: - Table View
@@ -46,8 +49,6 @@ struct ImportTransactionListView: View {
 
     private var tableViewContent: some View {
         VStack(spacing: 0) {
-            tableHeader
-            Divider()
             tableRows
             ellipsisIndicator
         }
