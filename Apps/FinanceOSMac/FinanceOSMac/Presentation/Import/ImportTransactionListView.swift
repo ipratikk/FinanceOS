@@ -48,7 +48,18 @@ struct ImportTransactionListView: View {
 
     // MARK: - List View
 
+    @ViewBuilder
     private var listView: some View {
+        if scrollable {
+            ScrollView {
+                listViewContent
+            }
+        } else {
+            listViewContent
+        }
+    }
+
+    private var listViewContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
