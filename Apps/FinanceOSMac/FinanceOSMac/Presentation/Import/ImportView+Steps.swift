@@ -122,12 +122,23 @@ extension ImportView {
                 Rectangle()
                     .fill(Color.clear)
                     .onDrop(of: [.fileURL], isTargeted: $viewModel.isDraggedOver) { providers in
+                        var fileURLs: [URL] = []
+                        let group = DispatchGroup()
+
                         for provider in providers {
-                            provider.loadFileRepresentation(forTypeIdentifier: "public.data") { url, _ in
-                                if let url {
-                                    Task { @MainActor in
-                                        viewModel.parseFiles([url])
-                                    }
+                            group.enter()
+                            provider.loadObject(ofClass: NSURL.self) { nsurl, _ in
+                                if let url = nsurl as? URL {
+                                    fileURLs.append(url)
+                                }
+                                group.leave()
+                            }
+                        }
+
+                        group.notify(queue: .main) {
+                            if !fileURLs.isEmpty {
+                                Task { @MainActor in
+                                    viewModel.parseFiles(fileURLs)
                                 }
                             }
                         }
