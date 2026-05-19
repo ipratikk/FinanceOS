@@ -96,24 +96,18 @@ SwiftUI View
 
 ---
 
-# Planned Package Evolution
+# Completed Package Evolution
 
 Packages/
-├── FinanceCore (current focus: complete)
-├── FinanceParsers (CSV/XLSX parsers)
-├── FinanceImport (import orchestration)
-└── Future: sync, analytics, AI features
+├── FinanceCore ✅ (complete: models, DB, repositories, logging)
+├── FinanceParsers ✅ (CSV/XLSX/TXT parsing with bank-specific rules)
+├── FinanceUI ✅ (design system, components, tokens)
+└── FinanceTesting ✅ (mocks, fixtures, test utilities)
 
----
-
-# Next Steps
-
-1. CSV/XLSX parser improvements
-2. Statement format detection
-3. Bank-specific parsing rules
-4. Spending analytics
-5. Budget management
-6. Forecasting
+Future packages:
+- FinanceSync (CloudKit sync)
+- FinanceAnalytics (spending insights)
+- FinanceAI (categorization, forecasting)
 
 ---
 
@@ -127,9 +121,9 @@ Packages/
 
 ---
 
-# Current Risks
+# Ongoing Considerations
 
-1. Bank statement inconsistency
-2. Future parser complexity
-3. Deduplication correctness
-4. Merchant normalization scale
+1. **Parser robustness**: Bank statement formats evolve; test against real-world samples
+2. **Deduplication accuracy**: Monitor edge cases (same amount, same date, multiple sources)
+3. **Scale performance**: N+1 query patterns in ViewModels; batch-load related data
+4. **Merchant normalization**: Future work for categorization and analytics
