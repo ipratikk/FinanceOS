@@ -39,6 +39,12 @@ public final class MockLedgerRepository: LedgerRepository, @unchecked Sendable {
         }
     }
 
+    public func updateClosingBalance(id: UUID, balance: Int64, asOf: Date) async throws {
+        if let idx = ledgers.firstIndex(where: { $0.id == id }) {
+            ledgers[idx].closingBalance = balance
+        }
+    }
+
     public func archive(id: UUID) async throws {
         // No-op for snapshots
     }
@@ -72,6 +78,10 @@ public final class MockBankRepository: BankRepository, @unchecked Sendable {
 
     public func delete(id: UUID) async throws {
         banks.removeAll { $0.id == id }
+    }
+
+    public func deleteAll() async throws {
+        banks.removeAll()
     }
 }
 
