@@ -7,7 +7,7 @@ struct ContentView: View {
     private let appContainer = AppContainer.shared
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topLeading) {
             Wallpaper()
 
             Group {
@@ -22,6 +22,8 @@ struct ContentView: View {
                 AdaptiveNavigation()
                 #endif
             }
+
+            ToastPresenterView(presenter: navigator.toastPresenter)
         }
         .environment(navigator)
         .sheet(item: $navigator.sheet) { route in

@@ -17,6 +17,8 @@ final class AppNavigator {
     var pendingImportTarget: TransactionImportTarget?
     var pendingImportSource: StatementSource?
 
+    let toastPresenter = ToastPresenter()
+
     func navigate(to item: NavigationItem) {
         sidebarSelection = item
         detailPath = NavigationPath()
