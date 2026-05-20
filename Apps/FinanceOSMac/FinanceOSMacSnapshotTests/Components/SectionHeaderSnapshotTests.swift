@@ -8,7 +8,7 @@ import XCTest
 
 final class SectionHeaderSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        false
+        true
     }
 
     func test_section_header_basic() {

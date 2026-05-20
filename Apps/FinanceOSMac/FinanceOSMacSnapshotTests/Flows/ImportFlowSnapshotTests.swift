@@ -8,7 +8,7 @@ import XCTest
 
 final class ImportFlowSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        false
+        true
     }
 
     func test_import_view() {

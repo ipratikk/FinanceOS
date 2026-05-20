@@ -8,7 +8,7 @@ import XCTest
 
 final class EmptyStateSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        false
+        true
     }
 
     func test_empty_state_view() {

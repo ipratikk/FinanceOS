@@ -27,7 +27,6 @@ public final class AppContainer {
     public let spendingService: any SpendingServiceProtocol
 
     public init(databaseManager: DatabaseManager = DatabaseManager.shared) {
-
         transactionRepository = GRDBTransactionRepository(
             dbQueue: databaseManager.dbQueue
         )
