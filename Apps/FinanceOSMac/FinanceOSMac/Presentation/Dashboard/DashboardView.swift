@@ -48,7 +48,7 @@ struct DashboardView: View {
                     .controlSize(.small)
                 FDSLabel("Loading…")
                     .font(AppTypography.captionSmMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
@@ -66,11 +66,11 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 4) {
             FDSLabel("Overview")
                 .font(AppTypography.screenTitle)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
             FDSLabel(currentMonth)
                 .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -82,7 +82,7 @@ struct DashboardView: View {
                 FDSLabel("Net Flow This Month")
                     .font(AppTypography.captionLgMedium)
                     .tracking(0.3)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
 
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     FDSLabel(formatAmount(net))
@@ -126,7 +126,7 @@ struct DashboardView: View {
                 "Transactions",
                 value: "\(totals.transactionCount)",
                 symbol: "list.bullet",
-                color: DesignTokens.Text.tertiary
+                color: AppColors.Text.tertiary
             )
         }
     }
@@ -142,7 +142,7 @@ struct DashboardView: View {
                     FDSLabel(label.uppercased())
                         .font(AppTypography.captionSmSemibold)
                         .tracking(0.2)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
 
                 FDSLabel(value)
@@ -160,10 +160,10 @@ struct DashboardView: View {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel("6-Month Trend")
                     .font(AppTypography.headingSmall)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                 FDSLabel("Inflows vs outflows over time")
                     .font(AppTypography.captionLgMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -180,10 +180,10 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("Recent Activity")
                         .font(AppTypography.headingSmall)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
                     FDSLabel("Last 6 transactions")
                         .font(AppTypography.captionLgMedium)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 Spacer()
                 Button(action: { navigator.navigate(to: .transactions) }, label: {

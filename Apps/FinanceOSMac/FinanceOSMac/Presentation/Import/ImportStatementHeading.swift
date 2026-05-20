@@ -10,7 +10,7 @@ struct ImportStatementHeading: View {
         VStack(alignment: .leading, spacing: 4) {
             FDSLabel("Importing \(fileName)")
                 .font(AppTypography.headingSmall)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
 
             if let ledgerName {
                 FDSLabel("into \(ledgerName)")
@@ -19,12 +19,12 @@ struct ImportStatementHeading: View {
             } else {
                 FDSLabel("Select destination below")
                     .font(AppTypography.bodySm)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(AppSpacing.md)
-        .background(DesignTokens.Background.surfaceGlass)
+        .background(AppColors.Glass.surface)
         .cornerRadius(AppRadius.sm)
     }
 

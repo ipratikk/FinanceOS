@@ -18,11 +18,11 @@ struct TransactionDetailView: View {
                     FDSCard(cornerRadius: 12, padded: false) {
                         VStack(spacing: 0) {
                             detailRow(label: "Merchant", value: row.title)
-                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
                             detailRow(label: "Source", value: row.subtitle)
-                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
                             detailRow(label: "Date", value: formatDate(row.postedAt))
-                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
                             detailRow(
                                 label: "Type",
                                 value: row.transactionType == .debit ? "Debit" : "Credit"
@@ -39,18 +39,18 @@ struct TransactionDetailView: View {
             FDSLabel(row.transactionType == .debit ? "DEBITED" : "CREDITED")
                 .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
 
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 FDSLabel(row.amountText)
                     .font(AppTypography.headingXL)
                     .monospacedDigit()
-                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                    .foregroundColor(row.transactionType == .debit ? AppColors.System.red : AppColors.System
                         .green)
 
                 Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
                     .font(AppTypography.headingMd)
-                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                    .foregroundColor(row.transactionType == .debit ? AppColors.System.red : AppColors.System
                         .green)
             }
             .frame(maxWidth: .infinity, alignment: .center)
@@ -62,11 +62,11 @@ struct TransactionDetailView: View {
             FDSLabel(label.uppercased())
                 .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
             Spacer()
             FDSLabel(value)
                 .font(AppTypography.captionSmMedium)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
                 .multilineTextAlignment(.trailing)
         }
         .padding(AppSpacing.xs)

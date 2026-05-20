@@ -31,7 +31,7 @@ struct SettingsView: View {
     var body: some View {
         HStack(spacing: 0) {
             sideTabs
-            Divider().opacity(DesignTokens.Opacity.low)
+            Divider().opacity(AppColors.Opacity.low)
             ScrollView(showsIndicators: false) {
                 Group {
                     if selectedTab == .general {
@@ -60,11 +60,11 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel("Settings")
                     .font(AppTypography.headingMd)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                 FDSLabel("Preferences")
                     .font(AppTypography.captionSmSemibold)
                     .tracking(0.5)
-                    .foregroundColor(DesignTokens.Text.tertiary)
+                    .foregroundColor(AppColors.Text.tertiary)
             }
 
             VStack(alignment: .leading, spacing: 0) {
@@ -92,7 +92,7 @@ struct SettingsView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     toggleRow("Notifications", symbol: "bell.fill", binding: $notifications)
-                    Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                    Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
                     toggleRow("Auto-Refresh", symbol: "arrow.clockwise", binding: $autoRefresh)
                 }
                 .padding(AppSpacing.sm)
@@ -114,8 +114,8 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
-            .background(DesignTokens.System.red.opacity(0.18))
-            .foregroundColor(DesignTokens.System.red)
+            .background(AppColors.System.red.opacity(0.18))
+            .foregroundColor(AppColors.System.red)
             .cornerRadius(8)
             .buttonStyle(.plain)
         }
@@ -128,9 +128,9 @@ struct SettingsView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     infoRow("Version", value: "1.0.0", copyable: true)
-                    Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                    Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
                     infoRow("Build", value: "2026.05.16", copyable: true)
-                    Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                    Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
                     infoRow("Platform", value: "macOS", copyable: false)
                 }
                 .padding(AppSpacing.sm)
@@ -141,9 +141,9 @@ struct SettingsView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     linkRow("GitHub Repository", symbol: "link")
-                    Divider().opacity(DesignTokens.Opacity.low)
+                    Divider().opacity(AppColors.Opacity.low)
                     linkRow("Report a Bug", symbol: "ladybug.fill")
-                    Divider().opacity(DesignTokens.Opacity.low)
+                    Divider().opacity(AppColors.Opacity.low)
                     linkRow("Privacy Policy", symbol: "lock.fill")
                 }
             }
@@ -153,18 +153,18 @@ struct SettingsView: View {
     private func sectionTitle(_ title: String) -> some View {
         FDSLabel(title)
             .font(AppTypography.bodyMdSemibold)
-            .foregroundColor(DesignTokens.Text.primary)
+            .foregroundColor(AppColors.Text.primary)
     }
 
     private func toggleRow(_ label: String, symbol: String, binding: Binding<Bool>) -> some View {
         HStack(spacing: AppSpacing.sm) {
             Image(systemName: symbol)
                 .font(AppTypography.bodySmMedium)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
                 .frame(width: 22)
             FDSLabel(label)
                 .font(AppTypography.bodySmMedium)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
             Spacer()
             FDSToggle(isOn: binding)
         }
@@ -175,11 +175,11 @@ struct SettingsView: View {
             FDSLabel(label.uppercased())
                 .font(AppTypography.captionSmSemibold)
                 .tracking(0.6)
-                .foregroundColor(DesignTokens.Text.tertiary)
+                .foregroundColor(AppColors.Text.tertiary)
             Spacer()
             FDSLabel(value)
                 .font(AppTypography.bodySmMedium)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
             if copyable {
                 Button(action: {
                     NSPasteboard.general.clearContents()
@@ -187,7 +187,7 @@ struct SettingsView: View {
                 }, label: {
                     Image(systemName: "doc.on.doc")
                         .font(AppTypography.captionSmMedium)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 })
                 .buttonStyle(.plain)
             }
@@ -200,15 +200,15 @@ struct SettingsView: View {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
                     .font(AppTypography.bodySmMedium)
-                    .foregroundColor(DesignTokens.System.orange)
+                    .foregroundColor(AppColors.System.orange)
                     .frame(width: 22)
                 FDSLabel(label)
                     .font(AppTypography.bodySmMedium)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                 Spacer()
                 Image(systemName: "arrow.up.right")
                     .font(AppTypography.bodySmMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
             .padding(AppSpacing.xs)
         })

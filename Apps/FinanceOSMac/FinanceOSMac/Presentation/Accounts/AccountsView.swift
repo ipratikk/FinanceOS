@@ -92,11 +92,11 @@ struct AccountsView: View {
         VStack(alignment: .leading, spacing: 4) {
             FDSLabel("Bank Accounts")
                 .font(AppTypography.headingXL)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
             FDSLabel("Manage your accounts and balances")
                 .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -116,10 +116,10 @@ extension AccountsView {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel(bankName)
                     .font(AppTypography.bodyMdSemibold)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                 FDSLabel("\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
                     .font(AppTypography.captionLgMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
 
             VStack(spacing: 4) {
@@ -160,7 +160,7 @@ extension AccountsView {
             VStack(alignment: .leading, spacing: 2) {
                 FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .font(AppTypography.bodySmSemibold)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
@@ -171,7 +171,7 @@ extension AccountsView {
                             .maskedAccount()
                     }
                 }
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
             }
 
             Spacer()
@@ -193,13 +193,13 @@ extension AccountsView {
         return HStack(spacing: 12) {
             Spacer()
 
-            actionIconButton("plus", color: DesignTokens.Text.tertiary) {
+            actionIconButton("plus", color: AppColors.Text.tertiary) {
                 navigator.pendingImportTarget = .ledger(ledger.id)
                 navigator.pendingImportSource = importSource(for: ledger, bank: bank)
                 navigator.navigate(to: .importStatement)
             }
 
-            actionIconButton("pencil", color: DesignTokens.Text.tertiary) {
+            actionIconButton("pencil", color: AppColors.Text.tertiary) {
                 navigator.present(.accountEdit(ledger))
             }
 
@@ -254,15 +254,15 @@ extension AccountsView {
     private var skeletonRow: some View {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 6)
-                .fill(DesignTokens.Background.surfaceGlassThin)
+                .fill(AppColors.Glass.thinTint)
                 .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
             VStack(alignment: .leading, spacing: 4) {
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(DesignTokens.Background.surfaceGlassThin)
+                    .fill(AppColors.Glass.thinTint)
                     .frame(height: 11)
                     .frame(maxWidth: 160)
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(DesignTokens.Background.surfaceGlassThin)
+                    .fill(AppColors.Glass.thinTint)
                     .frame(height: 9)
                     .frame(maxWidth: 110)
             }
@@ -271,7 +271,7 @@ extension AccountsView {
         .padding(AppSpacing.xs)
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .fill(DesignTokens.Background.surfaceGlass)
+                .fill(AppColors.Glass.surface)
         }
     }
 }

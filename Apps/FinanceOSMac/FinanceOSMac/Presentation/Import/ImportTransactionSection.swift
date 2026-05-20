@@ -22,7 +22,7 @@ struct ImportTransactionSection: View {
         .cornerRadius(AppRadius.md)
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.md)
-                .strokeBorder(DesignTokens.Border.subtle, lineWidth: 1)
+                .strokeBorder(AppColors.Border.subtle, lineWidth: 1)
         )
     }
 
@@ -33,7 +33,7 @@ struct ImportTransactionSection: View {
             HStack(spacing: 8) {
                 FDSLabel(title)
                     .font(AppTypography.headingSmall)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
 
                 FBadge(String(badgeCount), color: .blue)
             }
@@ -43,7 +43,7 @@ struct ImportTransactionSection: View {
             viewAllButton
         }
         .padding(AppSpacing.md)
-        .background(DesignTokens.Background.surfaceGlass)
+        .background(AppColors.Glass.surface)
     }
 
     // MARK: - View All Button

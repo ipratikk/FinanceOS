@@ -10,7 +10,7 @@ struct ImportStepper: View {
         HStack(spacing: 16) {
             FDSLabel("Import Statements")
                 .font(AppTypography.headingXL)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
 
             Spacer()
 
@@ -64,13 +64,13 @@ struct ImportStepper: View {
                     } else {
                         FDSLabel("\(number)")
                             .font(AppTypography.captionSmSemibold)
-                            .foregroundColor(isCurrent ? .black : DesignTokens.Text.tertiary)
+                            .foregroundColor(isCurrent ? .black : AppColors.Text.tertiary)
                     }
                 }
 
                 FDSLabel(label)
                     .font(AppTypography.captionSmMedium)
-                    .foregroundColor(isCurrent ? AppColors.accent : DesignTokens.Text.secondary)
+                    .foregroundColor(isCurrent ? AppColors.accent : AppColors.Text.secondary)
             }
             .frame(maxWidth: .infinity)
         })
@@ -80,7 +80,7 @@ struct ImportStepper: View {
 
     private func stepRule(isComplete: Bool) -> some View {
         Rectangle()
-            .fill(isComplete ? AppColors.success : DesignTokens.Border.subtle)
+            .fill(isComplete ? AppColors.success : AppColors.Border.subtle)
             .frame(height: 1)
             .frame(maxWidth: .infinity)
     }

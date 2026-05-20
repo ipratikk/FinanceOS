@@ -27,7 +27,7 @@ struct ImportSourceGrid: View {
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 FDSLabel(title)
                     .font(AppTypography.headingSmall)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
 
                 LazyVGrid(columns: columns, spacing: AppSpacing.md) {
                     ForEach(sectionSources, id: \.self) { source in

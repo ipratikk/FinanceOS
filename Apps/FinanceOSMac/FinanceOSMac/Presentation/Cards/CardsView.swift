@@ -90,11 +90,11 @@ struct CardsView: View {
         VStack(alignment: .leading, spacing: 4) {
             FDSLabel("Credit Cards")
                 .font(AppTypography.headingXL)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
             FDSLabel("Manage and track your cards")
                 .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -121,7 +121,7 @@ struct CardsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .font(AppTypography.bodySmSemibold)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
@@ -129,12 +129,12 @@ struct CardsView: View {
                         FDSLabel(cardType.rawValue.uppercased())
                             .font(AppTypography.captionSmMedium)
                             .tracking(0.2)
-                            .foregroundColor(DesignTokens.Text.secondary)
+                            .foregroundColor(AppColors.Text.secondary)
                     }
                     if !ledger.last4.isEmpty {
                         FDSLabel("•••• \(ledger.last4)")
                             .maskedAccount()
-                            .foregroundColor(DesignTokens.Text.secondary)
+                            .foregroundColor(AppColors.Text.secondary)
                     }
                 }
             }
@@ -148,14 +148,14 @@ struct CardsView: View {
         HStack(spacing: 12) {
             Spacer()
 
-            actionIconButton("plus", color: DesignTokens.Text.tertiary) {
+            actionIconButton("plus", color: AppColors.Text.tertiary) {
                 let bank = viewModel.banks.first { $0.id == ledger.bankId }
                 navigator.pendingImportTarget = .ledger(ledger.id)
                 navigator.pendingImportSource = importSource(for: ledger, bank: bank)
                 navigator.navigate(to: .importStatement)
             }
 
-            actionIconButton("pencil", color: DesignTokens.Text.tertiary) {
+            actionIconButton("pencil", color: AppColors.Text.tertiary) {
                 navigator.present(.cardEdit(ledger))
             }
 
@@ -181,10 +181,10 @@ extension CardsView {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel(bankName)
                     .font(AppTypography.bodyMdSemibold)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                 FDSLabel("\(rows.count) card\(rows.count == 1 ? "" : "s")")
                     .font(AppTypography.captionLgMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
 
             VStack(spacing: 4) {
@@ -248,15 +248,15 @@ extension CardsView {
     private var skeletonRow: some View {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 6)
-                .fill(DesignTokens.Background.surfaceGlassThin)
+                .fill(AppColors.Glass.thinTint)
                 .frame(width: 56, height: 36)
             VStack(alignment: .leading, spacing: 4) {
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(DesignTokens.Background.surfaceGlassThin)
+                    .fill(AppColors.Glass.thinTint)
                     .frame(height: 11)
                     .frame(maxWidth: 160)
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(DesignTokens.Background.surfaceGlassThin)
+                    .fill(AppColors.Glass.thinTint)
                     .frame(height: 9)
                     .frame(maxWidth: 110)
             }
@@ -265,7 +265,7 @@ extension CardsView {
         .padding(AppSpacing.xs)
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .fill(DesignTokens.Background.surfaceGlass)
+                .fill(AppColors.Glass.surface)
         }
     }
 }

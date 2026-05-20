@@ -62,7 +62,7 @@ struct ImportTransactionListView: View {
             HStack {
                 FDSLabel("… and \(transactions.count - limit) more")
                     .font(AppTypography.labelSmall)
-                    .foregroundColor(DesignTokens.Text.quaternary)
+                    .foregroundColor(AppColors.Text.quaternary)
                 Spacer()
             }
             .padding(.horizontal, AppSpacing.md)
@@ -74,27 +74,27 @@ struct ImportTransactionListView: View {
         HStack(spacing: AppSpacing.md) {
             FDSLabel("Status")
                 .font(AppTypography.labelMedium)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
                 .frame(width: 80, alignment: .leading)
 
             FDSLabel("Date")
                 .font(AppTypography.labelMedium)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
                 .frame(width: 80, alignment: .leading)
 
             FDSLabel("Description")
                 .font(AppTypography.labelMedium)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 
             FDSLabel("Reference")
                 .font(AppTypography.labelMedium)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
                 .frame(width: 120, alignment: .leading)
 
             FDSLabel("Amount")
                 .font(AppTypography.labelMedium)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
                 .frame(width: 100, alignment: .trailing)
         }
         .padding(.horizontal, AppSpacing.md)
@@ -126,18 +126,18 @@ struct ImportTransactionListView: View {
 
             FDSLabel(ImportFormatting.formatDate(txn.postedAt))
                 .font(AppTypography.labelMedium)
-                .foregroundColor(DesignTokens.Text.tertiary)
+                .foregroundColor(AppColors.Text.tertiary)
                 .frame(width: 80, alignment: .leading)
 
             FDSLabel(txn.description)
                 .font(AppTypography.bodySm)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
                 .lineLimit(1)
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 
             FDSLabel(shortReference(txn.sourceFingerprint))
                 .font(AppTypography.labelSmall)
-                .foregroundColor(DesignTokens.Text.quaternary)
+                .foregroundColor(AppColors.Text.quaternary)
                 .lineLimit(1)
                 .frame(width: 120, alignment: .leading)
 
@@ -146,7 +146,7 @@ struct ImportTransactionListView: View {
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.sm)
-        .background(isDuplicate ? DesignTokens.Background.surfaceGlass.opacity(0.5) : AppColors.clear)
+        .background(isDuplicate ? AppColors.Glass.surface.opacity(0.5) : AppColors.clear)
     }
 
     @ViewBuilder

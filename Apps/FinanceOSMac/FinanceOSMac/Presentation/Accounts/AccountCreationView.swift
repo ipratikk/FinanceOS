@@ -30,12 +30,12 @@ struct AccountCreationView: View {
                             FDSLabel("ACCOUNT DETAILS")
                                 .font(AppTypography.captionSmSemibold)
                                 .tracking(0.2)
-                                .foregroundColor(DesignTokens.Text.secondary)
+                                .foregroundColor(AppColors.Text.secondary)
 
                             fieldInput("Nickname", text: $nickname)
-                            Divider().opacity(DesignTokens.Opacity.low)
+                            Divider().opacity(AppColors.Opacity.low)
                             fieldInput("Account Type", text: $accountType)
-                            Divider().opacity(DesignTokens.Opacity.low)
+                            Divider().opacity(AppColors.Opacity.low)
                             fieldInput("Last 4 Digits", text: $last4)
                         }
                         .padding(AppSpacing.xs)
@@ -71,9 +71,9 @@ struct AccountCreationView: View {
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             FDSTextInput("", text: text, style: .labelSmall)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
                 .padding(8)
-                .background(DesignTokens.Background.inputWell)
+                .background(AppColors.Glass.inputWell)
                 .cornerRadius(6)
         }
     }

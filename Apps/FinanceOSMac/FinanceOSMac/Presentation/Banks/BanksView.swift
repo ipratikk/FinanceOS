@@ -43,11 +43,11 @@ struct BanksView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("Banks")
                         .font(AppTypography.headingLg)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
                     FDSLabel("Manage connected institutions")
                         .font(AppTypography.captionSmMedium)
                         .tracking(0.3)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 .padding(.horizontal, 32)
 
@@ -75,19 +75,19 @@ struct BanksView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         FDSLabel(bank.name)
                             .font(AppTypography.bodySmSemibold)
-                            .foregroundColor(DesignTokens.Text.primary)
+                            .foregroundColor(AppColors.Text.primary)
                         FDSLabel(bank.providerType.rawValue.capitalized)
                             .font(AppTypography.captionSmMedium)
-                            .foregroundColor(DesignTokens.Text.secondary)
+                            .foregroundColor(AppColors.Text.secondary)
                     }
 
                     Spacer()
 
                     HStack(spacing: 8) {
-                        iconButton("pencil", color: DesignTokens.Text.tertiary) {
+                        iconButton("pencil", color: AppColors.Text.tertiary) {
                             navigator.present(.bankEdit(bank))
                         }
-                        iconButton("trash", color: DesignTokens.System.red) {
+                        iconButton("trash", color: AppColors.System.red) {
                             bankToDelete = bank
                             showDeleteConfirm = true
                         }
@@ -96,16 +96,16 @@ struct BanksView: View {
                 .padding(AppSpacing.xs)
 
                 if !ledgers.isEmpty {
-                    Divider().opacity(DesignTokens.Opacity.low)
+                    Divider().opacity(AppColors.Opacity.low)
                     VStack(alignment: .leading, spacing: 4) {
                         ForEach(ledgers) { ledger in
                             HStack(spacing: 8) {
                                 Image(systemName: ledger.kind == .creditCard ? "creditcard.fill" : "banknote.fill")
                                     .font(AppTypography.captionSmSemibold)
-                                    .foregroundColor(DesignTokens.Text.secondary)
+                                    .foregroundColor(AppColors.Text.secondary)
                                 FDSLabel(ledger.displayName)
                                     .font(AppTypography.captionSmMedium)
-                                    .foregroundColor(DesignTokens.Text.secondary)
+                                    .foregroundColor(AppColors.Text.secondary)
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 4)
@@ -148,11 +148,11 @@ struct BanksView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("Banks")
                         .font(AppTypography.headingLg)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
                     FDSLabel("Manage connected institutions")
                         .font(AppTypography.captionSmMedium)
                         .tracking(0.3)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 .padding(.horizontal, 32)
 
@@ -172,16 +172,16 @@ struct BanksView: View {
     private var skeletonRow: some View {
         HStack(spacing: 16) {
             RoundedRectangle(cornerRadius: 6)
-                .fill(DesignTokens.Background.surfaceGlassThin)
+                .fill(AppColors.Glass.thinTint)
                 .frame(width: AppSpacing.hitTarget, height: AppSpacing.hitTarget)
 
             VStack(alignment: .leading, spacing: 6) {
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(DesignTokens.Background.surfaceGlassThin)
+                    .fill(AppColors.Glass.thinTint)
                     .frame(height: 13)
                     .frame(maxWidth: 180)
                 RoundedRectangle(cornerRadius: 3)
-                    .fill(DesignTokens.Background.surfaceGlassThin)
+                    .fill(AppColors.Glass.thinTint)
                     .frame(height: 11)
                     .frame(maxWidth: 120)
             }
@@ -190,10 +190,10 @@ struct BanksView: View {
         .padding(AppSpacing.xs)
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .fill(DesignTokens.Background.surfaceGlass)
+                .fill(AppColors.Glass.surface)
                 .overlay {
                     RoundedRectangle(cornerRadius: 12)
-                        .strokeBorder(DesignTokens.Background.surfaceGlassMid, lineWidth: 1)
+                        .strokeBorder(AppColors.Glass.midTint, lineWidth: 1)
                 }
         }
     }

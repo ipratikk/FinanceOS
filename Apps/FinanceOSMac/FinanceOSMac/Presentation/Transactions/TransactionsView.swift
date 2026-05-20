@@ -28,7 +28,7 @@ struct TransactionsView: View {
                         .controlSize(.large)
                     FDSLabel("Loading transactions...")
                         .font(AppTypography.captionSmMedium)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.base)
@@ -36,13 +36,13 @@ struct TransactionsView: View {
                 VStack(spacing: 12) {
                     Image(systemName: "creditcard.fill")
                         .font(AppTypography.displaySmall)
-                        .foregroundColor(DesignTokens.Text.tertiary.opacity(DesignTokens.Opacity.muted))
+                        .foregroundColor(AppColors.Text.tertiary.opacity(AppColors.Opacity.muted))
                     FDSLabel("No Transactions")
                         .font(AppTypography.bodySmSemibold)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
                     FDSLabel("Import statements to get started")
                         .font(AppTypography.captionSmMedium)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.base)
@@ -53,10 +53,10 @@ struct TransactionsView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 FDSLabel("Transactions")
                                     .font(AppTypography.headingLg)
-                                    .foregroundColor(DesignTokens.Text.primary)
+                                    .foregroundColor(AppColors.Text.primary)
                                 FDSLabel("\(viewModel.transactionRows.count) total")
                                     .font(AppTypography.captionSmMedium)
-                                    .foregroundColor(DesignTokens.Text.secondary)
+                                    .foregroundColor(AppColors.Text.secondary)
                             }
                             Spacer()
                         }
@@ -106,7 +106,7 @@ struct TransactionsView: View {
     private func sectionHeader(_ date: Date) -> some View {
         FDSLabel(dateHeaderString(date))
             .font(AppTypography.captionSmSemibold)
-            .foregroundColor(DesignTokens.Text.tertiary)
+            .foregroundColor(AppColors.Text.tertiary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background(AppColors.base)
@@ -118,15 +118,15 @@ struct TransactionsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     FDSLabel(txn.title)
                         .font(AppTypography.bodySmSemibold)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
                     FDSLabel(dateString(txn.postedAt))
                         .font(AppTypography.captionSm)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 Spacer()
                 FDSLabel(txn.amountText)
                     .font(AppTypography.bodySmSemibold)
-                    .foregroundColor(txn.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                    .foregroundColor(txn.transactionType == .debit ? AppColors.System.red : AppColors.System
                         .green)
             }
             .padding(AppSpacing.xs)
