@@ -28,7 +28,7 @@ struct TransactionsView: View {
                         .controlSize(.large)
                     Text("Loading transactions...")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                        .foregroundColor(DesignTokens.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.base)
@@ -36,13 +36,13 @@ struct TransactionsView: View {
                 VStack(spacing: 12) {
                     Image(systemName: "creditcard.fill")
                         .font(.system(size: 32, weight: .light))
-                        .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580).opacity(0.4))
+                        .foregroundColor(DesignTokens.Text.tertiary.opacity(DesignTokens.Opacity.muted))
                     Text("No Transactions")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                        .foregroundColor(DesignTokens.Text.primary)
                     Text("Import statements to get started")
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                        .foregroundColor(DesignTokens.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.base)
@@ -53,10 +53,10 @@ struct TransactionsView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Transactions")
                                     .font(.system(size: 22, weight: .semibold))
-                                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                                    .foregroundColor(DesignTokens.Text.primary)
                                 Text("\(viewModel.transactionRows.count) total")
                                     .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                                    .foregroundColor(DesignTokens.Text.secondary)
                             }
                             Spacer()
                         }
@@ -106,7 +106,7 @@ struct TransactionsView: View {
     private func sectionHeader(_ date: Date) -> some View {
         Text(dateHeaderString(date))
             .font(.system(size: 11, weight: .semibold))
-            .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+            .foregroundColor(DesignTokens.Text.tertiary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background(AppColors.base)
@@ -118,19 +118,15 @@ struct TransactionsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(txn.title)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                        .foregroundColor(DesignTokens.Text.primary)
                     Text(dateString(txn.postedAt))
                         .font(.system(size: 11, weight: .regular))
-                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                        .foregroundColor(DesignTokens.Text.secondary)
                 }
                 Spacer()
                 Text(txn.amountText)
                     .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                    .foregroundColor(txn.transactionType == .debit ? Color(red: 1.0, green: 0.27, blue: 0.23) : Color(
-                        red: 0.19,
-                        green: 0.82,
-                        blue: 0.35
-                    ))
+                    .foregroundColor(txn.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System.green)
             }
             .padding(12)
         }

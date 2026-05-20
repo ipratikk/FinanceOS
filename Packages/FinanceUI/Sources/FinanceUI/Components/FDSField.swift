@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Form field wrapper with label, optional hint, control, and optional error.
@@ -25,7 +26,7 @@ public struct FDSField<Content: View>: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(label.uppercased())
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
                     .tracking(0.01)
 
@@ -33,7 +34,7 @@ public struct FDSField<Content: View>: View {
 
                 if let hint {
                     Text(hint)
-                        .font(.system(size: 11, weight: .regular))
+                        .font(AppTypography.captionSm)
                         .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
                 }
             }
@@ -42,7 +43,7 @@ public struct FDSField<Content: View>: View {
 
             if let error {
                 Text(error)
-                    .font(.system(size: 11, weight: .regular))
+                    .font(AppTypography.captionSm)
                     .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
             }
         }

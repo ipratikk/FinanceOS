@@ -43,7 +43,7 @@ public struct FDSChoiceGroup<T: Hashable>: View {
         }
         .padding(4)
         .background(AppColors.surface)
-        .cornerRadius(18)
+        .cornerRadius(AppRadius.xl)
         .animation(.spring(response: 0.25, dampingFraction: 0.85), value: selection)
     }
 }

@@ -68,11 +68,11 @@ struct ImportSourceCard: View {
             Image(bank.symbolAssetName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
         } else {
             RoundedRectangle(cornerRadius: AppRadius.sm)
                 .fill(DesignTokens.Background.surfaceGlass)
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
                 .overlay(
                     Image(systemName: "building.columns")
                         .font(.system(size: 16))

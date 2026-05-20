@@ -25,7 +25,7 @@ private struct SkeletonRow: View {
             HStack(spacing: AppSpacing.md) {
                 Circle()
                     .fill(AppColors.surface2)
-                    .frame(width: 8, height: 8)
+                    .frame(width: AppSpacing.xs, height: AppSpacing.xs)
 
                 VStack(alignment: .leading, spacing: AppSpacing.xs) {
                     RoundedRectangle(cornerRadius: 4)

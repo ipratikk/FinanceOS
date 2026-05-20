@@ -39,12 +39,12 @@ public struct FDSSheet<Content: View>: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
-                            .font(.system(size: 19, weight: .semibold))
+                            .font(DesignTokens.Typography.sheetTitle)
                             .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
 
                         if let subtitle {
                             Text(subtitle)
-                                .font(.system(size: 13, weight: .regular))
+                                .font(AppTypography.bodySm)
                                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                         }
                     }
@@ -61,7 +61,7 @@ public struct FDSSheet<Content: View>: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(20)
+                .padding(AppSpacing.lg)
                 .background(Color.black.opacity(0.15))
 
                 Divider()
@@ -69,13 +69,13 @@ public struct FDSSheet<Content: View>: View {
 
                 ScrollView {
                     content
-                        .padding(20)
+                        .padding(AppSpacing.lg)
                 }
 
                 Divider()
                     .opacity(0.2)
 
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.sm) {
                     Spacer()
 
                     Button(action: {
@@ -90,7 +90,7 @@ public struct FDSSheet<Content: View>: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(16)
+                .padding(AppSpacing.md)
                 .background(Color.black.opacity(0.1))
             }
             .frame(maxWidth: 580)
@@ -121,9 +121,9 @@ public struct FDSSheet<Content: View>: View {
             subtitle: "Update account details",
             onDismiss: {}
         ) {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
                 Text("Account Name")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                     .foregroundColor(.secondary)
 
                 TextField("Enter name", text: .constant(""))

@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// 76×48 mini credit card render for display in rows.
@@ -75,8 +76,13 @@ public struct FDSCardArt: View {
                 )
         }
         .frame(width: 76, height: 48)
-        .cornerRadius(8)
-        .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+        .cornerRadius(AppRadius.sm)
+        .shadow(
+            color: AppShadows.subtle.color,
+            radius: AppShadows.subtle.radius,
+            x: AppShadows.subtle.x,
+            y: AppShadows.subtle.y
+        )
     }
 }
 

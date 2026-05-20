@@ -30,19 +30,19 @@ public struct FDSSelect<T: Hashable>: View {
                 }
             }
         } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.sm) {
                 Text(optionLabel(selection))
                     .foregroundColor(AppColors.textPrimary)
                 Spacer()
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                     .foregroundColor(AppColors.textTertiary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 12)
+            .padding(.horizontal, AppSpacing.sm)
             .frame(height: 34)
             .background(AppColors.surface2)
-            .cornerRadius(8)
+            .cornerRadius(AppRadius.sm)
         }
     }
 }

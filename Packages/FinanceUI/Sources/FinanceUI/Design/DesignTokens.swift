@@ -44,6 +44,10 @@ public enum DesignTokens {
             green: 22 / 255,
             blue: 30 / 255
         ).opacity(0.65)
+        /// white 8% — mid glass (skeleton strokes, subtle separators)
+        public static let surfaceGlassMid = Color.white.opacity(0.08)
+        /// white 12% — card artwork border, light stroke highlights
+        public static let surfaceGlassHighlight = Color.white.opacity(0.12)
         /// black 25% — text input / select backgrounds (recessed)
         public static let inputWell = Color.black.opacity(0.25)
     }
@@ -200,6 +204,25 @@ public enum DesignTokens {
             public let xl: CGFloat
             public let xxl: CGFloat
         }
+    }
+
+    // MARK: - Opacity Scale
+
+    //
+    // Use these for `.opacity()` modifiers on Dividers, icons, and decorative shapes.
+    // Do NOT apply to text or interactive components — use semantic color tokens instead.
+
+    public enum Opacity {
+        /// 0.20 — subtle separators, dividers
+        public static let low: Double = 0.20
+        /// 0.30 — soft dividers, ghost icons
+        public static let medium: Double = 0.30
+        /// 0.40 — muted icon states
+        public static let muted: Double = 0.40
+        /// 0.50 — mid-weight overlays
+        public static let high: Double = 0.50
+        /// 0.80 — near-opaque tinted overlays
+        public static let strong: Double = 0.80
     }
 
     // MARK: - Layout Constants

@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Apple-spec toggle (36×22 capsule).
@@ -48,7 +49,7 @@ public struct FDSToggle: View {
 
                 Circle()
                     .fill(Color.white)
-                    .frame(width: 16, height: 16)
+                    .frame(width: AppSpacing.md, height: AppSpacing.md)
                     .overlay {
                         Circle()
                             .strokeBorder(

@@ -52,7 +52,7 @@ struct FDSPickerRow: View {
 
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(AppTypography.bodyMdSemibold)
                     .foregroundStyle(AppColors.accent)
             }
         }
@@ -74,7 +74,7 @@ struct FDSPickerRow: View {
 
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                     .foregroundStyle(AppColors.accent)
             }
         }
@@ -102,7 +102,7 @@ struct FDSPickerRow: View {
 
             if isSelected {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                     .foregroundStyle(AppColors.accent)
             }
         }

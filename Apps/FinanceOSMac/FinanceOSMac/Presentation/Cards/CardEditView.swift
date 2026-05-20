@@ -33,12 +33,12 @@ struct CardEditView: View {
                         Text("CARD DETAILS")
                             .font(.system(size: 10, weight: .semibold))
                             .tracking(0.2)
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                            .foregroundColor(DesignTokens.Text.secondary)
 
                         fieldInput("Nickname", text: $nickname)
-                        Divider().opacity(0.2)
+                        Divider().opacity(DesignTokens.Opacity.low)
                         fieldInput("Card Type", text: $cardType)
-                        Divider().opacity(0.2)
+                        Divider().opacity(DesignTokens.Opacity.low)
                         fieldInput("Last 4 Digits", text: $last4)
                     }
                     .padding(12)
@@ -82,11 +82,16 @@ struct CardEditView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+<<<<<<< HEAD
             TextField("", text: text)
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+=======
+            FDSTextInput("", text: text, style: .labelSmall)
+                .foregroundColor(DesignTokens.Text.primary)
+>>>>>>> 50e856e (refactor: Replace hardcoded frames, corners, and shadows with design tokens)
                 .padding(8)
-                .background(Color.black.opacity(0.25))
+                .background(DesignTokens.Background.inputWell)
                 .cornerRadius(6)
         }
     }

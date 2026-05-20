@@ -37,14 +37,14 @@ struct AccountEditView: View {
                         Text("ACCOUNT INFORMATION")
                             .font(.system(size: 10, weight: .semibold))
                             .tracking(0.2)
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                            .foregroundColor(DesignTokens.Text.secondary)
 
                         fieldInput("Account Name", text: $displayName)
-                        Divider().opacity(0.2)
+                        Divider().opacity(DesignTokens.Opacity.low)
                         fieldInput("Owner Name", text: $ownerName)
-                        Divider().opacity(0.2)
+                        Divider().opacity(DesignTokens.Opacity.low)
                         fieldInput("Last 4 Digits", text: $last4)
-                        Divider().opacity(0.2)
+                        Divider().opacity(DesignTokens.Opacity.low)
                         fieldInput("Nickname", text: $nickname)
                     }
                     .padding(12)
@@ -55,18 +55,18 @@ struct AccountEditView: View {
                         Text("BANK")
                             .font(.system(size: 10, weight: .semibold))
                             .tracking(0.2)
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                            .foregroundColor(DesignTokens.Text.secondary)
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Select Bank")
                                 .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                                .foregroundColor(DesignTokens.Text.primary)
                             Picker("Bank", selection: $bankId) {
                                 ForEach(context.banks) { bank in
                                     Text(bank.name).tag(bank.id)
                                 }
                             }
-                            .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                            .foregroundColor(DesignTokens.Text.primary)
                         }
                         .padding(8)
                     }
@@ -125,7 +125,7 @@ struct AccountEditView: View {
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 .padding(8)
-                .background(Color.black.opacity(0.25))
+                .background(DesignTokens.Background.inputWell)
                 .cornerRadius(6)
         }
     }

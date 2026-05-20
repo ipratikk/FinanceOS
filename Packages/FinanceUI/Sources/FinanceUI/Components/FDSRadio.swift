@@ -26,7 +26,7 @@ public struct FDSRadio: View {
             if isSelected {
                 Circle()
                     .fill(AppColors.base)
-                    .frame(width: 8, height: 8)
+                    .frame(width: AppSpacing.xs, height: AppSpacing.xs)
             }
         }
         .frame(width: 20, height: 20)
