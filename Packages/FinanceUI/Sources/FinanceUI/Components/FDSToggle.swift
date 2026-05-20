@@ -19,12 +19,12 @@ public struct FDSToggle: View {
     public var body: some View {
         ZStack {
             Capsule()
-                .fill(isOn ? AppColors.accent : DesignTokens.Background.inputWell)
+                .fill(isOn ? AppColors.accent : AppColors.Glass.inputWell)
                 .overlay {
                     Capsule()
                         .strokeBorder(
                             isOn
-                                ? DesignTokens.Edge.gleamBorder
+                                ? AppColors.Glass.gleamBorder
                                 : LinearGradient(
                                     colors: [.clear, .clear],
                                     startPoint: .top,

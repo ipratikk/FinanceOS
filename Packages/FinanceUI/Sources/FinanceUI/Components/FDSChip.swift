@@ -45,7 +45,7 @@ public struct FDSChip: View {
                             // chip tint — intentionally lighter than Opacity.low (0.20)
                             .fill(accentColor.opacity(0.18))
                             .overlay(
-                                Capsule().strokeBorder(accentColor.opacity(DesignTokens.Opacity.muted), lineWidth: 0.5)
+                                Capsule().strokeBorder(accentColor.opacity(AppColors.Opacity.muted), lineWidth: 0.5)
                             )
                     } else {
                         Capsule()
@@ -57,7 +57,7 @@ public struct FDSChip: View {
         .contentShape(Rectangle())
         .buttonStyle(.plain)
         .disabled(!isEnabled)
-        .opacity(isEnabled ? 1.0 : DesignTokens.Opacity.muted)
+        .opacity(isEnabled ? 1.0 : AppColors.Opacity.muted)
         .animation(.spring(response: 0.25, dampingFraction: 0.85), value: isActive)
         .accessibilityLabel("\(label)\(isActive ? ", selected" : "")")
     }

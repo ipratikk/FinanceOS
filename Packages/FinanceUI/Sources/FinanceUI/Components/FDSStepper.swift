@@ -27,21 +27,21 @@ public struct FDSStepper: View {
             Button(action: { if value > min { value -= 1 } }, label: {
                 Image(systemName: "minus")
                     .font(AppTypography.captionSmSemibold)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                     .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
             })
             .buttonStyle(.plain)
 
             FDSLabel(String(format: "%02d", value))
                 .font(AppTypography.bodySmSemibold)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
                 .frame(maxWidth: .infinity)
                 .frame(height: 32)
 
             Button(action: { if value < max { value += 1 } }, label: {
                 Image(systemName: "plus")
                     .font(AppTypography.captionSmSemibold)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                     .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
             })
             .buttonStyle(.plain)

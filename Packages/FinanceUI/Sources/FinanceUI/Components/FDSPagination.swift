@@ -23,7 +23,7 @@ public struct FDSPagination: View {
         HStack(spacing: AppSpacing.tight) {
             ForEach(0 ..< count, id: \.self) { i in
                 Capsule()
-                    .fill(i == index ? AppColors.accent : DesignTokens.Text.quaternary.opacity(0.5))
+                    .fill(i == index ? AppColors.accent : AppColors.Text.quaternary.opacity(0.5))
                     .frame(width: i == index ? 18 : 6, height: 6)
                     .animation(AppAnimation.springSnappy, value: index)
                     .onTapGesture { index = i }
@@ -44,7 +44,7 @@ public struct FDSPagination: View {
             Button("→") { if page < 3 { page += 1 } }.buttonStyle(.plain)
         }
         .font(AppTypography.bodySm)
-        .foregroundStyle(DesignTokens.Text.secondary)
+        .foregroundStyle(AppColors.Text.secondary)
     }
     .padding(AppSpacing.xl)
     .background(AppColors.base)

@@ -60,7 +60,7 @@ public struct FDSSheet<Content: View>: View {
                     }, label: {
                         FDSLabel("Cancel")
                             .font(AppTypography.bodySmSemibold)
-                            .foregroundColor(DesignTokens.Text.secondary)
+                            .foregroundColor(AppColors.Text.secondary)
                             .frame(minWidth: 80)
                             .frame(height: 32)
                     })
@@ -86,16 +86,16 @@ public struct FDSSheet<Content: View>: View {
         }
     }
 
-    @ViewBuilder private var sheetHeader: some View {
+    private var sheetHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel(title)
                     .font(AppTypography.titleSm)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                 if let subtitle {
                     FDSLabel(subtitle)
                         .font(AppTypography.bodySm)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
             }
             Spacer()
@@ -122,7 +122,7 @@ public struct FDSSheet<Content: View>: View {
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
                     FDSLabel("Account Name")
                         .font(AppTypography.captionLgSemibold)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
 
                     TextField("Enter name", text: .constant(""))
                         .padding(AppSpacing.sm)

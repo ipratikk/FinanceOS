@@ -36,7 +36,7 @@ public struct FDSCardArt: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(DesignTokens.System.yellow)
+                        .fill(AppColors.System.yellow)
                         .frame(width: 12, height: 9)
 
                     Spacer()

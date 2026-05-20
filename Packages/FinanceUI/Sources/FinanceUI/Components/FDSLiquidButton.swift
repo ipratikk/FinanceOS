@@ -6,7 +6,7 @@ import SwiftUI
 /// Variants:
 /// - `.primary` — emerald fill (AppColors.accentGreen) with gleam edge
 /// - `.ghost`   — .regularMaterial glass pill, primary text
-/// - `.danger`  — DesignTokens.Semantic.danger-tinted glass pill
+/// - `.danger`  — AppColors.danger-tinted glass pill
 /// - `.link`    — bare AppColors.accent text with hover pill
 public struct FDSLiquidButton: View {
     let title: String
@@ -90,7 +90,7 @@ public struct FDSLiquidButton: View {
     //
     // primary  — AppColors.accentGreen solid capsule with glass gleam border
     // ghost    — .regularMaterial capsule with glass tint and gleam border
-    // danger   — DesignTokens.Semantic.danger at 18% opacity
+    // danger   — AppColors.danger at 18% opacity
     // link     — no background
 
     @ViewBuilder
@@ -108,7 +108,7 @@ public struct FDSLiquidButton: View {
                 .fill(.regularMaterial)
                 .overlay {
                     Capsule()
-                        .fill(DesignTokens.Background.surfaceGlass)
+                        .fill(AppColors.Glass.surface)
                 }
                 .overlay {
                     Capsule()
@@ -126,7 +126,7 @@ public struct FDSLiquidButton: View {
 
     //
     // primary  — AppColors.base (near-black text on bright green fill)
-    // ghost    — DesignTokens.Text.primary (near-white)
+    // ghost    — AppColors.Text.primary (near-white)
     // danger   — AppColors.danger (red)
     // link     — AppColors.accent (emerald)
 
@@ -135,7 +135,7 @@ public struct FDSLiquidButton: View {
         case .primary:
             return AppColors.base
         case .ghost:
-            return DesignTokens.Text.primary
+            return AppColors.Text.primary
         case .danger:
             return AppColors.danger
         case .link:
@@ -144,6 +144,6 @@ public struct FDSLiquidButton: View {
     }
 
     private var gleamGradient: LinearGradient {
-        DesignTokens.Edge.gleamBorder
+        AppColors.Glass.gleamBorder
     }
 }

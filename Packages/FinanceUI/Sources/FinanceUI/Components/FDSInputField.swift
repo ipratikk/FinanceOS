@@ -41,12 +41,12 @@ public struct FDSInputField: View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
             FDSLabel(label)
                 .font(AppTypography.captionSmSemibold)
-                .foregroundStyle(DesignTokens.Text.secondary)
+                .foregroundStyle(AppColors.Text.secondary)
 
             FDSTextInput(placeholder, text: $text, isSecure: isSecure)
                 .padding(.horizontal, AppSpacing.sm)
                 .padding(.vertical, AppSpacing.compact)
-                .background(DesignTokens.Background.inputWell)
+                .background(AppColors.Glass.inputWell)
                 .overlay(
                     RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
                         .stroke(borderColor, lineWidth: 1)
@@ -65,7 +65,7 @@ public struct FDSInputField: View {
 
     private var borderColor: Color {
         switch state {
-        case .normal: return DesignTokens.Border.subtle
+        case .normal: return AppColors.Border.subtle
         case .error: return AppColors.danger.opacity(0.5)
         case .success: return AppColors.success.opacity(0.5)
         }
@@ -80,7 +80,7 @@ public struct FDSInputField: View {
 
     private var messageColor: Color {
         switch state {
-        case .normal, .success: return DesignTokens.Text.tertiary
+        case .normal, .success: return AppColors.Text.tertiary
         case .error: return AppColors.danger
         }
     }

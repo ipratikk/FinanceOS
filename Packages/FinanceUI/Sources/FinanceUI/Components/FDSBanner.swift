@@ -35,7 +35,7 @@ public struct FDSBanner: View {
 
             FDSLabel(message)
                 .font(AppTypography.captionLgMedium)
-                .foregroundStyle(DesignTokens.Text.primary)
+                .foregroundStyle(AppColors.Text.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -43,7 +43,7 @@ public struct FDSBanner: View {
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")
                         .font(AppTypography.captionSmSemibold)
-                        .foregroundStyle(DesignTokens.Text.tertiary)
+                        .foregroundStyle(AppColors.Text.tertiary)
                 }
                 .buttonStyle(.plain)
             }
@@ -64,7 +64,7 @@ public struct FDSBanner: View {
         case .success: return AppColors.success
         case .warning: return AppColors.warning
         case .error: return AppColors.danger
-        case .neutral: return DesignTokens.Text.tertiary
+        case .neutral: return AppColors.Text.tertiary
         }
     }
 

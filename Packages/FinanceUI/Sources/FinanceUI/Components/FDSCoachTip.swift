@@ -42,11 +42,11 @@ public struct FDSCoachTip: View {
 
             FDSLabel(steps[currentStep].title)
                 .font(AppTypography.bodySmSemibold)
-                .foregroundStyle(DesignTokens.Text.primary)
+                .foregroundStyle(AppColors.Text.primary)
 
             FDSLabel(steps[currentStep].description)
                 .font(AppTypography.captionSm)
-                .foregroundStyle(DesignTokens.Text.secondary)
+                .foregroundStyle(AppColors.Text.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
             HStack {
@@ -62,7 +62,7 @@ public struct FDSCoachTip: View {
         }
         .overlay {
             RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
-                .stroke(DesignTokens.Border.subtle, lineWidth: 1)
+                .stroke(AppColors.Border.subtle, lineWidth: 1)
         }
         .shadow(color: AppColors.base.opacity(0.3), radius: 12, y: 4)
     }
@@ -71,14 +71,14 @@ public struct FDSCoachTip: View {
         HStack(spacing: AppSpacing.tight) {
             ForEach(steps.indices, id: \.self) { i in
                 Circle()
-                    .fill(i == currentStep ? AppColors.accent : DesignTokens.Text.quaternary)
+                    .fill(i == currentStep ? AppColors.accent : AppColors.Text.quaternary)
                     .frame(width: 5, height: 5)
                     .animation(AppAnimation.selection, value: currentStep)
             }
             Spacer()
             FDSLabel("\(currentStep + 1) of \(steps.count)")
                 .font(AppTypography.captionSmSemibold)
-                .foregroundStyle(DesignTokens.Text.tertiary)
+                .foregroundStyle(AppColors.Text.tertiary)
         }
     }
 
