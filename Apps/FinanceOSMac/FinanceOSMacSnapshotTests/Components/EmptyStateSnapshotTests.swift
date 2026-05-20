@@ -12,8 +12,8 @@ final class EmptyStateSnapshotTests: SnapshotTestable {
     }
 
     func test_empty_state_view() {
-        let view = EmptyStateView(
-            icon: "list.bullet",
+        let view = FDSEmptyState(
+            symbol: "list.bullet",
             title: "No Transactions",
             subtitle: "Start importing transactions to see them here"
         )
@@ -21,12 +21,10 @@ final class EmptyStateSnapshotTests: SnapshotTestable {
     }
 
     func test_empty_state_with_action() {
-        let view = EmptyStateView(
-            icon: "creditcard",
+        let view = FDSEmptyState(
+            symbol: "creditcard",
             title: "No Cards Yet",
-            subtitle: "Add your first credit card to track spending",
-            action: {},
-            actionLabel: "Add Card"
+            subtitle: "Add your first credit card to track spending"
         )
         verifyComponentSnapshots(view, size: CGSize(width: 390, height: 360))
     }

@@ -146,7 +146,7 @@ struct CardSelectionView: View {
                 Spacer(minLength: AppSpacing.compact)
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(AppTypography.headlineMdRegular)
+                    .font(AppTypography.headingMdRegular)
                     .foregroundStyle(isSelected ? AppColors.accent : AppColors.textSecondary.opacity(0.4))
             }
             .padding(AppSpacing.md)
@@ -195,7 +195,7 @@ struct CardSelectionView: View {
             .fill(.ultraThinMaterial)
             .overlay {
                 Image(systemName: "creditcard.fill")
-                    .font(AppTypography.headlineLgLight)
+                    .font(AppTypography.headingLgLight)
                     .foregroundStyle(.tertiary)
             }
     }

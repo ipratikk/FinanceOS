@@ -12,7 +12,7 @@ final class FinanceCardSnapshotTests: SnapshotTestable {
     }
 
     func test_finance_card_basic() {
-        let view = FinanceCard {
+        let view = FDSCard {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Chase Checking")
                     .font(.headline)
