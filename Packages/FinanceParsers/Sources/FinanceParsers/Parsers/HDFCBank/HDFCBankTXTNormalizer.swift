@@ -3,7 +3,7 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.pratik.FinanceOS", category: "Parsing")
 
-public struct HDFCBankTXTNormalizer: Sendable {
+public struct HDFCBankTXTNormalizer: Sendable, CSVRowNormalizer {
     public init() {}
 
     public func normalize(normalizedRow: NormalizedRow) throws -> ParsedTransaction? {

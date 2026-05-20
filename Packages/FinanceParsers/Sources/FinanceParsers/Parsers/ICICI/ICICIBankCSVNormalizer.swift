@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ICICIBankCSVNormalizer: Sendable {
+public struct ICICIBankCSVNormalizer: Sendable, CSVRowNormalizer {
     public init() {}
 
     public func normalize(normalizedRow: NormalizedRow) throws -> ParsedTransaction? {
