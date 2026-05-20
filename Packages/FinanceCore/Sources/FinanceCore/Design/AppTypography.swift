@@ -11,17 +11,15 @@ public enum AppTypography {
 
     // MARK: - Headline (Section Headers, Titles)
 
-    public static let headlineXL = Font.system(size: 24, weight: .bold, design: .default)
     public static let headingXL = Font.system(size: 24, weight: .bold, design: .default)
     public static let headingXLLight = Font.system(size: 24, weight: .light, design: .default)
-    public static let headlineLg = Font.system(size: 20, weight: .bold, design: .default)
     public static let headingLg = Font.system(size: 20, weight: .bold, design: .default)
-    public static let headlineLgLight = Font.system(size: 20, weight: .light, design: .default)
-    public static let headlineMd = Font.system(size: 18, weight: .semibold, design: .default)
+    public static let headingLgLight = Font.system(size: 20, weight: .light, design: .default)
     public static let headingMd = Font.system(size: 18, weight: .semibold, design: .default)
-    public static let headlineMdRegular = Font.system(size: 18, weight: .regular, design: .default)
-    public static let headlineSm = Font.system(size: 16, weight: .semibold, design: .default)
+    public static let headingMdRegular = Font.system(size: 18, weight: .regular, design: .default)
     public static let headingSmall = Font.system(size: 16, weight: .semibold, design: .default)
+    // alias — prefer headingSmall
+    public static let headlineSm = Font.system(size: 16, weight: .semibold, design: .default)
     public static let headlineSmLight = Font.system(size: 16, weight: .light, design: .default)
     public static let subheadline = Font.system(size: 15, weight: .semibold, design: .default)
 
@@ -40,8 +38,9 @@ public enum AppTypography {
     public static let labelSemibold = Font.system(size: 13, weight: .semibold, design: .default)
     public static let labelMedium = Font.system(size: 13, weight: .medium, design: .default)
     public static let labelRegular = Font.system(size: 13, weight: .regular, design: .default)
-    public static let label = Font.system(size: 12, weight: .regular, design: .default)
     public static let labelSmall = Font.system(size: 12, weight: .regular, design: .default)
+    /// alias — prefer labelSmall
+    public static let label = Font.system(size: 12, weight: .regular, design: .default)
 
     public static let captionLg = Font.system(size: 12, weight: .regular, design: .default)
     public static let captionLgSemibold = Font.system(size: 12, weight: .semibold, design: .default)
@@ -53,7 +52,6 @@ public enum AppTypography {
     // MARK: - Amount (Monospaced Currency)
 
     public static let amountLarge = Font.system(size: 20, weight: .semibold, design: .monospaced)
-    public static let amountMedium = Font.system(size: 16, weight: .semibold, design: .monospaced)
     public static let amountMd = Font.system(size: 16, weight: .semibold, design: .monospaced)
     public static let amountSm = Font.system(size: 14, weight: .regular, design: .monospaced)
     public static let amountXs = Font.system(size: 12, weight: .regular, design: .monospaced)
@@ -77,6 +75,7 @@ public enum AppTypography {
 
 // MARK: - View Extension Modifiers
 
+/// Migrate callers to FDSLabel(text, style:) then remove this block
 public extension View {
     func displayLarge() -> some View {
         font(.system(size: 34, weight: .bold, design: .default))
