@@ -67,11 +67,11 @@ extension ImportPreviewView {
             HStack(spacing: 6) {
                 FDSLabel(displayText)
                     .font(AppTypography.labelMedium)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
             }
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, AppSpacing.sm)
-            .background(DesignTokens.Background.surfaceGlass)
+            .background(AppColors.Glass.surface)
             .cornerRadius(AppRadius.sm)
         }
     }
@@ -105,19 +105,19 @@ extension ImportPreviewView {
         return HStack(spacing: AppSpacing.md) {
             FDSLabel("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
                 .font(AppTypography.labelSmall)
-                .foregroundColor(DesignTokens.Text.secondary)
+                .foregroundColor(AppColors.Text.secondary)
 
             Spacer()
 
             Button(action: { viewModel.backToUpload() }, label: {
                 FDSLabel("Cancel")
                     .font(AppTypography.labelMedium)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
                     .padding(.horizontal, AppSpacing.md)
                     .padding(.vertical, AppSpacing.sm)
                     .overlay(
                         RoundedRectangle(cornerRadius: AppRadius.sm)
-                            .stroke(DesignTokens.Text.secondary.opacity(0.3), lineWidth: 1)
+                            .stroke(AppColors.Text.secondary.opacity(0.3), lineWidth: 1)
                     )
             })
             .buttonStyle(.plain)
@@ -136,7 +136,7 @@ extension ImportPreviewView {
         }
         .padding(.horizontal, AppSpacing.lg)
         .padding(.vertical, AppSpacing.md)
-        .background(DesignTokens.Background.surfaceGlass)
+        .background(AppColors.Glass.surface)
         .overlay(
             Divider(),
             alignment: .top

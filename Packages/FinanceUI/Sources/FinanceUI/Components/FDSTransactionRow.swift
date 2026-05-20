@@ -74,13 +74,13 @@ public struct FDSTransactionRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 FDSLabel(merchant)
-                    .font(DesignTokens.Typography.txnRow)
-                    .foregroundStyle(.primary)
+                    .font(AppTypography.bodySmMedium)
+                    .foregroundStyle(AppColors.Text.primary)
                     .lineLimit(1)
 
                 FDSLabel(subtitle)
-                    .font(DesignTokens.Typography.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.tertiary)
                     .lineLimit(1)
             }
 
@@ -88,22 +88,22 @@ public struct FDSTransactionRow: View {
 
             VStack(alignment: .trailing, spacing: 2) {
                 FDSLabel(amount)
-                    .font(DesignTokens.Typography.txnRow.monospacedDigit())
+                    .font(AppTypography.bodySmMedium.monospacedDigit())
                     .foregroundStyle(isDebit ? AppColors.debit : AppColors.credit)
                     .lineLimit(1)
 
                 if let balance = runningBalance {
                     FDSLabel(balance)
-                        .font(DesignTokens.Typography.caption.monospacedDigit())
-                        .foregroundStyle(.tertiary)
+                        .font(AppTypography.captionSm.monospacedDigit())
+                        .foregroundStyle(AppColors.Text.tertiary)
                 } else if let chip = accountChip {
                     HStack(spacing: 3) {
                         FDSLabel(chip.bankName)
-                            .font(DesignTokens.Typography.label)
+                            .font(AppTypography.captionSmSemibold)
                         FDSLabel("· \(chip.last4)")
-                            .font(DesignTokens.Typography.caption.monospacedDigit())
+                            .font(AppTypography.captionSm.monospacedDigit())
                     }
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(AppColors.Text.tertiary)
                 }
             }
         }

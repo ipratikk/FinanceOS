@@ -32,7 +32,7 @@ struct SidebarView: View {
 
             footerImport
         }
-        .frame(minWidth: DesignTokens.Layout.sidebarWidth, idealWidth: DesignTokens.Layout.sidebarWidth, maxWidth: 240)
+        .frame(minWidth: AppSpacing.Layout.sidebarWidth, idealWidth: AppSpacing.Layout.sidebarWidth, maxWidth: 240)
         .background(.regularMaterial)
         .colorScheme(.dark)
     }
@@ -41,13 +41,13 @@ struct SidebarView: View {
         HStack(spacing: 12) {
             ZStack {
                 RoundedRectangle(cornerRadius: AppRadius.xs)
-                    .fill(DesignTokens.System.orange)
+                    .fill(AppColors.System.orange)
                     .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
 
                 VStack(spacing: 3) {
-                    Triangle().fill(DesignTokens.Text.primary).frame(height: 3)
-                    Triangle().fill(DesignTokens.Text.primary).frame(height: 3)
-                    Triangle().fill(DesignTokens.Text.primary).frame(height: 3)
+                    Triangle().fill(AppColors.Text.primary).frame(height: 3)
+                    Triangle().fill(AppColors.Text.primary).frame(height: 3)
+                    Triangle().fill(AppColors.Text.primary).frame(height: 3)
                 }
                 .frame(width: 18, height: 18)
             }
@@ -55,11 +55,11 @@ struct SidebarView: View {
             VStack(alignment: .leading, spacing: 2) {
                 FDSLabel("FinanceOS")
                     .font(AppTypography.bodySmSemibold)
-                    .foregroundColor(DesignTokens.Text.primary)
+                    .foregroundColor(AppColors.Text.primary)
 
                 FDSLabel("Personal · INR")
                     .font(AppTypography.captionSm)
-                    .foregroundColor(DesignTokens.Text.tertiary)
+                    .foregroundColor(AppColors.Text.tertiary)
             }
 
             Spacer()
@@ -72,17 +72,17 @@ struct SidebarView: View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .font(AppTypography.captionSmSemibold)
-                .foregroundColor(DesignTokens.Text.tertiary)
+                .foregroundColor(AppColors.Text.tertiary)
 
             FDSTextInput("Find anything…", text: .constant(""), style: .labelSmall)
 
             FDSLabel("⌘K")
                 .font(AppTypography.captionSmMedium)
-                .foregroundColor(DesignTokens.Text.tertiary)
+                .foregroundColor(AppColors.Text.tertiary)
         }
         .padding(.horizontal, 10)
         .frame(height: 32)
-        .background(DesignTokens.Background.inputWell)
+        .background(AppColors.Glass.inputWell)
         .cornerRadius(AppRadius.lg)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
@@ -90,29 +90,29 @@ struct SidebarView: View {
 
     private var footerImport: some View {
         VStack(spacing: 8) {
-            Divider().opacity(DesignTokens.Opacity.low)
+            Divider().opacity(AppColors.Opacity.low)
 
             Button(action: { navigator.navigate(to: .importStatement) }, label: {
                 HStack(spacing: 8) {
                     ZStack {
                         Circle()
-                            .fill(DesignTokens.System.orange.opacity(DesignTokens.Opacity.low))
+                            .fill(AppColors.System.orange.opacity(AppColors.Opacity.low))
 
                         Image(systemName: "arrow.down.doc")
                             .font(AppTypography.captionSmSemibold)
-                            .foregroundColor(DesignTokens.System.orange)
+                            .foregroundColor(AppColors.System.orange)
                     }
                     .frame(width: 28, height: 28)
 
                     FDSLabel("Import statement")
                         .font(AppTypography.captionSmSemibold)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
 
                     Spacer()
 
                     FDSLabel("⌘I")
                         .font(AppTypography.captionSmMedium)
-                        .foregroundColor(DesignTokens.Text.tertiary)
+                        .foregroundColor(AppColors.Text.tertiary)
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 8)
@@ -122,13 +122,13 @@ struct SidebarView: View {
 
             HStack(spacing: 6) {
                 Circle()
-                    .fill(DesignTokens.System.green)
+                    .fill(AppColors.System.green)
                     .frame(width: 6, height: 6)
-                    .shadow(color: DesignTokens.System.green.opacity(DesignTokens.Opacity.high), radius: 3)
+                    .shadow(color: AppColors.System.green.opacity(AppColors.Opacity.high), radius: 3)
 
                 FDSLabel("Database healthy · 2,148 txns")
                     .font(AppTypography.captionSm)
-                    .foregroundColor(DesignTokens.Text.tertiary)
+                    .foregroundColor(AppColors.Text.tertiary)
 
                 Spacer()
             }
@@ -154,7 +154,7 @@ struct SidebarView: View {
                 Spacer()
                 FDSLabel(shortcut)
                     .font(AppTypography.captionSmMedium)
-                    .foregroundColor(DesignTokens.Text.tertiary)
+                    .foregroundColor(AppColors.Text.tertiary)
             }
         }
     }
@@ -174,5 +174,5 @@ private struct Triangle: Shape {
 #Preview {
     SidebarView()
         .environment(AppNavigator())
-        .frame(width: DesignTokens.Layout.sidebarWidth, height: 600)
+        .frame(width: AppSpacing.Layout.sidebarWidth, height: 600)
 }

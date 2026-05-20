@@ -37,14 +37,14 @@ struct AccountEditView: View {
                             FDSLabel("ACCOUNT INFORMATION")
                                 .font(AppTypography.captionSmSemibold)
                                 .tracking(0.2)
-                                .foregroundColor(DesignTokens.Text.secondary)
+                                .foregroundColor(AppColors.Text.secondary)
 
                             fieldInput("Account Name", text: $displayName)
-                            Divider().opacity(DesignTokens.Opacity.low)
+                            Divider().opacity(AppColors.Opacity.low)
                             fieldInput("Owner Name", text: $ownerName)
-                            Divider().opacity(DesignTokens.Opacity.low)
+                            Divider().opacity(AppColors.Opacity.low)
                             fieldInput("Last 4 Digits", text: $last4)
-                            Divider().opacity(DesignTokens.Opacity.low)
+                            Divider().opacity(AppColors.Opacity.low)
                             fieldInput("Nickname", text: $nickname)
                         }
                         .padding(AppSpacing.xs)
@@ -55,18 +55,18 @@ struct AccountEditView: View {
                             FDSLabel("BANK")
                                 .font(AppTypography.captionSmSemibold)
                                 .tracking(0.2)
-                                .foregroundColor(DesignTokens.Text.secondary)
+                                .foregroundColor(AppColors.Text.secondary)
 
                             VStack(alignment: .leading, spacing: 4) {
                                 FDSLabel("Select Bank")
                                     .font(AppTypography.captionSmMedium)
-                                    .foregroundColor(DesignTokens.Text.primary)
+                                    .foregroundColor(AppColors.Text.primary)
                                 Picker("Bank", selection: $bankId) {
                                     ForEach(context.banks) { bank in
                                         FDSLabel(bank.name).tag(bank.id)
                                     }
                                 }
-                                .foregroundColor(DesignTokens.Text.primary)
+                                .foregroundColor(AppColors.Text.primary)
                             }
                             .padding(AppSpacing.xs)
                         }
@@ -115,7 +115,7 @@ struct AccountEditView: View {
             FDSTextInput("", text: text, style: .labelSmall)
                 .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 .padding(8)
-                .background(DesignTokens.Background.inputWell)
+                .background(AppColors.Glass.inputWell)
                 .cornerRadius(6)
         }
     }

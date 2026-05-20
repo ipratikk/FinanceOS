@@ -37,7 +37,7 @@ struct ImportPreviewView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("Review parsed transactions")
                         .font(AppTypography.headingMd)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
 
                     if !viewModel.parsedStatements.isEmpty {
                         let newCount = viewModel.parsedStatements.count - viewModel.duplicateTransactionIndices.count
@@ -46,7 +46,7 @@ struct ImportPreviewView: View {
                         let total = viewModel.parsedStatements.count
                         FDSLabel("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
                             .font(AppTypography.labelSmall)
-                            .foregroundColor(DesignTokens.Text.tertiary)
+                            .foregroundColor(AppColors.Text.tertiary)
                     }
                 }
 
@@ -55,7 +55,7 @@ struct ImportPreviewView: View {
                 targetSelectionMenu
             }
             .padding(AppSpacing.lg)
-            .background(DesignTokens.Background.surfaceGlass)
+            .background(AppColors.Glass.surface)
 
             Divider()
 

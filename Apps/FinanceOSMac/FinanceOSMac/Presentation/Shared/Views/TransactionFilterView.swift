@@ -29,7 +29,7 @@ struct TransactionFilterView: View {
     private var header: some View {
         HStack(spacing: AppSpacing.compact) {
             Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                .font(AppTypography.headlineMdRegular)
+                .font(AppTypography.headingMdRegular)
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
             FDSLabel("Filters").bodyMedium()

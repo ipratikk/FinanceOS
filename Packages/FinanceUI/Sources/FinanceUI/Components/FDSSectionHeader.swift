@@ -3,17 +3,15 @@ import SwiftUI
 
 /// Visual-first section header. Subtle, hierarchical, calm.
 ///
-/// Layout:
-/// ```
-/// SECTION LABEL                       [Action →]
-/// Optional subtitle text muted
-/// ```
+/// Two inits:
+/// - `init(_:subtitle:actionLabel:actionSymbol:action:)` — convenience for a single text button trailing
+/// - `init(_:subtitle:trailing:)` — ViewBuilder for arbitrary trailing content
 public struct FDSSectionHeader: View {
     let title: String
     let subtitle: String?
-    let actionLabel: String?
-    let actionSymbol: String?
-    let action: (() -> Void)?
+    private let trailingView: AnyView?
+
+    // MARK: - Text action init (backward compat)
 
     public init(
         _ title: String,
@@ -24,28 +22,8 @@ public struct FDSSectionHeader: View {
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.actionLabel = actionLabel
-        self.actionSymbol = actionSymbol
-        self.action = action
-    }
-
-    public var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel(title)
-                    .font(AppTypography.subheadline)
-                    .foregroundStyle(.primary)
-
-                if let subtitle {
-                    FDSLabel(subtitle)
-                        .font(AppTypography.captionSm)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-
-            Spacer()
-
-            if let actionLabel, let action {
+        if let actionLabel, let action {
+            trailingView = AnyView(
                 Button(action: action) {
                     HStack(spacing: 4) {
                         FDSLabel(actionLabel)
@@ -58,7 +36,41 @@ public struct FDSSectionHeader: View {
                     .foregroundStyle(AppColors.accent)
                 }
                 .buttonStyle(.plain)
+            )
+        } else {
+            trailingView = nil
+        }
+    }
+
+    // MARK: - ViewBuilder trailing init
+
+    public init(
+        _ title: String,
+        subtitle: String? = nil,
+        @ViewBuilder trailing: () -> some View
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        trailingView = AnyView(trailing())
+    }
+
+    public var body: some View {
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                FDSLabel(title)
+                    .font(AppTypography.subheadline)
+                    .foregroundStyle(AppColors.Text.primary)
+
+                if let subtitle {
+                    FDSLabel(subtitle)
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.tertiary)
+                }
             }
+
+            Spacer()
+
+            trailingView
         }
         .padding(.vertical, AppSpacing.compact)
     }

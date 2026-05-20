@@ -38,12 +38,12 @@ public struct FDSListRow<Trailing: View>: View {
             VStack(alignment: .leading, spacing: 2) {
                 FDSLabel(title)
                     .font(AppTypography.bodyMdSemibold)
-                    .foregroundColor(.primary)
+                    .foregroundColor(AppColors.Text.primary)
 
                 if let subtitle {
                     FDSLabel(subtitle)
                         .font(AppTypography.captionLg)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
             }
 
@@ -92,7 +92,7 @@ public extension FDSListRow where Trailing == EmptyView {
         ) {
             FDSLabel("$5,234.50")
                 .font(AppTypography.bodyMdSemibold)
-                .foregroundColor(.primary)
+                .foregroundColor(AppColors.Text.primary)
         }
 
         FDSListRow(
@@ -106,7 +106,7 @@ public extension FDSListRow where Trailing == EmptyView {
                     .foregroundColor(.blue)
                 FDSLabel("Due Apr 15")
                     .font(AppTypography.maskedAccount)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
         }
     }

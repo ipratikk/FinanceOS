@@ -50,7 +50,7 @@ struct CardTransactionsView: View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(AppTypography.headlineMd)
+                    .font(AppTypography.headingMd)
                     .foregroundStyle(.primary)
 
                 HStack(spacing: AppSpacing.compact) {

@@ -12,17 +12,17 @@ final class SectionHeaderSnapshotTests: SnapshotTestable {
     }
 
     func test_section_header_basic() {
-        let view = SectionHeader("Recent Activity")
+        let view = FDSSectionHeader("Recent Activity")
         verifyComponentSnapshots(view, size: CGSize(width: 400, height: 60))
     }
 
     func test_section_header_with_subtitle() {
-        let view = SectionHeader("Recent Activity", subtitle: "Last 30 days")
+        let view = FDSSectionHeader("Recent Activity", subtitle: "Last 30 days")
         verifyComponentSnapshots(view, size: CGSize(width: 400, height: 80))
     }
 
     func test_section_header_with_action() {
-        let view = SectionHeader("Recent Activity", action: {}, actionLabel: "View All")
+        let view = FDSSectionHeader("Recent Activity", actionLabel: "View All", action: {})
         verifyComponentSnapshots(view, size: CGSize(width: 400, height: 60))
     }
 }

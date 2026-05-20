@@ -36,7 +36,7 @@ public struct FDSCardArt: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color(red: 1.0, green: 0.84, blue: 0))
+                        .fill(AppColors.System.yellow)
                         .frame(width: 12, height: 9)
 
                     Spacer()
@@ -45,7 +45,7 @@ public struct FDSCardArt: View {
                         .font(AppTypography.captionSmSemibold)
                         .foregroundColor(AppColors.textPrimary)
                 }
-                .padding(6)
+                .padding(AppSpacing.tight)
 
                 Spacer()
 
@@ -56,7 +56,7 @@ public struct FDSCardArt: View {
 
                     Spacer()
                 }
-                .padding(6)
+                .padding(AppSpacing.tight)
             }
 
             RoundedRectangle(cornerRadius: 8, style: .continuous)

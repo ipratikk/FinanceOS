@@ -36,33 +36,9 @@ public struct FDSSheet<Content: View>: View {
                 }
 
             VStack(spacing: 0) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        FDSLabel(title)
-                            .font(DesignTokens.Typography.sheetTitle)
-                            .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
-
-                        if let subtitle {
-                            FDSLabel(subtitle)
-                                .font(AppTypography.bodySm)
-                                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
-                        }
-                    }
-
-                    Spacer()
-
-                    Button(action: {
-                        dismiss()
-                        onDismiss()
-                    }, label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(AppTypography.headlineMdRegular)
-                            .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
-                    })
-                    .buttonStyle(.plain)
-                }
-                .padding(AppSpacing.lg)
-                .background(AppColors.base.opacity(0.15))
+                sheetHeader
+                    .padding(AppSpacing.lg)
+                    .background(AppColors.base.opacity(0.15))
 
                 Divider()
                     .opacity(0.2)
@@ -84,7 +60,7 @@ public struct FDSSheet<Content: View>: View {
                     }, label: {
                         FDSLabel("Cancel")
                             .font(AppTypography.bodySmSemibold)
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                            .foregroundColor(AppColors.Text.secondary)
                             .frame(minWidth: 80)
                             .frame(height: 32)
                     })
@@ -109,6 +85,28 @@ public struct FDSSheet<Content: View>: View {
             .animation(.easeOut(duration: 0.2), value: UUID())
         }
     }
+
+    private var sheetHeader: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                FDSLabel(title)
+                    .font(AppTypography.titleSm)
+                    .foregroundColor(AppColors.Text.primary)
+                if let subtitle {
+                    FDSLabel(subtitle)
+                        .font(AppTypography.bodySm)
+                        .foregroundColor(AppColors.Text.secondary)
+                }
+            }
+            Spacer()
+            Button(action: { dismiss(); onDismiss() }, label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(AppTypography.headingMdRegular)
+                    .foregroundColor(AppColors.textTertiary)
+            })
+            .buttonStyle(.plain)
+        }
+    }
 }
 
 #Preview {
@@ -124,7 +122,7 @@ public struct FDSSheet<Content: View>: View {
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
                     FDSLabel("Account Name")
                         .font(AppTypography.captionLgSemibold)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
 
                     TextField("Enter name", text: .constant(""))
                         .padding(AppSpacing.sm)

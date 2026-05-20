@@ -27,15 +27,15 @@ public struct FDSField<Content: View>: View {
             HStack {
                 FDSLabel(label.uppercased())
                     .font(AppTypography.captionSmSemibold)
-                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
-                    .tracking(0.01)
+                    .foregroundColor(AppColors.Text.tertiary)
+                    .tracking(0.01) // design decision
 
                 Spacer()
 
                 if let hint {
                     FDSLabel(hint)
                         .font(AppTypography.captionSm)
-                        .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                        .foregroundColor(AppColors.Text.tertiary)
                 }
             }
 
@@ -44,7 +44,7 @@ public struct FDSField<Content: View>: View {
             if let error {
                 FDSLabel(error)
                     .font(AppTypography.captionSm)
-                    .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
+                    .foregroundColor(AppColors.System.red)
             }
         }
     }

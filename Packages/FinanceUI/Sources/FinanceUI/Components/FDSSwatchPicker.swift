@@ -31,24 +31,35 @@ public struct FDSSwatchPicker: View {
         Color(red: 0.60, green: 0.60, blue: 0.62) // gray
     ]
 
+    private let colorNames = [
+        "Blue", "Navy", "Indigo", "Purple", "Pink", "Red",
+        "Deep Red", "Orange", "Green", "Teal", "Cyan", "Gray"
+    ]
+
     public var body: some View {
         let gridItems = Array(repeating: GridItem(.flexible(), spacing: 12), count: 6)
 
         LazyVGrid(columns: gridItems, spacing: 12) {
             ForEach(colors.indices, id: \.self) { index in
                 let color = colors[index]
+                let colorName = index < colorNames.count ? colorNames[index] : "Color \(index + 1)"
+                let isSelected = selectedColor == color
+
                 Button(action: { selectedColor = color }, label: {
                     Circle()
                         .fill(color)
                         .frame(height: 40)
+                        .contentShape(Circle())
                         .overlay {
-                            if selectedColor == color {
+                            if isSelected {
                                 Circle()
                                     .strokeBorder(AppColors.accent, lineWidth: 2.5)
                             }
                         }
                 })
                 .buttonStyle(.plain)
+                .accessibilityLabel("Color option: \(colorName)")
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
         }
     }

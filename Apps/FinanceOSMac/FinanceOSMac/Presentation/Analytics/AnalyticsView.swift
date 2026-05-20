@@ -43,7 +43,7 @@ struct AnalyticsView: View {
                 ProgressView().controlSize(.small)
                 FDSLabel("Loading…")
                     .font(AppTypography.captionSmMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
@@ -78,7 +78,7 @@ struct AnalyticsView: View {
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 FDSLabel("Inflows vs outflows over time")
                     .font(AppTypography.captionLgMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -123,7 +123,7 @@ struct AnalyticsView: View {
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 FDSLabel("Highest outflow activity")
                     .font(AppTypography.captionLgMedium)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -155,7 +155,7 @@ struct AnalyticsView: View {
                             .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                         FDSLabel("Auto-categorization with smart detection")
                             .font(AppTypography.captionLg)
-                            .foregroundColor(DesignTokens.Text.secondary)
+                            .foregroundColor(AppColors.Text.secondary)
                     }
                 }
                 .frame(maxWidth: .infinity)

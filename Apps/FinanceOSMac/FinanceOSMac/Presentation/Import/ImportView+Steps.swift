@@ -15,14 +15,14 @@ extension ImportView {
                 VStack(alignment: .leading, spacing: 8) {
                     FDSLabel("Select a source")
                         .font(AppTypography.headingLg)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
 
                     FDSLabel(
                         "Pick the institution and ledger type. Each parser maps " +
                             "statement-specific columns to a normalised transaction."
                     )
                     .font(AppTypography.bodySm)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
                 }
 
                 // Source grid
@@ -48,13 +48,13 @@ extension ImportView {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("Drop your statement")
                         .font(AppTypography.headingMd)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
 
                     if let source = viewModel.selectedSource {
                         let formats = source.allowedFormats.map { $0.rawValue.uppercased() }.joined(separator: " · ")
                         FDSLabel("\(source.bankName) · \(source.sourceType.rawValue) · \(formats)")
                             .font(AppTypography.labelSmall)
-                            .foregroundColor(DesignTokens.Text.tertiary)
+                            .foregroundColor(AppColors.Text.tertiary)
                     }
                 }
 
@@ -73,7 +73,7 @@ extension ImportView {
                 .contentShape(Rectangle())
             }
             .padding(AppSpacing.lg)
-            .background(DesignTokens.Background.surfaceGlass)
+            .background(AppColors.Glass.surface)
 
             Divider()
 
@@ -87,11 +87,11 @@ extension ImportView {
                     VStack(spacing: 4) {
                         FDSLabel(viewModel.isDraggedOver ? "Release to upload" : "Drag your file here")
                             .font(AppTypography.headingSmall)
-                            .foregroundColor(DesignTokens.Text.primary)
+                            .foregroundColor(AppColors.Text.primary)
 
                         FDSLabel("or")
                             .font(AppTypography.labelSmall)
-                            .foregroundColor(DesignTokens.Text.tertiary)
+                            .foregroundColor(AppColors.Text.tertiary)
 
                         Button(action: { openFilePicker() }, label: {
                             HStack(spacing: 6) {
@@ -113,7 +113,7 @@ extension ImportView {
                             ?? "CSV · XLSX · PDF"
                         FDSLabel("\(formatHint) · up to 25 MB")
                             .font(AppTypography.labelSmall)
-                            .foregroundColor(DesignTokens.Text.quaternary)
+                            .foregroundColor(AppColors.Text.quaternary)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -156,11 +156,11 @@ extension ImportView {
                     if viewModel.totalFilesToParse > 1 {
                         FDSLabel("Parsing file \(viewModel.currentFileIndex + 1) of \(viewModel.totalFilesToParse)...")
                             .font(AppTypography.labelSmall)
-                            .foregroundColor(DesignTokens.Text.tertiary)
+                            .foregroundColor(AppColors.Text.tertiary)
                     } else {
                         FDSLabel("Parsing statement...")
                             .font(AppTypography.labelSmall)
-                            .foregroundColor(DesignTokens.Text.tertiary)
+                            .foregroundColor(AppColors.Text.tertiary)
                     }
                 }
                 .padding(AppSpacing.lg)
@@ -174,7 +174,7 @@ extension ImportView {
 
                     FDSLabel(error)
                         .font(AppTypography.labelSmall)
-                        .foregroundColor(DesignTokens.Text.primary)
+                        .foregroundColor(AppColors.Text.primary)
 
                     Spacer()
                 }

@@ -29,10 +29,10 @@ struct BankEditView: View {
                             FDSLabel("BANK INFORMATION")
                                 .font(AppTypography.captionSmSemibold)
                                 .tracking(0.2)
-                                .foregroundColor(DesignTokens.Text.secondary)
+                                .foregroundColor(AppColors.Text.secondary)
 
                             fieldInput("Bank Name", text: $name)
-                            Divider().opacity(DesignTokens.Opacity.low)
+                            Divider().opacity(AppColors.Opacity.low)
                             fieldInput("Provider Type", text: $providerType)
                         }
                         .padding(AppSpacing.xs)
@@ -69,9 +69,9 @@ struct BankEditView: View {
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             FDSTextInput("", text: text, style: .labelSmall)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
                 .padding(8)
-                .background(DesignTokens.Background.inputWell)
+                .background(AppColors.Glass.inputWell)
                 .cornerRadius(6)
         }
     }

@@ -35,14 +35,14 @@ struct LedgerDetailView: View {
                         .controlSize(.small)
                     FDSLabel("Loading…")
                         .font(AppTypography.captionSmMedium)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.base)
             } else {
                 VStack {
                     FDSLabel("Ledger not found")
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.base)
@@ -73,7 +73,7 @@ struct LedgerDetailView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         FDSLabel(ledger.displayName)
                             .font(AppTypography.headingSmall)
-                            .foregroundColor(DesignTokens.Text.primary)
+                            .foregroundColor(AppColors.Text.primary)
 
                         HStack(spacing: 4) {
                             FDSLabel(ledger.kind.displayName.uppercased())
@@ -83,7 +83,7 @@ struct LedgerDetailView: View {
                                     .font(AppTypography.captionSm)
                             }
                         }
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                     }
 
                     Spacer()
@@ -93,11 +93,11 @@ struct LedgerDetailView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         FDSLabel("Balance")
                             .font(AppTypography.captionSmMedium)
-                            .foregroundColor(DesignTokens.Text.secondary)
+                            .foregroundColor(AppColors.Text.secondary)
                         FDSLabel(formatBalance(ledger.closingBalance ?? 0))
                             .font(AppTypography.headingLg)
                             .monospacedDigit()
-                            .foregroundColor(DesignTokens.System.green)
+                            .foregroundColor(AppColors.System.green)
                     }
                     Spacer()
                 }
@@ -117,19 +117,19 @@ struct LedgerDetailView: View {
                     HStack {
                         FDSLabel("Credit Utilization")
                             .font(AppTypography.bodySmSemibold)
-                            .foregroundColor(DesignTokens.Text.primary)
+                            .foregroundColor(AppColors.Text.primary)
                         Spacer()
                         FDSLabel("\(percent)%")
                             .font(AppTypography.bodySmSemibold)
-                            .foregroundColor(percent > 80 ? DesignTokens.System.red : DesignTokens.System.green)
+                            .foregroundColor(percent > 80 ? AppColors.System.red : AppColors.System.green)
                     }
 
                     Capsule()
-                        .fill(DesignTokens.Border.strong)
+                        .fill(AppColors.Border.strong)
                         .frame(height: 6)
                         .overlay(alignment: .leading) {
                             Capsule()
-                                .fill(percent > 80 ? DesignTokens.System.red : DesignTokens.System.green)
+                                .fill(percent > 80 ? AppColors.System.red : AppColors.System.green)
                                 .frame(width: max(0, min(1, utilization)) * 260)
                         }
                 }
@@ -142,12 +142,12 @@ struct LedgerDetailView: View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
             FDSLabel("Statistics")
                 .font(AppTypography.headingSmall)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
 
             HStack(spacing: AppSpacing.sm) {
-                metricCard("Income", value: "₹0.00", color: DesignTokens.System.green)
-                metricCard("Spending", value: "₹0.00", color: DesignTokens.System.red)
-                metricCard("Transactions", value: "0", color: DesignTokens.Text.tertiary)
+                metricCard("Income", value: "₹0.00", color: AppColors.System.green)
+                metricCard("Spending", value: "₹0.00", color: AppColors.System.red)
+                metricCard("Transactions", value: "0", color: AppColors.Text.tertiary)
             }
         }
     }
@@ -158,7 +158,7 @@ struct LedgerDetailView: View {
                 FDSLabel(label.uppercased())
                     .font(AppTypography.captionSmSemibold)
                     .tracking(0.2)
-                    .foregroundColor(DesignTokens.Text.secondary)
+                    .foregroundColor(AppColors.Text.secondary)
 
                 FDSLabel(value)
                     .font(AppTypography.headingSmall)
@@ -174,13 +174,13 @@ struct LedgerDetailView: View {
         VStack(alignment: .leading, spacing: 12) {
             FDSLabel("Recent Activity")
                 .font(AppTypography.headingSmall)
-                .foregroundColor(DesignTokens.Text.primary)
+                .foregroundColor(AppColors.Text.primary)
 
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     FDSLabel("No transactions yet")
                         .font(AppTypography.bodySm)
-                        .foregroundColor(DesignTokens.Text.secondary)
+                        .foregroundColor(AppColors.Text.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(AppSpacing.lg)
                 }
