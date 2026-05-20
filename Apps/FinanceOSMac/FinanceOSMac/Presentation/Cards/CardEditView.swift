@@ -115,7 +115,7 @@ struct CardEditView: View {
 
                         fieldInput("Nickname", text: $nickname)
                         Divider().opacity(DesignTokens.Opacity.low)
-                        fieldInput("Card Type", text: $cardType)
+                        fieldInput("Card Type", cardNetwork: $cardType)
                         Divider().opacity(DesignTokens.Opacity.low)
                         fieldInput("Last 4 Digits", text: $last4)
                     }
@@ -170,5 +170,21 @@ struct CardEditView: View {
         .background(AppColors.base)
         .sheet(isPresented: $showDeleteConfirm) { deleteSheet }
         .sheet(isPresented: $showCardSelection) { cardSelectionSheet }
+    }
+
+    private func fieldInput(_ label: String, cardNetwork: Binding<CardNetwork>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label.uppercased())
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(0.2)
+                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+            Picker("", selection: cardNetwork) {
+                ForEach(CardNetwork.allCases, id: \.self) { network in
+                    Text(network.rawValue).tag(network)
+                }
+            }
+            .pickerStyle(.segmented)
+            .frame(height: 32)
+        }
     }
 }
