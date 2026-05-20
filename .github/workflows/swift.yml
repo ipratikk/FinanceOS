@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  build-and-test:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -17,6 +17,7 @@ jobs:
       with:
         swift-version: "6.1"
 
+    # Build all packages
     - name: Build FinanceCore Package
       run: swift build --package-path Packages/FinanceCore -v
 
@@ -26,11 +27,30 @@ jobs:
     - name: Build FinanceUI Package
       run: swift build --package-path Packages/FinanceUI -v
 
+    - name: Build FinanceTesting Package
+      run: swift build --package-path Packages/FinanceTesting -v
+
     - name: Build macOS App
       run: xcodebuild build -scheme FinanceOSMac -quiet
 
+    # Run all tests
     - name: Run FinanceCore Tests
       run: swift test --package-path Packages/FinanceCore -v
 
     - name: Run FinanceParsers Tests
       run: swift test --package-path Packages/FinanceParsers -v
+
+    - name: Run FinanceUI Tests
+      run: swift test --package-path Packages/FinanceUI -v
+
+    - name: Run FinanceTesting Tests
+      run: swift test --package-path Packages/FinanceTesting -v
+
+    - name: Run Snapshot Tests
+      run: xcodebuild test -scheme FinanceOSMac -quiet
+
+    # Lint
+    - name: Run SwiftLint
+      run: |
+        brew install swiftlint
+        swiftlint --strict
