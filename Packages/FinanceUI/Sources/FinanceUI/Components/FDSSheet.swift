@@ -56,7 +56,7 @@ public struct FDSSheet<Content: View>: View {
                         onDismiss()
                     }, label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(AppTypography.custom(size: 18))
+                            .font(AppTypography.headlineMdRegular)
                             .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
                     })
                     .buttonStyle(.plain)
@@ -83,7 +83,7 @@ public struct FDSSheet<Content: View>: View {
                         onDismiss()
                     }, label: {
                         FDSLabel("Cancel")
-                            .font(AppTypography.custom(size: 13, weight: .semibold))
+                            .font(AppTypography.bodySmSemibold)
                             .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                             .frame(minWidth: 80)
                             .frame(height: 32)

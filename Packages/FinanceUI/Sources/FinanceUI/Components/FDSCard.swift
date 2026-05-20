@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Liquid Glass card container for the Finance Design System.

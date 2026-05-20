@@ -42,7 +42,7 @@ public struct FDSCardArt: View {
                     Spacer()
 
                     FDSLabel(network)
-                        .font(AppTypography.custom(size: 7, weight: .semibold))
+                        .font(AppTypography.captionSmSemibold)
                         .foregroundColor(AppColors.textPrimary)
                 }
                 .padding(6)
@@ -51,7 +51,7 @@ public struct FDSCardArt: View {
 
                 HStack {
                     FDSLabel("•• \(last4)")
-                        .font(AppTypography.custom(size: 8, weight: .semibold, design: .monospaced))
+                        .font(AppTypography.captionSmSemibold)
                         .foregroundColor(AppColors.textPrimary)
 
                     Spacer()

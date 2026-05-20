@@ -52,7 +52,7 @@ public struct FDSSectionHeader: View {
                             .font(AppTypography.captionLgMedium)
                         if let actionSymbol {
                             Image(systemName: actionSymbol)
-                                .font(AppTypography.custom(size: 10, weight: .semibold))
+                                .font(AppTypography.captionSmSemibold)
                         }
                     }
                     .foregroundStyle(AppColors.accent)

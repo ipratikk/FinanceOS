@@ -26,7 +26,7 @@ public struct FDSStepper: View {
         HStack(spacing: 0) {
             Button(action: { if value > min { value -= 1 } }, label: {
                 Image(systemName: "minus")
-                    .font(AppTypography.custom(size: 11, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                     .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
             })
@@ -40,7 +40,7 @@ public struct FDSStepper: View {
 
             Button(action: { if value < max { value += 1 } }, label: {
                 Image(systemName: "plus")
-                    .font(AppTypography.custom(size: 11, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                     .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
             })

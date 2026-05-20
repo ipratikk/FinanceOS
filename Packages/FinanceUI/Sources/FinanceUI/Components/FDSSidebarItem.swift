@@ -88,7 +88,7 @@ public struct FDSSidebarSectionHeader: View {
 
     public var body: some View {
         FDSLabel(title.uppercased())
-            .font(AppTypography.custom(size: 10.5, weight: .semibold))
+            .font(AppTypography.captionSmSemibold)
             .tracking(0.08)
             .foregroundColor(AppColors.textTertiary)
             .padding(.horizontal, 8)

@@ -10,14 +10,14 @@ public enum AppColors {
     public static let elevated = surface2
 
     // MARK: - Borders & Dividers
-    public static let border = ColorAppColors.textPrimary.opacity(0.08) // subtle border
-    public static let borderAccent = ColorAppColors.textPrimary.opacity(0.12) // accent border
-    public static let borderSubtle = ColorAppColors.textPrimary.opacity(0.05) // minimal separator
+    public static let border = textPrimary.opacity(0.08) // subtle border
+    public static let borderAccent = textPrimary.opacity(0.12) // accent border
+    public static let borderSubtle = textPrimary.opacity(0.05) // minimal separator
 
     // MARK: - Glass & Material overlays (deprecated — use border colors instead)
 
-    public static let glass = ColorAppColors.textPrimary.opacity(0.02) // minimal tint
-    public static let borderGlass = ColorAppColors.textPrimary.opacity(0.08) // flat border
+    public static let glass = textPrimary.opacity(0.02) // minimal tint
+    public static let borderGlass = textPrimary.opacity(0.08) // flat border
 
     // MARK: - Primary Accents (Apple System Colors)
 

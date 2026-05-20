@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct AccountTransactionsDestinationView: View {

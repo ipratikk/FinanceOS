@@ -179,7 +179,7 @@ struct LedgerDetailView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     FDSLabel("No transactions yet")
-                        .font(AppTypography.bodySmRegular)
+                        .font(AppTypography.bodySm)
                         .foregroundColor(DesignTokens.Text.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(AppSpacing.lg)

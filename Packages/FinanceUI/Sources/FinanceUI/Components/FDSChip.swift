@@ -31,7 +31,7 @@ public struct FDSChip: View {
     public var body: some View {
         Button(action: action, label: {
             FDSLabel(label)
-                .font(AppTypography.custom(size: 12, weight: .semibold))
+                .font(AppTypography.captionLgSemibold)
                 .foregroundColor(foregroundColor)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 7)

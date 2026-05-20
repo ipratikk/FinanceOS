@@ -23,7 +23,7 @@ public struct FDSBankMark: View {
                 .strokeBorder(bank.tintColor.opacity(0.3), lineWidth: 0.5)
 
             FDSLabel(bank.shortCode)
-                .font(AppTypography.custom(size: size * 0.4, weight: .semibold, design: .default))
+                .font(.system(size: size * 0.4, weight: .semibold, design: .default))
                 .foregroundColor(bank.tintColor)
         }
         .frame(width: size, height: size)

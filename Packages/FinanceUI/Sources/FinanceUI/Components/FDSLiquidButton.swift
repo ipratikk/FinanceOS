@@ -38,10 +38,10 @@ public struct FDSLiquidButton: View {
             HStack(spacing: 6) {
                 if let symbol {
                     Image(systemName: symbol)
-                        .font(AppTypography.custom(size: 13, weight: .semibold))
+                        .font(AppTypography.bodySmSemibold)
                 }
                 FDSLabel(title)
-                    .font(AppTypography.custom(size: 13, weight: .semibold))
+                    .font(AppTypography.bodySmSemibold)
             }
             .foregroundColor(foregroundColor)
             .padding(.horizontal, variant == .link ? 0 : 12)

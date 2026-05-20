@@ -50,13 +50,13 @@ public struct FDSMetricTile: View {
                         .frame(width: AppSpacing.md, height: AppSpacing.md)
                 }
                 FDSLabel(label.uppercased())
-                    .font(AppTypography.custom(size: 10, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
             }
 
             FDSLabel(value)
-                .font(AppTypography.custom(size: prominent ? 32 : 22, weight: .semibold, design: .rounded))
+                .font(prominent ? AppTypography.displayLarge : AppTypography.displaySmall)
                 .monospacedDigit()
                 .foregroundStyle(AppColors.accentIce)
                 .lineLimit(1)
@@ -65,9 +65,9 @@ public struct FDSMetricTile: View {
             if let delta {
                 HStack(spacing: 4) {
                     Image(systemName: delta.value >= 0 ? "arrow.up.right" : "arrow.down.right")
-                        .font(AppTypography.custom(size: 9, weight: .bold))
-                    FDSLabel("\(abs(delta.value), specifier: "%.1f")% \(delta.period)")
-                        .font(AppTypography.custom(size: 10, weight: .medium))
+                        .font(AppTypography.captionSmSemibold)
+                    FDSLabel(String(format: "%.1f%% \(delta.period)", abs(delta.value)))
+                        .font(AppTypography.captionSmMedium)
                 }
                 .foregroundStyle(delta.value >= 0 ? AppColors.credit : AppColors.debit)
             }

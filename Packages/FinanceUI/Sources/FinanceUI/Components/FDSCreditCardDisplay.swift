@@ -72,7 +72,7 @@ public struct FDSCreditCardDisplay: View {
                         Spacer()
                         if let bankName {
                             FDSLabel(bankName)
-                                .font(AppTypography.custom(size: 10, weight: .regular))
+                                .font(AppTypography.captionSm)
                                 .foregroundStyle(AppColors.textPrimary.opacity(0.8))
                                 .lineLimit(1)
                         }
@@ -83,7 +83,7 @@ public struct FDSCreditCardDisplay: View {
 
                     VStack(alignment: .leading, spacing: AppSpacing.compact) {
                         FDSLabel(maskedCardNumber)
-                            .font(AppTypography.custom(size: 12, weight: .medium, design: .monospaced))
+                            .font(AppTypography.amountXs)
                             .foregroundStyle(AppColors.textPrimary)
                             .tracking(2)
 
@@ -91,14 +91,14 @@ public struct FDSCreditCardDisplay: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 if let cardName {
                                     FDSLabel(cardName)
-                                        .font(AppTypography.custom(size: 9, weight: .semibold))
+                                        .font(AppTypography.captionSmSemibold)
                                         .foregroundStyle(AppColors.textPrimary)
                                         .lineLimit(1)
                                 }
                             }
                             Spacer()
                             FDSLabel(cardNetwork.uppercased())
-                                .font(AppTypography.custom(size: 8, weight: .semibold))
+                                .font(AppTypography.captionSmSemibold)
                                 .foregroundStyle(AppColors.textPrimary)
                                 .tracking(0.5)
                         }
@@ -110,7 +110,7 @@ public struct FDSCreditCardDisplay: View {
 
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 FDSLabel("Encrypted Card Number")
-                    .font(AppTypography.custom(size: 10, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
                 FDSTextInput("e.g. 4532123456789010", text: $encryptedCardNumber)
@@ -118,7 +118,7 @@ public struct FDSCreditCardDisplay: View {
 
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 FDSLabel("Last 4 Digits")
-                    .font(AppTypography.custom(size: 10, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
                 FDSTextInput("Last 4", text: $last4)

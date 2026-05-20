@@ -32,7 +32,7 @@ public struct ToastView: View {
     public var body: some View {
         HStack(spacing: AppSpacing.md) {
             Image(systemName: iconName)
-                .font(AppTypography.custom(size: 16, weight: .semibold))
+                .font(AppTypography.headlineSm)
                 .foregroundColor(iconColor)
 
             FDSLabel(toast.message)

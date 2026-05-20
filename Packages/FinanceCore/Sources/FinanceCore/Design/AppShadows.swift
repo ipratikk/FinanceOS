@@ -5,28 +5,28 @@ import SwiftUI
 public enum AppShadows {
     // MARK: - Elevation Levels
     public static let subtle = Shadow(
-        color: ColorAppColors.base.opacity(0.05),
+        color: AppColors.base.opacity(0.05),
         radius: 4,
         x: 0,
         y: 2
     )
 
     public static let standard = Shadow(
-        color: ColorAppColors.base.opacity(0.08),
+        color: AppColors.base.opacity(0.08),
         radius: 8,
         x: 0,
         y: 4
     )
 
     public static let elevated = Shadow(
-        color: ColorAppColors.base.opacity(0.12),
+        color: AppColors.base.opacity(0.12),
         radius: 16,
         x: 0,
         y: 8
     )
 
     public static let prominent = Shadow(
-        color: ColorAppColors.base.opacity(0.16),
+        color: AppColors.base.opacity(0.16),
         radius: 24,
         x: 0,
         y: 12

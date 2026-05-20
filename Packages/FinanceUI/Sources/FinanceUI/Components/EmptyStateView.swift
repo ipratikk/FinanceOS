@@ -25,7 +25,7 @@ public struct EmptyStateView: View {
     public var body: some View {
         VStack(spacing: AppSpacing.lg) {
             Image(systemName: icon)
-                .font(AppTypography.custom(size: 48, weight: .light))
+                .font(AppTypography.netHeroAmount)
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: AppSpacing.sm) {

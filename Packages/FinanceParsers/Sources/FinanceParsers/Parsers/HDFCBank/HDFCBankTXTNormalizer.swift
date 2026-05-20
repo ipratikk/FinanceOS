@@ -26,9 +26,8 @@ public struct HDFCBankTXTNormalizer: Sendable {
         if debitMinorUnits != 0 || creditMinorUnits != 0 {
             logger
                 .debug(
-                    "Parsed amounts: date=\(dateStr, privacy: .public) "
-                        + "debit=\(debitStr, privacy: .public)→\(debitMinorUnits) "
-                        + "credit=\(creditStr, privacy: .public)→\(creditMinorUnits)"
+                    // swiftlint:disable:next line_length
+                    "Parsed amounts: date=\(dateStr, privacy: .public) debit=\(debitStr, privacy: .public)→\(debitMinorUnits) credit=\(creditStr, privacy: .public)→\(creditMinorUnits)"
                 )
         }
 

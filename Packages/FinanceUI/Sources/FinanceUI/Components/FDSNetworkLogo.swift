@@ -25,14 +25,14 @@ public struct FDSNetworkLogo: View {
             rupayLogo
         default:
             FDSLabel(network.displayName)
-                .font(AppTypography.custom(size: 9, weight: .semibold))
+                .font(AppTypography.captionSmSemibold)
                 .foregroundColor(AppColors.textPrimary)
         }
     }
 
     private var visaLogo: some View {
         FDSLabel("VISA")
-            .font(AppTypography.custom(size: 10, weight: .bold, design: .default))
+            .font(AppTypography.captionSmSemibold)
             .italic()
             .foregroundColor(AppColors.textPrimary)
             .tracking(-0.02)
@@ -54,9 +54,9 @@ public struct FDSNetworkLogo: View {
     private var amexLogo: some View {
         VStack(spacing: 0.5) {
             FDSLabel("AMERICAN")
-                .font(AppTypography.custom(size: 6, weight: .semibold))
+                .font(AppTypography.captionSmSemibold)
             FDSLabel("EXPRESS")
-                .font(AppTypography.custom(size: 6, weight: .semibold))
+                .font(AppTypography.captionSmSemibold)
         }
         .foregroundColor(AppColors.textPrimary)
         .tracking(0.01)
@@ -77,10 +77,10 @@ public struct FDSNetworkLogo: View {
     private var rupayLogo: some View {
         HStack(spacing: 1) {
             FDSLabel("Ru")
-                .font(AppTypography.custom(size: 7, weight: .bold))
+                .font(AppTypography.captionSmSemibold)
                 .foregroundColor(AppColors.accent)
             FDSLabel("Pay")
-                .font(AppTypography.custom(size: 7, weight: .bold))
+                .font(AppTypography.captionSmSemibold)
                 .foregroundColor(AppColors.accent)
         }
     }

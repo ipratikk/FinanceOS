@@ -122,43 +122,53 @@ public struct UnifiedStatementParser: Sendable {
         case .hdfcCard:
             metadata = HDFCCardMetadataExtractor().extract(from: context.fileContent)
             cardLast4 = metadata?.accountNumber
-            try appendTransactions(
-                from: context.dataRows, headerRow: context.headerRow,
-                mapper: HDFCCardCSVMapper(), normalizer: HDFCCardCSVNormalizer(),
-                into: &transactions
-            )
+            let hdfcCardMapper = HDFCCardCSVMapper()
+            let hdfcCardNormalizer = HDFCCardCSVNormalizer()
+            let hdfcCardRoles = try hdfcCardMapper.map(headerRow: context.headerRow)
+            for row in context.dataRows {
+                let normalizedRow = hdfcCardMapper.mapRow(row, using: hdfcCardRoles)
+                if let tx = try hdfcCardNormalizer.normalize(normalizedRow: normalizedRow) { transactions.append(tx) }
+            }
         case .iciciCard:
             metadata = ICICICardMetadataExtractor().extract(from: context.allRows)
             cardLast4 = metadata?.accountNumber
-            try appendTransactions(
-                from: context.dataRows, headerRow: context.headerRow,
-                mapper: ICICICardCSVMapper(), normalizer: ICICICardCSVNormalizer(),
-                into: &transactions
-            )
+            let iciciCardMapper = ICICICardCSVMapper()
+            let iciciCardNormalizer = ICICICardCSVNormalizer()
+            let iciciCardRoles = try iciciCardMapper.map(headerRow: context.headerRow)
+            for row in context.dataRows {
+                let normalizedRow = iciciCardMapper.mapRow(row, using: iciciCardRoles)
+                if let tx = try iciciCardNormalizer.normalize(normalizedRow: normalizedRow) { transactions.append(tx) }
+            }
         case .iciciBank:
             metadata = ICICIMetadataExtractor().extract(from: context.rawRows)
             accountLast4 = metadata?.accountNumber
-            try appendTransactions(
-                from: context.dataRows, headerRow: context.headerRow,
-                mapper: ICICIBankCSVMapper(), normalizer: ICICIBankCSVNormalizer(),
-                into: &transactions
-            )
+            let iciciBankMapper = ICICIBankCSVMapper()
+            let iciciBankNormalizer = ICICIBankCSVNormalizer()
+            let iciciBankRoles = try iciciBankMapper.map(headerRow: context.headerRow)
+            for row in context.dataRows {
+                let normalizedRow = iciciBankMapper.mapRow(row, using: iciciBankRoles)
+                if let tx = try iciciBankNormalizer.normalize(normalizedRow: normalizedRow) { transactions.append(tx) }
+            }
         case .hdfcBank:
             metadata = HDFCBankMetadataExtractor().extract(from: context.fileContent)
             accountLast4 = metadata?.accountNumber
-            try appendTransactions(
-                from: context.dataRows, headerRow: context.headerRow,
-                mapper: HDFCBankTXTMapper(), normalizer: HDFCBankTXTNormalizer(),
-                into: &transactions
-            )
+            let hdfcBankMapper = HDFCBankTXTMapper()
+            let hdfcBankNormalizer = HDFCBankTXTNormalizer()
+            let hdfcBankRoles = try hdfcBankMapper.map(headerRow: context.headerRow)
+            for row in context.dataRows {
+                let normalizedRow = hdfcBankMapper.mapRow(row, using: hdfcBankRoles)
+                if let tx = try hdfcBankNormalizer.normalize(normalizedRow: normalizedRow) { transactions.append(tx) }
+            }
         case .amex:
             metadata = AmexCardMetadataExtractor().extract(from: context.allRows)
             cardLast4 = metadata?.accountNumber
-            try appendTransactions(
-                from: context.dataRows, headerRow: context.headerRow,
-                mapper: AmexCardCSVMapper(), normalizer: AmexCardCSVNormalizer(),
-                into: &transactions
-            )
+            let amexMapper = AmexCardCSVMapper()
+            let amexNormalizer = AmexCardCSVNormalizer()
+            let amexRoles = try amexMapper.map(headerRow: context.headerRow)
+            for row in context.dataRows {
+                let normalizedRow = amexMapper.mapRow(row, using: amexRoles)
+                if let tx = try amexNormalizer.normalize(normalizedRow: normalizedRow) { transactions.append(tx) }
+            }
         }
     }
 

@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 // MARK: - Glass Surface Modifier

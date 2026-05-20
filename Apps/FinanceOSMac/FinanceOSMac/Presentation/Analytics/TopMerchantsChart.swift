@@ -1,5 +1,6 @@
 import Charts
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct TopMerchantsChart: View {

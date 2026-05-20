@@ -24,7 +24,7 @@ public struct FDSChoiceGroup<T: Hashable>: View {
             ForEach(options, id: \.self) { option in
                 Button(action: { selection = option }, label: {
                     FDSLabel(optionLabel(option))
-                        .font(AppTypography.custom(size: 12, weight: .semibold))
+                        .font(AppTypography.captionLgSemibold)
                         .foregroundColor(
                             selection == option
                                 ? AppColors.textPrimary

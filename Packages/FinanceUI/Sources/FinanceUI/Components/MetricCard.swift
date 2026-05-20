@@ -39,7 +39,7 @@ public struct MetricCard: View {
             HStack(spacing: AppSpacing.sm) {
                 if let icon {
                     Image(systemName: icon)
-                        .font(AppTypography.custom(size: 16, weight: .semibold))
+                        .font(AppTypography.headlineSm)
                         .foregroundColor(AppColors.textTertiary)
                 }
                 FDSLabel(label)
@@ -53,7 +53,7 @@ public struct MetricCard: View {
             if let delta {
                 HStack(spacing: AppSpacing.xs) {
                     Image(systemName: delta.isPositive ? "triangle.fill" : "triangle.fill")
-                        .font(AppTypography.custom(size: 10, weight: .bold))
+                        .font(AppTypography.captionSmSemibold)
                         .rotationEffect(.degrees(delta.isPositive ? 0 : 180))
                         .foregroundColor(delta.isPositive ? AppColors.credit : AppColors.debit)
 

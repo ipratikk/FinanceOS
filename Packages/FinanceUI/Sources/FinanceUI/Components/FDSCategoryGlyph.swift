@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// 32×32 category icon glyph with hue-based background and foreground.
@@ -29,7 +30,7 @@ public struct FDSCategoryGlyph: View {
                 .strokeBorder(bgColor.opacity(0.5), lineWidth: 0.5)
 
             Image(systemName: icon)
-                .font(AppTypography.custom(size: size * 0.45, weight: .semibold))
+                .font(AppTypography.bodyMdSemibold)
                 .foregroundColor(fgColor)
         }
         .frame(width: size, height: size)
