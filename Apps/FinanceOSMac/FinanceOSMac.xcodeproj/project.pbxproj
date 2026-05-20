@@ -184,6 +184,10 @@
 			mainGroup = 049E34072FB3B1D2002A3820;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */,
+				99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */,
+				99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */,
+				99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */,
 				0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -565,6 +569,25 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceCore;
+		};
+		99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceUI;
+		};
+		99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceParsers;
+		};
+		99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceTesting;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -579,14 +602,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		041306252FBA461800133C99 /* FinanceCore */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */;
 			productName = FinanceCore;
 		};
 		041306272FBA461800133C99 /* FinanceTesting */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */;
 			productName = FinanceTesting;
 		};
 		041306292FBA461800133C99 /* FinanceUI */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */;
 			productName = FinanceUI;
 		};
 		0413062C2FBA467700133C99 /* SnapshotTesting */ = {
@@ -596,18 +622,22 @@
 		};
 		0413062E2FBA470000133C99 /* FinanceParsers */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */;
 			productName = FinanceParsers;
 		};
 		041306302FBA470000133C99 /* FinanceParsers */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */;
 			productName = FinanceParsers;
 		};
 		049E34252FB3B303002A3820 /* FinanceCore */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */;
 			productName = FinanceCore;
 		};
 		049E34282FB3B303002A3820 /* FinanceUI */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */;
 			productName = FinanceUI;
 		};
 /* End XCSwiftPackageProductDependency section */

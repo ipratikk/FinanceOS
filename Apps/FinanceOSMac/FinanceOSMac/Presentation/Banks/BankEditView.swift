@@ -35,18 +35,19 @@ struct BankEditView: View {
                         Divider().opacity(DesignTokens.Opacity.low)
                         fieldInput("Provider Type", text: $providerType)
                     }
+                    .padding(12)
+                }
 
-                    FDSCard(cornerRadius: 12, padded: false) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            FDSLiquidButton("Delete Bank", symbol: "trash.fill", variant: .danger) {
-                                showDeleteConfirm = true
-                            }
-                            .padding(12)
+                FDSCard(cornerRadius: 12, padded: false) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        FDSLiquidButton("Delete Bank", symbol: "trash.fill", variant: .danger) {
+                            showDeleteConfirm = true
                         }
+                        .padding(12)
                     }
                 }
             }
-        )
+        }
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {

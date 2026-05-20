@@ -188,7 +188,7 @@ struct SettingsView: View {
                     Image(systemName: "doc.on.doc")
                         .font(.system(size: 11, weight: .medium))
                         .foregroundColor(DesignTokens.Text.secondary)
-                }
+                })
                 .buttonStyle(.plain)
             }
         }

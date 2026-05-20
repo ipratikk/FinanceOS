@@ -15,18 +15,19 @@ struct TransactionDetailView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     heroAmount
 
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(spacing: 0) {
-                        detailRow(label: "Merchant", value: row.title)
-                        Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
-                        detailRow(label: "Source", value: row.subtitle)
-                        Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
-                        detailRow(label: "Date", value: formatDate(row.postedAt))
-                        Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
-                        detailRow(
-                            label: "Type",
-                            value: row.transactionType == .debit ? "Debit" : "Credit"
-                        )
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(spacing: 0) {
+                            detailRow(label: "Merchant", value: row.title)
+                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            detailRow(label: "Source", value: row.subtitle)
+                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            detailRow(label: "Date", value: formatDate(row.postedAt))
+                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            detailRow(
+                                label: "Type",
+                                value: row.transactionType == .debit ? "Debit" : "Credit"
+                            )
+                        }
                     }
                 }
             }
