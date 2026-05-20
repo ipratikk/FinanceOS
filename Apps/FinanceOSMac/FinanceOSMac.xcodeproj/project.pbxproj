@@ -184,6 +184,10 @@
 			mainGroup = 049E34072FB3B1D2002A3820;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */,
+				99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */,
+				99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */,
+				99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */,
 				0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -288,8 +292,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
-				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pratik.FinanceOSMacSnapshotTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -302,7 +306,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceOSMac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinanceOSMac";
-				XROS_DEPLOYMENT_TARGET = 26.4;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
@@ -313,8 +317,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
-				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pratik.FinanceOSMacSnapshotTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -327,7 +331,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinanceOSMac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinanceOSMac";
-				XROS_DEPLOYMENT_TARGET = 26.4;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -384,7 +388,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -441,7 +445,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.4;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -472,11 +476,13 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pratik.FinanceOSMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -514,11 +520,13 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.pratik.FinanceOSMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -565,6 +573,25 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceCore;
+		};
+		99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceUI;
+		};
+		99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceParsers;
+		};
+		99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceTesting;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -579,14 +606,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		041306252FBA461800133C99 /* FinanceCore */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */;
 			productName = FinanceCore;
 		};
 		041306272FBA461800133C99 /* FinanceTesting */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */;
 			productName = FinanceTesting;
 		};
 		041306292FBA461800133C99 /* FinanceUI */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */;
 			productName = FinanceUI;
 		};
 		0413062C2FBA467700133C99 /* SnapshotTesting */ = {
@@ -596,18 +626,22 @@
 		};
 		0413062E2FBA470000133C99 /* FinanceParsers */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */;
 			productName = FinanceParsers;
 		};
 		041306302FBA470000133C99 /* FinanceParsers */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */;
 			productName = FinanceParsers;
 		};
 		049E34252FB3B303002A3820 /* FinanceCore */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */;
 			productName = FinanceCore;
 		};
 		049E34282FB3B303002A3820 /* FinanceUI */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */;
 			productName = FinanceUI;
 		};
 /* End XCSwiftPackageProductDependency section */

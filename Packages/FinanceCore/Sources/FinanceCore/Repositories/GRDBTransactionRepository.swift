@@ -11,8 +11,7 @@ import OSLog
 
 public final class GRDBTransactionRepository:
     @unchecked Sendable,
-    TransactionRepository
-{
+    TransactionRepository {
     private let dbQueue: DatabaseQueue
     private let logger = FinanceLogger.repository
 

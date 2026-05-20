@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Form field wrapper with label, optional hint, control, and optional error.
@@ -22,18 +23,18 @@ public struct FDSField<Content: View>: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxs) {
             HStack {
-                Text(label.uppercased())
-                    .font(.system(size: 11, weight: .semibold))
+                FDSLabel(label.uppercased())
+                    .font(AppTypography.captionSmSemibold)
                     .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
                     .tracking(0.01)
 
                 Spacer()
 
                 if let hint {
-                    Text(hint)
-                        .font(.system(size: 11, weight: .regular))
+                    FDSLabel(hint)
+                        .font(AppTypography.captionSm)
                         .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
                 }
             }
@@ -41,8 +42,8 @@ public struct FDSField<Content: View>: View {
             content
 
             if let error {
-                Text(error)
-                    .font(.system(size: 11, weight: .regular))
+                FDSLabel(error)
+                    .font(AppTypography.captionSm)
                     .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
             }
         }
@@ -50,19 +51,19 @@ public struct FDSField<Content: View>: View {
 }
 
 #Preview {
-    VStack(spacing: 16) {
+    VStack(spacing: AppSpacing.md) {
         FDSField("Account Name", hint: "Required") {
             TextField("Enter name", text: .constant(""))
-                .padding(10)
-                .background(Color.black.opacity(0.25))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface)
+                .cornerRadius(AppRadius.sm)
         }
 
         FDSField("Email", error: "Invalid email format") {
             TextField("Enter email", text: .constant(""))
-                .padding(10)
-                .background(Color.black.opacity(0.25))
-                .cornerRadius(8)
+                .padding(AppSpacing.sm)
+                .background(AppColors.surface)
+                .cornerRadius(AppRadius.sm)
         }
     }
     .padding()

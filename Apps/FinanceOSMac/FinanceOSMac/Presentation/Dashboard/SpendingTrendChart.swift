@@ -1,5 +1,6 @@
 import Charts
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct SpendingTrendChart: View {
@@ -23,7 +24,7 @@ struct SpendingTrendChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Spending Trend")
+            FDSLabel("Spending Trend")
                 .headingSmall()
 
             Chart(chartData, id: \.date) { item in

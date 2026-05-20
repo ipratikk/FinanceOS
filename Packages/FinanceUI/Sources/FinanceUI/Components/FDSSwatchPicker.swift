@@ -37,20 +37,17 @@ public struct FDSSwatchPicker: View {
         LazyVGrid(columns: gridItems, spacing: 12) {
             ForEach(colors.indices, id: \.self) { index in
                 let color = colors[index]
-                Button(action: { selectedColor = color }) {
+                Button(action: { selectedColor = color }, label: {
                     Circle()
                         .fill(color)
                         .frame(height: 40)
                         .overlay {
                             if selectedColor == color {
                                 Circle()
-                                    .strokeBorder(
-                                        AppColors.accent,
-                                        lineWidth: 2.5
-                                    )
+                                    .strokeBorder(AppColors.accent, lineWidth: 2.5)
                             }
                         }
-                }
+                })
                 .buttonStyle(.plain)
             }
         }

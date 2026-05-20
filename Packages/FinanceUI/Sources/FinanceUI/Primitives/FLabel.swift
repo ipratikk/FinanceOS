@@ -16,10 +16,10 @@ public struct FLabel: View {
         HStack(spacing: AppSpacing.xs) {
             if let icon {
                 Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(AppTypography.bodyMdSemibold)
             }
-            Text(text)
-                .font(.system(size: 14, weight: .medium))
+            FDSLabel(text)
+                .font(AppTypography.bodyMd)
         }
         .foregroundColor(color)
     }

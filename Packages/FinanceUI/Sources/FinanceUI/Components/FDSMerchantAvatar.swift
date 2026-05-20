@@ -72,11 +72,11 @@ public struct FDSMerchantAvatar: View {
                     .padding(size * 0.18)
             } else if let symbol {
                 Image(systemName: symbol)
-                    .font(.system(size: size * 0.42, weight: .semibold))
+                    .font(AppTypography.bodyMdSemibold)
                     .foregroundStyle(tint.opacity(0.9))
             } else {
-                Text(initial)
-                    .font(.system(size: size * 0.42, weight: .semibold, design: .rounded))
+                FDSLabel(initial)
+                    .font(AppTypography.bodyMdSemibold)
                     .foregroundStyle(tint.opacity(0.95))
             }
         }

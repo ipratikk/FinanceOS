@@ -9,9 +9,9 @@ extension ImportPreviewView {
             if viewModel.selectedTarget != nil {
                 Button(action: {
                     viewModel.selectedTarget = nil
-                }) {
-                    Text("Clear Selection")
-                }
+                }, label: {
+                    FDSLabel("Clear Selection")
+                })
                 Divider()
             }
 
@@ -21,19 +21,19 @@ extension ImportPreviewView {
                     ForEach(accounts) { account in
                         Button(action: {
                             viewModel.selectedTarget = .ledger(account.id)
-                        }) {
+                        }, label: {
                             if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
                                 Label(account.displayName, systemImage: "checkmark")
                             } else {
-                                Text(account.displayName)
+                                FDSLabel(account.displayName)
                             }
-                        }
+                        })
                     }
                 }
             }
-            Button(action: { initializeCreateSheet(isCard: false) }) {
-                Text("Create New Account...")
-            }
+            Button(action: { initializeCreateSheet(isCard: false) }, label: {
+                FDSLabel("Create New Account...")
+            })
 
             let cards = viewModel.ledgers.filter { $0.kind == .creditCard }
             if !cards.isEmpty {
@@ -41,19 +41,19 @@ extension ImportPreviewView {
                     ForEach(cards) { card in
                         Button(action: {
                             viewModel.selectedTarget = .ledger(card.id)
-                        }) {
+                        }, label: {
                             if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
                                 Label(card.displayName, systemImage: "checkmark")
                             } else {
-                                Text(card.displayName)
+                                FDSLabel(card.displayName)
                             }
-                        }
+                        })
                     }
                 }
             }
-            Button(action: { initializeCreateSheet(isCard: true) }) {
-                Text("Create New Card...")
-            }
+            Button(action: { initializeCreateSheet(isCard: true) }, label: {
+                FDSLabel("Create New Card...")
+            })
         } label: {
             let displayText: String = {
                 if let target = viewModel.selectedTarget {
@@ -65,7 +65,7 @@ extension ImportPreviewView {
             }()
 
             HStack(spacing: 6) {
-                Text(displayText)
+                FDSLabel(displayText)
                     .font(AppTypography.labelMedium)
                     .foregroundColor(DesignTokens.Text.primary)
             }
@@ -103,14 +103,14 @@ extension ImportPreviewView {
         let dupCount = viewModel.duplicateTransactionIndices.count
 
         return HStack(spacing: AppSpacing.md) {
-            Text("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
+            FDSLabel("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
                 .font(AppTypography.labelSmall)
                 .foregroundColor(DesignTokens.Text.secondary)
 
             Spacer()
 
-            Button(action: { viewModel.backToUpload() }) {
-                Text("Cancel")
+            Button(action: { viewModel.backToUpload() }, label: {
+                FDSLabel("Cancel")
                     .font(AppTypography.labelMedium)
                     .foregroundColor(DesignTokens.Text.primary)
                     .padding(.horizontal, AppSpacing.md)
@@ -119,18 +119,18 @@ extension ImportPreviewView {
                         RoundedRectangle(cornerRadius: AppRadius.sm)
                             .stroke(DesignTokens.Text.secondary.opacity(0.3), lineWidth: 1)
                     )
-            }
+            })
             .buttonStyle(.plain)
 
-            Button(action: { viewModel.importTransactions() }) {
-                Text("Import \(newCount) transaction\(newCount == 1 ? "" : "s")")
+            Button(action: { viewModel.importTransactions() }, label: {
+                FDSLabel("Import \(newCount) transaction\(newCount == 1 ? "" : "s")")
                     .font(AppTypography.labelMedium)
-                    .foregroundColor(.white)
+                    .foregroundColor(AppColors.textPrimary)
                     .padding(.horizontal, AppSpacing.md)
                     .padding(.vertical, AppSpacing.sm)
-                    .background(newCount > 0 ? AppColors.accent : Color.gray)
+                    .background(newCount > 0 ? AppColors.accent : AppColors.textDisabled)
                     .cornerRadius(AppRadius.sm)
-            }
+            })
             .buttonStyle(.plain)
             .disabled(newCount == 0 || viewModel.selectedTarget == nil)
         }

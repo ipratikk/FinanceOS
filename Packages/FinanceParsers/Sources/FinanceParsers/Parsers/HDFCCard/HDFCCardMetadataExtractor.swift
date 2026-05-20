@@ -23,39 +23,33 @@ public struct HDFCCardMetadataExtractor: Sendable {
     }
 
     private func extractCustomerName(from lines: [String]) -> String? {
-        for line in lines.prefix(20) {
-            if line.contains("Name~|~") {
-                let parts = line.components(separatedBy: "~|~")
-                if parts.count >= 2 {
-                    return parts[1].trimmingCharacters(in: .whitespaces)
-                }
+        for line in lines.prefix(20) where line.contains("Name~|~") {
+            let parts = line.components(separatedBy: "~|~")
+            if parts.count >= 2 {
+                return parts[1].trimmingCharacters(in: .whitespaces)
             }
         }
         return nil
     }
 
     private func extractCardLast4(from lines: [String]) -> String? {
-        for line in lines.prefix(50) {
-            if line.contains("Card No:") {
-                let trimmed = line.trimmingCharacters(in: .whitespaces)
-                let parts = trimmed.components(separatedBy: " ").filter { !$0.isEmpty }
-                if let lastPart = parts.last, lastPart.count == 4, lastPart.allSatisfy(\.isNumber) {
-                    return lastPart
-                }
+        for line in lines.prefix(50) where line.contains("Card No:") {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            let parts = trimmed.components(separatedBy: " ").filter { !$0.isEmpty }
+            if let lastPart = parts.last, lastPart.count == 4, lastPart.allSatisfy(\.isNumber) {
+                return lastPart
             }
         }
         return nil
     }
 
     private func extractFullCardNumber(from lines: [String]) -> String? {
-        for line in lines.prefix(50) {
-            if line.contains("Card No:") {
-                let colonParts = line.components(separatedBy: ":")
-                if colonParts.count >= 2 {
-                    let cardNum = colonParts[1].trimmingCharacters(in: .whitespaces)
-                    if cardNum.count >= 12 {
-                        return cardNum
-                    }
+        for line in lines.prefix(50) where line.contains("Card No:") {
+            let colonParts = line.components(separatedBy: ":")
+            if colonParts.count >= 2 {
+                let cardNum = colonParts[1].trimmingCharacters(in: .whitespaces)
+                if cardNum.count >= 12 {
+                    return cardNum
                 }
             }
         }
@@ -74,16 +68,11 @@ public struct HDFCCardMetadataExtractor: Sendable {
         }
 
         // Fallback: try to detect from card number using BIN
-        for line in lines.prefix(50) {
-            if line.contains("Card No:") {
-                let trimmed = line.trimmingCharacters(in: .whitespaces)
-                if let colonParts = trimmed.components(separatedBy: ":").last {
-                    let cardNum = colonParts.trimmingCharacters(in: .whitespaces)
-                    // Use BIN parser to detect type
-                    // Note: BINParser is in FinanceCore, but we're in FinanceParsers
-                    // So we'll implement simple detection here
-                    return detectTypeFromCardNumber(cardNum)
-                }
+        for line in lines.prefix(50) where line.contains("Card No:") {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if let colonParts = trimmed.components(separatedBy: ":").last {
+                let cardNum = colonParts.trimmingCharacters(in: .whitespaces)
+                return detectTypeFromCardNumber(cardNum)
             }
         }
 
@@ -119,13 +108,11 @@ public struct HDFCCardMetadataExtractor: Sendable {
     }
 
     private func extractStatementDate(from lines: [String]) -> Date? {
-        for line in lines.prefix(20) {
-            if line.contains("Statement Date~|~") {
-                let parts = line.components(separatedBy: "~|~")
-                if parts.count >= 2 {
-                    let dateString = parts[1].trimmingCharacters(in: .whitespaces)
-                    return parseDate(dateString)
-                }
+        for line in lines.prefix(20) where line.contains("Statement Date~|~") {
+            let parts = line.components(separatedBy: "~|~")
+            if parts.count >= 2 {
+                let dateString = parts[1].trimmingCharacters(in: .whitespaces)
+                return parseDate(dateString)
             }
         }
         return nil

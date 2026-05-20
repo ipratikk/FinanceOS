@@ -8,16 +8,16 @@ struct ImportStatementHeading: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Importing \(fileName)")
+            FDSLabel("Importing \(fileName)")
                 .font(AppTypography.headingSmall)
                 .foregroundColor(DesignTokens.Text.primary)
 
             if let ledgerName {
-                Text("into \(ledgerName)")
+                FDSLabel("into \(ledgerName)")
                     .font(AppTypography.bodySm)
                     .foregroundColor(AppColors.accent)
             } else {
-                Text("Select destination below")
+                FDSLabel("Select destination below")
                     .font(AppTypography.bodySm)
                     .foregroundColor(DesignTokens.Text.secondary)
             }

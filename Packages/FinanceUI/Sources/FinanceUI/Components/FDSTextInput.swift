@@ -40,18 +40,18 @@ private extension View {
     func applyInputStyle(_ style: FDSTextInputStyle) -> some View {
         switch style {
         case .bodyLarge:
-            return AnyView(font(.system(size: 16, weight: .regular)))
+            return AnyView(font(AppTypography.bodyLg))
         case .bodyMedium:
-            return AnyView(font(.system(size: 14, weight: .regular)))
+            return AnyView(font(AppTypography.bodyMd))
         case .labelSmall:
-            return AnyView(font(.system(size: 12, weight: .medium)))
+            return AnyView(font(AppTypography.captionLgMedium))
         }
     }
 }
 
 #Preview {
-    @State var password = ""
-    @State var text = ""
+    @Previewable @State var password = ""
+    @Previewable @State var text = ""
 
     return VStack(spacing: 12) {
         VStack(alignment: .leading, spacing: 4) {

@@ -27,16 +27,14 @@ public struct InstitutionDetector: Sendable {
             }
             if normalized.contains("particulars"),
                normalized.contains("deposits"),
-               normalized.contains("withdrawals")
-            {
+               normalized.contains("withdrawals") {
                 return .iciciBank
             }
             let cols = line.components(separatedBy: ",").map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
             if cols.count == 3,
                cols.contains("date"),
                cols.contains("description"),
-               cols.contains("amount")
-            {
+               cols.contains("amount") {
                 return .amex
             }
         }

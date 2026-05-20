@@ -10,54 +10,48 @@ struct TransactionDetailView: View {
         FDSSheet(
             title: "Transaction Details",
             subtitle: row.title,
-            onDismiss: { dismiss() }
-        ) {
-            VStack(alignment: .leading, spacing: 20) {
-                heroAmount
+            onDismiss: { dismiss() },
+            content: {
+                VStack(alignment: .leading, spacing: 20) {
+                    heroAmount
 
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(spacing: 0) {
-                        detailRow(label: "Merchant", value: row.title)
-                        Divider().opacity(0.2).padding(.vertical, 8)
-                        detailRow(label: "Source", value: row.subtitle)
-                        Divider().opacity(0.2).padding(.vertical, 8)
-                        detailRow(label: "Date", value: formatDate(row.postedAt))
-                        Divider().opacity(0.2).padding(.vertical, 8)
-                        detailRow(
-                            label: "Type",
-                            value: row.transactionType == .debit ? "Debit" : "Credit"
-                        )
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(spacing: 0) {
+                            detailRow(label: "Merchant", value: row.title)
+                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            detailRow(label: "Source", value: row.subtitle)
+                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            detailRow(label: "Date", value: formatDate(row.postedAt))
+                            Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
+                            detailRow(
+                                label: "Type",
+                                value: row.transactionType == .debit ? "Debit" : "Credit"
+                            )
+                        }
                     }
-                    .padding(12)
                 }
             }
-        }
+        )
     }
 
     private var heroAmount: some View {
         VStack(alignment: .center, spacing: 8) {
-            Text(row.transactionType == .debit ? "DEBITED" : "CREDITED")
-                .font(.system(size: 11, weight: .semibold))
+            FDSLabel(row.transactionType == .debit ? "DEBITED" : "CREDITED")
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                .foregroundColor(DesignTokens.Text.secondary)
 
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(row.amountText)
-                    .font(.system(size: 40, weight: .semibold, design: .default))
+                FDSLabel(row.amountText)
+                    .font(AppTypography.headingXL)
                     .monospacedDigit()
-                    .foregroundColor(row.transactionType == .debit ? Color(red: 1.0, green: 0.27, blue: 0.23) : Color(
-                        red: 0.19,
-                        green: 0.82,
-                        blue: 0.35
-                    ))
+                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                        .green)
 
                 Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(row.transactionType == .debit ? Color(red: 1.0, green: 0.27, blue: 0.23) : Color(
-                        red: 0.19,
-                        green: 0.82,
-                        blue: 0.35
-                    ))
+                    .font(AppTypography.headingMd)
+                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                        .green)
             }
             .frame(maxWidth: .infinity, alignment: .center)
         }
@@ -65,17 +59,17 @@ struct TransactionDetailView: View {
 
     private func detailRow(label: String, value: String) -> some View {
         HStack {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+            FDSLabel(label.uppercased())
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                .foregroundColor(DesignTokens.Text.secondary)
             Spacer()
-            Text(value)
-                .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+            FDSLabel(value)
+                .font(AppTypography.captionSmMedium)
+                .foregroundColor(DesignTokens.Text.primary)
                 .multilineTextAlignment(.trailing)
         }
-        .padding(12)
+        .padding(AppSpacing.xs)
     }
 
     private func formatDate(_ date: Date) -> String {

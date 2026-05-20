@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Apple-spec toggle (36×22 capsule).
@@ -14,25 +15,25 @@ public struct FDSToggle: View {
     public var body: some View {
         ZStack {
             Capsule()
-                .fill(isOn ? Color(red: 0.19, green: 0.82, blue: 0.35) : Color.black.opacity(0.25))
+                .fill(isOn ? Color(red: 0.19, green: 0.82, blue: 0.35) : AppColors.base.opacity(0.25))
                 .overlay {
                     Capsule()
                         .strokeBorder(
                             isOn
                                 ? LinearGradient(
                                     colors: [
-                                        Color.white.opacity(0.16),
-                                        Color.white.opacity(0.06),
+                                        AppColors.textPrimary.opacity(0.16),
+                                        AppColors.textPrimary.opacity(0.06),
                                         .clear,
-                                        Color.black.opacity(0.20)
+                                        AppColors.base.opacity(0.20)
                                     ],
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )
                                 : LinearGradient(
                                     colors: [
-                                        Color.white.opacity(0.0),
-                                        Color.white.opacity(0.0)
+                                        AppColors.textPrimary.opacity(0.0),
+                                        AppColors.textPrimary.opacity(0.0)
                                     ],
                                     startPoint: .top,
                                     endPoint: .bottom
@@ -47,15 +48,15 @@ public struct FDSToggle: View {
                 }
 
                 Circle()
-                    .fill(Color.white)
-                    .frame(width: 16, height: 16)
+                    .fill(AppColors.textPrimary)
+                    .frame(width: AppSpacing.md, height: AppSpacing.md)
                     .overlay {
                         Circle()
                             .strokeBorder(
                                 LinearGradient(
                                     colors: [
-                                        Color.white.opacity(0.30),
-                                        Color.black.opacity(0.10)
+                                        AppColors.textPrimary.opacity(0.30),
+                                        AppColors.base.opacity(0.10)
                                     ],
                                     startPoint: .top,
                                     endPoint: .bottom
@@ -82,13 +83,13 @@ public struct FDSToggle: View {
 #Preview {
     VStack(spacing: 16) {
         HStack {
-            Text("Auto-deduplicate")
+            FDSLabel("Auto-deduplicate")
             Spacer()
             FDSToggle(isOn: .constant(false))
         }
 
         HStack {
-            Text("Preview before import")
+            FDSLabel("Preview before import")
             Spacer()
             FDSToggle(isOn: .constant(true))
         }

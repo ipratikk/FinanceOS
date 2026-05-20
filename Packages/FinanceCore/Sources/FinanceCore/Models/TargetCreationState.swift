@@ -5,29 +5,27 @@ public struct TargetCreationState: Identifiable, Equatable {
     public let id = UUID()
     public var customName: String = ""
     public var nickname: String = ""
+    public var first4: String = ""
     public var last4: String = ""
-    public var maskedCardNumber: String = ""
     public var encryptedCardNumber: String = ""
-    public var ownerName: String = ""
+    public var cardholderName: String = ""
     public var selectedBank: Banks?
     public var isCard: Bool = false
     public var accountType: String = "savings"
-    public var cardType: String = "other"
-    public var cardProduct: String = ""
+    public var cardType: CardNetwork = .other
+    public var cardProductId: String = ""
     public var linkedLedgerId: UUID?
 
     public init() {}
 
     public mutating func initializeFromStatement(_ statement: ParsedStatement) {
         last4 = isCard ? (statement.cardLast4 ?? "") : (statement.accountLast4 ?? "")
-        let maskedCard = isCard ? (statement.metadata?.fullAccountNumber ?? "") : ""
-        maskedCardNumber = maskedCard
-        encryptedCardNumber = maskedCard
+        encryptedCardNumber = isCard ? (statement.metadata?.fullAccountNumber ?? "") : ""
 
-        ownerName = statement.metadata?.customerName ?? ""
+        cardholderName = statement.metadata?.customerName ?? ""
 
         if isCard {
-            cardType = statement.metadata?.cardType ?? "other"
+            cardType = CardNetwork(rawValue: statement.metadata?.cardType ?? "") ?? .other
         } else {
             accountType = (statement.metadata?.accountType ?? "savings").lowercased()
         }

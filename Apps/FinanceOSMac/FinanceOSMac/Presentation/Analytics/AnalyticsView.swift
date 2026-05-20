@@ -7,8 +7,6 @@ struct AnalyticsView: View {
     @State private var viewModel: AnalyticsViewModel?
     @State private var isLoading = true
 
-    private let appContainer = AppContainer.shared
-
     init() {}
 
     init(viewModel: AnalyticsViewModel) {
@@ -43,16 +41,17 @@ struct AnalyticsView: View {
         } else {
             VStack(spacing: 12) {
                 ProgressView().controlSize(.small)
-                Text("Loading…")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                FDSLabel("Loading…")
+                    .font(AppTypography.captionSmMedium)
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
             .task {
+                let container = AppContainer.shared
                 viewModel = AnalyticsViewModel(
-                    spendingService: appContainer.spendingService,
-                    transactionRepository: appContainer.transactionRepository
+                    spendingService: container.spendingService,
+                    transactionRepository: container.transactionRepository
                 )
             }
         }
@@ -60,11 +59,11 @@ struct AnalyticsView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Analytics")
-                .font(.system(size: 22, weight: .semibold))
+            FDSLabel("Analytics")
+                .font(AppTypography.displaySmall)
                 .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
-            Text("Spending trends and merchant insights")
-                .font(.system(size: 12, weight: .medium))
+            FDSLabel("Spending trends and merchant insights")
+                .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
         }
@@ -74,12 +73,12 @@ struct AnalyticsView: View {
     private func spendingTrendSection(_ viewModel: AnalyticsViewModel) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("6-Month Trend")
-                    .font(.system(size: 16, weight: .semibold))
+                FDSLabel("6-Month Trend")
+                    .font(AppTypography.headingSmall)
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
-                Text("Inflows vs outflows over time")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                FDSLabel("Inflows vs outflows over time")
+                    .font(AppTypography.captionLgMedium)
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -89,7 +88,7 @@ struct AnalyticsView: View {
                         y: .value("Outflows", Double(item.totalDebit) / 100.0)
                     )
                     .foregroundStyle(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.8))
-                    .cornerRadius(4)
+                    .cornerRadius(AppRadius.xs)
                     .position(by: .value("Type", "Outflows"))
 
                     BarMark(
@@ -97,7 +96,7 @@ struct AnalyticsView: View {
                         y: .value("Inflows", Double(item.totalCredit) / 100.0)
                     )
                     .foregroundStyle(Color(red: 0.19, green: 0.82, blue: 0.35).opacity(0.8))
-                    .cornerRadius(4)
+                    .cornerRadius(AppRadius.xs)
                     .position(by: .value("Type", "Inflows"))
                 }
                 .frame(height: 240)
@@ -107,11 +106,11 @@ struct AnalyticsView: View {
                 }
                 .chartYAxis {
                     AxisMarks { _ in
-                        AxisGridLine().foregroundStyle(Color.white.opacity(0.06))
+                        AxisGridLine().foregroundStyle(AppColors.textPrimary.opacity(0.06))
                         AxisValueLabel()
                     }
                 }
-                .padding(12)
+                .padding(AppSpacing.sm)
             }
         }
     }
@@ -119,12 +118,12 @@ struct AnalyticsView: View {
     private func topMerchantsSection(_ viewModel: AnalyticsViewModel) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Top Merchants")
-                    .font(.system(size: 16, weight: .semibold))
+                FDSLabel("Top Merchants")
+                    .font(AppTypography.headingSmall)
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
-                Text("Highest outflow activity")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                FDSLabel("Highest outflow activity")
+                    .font(AppTypography.captionLgMedium)
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -133,34 +132,34 @@ struct AnalyticsView: View {
                 }
                 TopMerchantsChart(merchants: Array(merchants))
                     .frame(height: 240)
-                    .padding(12)
+                    .padding(AppSpacing.sm)
             }
         }
     }
 
     private var categoriesPlaceholder: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Categories")
-                .font(.system(size: 16, weight: .semibold))
+            FDSLabel("Categories")
+                .font(AppTypography.headingSmall)
                 .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
 
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 12) {
                     Image(systemName: "tag.circle.fill")
-                        .font(.system(size: 40, weight: .light))
+                        .font(AppTypography.headingXLLight)
                         .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580).opacity(0.4))
                         .symbolRenderingMode(.hierarchical)
                     VStack(spacing: 4) {
-                        Text("Coming Soon")
-                            .font(.system(size: 14, weight: .semibold))
+                        FDSLabel("Coming Soon")
+                            .font(AppTypography.bodyMdSemibold)
                             .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
-                        Text("Auto-categorization with smart detection")
-                            .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                        FDSLabel("Auto-categorization with smart detection")
+                            .font(AppTypography.captionLg)
+                            .foregroundColor(DesignTokens.Text.secondary)
                     }
                 }
                 .frame(maxWidth: .infinity)
-                .padding(24)
+                .padding(AppSpacing.xl)
             }
         }
     }

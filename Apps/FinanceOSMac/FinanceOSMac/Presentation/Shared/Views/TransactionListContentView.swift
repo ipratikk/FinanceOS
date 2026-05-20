@@ -36,7 +36,7 @@ struct TransactionListContentView: View {
                 }
             }
         } message: {
-            Text("This will permanently delete \"\(transactionPendingDelete?.title ?? "this transaction")\".")
+            FDSLabel("This will permanently delete \"\(transactionPendingDelete?.title ?? "this transaction")\".")
         }
     }
 
@@ -47,16 +47,15 @@ struct TransactionListContentView: View {
                     .font(AppTypography.captionLgSemibold)
                     .foregroundStyle(.tertiary)
 
-                TextField("Search transactions", text: $listState.searchQuery)
-                    .font(AppTypography.bodySm)
+                FDSTextInput("Search transactions", text: $listState.searchQuery, style: .bodyMedium)
                     .textFieldStyle(.plain)
 
                 if !listState.searchQuery.isEmpty {
-                    Button(action: { listState.searchQuery = "" }) {
+                    Button(action: { listState.searchQuery = "" }, label: {
                         Image(systemName: "xmark.circle.fill")
                             .font(AppTypography.captionLg)
                             .foregroundStyle(.tertiary)
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
             }
@@ -83,15 +82,15 @@ struct TransactionListContentView: View {
                 dateChip
 
                 if listState.isFilterActive {
-                    Button(action: { listState.reset() }) {
+                    Button(action: { listState.reset() }, label: {
                         HStack(spacing: 3) {
                             Image(systemName: "xmark.circle.fill")
                                 .font(AppTypography.label)
-                            Text("Clear")
+                            FDSLabel("Clear")
                                 .font(AppTypography.captionLgMedium)
                         }
                         .foregroundStyle(AppColors.accentGold)
-                    }
+                    })
                     .buttonStyle(.plain)
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
@@ -108,14 +107,14 @@ struct TransactionListContentView: View {
         return Button {
             listState.typeFilter = active ? nil : type
         } label: {
-            Text(label)
+            FDSLabel(label)
                 .font(active ? AppTypography.captionLgSemibold : AppTypography.captionLg)
-                .foregroundStyle(active ? color : Color.secondary)
+                .foregroundStyle(active ? color : AppColors.textSecondary)
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.vertical, 5)
                 .background {
                     Capsule(style: .continuous)
-                        .fill(active ? color.opacity(0.1) : Color.clear)
+                        .fill(active ? color.opacity(0.1) : AppColors.clear)
                         .overlay(
                             Capsule(style: .continuous)
                                 .strokeBorder(
@@ -137,19 +136,19 @@ struct TransactionListContentView: View {
             HStack(spacing: 4) {
                 Image(systemName: "calendar")
                     .font(AppTypography.captionSmMedium)
-                Text(listState.dateRangeFilter?.label ?? "Date")
+                FDSLabel(listState.dateRangeFilter?.label ?? "Date")
                     .font(active ? AppTypography.captionLgSemibold : AppTypography.captionLg)
                 if !active {
                     Image(systemName: "chevron.down")
                         .font(AppTypography.iconSm)
                 }
             }
-            .foregroundStyle(active ? AppColors.accentGold : Color.secondary)
+            .foregroundStyle(active ? AppColors.accentGold : AppColors.textSecondary)
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, 5)
             .background {
                 Capsule(style: .continuous)
-                    .fill(active ? AppColors.accentGold.opacity(0.1) : Color.clear)
+                    .fill(active ? AppColors.accentGold.opacity(0.1) : AppColors.clear)
                     .overlay(
                         Capsule(style: .continuous)
                             .strokeBorder(
@@ -183,7 +182,7 @@ struct TransactionListContentView: View {
     }
 
     private func sectionHeader(_ title: String) -> some View {
-        Text(title)
+        FDSLabel(title)
             .font(AppTypography.labelMedium)
             .tracking(0.5)
             .foregroundStyle(.tertiary)
@@ -196,7 +195,7 @@ struct TransactionListContentView: View {
         FDSCard {
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
-                    Button(action: { selectedTransaction = row }) {
+                    Button(action: { selectedTransaction = row }, label: {
                         FDSTransactionRow(
                             merchant: row.title,
                             categorySymbol: nil,
@@ -205,7 +204,7 @@ struct TransactionListContentView: View {
                             isDebit: row.transactionType == .debit,
                             runningBalance: row.runningBalance
                         )
-                    }
+                    })
                     .buttonStyle(.plain)
                     .contextMenu {
                         Button("Delete", role: .destructive) { transactionPendingDelete = row }
@@ -227,8 +226,8 @@ struct TransactionListContentView: View {
                 .symbolRenderingMode(.hierarchical)
 
             VStack(spacing: AppSpacing.tight) {
-                Text("No Transactions").bodyLarge()
-                Text(listState.isFilterActive ? "No transactions match your filters." : "No transactions found.")
+                FDSLabel("No Transactions").bodyLarge()
+                FDSLabel(listState.isFilterActive ? "No transactions match your filters." : "No transactions found.")
                     .font(AppTypography.captionLg)
                     .foregroundStyle(.tertiary)
             }
@@ -251,7 +250,7 @@ struct DateFilterPopover: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("DATE RANGE")
+            FDSLabel("DATE RANGE")
                 .font(AppTypography.labelSemibold)
                 .tracking(0.6)
                 .foregroundStyle(.tertiary)
@@ -298,9 +297,9 @@ struct DateFilterPopover: View {
             if !isCustom { isPresented = false }
         } label: {
             HStack {
-                Text(preset.label)
+                FDSLabel(preset.label)
                     .font(active ? AppTypography.bodySmSemibold : AppTypography.bodySm)
-                    .foregroundStyle(active ? AppColors.accentGold : Color.primary)
+                    .foregroundStyle(active ? AppColors.accentGold : AppColors.textPrimary)
                 Spacer()
                 if active {
                     Image(systemName: "checkmark")
@@ -325,13 +324,13 @@ struct DateFilterPopover: View {
             }
         } label: {
             HStack {
-                Text("Custom")
+                FDSLabel("Custom")
                     .font(active ? AppTypography.bodySmSemibold : AppTypography.bodySm)
-                    .foregroundStyle(active ? AppColors.accent : Color.primary)
+                    .foregroundStyle(active ? AppColors.accent : AppColors.textPrimary)
                 Spacer()
                 Image(systemName: active ? "checkmark" : "chevron.right")
                     .font(AppTypography.captionSmSemibold)
-                    .foregroundStyle(active ? AppColors.accent : Color.secondary)
+                    .foregroundStyle(active ? AppColors.accent : AppColors.textSecondary)
             }
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, 7)
@@ -358,7 +357,7 @@ struct DateFilterPopover: View {
 
     private func customDateRow(label: String, date: Binding<Date>) -> some View {
         HStack {
-            Text(label)
+            FDSLabel(label)
                 .font(AppTypography.captionLgMedium)
                 .foregroundStyle(.secondary)
                 .frame(width: 32, alignment: .leading)

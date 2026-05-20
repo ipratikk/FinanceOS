@@ -3,7 +3,7 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.pratik.FinanceOS", category: "Parsing")
 
-public struct HDFCBankTXTNormalizer: Sendable {
+public struct HDFCBankTXTNormalizer: Sendable, CSVRowNormalizer {
     public init() {}
 
     public func normalize(normalizedRow: NormalizedRow) throws -> ParsedTransaction? {
@@ -26,6 +26,7 @@ public struct HDFCBankTXTNormalizer: Sendable {
         if debitMinorUnits != 0 || creditMinorUnits != 0 {
             logger
                 .debug(
+                    // swiftlint:disable:next line_length
                     "Parsed amounts: date=\(dateStr, privacy: .public) debit=\(debitStr, privacy: .public)→\(debitMinorUnits) credit=\(creditStr, privacy: .public)→\(creditMinorUnits)"
                 )
         }

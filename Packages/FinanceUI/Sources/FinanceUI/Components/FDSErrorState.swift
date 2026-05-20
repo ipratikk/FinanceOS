@@ -1,3 +1,4 @@
+import FinanceCore
 import SwiftUI
 
 /// Standard error state component for all async operations.
@@ -21,31 +22,31 @@ public struct FDSErrorState: View {
     }
 
     public var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: AppSpacing.md) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 48))
+                .font(AppTypography.displayLargeLight)
                 .foregroundColor(.orange)
 
-            Text(title)
-                .font(.system(size: 18, weight: .semibold))
+            FDSLabel(title)
+                .font(AppTypography.headingMd)
                 .foregroundColor(.primary)
 
-            Text(message)
-                .font(.system(size: 14, weight: .regular))
+            FDSLabel(message)
+                .font(AppTypography.bodyMd)
                 .foregroundColor(.secondary)
                 .lineLimit(3)
                 .multilineTextAlignment(.center)
 
-            Button(action: action) {
-                Text(actionTitle)
+            Button(action: action, label: {
+                FDSLabel(actionTitle)
                     .frame(maxWidth: .infinity)
-                    .padding(16)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
+                    .padding(AppSpacing.md)
+                    .background(AppColors.accentBlue)
+                    .foregroundColor(AppColors.textPrimary)
                     .cornerRadius(8)
-            }
+            })
         }
-        .padding(24)
+        .padding(AppSpacing.xl)
     }
 }
 

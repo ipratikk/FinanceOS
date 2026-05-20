@@ -22,8 +22,8 @@ public struct FDSBankMark: View {
             RoundedRectangle(cornerRadius: size * 0.25, style: .continuous)
                 .strokeBorder(bank.tintColor.opacity(0.3), lineWidth: 0.5)
 
-            Text(bank.shortCode)
-                .font(.system(size: size * 0.4, weight: .semibold, design: .default))
+            FDSLabel(bank.shortCode)
+                .font(AppTypography.bodyMdSemibold)
                 .foregroundColor(bank.tintColor)
         }
         .frame(width: size, height: size)

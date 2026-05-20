@@ -7,8 +7,6 @@ struct DashboardView: View {
     @State private var isLoading = true
     @Environment(AppNavigator.self) private var navigator
 
-    private let appContainer = AppContainer.shared
-
     init() {}
 
     init(viewModel: DashboardViewModel) {
@@ -48,16 +46,17 @@ struct DashboardView: View {
             VStack(spacing: 12) {
                 ProgressView()
                     .controlSize(.small)
-                Text("Loading…")
+                FDSLabel("Loading…")
                     .font(AppTypography.captionSmMedium)
                     .foregroundColor(DesignTokens.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
             .task {
+                let container = AppContainer.shared
                 viewModel = DashboardViewModel(
-                    spendingService: appContainer.spendingService,
-                    transactionRepository: appContainer.transactionRepository
+                    spendingService: container.spendingService,
+                    transactionRepository: container.transactionRepository
                 )
             }
         }
@@ -65,10 +64,10 @@ struct DashboardView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Overview")
+            FDSLabel("Overview")
                 .font(DesignTokens.Typography.screenTitle)
                 .foregroundColor(DesignTokens.Text.primary)
-            Text(currentMonth)
+            FDSLabel(currentMonth)
                 .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
                 .foregroundColor(DesignTokens.Text.secondary)
@@ -80,13 +79,13 @@ struct DashboardView: View {
         let net = totals.totalCredit - totals.totalDebit
         return FDSCard(cornerRadius: 18, padded: false) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Net Flow This Month")
+                FDSLabel("Net Flow This Month")
                     .font(AppTypography.captionLgMedium)
                     .tracking(0.3)
                     .foregroundColor(DesignTokens.Text.secondary)
 
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
-                    Text(formatAmount(net))
+                    FDSLabel(formatAmount(net))
                         .netHeroAmount()
                         .monospacedDigit()
                         .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
@@ -97,13 +96,13 @@ struct DashboardView: View {
                             .font(AppTypography.captionLgSemibold)
                             .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
 
-                        Text(net >= 0 ? "Positive" : "Negative")
+                        FDSLabel(net >= 0 ? "Positive" : "Negative")
                             .font(AppTypography.captionSmMedium)
                             .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
                     }
                 }
             }
-            .padding(20)
+            .padding(AppSpacing.md)
         }
     }
 
@@ -140,29 +139,29 @@ struct DashboardView: View {
                         .font(AppTypography.captionLgSemibold)
                         .foregroundColor(color.opacity(0.6))
 
-                    Text(label.uppercased())
+                    FDSLabel(label.uppercased())
                         .font(AppTypography.captionSmSemibold)
                         .tracking(0.2)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
 
-                Text(value)
+                FDSLabel(value)
                     .font(AppTypography.headingSmall)
                     .monospacedDigit()
                     .foregroundColor(color)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(12)
+            .padding(AppSpacing.xs)
         }
     }
 
     private func chartSection(_ viewModel: DashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("6-Month Trend")
+                FDSLabel("6-Month Trend")
                     .font(AppTypography.headingSmall)
                     .foregroundColor(DesignTokens.Text.primary)
-                Text("Inflows vs outflows over time")
+                FDSLabel("Inflows vs outflows over time")
                     .font(AppTypography.captionLgMedium)
                     .foregroundColor(DesignTokens.Text.secondary)
             }
@@ -170,7 +169,7 @@ struct DashboardView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
                     .frame(height: 240)
-                    .padding(12)
+                    .padding(AppSpacing.xs)
             }
         }
     }
@@ -179,19 +178,19 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Recent Activity")
+                    FDSLabel("Recent Activity")
                         .font(AppTypography.headingSmall)
                         .foregroundColor(DesignTokens.Text.primary)
-                    Text("Last 6 transactions")
+                    FDSLabel("Last 6 transactions")
                         .font(AppTypography.captionLgMedium)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
                 Spacer()
-                Button(action: { navigator.navigate(to: .transactions) }) {
-                    Text("View All →")
+                Button(action: { navigator.navigate(to: .transactions) }, label: {
+                    FDSLabel("View All →")
                         .font(AppTypography.captionLgSemibold)
                         .foregroundColor(AppColors.accentOrange)
-                }
+                })
                 .help("View all transactions")
             }
 
@@ -209,7 +208,7 @@ struct DashboardView: View {
                                 amount: formatAmount(txn.amountMinorUnits),
                                 isDebit: txn.transactionType == .debit
                             )
-                            .padding(12)
+                            .padding(AppSpacing.xs)
 
                             if index < min(viewModel.recentTransactions.count, 6) - 1 {
                                 Divider()

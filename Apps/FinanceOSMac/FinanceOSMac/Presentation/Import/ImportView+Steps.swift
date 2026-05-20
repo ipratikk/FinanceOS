@@ -13,11 +13,11 @@ extension ImportView {
             VStack(alignment: .leading, spacing: 24) {
                 // Header
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Select a source")
+                    FDSLabel("Select a source")
                         .font(AppTypography.headingLg)
                         .foregroundColor(DesignTokens.Text.primary)
 
-                    Text(
+                    FDSLabel(
                         "Pick the institution and ledger type. Each parser maps " +
                             "statement-specific columns to a normalised transaction."
                     )
@@ -46,13 +46,13 @@ extension ImportView {
             // Header with back button
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Drop your statement")
+                    FDSLabel("Drop your statement")
                         .font(AppTypography.headingMd)
                         .foregroundColor(DesignTokens.Text.primary)
 
                     if let source = viewModel.selectedSource {
                         let formats = source.allowedFormats.map { $0.rawValue.uppercased() }.joined(separator: " · ")
-                        Text("\(source.bankName) · \(source.sourceType.rawValue) · \(formats)")
+                        FDSLabel("\(source.bankName) · \(source.sourceType.rawValue) · \(formats)")
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
                     }
@@ -63,8 +63,8 @@ extension ImportView {
                 Button(action: viewModel.resetToSource) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 12, weight: .semibold))
-                        Text("Change source")
+                            .font(AppTypography.captionSmSemibold)
+                        FDSLabel("Change source")
                     }
                     .font(AppTypography.labelMedium)
                     .foregroundColor(AppColors.accent)
@@ -81,37 +81,37 @@ extension ImportView {
             ZStack {
                 VStack(spacing: 16) {
                     Image(systemName: "arrow.down.doc.fill")
-                        .font(.system(size: 32))
+                        .font(AppTypography.displaySmall)
                         .foregroundColor(AppColors.accent)
 
                     VStack(spacing: 4) {
-                        Text(viewModel.isDraggedOver ? "Release to upload" : "Drag your file here")
+                        FDSLabel(viewModel.isDraggedOver ? "Release to upload" : "Drag your file here")
                             .font(AppTypography.headingSmall)
                             .foregroundColor(DesignTokens.Text.primary)
 
-                        Text("or")
+                        FDSLabel("or")
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
 
-                        Button(action: { openFilePicker() }) {
+                        Button(action: { openFilePicker() }, label: {
                             HStack(spacing: 6) {
                                 Image(systemName: "doc")
-                                    .font(.system(size: 14, weight: .semibold))
-                                Text("Choose file")
+                                    .font(AppTypography.bodySmSemibold)
+                                FDSLabel("Choose file")
                             }
                             .font(AppTypography.labelMedium)
-                            .foregroundColor(.white)
+                            .foregroundColor(AppColors.textPrimary)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             .background(AppColors.accent)
                             .cornerRadius(AppRadius.md)
-                        }
+                        })
                         .buttonStyle(.plain)
 
                         let formatHint = viewModel.selectedSource
                             .map { $0.allowedFormats.map { $0.rawValue.uppercased() }.joined(separator: " · ") }
                             ?? "CSV · XLSX · PDF"
-                        Text("\(formatHint) · up to 25 MB")
+                        FDSLabel("\(formatHint) · up to 25 MB")
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.quaternary)
                     }
@@ -120,7 +120,7 @@ extension ImportView {
 
                 // Drag target overlay
                 Rectangle()
-                    .fill(Color.clear)
+                    .fill(AppColors.clear)
                     .onDrop(of: [.fileURL], isTargeted: $viewModel.isDraggedOver) { providers in
                         var fileURLs: [URL] = []
                         let group = DispatchGroup()
@@ -154,11 +154,11 @@ extension ImportView {
                         .controlSize(.small)
 
                     if viewModel.totalFilesToParse > 1 {
-                        Text("Parsing file \(viewModel.currentFileIndex + 1) of \(viewModel.totalFilesToParse)...")
+                        FDSLabel("Parsing file \(viewModel.currentFileIndex + 1) of \(viewModel.totalFilesToParse)...")
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
                     } else {
-                        Text("Parsing statement...")
+                        FDSLabel("Parsing statement...")
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
                     }
@@ -172,7 +172,7 @@ extension ImportView {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(AppColors.danger)
 
-                    Text(error)
+                    FDSLabel(error)
                         .font(AppTypography.labelSmall)
                         .foregroundColor(DesignTokens.Text.primary)
 

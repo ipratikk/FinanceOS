@@ -27,12 +27,7 @@ public struct GlassStyleModifier: ViewModifier {
                     .stroke(AppColors.accentSlate.opacity(0.08), lineWidth: 0.5)
             )
             .cornerRadius(AppRadius.md)
-            .shadow(
-                color: Color.black.opacity(0.15),
-                radius: 8,
-                x: 0,
-                y: 2
-            )
+            .shadow(color: AppColors.base.opacity(0.15), radius: 8, x: 0, y: 2)
     }
 }
 

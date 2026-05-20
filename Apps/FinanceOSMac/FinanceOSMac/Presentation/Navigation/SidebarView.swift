@@ -40,26 +40,26 @@ struct SidebarView: View {
     private var brandHeader: some View {
         HStack(spacing: 12) {
             ZStack {
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(Color(red: 1.0, green: 0.62, blue: 0.04))
-                    .frame(width: 32, height: 32)
+                RoundedRectangle(cornerRadius: AppRadius.xs)
+                    .fill(DesignTokens.System.orange)
+                    .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
 
                 VStack(spacing: 3) {
-                    Triangle().fill(Color.white).frame(height: 3)
-                    Triangle().fill(Color.white).frame(height: 3)
-                    Triangle().fill(Color.white).frame(height: 3)
+                    Triangle().fill(DesignTokens.Text.primary).frame(height: 3)
+                    Triangle().fill(DesignTokens.Text.primary).frame(height: 3)
+                    Triangle().fill(DesignTokens.Text.primary).frame(height: 3)
                 }
                 .frame(width: 18, height: 18)
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("FinanceOS")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                FDSLabel("FinanceOS")
+                    .font(AppTypography.bodySmSemibold)
+                    .foregroundColor(DesignTokens.Text.primary)
 
-                Text("Personal · INR")
-                    .font(.system(size: 10, weight: .regular))
-                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                FDSLabel("Personal · INR")
+                    .font(AppTypography.captionSm)
+                    .foregroundColor(DesignTokens.Text.tertiary)
             }
 
             Spacer()
@@ -71,65 +71,64 @@ struct SidebarView: View {
     private var searchInput: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                .font(AppTypography.captionSmSemibold)
+                .foregroundColor(DesignTokens.Text.tertiary)
 
-            TextField("Find anything…", text: .constant(""))
-                .font(.system(size: 12, weight: .regular))
+            FDSTextInput("Find anything…", text: .constant(""), style: .labelSmall)
 
-            Text("⌘K")
-                .font(.system(size: 10, weight: .medium, design: .monospaced))
-                .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+            FDSLabel("⌘K")
+                .font(AppTypography.captionSmMedium)
+                .foregroundColor(DesignTokens.Text.tertiary)
         }
         .padding(.horizontal, 10)
         .frame(height: 32)
-        .background(Color.black.opacity(0.25))
-        .cornerRadius(16)
+        .background(DesignTokens.Background.inputWell)
+        .cornerRadius(AppRadius.lg)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
     }
 
     private var footerImport: some View {
         VStack(spacing: 8) {
-            Divider().opacity(0.2)
+            Divider().opacity(DesignTokens.Opacity.low)
 
-            Button(action: { navigator.navigate(to: .importStatement) }) {
+            Button(action: { navigator.navigate(to: .importStatement) }, label: {
                 HStack(spacing: 8) {
                     ZStack {
                         Circle()
-                            .fill(Color(red: 1.0, green: 0.62, blue: 0.04).opacity(0.2))
+                            .fill(DesignTokens.System.orange.opacity(DesignTokens.Opacity.low))
 
                         Image(systemName: "arrow.down.doc")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundColor(Color(red: 1.0, green: 0.62, blue: 0.04))
+                            .font(AppTypography.captionSmSemibold)
+                            .foregroundColor(DesignTokens.System.orange)
                     }
                     .frame(width: 28, height: 28)
 
-                    Text("Import statement")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    FDSLabel("Import statement")
+                        .font(AppTypography.captionSmSemibold)
+                        .foregroundColor(DesignTokens.Text.primary)
 
                     Spacer()
 
-                    Text("⌘I")
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
-                        .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                    FDSLabel("⌘I")
+                        .font(AppTypography.captionSmMedium)
+                        .foregroundColor(DesignTokens.Text.tertiary)
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 8)
                 .contentShape(Rectangle())
-            }
+            })
             .buttonStyle(.plain)
 
             HStack(spacing: 6) {
                 Circle()
-                    .fill(Color(red: 0.19, green: 0.82, blue: 0.35))
+                    .fill(DesignTokens.System.green)
                     .frame(width: 6, height: 6)
-                    .shadow(color: Color(red: 0.19, green: 0.82, blue: 0.35).opacity(0.5), radius: 3)
+                    .shadow(color: DesignTokens.System.green.opacity(DesignTokens.Opacity.high), radius: 3)
 
-                Text("Database healthy · 2,148 txns")
-                    .font(.system(size: 11, weight: .regular))
-                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                FDSLabel("Database healthy · 2,148 txns")
+                    .font(AppTypography.captionSm)
+                    .foregroundColor(DesignTokens.Text.tertiary)
 
                 Spacer()
             }
@@ -153,9 +152,9 @@ struct SidebarView: View {
 
             if navigator.sidebarSelection == item {
                 Spacer()
-                Text(shortcut)
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
-                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                FDSLabel(shortcut)
+                    .font(AppTypography.captionSmMedium)
+                    .foregroundColor(DesignTokens.Text.tertiary)
             }
         }
     }

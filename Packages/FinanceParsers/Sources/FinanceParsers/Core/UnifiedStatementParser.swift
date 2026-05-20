@@ -16,14 +16,15 @@ public struct UnifiedStatementParser: Sendable {
         let headerRow = rows[0]
         let dataRows = Array(rows.dropFirst())
 
-        let statement = try buildStatement(
-            from: dataRows,
+        let ctx = BuildContext(
+            dataRows: dataRows,
             allRows: rows,
             rawRows: rawRows,
             headerRow: headerRow,
             source: detectedSource,
             fileContent: fileContent
         )
+        let statement = try buildStatement(context: ctx)
 
         let durationMs = Date().timeIntervalSince(startTime) * 1000
 
@@ -69,93 +70,35 @@ public struct UnifiedStatementParser: Sendable {
         }
     }
 
-    private func buildStatement(
-        from dataRows: [[String]],
-        allRows: [[String]],
-        rawRows: [[String]],
-        headerRow: [String],
-        source: StatementSource,
-        fileContent: String
-    ) throws -> ParsedStatement {
-        var transactions: [ParsedTransaction] = []
-        var metadata: StatementMetadata? = nil
-        var cardLast4: String? = nil
-        var accountLast4: String? = nil
+    private struct BuildContext {
+        let dataRows: [[String]]
+        let allRows: [[String]]
+        let rawRows: [[String]]
+        let headerRow: [String]
+        let source: StatementSource
+        let fileContent: String
+    }
 
-        switch source {
-        case .hdfcCard:
-            let extractor = HDFCCardMetadataExtractor()
-            metadata = extractor.extract(from: fileContent)
-            cardLast4 = metadata?.accountNumber
-            let mapper = HDFCCardCSVMapper()
-            let normalizer = HDFCCardCSVNormalizer()
-            let roles = try mapper.map(headerRow: headerRow)
-            for row in dataRows {
-                let normalized = mapper.mapRow(row, using: roles)
-                if let txn = try normalizer.normalize(normalizedRow: normalized) {
-                    transactions.append(txn)
-                }
-            }
-        case .iciciCard:
-            let extractor = ICICICardMetadataExtractor()
-            metadata = extractor.extract(from: allRows)
-            cardLast4 = metadata?.accountNumber
-            let mapper = ICICICardCSVMapper()
-            let normalizer = ICICICardCSVNormalizer()
-            let roles = try mapper.map(headerRow: headerRow)
-            for row in dataRows {
-                let normalized = mapper.mapRow(row, using: roles)
-                if let txn = try normalizer.normalize(normalizedRow: normalized) {
-                    transactions.append(txn)
-                }
-            }
-        case .iciciBank:
-            let extractor = ICICIMetadataExtractor()
-            metadata = extractor.extract(from: rawRows)
-            accountLast4 = metadata?.accountNumber
-            let mapper = ICICIBankCSVMapper()
-            let normalizer = ICICIBankCSVNormalizer()
-            let roles = try mapper.map(headerRow: headerRow)
-            for row in dataRows {
-                let normalized = mapper.mapRow(row, using: roles)
-                if let txn = try normalizer.normalize(normalizedRow: normalized) {
-                    transactions.append(txn)
-                }
-            }
-        case .hdfcBank:
-            let extractor = HDFCBankMetadataExtractor()
-            metadata = extractor.extract(from: fileContent)
-            accountLast4 = metadata?.accountNumber
-            let mapper = HDFCBankTXTMapper()
-            let normalizer = HDFCBankTXTNormalizer()
-            let roles = try mapper.map(headerRow: headerRow)
-            for row in dataRows {
-                let normalized = mapper.mapRow(row, using: roles)
-                if let txn = try normalizer.normalize(normalizedRow: normalized) {
-                    transactions.append(txn)
-                }
-            }
-        case .amex:
-            let extractor = AmexCardMetadataExtractor()
-            metadata = extractor.extract(from: allRows)
-            cardLast4 = metadata?.accountNumber
-            let mapper = AmexCardCSVMapper()
-            let normalizer = AmexCardCSVNormalizer()
-            let roles = try mapper.map(headerRow: headerRow)
-            for row in dataRows {
-                let normalized = mapper.mapRow(row, using: roles)
-                if let txn = try normalizer.normalize(normalizedRow: normalized) {
-                    transactions.append(txn)
-                }
-            }
-        }
+    private func buildStatement(context: BuildContext) throws -> ParsedStatement {
+        var transactions: [ParsedTransaction] = []
+        var metadata: StatementMetadata?
+        var cardLast4: String?
+        var accountLast4: String?
+
+        try populateTransactions(
+            context: context,
+            transactions: &transactions,
+            metadata: &metadata,
+            cardLast4: &cardLast4,
+            accountLast4: &accountLast4
+        )
 
         let totalDebit = transactions.filter { $0.amountMinorUnits > 0 }.map(\.amountMinorUnits).reduce(0, +)
         let totalCredit = transactions.filter { $0.amountMinorUnits < 0 }.map { -$0.amountMinorUnits }.reduce(0, +)
 
         return ParsedStatement(
-            bankName: source.bankName,
-            accountName: metadata?.customerName ?? source.bankName,
+            bankName: context.source.bankName,
+            accountName: metadata?.customerName ?? context.source.bankName,
             accountLast4: accountLast4,
             cardLast4: cardLast4,
             statementPeriodStart: nil,
@@ -166,6 +109,76 @@ public struct UnifiedStatementParser: Sendable {
             transactions: transactions,
             metadata: metadata
         )
+    }
+
+    private func populateTransactions(
+        context: BuildContext,
+        transactions: inout [ParsedTransaction],
+        metadata: inout StatementMetadata?,
+        cardLast4: inout String?,
+        accountLast4: inout String?
+    ) throws {
+        switch context.source {
+        case .hdfcCard:
+            metadata = HDFCCardMetadataExtractor().extract(from: context.fileContent)
+            cardLast4 = metadata?.accountNumber
+            try appendRows(
+                context,
+                mapper: HDFCCardCSVMapper(),
+                normalizer: HDFCCardCSVNormalizer(),
+                into: &transactions
+            )
+        case .iciciCard:
+            metadata = ICICICardMetadataExtractor().extract(from: context.allRows)
+            cardLast4 = metadata?.accountNumber
+            try appendRows(
+                context,
+                mapper: ICICICardCSVMapper(),
+                normalizer: ICICICardCSVNormalizer(),
+                into: &transactions
+            )
+        case .iciciBank:
+            metadata = ICICIMetadataExtractor().extract(from: context.rawRows)
+            accountLast4 = metadata?.accountNumber
+            try appendRows(
+                context,
+                mapper: ICICIBankCSVMapper(),
+                normalizer: ICICIBankCSVNormalizer(),
+                into: &transactions
+            )
+        case .hdfcBank:
+            metadata = HDFCBankMetadataExtractor().extract(from: context.fileContent)
+            accountLast4 = metadata?.accountNumber
+            try appendRows(
+                context,
+                mapper: HDFCBankTXTMapper(),
+                normalizer: HDFCBankTXTNormalizer(),
+                into: &transactions
+            )
+        case .amex:
+            metadata = AmexCardMetadataExtractor().extract(from: context.allRows)
+            cardLast4 = metadata?.accountNumber
+            try appendRows(
+                context,
+                mapper: AmexCardCSVMapper(),
+                normalizer: AmexCardCSVNormalizer(),
+                into: &transactions
+            )
+        }
+    }
+
+    private func appendRows(
+        _ context: BuildContext,
+        mapper: some CSVRowMapper,
+        normalizer: some CSVRowNormalizer,
+        into transactions: inout [ParsedTransaction]
+    ) throws {
+        let roles = try mapper.map(headerRow: context.headerRow)
+        for row in context.dataRows {
+            if let tx = try normalizer.normalize(normalizedRow: mapper.mapRow(row, using: roles)) {
+                transactions.append(tx)
+            }
+        }
     }
 
     private func sourceVersion(_ source: StatementSource) -> String {

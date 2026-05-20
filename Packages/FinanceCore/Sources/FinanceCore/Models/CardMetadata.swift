@@ -4,7 +4,7 @@ public struct CardMetadata: Codable, Identifiable, Equatable, Sendable {
     public let id: String
     public let issuer: String
     public let name: String
-    public let cardType: String // visa, mastercard, amex, rupay, etc
+    public let cardType: CardNetwork
     public let variant: String // credit, debit, signature, infinite, etc
     public let binRanges: [BINRange]
     public let imageURL: String?
@@ -46,7 +46,7 @@ public struct CardMetadata: Codable, Identifiable, Equatable, Sendable {
         id: String,
         issuer: String,
         name: String,
-        cardType: String,
+        cardType: CardNetwork,
         variant: String,
         binRanges: [BINRange],
         imageURL: String? = nil,

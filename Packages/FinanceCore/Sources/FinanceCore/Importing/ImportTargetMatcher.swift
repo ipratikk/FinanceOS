@@ -18,16 +18,33 @@ public enum ImportTargetMatcher {
         let storedLower = stored.lowercased()
         let parsedLower = parsed.lowercased()
 
-        if storedLower == parsedLower { return true }
-
         let storedWords = storedLower.split(separator: " ").map(String.init)
         let parsedWords = parsedLower.split(separator: " ").map(String.init)
 
         guard !storedWords.isEmpty, !parsedWords.isEmpty else { return false }
 
-        let commonWords = Set(storedWords).intersection(Set(parsedWords))
-        let requiredCommonWords = max(1, min(storedWords.count, parsedWords.count) - 1)
-        return commonWords.count >= requiredCommonWords
+        let genericWords = Set(["bank", "credit", "card", "union"])
+
+        // Reject if both inputs are single generic words (e.g., "Bank" vs "Bank")
+        if storedWords.count == 1, parsedWords.count == 1, genericWords.contains(storedWords[0]) {
+            return false
+        }
+
+        // Exact match (case-insensitive) - allowed for non-generic or multi-word strings
+        if storedLower == parsedLower { return true }
+
+        // If either string is a single word, it must match the first word and not be generic
+        if storedWords.count == 1 {
+            return !genericWords.contains(storedWords[0]) && storedWords[0] == parsedWords[0]
+        }
+        if parsedWords.count == 1 {
+            return !genericWords.contains(parsedWords[0]) && parsedWords[0] == storedWords[0]
+        }
+
+        // For multi-word strings, require all non-generic words from shorter string to match longer
+        let commonWords = Set(storedWords).intersection(Set(parsedWords)).subtracting(genericWords)
+        let minNonGeneric = min(storedWords.count, parsedWords.count) - 1
+        return commonWords.count >= max(1, minNonGeneric)
     }
 
     /// Find best matching target for a parsed statement.
@@ -41,7 +58,7 @@ public enum ImportTargetMatcher {
         guard let match = bestMatch(for: statement, ledgers: ledgers, banks: banks) else {
             return nil
         }
-        return match.confidence >= 0.9 ? match.target : nil
+        return match.confidence >= 0.7 ? match.target : nil
     }
 
     /// Find best matching target with confidence score.

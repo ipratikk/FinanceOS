@@ -30,10 +30,10 @@ public struct FDSSidebarItem: View {
     }
 
     public var body: some View {
-        Button(action: action) {
+        Button(action: action, label: {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
+                    .font(isSelected ? AppTypography.bodySmSemibold : AppTypography.bodySmMedium)
                     .foregroundColor(
                         isSelected
                             ? AppColors.accent
@@ -42,8 +42,8 @@ public struct FDSSidebarItem: View {
                     .symbolRenderingMode(.hierarchical)
                     .frame(width: 18)
 
-                Text(title)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                FDSLabel(title)
+                    .font(isSelected ? AppTypography.bodySmSemibold : AppTypography.bodySm)
                     .foregroundColor(
                         isSelected || isHovered
                             ? AppColors.textPrimary
@@ -53,8 +53,8 @@ public struct FDSSidebarItem: View {
                 Spacer(minLength: 4)
 
                 if let badge {
-                    Text(badge)
-                        .font(.system(size: 10, weight: .semibold).monospacedDigit())
+                    FDSLabel(badge)
+                        .font(AppTypography.maskedAccount.monospacedDigit())
                         .foregroundColor(AppColors.textTertiary)
                 }
             }
@@ -70,7 +70,7 @@ public struct FDSSidebarItem: View {
                 }
             }
             .contentShape(Rectangle())
-        }
+        })
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
         .animation(.easeOut(duration: 0.12), value: isHovered)
@@ -87,8 +87,8 @@ public struct FDSSidebarSectionHeader: View {
     }
 
     public var body: some View {
-        Text(title.uppercased())
-            .font(.system(size: 10.5, weight: .semibold))
+        FDSLabel(title.uppercased())
+            .font(AppTypography.captionSmSemibold)
             .tracking(0.08)
             .foregroundColor(AppColors.textTertiary)
             .padding(.horizontal, 8)

@@ -1,24 +1,12 @@
 @testable import FinanceCore
+import Foundation
 import GRDB
 import Testing
 
 @Test
 func transactionsCanBeInsertedAgainstLedger() throws {
-    var migrator = DatabaseMigrator()
-    AppMigration.registerMigrations(
-        in: &migrator
-    )
-
-    let dbQueue = try DatabaseQueue()
-    try migrator.migrate(dbQueue)
-
-    try dbQueue.write { database in
-        try DatabaseSeeder.seedBanks(in: database)
-    }
-
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let dbQueue = try migratedTransactionDatabase()
+    let bank = try seededBank(in: dbQueue)
 
     let accountLedger = Ledger(
         bankId: bank.id,
@@ -32,43 +20,8 @@ func transactionsCanBeInsertedAgainstLedger() throws {
         displayName: "HDFC Regalia"
     )
 
-    try dbQueue.write { database in
-        try accountLedger.insert(database)
-        try cardLedger.insert(database)
-    }
-
-    try dbQueue.write { database in
-        let accountTxn = Transaction(
-            ledgerId: accountLedger.id,
-            accountID: accountLedger.id,
-            postedAt: Date(timeIntervalSince1970: 0),
-            description: "Grocery Store",
-            amountMinorUnits: 50000,
-            currencyCode: "INR",
-            transactionType: .debit
-        )
-        let cardTxn = Transaction(
-            ledgerId: cardLedger.id,
-            cardID: cardLedger.id,
-            postedAt: Date(timeIntervalSince1970: 1000),
-            description: "Restaurant",
-            amountMinorUnits: 20000,
-            currencyCode: "INR",
-            transactionType: .debit
-        )
-        let creditTxn = Transaction(
-            ledgerId: accountLedger.id,
-            accountID: accountLedger.id,
-            postedAt: Date(timeIntervalSince1970: 2000),
-            description: "Salary Credit",
-            amountMinorUnits: 500_000,
-            currencyCode: "INR",
-            transactionType: .credit
-        )
-        try accountTxn.insert(database)
-        try cardTxn.insert(database)
-        try creditTxn.insert(database)
-    }
+    try insertLedgers([accountLedger, cardLedger], in: dbQueue)
+    try insertTransactions(accountLedger: accountLedger, cardLedger: cardLedger, in: dbQueue)
 
     let transactions = try dbQueue.read { database in
         try Transaction.fetchAll(database)
@@ -79,8 +32,69 @@ func transactionsCanBeInsertedAgainstLedger() throws {
     #expect(transactions.contains { $0.ledgerId == cardLedger.id })
 }
 
+private func migratedTransactionDatabase() throws -> DatabaseQueue {
+    var migrator = DatabaseMigrator()
+    AppMigration.registerMigrations(in: &migrator)
+
+    let dbQueue = try DatabaseQueue()
+    try migrator.migrate(dbQueue)
+    try dbQueue.write { database in
+        try DatabaseSeeder.seedBanks(in: database)
+    }
+    return dbQueue
+}
+
+private func seededBank(in dbQueue: DatabaseQueue) throws -> Bank {
+    try #require(dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
+}
+
+private func insertLedgers(_ ledgers: [Ledger], in dbQueue: DatabaseQueue) throws {
+    try dbQueue.write { database in
+        for ledger in ledgers {
+            try ledger.insert(database)
+        }
+    }
+}
+
+private func insertTransactions(accountLedger: Ledger, cardLedger: Ledger, in dbQueue: DatabaseQueue) throws {
+    let accountTxn = Transaction(
+        ledgerId: accountLedger.id,
+        accountID: accountLedger.id,
+        postedAt: Date(timeIntervalSince1970: 0),
+        description: "Grocery Store",
+        amountMinorUnits: 50000,
+        currencyCode: "INR",
+        transactionType: .debit
+    )
+    let cardTxn = Transaction(
+        ledgerId: cardLedger.id,
+        cardID: cardLedger.id,
+        postedAt: Date(timeIntervalSince1970: 1000),
+        description: "Restaurant",
+        amountMinorUnits: 20000,
+        currencyCode: "INR",
+        transactionType: .debit
+    )
+    let creditTxn = Transaction(
+        ledgerId: accountLedger.id,
+        accountID: accountLedger.id,
+        postedAt: Date(timeIntervalSince1970: 2000),
+        description: "Salary Credit",
+        amountMinorUnits: 500_000,
+        currencyCode: "INR",
+        transactionType: .credit
+    )
+    try dbQueue.write { database in
+        try accountTxn.insert(database)
+        try cardTxn.insert(database)
+        try creditTxn.insert(database)
+    }
+}
+
 @Test
-func transactionInsertionIsIdempotentViaFingerprint() throws {
+func transactionInsertionIsIdempotentViaFingerprint() async throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(
         in: &migrator
@@ -89,13 +103,13 @@ func transactionInsertionIsIdempotentViaFingerprint() throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -103,7 +117,7 @@ func transactionInsertionIsIdempotentViaFingerprint() throws {
         displayName: "Test Account"
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try ledger.insert(database)
     }
 
@@ -118,25 +132,25 @@ func transactionInsertionIsIdempotentViaFingerprint() throws {
         sourceFingerprint: "unique-fp-001"
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try txn.insert(database)
     }
 
-    var countAfterFirst = try dbQueue.read { database in
+    var countAfterFirst = try await dbQueue.read { database in
         try Transaction.fetchCount(database)
     }
     #expect(countAfterFirst == 1)
 
     // Inserting the same row again should fail the unique index — count stays 1
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         do {
             try txn.insert(database)
-        } catch let error as DatabaseError where error.resultCode == .SQLITE_CONSTRAINT {
+        } catch let error as GRDB.DatabaseError where error.resultCode == .SQLITE_CONSTRAINT {
             // Expected: fingerprint uniqueness enforced
         }
     }
 
-    countAfterFirst = try dbQueue.read { database in
+    countAfterFirst = try await dbQueue.read { database in
         try Transaction.fetchCount(database)
     }
     #expect(countAfterFirst == 1)

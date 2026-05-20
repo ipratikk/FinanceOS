@@ -11,14 +11,14 @@ public enum AppColors {
 
     // MARK: - Borders & Dividers
 
-    public static let border = Color.white.opacity(0.08) // subtle border
-    public static let borderAccent = Color.white.opacity(0.12) // accent border
-    public static let borderSubtle = Color.white.opacity(0.05) // minimal separator
+    public static let border = textPrimary.opacity(0.08) // subtle border
+    public static let borderAccent = textPrimary.opacity(0.12) // accent border
+    public static let borderSubtle = textPrimary.opacity(0.05) // minimal separator
 
     // MARK: - Glass & Material overlays (deprecated — use border colors instead)
 
-    public static let glass = Color.white.opacity(0.02) // minimal tint
-    public static let borderGlass = Color.white.opacity(0.08) // flat border
+    public static let glass = textPrimary.opacity(0.02) // minimal tint
+    public static let borderGlass = textPrimary.opacity(0.08) // flat border
 
     // MARK: - Primary Accents (Apple System Colors)
 
@@ -59,4 +59,5 @@ public enum AppColors {
     public static let textSecondary = Color(red: 0.631, green: 0.631, blue: 0.651) // #A1A1A6
     public static let textTertiary = Color(red: 0.557, green: 0.557, blue: 0.576) // #8E8E93
     public static let textDisabled = Color(red: 0.322, green: 0.322, blue: 0.361) // #52525B
+    public static let clear = Color.clear
 }

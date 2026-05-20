@@ -1,4 +1,5 @@
 @testable import FinanceCore
+import Foundation
 import GRDB
 import Testing
 
@@ -25,18 +26,18 @@ func ledgerKindCodable() throws {
 }
 
 @Test
-func ledgerGRDBRoundTrip() throws {
+func ledgerGRDBRoundTrip() async throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let banks = try dbQueue.read { database in
+    let banks = try await dbQueue.read { database in
         try Bank.fetchAll(database)
     }
 
@@ -50,7 +51,7 @@ func ledgerGRDBRoundTrip() throws {
         displayName: "Savings Account",
         last4: "1234",
         ownerName: "Test User",
-        accountType: .savings
+        accountType: "savings"
     )
 
     let cardLedger = Ledger(
@@ -59,16 +60,16 @@ func ledgerGRDBRoundTrip() throws {
         displayName: "Credit Card",
         last4: "5678",
         cardType: .visa,
-        cardProduct: "Regalia",
+        cardProductId: "regalia",
         linkedLedgerId: bankAccountLedger.id
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try bankAccountLedger.insert(database)
         try cardLedger.insert(database)
     }
 
-    let fetchedLedgers = try dbQueue.read { database in
+    let fetchedLedgers = try await dbQueue.read { database in
         try Ledger.fetchAll(database)
     }
 
@@ -78,26 +79,26 @@ func ledgerGRDBRoundTrip() throws {
 }
 
 @Test
-func ledgerFilterByKind() throws {
+func ledgerFilterByKind() async throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let account = Ledger(
         bankId: bank.id,
         kind: .bankAccount,
         displayName: "Account",
-        accountType: .savings
+        accountType: "savings"
     )
 
     let card = Ledger(
@@ -107,18 +108,18 @@ func ledgerFilterByKind() throws {
         cardType: .visa
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try account.insert(database)
         try card.insert(database)
     }
 
-    let accounts = try dbQueue.read { database in
+    let accounts = try await dbQueue.read { database in
         try Ledger
             .filter(Ledger.Columns.kind == LedgerKind.bankAccount.rawValue)
             .fetchAll(database)
     }
 
-    let cards = try dbQueue.read { database in
+    let cards = try await dbQueue.read { database in
         try Ledger
             .filter(Ledger.Columns.kind == LedgerKind.creditCard.rawValue)
             .fetchAll(database)
@@ -131,18 +132,18 @@ func ledgerFilterByKind() throws {
 }
 
 @Test
-func ledgerFilterByBankAndKind() throws {
+func ledgerFilterByBankAndKind() async throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let banks = try dbQueue.read { database in
+    let banks = try await dbQueue.read { database in
         try Bank.fetchAll(database)
     }
 
@@ -150,8 +151,8 @@ func ledgerFilterByBankAndKind() throws {
         fatalError("Need at least 2 banks")
     }
 
-    let hdfcBank = try #require(banks.first(where: { $0.name == "HDFC" }))
-    let iciciBank = try #require(banks.first(where: { $0.name == "ICICI" }))
+    let hdfcBank = try #require(banks.first(where: { $0.name == "HDFC Bank" }))
+    let iciciBank = try #require(banks.first(where: { $0.name == "ICICI Bank" }))
 
     let hdfcAccount = Ledger(
         bankId: hdfcBank.id,
@@ -171,13 +172,13 @@ func ledgerFilterByBankAndKind() throws {
         displayName: "ICICI Card"
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try hdfcAccount.insert(database)
         try hdfcCard.insert(database)
         try iciciCard.insert(database)
     }
 
-    let hdfcCards = try dbQueue.read { database in
+    let hdfcCards = try await dbQueue.read { database in
         try Ledger
             .filter(Ledger.Columns.bankId == hdfcBank.id)
             .filter(Ledger.Columns.kind == LedgerKind.creditCard.rawValue)
@@ -189,20 +190,20 @@ func ledgerFilterByBankAndKind() throws {
 }
 
 @Test
-func ledgerLinkedRelationship() throws {
+func ledgerLinkedRelationship() async throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let account = Ledger(
         bankId: bank.id,
@@ -217,12 +218,12 @@ func ledgerLinkedRelationship() throws {
         linkedLedgerId: account.id
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try account.insert(database)
         try card.insert(database)
     }
 
-    let fetchedCard = try dbQueue.read { database in
+    let fetchedCard = try await dbQueue.read { database in
         try Ledger.fetchOne(database, id: card.id)
     }
 
@@ -230,20 +231,20 @@ func ledgerLinkedRelationship() throws {
 }
 
 @Test
-func ledgerArchiveFlag() throws {
+func ledgerArchiveFlag() async throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
 
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -251,11 +252,11 @@ func ledgerArchiveFlag() throws {
         displayName: "Account"
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try ledger.insert(database)
     }
 
-    let activeLedgers = try dbQueue.read { database in
+    let activeLedgers = try await dbQueue.read { database in
         try Ledger
             .filter(Ledger.Columns.isArchived == false)
             .fetchAll(database)
@@ -263,18 +264,32 @@ func ledgerArchiveFlag() throws {
 
     #expect(activeLedgers.count == 1)
 
-    var archived = ledger
-    archived.isArchived = true
+    let archived = Ledger(
+        id: ledger.id,
+        bankId: ledger.bankId,
+        kind: ledger.kind,
+        displayName: ledger.displayName,
+        last4: ledger.last4,
+        nickname: ledger.nickname,
+        ownerName: ledger.ownerName,
+        createdAt: ledger.createdAt,
+        accountType: ledger.accountType,
+        cardType: ledger.cardType,
+        cardProductId: ledger.cardProductId,
+        bin: ledger.bin,
+        linkedLedgerId: ledger.linkedLedgerId,
+        isArchived: true
+    )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try archived.update(database)
     }
 
-    let stillActive = try dbQueue.read { database in
+    let stillActive = try await dbQueue.read { database in
         try Ledger
             .filter(Ledger.Columns.isArchived == false)
             .fetchAll(database)
     }
 
-    #expect(stillActive.count == 0)
+    #expect(stillActive.isEmpty)
 }

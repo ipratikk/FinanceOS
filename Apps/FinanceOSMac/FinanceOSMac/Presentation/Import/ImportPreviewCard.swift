@@ -25,7 +25,7 @@ struct ImportPreviewCard: View {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("Total Files", style: .caption)
-                    Text("\(parsedStatements.count)")
+                    FDSLabel("\(parsedStatements.count)")
                         .bodyLarge()
                 }
 
@@ -33,7 +33,7 @@ struct ImportPreviewCard: View {
 
                 VStack(alignment: .trailing, spacing: 4) {
                     FDSLabel("Total Transactions", style: .caption)
-                    Text("\(totalTransactions)")
+                    FDSLabel("\(totalTransactions)")
                         .bodyLarge()
                 }
             }
@@ -41,7 +41,7 @@ struct ImportPreviewCard: View {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     FDSLabel("Total Debits", style: .caption)
-                    Text(ImportFormatting.formatAmount(totalDebit))
+                    FDSLabel(ImportFormatting.formatAmount(totalDebit))
                         .bodyLarge()
                         .foregroundColor(AppColors.debit)
                 }
@@ -50,7 +50,7 @@ struct ImportPreviewCard: View {
 
                 VStack(alignment: .trailing, spacing: 4) {
                     FDSLabel("Total Credits", style: .caption)
-                    Text(ImportFormatting.formatAmount(totalCredit))
+                    FDSLabel(ImportFormatting.formatAmount(totalCredit))
                         .bodyLarge()
                         .foregroundColor(AppColors.credit)
                 }

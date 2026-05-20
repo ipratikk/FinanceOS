@@ -5,10 +5,10 @@ import SwiftUI
 public extension AppColors {
     // MARK: - Semantic Opacity Values
 
-    static let dividerDefault = Color.white.opacity(0.06)
-    static let borderDefault = Color.white.opacity(0.12)
-    static let overlayLight = Color.white.opacity(0.03)
-    static let overlayMedium = Color.white.opacity(0.05)
+    static let dividerDefault = textPrimary.opacity(0.06)
+    static let borderDefault = textPrimary.opacity(0.12)
+    static let overlayLight = textPrimary.opacity(0.03)
+    static let overlayMedium = textPrimary.opacity(0.05)
 
     // MARK: - Semantic Opacity Variants
 
@@ -21,8 +21,8 @@ public extension AppColors {
 
     // MARK: - Skeleton / Loading States
 
-    static let skeletonLight = Color.white.opacity(0.04)
-    static let skeletonMedium = Color.white.opacity(0.08)
+    static let skeletonLight = textPrimary.opacity(0.04)
+    static let skeletonMedium = textPrimary.opacity(0.08)
 
     // MARK: - Card Network Colors (Centralized)
 

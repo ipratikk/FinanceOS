@@ -18,8 +18,7 @@ public struct Transaction:
     Codable,
     Sendable,
     FetchableRecord,
-    PersistableRecord
-{
+    PersistableRecord {
     public let id: UUID
     public let ledgerId: UUID?
     public let accountID: UUID?

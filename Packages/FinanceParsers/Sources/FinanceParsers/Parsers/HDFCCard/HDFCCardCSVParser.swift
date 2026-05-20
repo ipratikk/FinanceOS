@@ -21,13 +21,13 @@ public struct HDFCCardCSVParser: Sendable {
 
             let row = line.components(separatedBy: "~|~").map { $0.trimmingCharacters(in: .whitespaces) }
 
-            if headerRow == nil, row.count > 0, row[0].lowercased().contains("transaction") {
+            if headerRow == nil, !row.isEmpty, row[0].lowercased().contains("transaction") {
                 headerRow = row
                 result.append(row)
                 continue
             }
 
-            if headerRow != nil, row.count > 0, !row[0].isEmpty {
+            if headerRow != nil, !row.isEmpty, !row[0].isEmpty {
                 result.append(row)
             }
         }

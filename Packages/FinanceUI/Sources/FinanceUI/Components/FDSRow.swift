@@ -12,8 +12,8 @@ import SwiftUI
 ///     FDSMerchantAvatar(...)
 /// } content: {
 ///     VStack(alignment: .leading) {
-///         Text(title).caption()
-///         Text(subtitle).font(...)
+///         FDSLabel(title).caption()
+///         FDSLabel(subtitle).font(...)
 ///     }
 /// } trailing: {
 ///     HStack { iconButton("pencil"), iconButton("trash") }

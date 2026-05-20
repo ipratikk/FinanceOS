@@ -1,4 +1,5 @@
 @testable import FinanceCore
+import Foundation
 import GRDB
 import Testing
 
@@ -29,9 +30,9 @@ func ledgersOfBothKindsCanBeInsertedAfterMigration() throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let accountLedger = Ledger(
         bankId: bank.id,
@@ -44,7 +45,7 @@ func ledgersOfBothKindsCanBeInsertedAfterMigration() throws {
         bankId: bank.id,
         kind: .creditCard,
         displayName: "Platinum Card",
-        cardType: "credit",
+        cardType: .other,
         linkedLedgerId: accountLedger.id
     )
 
@@ -72,9 +73,9 @@ func ledgerPropertiesArePersistedCorrectly() throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let original = Ledger(
         bankId: bank.id,
@@ -116,9 +117,9 @@ func cardLedgerPropertiesArePersistedCorrectly() throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let accountLedger = Ledger(
         bankId: bank.id,
@@ -131,7 +132,7 @@ func cardLedgerPropertiesArePersistedCorrectly() throws {
         kind: .creditCard,
         displayName: "Travel Card",
         last4: "5678",
-        cardType: "credit",
+        cardType: .other,
         linkedLedgerId: accountLedger.id
     )
 

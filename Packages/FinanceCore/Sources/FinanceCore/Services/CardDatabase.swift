@@ -4,13 +4,35 @@ public enum CardDatabase {
     private static let defaultCards: [CardMetadata] = CardCatalogLoader.loadCardMetadata().isEmpty ?
         fallbackCards : CardCatalogLoader.loadCardMetadata()
 
+    public static func allCards() -> [CardMetadata] {
+        defaultCards
+    }
+
+    public static func cardsByIssuer(_ issuer: String) -> [CardMetadata] {
+        defaultCards.filter { $0.issuer.lowercased() == issuer.lowercased() }
+    }
+
+    public static func findCard(by bin: String) -> CardMetadata? {
+        defaultCards.first { $0.matches(bin) }
+    }
+
+    public static func issuers() -> [String] {
+        Array(Set(defaultCards.map(\.issuer))).sorted()
+    }
+
+    public static func supportedCards() -> [CardMetadata] {
+        defaultCards.filter(\.isSupported)
+    }
+}
+
+private extension CardDatabase {
     private static let fallbackCards: [CardMetadata] = [
         // HDFC Cards
         CardMetadata(
             id: "hdfc-credit-classic",
             issuer: "HDFC",
             name: "HDFC Bank Credit Card",
-            cardType: "mastercard",
+            cardType: .mastercard,
             variant: "credit",
             binRanges: [
                 .init(start: "510029", end: "510029"),
@@ -36,7 +58,7 @@ public enum CardDatabase {
             id: "hdfc-credit-premium",
             issuer: "HDFC",
             name: "HDFC Bank Regalia Credit Card",
-            cardType: "mastercard",
+            cardType: .mastercard,
             variant: "credit",
             binRanges: [
                 .init(start: "512456", end: "512456"),
@@ -61,7 +83,7 @@ public enum CardDatabase {
             id: "hdfc-debit-classic",
             issuer: "HDFC",
             name: "HDFC Bank Debit Card",
-            cardType: "mastercard",
+            cardType: .mastercard,
             variant: "debit",
             binRanges: [
                 .init(start: "553200", end: "553299"),
@@ -88,7 +110,7 @@ public enum CardDatabase {
             id: "icici-credit-instant",
             issuer: "ICICI",
             name: "ICICI Bank Instant Access Credit Card",
-            cardType: "visa",
+            cardType: .visa,
             variant: "credit",
             binRanges: [
                 .init(start: "401200", end: "401299"),
@@ -108,7 +130,7 @@ public enum CardDatabase {
             id: "icici-credit-coral",
             issuer: "ICICI",
             name: "ICICI Bank Coral Credit Card",
-            cardType: "visa",
+            cardType: .visa,
             variant: "credit",
             binRanges: [
                 .init(start: "401300", end: "401399"),
@@ -133,7 +155,7 @@ public enum CardDatabase {
             id: "icici-debit-classic",
             issuer: "ICICI",
             name: "ICICI Bank Debit Card",
-            cardType: "visa",
+            cardType: .visa,
             variant: "debit",
             binRanges: [
                 .init(start: "421056", end: "421065"),
@@ -160,7 +182,7 @@ public enum CardDatabase {
             id: "amex-green",
             issuer: "American Express",
             name: "American Express Green Card",
-            cardType: "amex",
+            cardType: .amex,
             variant: "credit",
             binRanges: [
                 .init(start: "374282", end: "374282"),
@@ -185,7 +207,7 @@ public enum CardDatabase {
             id: "amex-gold",
             issuer: "American Express",
             name: "American Express Gold Card",
-            cardType: "amex",
+            cardType: .amex,
             variant: "credit",
             binRanges: [
                 .init(start: "378282", end: "378282"),
@@ -210,7 +232,7 @@ public enum CardDatabase {
             id: "amex-platinum",
             issuer: "American Express",
             name: "American Express Platinum Card",
-            cardType: "amex",
+            cardType: .amex,
             variant: "credit",
             binRanges: [
                 .init(start: "373953", end: "373953"),
@@ -237,7 +259,7 @@ public enum CardDatabase {
             id: "scapia-credit-personal",
             issuer: "Scapia",
             name: "Scapia Personal Credit Card",
-            cardType: "rupay",
+            cardType: .rupay,
             variant: "credit",
             binRanges: [
                 .init(start: "607844", end: "607844"),
@@ -262,7 +284,7 @@ public enum CardDatabase {
             id: "scapia-credit-premium",
             issuer: "Scapia",
             name: "Scapia Premium Credit Card",
-            cardType: "rupay",
+            cardType: .rupay,
             variant: "credit",
             binRanges: [
                 .init(start: "607845", end: "607845"),
@@ -287,7 +309,7 @@ public enum CardDatabase {
             id: "scapia-debit",
             issuer: "Scapia",
             name: "Scapia RuPay Debit Card",
-            cardType: "rupay",
+            cardType: .rupay,
             variant: "debit",
             binRanges: [
                 .init(start: "607846", end: "607846"),
@@ -303,24 +325,4 @@ public enum CardDatabase {
             isSupported: true
         )
     ]
-
-    public static func allCards() -> [CardMetadata] {
-        defaultCards
-    }
-
-    public static func cardsByIssuer(_ issuer: String) -> [CardMetadata] {
-        defaultCards.filter { $0.issuer.lowercased() == issuer.lowercased() }
-    }
-
-    public static func findCard(by bin: String) -> CardMetadata? {
-        defaultCards.first { $0.matches(bin) }
-    }
-
-    public static func issuers() -> [String] {
-        Array(Set(defaultCards.map(\.issuer))).sorted()
-    }
-
-    public static func supportedCards() -> [CardMetadata] {
-        defaultCards.filter(\.isSupported)
-    }
 }

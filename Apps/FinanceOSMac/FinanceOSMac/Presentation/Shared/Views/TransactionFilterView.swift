@@ -32,15 +32,15 @@ struct TransactionFilterView: View {
                 .font(AppTypography.headlineMdRegular)
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
-            Text("Filters").bodyMedium()
+            FDSLabel("Filters").bodyMedium()
             Spacer()
-            Button(action: { dismiss() }) {
+            Button(action: { dismiss() }, label: {
                 Image(systemName: "xmark")
                     .labelSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
-            }
+            })
             .buttonStyle(.plain)
         }
         .padding(AppSpacing.md)
@@ -49,15 +49,15 @@ struct TransactionFilterView: View {
     private var typeSection: some View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                Text("TRANSACTION TYPE")
+                FDSLabel("TRANSACTION TYPE")
                     .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
 
                 Picker("Type", selection: $listState.typeFilter) {
-                    Text("All").tag(TransactionType?.none)
-                    Text("Debit").tag(TransactionType?.some(.debit))
-                    Text("Credit").tag(TransactionType?.some(.credit))
+                    FDSLabel("All").tag(TransactionType?.none)
+                    FDSLabel("Debit").tag(TransactionType?.some(.debit))
+                    FDSLabel("Credit").tag(TransactionType?.some(.credit))
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
@@ -68,7 +68,7 @@ struct TransactionFilterView: View {
     private var dateSection: some View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                Text("DATE RANGE")
+                FDSLabel("DATE RANGE")
                     .font(AppTypography.labelSemibold)
                     .tracking(0.6)
                     .foregroundStyle(.tertiary)
@@ -91,7 +91,7 @@ struct TransactionFilterView: View {
             listState.dateRangeFilter = listState.dateRangeFilter == preset ? nil : preset
         } label: {
             HStack {
-                Text(preset.label)
+                FDSLabel(preset.label)
                     .font(AppTypography.bodySm)
                     .foregroundStyle(.primary)
                 Spacer()

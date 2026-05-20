@@ -28,7 +28,7 @@ public struct FDSSheet<Content: View>: View {
 
     public var body: some View {
         ZStack {
-            Color.black.opacity(0.35)
+            AppColors.base.opacity(0.35)
                 .ignoresSafeArea()
                 .onTapGesture {
                     dismiss()
@@ -38,13 +38,13 @@ public struct FDSSheet<Content: View>: View {
             VStack(spacing: 0) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(title)
-                            .font(.system(size: 19, weight: .semibold))
+                        FDSLabel(title)
+                            .font(DesignTokens.Typography.sheetTitle)
                             .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
 
                         if let subtitle {
-                            Text(subtitle)
-                                .font(.system(size: 13, weight: .regular))
+                            FDSLabel(subtitle)
+                                .font(AppTypography.bodySm)
                                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                         }
                     }
@@ -54,44 +54,44 @@ public struct FDSSheet<Content: View>: View {
                     Button(action: {
                         dismiss()
                         onDismiss()
-                    }) {
+                    }, label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 18))
+                            .font(AppTypography.headlineMdRegular)
                             .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
-                .padding(20)
-                .background(Color.black.opacity(0.15))
+                .padding(AppSpacing.lg)
+                .background(AppColors.base.opacity(0.15))
 
                 Divider()
                     .opacity(0.2)
 
                 ScrollView {
                     content
-                        .padding(20)
+                        .padding(AppSpacing.lg)
                 }
 
                 Divider()
                     .opacity(0.2)
 
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.sm) {
                     Spacer()
 
                     Button(action: {
                         dismiss()
                         onDismiss()
-                    }) {
-                        Text("Cancel")
-                            .font(.system(size: 13, weight: .semibold))
+                    }, label: {
+                        FDSLabel("Cancel")
+                            .font(AppTypography.bodySmSemibold)
                             .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                             .frame(minWidth: 80)
                             .frame(height: 32)
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
-                .padding(16)
-                .background(Color.black.opacity(0.1))
+                .padding(AppSpacing.md)
+                .background(AppColors.base.opacity(0.1))
             }
             .frame(maxWidth: 580)
             .frame(maxHeight: .infinity)
@@ -119,18 +119,19 @@ public struct FDSSheet<Content: View>: View {
         FDSSheet(
             title: "Edit Account",
             subtitle: "Update account details",
-            onDismiss: {}
-        ) {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Account Name")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.secondary)
+            onDismiss: {},
+            content: {
+                VStack(alignment: .leading, spacing: AppSpacing.md) {
+                    FDSLabel("Account Name")
+                        .font(AppTypography.captionLgSemibold)
+                        .foregroundColor(.secondary)
 
-                TextField("Enter name", text: .constant(""))
-                    .padding(10)
-                    .background(Color.black.opacity(0.25))
-                    .cornerRadius(8)
+                    TextField("Enter name", text: .constant(""))
+                        .padding(AppSpacing.sm)
+                        .background(AppColors.surface)
+                        .cornerRadius(AppRadius.sm)
+                }
             }
-        }
+        )
     }
 }

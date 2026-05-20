@@ -35,11 +35,11 @@ public struct FDSPicker<V: Hashable>: View {
                     Button(action: {
                         selection = option.value as? V
                         isOpen = false
-                    }) {
+                    }, label: {
                         FDSPickerRow(option: option, variant: variant, isSelected: isSelected)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(Rectangle())
-                    }
+                    })
                     .buttonStyle(.plain)
                     if option.id != options.last?.id {
                         Divider().opacity(0.3)
@@ -52,11 +52,10 @@ public struct FDSPicker<V: Hashable>: View {
     }
 
     private var triggerView: some View {
-        Button(action: { isOpen.toggle() }) {
+        Button(action: { isOpen.toggle() }, label: {
             HStack(spacing: AppSpacing.compact) {
                 if let selectedValue = selection,
-                   let selectedOption = options.first(where: { ($0.value as? V) == selectedValue })
-                {
+                   let selectedOption = options.first(where: { ($0.value as? V) == selectedValue }) {
                     FDSPickerRow(option: selectedOption, variant: variant, isSelected: false)
                 } else {
                     FDSLabel(placeholder, style: .hint)
@@ -64,7 +63,7 @@ public struct FDSPicker<V: Hashable>: View {
                 }
 
                 Image(systemName: "chevron.up.chevron.down")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .foregroundStyle(AppColors.textTertiary)
                     .padding(.trailing, AppSpacing.compact)
             }
@@ -76,10 +75,10 @@ public struct FDSPicker<V: Hashable>: View {
                     .fill(.ultraThinMaterial)
                     .overlay {
                         RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                            .strokeBorder(AppColors.textPrimary.opacity(0.06), lineWidth: 0.5)
                     }
             }
-        }
+        })
         .buttonStyle(.plain)
     }
 }

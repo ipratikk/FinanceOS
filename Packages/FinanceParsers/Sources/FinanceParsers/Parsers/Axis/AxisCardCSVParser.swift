@@ -13,8 +13,7 @@ public struct AxisCardCSVParser: Sendable {
             let normalized = row.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
             if normalized.contains("transaction date") || normalized.contains("date") {
                 if normalized.contains("description"),
-                   normalized.contains("amount") || normalized.contains("debit")
-                {
+                   normalized.contains("amount") || normalized.contains("debit") {
                     headerIndex = index
                     result.append(row)
                     break
@@ -42,8 +41,7 @@ public struct AxisCardCSVParser: Sendable {
             let normalized = row.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
             if normalized.contains("transaction date") || normalized.contains("date"),
                normalized.contains("description"),
-               normalized.contains("amount") || normalized.contains("debit")
-            {
+               normalized.contains("amount") || normalized.contains("debit") {
                 return true
             }
         }

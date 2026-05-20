@@ -25,27 +25,27 @@ public struct EmptyStateView: View {
     public var body: some View {
         VStack(spacing: AppSpacing.lg) {
             Image(systemName: icon)
-                .font(.system(size: 48, weight: .light))
+                .font(AppTypography.netHeroAmount)
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: AppSpacing.sm) {
-                Text(title)
+                FDSLabel(title)
                     .headingMedium()
 
-                Text(subtitle)
+                FDSLabel(subtitle)
                     .bodyMedium()
             }
 
             if let action, let actionLabel {
-                Button(action: action) {
-                    Text(actionLabel)
+                Button(action: action, label: {
+                    FDSLabel(actionLabel)
                         .bodyLarge()
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.sm)
                         .background(AppColors.accent)
-                        .foregroundColor(.white)
+                        .foregroundColor(AppColors.textPrimary)
                         .cornerRadius(AppRadius.md)
-                }
+                })
             }
         }
         .padding(AppSpacing.xxxl)

@@ -58,11 +58,9 @@ public struct FDSTransactionRow: View {
     }
 
     public var body: some View {
-        Button(action: { onTap?() }) {
-            rowContent
-        }
-        .buttonStyle(.plain)
-        .disabled(onTap == nil)
+        Button(action: { onTap?() }, label: { rowContent })
+            .buttonStyle(.plain)
+            .disabled(onTap == nil)
     }
 
     private var rowContent: some View {
@@ -75,12 +73,12 @@ public struct FDSTransactionRow: View {
             )
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(merchant)
+                FDSLabel(merchant)
                     .font(DesignTokens.Typography.txnRow)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
-                Text(subtitle)
+                FDSLabel(subtitle)
                     .font(DesignTokens.Typography.caption)
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
@@ -89,20 +87,20 @@ public struct FDSTransactionRow: View {
             Spacer(minLength: AppSpacing.md)
 
             VStack(alignment: .trailing, spacing: 2) {
-                Text(amount)
+                FDSLabel(amount)
                     .font(DesignTokens.Typography.txnRow.monospacedDigit())
                     .foregroundStyle(isDebit ? AppColors.debit : AppColors.credit)
                     .lineLimit(1)
 
                 if let balance = runningBalance {
-                    Text(balance)
+                    FDSLabel(balance)
                         .font(DesignTokens.Typography.caption.monospacedDigit())
                         .foregroundStyle(.tertiary)
                 } else if let chip = accountChip {
                     HStack(spacing: 3) {
-                        Text(chip.bankName)
+                        FDSLabel(chip.bankName)
                             .font(DesignTokens.Typography.label)
-                        Text("· \(chip.last4)")
+                        FDSLabel("· \(chip.last4)")
                             .font(DesignTokens.Typography.caption.monospacedDigit())
                     }
                     .foregroundStyle(.tertiary)

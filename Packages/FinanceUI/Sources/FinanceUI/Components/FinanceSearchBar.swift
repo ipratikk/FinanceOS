@@ -20,10 +20,10 @@ public struct FinanceSearchBar: View {
                 .foregroundColor(AppColors.textPrimary)
 
             if !text.isEmpty {
-                Button(action: { text = "" }) {
+                Button(action: { text = "" }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(AppColors.textTertiary)
-                }
+                })
             }
         }
         .padding(AppSpacing.sm)
@@ -33,7 +33,7 @@ public struct FinanceSearchBar: View {
 }
 
 #Preview {
-    @State var text = ""
+    @Previewable @State var text = ""
 
     return VStack {
         FinanceSearchBar("Search transactions", text: $text)

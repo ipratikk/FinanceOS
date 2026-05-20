@@ -14,8 +14,7 @@ final class ImportTransactionListViewSnapshotTests: SnapshotTestable {
     func test_import_transaction_list_no_dupes() {
         let view = ImportTransactionListView(
             transactions: PreviewStatements.sampleParsedTransactions(),
-            duplicateIndices: Set<Int>(),
-            style: .list
+            duplicateIndices: Set<Int>()
         )
         verifyComponentSnapshots(view, size: CGSize(width: 700, height: 500))
     }
@@ -23,17 +22,16 @@ final class ImportTransactionListViewSnapshotTests: SnapshotTestable {
     func test_import_transaction_list_with_dupes() {
         let view = ImportTransactionListView(
             transactions: PreviewStatements.sampleParsedTransactions(),
-            duplicateIndices: Set([0, 2]),
-            style: .list
+            duplicateIndices: Set([0, 2])
         )
         verifyComponentSnapshots(view, size: CGSize(width: 700, height: 500))
     }
 
-    func test_import_transaction_list_table_style() {
+    func test_import_transaction_list_with_row_limit() {
         let view = ImportTransactionListView(
             transactions: PreviewStatements.sampleParsedTransactions(),
             duplicateIndices: Set([1]),
-            style: .table
+            rowLimit: 5
         )
         verifyComponentSnapshots(view, size: CGSize(width: 700, height: 500))
     }

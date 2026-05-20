@@ -10,7 +10,6 @@ import Foundation
 public enum TransactionImportTarget:
     Sendable,
     Equatable,
-    Hashable
-{
+    Hashable {
     case ledger(UUID)
 }

@@ -10,8 +10,7 @@ import GRDB
 
 public final class GRDBBankRepository:
     @unchecked Sendable,
-    BankRepository
-{
+    BankRepository {
     private let dbQueue: DatabaseQueue
 
     public init(dbQueue: DatabaseQueue) {

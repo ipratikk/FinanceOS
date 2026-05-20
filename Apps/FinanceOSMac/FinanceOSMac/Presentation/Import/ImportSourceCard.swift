@@ -16,17 +16,17 @@ struct ImportSourceCard: View {
     }
 
     var body: some View {
-        Button(action: { onSelect(source) }) {
+        Button(action: { onSelect(source) }, label: {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 12) {
                     bankLogoView
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(matchedBank?.displayName ?? source.bankName)
+                        FDSLabel(matchedBank?.displayName ?? source.bankName)
                             .font(AppTypography.bodyMd)
                             .foregroundColor(DesignTokens.Text.primary)
 
-                        Text(source.sourceType.rawValue)
+                        FDSLabel(source.sourceType.rawValue)
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
                     }
@@ -34,11 +34,11 @@ struct ImportSourceCard: View {
                     Spacer()
 
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(AppTypography.bodySmSemibold)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
 
-                Text(formatLabel)
+                FDSLabel(formatLabel)
                     .font(AppTypography.labelSmall)
                     .foregroundColor(DesignTokens.Text.quaternary)
             }
@@ -57,7 +57,7 @@ struct ImportSourceCard: View {
                         lineWidth: 1
                     )
             )
-        }
+        })
         .buttonStyle(.plain)
         .contentShape(Rectangle())
     }
@@ -68,14 +68,14 @@ struct ImportSourceCard: View {
             Image(bank.symbolAssetName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
         } else {
             RoundedRectangle(cornerRadius: AppRadius.sm)
                 .fill(DesignTokens.Background.surfaceGlass)
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
                 .overlay(
                     Image(systemName: "building.columns")
-                        .font(.system(size: 16))
+                        .font(AppTypography.bodyMd)
                         .foregroundColor(DesignTokens.Text.tertiary)
                 )
         }

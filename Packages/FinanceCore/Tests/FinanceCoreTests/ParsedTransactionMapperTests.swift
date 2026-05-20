@@ -16,7 +16,7 @@ func mapperSignsDebitCorrectly() {
     let ledgerId = UUID()
     let target = TransactionImportTarget.ledger(ledgerId)
 
-    let mapped = ParsedTransactionMapper.map(debitParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(debitParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .debit)
     #expect(mapped.amountMinorUnits == 50000)
@@ -33,9 +33,9 @@ func mapperSignsCreditCorrectly() {
     )
 
     let accountID = UUID()
-    let target = TransactionImportTarget.account(accountID)
+    let target = TransactionImportTarget.ledger(accountID)
 
-    let mapped = ParsedTransactionMapper.map(creditParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(creditParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .credit)
     #expect(mapped.amountMinorUnits == 100_000)
@@ -54,7 +54,7 @@ func mapperHandlesCardDebit() {
     let ledgerId = UUID()
     let target = TransactionImportTarget.ledger(ledgerId)
 
-    let mapped = ParsedTransactionMapper.map(debitParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(debitParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .debit)
     #expect(mapped.amountMinorUnits == 5000)
@@ -72,13 +72,13 @@ func mapperHandlesCardCredit() {
     )
 
     let cardID = UUID()
-    let target = TransactionImportTarget.card(cardID)
+    let target = TransactionImportTarget.ledger(cardID)
 
-    let mapped = ParsedTransactionMapper.map(creditParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(creditParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .credit)
     #expect(mapped.amountMinorUnits == 10000)
-    #expect(mapped.ledgerId == ledgerId)
+    #expect(mapped.ledgerId == cardID)
 }
 
 @Test
@@ -92,7 +92,7 @@ func mapperPreservesSourceFingerprint() {
     )
 
     let target = TransactionImportTarget.ledger(UUID())
-    let mapped = ParsedTransactionMapper.map(parsed, target: target)
+    let mapped = ParsedTransactionMapper.map(parsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.sourceFingerprint == "20260501|Test|1000")
 }
@@ -109,7 +109,7 @@ func mapperPreservesDescription() {
     )
 
     let target = TransactionImportTarget.ledger(UUID())
-    let mapped = ParsedTransactionMapper.map(parsed, target: target)
+    let mapped = ParsedTransactionMapper.map(parsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.description == description)
 }
@@ -125,7 +125,7 @@ func mapperHandlesZeroAmount() {
     )
 
     let target = TransactionImportTarget.ledger(UUID())
-    let mapped = ParsedTransactionMapper.map(parsed, target: target)
+    let mapped = ParsedTransactionMapper.map(parsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .debit)
     #expect(mapped.amountMinorUnits == 0)

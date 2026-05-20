@@ -3,9 +3,9 @@ import FinanceParsers
 import Foundation
 import Testing
 
-let testBank = Bank(id: UUID(), name: "HDFC", providerType: .bank)
-let testBank2 = Bank(id: UUID(), name: "ICICI", providerType: .bank)
-let testBank3 = Bank(id: UUID(), name: "Amex", providerType: .credit)
+let testBank = Bank(bank: .hdfc)
+let testBank2 = Bank(bank: .icici)
+let testBank3 = Bank(bank: .amex)
 
 let testLedger1 = Ledger(
     id: UUID(),
@@ -120,7 +120,7 @@ func bestTargetCardMultipleCardsNoMatchReturnsNil() {
         bankName: "HDFC",
         accountName: "HDFC Card",
         accountLast4: nil,
-        cardLast4: "1234",
+        cardLast4: "9998",
         transactions: [],
         metadata: nil
     )
@@ -261,7 +261,7 @@ func bestMatchReturnsConfidenceWithScore() {
         banks: [testBank]
     )
 
-    #expect(result?.target == .ledger(testAccount1.id))
+    #expect(result?.target == .ledger(testLedger1.id))
     #expect(result?.confidence == 1.0)
 }
 
@@ -278,11 +278,10 @@ func bestMatchPartialConfidenceForSingleAccountWithoutLast4() {
 
     let result = ImportTargetMatcher.bestMatch(
         for: statement,
-        accounts: [testAccount1],
-        cards: [],
+        ledgers: [testLedger1],
         banks: [testBank]
     )
 
-    #expect(result?.target == .ledger(testAccount1.id))
+    #expect(result?.target == .ledger(testLedger1.id))
     #expect(result?.confidence == 0.7)
 }

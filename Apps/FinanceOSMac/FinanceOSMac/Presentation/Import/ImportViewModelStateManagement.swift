@@ -52,10 +52,8 @@ extension ImportViewModel {
                 context: context
             )
 
-            if case let .ledger(ledgerId) = target,
-               let closingBalance = statement.metadata?.closingBalance,
-               let statementDate = statement.metadata?.generatedAt
-            {
+            if case let .ledger(ledgerId) = target, let closingBalance = statement.metadata?.closingBalance,
+               let statementDate = statement.metadata?.generatedAt {
                 try? await ledgerRepository.updateClosingBalance(
                     id: ledgerId,
                     balance: closingBalance,
@@ -145,9 +143,7 @@ extension ImportViewModel {
         var nonMatches: [(Int, String)] = []
 
         let existingHashes = Set(
-            existingTransactions.map { txn in
-                hashTransaction(txn)
-            }
+            existingTransactions.map { hashTransaction($0) }
         )
 
         var flatIndex = 0
@@ -164,78 +160,105 @@ extension ImportViewModel {
         }
 
         if !nonMatches.isEmpty {
-            logger.logWarning(
-                "Duplicate detection: {matched}/{total} matched, {unmatched} not found",
-                [
-                    "matched": String(duplicates.count),
-                    "total": String(flatIndex),
-                    "unmatched": String(nonMatches.count)
-                ]
+            logDuplicateDebugInfo(
+                duplicates: duplicates,
+                nonMatches: nonMatches,
+                flatIndex: flatIndex,
+                parsedStatements: parsedStatements,
+                existingTransactions: existingTransactions
             )
-
-            let existingUpiTxns = existingTransactions.filter { $0.description.contains("UPI") }
-            logger.logDebug(
-                "Database has {count} UPI transactions",
-                ["count": String(existingUpiTxns.count)]
-            )
-
-            if let firstUpi = existingUpiTxns.first {
-                logger.logDebug(
-                    "Example stored UPI: len={len} desc={desc}",
-                    ["len": String(firstUpi.description.count), "desc": firstUpi.description]
-                )
-            }
-
-            let samples = nonMatches.prefix(1)
-            for (idx, parsedDesc) in samples {
-                logger.logDebug(
-                    "Example parsed UPI: len={len} desc={desc}",
-                    ["len": String(parsedDesc.count), "desc": parsedDesc]
-                )
-
-                var flatIdx = 0
-                for statement in parsedStatements {
-                    for parsedTxn in statement.transactions {
-                        if flatIdx == idx {
-                            logger.logDebug(
-                                "Parsed txn details: date={date} amount={amt}",
-                                [
-                                    "date": ISO8601DateFormatter().string(from: parsedTxn.postedAt),
-                                    "amt": String(parsedTxn.amountMinorUnits)
-                                ]
-                            )
-                        }
-                        flatIdx += 1
-                    }
-                }
-
-                let keyword = parsedDesc.prefix(20)
-                let storedMatches = existingTransactions.filter {
-                    $0.description.prefix(20) == keyword
-                }
-                if let match = storedMatches.first {
-                    logger.logDebug(
-                        "Found similar stored: len={len} desc={desc}",
-                        ["len": String(match.description.count), "desc": match.description]
-                    )
-
-                    let storedHash = hashTransaction(match)
-                    logger.logDebug(
-                        "Stored hash: {sh}",
-                        ["sh": storedHash]
-                    )
-                    logger.logDebug(
-                        "Match details: date={date} amount={amt}",
-                        [
-                            "date": ISO8601DateFormatter().string(from: match.postedAt),
-                            "amt": String(match.amountMinorUnits)
-                        ]
-                    )
-                }
-            }
         }
 
         return duplicates
+    }
+
+    private func logDuplicateDebugInfo(
+        duplicates: Set<Int>,
+        nonMatches: [(Int, String)],
+        flatIndex: Int,
+        parsedStatements: [ParsedStatement],
+        existingTransactions: [Transaction]
+    ) {
+        logger.logWarning(
+            "Duplicate detection: {matched}/{total} matched, {unmatched} not found",
+            [
+                "matched": String(duplicates.count),
+                "total": String(flatIndex),
+                "unmatched": String(nonMatches.count)
+            ]
+        )
+
+        let existingUpiTxns = existingTransactions.filter { $0.description.contains("UPI") }
+        logger.logDebug(
+            "Database has {count} UPI transactions",
+            ["count": String(existingUpiTxns.count)]
+        )
+
+        if let firstUpi = existingUpiTxns.first {
+            logger.logDebug(
+                "Example stored UPI: len={len} desc={desc}",
+                ["len": String(firstUpi.description.count), "desc": firstUpi.description]
+            )
+        }
+
+        let samples = nonMatches.prefix(1)
+        for (idx, parsedDesc) in samples {
+            debugParsedTransactionSample(
+                idx: idx,
+                parsedDesc: parsedDesc,
+                parsedStatements: parsedStatements,
+                existingTransactions: existingTransactions
+            )
+        }
+    }
+
+    private func debugParsedTransactionSample(
+        idx: Int,
+        parsedDesc: String,
+        parsedStatements: [ParsedStatement],
+        existingTransactions: [Transaction]
+    ) {
+        logger.logDebug(
+            "Example parsed UPI: len={len} desc={desc}",
+            ["len": String(parsedDesc.count), "desc": parsedDesc]
+        )
+
+        var flatIdx = 0
+        for statement in parsedStatements {
+            for parsedTxn in statement.transactions {
+                if flatIdx == idx {
+                    logger.logDebug(
+                        "Parsed txn details: date={date} amount={amt}",
+                        [
+                            "date": ISO8601DateFormatter().string(from: parsedTxn.postedAt),
+                            "amt": String(parsedTxn.amountMinorUnits)
+                        ]
+                    )
+                }
+                flatIdx += 1
+            }
+        }
+
+        let keyword = parsedDesc.prefix(20)
+        let storedMatches = existingTransactions.filter {
+            $0.description.prefix(20) == keyword
+        }
+        if let match = storedMatches.first {
+            logger.logDebug(
+                "Found similar stored: len={len} desc={desc}",
+                ["len": String(match.description.count), "desc": match.description]
+            )
+
+            let storedHash = hashTransaction(match)
+            logger.logDebug("Stored hash: {sh}", ["sh": storedHash])
+            logger.logDebug(
+                "Match details: date={date} amount={amt}",
+                [
+                    "date": ISO8601DateFormatter().string(from: match.postedAt),
+                    "amt": String(match.amountMinorUnits)
+                ]
+            )
+        }
     }
 
     private func hashParsedTransaction(_ txn: ParsedTransaction) -> String {

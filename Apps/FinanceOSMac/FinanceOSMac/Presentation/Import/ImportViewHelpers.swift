@@ -75,7 +75,7 @@ struct DropZoneView: View {
 
                     FDSLabel("or click button below", style: .hint)
 
-                    Text("Supported: \(formatNames)")
+                    FDSLabel("Supported: \(formatNames)")
                         .labelSmall()
                         .foregroundColor(AppColors.textTertiary)
                         .padding(.top, 4)

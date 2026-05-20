@@ -36,8 +36,10 @@ enum DateRangeFilter: Equatable {
             let start = cal.date(from: cal.dateComponents([.year, .month], from: now))
             return (start, nil)
         case .lastMonth:
-            let thisStart = cal.date(from: cal.dateComponents([.year, .month], from: now))!
-            let lastStart = cal.date(byAdding: .month, value: -1, to: thisStart)!
+            guard let thisStart = cal.date(from: cal.dateComponents([.year, .month], from: now)),
+                  let lastStart = cal.date(byAdding: .month, value: -1, to: thisStart) else {
+                return (nil, nil)
+            }
             let lastEnd = cal.date(byAdding: .day, value: -1, to: thisStart)
             return (lastStart, lastEnd)
         case .lastQuarter:

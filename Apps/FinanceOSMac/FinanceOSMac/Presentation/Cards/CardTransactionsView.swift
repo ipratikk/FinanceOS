@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct CardTransactionsView: View {
@@ -32,7 +33,7 @@ struct CardTransactionsView: View {
             Button("OK") { viewModel.deleteError = nil }
         } message: {
             if let error = viewModel.deleteError {
-                Text(error)
+                FDSLabel(error)
             }
         }
         .task {
@@ -40,28 +41,15 @@ struct CardTransactionsView: View {
         }
     }
 
-    private func networkLogo(for cardType: String) -> NSImage? {
-        let assetNames: [String: String] = [
-            "visa": "visa",
-            "mastercard": "mastercard",
-            "amex": "amex",
-            "rupay": "rupay",
-            "diners": "diners"
-        ]
-
-        if let assetName = assetNames[cardType.lowercased()],
-           let nsImage = NSImage(named: assetName)
-        {
-            return nsImage
-        }
-
-        return nil
+    private func networkLogo(for network: CardNetwork) -> NSImage? {
+        guard let assetName = network.logoAssetName else { return nil }
+        return NSImage(named: assetName)
     }
 
     private var cardHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
+                FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .font(AppTypography.headlineMd)
                     .foregroundStyle(.primary)
 
@@ -74,19 +62,19 @@ struct CardTransactionsView: View {
                                 .frame(width: 24, height: 12)
                         }
 
-                        Text(cardType.uppercased())
+                        FDSLabel(cardType.displayName.uppercased())
                             .font(AppTypography.captionLgMedium)
                             .foregroundStyle(.secondary)
                     }
 
-                    Text("• ••••\(ledger.last4)")
+                    FDSLabel("• ••••\(ledger.last4)")
                         .font(AppTypography.captionLgMedium)
                         .foregroundStyle(.tertiary)
                 }
             }
 
             HStack(spacing: AppSpacing.md) {
-                Text("Transactions: \(viewModel.sections.map(\.rows.count).reduce(0, +))")
+                FDSLabel("Transactions: \(viewModel.sections.map(\.rows.count).reduce(0, +))")
                     .font(AppTypography.captionLg)
                     .foregroundStyle(.tertiary)
 

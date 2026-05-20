@@ -35,7 +35,7 @@ public struct FDSGlassSurface<Content: View>: View {
                         .fill(material)
                         .background(AppColors.surface.opacity(0.25))
                 } else {
-                    Color.clear
+                    AppColors.clear
                 }
             }
             .overlay {

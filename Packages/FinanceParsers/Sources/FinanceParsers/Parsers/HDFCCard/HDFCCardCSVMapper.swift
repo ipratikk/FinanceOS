@@ -1,6 +1,6 @@
 import Foundation
 
-public struct HDFCCardCSVMapper: Sendable {
+public struct HDFCCardCSVMapper: Sendable, CSVRowMapper {
     public init() {}
 
     public func map(headerRow: [String]) throws -> [ColumnRole] {

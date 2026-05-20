@@ -1,31 +1,33 @@
 import FinanceCore
 import SwiftUI
 
+public struct MetricCardDelta {
+    public let change: Double
+    public let period: String
+
+    public init(change: Double, period: String) {
+        self.change = change
+        self.period = period
+    }
+
+    var isPositive: Bool {
+        change >= 0
+    }
+
+    var text: String {
+        String(format: "%+.0f%%", change)
+    }
+}
+
 public struct MetricCard: View {
     let label: String
     let value: String
-    let delta: Delta?
+    let delta: MetricCardDelta?
     let icon: String?
 
-    public struct Delta {
-        public let change: Double
-        public let period: String
+    public typealias Delta = MetricCardDelta
 
-        public init(change: Double, period: String) {
-            self.change = change
-            self.period = period
-        }
-
-        var isPositive: Bool {
-            change >= 0
-        }
-
-        var text: String {
-            String(format: "%+.0f%%", change)
-        }
-    }
-
-    public init(_ label: String, value: String, delta: Delta? = nil, icon: String? = nil) {
+    public init(_ label: String, value: String, delta: MetricCardDelta? = nil, icon: String? = nil) {
         self.label = label
         self.value = value
         self.delta = delta
@@ -37,29 +39,29 @@ public struct MetricCard: View {
             HStack(spacing: AppSpacing.sm) {
                 if let icon {
                     Image(systemName: icon)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(AppTypography.headlineSm)
                         .foregroundColor(AppColors.textTertiary)
                 }
-                Text(label)
+                FDSLabel(label)
                     .headingMedium()
                 Spacer()
             }
 
-            Text(value)
+            FDSLabel(value)
                 .displayMedium()
 
             if let delta {
                 HStack(spacing: AppSpacing.xs) {
                     Image(systemName: delta.isPositive ? "triangle.fill" : "triangle.fill")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(AppTypography.captionSmSemibold)
                         .rotationEffect(.degrees(delta.isPositive ? 0 : 180))
                         .foregroundColor(delta.isPositive ? AppColors.credit : AppColors.debit)
 
-                    Text(delta.text)
+                    FDSLabel(delta.text)
                         .caption()
                         .foregroundColor(delta.isPositive ? AppColors.credit : AppColors.debit)
 
-                    Text("vs \(delta.period)")
+                    FDSLabel("vs \(delta.period)")
                         .caption()
                 }
             }

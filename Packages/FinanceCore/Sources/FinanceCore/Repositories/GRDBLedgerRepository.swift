@@ -4,8 +4,7 @@ import OSLog
 
 public final class GRDBLedgerRepository:
     @unchecked Sendable,
-    LedgerRepository
-{
+    LedgerRepository {
     private let dbQueue: DatabaseQueue
     private let logger = FinanceLogger.repository
 
@@ -161,6 +160,15 @@ public final class GRDBLedgerRepository:
                         ["ledgerId": id.uuidString]
                     )
                     throw RepositoryError.notFound(entity: "Ledger", id: id.uuidString)
+                }
+
+                let transactionCount = try Transaction.filter(Column("ledgerId") == id).fetchCount(database)
+                if transactionCount > 0 {
+                    throw RepositoryError.deleteFailed(
+                        entity: "Ledger",
+                        id: id.uuidString,
+                        reason: "Cannot delete ledger with \(transactionCount) transaction(s)"
+                    )
                 }
 
                 try ledger.delete(database)

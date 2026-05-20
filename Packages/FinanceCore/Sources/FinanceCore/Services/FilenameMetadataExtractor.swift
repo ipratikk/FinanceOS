@@ -101,10 +101,8 @@ public struct FilenameMetadataExtractor {
         let bankNames = ["HDFC", "ICICI", "Axis", "SBI", "Amex", "AMEX", "Bank", "Visa", "MasterCard", "Diners"]
 
         let lower = filename.lowercased()
-        for bankName in bankNames {
-            if lower.contains(bankName.lowercased()) {
-                return bankName
-            }
+        for bankName in bankNames where lower.contains(bankName.lowercased()) {
+            return bankName
         }
         return nil
     }

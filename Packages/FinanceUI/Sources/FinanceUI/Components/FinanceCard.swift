@@ -28,13 +28,13 @@ public struct FinanceCard<Content: View>: View {
     VStack(spacing: AppSpacing.md) {
         FinanceCard {
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                Text("Account Balance")
+                FDSLabel("Account Balance")
                     .headingMedium()
                 HStack {
-                    Text("HDFC Savings")
+                    FDSLabel("HDFC Savings")
                         .bodyMedium()
                     Spacer()
-                    Text("₹1,24,500")
+                    FDSLabel("₹1,24,500")
                         .monoAmount()
                 }
             }
@@ -42,20 +42,20 @@ public struct FinanceCard<Content: View>: View {
 
         FinanceCard {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                Text("Recent Transaction")
+                FDSLabel("Recent Transaction")
                     .headingMedium()
                 HStack {
                     VStack(alignment: .leading, spacing: AppSpacing.xxs) {
-                        Text("Swiggy")
+                        FDSLabel("Swiggy")
                             .bodyLarge()
-                        Text("Today at 2:30 PM")
+                        FDSLabel("Today at 2:30 PM")
                             .caption()
                     }
                     Spacer()
                     HStack(spacing: AppSpacing.xs) {
                         Image(systemName: "minus.circle.fill")
                             .foregroundColor(AppColors.debit)
-                        Text("₹320")
+                        FDSLabel("₹320")
                             .monoAmount()
                             .foregroundColor(AppColors.debit)
                     }
