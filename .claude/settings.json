@@ -9,5 +9,43 @@
   },
   "autoMemoryEnabled": false,
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-edit-lint.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-edit-build.sh"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-parser-edit.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/summarize-failure.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/escalation-detector.sh"
+          }
+        ]
+      }
+    ]
   }
 }

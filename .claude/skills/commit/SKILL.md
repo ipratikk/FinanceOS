@@ -10,8 +10,12 @@ description: Create clean, architecture-grouped git commits from unstaged change
 
 ## Usage
 
-- `/commit` → auto-group by layer, commit each group via caveman-commit
+- `/commit` → auto-group by layer, commit each group (uses `caveman-commit` for message generation if installed, otherwise falls back to generic messages)
 - `/commit --dry-run` → show groups without committing
+
+## Dependencies
+
+`caveman-commit` is optional. If not installed, the script generates generic `chore(<layer>): update files` messages.
 
 ## Grouping layers (in order)
 

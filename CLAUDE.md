@@ -21,67 +21,27 @@ Prefer extending existing patterns over introducing new ones.
 
 ---
 
+# Quick Start
+
+```bash
+bash bootstrap.sh   # install tools, global skills, seed log dirs (run once after cloning)
+```
+
+Key skills: `/build` `/lint` `/parser-test` `/commit` `/review` `/refactor`
+
+Key make targets: `make parser-test`, `make parser-parse FILE=<path>`, `make parser-build`
+
+---
+
 # Engineering Expectations
 
-Act like a senior software engineer working on a long-term production codebase.
+Act like a senior software engineer on a long-term production codebase.
 
-Prioritize:
-
-* maintainability
-* clarity
-* deterministic behavior
-* explicit dependency flow
-* operational simplicity
-* small safe iterations
-
-Think beyond “making code compile”.
-
-Before implementing:
-
-* evaluate architectural impact
-* identify coupling risks
-* preserve separation of concerns
-* consider long-term maintainability
-
-When proposing changes:
-
-* explain tradeoffs briefly
-* identify why the approach fits current architecture
-* avoid unnecessary abstractions
-* avoid speculative engineering
-
-Prefer:
-
-* explicit code
-* predictable control flow
-* composition over inheritance
-* focused modules
-* vertical slices
-* strongly typed models
-
-Avoid:
-
-* hidden magic
-* premature optimization
-* unnecessary generics
-* giant service layers
-* framework-driven architecture
-* broad unrelated refactors
-* speculative abstractions
-
-For persistence and ingestion systems:
-
-* correctness is more important than cleverness
-* reliability is more important than brevity
-* deterministic behavior is critical
-
-If architecture conflicts arise:
-
-* call them out before coding
-
-If uncertain:
-
-* ask instead of guessing
+* Prefer explicit, predictable code over clever abstractions
+* Evaluate architectural impact and coupling risks before implementing
+* Explain tradeoffs briefly; identify why an approach fits the current architecture
+* For persistence/ingestion: correctness > cleverness, determinism is critical
+* Call out architecture conflicts before coding; ask when uncertain
 
 ---
 
@@ -246,6 +206,15 @@ Rules:
 * Keep UI decoupled from persistence
 * Parser layer isolated from UI/persistence
 
+## Packages
+
+| Package | Owns |
+|---------|------|
+| FinanceCore | Models, Repositories (GRDB), DatabaseManager, AppContainer, Logging |
+| FinanceParsers | Parser protocols, bank-specific parsers, import pipeline, deduplicator |
+| FinanceUI | SwiftUI components, design system (FDS) |
+| FinanceTesting | Shared test helpers, fixtures, golden JSON |
+
 ---
 
 # Parsing Strategy
@@ -285,14 +254,15 @@ Large refactors require reasoning first.
 
 # Current Project Focus
 
+Phases 1–10 complete (Ledger unification, import pipeline, dedup engine, UI migration).
+
 Current priorities:
 
-1. Accounts domain
-2. Transactions domain
-3. Import scaffolding
-4. Parser protocols
-5. CSV/XLSX ingestion
-6. Deduplication engine
+1. CSV/XLSX parser hardening (ICICI, HDFC, Axis, and other Indian banks)
+2. Statement format auto-detection
+3. Bank-specific parsing rules
+4. Duplicate detection at scale
+5. Analytics and spending insights
 
 Avoid implementing:
 
@@ -301,24 +271,23 @@ Avoid implementing:
 * cloud architecture
 * AI chat features
 
-until ingestion architecture stabilizes.
-
 ---
 
 # Build & Test Workflow
 
-User runs all builds and tests manually.
+Use project skills — do not invoke build tools directly unless a skill isn't available.
 
-Do NOT:
+| Task | Skill | Make target |
+|------|-------|-------------|
+| Build | `/build` | `make parser-build` |
+| Test parsers | `/parser-test` | `make parser-test` |
+| Parse a file | — | `make parser-parse FILE=<path>` |
+| Lint | `/lint` | — |
+| Commit | `/commit` | — |
 
-* attempt xcodebuild or build commands
-* run test suites
-* check compilation status via CLI
+Post-edit hooks automatically lint and incrementally build affected packages after every Swift file edit.
 
-When compilation/test errors occur:
-
-* user shares errors here
-* Claude fixes issues based on error output
+When build/test errors occur, share the output — Claude fixes based on error text.
 
 ---
 
