@@ -65,7 +65,7 @@ struct DashboardView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             FDSLabel("Overview")
-                .font(DesignTokens.Typography.screenTitle)
+                .font(AppTypography.screenTitle)
                 .foregroundColor(DesignTokens.Text.primary)
             FDSLabel(currentMonth)
                 .font(AppTypography.captionLgMedium)
