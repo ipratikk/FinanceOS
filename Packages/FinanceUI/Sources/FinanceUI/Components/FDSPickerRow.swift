@@ -52,7 +52,7 @@ struct FDSPickerRow: View {
 
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(AppTypography.bodyMdSemibold)
                     .foregroundStyle(AppColors.accent)
             }
         }
@@ -62,7 +62,7 @@ struct FDSPickerRow: View {
     }
 
     private var logoOnlyVariant: some View {
-        VStack(spacing: AppSpacing.sm) {
+        HStack(spacing: AppSpacing.sm) {
             FDSImage(
                 imageName: option.imageName,
                 fallbackSymbol: option.symbol,
@@ -74,7 +74,7 @@ struct FDSPickerRow: View {
 
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                     .foregroundStyle(AppColors.accent)
             }
         }
@@ -102,7 +102,7 @@ struct FDSPickerRow: View {
 
             if isSelected {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                     .foregroundStyle(AppColors.accent)
             }
         }
@@ -110,45 +110,4 @@ struct FDSPickerRow: View {
         .padding(.horizontal, AppSpacing.md)
         .background(isSelected ? AppColors.accent.opacity(0.08) : .clear)
     }
-}
-
-#Preview {
-    VStack(spacing: AppSpacing.md) {
-        FDSPickerRow(
-            option: FDSPickerOption(
-                id: "hdfc",
-                title: "HDFC Bank",
-                subtitle: "•••• 6521",
-                symbol: "building.columns.fill"
-            ),
-            variant: .symbolText,
-            isSelected: true
-        )
-
-        Divider()
-
-        FDSPickerRow(
-            option: FDSPickerOption(
-                id: "visa",
-                title: "Visa",
-                symbol: "creditcard.fill"
-            ),
-            variant: .logoOnly,
-            isSelected: false
-        )
-
-        Divider()
-
-        FDSPickerRow(
-            option: FDSPickerOption(
-                id: "checking",
-                title: "Checking",
-                subtitle: "Account Type"
-            ),
-            variant: .textOnly,
-            isSelected: false
-        )
-    }
-    .padding(AppSpacing.md)
-    .background(AppColors.base)
 }

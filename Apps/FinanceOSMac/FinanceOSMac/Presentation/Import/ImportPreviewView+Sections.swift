@@ -9,9 +9,9 @@ extension ImportPreviewView {
             if viewModel.selectedTarget != nil {
                 Button(action: {
                     viewModel.selectedTarget = nil
-                }) {
+                }, label: {
                     Text("Clear Selection")
-                }
+                })
                 Divider()
             }
 
@@ -21,19 +21,19 @@ extension ImportPreviewView {
                     ForEach(accounts) { account in
                         Button(action: {
                             viewModel.selectedTarget = .ledger(account.id)
-                        }) {
+                        }, label: {
                             if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
                                 Label(account.displayName, systemImage: "checkmark")
                             } else {
                                 Text(account.displayName)
                             }
-                        }
+                        })
                     }
                 }
             }
-            Button(action: { initializeCreateSheet(isCard: false) }) {
+            Button(action: { initializeCreateSheet(isCard: false) }, label: {
                 Text("Create New Account...")
-            }
+            })
 
             let cards = viewModel.ledgers.filter { $0.kind == .creditCard }
             if !cards.isEmpty {
@@ -41,19 +41,19 @@ extension ImportPreviewView {
                     ForEach(cards) { card in
                         Button(action: {
                             viewModel.selectedTarget = .ledger(card.id)
-                        }) {
+                        }, label: {
                             if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
                                 Label(card.displayName, systemImage: "checkmark")
                             } else {
                                 Text(card.displayName)
                             }
-                        }
+                        })
                     }
                 }
             }
-            Button(action: { initializeCreateSheet(isCard: true) }) {
+            Button(action: { initializeCreateSheet(isCard: true) }, label: {
                 Text("Create New Card...")
-            }
+            })
         } label: {
             let displayText: String = {
                 if let target = viewModel.selectedTarget {
@@ -109,7 +109,7 @@ extension ImportPreviewView {
 
             Spacer()
 
-            Button(action: { viewModel.backToUpload() }) {
+            Button(action: { viewModel.backToUpload() }, label: {
                 Text("Cancel")
                     .font(AppTypography.labelMedium)
                     .foregroundColor(DesignTokens.Text.primary)
@@ -119,10 +119,10 @@ extension ImportPreviewView {
                         RoundedRectangle(cornerRadius: AppRadius.sm)
                             .stroke(DesignTokens.Text.secondary.opacity(0.3), lineWidth: 1)
                     )
-            }
+            })
             .buttonStyle(.plain)
 
-            Button(action: { viewModel.importTransactions() }) {
+            Button(action: { viewModel.importTransactions() }, label: {
                 Text("Import \(newCount) transaction\(newCount == 1 ? "" : "s")")
                     .font(AppTypography.labelMedium)
                     .foregroundColor(.white)
@@ -130,7 +130,7 @@ extension ImportPreviewView {
                     .padding(.vertical, AppSpacing.sm)
                     .background(newCount > 0 ? AppColors.accent : Color.gray)
                     .cornerRadius(AppRadius.sm)
-            }
+            })
             .buttonStyle(.plain)
             .disabled(newCount == 0 || viewModel.selectedTarget == nil)
         }

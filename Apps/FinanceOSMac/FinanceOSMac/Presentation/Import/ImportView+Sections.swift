@@ -50,9 +50,9 @@ struct TargetSelectionSection: View {
 
             Menu {
                 if viewModel.selectedTarget != nil {
-                    Button(action: { viewModel.selectedTarget = nil }) {
+                    Button(action: { viewModel.selectedTarget = nil }, label: {
                         Text("Clear")
-                    }
+                    })
                     Divider()
                 }
 
@@ -60,13 +60,13 @@ struct TargetSelectionSection: View {
                 if !accounts.isEmpty {
                     Menu("Accounts") {
                         ForEach(accounts) { account in
-                            Button(action: { viewModel.selectedTarget = .ledger(account.id) }) {
+                            Button(action: { viewModel.selectedTarget = .ledger(account.id) }, label: {
                                 if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
                                     Label(account.displayName, systemImage: "checkmark")
                                 } else {
                                     Text(account.displayName)
                                 }
-                            }
+                            })
                         }
                     }
                 }
@@ -75,20 +75,20 @@ struct TargetSelectionSection: View {
                 if !cards.isEmpty {
                     Menu("Cards") {
                         ForEach(cards) { card in
-                            Button(action: { viewModel.selectedTarget = .ledger(card.id) }) {
+                            Button(action: { viewModel.selectedTarget = .ledger(card.id) }, label: {
                                 if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
                                     Label(card.displayName, systemImage: "checkmark")
                                 } else {
                                     Text(card.displayName)
                                 }
-                            }
+                            })
                         }
                     }
                 }
 
                 Divider()
-                Button(action: {}) { Text("New Account") }
-                Button(action: {}) { Text("New Card") }
+                Button(action: {}, label: { Text("New Account") })
+                Button(action: {}, label: { Text("New Card") })
             } label: {
                 let displayText: String = {
                     if let target = viewModel.selectedTarget {

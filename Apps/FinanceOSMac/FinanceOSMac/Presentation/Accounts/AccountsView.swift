@@ -155,7 +155,7 @@ extension AccountsView {
 
         return HStack(spacing: 16) {
             FDSBankMark(bank?.bank ?? .hdfc)
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
@@ -255,7 +255,7 @@ extension AccountsView {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 6)
                 .fill(DesignTokens.Background.surfaceGlassThin)
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
             VStack(alignment: .leading, spacing: 4) {
                 RoundedRectangle(cornerRadius: 3)
                     .fill(DesignTokens.Background.surfaceGlassThin)

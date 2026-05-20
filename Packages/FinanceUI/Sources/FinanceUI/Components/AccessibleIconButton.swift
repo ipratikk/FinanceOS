@@ -33,7 +33,7 @@ public struct AccessibleIconButton: View {
     public var body: some View {
         Button(action: action) {
             icon
-                .font(.system(size: 16, weight: .semibold))
+                .font(AppTypography.iconMd)
         }
         .frame(minWidth: 44, minHeight: 44)
         .contentShape(Rectangle())

@@ -44,7 +44,7 @@ func ledgersOfBothKindsCanBeInsertedAfterMigration() throws {
         bankId: bank.id,
         kind: .creditCard,
         displayName: "Platinum Card",
-        cardType: "credit",
+        cardType: .other,
         linkedLedgerId: accountLedger.id
     )
 
@@ -131,7 +131,7 @@ func cardLedgerPropertiesArePersistedCorrectly() throws {
         kind: .creditCard,
         displayName: "Travel Card",
         last4: "5678",
-        cardType: "credit",
+        cardType: .other,
         linkedLedgerId: accountLedger.id
     )
 

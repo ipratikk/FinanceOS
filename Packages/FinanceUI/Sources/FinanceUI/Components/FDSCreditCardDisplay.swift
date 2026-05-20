@@ -64,7 +64,7 @@ public struct FDSCreditCardDisplay: View {
                         VStack(alignment: .leading, spacing: 2) {
                             if let cardName {
                                 Text(cardName)
-                                    .font(.system(size: 11, weight: .semibold))
+                                    .font(AppTypography.captionSmSemibold)
                                     .foregroundStyle(.white)
                                     .lineLimit(1)
                             }

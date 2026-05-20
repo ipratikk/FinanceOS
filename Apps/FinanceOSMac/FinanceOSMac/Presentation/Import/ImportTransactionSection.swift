@@ -49,11 +49,11 @@ struct ImportTransactionSection: View {
     // MARK: - View All Button
 
     private var viewAllButton: some View {
-        Button(action: { isExpanded.toggle() }) {
+        Button(action: { isExpanded.toggle() }, label: {
             Text(isExpanded ? "Show Less" : "View All")
                 .font(AppTypography.labelMedium)
                 .foregroundColor(AppColors.accent)
-        }
+        })
         .buttonStyle(.plain)
         .contentShape(Rectangle())
     }

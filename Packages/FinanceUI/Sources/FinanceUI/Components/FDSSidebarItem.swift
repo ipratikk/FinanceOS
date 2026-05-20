@@ -33,7 +33,7 @@ public struct FDSSidebarItem: View {
         Button(action: action) {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
+                    .font(isSelected ? AppTypography.bodySmSemibold : AppTypography.bodySmMedium)
                     .foregroundColor(
                         isSelected
                             ? AppColors.accent
@@ -43,7 +43,7 @@ public struct FDSSidebarItem: View {
                     .frame(width: 18)
 
                 Text(title)
-                    .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
+                    .font(isSelected ? AppTypography.bodySmSemibold : AppTypography.bodySm)
                     .foregroundColor(
                         isSelected || isHovered
                             ? AppColors.textPrimary
@@ -54,7 +54,7 @@ public struct FDSSidebarItem: View {
 
                 if let badge {
                     Text(badge)
-                        .font(.system(size: 10, weight: .semibold).monospacedDigit())
+                        .font(AppTypography.maskedAccount.monospacedDigit())
                         .foregroundColor(AppColors.textTertiary)
                 }
             }

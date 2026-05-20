@@ -45,7 +45,7 @@ struct AnalyticsView: View {
                 ProgressView().controlSize(.small)
                 Text("Loading…")
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
@@ -79,7 +79,7 @@ struct AnalyticsView: View {
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 Text("Inflows vs outflows over time")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -89,7 +89,7 @@ struct AnalyticsView: View {
                         y: .value("Outflows", Double(item.totalDebit) / 100.0)
                     )
                     .foregroundStyle(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.8))
-                    .cornerRadius(4)
+                    .cornerRadius(AppRadius.xs)
                     .position(by: .value("Type", "Outflows"))
 
                     BarMark(
@@ -97,7 +97,7 @@ struct AnalyticsView: View {
                         y: .value("Inflows", Double(item.totalCredit) / 100.0)
                     )
                     .foregroundStyle(Color(red: 0.19, green: 0.82, blue: 0.35).opacity(0.8))
-                    .cornerRadius(4)
+                    .cornerRadius(AppRadius.xs)
                     .position(by: .value("Type", "Inflows"))
                 }
                 .frame(height: 240)
@@ -124,7 +124,7 @@ struct AnalyticsView: View {
                     .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 Text("Highest outflow activity")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
 
             FDSCard(cornerRadius: 12, padded: false) {
@@ -156,7 +156,7 @@ struct AnalyticsView: View {
                             .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                         Text("Auto-categorization with smart detection")
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                            .foregroundColor(DesignTokens.Text.secondary)
                     }
                 }
                 .frame(maxWidth: .infinity)

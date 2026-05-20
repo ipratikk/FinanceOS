@@ -28,21 +28,21 @@ public struct FDSListRow<Trailing: View>: View {
     }
 
     public var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppSpacing.sm) {
             if let icon {
                 icon
-                    .frame(width: 32, height: 32)
+                    .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
                     .foregroundColor(AppColors.accent)
             }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(AppTypography.bodyMdSemibold)
                     .foregroundColor(.primary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.system(size: 12, weight: .regular))
+                        .font(AppTypography.captionLg)
                         .foregroundColor(.secondary)
                 }
             }
@@ -51,13 +51,13 @@ public struct FDSListRow<Trailing: View>: View {
 
             trailing
         }
-        .padding(12)
+        .padding(AppSpacing.sm)
         .background(AppColors.surface2)
         .overlay(
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: AppRadius.sm)
                 .strokeBorder(AppColors.accent.opacity(isSelected ? 0.2 : 0.1), lineWidth: 0.5)
         )
-        .cornerRadius(8)
+        .cornerRadius(AppRadius.sm)
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap ?? {})
         .accessibilityElement(children: .ignore)
@@ -84,14 +84,14 @@ public extension FDSListRow where Trailing == EmptyView {
 // MARK: - Preview
 
 #Preview {
-    VStack(spacing: 12) {
+    VStack(spacing: AppSpacing.sm) {
         FDSListRow(
             title: "Chase Checking",
             subtitle: "****1234",
             icon: Image(systemName: "building.2.fill")
         ) {
             Text("$5,234.50")
-                .font(.system(size: 14, weight: .semibold))
+                .font(AppTypography.bodyMdSemibold)
                 .foregroundColor(.primary)
         }
 
@@ -102,10 +102,10 @@ public extension FDSListRow where Trailing == EmptyView {
         ) {
             VStack(alignment: .trailing, spacing: 2) {
                 Text("$2,100.00")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(AppTypography.captionLgSemibold)
                     .foregroundColor(.blue)
                 Text("Due Apr 15")
-                    .font(.system(size: 10, weight: .regular))
+                    .font(AppTypography.maskedAccount)
                     .foregroundColor(.secondary)
             }
         }

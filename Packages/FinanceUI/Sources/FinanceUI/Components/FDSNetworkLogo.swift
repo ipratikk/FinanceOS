@@ -85,17 +85,3 @@ public struct FDSNetworkLogo: View {
         }
     }
 }
-
-public extension CardNetwork {
-    var displayName: String {
-        switch self {
-        case .visa: "Visa"
-        case .mastercard: "Mastercard"
-        case .amex: "American Express"
-        case .discover: "Discover"
-        case .diners: "Diners Club"
-        case .rupay: "RuPay"
-        case .other: "Other"
-        }
-    }
-}

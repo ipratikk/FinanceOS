@@ -31,7 +31,7 @@ struct SettingsView: View {
     var body: some View {
         HStack(spacing: 0) {
             sideTabs
-            Divider().opacity(0.2)
+            Divider().opacity(DesignTokens.Opacity.low)
             ScrollView(showsIndicators: false) {
                 Group {
                     if selectedTab == .general {
@@ -40,7 +40,7 @@ struct SettingsView: View {
                         aboutSettings
                     }
                 }
-                .padding(16)
+                .padding(AppSpacing.md)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
         }
@@ -59,12 +59,12 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Settings")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    .font(AppTypography.headingMd)
+                    .foregroundColor(DesignTokens.Text.primary)
                 Text("Preferences")
                     .font(.system(size: 10, weight: .semibold))
                     .tracking(0.5)
-                    .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                    .foregroundColor(DesignTokens.Text.tertiary)
             }
 
             VStack(alignment: .leading, spacing: 0) {
@@ -80,7 +80,7 @@ struct SettingsView: View {
 
             Spacer()
         }
-        .padding(16)
+        .padding(AppSpacing.md)
         .frame(width: 220)
         .background(.regularMaterial)
     }
@@ -92,15 +92,15 @@ struct SettingsView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     toggleRow("Notifications", symbol: "bell.fill", binding: $notifications)
-                    Divider().opacity(0.2).padding(.vertical, 8)
+                    Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
                     toggleRow("Auto-Refresh", symbol: "arrow.clockwise", binding: $autoRefresh)
                 }
-                .padding(12)
+                .padding(AppSpacing.sm)
             }
 
             sectionTitle("Danger Zone")
 
-            Button(action: { showConfirmClear = true }) {
+            Button(action: { showConfirmClear = true }, label: {
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.system(size: 13, weight: .semibold))
@@ -110,12 +110,12 @@ struct SettingsView: View {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13, weight: .semibold))
                 }
-            }
+            })
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
-            .background(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.18))
-            .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
+            .background(DesignTokens.System.red.opacity(0.18))
+            .foregroundColor(DesignTokens.System.red)
             .cornerRadius(8)
             .buttonStyle(.plain)
         }
@@ -128,12 +128,12 @@ struct SettingsView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     infoRow("Version", value: "1.0.0", copyable: true)
-                    Divider().opacity(0.2).padding(.vertical, 8)
+                    Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
                     infoRow("Build", value: "2026.05.16", copyable: true)
-                    Divider().opacity(0.2).padding(.vertical, 8)
+                    Divider().opacity(DesignTokens.Opacity.low).padding(.vertical, 8)
                     infoRow("Platform", value: "macOS", copyable: false)
                 }
-                .padding(12)
+                .padding(AppSpacing.sm)
             }
 
             sectionTitle("Links")
@@ -141,9 +141,9 @@ struct SettingsView: View {
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {
                     linkRow("GitHub Repository", symbol: "link")
-                    Divider().opacity(0.2)
+                    Divider().opacity(DesignTokens.Opacity.low)
                     linkRow("Report a Bug", symbol: "ladybug.fill")
-                    Divider().opacity(0.2)
+                    Divider().opacity(DesignTokens.Opacity.low)
                     linkRow("Privacy Policy", symbol: "lock.fill")
                 }
             }
@@ -152,66 +152,66 @@ struct SettingsView: View {
 
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
-            .font(.system(size: 14, weight: .semibold))
-            .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+            .font(AppTypography.bodyMdSemibold)
+            .foregroundColor(DesignTokens.Text.primary)
     }
 
     private func toggleRow(_ label: String, symbol: String, binding: Binding<Bool>) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppSpacing.sm) {
             Image(systemName: symbol)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                .font(AppTypography.bodySmMedium)
+                .foregroundColor(DesignTokens.Text.secondary)
                 .frame(width: 22)
             Text(label)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                .font(AppTypography.bodySmMedium)
+                .foregroundColor(DesignTokens.Text.primary)
             Spacer()
             FDSToggle(isOn: binding)
         }
     }
 
     private func infoRow(_ label: String, value: String, copyable: Bool) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppSpacing.sm) {
             Text(label.uppercased())
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(0.6)
-                .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
+                .foregroundColor(DesignTokens.Text.tertiary)
             Spacer()
             Text(value)
-                .font(.system(size: 13, weight: .medium, design: .monospaced))
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                .font(AppTypography.bodySmMedium)
+                .foregroundColor(DesignTokens.Text.secondary)
             if copyable {
                 Button(action: {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(value, forType: .string)
-                }) {
+                }, label: {
                     Image(systemName: "doc.on.doc")
                         .font(.system(size: 11, weight: .medium))
-                        .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
-                }
+                        .foregroundColor(DesignTokens.Text.secondary)
+                })
                 .buttonStyle(.plain)
             }
         }
-        .padding(12)
+        .padding(AppSpacing.sm)
     }
 
     private func linkRow(_ label: String, symbol: String) -> some View {
-        Button(action: {}) {
+        Button(action: {}, label: {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(red: 1.0, green: 0.62, blue: 0.04))
+                    .foregroundColor(DesignTokens.System.orange)
                     .frame(width: 22)
                 Text(label)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    .foregroundColor(DesignTokens.Text.primary)
                 Spacer()
                 Image(systemName: "arrow.up.right")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                    .foregroundColor(DesignTokens.Text.secondary)
             }
             .padding(12)
-        }
+        })
         .buttonStyle(.plain)
     }
 }

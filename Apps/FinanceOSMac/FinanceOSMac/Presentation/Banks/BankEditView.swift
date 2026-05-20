@@ -21,42 +21,34 @@ struct BankEditView: View {
         FDSSheet(
             title: "Edit Bank",
             subtitle: bank.name,
-            onDismiss: { dismiss() }
-        ) {
-            VStack(alignment: .leading, spacing: 20) {
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("BANK INFORMATION")
-                            .font(.system(size: 10, weight: .semibold))
-                            .tracking(0.2)
-                            .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+            onDismiss: { dismiss() },
+            content: {
+                VStack(alignment: .leading, spacing: 20) {
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("BANK INFORMATION")
+                                .font(.system(size: 10, weight: .semibold))
+                                .tracking(0.2)
+                                .foregroundColor(DesignTokens.Text.secondary)
 
-                        fieldInput("Bank Name", text: $name)
-                        Divider().opacity(0.2)
-                        fieldInput("Provider Type", text: $providerType)
+                            fieldInput("Bank Name", text: $name)
+                            Divider().opacity(DesignTokens.Opacity.low)
+                            fieldInput("Provider Type", text: $providerType)
+                        }
+                        .padding(12)
                     }
-                    .padding(12)
-                }
 
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Button(action: { showDeleteConfirm = true }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "trash.fill")
-                                    .font(.system(size: 12, weight: .semibold))
-                                Text("Delete Bank")
-                                    .font(.system(size: 13, weight: .semibold))
-                                Spacer()
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            FDSLiquidButton("Delete Bank", symbol: "trash.fill", variant: .danger) {
+                                showDeleteConfirm = true
                             }
-                            .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(12)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
-        }
+        )
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -76,11 +68,10 @@ struct BankEditView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
-            TextField("", text: text)
-                .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+            FDSTextInput("", text: text, style: .labelSmall)
+                .foregroundColor(DesignTokens.Text.primary)
                 .padding(8)
-                .background(Color.black.opacity(0.25))
+                .background(DesignTokens.Background.inputWell)
                 .cornerRadius(6)
         }
     }

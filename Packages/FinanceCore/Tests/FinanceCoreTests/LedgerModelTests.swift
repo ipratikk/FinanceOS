@@ -59,7 +59,7 @@ func ledgerGRDBRoundTrip() throws {
         displayName: "Credit Card",
         last4: "5678",
         cardType: .visa,
-        cardProduct: "Regalia",
+        cardProductId: "Regalia",
         linkedLedgerId: bankAccountLedger.id
     )
 

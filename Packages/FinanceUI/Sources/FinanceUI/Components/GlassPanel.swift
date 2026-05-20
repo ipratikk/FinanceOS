@@ -19,7 +19,12 @@ public struct GlassPanel<Content: View>: View {
                 }
             )
             .cornerRadius(AppRadius.md)
-            .shadow(color: .black.opacity(0.3), radius: 8, y: 2)
+            .shadow(
+                color: AppShadows.standard.color,
+                radius: AppShadows.standard.radius,
+                x: AppShadows.standard.x,
+                y: AppShadows.standard.y
+            )
     }
 }
 

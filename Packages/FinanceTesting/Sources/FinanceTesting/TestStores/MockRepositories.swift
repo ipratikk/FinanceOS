@@ -53,7 +53,7 @@ public final class MockLedgerRepository: LedgerRepository, @unchecked Sendable {
                 createdAt: updated.createdAt,
                 accountType: updated.accountType,
                 cardType: updated.cardType,
-                cardProduct: updated.cardProduct,
+                cardProductId: updated.cardProductId,
                 bin: updated.bin,
                 linkedLedgerId: updated.linkedLedgerId,
                 isArchived: updated.isArchived,

@@ -45,9 +45,9 @@ public struct FDSMetricTile: View {
             HStack(spacing: AppSpacing.compact) {
                 if let symbol {
                     Image(systemName: symbol)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(AppTypography.captionSmSemibold)
                         .foregroundStyle(.tertiary)
-                        .frame(width: 16, height: 16)
+                        .frame(width: AppSpacing.md, height: AppSpacing.md)
                 }
                 Text(label.uppercased())
                     .font(.system(size: 10, weight: .semibold))

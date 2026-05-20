@@ -34,13 +34,13 @@ struct TransactionFilterView: View {
                 .symbolRenderingMode(.hierarchical)
             Text("Filters").bodyMedium()
             Spacer()
-            Button(action: { dismiss() }) {
+            Button(action: { dismiss() }, label: {
                 Image(systemName: "xmark")
                     .labelSmall()
                     .foregroundStyle(.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(.ultraThinMaterial))
-            }
+            })
             .buttonStyle(.plain)
         }
         .padding(AppSpacing.md)

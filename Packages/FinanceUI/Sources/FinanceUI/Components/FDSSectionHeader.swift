@@ -33,12 +33,12 @@ public struct FDSSectionHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 Text(title)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(AppTypography.subheadline)
                     .foregroundStyle(.primary)
 
                 if let subtitle {
                     Text(subtitle)
-                        .font(.system(size: 11, weight: .regular))
+                        .font(AppTypography.captionSm)
                         .foregroundStyle(.tertiary)
                 }
             }
@@ -49,7 +49,7 @@ public struct FDSSectionHeader: View {
                 Button(action: action) {
                     HStack(spacing: 4) {
                         Text(actionLabel)
-                            .font(.system(size: 12, weight: .medium))
+                            .font(AppTypography.captionLgMedium)
                         if let actionSymbol {
                             Image(systemName: actionSymbol)
                                 .font(.system(size: 10, weight: .semibold))

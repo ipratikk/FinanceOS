@@ -16,7 +16,7 @@ struct ImportSourceCard: View {
     }
 
     var body: some View {
-        Button(action: { onSelect(source) }) {
+        Button(action: { onSelect(source) }, label: {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 12) {
                     bankLogoView
@@ -57,7 +57,7 @@ struct ImportSourceCard: View {
                         lineWidth: 1
                     )
             )
-        }
+        })
         .buttonStyle(.plain)
         .contentShape(Rectangle())
     }
@@ -68,11 +68,11 @@ struct ImportSourceCard: View {
             Image(bank.symbolAssetName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
         } else {
             RoundedRectangle(cornerRadius: AppRadius.sm)
                 .fill(DesignTokens.Background.surfaceGlass)
-                .frame(width: 40, height: 40)
+                .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
                 .overlay(
                     Image(systemName: "building.columns")
                         .font(.system(size: 16))

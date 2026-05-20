@@ -47,10 +47,10 @@ public struct FBadge: View {
         HStack(spacing: AppSpacing.xxs) {
             if let icon {
                 Image(systemName: icon)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
             }
             Text(text)
-                .font(.system(size: 12, weight: .medium))
+                .font(AppTypography.captionLgMedium)
         }
         .foregroundColor(color.foreground)
         .padding(.vertical, AppSpacing.xxs)

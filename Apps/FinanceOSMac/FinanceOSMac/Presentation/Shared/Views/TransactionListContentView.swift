@@ -47,16 +47,15 @@ struct TransactionListContentView: View {
                     .font(AppTypography.captionLgSemibold)
                     .foregroundStyle(.tertiary)
 
-                TextField("Search transactions", text: $listState.searchQuery)
-                    .font(AppTypography.bodySm)
+                FDSTextInput("Search transactions", text: $listState.searchQuery, style: .bodyMedium)
                     .textFieldStyle(.plain)
 
                 if !listState.searchQuery.isEmpty {
-                    Button(action: { listState.searchQuery = "" }) {
+                    Button(action: { listState.searchQuery = "" }, label: {
                         Image(systemName: "xmark.circle.fill")
                             .font(AppTypography.captionLg)
                             .foregroundStyle(.tertiary)
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
             }
@@ -83,7 +82,7 @@ struct TransactionListContentView: View {
                 dateChip
 
                 if listState.isFilterActive {
-                    Button(action: { listState.reset() }) {
+                    Button(action: { listState.reset() }, label: {
                         HStack(spacing: 3) {
                             Image(systemName: "xmark.circle.fill")
                                 .font(AppTypography.label)
@@ -91,7 +90,7 @@ struct TransactionListContentView: View {
                                 .font(AppTypography.captionLgMedium)
                         }
                         .foregroundStyle(AppColors.accentGold)
-                    }
+                    })
                     .buttonStyle(.plain)
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
@@ -196,7 +195,7 @@ struct TransactionListContentView: View {
         FDSCard {
             VStack(spacing: 0) {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
-                    Button(action: { selectedTransaction = row }) {
+                    Button(action: { selectedTransaction = row }, label: {
                         FDSTransactionRow(
                             merchant: row.title,
                             categorySymbol: nil,
@@ -205,7 +204,7 @@ struct TransactionListContentView: View {
                             isDebit: row.transactionType == .debit,
                             runningBalance: row.runningBalance
                         )
-                    }
+                    })
                     .buttonStyle(.plain)
                     .contextMenu {
                         Button("Delete", role: .destructive) { transactionPendingDelete = row }

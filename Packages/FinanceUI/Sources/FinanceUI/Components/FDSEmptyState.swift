@@ -18,7 +18,7 @@ public struct FDSEmptyState: View {
     public var body: some View {
         VStack(spacing: AppSpacing.md) {
             Image(systemName: symbol)
-                .font(.system(size: 48, weight: .light))
+                .font(AppTypography.displayLargeLight)
                 .foregroundStyle(AppColors.accentSlate.opacity(0.4))
                 .symbolRenderingMode(.hierarchical)
 
@@ -26,7 +26,7 @@ public struct FDSEmptyState: View {
                 Text(title)
                     .bodyLarge()
                 Text(subtitle)
-                    .font(.system(size: 12))
+                    .font(AppTypography.captionLg)
                     .foregroundStyle(.tertiary)
             }
         }
