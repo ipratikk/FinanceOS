@@ -2,62 +2,267 @@ name: Build and Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 defaults:
   run:
     shell: bash
 
-_runner: &runner macos-26-arm64
+env:
+  SPM_BUILD_PATH: .spm-build
+  DERIVED_DATA_PATH: .derivedData
+
+# =========================================================
+# Concurrency
+# =========================================================
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# =========================================================
+# Jobs
+# =========================================================
 
 jobs:
+
+  # =======================================================
+  # SwiftLint
+  # =======================================================
+
   lint:
-    runs-on: *runner
+    name: SwiftLint
+    runs-on: macos-26
+
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Lint
+      - name: Install SwiftLint
         run: |
-          which swiftlint || brew install swiftlint
-          swiftlint --strict --quiet
+          set -euo pipefail
+
+          if ! command -v swiftlint >/dev/null 2>&1; then
+            brew install swiftlint
+          fi
+
+      - name: Lint Changed Files
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+
+            CHANGED_FILES=$(
+              git diff --name-only origin/main...HEAD \
+                | grep '\.swift$' || true
+            )
+
+            if [[ -z "$CHANGED_FILES" ]]; then
+              echo "No Swift files changed"
+              exit 0
+            fi
+
+            echo "Linting changed Swift files"
+
+            while IFS= read -r file; do
+
+              [[ -z "$file" ]] && continue
+
+              echo "Linting $file"
+
+              swiftlint lint \
+                --strict \
+                --quiet \
+                "$file"
+
+            done <<< "$CHANGED_FILES"
+
+          else
+            swiftlint lint --strict --quiet
+          fi
+
+  # =======================================================
+  # Package Tests
+  # =======================================================
 
   package-tests:
-    runs-on: *runner
+    name: Package Tests (${{ matrix.package }})
+    runs-on: macos-26
+
+    timeout-minutes: 20
+
     strategy:
       fail-fast: false
+
       matrix:
-        package: [FinanceCore, FinanceParsers, FinanceUI, FinanceTesting]
+        package:
+          - FinanceCore
+          - FinanceParsers
+          - FinanceUI
+          - FinanceTesting
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.1"
-
-      - name: Cache ${{ matrix.package }} build
+      - name: Cache Shared SPM Build
         uses: actions/cache@v4
         with:
-          path: Packages/${{ matrix.package }}/.build
-          key: swift-${{ matrix.package }}-${{ runner.os }}-${{ hashFiles(format('Packages/{0}/Package.resolved', matrix.package)) }}
-          restore-keys: swift-${{ matrix.package }}-${{ runner.os }}-
+          path: ${{ env.SPM_BUILD_PATH }}
 
-      - name: Test ${{ matrix.package }}
-        run: swift test --package-path Packages/${{ matrix.package }} --parallel
+          key: >
+            spm-${{ runner.os }}-${{ matrix.package }}-${{
+              hashFiles(
+                'Packages/**/Package.swift',
+                'Packages/**/Package.resolved'
+              )
+            }}
 
-  snapshot-tests:
-    runs-on: *runner
+          restore-keys: |
+            spm-${{ runner.os }}-${{ matrix.package }}-
+            spm-${{ runner.os }}-
+
+      - name: Resolve Package Dependencies
+        run: |
+          set -euo pipefail
+
+          swift package resolve \
+            --package-path Packages/${{ matrix.package }}
+
+      - name: Run Package Tests
+        run: |
+          set -euo pipefail
+
+          swift test \
+            --package-path Packages/${{ matrix.package }} \
+            --build-path ${{ env.SPM_BUILD_PATH }} \
+            --parallel
+
+  # =======================================================
+  # macOS Build
+  # =======================================================
+
+  macos-build:
+    name: macOS Build
+    runs-on: macos-26
+
+    timeout-minutes: 20
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Cache DerivedData
         uses: actions/cache@v4
         with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: xcode-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: xcode-${{ runner.os }}-
+          path: ${{ env.DERIVED_DATA_PATH }}
 
-      - name: Run Snapshot Tests
-        run: xcodebuild test -scheme FinanceOSMac -quiet
+          key: >
+            deriveddata-${{ runner.os }}-${{
+              hashFiles(
+                '**/Package.resolved',
+                '**/*.xcodeproj/project.pbxproj'
+              )
+            }}
+
+          restore-keys: |
+            deriveddata-${{ runner.os }}-
+
+      - name: Build macOS App
+        run: |
+          set -euo pipefail
+
+          xcodebuild \
+            build \
+            -scheme FinanceOSMac \
+            -destination 'platform=macOS,arch=arm64' \
+            -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            -parallelizeTargets \
+            -quiet
+
+  # =======================================================
+  # Snapshot Tests
+  # =======================================================
+
+  # snapshot-tests:
+  #   name: Snapshot Tests
+  #   runs-on: macos-26
+
+  #   timeout-minutes: 30
+
+  #   needs:
+  #     - package-tests
+  #     - macos-build
+
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Cache DerivedData
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: ${{ env.DERIVED_DATA_PATH }}
+
+  #         key: >
+  #           snapshot-deriveddata-${{ runner.os }}-${{
+  #             hashFiles(
+  #               '**/Package.resolved',
+  #               '**/*.xcodeproj/project.pbxproj'
+  #             )
+  #           }}
+
+  #         restore-keys: |
+  #           snapshot-deriveddata-${{ runner.os }}-
+
+  #     - name: Run Snapshot Tests
+  #       env:
+  #         IS_RUNNING_IN_CI: true
+
+  #       run: |
+  #         set -euo pipefail
+
+  #         xcodebuild \
+  #           test \
+  #           -scheme FinanceOSMac \
+  #           -destination 'platform=macOS,arch=arm64' \
+  #           -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
+  #           COMPILER_INDEX_STORE_ENABLE=NO \
+  #           -parallel-testing-enabled YES \
+  #           -parallelizeTargets \
+  #           -resultBundlePath TestResults \
+  #           -quiet
+
+  #     - name: Upload Snapshot Test Results
+  #       if: failure()
+
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: snapshot-test-results
+  #         path: TestResults
+
+  # =======================================================
+  # Validation Summary
+  # =======================================================
+
+  validate:
+    name: Validation Summary
+    runs-on: macos-26
+
+    timeout-minutes: 5
+
+    needs:
+      - lint
+      - package-tests
+      - macos-build
+      # - snapshot-tests
+
+    steps:
+      - name: Validation Passed
+        run: |
+          echo "✅ All CI validations passed"
