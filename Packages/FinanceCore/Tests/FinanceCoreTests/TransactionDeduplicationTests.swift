@@ -43,13 +43,13 @@ func reImportingSameTransactionsProducesSkipped() throws {
     )
 
     let firstImport = try awaitThrows {
-        await repo.insertTransactions([txn])
+        try await repo.insertTransactions([txn])
     }
     #expect(firstImport.inserted == 1)
     #expect(firstImport.skipped == 0)
 
     let secondImport = try awaitThrows {
-        await repo.insertTransactions([txn])
+        try await repo.insertTransactions([txn])
     }
     #expect(secondImport.inserted == 0)
     #expect(secondImport.skipped == 1)
@@ -115,12 +115,12 @@ func sameFingerprointDifferentAccountsInsertBoth() throws {
     )
 
     let result1 = try awaitThrows {
-        await repo.insertTransactions([txn1])
+        try await repo.insertTransactions([txn1])
     }
     #expect(result1.inserted == 1)
 
     let result2 = try awaitThrows {
-        await repo.insertTransactions([txn2])
+        try await repo.insertTransactions([txn2])
     }
     #expect(result2.inserted == 1)
     #expect(result2.skipped == 0)
