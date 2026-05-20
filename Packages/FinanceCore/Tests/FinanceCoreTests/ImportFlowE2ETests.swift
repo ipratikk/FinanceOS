@@ -50,7 +50,12 @@ func importFlowE2E_successfulAccountImport() async throws {
     let target = TransactionImportTarget.ledger(ledger.id)
     let pipeline = TransactionImportPipeline(repository: transactionRepository)
     let context = OperationContext.importSession()
-    let result = try await pipeline.execute(statement: statement, target: target, ledgerKind: ledger.kind, context: context)
+    let result = try await pipeline.execute(
+        statement: statement,
+        target: target,
+        ledgerKind: ledger.kind,
+        context: context
+    )
 
     #expect(result.inserted == 1)
     #expect(result.skipped == 0)
@@ -107,7 +112,12 @@ func importFlowE2E_deduplicationWorksWithLedgerId() async throws {
     let target = TransactionImportTarget.ledger(ledger.id)
     let pipeline = TransactionImportPipeline(repository: transactionRepository)
     let context = OperationContext.importSession()
-    let result = try await pipeline.execute(statement: statement, target: target, ledgerKind: ledger.kind, context: context)
+    let result = try await pipeline.execute(
+        statement: statement,
+        target: target,
+        ledgerKind: ledger.kind,
+        context: context
+    )
 
     #expect(result.inserted == 1)
     #expect(result.skipped == 1)
@@ -206,7 +216,12 @@ func importFlowE2E_creditCardImport() async throws {
     let target = TransactionImportTarget.ledger(card.id)
     let pipeline = TransactionImportPipeline(repository: transactionRepository)
     let context = OperationContext.importSession()
-    let result = try await pipeline.execute(statement: statement, target: target, ledgerKind: card.kind, context: context)
+    let result = try await pipeline.execute(
+        statement: statement,
+        target: target,
+        ledgerKind: card.kind,
+        context: context
+    )
 
     #expect(result.inserted == 1)
 
