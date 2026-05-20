@@ -3,9 +3,9 @@ import FinanceParsers
 import Foundation
 import Testing
 
-let testBank = Bank(id: UUID(), name: "HDFC", providerType: .bank)
-let testBank2 = Bank(id: UUID(), name: "ICICI", providerType: .bank)
-let testBank3 = Bank(id: UUID(), name: "Amex", providerType: .credit)
+let testBank = Bank(id: UUID(), bank: .hdfc)
+let testBank2 = Bank(id: UUID(), bank: .icici)
+let testBank3 = Bank(id: UUID(), bank: .amex)
 
 let testLedger1 = Ledger(
     id: UUID(),

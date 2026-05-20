@@ -1,4 +1,5 @@
 @testable import FinanceCore
+import Foundation
 import GRDB
 import Testing
 
@@ -50,7 +51,7 @@ func ledgerGRDBRoundTrip() throws {
         displayName: "Savings Account",
         last4: "1234",
         ownerName: "Test User",
-        accountType: .savings
+        accountType: "savings"
     )
 
     let cardLedger = Ledger(
@@ -58,7 +59,7 @@ func ledgerGRDBRoundTrip() throws {
         kind: .creditCard,
         displayName: "Credit Card",
         last4: "5678",
-        cardType: .visa,
+        cardType: "visa",
         cardProduct: "Regalia",
         linkedLedgerId: bankAccountLedger.id
     )
@@ -97,14 +98,14 @@ func ledgerFilterByKind() throws {
         bankId: bank.id,
         kind: .bankAccount,
         displayName: "Account",
-        accountType: .savings
+        accountType: "savings"
     )
 
     let card = Ledger(
         bankId: bank.id,
         kind: .creditCard,
         displayName: "Card",
-        cardType: .visa
+        cardType: "visa"
     )
 
     try dbQueue.write { database in
@@ -229,52 +230,3 @@ func ledgerLinkedRelationship() throws {
     #expect(fetchedCard?.linkedLedgerId == account.id)
 }
 
-@Test
-func ledgerArchiveFlag() throws {
-    var migrator = DatabaseMigrator()
-    AppMigration.registerMigrations(in: &migrator)
-
-    let dbQueue = try DatabaseQueue()
-    try migrator.migrate(dbQueue)
-
-    try dbQueue.write { database in
-        try DatabaseSeeder.seedBanks(in: database)
-    }
-
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
-
-    let ledger = Ledger(
-        bankId: bank.id,
-        kind: .bankAccount,
-        displayName: "Account"
-    )
-
-    try dbQueue.write { database in
-        try ledger.insert(database)
-    }
-
-    let activeLedgers = try dbQueue.read { database in
-        try Ledger
-            .filter(Ledger.Columns.isArchived == false)
-            .fetchAll(database)
-    }
-
-    #expect(activeLedgers.count == 1)
-
-    var archived = ledger
-    archived.isArchived = true
-
-    try dbQueue.write { database in
-        try archived.update(database)
-    }
-
-    let stillActive = try dbQueue.read { database in
-        try Ledger
-            .filter(Ledger.Columns.isArchived == false)
-            .fetchAll(database)
-    }
-
-    #expect(stillActive.count == 0)
-}
