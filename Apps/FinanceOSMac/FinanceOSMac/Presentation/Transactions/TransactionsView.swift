@@ -126,7 +126,8 @@ struct TransactionsView: View {
                 Spacer()
                 Text(txn.amountText)
                     .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                    .foregroundColor(txn.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System.green)
+                    .foregroundColor(txn.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                        .green)
             }
             .padding(12)
         }

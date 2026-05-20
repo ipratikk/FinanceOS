@@ -45,11 +45,13 @@ struct TransactionDetailView: View {
                 Text(row.amountText)
                     .font(.system(size: 40, weight: .semibold, design: .default))
                     .monospacedDigit()
-                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System.green)
+                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                        .green)
 
                 Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System.green)
+                    .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
+                        .green)
             }
             .frame(maxWidth: .infinity, alignment: .center)
         }

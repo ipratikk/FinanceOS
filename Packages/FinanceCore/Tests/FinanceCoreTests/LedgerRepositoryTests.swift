@@ -1,4 +1,5 @@
 @testable import FinanceCore
+import Foundation
 import GRDB
 import Testing
 
@@ -10,13 +11,13 @@ func ledgerRepositoryCRUD() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try dbQueue.read { database in
+    let bank = try await dbQueue.read { database in
         try Bank.fetchAll(database).first!
     }
 
@@ -41,13 +42,13 @@ func ledgerRepositoryFetchByKind() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try dbQueue.read { database in
+    let bank = try await dbQueue.read { database in
         try Bank.fetchAll(database).first!
     }
 
@@ -83,13 +84,13 @@ func ledgerRepositoryFetchByBankAndKind() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let banks = try dbQueue.read { database in
+    let banks = try await dbQueue.read { database in
         try Bank.fetchAll(database)
     }
 
@@ -132,13 +133,13 @@ func ledgerRepositoryUpdate() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try dbQueue.read { database in
+    let bank = try await dbQueue.read { database in
         try Bank.fetchAll(database).first!
     }
 
@@ -171,13 +172,13 @@ func ledgerRepositoryArchive() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try dbQueue.read { database in
+    let bank = try await dbQueue.read { database in
         try Bank.fetchAll(database).first!
     }
 
@@ -209,13 +210,13 @@ func ledgerRepositoryDeleteBlocked() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try dbQueue.read { database in
+    let bank = try await dbQueue.read { database in
         try Bank.fetchAll(database).first!
     }
 
@@ -238,7 +239,7 @@ func ledgerRepositoryDeleteBlocked() async throws {
         transactionType: .debit
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try txn.insert(database)
     }
 
@@ -246,8 +247,8 @@ func ledgerRepositoryDeleteBlocked() async throws {
         try await repo.delete(id: ledger.id)
         fatalError("Should have thrown")
     } catch let error as RepositoryError {
-        if case .cannotDeleteLedgerWithTransactions = error {
-            // Expected
+        if case .deleteFailed = error {
+            // Expected - cannot delete ledger with transactions
         } else {
             fatalError("Wrong error type")
         }

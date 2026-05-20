@@ -1,5 +1,6 @@
 @testable import FinanceCore
 import FinanceParsers
+import Foundation
 import GRDB
 import Testing
 
@@ -11,7 +12,7 @@ func importFlowE2E_successfulAccountImport() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
@@ -19,7 +20,7 @@ func importFlowE2E_successfulAccountImport() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try try await #require(bankRepository.fetchBanks().first)
+    let bank = try await #require(bankRepository.fetchBanks().first)
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -48,7 +49,8 @@ func importFlowE2E_successfulAccountImport() async throws {
 
     let target = TransactionImportTarget.ledger(ledger.id)
     let pipeline = TransactionImportPipeline(repository: transactionRepository)
-    let result = try await pipeline.execute(statement: statement, target: target)
+    let context = OperationContext.importSession()
+    let result = try await pipeline.execute(statement: statement, target: target, ledgerKind: ledger.kind, context: context)
 
     #expect(result.inserted == 1)
     #expect(result.skipped == 0)
@@ -69,7 +71,7 @@ func importFlowE2E_deduplicationWorksWithLedgerId() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
@@ -77,7 +79,7 @@ func importFlowE2E_deduplicationWorksWithLedgerId() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try try await #require(bankRepository.fetchBanks().first)
+    let bank = try await #require(bankRepository.fetchBanks().first)
     let ledger = Ledger(
         bankId: bank.id,
         kind: .bankAccount,
@@ -104,7 +106,8 @@ func importFlowE2E_deduplicationWorksWithLedgerId() async throws {
 
     let target = TransactionImportTarget.ledger(ledger.id)
     let pipeline = TransactionImportPipeline(repository: transactionRepository)
-    let result = try await pipeline.execute(statement: statement, target: target)
+    let context = OperationContext.importSession()
+    let result = try await pipeline.execute(statement: statement, target: target, ledgerKind: ledger.kind, context: context)
 
     #expect(result.inserted == 1)
     #expect(result.skipped == 1)
@@ -121,14 +124,14 @@ func importFlowE2E_targetMatchingFindsLedgerByLast4() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
     let bankRepository = GRDBBankRepository(dbQueue: dbQueue)
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try try await #require(bankRepository.fetchBanks().first)
+    let bank = try await #require(bankRepository.fetchBanks().first)
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -165,7 +168,7 @@ func importFlowE2E_creditCardImport() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
@@ -173,7 +176,7 @@ func importFlowE2E_creditCardImport() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try try await #require(bankRepository.fetchBanks().first)
+    let bank = try await #require(bankRepository.fetchBanks().first)
 
     let card = Ledger(
         bankId: bank.id,
@@ -202,7 +205,8 @@ func importFlowE2E_creditCardImport() async throws {
 
     let target = TransactionImportTarget.ledger(card.id)
     let pipeline = TransactionImportPipeline(repository: transactionRepository)
-    let result = try await pipeline.execute(statement: statement, target: target)
+    let context = OperationContext.importSession()
+    let result = try await pipeline.execute(statement: statement, target: target, ledgerKind: card.kind, context: context)
 
     #expect(result.inserted == 1)
 
@@ -220,7 +224,7 @@ func importFlowE2E_archiveBlocksDeletion() async throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
@@ -228,7 +232,7 @@ func importFlowE2E_archiveBlocksDeletion() async throws {
     let ledgerRepository = GRDBLedgerRepository(dbQueue: dbQueue)
     let transactionRepository = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try try await #require(bankRepository.fetchBanks().first)
+    let bank = try await #require(bankRepository.fetchBanks().first)
     let ledger = Ledger(
         bankId: bank.id,
         kind: .bankAccount,
@@ -255,7 +259,8 @@ func importFlowE2E_archiveBlocksDeletion() async throws {
 
     let target = TransactionImportTarget.ledger(ledger.id)
     let pipeline = TransactionImportPipeline(repository: transactionRepository)
-    _ = try await pipeline.execute(statement: statement, target: target)
+    let context = OperationContext.importSession()
+    _ = try await pipeline.execute(statement: statement, target: target, ledgerKind: ledger.kind, context: context)
 
     try await ledgerRepository.archive(id: ledger.id)
 
@@ -267,9 +272,9 @@ func importFlowE2E_archiveBlocksDeletion() async throws {
     }
 
     #expect(deletionError != nil)
-    if case .cannotDeleteLedgerWithTransactions = try #require(deletionError) {
-        // Expected
+    if case .deleteFailed = try #require(deletionError) {
+        // Expected - cannot delete ledger with transactions
     } else {
-        #expect(false, "Wrong error type")
+        fatalError("Wrong error type")
     }
 }

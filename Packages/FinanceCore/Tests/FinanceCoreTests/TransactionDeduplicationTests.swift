@@ -1,4 +1,5 @@
 @testable import FinanceCore
+import Foundation
 import GRDB
 import Testing
 
