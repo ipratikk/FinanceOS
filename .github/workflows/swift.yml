@@ -7,42 +7,51 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  lint:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup Swift
-      uses: swift-actions/setup-swift@v2
-      with:
-        swift-version: "6.1"
+      - name: Lint
+        run: |
+          which swiftlint || brew install swiftlint
+          swiftlint --strict --quiet
 
-    - name: Cache DerivedData
-      uses: actions/cache@v4
-      with:
-        path: ~/Library/Developer/Xcode/DerivedData
-        key: xcode-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
-        restore-keys: xcode-${{ runner.os }}-
+  package-tests:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [FinanceCore, FinanceParsers, FinanceUI, FinanceTesting]
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Lint
-      run: |
-        brew install swiftlint
-        swiftlint --strict --quiet
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
 
-    - name: Build macOS App
-      run: xcodebuild build -scheme FinanceOSMac -quiet
+      - name: Cache ${{ matrix.package }} build
+        uses: actions/cache@v4
+        with:
+          path: Packages/${{ matrix.package }}/.build
+          key: swift-${{ matrix.package }}-${{ runner.os }}-${{ hashFiles(format('Packages/{0}/Package.resolved', matrix.package)) }}
+          restore-keys: swift-${{ matrix.package }}-${{ runner.os }}-
 
-    - name: Run FinanceCore Tests
-      run: swift test --package-path Packages/FinanceCore --parallel
+      - name: Test ${{ matrix.package }}
+        run: swift test --package-path Packages/${{ matrix.package }} --parallel
 
-    - name: Run FinanceParsers Tests
-      run: swift test --package-path Packages/FinanceParsers --parallel
+  snapshot-tests:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Run FinanceUI Tests
-      run: swift test --package-path Packages/FinanceUI --parallel
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: xcode-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: xcode-${{ runner.os }}-
 
-    - name: Run FinanceTesting Tests
-      run: swift test --package-path Packages/FinanceTesting --parallel
-
-    - name: Run Snapshot Tests
-      run: xcodebuild test -scheme FinanceOSMac -quiet
+      - name: Run Snapshot Tests
+        run: xcodebuild test -scheme FinanceOSMac -quiet
