@@ -61,6 +61,56 @@ private struct SkeletonRow: View {
     }
 }
 
+// MARK: - Shimmer Modifier
+
+/// Overlays a pulsing shimmer shape on any view while loading.
+///
+/// Hides the view's content and shows an animated placeholder in the same frame.
+///
+/// Usage:
+/// ```swift
+/// FDSLabel("Merchant name")
+///     .shimmer(isLoading: isLoading)
+///
+/// Image(...)
+///     .shimmer(isLoading: isLoading, cornerRadius: AppRadius.xl)
+/// ```
+public struct ShimmerModifier: ViewModifier {
+    let isLoading: Bool
+    let cornerRadius: CGFloat
+    @State private var isAnimating = false
+
+    public init(isLoading: Bool, cornerRadius: CGFloat = AppRadius.xs) {
+        self.isLoading = isLoading
+        self.cornerRadius = cornerRadius
+    }
+
+    public func body(content: Content) -> some View {
+        content
+            .opacity(isLoading ? 0 : 1)
+            .overlay {
+                if isLoading {
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .fill(AppColors.surface2)
+                        .opacity(isAnimating ? 0.4 : 1.0)
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
+                                isAnimating = true
+                            }
+                        }
+                }
+            }
+            .animation(AppAnimation.easeSmooth, value: isLoading)
+    }
+}
+
+public extension View {
+    /// Overlay a pulsing shimmer placeholder while `isLoading` is true.
+    func shimmer(isLoading: Bool, cornerRadius: CGFloat = AppRadius.xs) -> some View {
+        modifier(ShimmerModifier(isLoading: isLoading, cornerRadius: cornerRadius))
+    }
+}
+
 #Preview {
     LoadingSkeletonView(count: 3)
         .padding(AppSpacing.lg)

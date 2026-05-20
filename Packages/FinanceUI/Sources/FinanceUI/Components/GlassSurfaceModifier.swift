@@ -21,19 +21,7 @@ struct GlassSurface: ViewModifier {
             }
             .overlay {
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [
-                                AppColors.textPrimary.opacity(0.16),
-                                AppColors.textPrimary.opacity(0.06),
-                                .clear,
-                                AppColors.base.opacity(0.20)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        ),
-                        lineWidth: 1
-                    )
+                    .strokeBorder(DesignTokens.Edge.gleamBorder, lineWidth: 1)
             }
             .shadow(
                 color: AppColors.base.opacity(liftShadow ? 0.25 : 0),
@@ -78,19 +66,7 @@ extension View {
         }
         .overlay {
             Capsule()
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [
-                            AppColors.textPrimary.opacity(0.16),
-                            AppColors.textPrimary.opacity(0.06),
-                            .clear,
-                            AppColors.base.opacity(0.20)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: 1
-                )
+                .strokeBorder(DesignTokens.Edge.gleamBorder, lineWidth: 1)
         }
         .shadow(
             color: AppColors.base.opacity(lifted ? 0.25 : 0),

@@ -39,7 +39,7 @@ public struct FDSSheet<Content: View>: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         FDSLabel(title)
-                            .font(DesignTokens.Typography.sheetTitle)
+                            .font(AppTypography.titleSm)
                             .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
 
                         if let subtitle {

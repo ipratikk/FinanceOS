@@ -60,5 +60,20 @@ public typealias CreditCardDisplay = FDSCreditCardDisplay
 /// Button
 public typealias FinanceButton = FDSLiquidButton
 
+/// Form
+public typealias InputField = FDSInputField
+public typealias InputState = FDSInputState
+
+/// Feedback
+public typealias Banner = FDSBanner
+public typealias BannerStyle = FDSBannerStyle
+
+/// Navigation
+public typealias Pagination = FDSPagination
+
+/// Onboarding
+public typealias CoachTip = FDSCoachTip
+public typealias CoachTipStep = FDSCoachTipStep
+
 /// Structural
 public typealias AvatarSize = FDSAvatarSize

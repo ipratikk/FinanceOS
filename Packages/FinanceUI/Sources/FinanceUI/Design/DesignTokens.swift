@@ -126,39 +126,15 @@ public enum DesignTokens {
         public static let topGleamMid = AppColors.textPrimary.opacity(0.06)
         /// black 20% — bottom shadow for depth
         public static let bottomShadow = AppColors.base.opacity(0.20)
-    }
 
-    // MARK: - Typography
-
-    //
-    // Views should prefer AppTypography View extensions (.bodyLarge(), .caption() etc.)
-    // These statics are kept for components that need raw Font values.
-
-    public enum Typography {
-        /// Display/Hero amounts
-        public static let heroAmount = Font.system(size: 60, weight: .semibold, design: .default)
-            .monospacedDigit()
-        public static let ledgerAmount = Font.system(size: 38, weight: .semibold, design: .default)
-            .monospacedDigit()
-        public static let txnAmount = Font.system(size: 40, weight: .semibold, design: .default)
-            .monospacedDigit()
-
-        // Screen & Section titles
-        public static let screenTitle = Font.system(size: 30, weight: .semibold, design: .default)
-        public static let sectionTitle = Font.system(size: 17, weight: .semibold, design: .default)
-        public static let sheetTitle = Font.system(size: 19, weight: .semibold, design: .default)
-
-        /// Metric cards
-        public static let metricValue = Font.system(size: 28, weight: .semibold, design: .default)
-            .monospacedDigit()
-
-        // Body text
-        public static let body = Font.system(size: 14, weight: .regular, design: .default)
-        public static let txnRow = Font.system(size: 13.5, weight: .medium, design: .default)
-
-        // Labels & captions
-        public static let label = Font.system(size: 11, weight: .semibold, design: .default)
-        public static let caption = Font.system(size: 11.5, weight: .regular, design: .default)
+        /// Shared gleam border gradient used by FDSCard, FDSLiquidButton, and glass surfaces.
+        public static var gleamBorder: LinearGradient {
+            LinearGradient(
+                colors: [topGleam, topGleamMid, .clear, bottomShadow],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        }
     }
 
     // MARK: - Elevation (Shadow Lift Tiers)

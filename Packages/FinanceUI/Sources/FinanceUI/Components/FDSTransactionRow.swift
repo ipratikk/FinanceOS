@@ -74,12 +74,12 @@ public struct FDSTransactionRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 FDSLabel(merchant)
-                    .font(DesignTokens.Typography.txnRow)
+                    .font(AppTypography.bodySmMedium)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
                 FDSLabel(subtitle)
-                    .font(DesignTokens.Typography.caption)
+                    .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)
             }
@@ -88,20 +88,20 @@ public struct FDSTransactionRow: View {
 
             VStack(alignment: .trailing, spacing: 2) {
                 FDSLabel(amount)
-                    .font(DesignTokens.Typography.txnRow.monospacedDigit())
+                    .font(AppTypography.bodySmMedium.monospacedDigit())
                     .foregroundStyle(isDebit ? AppColors.debit : AppColors.credit)
                     .lineLimit(1)
 
                 if let balance = runningBalance {
                     FDSLabel(balance)
-                        .font(DesignTokens.Typography.caption.monospacedDigit())
+                        .font(AppTypography.captionSm.monospacedDigit())
                         .foregroundStyle(.tertiary)
                 } else if let chip = accountChip {
                     HStack(spacing: 3) {
                         FDSLabel(chip.bankName)
-                            .font(DesignTokens.Typography.label)
+                            .font(AppTypography.captionSmSemibold)
                         FDSLabel("· \(chip.last4)")
-                            .font(DesignTokens.Typography.caption.monospacedDigit())
+                            .font(AppTypography.captionSm.monospacedDigit())
                     }
                     .foregroundStyle(.tertiary)
                 }

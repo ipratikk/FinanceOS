@@ -3,17 +3,15 @@ import SwiftUI
 
 /// Visual-first section header. Subtle, hierarchical, calm.
 ///
-/// Layout:
-/// ```
-/// SECTION LABEL                       [Action →]
-/// Optional subtitle text muted
-/// ```
+/// Two inits:
+/// - `init(_:subtitle:actionLabel:actionSymbol:action:)` — convenience for a single text button trailing
+/// - `init(_:subtitle:trailing:)` — ViewBuilder for arbitrary trailing content
 public struct FDSSectionHeader: View {
     let title: String
     let subtitle: String?
-    let actionLabel: String?
-    let actionSymbol: String?
-    let action: (() -> Void)?
+    private let trailingView: AnyView?
+
+    // MARK: - Text action init (backward compat)
 
     public init(
         _ title: String,
@@ -24,9 +22,36 @@ public struct FDSSectionHeader: View {
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.actionLabel = actionLabel
-        self.actionSymbol = actionSymbol
-        self.action = action
+        if let actionLabel, let action {
+            trailingView = AnyView(
+                Button(action: action) {
+                    HStack(spacing: 4) {
+                        FDSLabel(actionLabel)
+                            .font(AppTypography.captionLgMedium)
+                        if let actionSymbol {
+                            Image(systemName: actionSymbol)
+                                .font(AppTypography.captionSmSemibold)
+                        }
+                    }
+                    .foregroundStyle(AppColors.accent)
+                }
+                .buttonStyle(.plain)
+            )
+        } else {
+            trailingView = nil
+        }
+    }
+
+    // MARK: - ViewBuilder trailing init
+
+    public init<Trailing: View>(
+        _ title: String,
+        subtitle: String? = nil,
+        @ViewBuilder trailing: () -> Trailing
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.trailingView = AnyView(trailing())
     }
 
     public var body: some View {
@@ -45,20 +70,7 @@ public struct FDSSectionHeader: View {
 
             Spacer()
 
-            if let actionLabel, let action {
-                Button(action: action) {
-                    HStack(spacing: 4) {
-                        FDSLabel(actionLabel)
-                            .font(AppTypography.captionLgMedium)
-                        if let actionSymbol {
-                            Image(systemName: actionSymbol)
-                                .font(AppTypography.captionSmSemibold)
-                        }
-                    }
-                    .foregroundStyle(AppColors.accent)
-                }
-                .buttonStyle(.plain)
-            }
+            trailingView
         }
         .padding(.vertical, AppSpacing.compact)
     }

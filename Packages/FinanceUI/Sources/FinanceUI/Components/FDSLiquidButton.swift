@@ -122,18 +122,5 @@ public struct FDSLiquidButton: View {
         }
     }
 
-    // MARK: - Shared Gleam Border Gradient
-
-    private var gleamGradient: LinearGradient {
-        LinearGradient(
-            colors: [
-                DesignTokens.Edge.topGleam,
-                DesignTokens.Edge.topGleamMid,
-                .clear,
-                DesignTokens.Edge.bottomShadow
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
+    private var gleamGradient: LinearGradient { DesignTokens.Edge.gleamBorder }
 }
