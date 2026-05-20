@@ -59,8 +59,8 @@ func ledgerGRDBRoundTrip() async throws {
         kind: .creditCard,
         displayName: "Credit Card",
         last4: "5678",
-        cardType: "visa",
-        cardProduct: "Regalia",
+        cardType: .visa,
+        cardProductId: "regalia",
         linkedLedgerId: bankAccountLedger.id
     )
 
@@ -105,7 +105,7 @@ func ledgerFilterByKind() async throws {
         bankId: bank.id,
         kind: .creditCard,
         displayName: "Card",
-        cardType: "visa"
+        cardType: .visa
     )
 
     try await dbQueue.write { database in
@@ -275,7 +275,7 @@ func ledgerArchiveFlag() async throws {
         createdAt: ledger.createdAt,
         accountType: ledger.accountType,
         cardType: ledger.cardType,
-        cardProduct: ledger.cardProduct,
+        cardProductId: ledger.cardProductId,
         bin: ledger.bin,
         linkedLedgerId: ledger.linkedLedgerId,
         isArchived: true
