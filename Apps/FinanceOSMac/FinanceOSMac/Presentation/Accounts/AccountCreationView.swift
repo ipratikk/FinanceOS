@@ -15,7 +15,7 @@ struct AccountCreationView: View {
         self.onCommit = onCommit
         _nickname = State(initialValue: state.nickname)
         _last4 = State(initialValue: state.last4)
-        _accountType = State(initialValue: state.accountType ?? "")
+        _accountType = State(initialValue: state.accountType)
     }
 
     var body: some View {
