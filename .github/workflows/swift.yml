@@ -6,9 +6,15 @@ on:
   pull_request:
     branches: [ "main" ]
 
+defaults:
+  run:
+    shell: bash
+
+_runner: &runner macos-26-arm64
+
 jobs:
   lint:
-    runs-on: macos-latest
+    runs-on: *runner
     steps:
       - uses: actions/checkout@v4
 
@@ -18,7 +24,7 @@ jobs:
           swiftlint --strict --quiet
 
   package-tests:
-    runs-on: macos-latest
+    runs-on: *runner
     strategy:
       fail-fast: false
       matrix:
@@ -42,7 +48,7 @@ jobs:
         run: swift test --package-path Packages/${{ matrix.package }} --parallel
 
   snapshot-tests:
-    runs-on: macos-26-arm64
+    runs-on: *runner
     steps:
       - uses: actions/checkout@v4
 
