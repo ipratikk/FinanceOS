@@ -42,7 +42,7 @@ jobs:
         run: swift test --package-path Packages/${{ matrix.package }} --parallel
 
   snapshot-tests:
-    runs-on: macos-latest
+    runs-on: macos-26-arm64
     steps:
       - uses: actions/checkout@v4
 
