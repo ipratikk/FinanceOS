@@ -10,6 +10,7 @@ public enum AppColors {
     public static let elevated = surface2
 
     // MARK: - Borders & Dividers
+
     public static let border = textPrimary.opacity(0.08) // subtle border
     public static let borderAccent = textPrimary.opacity(0.12) // accent border
     public static let borderSubtle = textPrimary.opacity(0.05) // minimal separator
@@ -53,6 +54,7 @@ public enum AppColors {
     public static let accentLime = success // Replaced
 
     // MARK: - Text (Apple System)
+
     public static let textPrimary = Color.white // #FFFFFF
     public static let textSecondary = Color(red: 0.631, green: 0.631, blue: 0.651) // #A1A1A6
     public static let textTertiary = Color(red: 0.557, green: 0.557, blue: 0.576) // #8E8E93

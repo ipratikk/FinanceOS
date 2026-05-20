@@ -59,12 +59,12 @@ struct AnalyticsView: View {
     }
 
     private var header: some View {
-            VStack(alignment: .leading, spacing: 4) {
-                FDSLabel("Analytics")
-                    .font(AppTypography.displaySmall)
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
-                FDSLabel("Spending trends and merchant insights")
-                    .font(AppTypography.captionLgMedium)
+        VStack(alignment: .leading, spacing: 4) {
+            FDSLabel("Analytics")
+                .font(AppTypography.displaySmall)
+                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+            FDSLabel("Spending trends and merchant insights")
+                .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
         }

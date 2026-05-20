@@ -22,7 +22,7 @@ struct SupportedSourcesView: View {
                 "CSV and XLSX for CSV-based statements; "
                     + "TXT for delimited text (HDFC); PDF for scanned statements."
             )
-                .caption()
+            .caption()
         }
         .padding()
         .background(AppColors.surface2)

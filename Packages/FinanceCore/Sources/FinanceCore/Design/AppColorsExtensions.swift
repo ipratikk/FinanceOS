@@ -4,6 +4,7 @@ import SwiftUI
 /// All opacity values and border colors must use these.
 public extension AppColors {
     // MARK: - Semantic Opacity Values
+
     static let dividerDefault = textPrimary.opacity(0.06)
     static let borderDefault = textPrimary.opacity(0.12)
     static let overlayLight = textPrimary.opacity(0.03)
@@ -19,6 +20,7 @@ public extension AppColors {
     static let creditLight = credit.opacity(0.12)
 
     // MARK: - Skeleton / Loading States
+
     static let skeletonLight = textPrimary.opacity(0.04)
     static let skeletonMedium = textPrimary.opacity(0.08)
 

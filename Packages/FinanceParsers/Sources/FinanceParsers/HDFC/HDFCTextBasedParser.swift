@@ -8,6 +8,7 @@ class HDFCTextBasedParser {
             preconditionFailure("Invalid HDFC date regex: \(error)")
         }
     }()
+
     private let dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateFormat = "dd/MM/yy"

@@ -35,13 +35,13 @@ public enum BINParser {
     }
 
     private static func detectMastercard(firstTwo: String, firstFour: String) -> String? {
-        if let num = Int(firstTwo), (51...55).contains(num) { return "mastercard" }
-        if let num = Int(firstFour), (2221...2720).contains(num) { return "mastercard" }
+        if let num = Int(firstTwo), (51 ... 55).contains(num) { return "mastercard" }
+        if let num = Int(firstFour), (2221 ... 2720).contains(num) { return "mastercard" }
         return nil
     }
 
     private static func detectDiners(firstTwo: String, firstThree: String) -> String? {
-        if let num = Int(firstThree), (300...305).contains(num) { return "diners" }
+        if let num = Int(firstThree), (300 ... 305).contains(num) { return "diners" }
         if firstTwo == "36" || firstTwo == "38" { return "diners" }
         return nil
     }
@@ -49,7 +49,7 @@ public enum BINParser {
     private static func detectSixNetwork(bin: String, firstFour: String) -> String {
         if firstFour.hasPrefix("60") || firstFour.hasPrefix("65") { return "rupay" }
         if bin.hasPrefix("6011") || bin.hasPrefix("65") { return "discover" }
-        if let num = Int(firstFour), (644...649).contains(num) { return "discover" }
+        if let num = Int(firstFour), (644 ... 649).contains(num) { return "discover" }
         return "other"
     }
 

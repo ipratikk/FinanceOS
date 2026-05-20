@@ -4,6 +4,7 @@ import SwiftUI
 /// All shadows must use these constants for consistent elevation hierarchy.
 public enum AppShadows {
     // MARK: - Elevation Levels
+
     public static let subtle = Shadow(
         color: AppColors.base.opacity(0.05),
         radius: 4,

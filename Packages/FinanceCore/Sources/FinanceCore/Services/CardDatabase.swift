@@ -325,5 +325,4 @@ private extension CardDatabase {
             isSupported: true
         )
     ]
-
 }
