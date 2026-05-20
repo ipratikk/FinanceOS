@@ -46,9 +46,6 @@
     "%@ · up to 25 MB" : {
 
     },
-    "%@ Information" : {
-
-    },
     "%lld" : {
 
     },
@@ -105,6 +102,9 @@
 
     },
     "•••• %@" : {
+
+    },
+    "•••• •••• " : {
 
     },
     "+" : {
@@ -226,9 +226,6 @@
     "BANK INFORMATION" : {
 
     },
-    "Bank%@" : {
-
-    },
     "Banks" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -253,9 +250,6 @@
           }
         }
       }
-    },
-    "CARD DETAILS" : {
-
     },
     "CARD INFORMATION" : {
       "extractionState" : "manual",
@@ -285,9 +279,6 @@
     "Categories" : {
 
     },
-    "Change" : {
-
-    },
     "Change source" : {
 
     },
@@ -312,9 +303,6 @@
 
     },
     "Clear Selection" : {
-
-    },
-    "Close" : {
 
     },
     "Coming Soon" : {
@@ -433,19 +421,10 @@
     "Delete \"%@\"?" : {
 
     },
-    "Delete %@" : {
-
-    },
     "Delete %@?" : {
 
     },
-    "Delete Account" : {
-
-    },
     "Delete Account?" : {
-
-    },
-    "Delete Bank" : {
 
     },
     "Delete Bank?" : {
@@ -469,9 +448,6 @@
           }
         }
       }
-    },
-    "Delete Card?" : {
-
     },
     "Delete Failed" : {
 
@@ -497,9 +473,6 @@
 
     },
     "Drop your statement" : {
-
-    },
-    "Edit %@" : {
 
     },
     "Edit Card" : {
@@ -531,9 +504,6 @@
       }
     },
     "FinanceOS" : {
-
-    },
-    "Find anything…" : {
 
     },
     "From" : {
@@ -736,9 +706,6 @@
     "OK" : {
 
     },
-    "Operation Failed" : {
-
-    },
     "or" : {
 
     },
@@ -797,9 +764,6 @@
 
     },
     "Save password to Keychain" : {
-
-    },
-    "Search cards" : {
 
     },
     "Search transactions" : {
@@ -885,7 +849,7 @@
     "This will permanently delete all data including banks, accounts, cards, and transactions." : {
 
     },
-    "This will permanently delete this %@ and all associated transactions. This cannot be undone." : {
+    "This will permanently delete this %@ and all associated transactions." : {
 
     },
     "This will permanently delete this account and all associated transactions." : {

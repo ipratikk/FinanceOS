@@ -17,7 +17,7 @@ final class CardEditViewSnapshotTests: SnapshotTestable {
             banks: PreviewBanks.all,
             accounts: PreviewLedgers.all.filter { $0.kind == .bankAccount }
         )
-        let view = CardEditView(card: PreviewLedgers.creditCard(), context: context)
+        let view = CardEditView(mode: .edit(PreviewLedgers.creditCard(), context))
         verifySnapshots(view)
     }
 }

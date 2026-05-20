@@ -20,14 +20,34 @@ public struct Ledger:
     public let createdAt: Date
 
     public let accountType: String?
-    public let cardType: String?
-    public let cardProduct: String?
+    public let cardType: CardNetwork?
+    public let cardProductId: String?
     public let bin: String? // Bank Identification Number for card network auto-detection
     public let linkedLedgerId: UUID?
 
     public let isArchived: Bool
     public let closingBalance: Int64?
     public let closingBalanceAsOf: Date?
+
+    /// Explicit CodingKeys so cardProductId serializes as "cardProduct" (preserves DB column name)
+    public enum CodingKeys: String, CodingKey {
+        case id
+        case bankId
+        case kind
+        case displayName
+        case last4
+        case nickname
+        case ownerName
+        case createdAt
+        case accountType
+        case cardType
+        case cardProductId = "cardProduct"
+        case bin
+        case linkedLedgerId
+        case isArchived
+        case closingBalance
+        case closingBalanceAsOf
+    }
 
     public init(
         id: UUID = UUID(),
@@ -39,8 +59,8 @@ public struct Ledger:
         ownerName: String = "",
         createdAt: Date = Date(),
         accountType: String? = nil,
-        cardType: String? = nil,
-        cardProduct: String? = nil,
+        cardType: CardNetwork? = nil,
+        cardProductId: String? = nil,
         bin: String? = nil,
         linkedLedgerId: UUID? = nil,
         isArchived: Bool = false,
@@ -57,7 +77,7 @@ public struct Ledger:
         self.createdAt = createdAt
         self.accountType = accountType
         self.cardType = cardType
-        self.cardProduct = cardProduct
+        self.cardProductId = cardProductId
         self.bin = bin
         self.linkedLedgerId = linkedLedgerId
         self.isArchived = isArchived
@@ -78,7 +98,7 @@ public extension Ledger {
         static let createdAt = Column(CodingKeys.createdAt)
         static let accountType = Column(CodingKeys.accountType)
         static let cardType = Column(CodingKeys.cardType)
-        static let cardProduct = Column(CodingKeys.cardProduct)
+        static let cardProductId = Column(CodingKeys.cardProductId)
         static let bin = Column(CodingKeys.bin)
         static let linkedLedgerId = Column(CodingKeys.linkedLedgerId)
         static let isArchived = Column(CodingKeys.isArchived)
@@ -151,5 +171,12 @@ public extension Ledger {
         try database.execute(sql: """
             CREATE INDEX idx_ledgers_bank_kind ON \(databaseTableName)(bankId, kind)
         """)
+    }
+}
+
+public extension Ledger {
+    var cardProductMetadata: CardMetadata? {
+        guard let cardProductId else { return nil }
+        return CardDatabase.supportedCards().first { $0.id == cardProductId }
     }
 }

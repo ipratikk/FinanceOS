@@ -61,7 +61,7 @@ public enum CardCatalogLoader {
                         id: card.id,
                         issuer: issuer.name,
                         name: card.name,
-                        cardType: card.network.lowercased(),
+                        cardType: CardNetwork(rawValue: card.network.lowercased()) ?? .other,
                         variant: card.variant,
                         binRanges: card.binRanges.map { bin in
                             CardMetadata.BINRange(start: bin.start, end: bin.end)

@@ -74,8 +74,7 @@ struct SidebarView: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(DesignTokens.Text.tertiary)
 
-            TextField("Find anything…", text: .constant(""))
-                .font(.system(size: 12, weight: .regular))
+            FDSTextInput("Find anything…", text: .constant(""), style: .labelSmall)
 
             Text("⌘K")
                 .font(.system(size: 10, weight: .medium, design: .monospaced))
@@ -93,7 +92,7 @@ struct SidebarView: View {
         VStack(spacing: 8) {
             Divider().opacity(DesignTokens.Opacity.low)
 
-            Button(action: { navigator.navigate(to: .importStatement) }) {
+            Button(action: { navigator.navigate(to: .importStatement) }, label: {
                 HStack(spacing: 8) {
                     ZStack {
                         Circle()
@@ -118,7 +117,7 @@ struct SidebarView: View {
                 .padding(.horizontal, 8)
                 .padding(.vertical, 8)
                 .contentShape(Rectangle())
-            }
+            })
             .buttonStyle(.plain)
 
             HStack(spacing: 6) {

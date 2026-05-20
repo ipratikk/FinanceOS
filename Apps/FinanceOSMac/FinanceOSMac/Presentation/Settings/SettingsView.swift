@@ -100,7 +100,7 @@ struct SettingsView: View {
 
             sectionTitle("Danger Zone")
 
-            Button(action: { showConfirmClear = true }) {
+            Button(action: { showConfirmClear = true }, label: {
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.system(size: 13, weight: .semibold))
@@ -110,7 +110,7 @@ struct SettingsView: View {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 13, weight: .semibold))
                 }
-            }
+            })
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
@@ -184,7 +184,7 @@ struct SettingsView: View {
                 Button(action: {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(value, forType: .string)
-                }) {
+                }, label: {
                     Image(systemName: "doc.on.doc")
                         .font(.system(size: 11, weight: .medium))
                         .foregroundColor(DesignTokens.Text.secondary)
@@ -196,7 +196,7 @@ struct SettingsView: View {
     }
 
     private func linkRow(_ label: String, symbol: String) -> some View {
-        Button(action: {}) {
+        Button(action: {}, label: {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
                     .font(.system(size: 13, weight: .medium))
@@ -211,7 +211,7 @@ struct SettingsView: View {
                     .foregroundColor(DesignTokens.Text.secondary)
             }
             .padding(12)
-        }
+        })
         .buttonStyle(.plain)
     }
 }

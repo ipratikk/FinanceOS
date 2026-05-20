@@ -68,30 +68,43 @@ struct AccountEditView: View {
                             }
                             .foregroundColor(DesignTokens.Text.primary)
                         }
-                        .padding(8)
+                        .padding(12)
                     }
-                    .padding(12)
-                }
 
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Button(action: { showDeleteConfirm = true }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "trash.fill")
-                                    .font(.system(size: 12, weight: .semibold))
-                                Text("Delete Account")
-                                    .font(.system(size: 13, weight: .semibold))
-                                Spacer()
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("BANK")
+                                .font(.system(size: 10, weight: .semibold))
+                                .tracking(0.2)
+                                .foregroundColor(DesignTokens.Text.secondary)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Select Bank")
+                                    .font(.system(size: 11, weight: .medium))
+                                    .foregroundColor(DesignTokens.Text.primary)
+                                Picker("Bank", selection: $bankId) {
+                                    ForEach(context.banks) { bank in
+                                        Text(bank.name).tag(bank.id)
+                                    }
+                                }
+                                .foregroundColor(DesignTokens.Text.primary)
                             }
-                            .foregroundColor(Color(red: 1.0, green: 0.27, blue: 0.23))
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(8)
+                        }
+                        .padding(12)
+                    }
+
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            FDSLiquidButton("Delete Account", symbol: "trash.fill", variant: .danger) {
+                                showDeleteConfirm = true
+                            }
                             .padding(12)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
-        }
+        )
         .alert("Delete Account?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -121,8 +134,7 @@ struct AccountEditView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
-            TextField("", text: text)
-                .font(.system(size: 12, weight: .regular))
+            FDSTextInput("", text: text, style: .labelSmall)
                 .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
                 .padding(8)
                 .background(DesignTokens.Background.inputWell)

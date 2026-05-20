@@ -24,19 +24,6 @@ public final class ImportSession {
     public var errorMessage: String?
     public var isLoading = false
 
-    /// Derived state
-    public var currentParsedStatement: ParsedStatement? {
-        parsedStatements.first
-    }
-
-    public var isAccountType: Bool {
-        currentParsedStatement?.cardLast4 == nil
-    }
-
-    public var isCardType: Bool {
-        !isAccountType
-    }
-
     public init() {}
 
     public func reset() {

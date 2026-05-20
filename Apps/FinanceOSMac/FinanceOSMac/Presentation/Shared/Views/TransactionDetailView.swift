@@ -10,10 +10,10 @@ struct TransactionDetailView: View {
         FDSSheet(
             title: "Transaction Details",
             subtitle: row.title,
-            onDismiss: { dismiss() }
-        ) {
-            VStack(alignment: .leading, spacing: 20) {
-                heroAmount
+            onDismiss: { dismiss() },
+            content: {
+                VStack(alignment: .leading, spacing: 20) {
+                    heroAmount
 
                 FDSCard(cornerRadius: 12, padded: false) {
                     VStack(spacing: 0) {
@@ -28,10 +28,9 @@ struct TransactionDetailView: View {
                             value: row.transactionType == .debit ? "Debit" : "Credit"
                         )
                     }
-                    .padding(12)
                 }
             }
-        }
+        )
     }
 
     private var heroAmount: some View {

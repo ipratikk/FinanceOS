@@ -18,9 +18,7 @@ struct LedgerDetailView: View {
                     VStack(alignment: .leading, spacing: 24) {
                         heroCard(ledger)
 
-                        if ledger.kind == .creditCard {
-                            // TODO: Add utilization section
-                        }
+                        if ledger.kind == .creditCard { EmptyView() }
 
                         metricsSection
 
@@ -63,7 +61,7 @@ struct LedgerDetailView: View {
                     if ledger.kind == .creditCard {
                         FDSCardArt(
                             ledger.displayName,
-                            network: ledger.cardType?.uppercased() ?? "CARD",
+                            network: ledger.cardType?.rawValue.uppercased() ?? "CARD",
                             last4: ledger.last4
                         )
                         .frame(width: 76, height: 48)
@@ -156,19 +154,19 @@ struct LedgerDetailView: View {
 
     private func metricCard(_ label: String, value: String, color: Color) -> some View {
         FDSCard(cornerRadius: 12, padded: false) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 Text(label.uppercased())
                     .font(.system(size: 10, weight: .semibold))
                     .tracking(0.2)
                     .foregroundColor(DesignTokens.Text.secondary)
 
                 Text(value)
-                    .font(.system(size: 16, weight: .semibold, design: .default))
+                    .font(AppTypography.headingSmall)
                     .monospacedDigit()
                     .foregroundColor(color)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(12)
+            .padding(AppSpacing.sm)
         }
     }
 

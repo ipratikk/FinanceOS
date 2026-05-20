@@ -31,11 +31,11 @@ struct ToastPresenterView: View {
 
             Spacer()
 
-            Button(action: { presenter.dismiss() }) {
+            Button(action: { presenter.dismiss() }, label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
-            }
+            })
             .buttonStyle(.plain)
         }
         .padding(.horizontal, AppSpacing.md)

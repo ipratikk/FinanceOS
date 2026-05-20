@@ -6,8 +6,7 @@ import SwiftUI
 struct ImportPreviewView: View {
     let viewModel: ImportViewModel
 
-    @State private var isShowingCreationSheet = false
-    @State private var sheetCreationState = TargetCreationState()
+    @State private var sheetCreationItem: TargetCreationState?
     @State private var importedExpanded = false
     @State private var duplicatesExpanded = false
 
@@ -85,42 +84,13 @@ struct ImportPreviewView: View {
 
             confirmBar
         }
-        .sheet(isPresented: $isShowingCreationSheet) {
-            CreateNewTargetSheet(
-                state: $sheetCreationState,
-                detectedBank: viewModel.importSession.currentParsedStatement?.bankName ?? "Unknown",
-                availableAccounts: viewModel.ledgers.filter { $0.kind == .bankAccount },
-                onCancel: {
-                    isShowingCreationSheet = false
-                    viewModel.importSession.targetBeingCreated = nil
-                },
-                onCreate: {
-                    let state = sheetCreationState
-                    isShowingCreationSheet = false
-                    viewModel.importSession.targetBeingCreated = nil
-                    Task {
-                        await viewModel.createTargetFromDetected(
-                            customName: state.customName,
-                            nickname: state.nickname,
-                            last4: state.last4,
-                            selectedBank: state.selectedBank,
-                            ownerName: state.ownerName,
-                            accountType: state.accountType,
-                            cardType: state.cardType,
-                            cardProduct: state.cardProduct,
-                            encryptedCardNumber: state.encryptedCardNumber,
-                            linkedLedgerId: state.linkedLedgerId,
-                            isCard: state.isCard
-                        )
-                    }
-                }
-            )
+        .sheet(item: $sheetCreationItem) { item in
+            CardEditView(mode: item.isCard
+                ? .createCard(prefill: item, onCommit: handleCreationCommit)
+                : .createAccount(prefill: item, onCommit: handleCreationCommit))
         }
         .onChange(of: viewModel.importSession.targetBeingCreated) { _, newValue in
-            if let newValue {
-                sheetCreationState = newValue
-                isShowingCreationSheet = true
-            }
+            sheetCreationItem = newValue
         }
     }
 
@@ -142,11 +112,23 @@ struct ImportPreviewView: View {
         }
     }
 
-    private var selectedLedgerDisplay: String? {
-        guard let target = viewModel.selectedTarget else { return nil }
-        if case let .ledger(id) = target {
-            return viewModel.ledgers.first { $0.id == id }?.displayName
+    func handleCreationCommit(_ state: TargetCreationState) {
+        sheetCreationItem = nil
+        viewModel.importSession.targetBeingCreated = nil
+        Task {
+            await viewModel.createTargetFromDetected(
+                customName: state.customName,
+                nickname: state.nickname,
+                last4: state.last4,
+                selectedBank: state.selectedBank,
+                ownerName: state.cardholderName,
+                accountType: state.accountType,
+                cardType: state.cardType,
+                cardProductId: state.cardProductId,
+                encryptedCardNumber: state.encryptedCardNumber,
+                linkedLedgerId: state.linkedLedgerId,
+                isCard: state.isCard
+            )
         }
-        return nil
     }
 }
