@@ -19,7 +19,9 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         let now = Date()
 
         for txn in allTransactions {
-            let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: txn.postedAt))!
+            guard let monthStart = calendar.date(
+                from: calendar.dateComponents([.year, .month], from: txn.postedAt)
+            ) else { continue }
             let amount = txn.amountMinorUnits
 
             if summaryByMonth[monthStart] == nil {
@@ -52,8 +54,14 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
 
         let calendar = Calendar.current
         let now = Date()
-        let currentMonthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: now))!
-        let currentMonthEnd = calendar.date(byAdding: DateComponents(month: 1), to: currentMonthStart)!
+        guard let currentMonthStart = calendar.date(
+            from: calendar.dateComponents([.year, .month], from: now)
+        ), let currentMonthEnd = calendar.date(
+            byAdding: DateComponents(month: 1),
+            to: currentMonthStart
+        ) else {
+            return SpendingTotals(totalDebit: 0, totalCredit: 0, transactionCount: 0)
+        }
 
         var totalDebit: Int64 = 0
         var totalCredit: Int64 = 0

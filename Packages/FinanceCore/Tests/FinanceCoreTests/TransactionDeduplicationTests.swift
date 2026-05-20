@@ -17,9 +17,9 @@ func reImportingSameTransactionsProducesSkipped() async throws {
 
     let repo = GRDBTransactionRepository(dbQueue: dbQueue)
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,

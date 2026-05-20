@@ -53,12 +53,12 @@ struct SidebarView: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("FinanceOS")
-                    .font(.system(size: 13, weight: .semibold))
+                FDSLabel("FinanceOS")
+                    .font(AppTypography.bodySmSemibold)
                     .foregroundColor(DesignTokens.Text.primary)
 
-                Text("Personal · INR")
-                    .font(.system(size: 10, weight: .regular))
+                FDSLabel("Personal · INR")
+                    .font(AppTypography.captionSm)
                     .foregroundColor(DesignTokens.Text.tertiary)
             }
 
@@ -71,13 +71,13 @@ struct SidebarView: View {
     private var searchInput: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 12, weight: .semibold))
+                .font(AppTypography.captionSmSemibold)
                 .foregroundColor(DesignTokens.Text.tertiary)
 
             FDSTextInput("Find anything…", text: .constant(""), style: .labelSmall)
 
-            Text("⌘K")
-                .font(.system(size: 10, weight: .medium, design: .monospaced))
+            FDSLabel("⌘K")
+                .font(AppTypography.captionSmMedium)
                 .foregroundColor(DesignTokens.Text.tertiary)
         }
         .padding(.horizontal, 10)
@@ -99,19 +99,19 @@ struct SidebarView: View {
                             .fill(DesignTokens.System.orange.opacity(DesignTokens.Opacity.low))
 
                         Image(systemName: "arrow.down.doc")
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(AppTypography.captionSmSemibold)
                             .foregroundColor(DesignTokens.System.orange)
                     }
                     .frame(width: 28, height: 28)
 
-                    Text("Import statement")
-                        .font(.system(size: 12, weight: .semibold))
+                    FDSLabel("Import statement")
+                        .font(AppTypography.captionSmSemibold)
                         .foregroundColor(DesignTokens.Text.primary)
 
                     Spacer()
 
-                    Text("⌘I")
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    FDSLabel("⌘I")
+                        .font(AppTypography.captionSmMedium)
                         .foregroundColor(DesignTokens.Text.tertiary)
                 }
                 .padding(.horizontal, 8)
@@ -126,8 +126,8 @@ struct SidebarView: View {
                     .frame(width: 6, height: 6)
                     .shadow(color: DesignTokens.System.green.opacity(DesignTokens.Opacity.high), radius: 3)
 
-                Text("Database healthy · 2,148 txns")
-                    .font(.system(size: 11, weight: .regular))
+                FDSLabel("Database healthy · 2,148 txns")
+                    .font(AppTypography.captionSm)
                     .foregroundColor(DesignTokens.Text.tertiary)
 
                 Spacer()
@@ -152,8 +152,8 @@ struct SidebarView: View {
 
             if navigator.sidebarSelection == item {
                 Spacer()
-                Text(shortcut)
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                FDSLabel(shortcut)
+                    .font(AppTypography.captionSmMedium)
                     .foregroundColor(DesignTokens.Text.tertiary)
             }
         }

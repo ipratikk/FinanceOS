@@ -47,7 +47,7 @@ struct AccountsView: View {
                 }
             }
         } message: {
-            Text(
+            FDSLabel(
                 "This will permanently delete this account and all associated transactions. This cannot be undone."
             )
         }
@@ -58,7 +58,7 @@ struct AccountsView: View {
             Button("OK") { viewModel.deleteError = nil }
         } message: {
             if let error = viewModel.deleteError {
-                Text(error)
+                FDSLabel(error)
             }
         }
         .onAppear {
@@ -90,10 +90,10 @@ struct AccountsView: View {
 
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Bank Accounts")
+            FDSLabel("Bank Accounts")
                 .font(AppTypography.headingXL)
                 .foregroundColor(DesignTokens.Text.primary)
-            Text("Manage your accounts and balances")
+            FDSLabel("Manage your accounts and balances")
                 .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
                 .foregroundColor(DesignTokens.Text.secondary)
@@ -114,10 +114,10 @@ extension AccountsView {
     private func bankSection(bankName: String, ledgers: [Ledger]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(bankName)
+                FDSLabel(bankName)
                     .font(AppTypography.bodyMdSemibold)
                     .foregroundColor(DesignTokens.Text.primary)
-                Text("\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
+                FDSLabel("\(ledgers.count) account\(ledgers.count == 1 ? "" : "s")")
                     .font(AppTypography.captionLgMedium)
                     .foregroundColor(DesignTokens.Text.secondary)
             }
@@ -158,16 +158,16 @@ extension AccountsView {
                 .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
+                FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .font(AppTypography.bodySmSemibold)
                     .foregroundColor(DesignTokens.Text.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
-                    Text((ledger.accountType ?? "Account").capitalized)
+                    FDSLabel((ledger.accountType ?? "Account").capitalized)
                         .font(AppTypography.captionSmMedium)
                     if !ledger.last4.isEmpty {
-                        Text("•••• \(ledger.last4)")
+                        FDSLabel("•••• \(ledger.last4)")
                             .maskedAccount()
                     }
                 }
@@ -178,13 +178,13 @@ extension AccountsView {
 
             if let balance {
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(balance.formattedBalance)
+                    FDSLabel(balance.formattedBalance)
                         .font(AppTypography.amountSm)
                         .foregroundColor(AppColors.success)
                 }
             }
         }
-        .padding(12)
+        .padding(AppSpacing.xs)
     }
 
     private func accountRowActions(_ ledger: Ledger) -> some View {
@@ -268,7 +268,7 @@ extension AccountsView {
             }
             Spacer()
         }
-        .padding(12)
+        .padding(AppSpacing.xs)
         .background {
             RoundedRectangle(cornerRadius: 12)
                 .fill(DesignTokens.Background.surfaceGlass)

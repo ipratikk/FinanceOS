@@ -22,9 +22,9 @@ public struct FDSChoiceGroup<T: Hashable>: View {
     public var body: some View {
         HStack(spacing: 0) {
             ForEach(options, id: \.self) { option in
-                Button(action: { selection = option }) {
-                    Text(optionLabel(option))
-                        .font(.system(size: 12, weight: .semibold))
+                Button(action: { selection = option }, label: {
+                    FDSLabel(optionLabel(option))
+                        .font(AppTypography.custom(size: 12, weight: .semibold))
                         .foregroundColor(
                             selection == option
                                 ? AppColors.textPrimary
@@ -37,7 +37,7 @@ public struct FDSChoiceGroup<T: Hashable>: View {
                                 Capsule().fill(AppColors.surface2)
                             }
                         }
-                }
+                })
                 .buttonStyle(.plain)
             }
         }

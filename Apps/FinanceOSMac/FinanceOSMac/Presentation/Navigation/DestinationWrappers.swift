@@ -23,7 +23,7 @@ struct AccountTransactionsDestinationView: View {
                 )
                 .navigationTitle(ledger.displayName)
             } else if !isLoading {
-                Text("Account not found")
+                FDSLabel("Account not found")
             } else {
                 ProgressView()
             }
@@ -67,7 +67,7 @@ struct CardTransactionsDestinationView: View {
                 )
                 .navigationTitle(ledger.displayName)
             } else if !isLoading {
-                Text("Card not found")
+                FDSLabel("Card not found")
             } else {
                 ProgressView()
             }

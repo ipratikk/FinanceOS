@@ -9,14 +9,10 @@ struct CardCatalogWidget: View {
         HStack(spacing: AppSpacing.md) {
             CardArtworkDisplay(card: card)
             VStack(alignment: .leading, spacing: 3) {
-                Text(card.name)
-                    .font(AppTypography.bodySmSemibold)
-                    .foregroundStyle(.primary)
+                FDSLabel(card.name, style: .bodyMedium, color: .primary)
                     .lineLimit(1)
-                Text(card.cardType.displayName.uppercased())
-                    .font(AppTypography.captionSm)
+                FDSLabel(card.cardType.displayName.uppercased(), style: .caption, color: .secondary)
                     .tracking(0.4)
-                    .foregroundStyle(.secondary)
             }
             Spacer()
         }
@@ -51,7 +47,7 @@ struct CardArtworkDisplay: View {
         .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.sm)
-                .strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5)
+                .strokeBorder(AppColors.textPrimary.opacity(0.12), lineWidth: 0.5)
         )
     }
 
@@ -77,19 +73,16 @@ struct CardDeleteConfirmationAlert: View {
         VStack(spacing: AppSpacing.lg) {
             VStack(spacing: AppSpacing.sm) {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.red)
+                    .font(AppTypography.netHeroAmount)
+                    .foregroundStyle(AppColors.danger)
 
-                Text("Delete \(isCard ? "Card" : "Account")?")
-                    .font(AppTypography.headingMd)
-                    .foregroundStyle(.primary)
+                FDSLabel("Delete \(isCard ? "Card" : "Account")?", style: .headingMedium)
 
-                Text(
-                    "This will permanently delete this \(isCard ? "card" : "account") and all associated transactions."
+                FDSLabel(
+                    "This will permanently delete this \(isCard ? "card" : "account") and all associated transactions.",
+                    style: .bodyMedium,
+                    color: .secondary
                 )
-                .font(AppTypography.bodyMd)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
             }
 
             HStack(spacing: AppSpacing.compact) {

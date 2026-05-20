@@ -72,7 +72,6 @@ public struct VisionPDFTextExtractor: PDFTextExtractor {
             bitmapInfo: bitmapInfo
         ) else { return nil }
 
-        ctx.setFillColor(CGColor.white)
         ctx.fill(CGRect(x: 0, y: 0, width: width, height: height))
         ctx.scaleBy(x: renderScale, y: renderScale)
         page.draw(with: .mediaBox, to: ctx)

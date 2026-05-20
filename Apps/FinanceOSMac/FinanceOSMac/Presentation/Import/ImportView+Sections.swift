@@ -13,12 +13,15 @@ struct SupportedSourcesView: View {
                 ForEach(Array(viewModel.supportedSources.enumerated()), id: \.offset) { _, source in
                     let isFullySupported = source.bankName == "ICICI" && source.sourceType == .bankAccount
                     let status = isFullySupported ? "" : " (coming soon)"
-                    Text("• \(source.bankName) \(source.sourceType.rawValue)\(status)")
+                    FDSLabel("• \(source.bankName) \(source.sourceType.rawValue)\(status)")
                         .caption()
                 }
             }
             Divider()
-            Text("CSV and XLSX for CSV-based statements; TXT for delimited text (HDFC); PDF for scanned statements.")
+            FDSLabel(
+                "CSV and XLSX for CSV-based statements; "
+                    + "TXT for delimited text (HDFC); PDF for scanned statements."
+            )
                 .caption()
         }
         .padding()
@@ -51,7 +54,7 @@ struct TargetSelectionSection: View {
             Menu {
                 if viewModel.selectedTarget != nil {
                     Button(action: { viewModel.selectedTarget = nil }, label: {
-                        Text("Clear")
+                        FDSLabel("Clear")
                     })
                     Divider()
                 }
@@ -64,7 +67,7 @@ struct TargetSelectionSection: View {
                                 if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
                                     Label(account.displayName, systemImage: "checkmark")
                                 } else {
-                                    Text(account.displayName)
+                                    FDSLabel(account.displayName)
                                 }
                             })
                         }
@@ -79,7 +82,7 @@ struct TargetSelectionSection: View {
                                 if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
                                     Label(card.displayName, systemImage: "checkmark")
                                 } else {
-                                    Text(card.displayName)
+                                    FDSLabel(card.displayName)
                                 }
                             })
                         }
@@ -87,8 +90,8 @@ struct TargetSelectionSection: View {
                 }
 
                 Divider()
-                Button(action: {}, label: { Text("New Account") })
-                Button(action: {}, label: { Text("New Card") })
+                Button(action: {}, label: { FDSLabel("New Account") })
+                Button(action: {}, label: { FDSLabel("New Card") })
             } label: {
                 let displayText: String = {
                     if let target = viewModel.selectedTarget {
@@ -100,7 +103,7 @@ struct TargetSelectionSection: View {
                 }()
 
                 HStack {
-                    Text(displayText)
+                    FDSLabel(displayText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Image(systemName: "chevron.down")
                 }

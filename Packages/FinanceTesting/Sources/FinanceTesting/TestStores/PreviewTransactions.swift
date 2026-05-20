@@ -10,7 +10,7 @@ public enum PreviewTransactions {
     ) -> Transaction {
         Transaction(
             id: UUID(),
-            accountID: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+            accountID: uuid("00000000-0000-0000-0000-000000000001"),
             postedAt: Date(timeIntervalSince1970: 1_747_000_000),
             description: description,
             amountMinorUnits: amountMinorUnits,
@@ -26,7 +26,7 @@ public enum PreviewTransactions {
     ) -> Transaction {
         Transaction(
             id: UUID(),
-            accountID: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
+            accountID: uuid("00000000-0000-0000-0000-000000000002"),
             postedAt: Date(timeIntervalSince1970: 1_747_000_000),
             description: description,
             amountMinorUnits: amountMinorUnits,
@@ -44,5 +44,12 @@ public enum PreviewTransactions {
             debit(description: "Target", amountMinorUnits: 14567),
             credit(description: "Employer Deposit", amountMinorUnits: 500_000)
         ]
+    }
+
+    private static func uuid(_ value: String) -> UUID {
+        guard let uuid = UUID(uuidString: value) else {
+            fatalError("Invalid preview transaction UUID: \(value)")
+        }
+        return uuid
     }
 }

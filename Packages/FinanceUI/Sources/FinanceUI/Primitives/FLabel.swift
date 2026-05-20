@@ -18,7 +18,7 @@ public struct FLabel: View {
                 Image(systemName: icon)
                     .font(AppTypography.bodyMdSemibold)
             }
-            Text(text)
+            FDSLabel(text)
                 .font(AppTypography.bodyMd)
         }
         .foregroundColor(color)

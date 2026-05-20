@@ -29,7 +29,7 @@ struct ImportFileListView: View {
 
                         Spacer()
 
-                        Text("\(pair.statement.transactions.count) txns")
+                        FDSLabel("\(pair.statement.transactions.count) txns")
                             .caption()
                     }
                     .padding(AppSpacing.sm)

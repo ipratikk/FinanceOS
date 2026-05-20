@@ -22,36 +22,37 @@ struct CardCreationView: View {
         FDSSheet(
             title: "Create Card",
             subtitle: state.customName,
-            onDismiss: { dismiss() }
-        ) {
-            VStack(alignment: .leading, spacing: 20) {
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("CARD DETAILS")
-                            .font(.system(size: 10, weight: .semibold))
-                            .tracking(0.2)
-                            .foregroundColor(DesignTokens.Text.secondary)
+            onDismiss: { dismiss() },
+            content: {
+                VStack(alignment: .leading, spacing: AppSpacing.md) {
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                            FDSLabel("CARD DETAILS")
+                                .font(AppTypography.captionSmSemibold)
+                                .tracking(0.2)
+                                .foregroundColor(DesignTokens.Text.secondary)
 
-                        fieldInput("Nickname", text: $nickname)
-                        Divider().opacity(DesignTokens.Opacity.low)
-                        fieldInput("Card Type", cardNetwork: $cardType)
-                        Divider().opacity(DesignTokens.Opacity.low)
-                        fieldInput("Last 4 Digits", text: $last4)
+                            fieldInput("Nickname", text: $nickname)
+                            Divider().opacity(DesignTokens.Opacity.low)
+                            fieldInput("Card Type", cardNetwork: $cardType)
+                            Divider().opacity(DesignTokens.Opacity.low)
+                            fieldInput("Last 4 Digits", text: $last4)
+                        }
+                        .padding(AppSpacing.xs)
                     }
-                    .padding(12)
-                }
 
-                Button(action: commit) {
-                    Text("Create Card")
-                        .font(.system(size: 13, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(12)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(6)
+                    Button(action: commit) {
+                        FDSLabel("Create Card")
+                            .font(AppTypography.bodySmSemibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(AppSpacing.xs)
+                            .background(AppColors.accentBlue)
+                            .foregroundColor(AppColors.textPrimary)
+                            .cornerRadius(6)
+                    }
                 }
             }
-        }
+        )
     }
 
     private func commit() {
@@ -65,8 +66,8 @@ struct CardCreationView: View {
 
     private func fieldInput(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+            FDSLabel(label.uppercased())
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             FDSTextInput("", text: text, style: .labelSmall)
@@ -79,13 +80,13 @@ struct CardCreationView: View {
 
     private func fieldInput(_ label: String, cardNetwork: Binding<CardNetwork>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+            FDSLabel(label.uppercased())
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             Picker("", selection: cardNetwork) {
                 ForEach(CardNetwork.allCases, id: \.self) { network in
-                    Text(network.rawValue).tag(network)
+                    FDSLabel(network.rawValue).tag(network)
                 }
             }
             .pickerStyle(.segmented)

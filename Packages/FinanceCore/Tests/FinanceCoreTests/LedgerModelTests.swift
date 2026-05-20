@@ -90,9 +90,9 @@ func ledgerFilterByKind() async throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let account = Ledger(
         bankId: bank.id,
@@ -201,9 +201,9 @@ func ledgerLinkedRelationship() async throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let account = Ledger(
         bankId: bank.id,
@@ -242,9 +242,9 @@ func ledgerArchiveFlag() async throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -291,5 +291,5 @@ func ledgerArchiveFlag() async throws {
             .fetchAll(database)
     }
 
-    #expect(stillActive.count == 0)
+    #expect(stillActive.isEmpty)
 }

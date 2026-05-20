@@ -21,20 +21,20 @@ struct ToastPresenterView: View {
     private func toastView(for config: ToastConfig) -> some View {
         HStack(alignment: config.verticalAlignment, spacing: AppSpacing.md) {
             Image(systemName: iconName(for: config.type))
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(.white)
+                .font(AppTypography.bodyMdSemibold)
+                .foregroundColor(AppColors.textPrimary)
 
-            Text(config.message)
+            FDSLabel(config.message)
                 .font(AppTypography.labelMedium)
-                .foregroundColor(.white)
+                .foregroundColor(AppColors.textPrimary)
                 .lineLimit(3)
 
             Spacer()
 
             Button(action: { presenter.dismiss() }, label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
+                    .font(AppTypography.bodySmSemibold)
+                    .foregroundColor(AppColors.textPrimary)
             })
             .buttonStyle(.plain)
         }

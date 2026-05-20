@@ -36,20 +36,20 @@ struct TransactionDetailView: View {
 
     private var heroAmount: some View {
         VStack(alignment: .center, spacing: 8) {
-            Text(row.transactionType == .debit ? "DEBITED" : "CREDITED")
-                .font(.system(size: 11, weight: .semibold))
+            FDSLabel(row.transactionType == .debit ? "DEBITED" : "CREDITED")
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
                 .foregroundColor(DesignTokens.Text.secondary)
 
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(row.amountText)
-                    .font(.system(size: 40, weight: .semibold, design: .default))
+                FDSLabel(row.amountText)
+                    .font(AppTypography.headingXL)
                     .monospacedDigit()
                     .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
                         .green)
 
                 Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(AppTypography.headingMd)
                     .foregroundColor(row.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
                         .green)
             }
@@ -59,17 +59,17 @@ struct TransactionDetailView: View {
 
     private func detailRow(label: String, value: String) -> some View {
         HStack {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+            FDSLabel(label.uppercased())
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
                 .foregroundColor(DesignTokens.Text.secondary)
             Spacer()
-            Text(value)
-                .font(.system(size: 12, weight: .regular))
+            FDSLabel(value)
+                .font(AppTypography.captionSmMedium)
                 .foregroundColor(DesignTokens.Text.primary)
                 .multilineTextAlignment(.trailing)
         }
-        .padding(12)
+        .padding(AppSpacing.xs)
     }
 
     private func formatDate(_ date: Date) -> String {

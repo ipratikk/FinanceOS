@@ -212,7 +212,7 @@ public extension Logger {
         let filename = (file as NSString).lastPathComponent
 
         // Convert StaticString to String
-        var msg = message.withUTF8Buffer { String(decoding: $0, as: UTF8.self) }
+        var msg = message.withUTF8Buffer { String(bytes: $0, encoding: .utf8) ?? "" }
 
         // Replace {key} placeholders with attribute values
         for (key, value) in attributes {

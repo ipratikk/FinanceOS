@@ -33,7 +33,6 @@ public struct FDSCardArt: View {
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
-
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     RoundedRectangle(cornerRadius: 2)
@@ -42,18 +41,18 @@ public struct FDSCardArt: View {
 
                     Spacer()
 
-                    Text(network)
-                        .font(.system(size: 7, weight: .semibold))
-                        .foregroundColor(.white)
+                    FDSLabel(network)
+                        .font(AppTypography.custom(size: 7, weight: .semibold))
+                        .foregroundColor(AppColors.textPrimary)
                 }
                 .padding(6)
 
                 Spacer()
 
                 HStack {
-                    Text("•• \(last4)")
-                        .font(.system(size: 8, weight: .semibold, design: .monospaced))
-                        .foregroundColor(.white)
+                    FDSLabel("•• \(last4)")
+                        .font(AppTypography.custom(size: 8, weight: .semibold, design: .monospaced))
+                        .foregroundColor(AppColors.textPrimary)
 
                     Spacer()
                 }
@@ -64,10 +63,10 @@ public struct FDSCardArt: View {
                 .strokeBorder(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.16),
-                            Color.white.opacity(0.06),
+                            AppColors.textPrimary.opacity(0.16),
+                            AppColors.textPrimary.opacity(0.06),
                             .clear,
-                            Color.black.opacity(0.20)
+                            AppColors.base.opacity(0.20)
                         ],
                         startPoint: .top,
                         endPoint: .bottom

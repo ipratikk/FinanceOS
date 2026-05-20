@@ -40,8 +40,7 @@ struct CardSelectionView: View {
                 .font(AppTypography.headlineSm)
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
-            Text("Select Card")
-                .bodyMedium()
+            FDSLabel("Select Card", style: .bodyMedium)
             Spacer()
             AccessibleIconButton.close(action: onDismiss)
         }
@@ -67,7 +66,7 @@ struct CardSelectionView: View {
         .padding(.horizontal, AppSpacing.compact)
         .padding(.vertical, 6)
         .background { Capsule(style: .continuous).fill(.ultraThinMaterial) }
-        .overlay { Capsule(style: .continuous).strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5) }
+        .overlay { Capsule(style: .continuous).strokeBorder(AppColors.textPrimary.opacity(0.06), lineWidth: 0.5) }
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.compact)
     }
@@ -87,18 +86,18 @@ struct CardSelectionView: View {
 
     private func issuerChip(_ label: String, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Text(label)
+            FDSLabel(label)
                 .font(selected ? AppTypography.captionLgSemibold : AppTypography.captionLg)
-                .foregroundStyle(selected ? AppColors.accent : Color.secondary)
+                .foregroundStyle(selected ? AppColors.accent : AppColors.textSecondary)
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.vertical, 5)
                 .background {
                     Capsule(style: .continuous)
-                        .fill(selected ? AppColors.accent.opacity(0.15) : Color.clear)
+                        .fill(selected ? AppColors.accent.opacity(0.15) : AppColors.clear)
                         .overlay(
                             Capsule(style: .continuous)
                                 .strokeBorder(
-                                    selected ? AppColors.accent.opacity(0.5) : Color.secondary.opacity(0.2),
+                                    selected ? AppColors.accent.opacity(0.5) : AppColors.textSecondary.opacity(0.2),
                                     lineWidth: 0.5
                                 )
                         )
@@ -129,16 +128,16 @@ struct CardSelectionView: View {
                 cardArtwork(for: card)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(card.name)
+                    FDSLabel(card.name)
                         .font(AppTypography.bodySmMedium)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
 
                     HStack(spacing: 6) {
-                        Text(card.issuer)
+                        FDSLabel(card.issuer)
                             .font(AppTypography.captionSm)
                             .foregroundStyle(.secondary)
-                        Text("·")
+                        FDSLabel("·")
                             .foregroundStyle(.quaternary)
                         networkBadge(for: card)
                     }
@@ -148,17 +147,17 @@ struct CardSelectionView: View {
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(AppTypography.headlineMdRegular)
-                    .foregroundStyle(isSelected ? AppColors.accent : Color.secondary.opacity(0.4))
+                    .foregroundStyle(isSelected ? AppColors.accent : AppColors.textSecondary.opacity(0.4))
             }
             .padding(AppSpacing.md)
             .contentShape(Rectangle())
             .background {
                 RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
-                    .fill(isSelected ? AppColors.accent.opacity(0.08) : Color.clear)
+                    .fill(isSelected ? AppColors.accent.opacity(0.08) : AppColors.clear)
                     .overlay(
                         RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
                             .strokeBorder(
-                                isSelected ? AppColors.accent.opacity(0.35) : Color.white.opacity(0.05),
+                                isSelected ? AppColors.accent.opacity(0.35) : AppColors.textPrimary.opacity(0.05),
                                 lineWidth: isSelected ? 1 : 0.5
                             )
                     )
@@ -187,7 +186,7 @@ struct CardSelectionView: View {
         .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5)
+                .strokeBorder(AppColors.textPrimary.opacity(0.12), lineWidth: 0.5)
         }
     }
 
@@ -202,7 +201,7 @@ struct CardSelectionView: View {
     }
 
     private func networkBadge(for card: CardMetadata) -> some View {
-        Text(card.cardType.displayName.uppercased())
+        FDSLabel(card.cardType.displayName.uppercased())
             .font(AppTypography.iconSm)
             .tracking(0.4)
             .foregroundStyle(networkColor(for: card.cardType))

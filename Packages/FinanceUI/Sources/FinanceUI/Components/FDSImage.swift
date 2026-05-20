@@ -28,13 +28,13 @@ public struct FDSImage: View {
     public var body: some View {
         Group {
             if let imageName, !imageName.isEmpty {
-                // Wrap in ZStack with a fixed-size Color.clear background so SwiftUI
+                // Wrap in ZStack with a fixed-size AppColors.clear background so SwiftUI
                 // resolves the container size (width x height) first, then scales the
                 // image to fit within that box. Without this, wide-aspect images like
                 // the Amex logo (15:1) report a huge intrinsic width that Menu items
                 // cannot override with downstream .frame() modifiers.
                 ZStack {
-                    Color.clear
+                    AppColors.clear
                     Image(imageName)
                         .resizable()
                         .scaledToFit()
@@ -49,7 +49,7 @@ public struct FDSImage: View {
                     .foregroundStyle(.secondary)
             } else {
                 Rectangle()
-                    .fill(Color.clear)
+                    .fill(AppColors.clear)
                     .frame(width: width, height: height)
             }
         }

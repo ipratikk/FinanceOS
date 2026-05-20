@@ -31,7 +31,7 @@ struct ImportTransactionSection: View {
     private var sectionHeader: some View {
         HStack(spacing: AppSpacing.md) {
             HStack(spacing: 8) {
-                Text(title)
+                FDSLabel(title)
                     .font(AppTypography.headingSmall)
                     .foregroundColor(DesignTokens.Text.primary)
 
@@ -50,7 +50,7 @@ struct ImportTransactionSection: View {
 
     private var viewAllButton: some View {
         Button(action: { isExpanded.toggle() }, label: {
-            Text(isExpanded ? "Show Less" : "View All")
+            FDSLabel(isExpanded ? "Show Less" : "View All")
                 .font(AppTypography.labelMedium)
                 .foregroundColor(AppColors.accent)
         })

@@ -12,12 +12,7 @@ public struct CardStyleModifier: ViewModifier {
                     .stroke(AppColors.accent.opacity(0.15), lineWidth: 0.5)
             )
             .cornerRadius(AppRadius.lg)
-            .shadow(
-                color: Color.black.opacity(0.3),
-                radius: 16,
-                x: 0,
-                y: 8
-            )
+            .shadow(color: AppColors.base.opacity(0.3), radius: 16, x: 0, y: 8)
     }
 }
 

@@ -12,7 +12,7 @@ public struct ChartContainer<Content: View>: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            Text(title)
+            FDSLabel(title)
                 .headingMedium()
 
             content
@@ -25,7 +25,7 @@ public struct ChartContainer<Content: View>: View {
 #Preview {
     ChartContainer("Spending Trend") {
         VStack(alignment: .center) {
-            Text("Chart goes here")
+            FDSLabel("Chart goes here")
                 .foregroundColor(AppColors.textTertiary)
         }
     }

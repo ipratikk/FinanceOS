@@ -53,8 +53,7 @@ extension ImportViewModel {
             )
 
             if case let .ledger(ledgerId) = target, let closingBalance = statement.metadata?.closingBalance,
-               let statementDate = statement.metadata?.generatedAt
-            {
+               let statementDate = statement.metadata?.generatedAt {
                 try? await ledgerRepository.updateClosingBalance(
                     id: ledgerId,
                     balance: closingBalance,

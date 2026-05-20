@@ -11,7 +11,7 @@ public struct SnapshotContainer<Content: View>: View {
         content
             .snapshotEnvironment(colorScheme: colorScheme)
             .frame(width: device.size.width, height: device.size.height)
-            .background(Color.white)
+            .background(Color(white: 1))
             .clipped()
     }
 
@@ -36,7 +36,7 @@ public struct ComponentSnapshotContainer<Content: View>: View {
         content
             .snapshotEnvironment(colorScheme: colorScheme)
             .frame(width: size.width, height: size.height)
-            .background(Color.white)
+            .background(Color(white: 1))
             .clipped()
     }
 

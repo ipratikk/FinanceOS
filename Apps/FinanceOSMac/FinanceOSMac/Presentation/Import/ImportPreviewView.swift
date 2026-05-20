@@ -16,7 +16,7 @@ struct ImportPreviewView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.red)
-                    Text(error)
+                    FDSLabel(error)
                         .caption()
                         .foregroundColor(.red)
                     Spacer()
@@ -35,7 +35,7 @@ struct ImportPreviewView: View {
             // Header with Review heading and Import to dropdown
             HStack(spacing: AppSpacing.md) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Review parsed transactions")
+                    FDSLabel("Review parsed transactions")
                         .font(AppTypography.headingMd)
                         .foregroundColor(DesignTokens.Text.primary)
 
@@ -44,7 +44,7 @@ struct ImportPreviewView: View {
                         let dupCount = viewModel.duplicateTransactionIndices.count
                         let fileName = viewModel.fileURLs.first?.lastPathComponent ?? "File"
                         let total = viewModel.parsedStatements.count
-                        Text("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
+                        FDSLabel("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
                     }

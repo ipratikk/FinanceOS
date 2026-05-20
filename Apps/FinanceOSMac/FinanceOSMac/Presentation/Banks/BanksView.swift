@@ -33,7 +33,7 @@ struct BanksView: View {
                 }
             }
         } message: {
-            Text("This will delete this bank and all associated cards, accounts, and transactions.")
+            FDSLabel("This will delete this bank and all associated cards, accounts, and transactions.")
         }
     }
 
@@ -41,11 +41,11 @@ struct BanksView: View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Banks")
-                        .font(.system(size: 22, weight: .semibold))
+                    FDSLabel("Banks")
+                        .font(AppTypography.headingLg)
                         .foregroundColor(DesignTokens.Text.primary)
-                    Text("Manage connected institutions")
-                        .font(.system(size: 12, weight: .medium))
+                    FDSLabel("Manage connected institutions")
+                        .font(AppTypography.captionSmMedium)
                         .tracking(0.3)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
@@ -73,11 +73,11 @@ struct BanksView: View {
                         .frame(width: AppSpacing.hitTarget, height: AppSpacing.hitTarget)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(bank.name)
-                            .font(.system(size: 14, weight: .semibold))
+                        FDSLabel(bank.name)
+                            .font(AppTypography.bodySmSemibold)
                             .foregroundColor(DesignTokens.Text.primary)
-                        Text(bank.providerType.rawValue.capitalized)
-                            .font(.system(size: 12, weight: .regular))
+                        FDSLabel(bank.providerType.rawValue.capitalized)
+                            .font(AppTypography.captionSmMedium)
                             .foregroundColor(DesignTokens.Text.secondary)
                     }
 
@@ -93,7 +93,7 @@ struct BanksView: View {
                         }
                     }
                 }
-                .padding(12)
+                .padding(AppSpacing.xs)
 
                 if !ledgers.isEmpty {
                     Divider().opacity(DesignTokens.Opacity.low)
@@ -101,10 +101,10 @@ struct BanksView: View {
                         ForEach(ledgers) { ledger in
                             HStack(spacing: 8) {
                                 Image(systemName: ledger.kind == .creditCard ? "creditcard.fill" : "banknote.fill")
-                                    .font(.system(size: 11, weight: .semibold))
+                                    .font(AppTypography.captionSmSemibold)
                                     .foregroundColor(DesignTokens.Text.secondary)
-                                Text(ledger.displayName)
-                                    .font(.system(size: 12, weight: .regular))
+                                FDSLabel(ledger.displayName)
+                                    .font(AppTypography.captionSmMedium)
                                     .foregroundColor(DesignTokens.Text.secondary)
                             }
                             .padding(.horizontal, 12)
@@ -124,7 +124,7 @@ struct BanksView: View {
     ) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 12, weight: .semibold))
+                .font(AppTypography.captionSmSemibold)
                 .foregroundColor(color)
                 .frame(width: 28, height: 28)
                 .background(Circle().fill(color.opacity(0.15)))
@@ -146,11 +146,11 @@ struct BanksView: View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Banks")
-                        .font(.system(size: 22, weight: .semibold))
+                    FDSLabel("Banks")
+                        .font(AppTypography.headingLg)
                         .foregroundColor(DesignTokens.Text.primary)
-                    Text("Manage connected institutions")
-                        .font(.system(size: 12, weight: .medium))
+                    FDSLabel("Manage connected institutions")
+                        .font(AppTypography.captionSmMedium)
                         .tracking(0.3)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
@@ -187,7 +187,7 @@ struct BanksView: View {
             }
             Spacer()
         }
-        .padding(12)
+        .padding(AppSpacing.xs)
         .background {
             RoundedRectangle(cornerRadius: 12)
                 .fill(DesignTokens.Background.surfaceGlass)

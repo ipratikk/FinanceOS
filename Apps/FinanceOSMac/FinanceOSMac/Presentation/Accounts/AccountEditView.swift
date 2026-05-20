@@ -29,59 +29,60 @@ struct AccountEditView: View {
         FDSSheet(
             title: "Edit Account",
             subtitle: account.displayName,
-            onDismiss: { dismiss() }
-        ) {
-            VStack(alignment: .leading, spacing: 20) {
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("ACCOUNT INFORMATION")
-                            .font(.system(size: 10, weight: .semibold))
-                            .tracking(0.2)
-                            .foregroundColor(DesignTokens.Text.secondary)
+            onDismiss: { dismiss() },
+            content: {
+                VStack(alignment: .leading, spacing: AppSpacing.md) {
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                            FDSLabel("ACCOUNT INFORMATION")
+                                .font(AppTypography.captionSmSemibold)
+                                .tracking(0.2)
+                                .foregroundColor(DesignTokens.Text.secondary)
 
-                        fieldInput("Account Name", text: $displayName)
-                        Divider().opacity(DesignTokens.Opacity.low)
-                        fieldInput("Owner Name", text: $ownerName)
-                        Divider().opacity(DesignTokens.Opacity.low)
-                        fieldInput("Last 4 Digits", text: $last4)
-                        Divider().opacity(DesignTokens.Opacity.low)
-                        fieldInput("Nickname", text: $nickname)
-                    }
-                    .padding(12)
-                }
-
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("BANK")
-                            .font(.system(size: 10, weight: .semibold))
-                            .tracking(0.2)
-                            .foregroundColor(DesignTokens.Text.secondary)
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Select Bank")
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(DesignTokens.Text.primary)
-                            Picker("Bank", selection: $bankId) {
-                                ForEach(context.banks) { bank in
-                                    Text(bank.name).tag(bank.id)
-                                }
-                            }
-                            .foregroundColor(DesignTokens.Text.primary)
+                            fieldInput("Account Name", text: $displayName)
+                            Divider().opacity(DesignTokens.Opacity.low)
+                            fieldInput("Owner Name", text: $ownerName)
+                            Divider().opacity(DesignTokens.Opacity.low)
+                            fieldInput("Last 4 Digits", text: $last4)
+                            Divider().opacity(DesignTokens.Opacity.low)
+                            fieldInput("Nickname", text: $nickname)
                         }
-                        .padding(12)
+                        .padding(AppSpacing.xs)
                     }
 
                     FDSCard(cornerRadius: 12, padded: false) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            FDSLiquidButton("Delete Account", symbol: "trash.fill", variant: .danger) {
-                                showDeleteConfirm = true
+                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                            FDSLabel("BANK")
+                                .font(AppTypography.captionSmSemibold)
+                                .tracking(0.2)
+                                .foregroundColor(DesignTokens.Text.secondary)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                FDSLabel("Select Bank")
+                                    .font(AppTypography.captionSmMedium)
+                                    .foregroundColor(DesignTokens.Text.primary)
+                                Picker("Bank", selection: $bankId) {
+                                    ForEach(context.banks) { bank in
+                                        FDSLabel(bank.name).tag(bank.id)
+                                    }
+                                }
+                                .foregroundColor(DesignTokens.Text.primary)
                             }
-                            .padding(12)
+                            .padding(AppSpacing.xs)
+                        }
+
+                        FDSCard(cornerRadius: 12, padded: false) {
+                            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                                FDSLiquidButton("Delete Account", symbol: "trash.fill", variant: .danger) {
+                                    showDeleteConfirm = true
+                                }
+                                .padding(AppSpacing.xs)
+                            }
                         }
                     }
                 }
             }
-        }
+        )
         .alert("Delete Account?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -91,7 +92,7 @@ struct AccountEditView: View {
                 }
             }
         } message: {
-            Text("This will permanently delete this account and all associated transactions.")
+            FDSLabel("This will permanently delete this account and all associated transactions.")
         }
         .alert("Error", isPresented: Binding(
             get: { context.deleteError != nil },
@@ -100,15 +101,15 @@ struct AccountEditView: View {
             Button("OK") { context.clearError() }
         } message: {
             if let error = context.deleteError {
-                Text(error)
+                FDSLabel(error)
             }
         }
     }
 
     private func fieldInput(_ label: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+            FDSLabel(label.uppercased())
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
             FDSTextInput("", text: text, style: .labelSmall)

@@ -31,7 +31,7 @@ public struct FDSSelect<T: Hashable>: View {
             }
         } label: {
             HStack(spacing: AppSpacing.sm) {
-                Text(optionLabel(selection))
+                FDSLabel(optionLabel(selection))
                     .foregroundColor(AppColors.textPrimary)
                 Spacer()
                 Image(systemName: "chevron.down")

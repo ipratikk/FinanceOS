@@ -1,5 +1,12 @@
 import Foundation
 
+private struct FooterTotals {
+    let openingBalance: Int64?
+    let closingBalance: Int64?
+    let debitCount: Int?
+    let creditCount: Int?
+}
+
 /// Extracts statement-level metadata (customer info, balances, counts)
 /// from the header/footer rows of an HDFC bank statement.
 ///
@@ -12,7 +19,11 @@ public struct HDFCMetadataExtractor: Sendable {
     public func extract(from lines: [String]) -> StatementMetadata {
         let scalars = extractScalarFields(from: lines)
         let (customerName, address) = extractCustomerNameAndAddress(from: lines)
-        let (openingBalance, closingBalance, debitCount, creditCount) = extractFooterTotals(from: lines)
+        let totals = extractFooterTotals(from: lines)
+        let openingBalance = totals.openingBalance
+        let closingBalance = totals.closingBalance
+        let debitCount = totals.debitCount
+        let creditCount = totals.creditCount
         let generatedAt = extractGeneratedAt(from: lines)
 
         return StatementMetadata(
@@ -162,22 +173,17 @@ public struct HDFCMetadataExtractor: Sendable {
 
     // MARK: - Footer totals
 
-    private func extractFooterTotals(
-        from lines: [String]
-    ) -> (Int64?, Int64?, Int?, Int?) {
+    private func extractFooterTotals(from lines: [String]) -> FooterTotals {
         // Locate the header row, then scan following lines for a row of
         // numeric tokens. The numeric row layout is:
         //   <opening> <drCount> <crCount> <debits> <credits> <closing>
-        guard let headerIdx = lines.firstIndex(where: isFooterHeaderLine) else {
-            return (nil, nil, nil, nil)
-        }
+        let empty = FooterTotals(openingBalance: nil, closingBalance: nil, debitCount: nil, creditCount: nil)
+        guard let headerIdx = lines.firstIndex(where: isFooterHeaderLine) else { return empty }
         let endIdx = min(headerIdx + 6, lines.count)
         for i in (headerIdx + 1) ..< endIdx {
-            if let parsed = parseFooterTotalsLine(lines[i]) {
-                return parsed
-            }
+            if let parsed = parseFooterTotalsLine(lines[i]) { return parsed }
         }
-        return (nil, nil, nil, nil)
+        return empty
     }
 
     private func isFooterHeaderLine(_ line: String) -> Bool {
@@ -188,16 +194,17 @@ public struct HDFCMetadataExtractor: Sendable {
             && lower.contains("closing")
     }
 
-    private func parseFooterTotalsLine(_ line: String) -> (Int64?, Int64?, Int?, Int?)? {
+    private func parseFooterTotalsLine(_ line: String) -> FooterTotals? {
         let tokens = line.split(separator: " ").map(String.init)
         // Expected: 6 numeric tokens. Two large amounts, two counts, debits+credits.
         let numeric = tokens.filter { isNumericToken($0) }
         guard numeric.count >= 6 else { return nil }
-        let opening = parseAmountToMinorUnits(numeric[0])
-        let drCount = Int(numeric[1])
-        let crCount = Int(numeric[2])
-        let closing = parseAmountToMinorUnits(numeric[5])
-        return (opening, closing, drCount, crCount)
+        return FooterTotals(
+            openingBalance: parseAmountToMinorUnits(numeric[0]),
+            closingBalance: parseAmountToMinorUnits(numeric[5]),
+            debitCount: Int(numeric[1]),
+            creditCount: Int(numeric[2])
+        )
     }
 
     private func isNumericToken(_ s: String) -> Bool {

@@ -73,7 +73,7 @@ extension CardEditView {
         Button(action: { showCardSelection = true }, label: {
             HStack(spacing: AppSpacing.compact) {
                 Image(systemName: "creditcard.fill")
-                Text("Browse Card Database")
+                FDSLabel("Browse Card Database")
                 Spacer()
                 Image(systemName: "chevron.right")
             }

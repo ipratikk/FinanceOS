@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import SwiftUI
 
 struct CardDisplayPreview: View {
@@ -38,16 +39,16 @@ struct CardDisplayPreview: View {
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.2), lineWidth: 1)
+                            .strokeBorder(AppColors.textPrimary.opacity(0.2), lineWidth: 1)
                     )
 
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             if let cardName {
-                                Text(cardName)
+                                FDSLabel(cardName)
                                     .font(AppTypography.captionSmSemibold)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(AppColors.textPrimary)
                                     .lineLimit(1)
                             }
                         }
@@ -65,30 +66,30 @@ struct CardDisplayPreview: View {
 
                     VStack(alignment: .leading, spacing: AppSpacing.compact) {
                         HStack {
-                            Text(!first4.isEmpty ? first4 : "••••")
-                                .font(.system(size: 12, weight: .medium, design: .monospaced))
-                                .foregroundStyle(.white)
-                            Text("•••• •••• ")
-                                .font(.system(size: 12, weight: .medium, design: .monospaced))
-                                .foregroundStyle(.white)
-                            Text(last4.isEmpty ? "••••" : last4)
-                                .font(.system(size: 12, weight: .medium, design: .monospaced))
-                                .foregroundStyle(.white)
+                            FDSLabel(!first4.isEmpty ? first4 : "••••")
+                                .font(AppTypography.maskedAccount)
+                                .foregroundStyle(AppColors.textPrimary)
+                            FDSLabel("•••• •••• ")
+                                .font(AppTypography.maskedAccount)
+                                .foregroundStyle(AppColors.textPrimary)
+                            FDSLabel(last4.isEmpty ? "••••" : last4)
+                                .font(AppTypography.maskedAccount)
+                                .foregroundStyle(AppColors.textPrimary)
                             Spacer()
                         }
                         .tracking(2)
 
                         HStack {
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(cardholderName.isEmpty ? "Cardholder" : cardholderName)
-                                    .font(.system(size: 9, weight: .semibold))
-                                    .foregroundStyle(.white)
+                                FDSLabel(cardholderName.isEmpty ? "Cardholder" : cardholderName)
+                                    .font(AppTypography.captionSmSemibold)
+                                    .foregroundStyle(AppColors.textPrimary)
                                     .lineLimit(1)
                             }
                             Spacer()
-                            Text(cardNetwork.displayName.uppercased())
-                                .font(.system(size: 8, weight: .semibold))
-                                .foregroundStyle(.white)
+                            FDSLabel(cardNetwork.displayName.uppercased())
+                                .font(AppTypography.captionSmSemibold)
+                                .foregroundStyle(AppColors.textPrimary)
                                 .tracking(0.5)
                         }
                     }

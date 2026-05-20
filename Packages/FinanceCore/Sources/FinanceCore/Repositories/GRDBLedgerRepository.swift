@@ -4,8 +4,7 @@ import OSLog
 
 public final class GRDBLedgerRepository:
     @unchecked Sendable,
-    LedgerRepository
-{
+    LedgerRepository {
     private let dbQueue: DatabaseQueue
     private let logger = FinanceLogger.repository
 

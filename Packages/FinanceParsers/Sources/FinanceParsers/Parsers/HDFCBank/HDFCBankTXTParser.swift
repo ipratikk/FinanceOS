@@ -38,12 +38,10 @@ public struct HDFCBankTXTParser: Sendable {
         // Last 4 cols are: [debit, credit, ref, balance]
         guard parts.count > 4 else { return parts }
 
-        var anchorIdx: Int? = nil
-        for i in stride(from: parts.count - 4 - 1, through: 1, by: -1) {
-            if isDateString(parts[i]) {
-                anchorIdx = i
-                break
-            }
+        var anchorIdx: Int?
+        for i in stride(from: parts.count - 4 - 1, through: 1, by: -1) where isDateString(parts[i]) {
+            anchorIdx = i
+            break
         }
 
         guard let anchor = anchorIdx else { return parts }

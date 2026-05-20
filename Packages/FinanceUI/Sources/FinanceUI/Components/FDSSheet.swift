@@ -28,7 +28,7 @@ public struct FDSSheet<Content: View>: View {
 
     public var body: some View {
         ZStack {
-            Color.black.opacity(0.35)
+            AppColors.base.opacity(0.35)
                 .ignoresSafeArea()
                 .onTapGesture {
                     dismiss()
@@ -38,12 +38,12 @@ public struct FDSSheet<Content: View>: View {
             VStack(spacing: 0) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(title)
+                        FDSLabel(title)
                             .font(DesignTokens.Typography.sheetTitle)
                             .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
 
                         if let subtitle {
-                            Text(subtitle)
+                            FDSLabel(subtitle)
                                 .font(AppTypography.bodySm)
                                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                         }
@@ -54,15 +54,15 @@ public struct FDSSheet<Content: View>: View {
                     Button(action: {
                         dismiss()
                         onDismiss()
-                    }) {
+                    }, label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 18))
+                            .font(AppTypography.custom(size: 18))
                             .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580))
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
                 .padding(AppSpacing.lg)
-                .background(Color.black.opacity(0.15))
+                .background(AppColors.base.opacity(0.15))
 
                 Divider()
                     .opacity(0.2)
@@ -81,17 +81,17 @@ public struct FDSSheet<Content: View>: View {
                     Button(action: {
                         dismiss()
                         onDismiss()
-                    }) {
-                        Text("Cancel")
-                            .font(.system(size: 13, weight: .semibold))
+                    }, label: {
+                        FDSLabel("Cancel")
+                            .font(AppTypography.custom(size: 13, weight: .semibold))
                             .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
                             .frame(minWidth: 80)
                             .frame(height: 32)
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
                 .padding(AppSpacing.md)
-                .background(Color.black.opacity(0.1))
+                .background(AppColors.base.opacity(0.1))
             }
             .frame(maxWidth: 580)
             .frame(maxHeight: .infinity)
@@ -119,18 +119,19 @@ public struct FDSSheet<Content: View>: View {
         FDSSheet(
             title: "Edit Account",
             subtitle: "Update account details",
-            onDismiss: {}
-        ) {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
-                Text("Account Name")
-                    .font(AppTypography.captionLgSemibold)
-                    .foregroundColor(.secondary)
+            onDismiss: {},
+            content: {
+                VStack(alignment: .leading, spacing: AppSpacing.md) {
+                    FDSLabel("Account Name")
+                        .font(AppTypography.captionLgSemibold)
+                        .foregroundColor(.secondary)
 
-                TextField("Enter name", text: .constant(""))
-                    .padding(10)
-                    .background(Color.black.opacity(0.25))
-                    .cornerRadius(8)
+                    TextField("Enter name", text: .constant(""))
+                        .padding(AppSpacing.sm)
+                        .background(AppColors.surface)
+                        .cornerRadius(AppRadius.sm)
+                }
             }
-        }
+        )
     }
 }

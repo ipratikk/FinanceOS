@@ -7,7 +7,7 @@ struct TopMerchantsChart: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Top Merchants")
+            FDSLabel("Top Merchants")
                 .headingSmall()
 
             Chart(merchants, id: \.name) { item in

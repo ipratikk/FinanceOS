@@ -39,8 +39,7 @@ public struct ICICIBankCSVParser: Sendable {
             if firstCol == "DATE" {
                 let normalized = row.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
                 if normalized.contains("particulars"), normalized.contains("deposits"),
-                   normalized.contains("withdrawals")
-                {
+                   normalized.contains("withdrawals") {
                     headerIndex = idx
                     result.append(row)
                     break
@@ -69,8 +68,7 @@ public struct ICICIBankCSVParser: Sendable {
             let normalized = row.map { $0.lowercased() }
             if normalized.contains("particulars"),
                normalized.contains("deposits"),
-               normalized.contains("withdrawals")
-            {
+               normalized.contains("withdrawals") {
                 return true
             }
         }

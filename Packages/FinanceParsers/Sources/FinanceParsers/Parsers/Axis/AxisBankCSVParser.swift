@@ -14,8 +14,7 @@ public struct AxisBankCSVParser: Sendable {
             if normalized.contains("tran. date") || normalized.contains("transaction date") {
                 if normalized.contains("description"),
                    normalized.contains("deposit") || normalized.contains("credit"),
-                   normalized.contains("withdrawal") || normalized.contains("debit")
-                {
+                   normalized.contains("withdrawal") || normalized.contains("debit") {
                     headerIndex = index
                     result.append(row)
                     break
@@ -44,8 +43,7 @@ public struct AxisBankCSVParser: Sendable {
             if normalized.contains("tran. date") || normalized.contains("transaction date"),
                normalized.contains("description"),
                (normalized.contains("deposit") || normalized.contains("credit")) ||
-               (normalized.contains("withdrawal") || normalized.contains("debit"))
-            {
+               (normalized.contains("withdrawal") || normalized.contains("debit")) {
                 return true
             }
         }

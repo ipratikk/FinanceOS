@@ -8,7 +8,7 @@ struct ImportStepper: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            Text("Import Statements")
+            FDSLabel("Import Statements")
                 .font(AppTypography.headingXL)
                 .foregroundColor(DesignTokens.Text.primary)
 
@@ -59,17 +59,17 @@ struct ImportStepper: View {
 
                     if isComplete {
                         Image(systemName: "checkmark")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundColor(.white)
+                            .font(AppTypography.captionSmSemibold)
+                            .foregroundColor(AppColors.textPrimary)
                     } else {
-                        Text("\(number)")
-                            .font(.system(size: 10, weight: .semibold))
+                        FDSLabel("\(number)")
+                            .font(AppTypography.captionSmSemibold)
                             .foregroundColor(isCurrent ? .black : DesignTokens.Text.tertiary)
                     }
                 }
 
-                Text(label)
-                    .font(.system(size: 10, weight: .medium))
+                FDSLabel(label)
+                    .font(AppTypography.captionSmMedium)
                     .foregroundColor(isCurrent ? AppColors.accent : DesignTokens.Text.secondary)
             }
             .frame(maxWidth: .infinity)

@@ -25,7 +25,7 @@ struct ImportSourceGrid: View {
         let sectionSources = sources.filter { $0.sourceType == sourceType }
         if !sectionSources.isEmpty {
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                Text(title)
+                FDSLabel(title)
                     .font(AppTypography.headingSmall)
                     .foregroundColor(DesignTokens.Text.primary)
 

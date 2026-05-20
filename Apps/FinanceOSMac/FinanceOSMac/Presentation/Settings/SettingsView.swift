@@ -51,18 +51,18 @@ struct SettingsView: View {
                 Task { await onClearAll?() }
             }
         } message: {
-            Text("This will permanently delete all data including banks, accounts, cards, and transactions.")
+            FDSLabel("This will permanently delete all data including banks, accounts, cards, and transactions.")
         }
     }
 
     private var sideTabs: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Settings")
+                FDSLabel("Settings")
                     .font(AppTypography.headingMd)
                     .foregroundColor(DesignTokens.Text.primary)
-                Text("Preferences")
-                    .font(.system(size: 10, weight: .semibold))
+                FDSLabel("Preferences")
+                    .font(AppTypography.captionSmSemibold)
                     .tracking(0.5)
                     .foregroundColor(DesignTokens.Text.tertiary)
             }
@@ -103,12 +103,12 @@ struct SettingsView: View {
             Button(action: { showConfirmClear = true }, label: {
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.system(size: 13, weight: .semibold))
-                    Text("Clear All Data")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(AppTypography.bodySmSemibold)
+                    FDSLabel("Clear All Data")
+                        .font(AppTypography.bodySmSemibold)
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(AppTypography.bodySmSemibold)
                 }
             })
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -151,7 +151,7 @@ struct SettingsView: View {
     }
 
     private func sectionTitle(_ title: String) -> some View {
-        Text(title)
+        FDSLabel(title)
             .font(AppTypography.bodyMdSemibold)
             .foregroundColor(DesignTokens.Text.primary)
     }
@@ -162,7 +162,7 @@ struct SettingsView: View {
                 .font(AppTypography.bodySmMedium)
                 .foregroundColor(DesignTokens.Text.secondary)
                 .frame(width: 22)
-            Text(label)
+            FDSLabel(label)
                 .font(AppTypography.bodySmMedium)
                 .foregroundColor(DesignTokens.Text.primary)
             Spacer()
@@ -172,12 +172,12 @@ struct SettingsView: View {
 
     private func infoRow(_ label: String, value: String, copyable: Bool) -> some View {
         HStack(spacing: AppSpacing.sm) {
-            Text(label.uppercased())
-                .font(.system(size: 10, weight: .semibold))
+            FDSLabel(label.uppercased())
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.6)
                 .foregroundColor(DesignTokens.Text.tertiary)
             Spacer()
-            Text(value)
+            FDSLabel(value)
                 .font(AppTypography.bodySmMedium)
                 .foregroundColor(DesignTokens.Text.secondary)
             if copyable {
@@ -186,7 +186,7 @@ struct SettingsView: View {
                     NSPasteboard.general.setString(value, forType: .string)
                 }, label: {
                     Image(systemName: "doc.on.doc")
-                        .font(.system(size: 11, weight: .medium))
+                        .font(AppTypography.captionSmMedium)
                         .foregroundColor(DesignTokens.Text.secondary)
                 })
                 .buttonStyle(.plain)
@@ -199,18 +199,18 @@ struct SettingsView: View {
         Button(action: {}, label: {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(AppTypography.bodySmMedium)
                     .foregroundColor(DesignTokens.System.orange)
                     .frame(width: 22)
-                Text(label)
-                    .font(.system(size: 13, weight: .medium))
+                FDSLabel(label)
+                    .font(AppTypography.bodySmMedium)
                     .foregroundColor(DesignTokens.Text.primary)
                 Spacer()
                 Image(systemName: "arrow.up.right")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(AppTypography.bodySmMedium)
                     .foregroundColor(DesignTokens.Text.secondary)
             }
-            .padding(12)
+            .padding(AppSpacing.xs)
         })
         .buttonStyle(.plain)
     }

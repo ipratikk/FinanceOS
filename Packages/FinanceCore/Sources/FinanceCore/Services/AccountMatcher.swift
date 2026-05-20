@@ -2,7 +2,7 @@ import FinanceParsers
 import Foundation
 
 @MainActor
-public final class AccountMatcher: Sendable {
+public final class AccountMatcher {
     private let ledgerRepository: any LedgerRepository
     private let bankRepository: any BankRepository
 

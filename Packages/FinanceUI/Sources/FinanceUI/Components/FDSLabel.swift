@@ -71,49 +71,57 @@ public struct FDSLabel: View {
 
 private extension View {
     func applyLabelStyle(_ style: FDSLabelStyle) -> some View {
-        switch style {
-        case .displayLarge:
-            return AnyView(font(.system(size: 34, weight: .bold)).lineSpacing(2))
-        case .displayMedium:
-            return AnyView(font(.system(size: 28, weight: .bold)).lineSpacing(2))
-        case .headingLarge:
-            return AnyView(font(.system(size: 24, weight: .bold)).lineSpacing(1.5))
-        case .heading:
-            return AnyView(font(.system(size: 24, weight: .bold)).lineSpacing(1.5))
-        case .headingMedium:
-            return AnyView(font(.system(size: 20, weight: .semibold)).lineSpacing(1.5))
-        case .headingSmall:
-            return AnyView(font(.system(size: 16, weight: .semibold)).lineSpacing(1))
-        case .subheading:
-            return AnyView(font(.system(size: 16, weight: .semibold)).lineSpacing(1))
-        case .bodyLarge:
-            return AnyView(font(.system(size: 16, weight: .regular)).lineSpacing(1.5))
-        case .bodyMedium:
-            return AnyView(font(.system(size: 14, weight: .regular)).lineSpacing(1.5))
-        case .labelSmall:
-            return AnyView(font(.system(size: 12, weight: .medium)).lineSpacing(0))
-        case .captionLarge:
-            return AnyView(font(.system(size: 12, weight: .regular)).lineSpacing(0))
-        case .caption:
-            return AnyView(font(.system(size: 10, weight: .regular)).lineSpacing(0))
-        case .hint:
-            return AnyView(font(.system(size: 10, weight: .regular)).lineSpacing(0))
-        case .monoAmount:
-            return AnyView(font(.system(size: 14, weight: .semibold, design: .monospaced)).lineSpacing(0))
-        case .monoAmountSmall:
-            return AnyView(font(.system(size: 12, weight: .regular, design: .monospaced)).lineSpacing(0))
-        }
+        font(style.font)
+            .lineSpacing(style.lineSpacing)
     }
 }
 
-#Preview {
-    VStack(alignment: .leading, spacing: 12) {
-        FDSLabel("Display Large", style: .displayLarge)
-        FDSLabel("Heading", style: .headingLarge)
-        FDSLabel("Body", style: .bodyLarge)
-        FDSLabel("Caption", style: .caption)
-        FDSLabel("Error Message", style: .caption, color: .warning)
-        FDSLabel("Success", style: .headingSmall, color: .credit)
+private extension FDSLabelStyle {
+    var font: Font {
+        switch self {
+        case .displayLarge:
+            return .system(size: 34, weight: .bold)
+        case .displayMedium:
+            return .system(size: 28, weight: .bold)
+        case .headingLarge:
+            return .system(size: 24, weight: .bold)
+        case .heading:
+            return .system(size: 24, weight: .bold)
+        case .headingMedium:
+            return .system(size: 20, weight: .semibold)
+        case .headingSmall:
+            return .system(size: 16, weight: .semibold)
+        case .subheading:
+            return .system(size: 16, weight: .semibold)
+        case .bodyLarge:
+            return .system(size: 16, weight: .regular)
+        case .bodyMedium:
+            return .system(size: 14, weight: .regular)
+        case .labelSmall:
+            return .system(size: 12, weight: .medium)
+        case .captionLarge:
+            return .system(size: 12, weight: .regular)
+        case .caption:
+            return .system(size: 10, weight: .regular)
+        case .hint:
+            return .system(size: 10, weight: .regular)
+        case .monoAmount:
+            return .system(size: 14, weight: .semibold, design: .monospaced)
+        case .monoAmountSmall:
+            return .system(size: 12, weight: .regular, design: .monospaced)
+        }
     }
-    .padding()
+
+    var lineSpacing: CGFloat {
+        switch self {
+        case .displayLarge, .displayMedium:
+            return 2
+        case .headingLarge, .heading, .headingMedium, .bodyLarge, .bodyMedium:
+            return 1.5
+        case .headingSmall, .subheading:
+            return 1
+        case .labelSmall, .captionLarge, .caption, .hint, .monoAmount, .monoAmountSmall:
+            return 0
+        }
+    }
 }

@@ -38,12 +38,12 @@ public struct FDSAccountChip: View {
             )
 
             VStack(alignment: .leading, spacing: 0) {
-                Text(bankName)
+                FDSLabel(bankName)
                     .font(nameFont)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
                 if !last4.isEmpty {
-                    Text("•••• \(last4)")
+                    FDSLabel("•••• \(last4)")
                         .font(last4Font)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
@@ -58,7 +58,7 @@ public struct FDSAccountChip: View {
         }
         .overlay {
             Capsule(style: .continuous)
-                .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                .strokeBorder(AppColors.textPrimary.opacity(0.06), lineWidth: 0.5)
         }
     }
 

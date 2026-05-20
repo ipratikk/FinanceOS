@@ -34,14 +34,14 @@ public struct FDSLiquidButton: View {
     }
 
     public var body: some View {
-        Button(action: action) {
+        Button(action: action, label: {
             HStack(spacing: 6) {
                 if let symbol {
                     Image(systemName: symbol)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(AppTypography.custom(size: 13, weight: .semibold))
                 }
-                Text(title)
-                    .font(.system(size: 13, weight: .semibold))
+                FDSLabel(title)
+                    .font(AppTypography.custom(size: 13, weight: .semibold))
             }
             .foregroundColor(foregroundColor)
             .padding(.horizontal, variant == .link ? 0 : 12)
@@ -52,7 +52,7 @@ public struct FDSLiquidButton: View {
                 }
             }
             .scaleEffect(isPressed ? 0.97 : 1.0)
-        }
+        })
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
         .animation(AppAnimation.hover, value: isHovered)

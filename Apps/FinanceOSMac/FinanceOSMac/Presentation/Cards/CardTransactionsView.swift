@@ -32,7 +32,7 @@ struct CardTransactionsView: View {
             Button("OK") { viewModel.deleteError = nil }
         } message: {
             if let error = viewModel.deleteError {
-                Text(error)
+                FDSLabel(error)
             }
         }
         .task {
@@ -48,7 +48,7 @@ struct CardTransactionsView: View {
     private var cardHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
+                FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .font(AppTypography.headlineMd)
                     .foregroundStyle(.primary)
 
@@ -61,19 +61,19 @@ struct CardTransactionsView: View {
                                 .frame(width: 24, height: 12)
                         }
 
-                        Text(cardType.displayName.uppercased())
+                        FDSLabel(cardType.displayName.uppercased())
                             .font(AppTypography.captionLgMedium)
                             .foregroundStyle(.secondary)
                     }
 
-                    Text("• ••••\(ledger.last4)")
+                    FDSLabel("• ••••\(ledger.last4)")
                         .font(AppTypography.captionLgMedium)
                         .foregroundStyle(.tertiary)
                 }
             }
 
             HStack(spacing: AppSpacing.md) {
-                Text("Transactions: \(viewModel.sections.map(\.rows.count).reduce(0, +))")
+                FDSLabel("Transactions: \(viewModel.sections.map(\.rows.count).reduce(0, +))")
                     .font(AppTypography.captionLg)
                     .foregroundStyle(.tertiary)
 

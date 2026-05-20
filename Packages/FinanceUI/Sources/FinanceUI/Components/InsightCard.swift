@@ -15,10 +15,10 @@ public struct InsightCard<Content: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                Text(title)
+                FDSLabel(title)
                     .caption()
 
-                Text(value)
+                FDSLabel(value)
                     .displayMedium()
             }
 
@@ -32,7 +32,7 @@ public struct InsightCard<Content: View>: View {
 #Preview {
     InsightCard("Monthly Spending", value: "₹1,24,500") {
         VStack(alignment: .center) {
-            Text("Chart placeholder")
+            FDSLabel("Chart placeholder")
                 .foregroundColor(AppColors.textTertiary)
         }
     }

@@ -9,9 +9,10 @@ opt_in_rules:
   - fatal_error_message
   - first_where
   - sorted_first_last
-  - unused_import
   - prefer_self_type_over_type_of_self
-  - comma_spacing
+
+analyzer_rules:
+  - unused_import
 
 included:
   - Apps
@@ -20,6 +21,17 @@ included:
 excluded:
   - .build
   - DerivedData
+  - .derivedData
+  - .swiftpm
+  - Packages/**/.build
+  - Packages/**/Snapshots
+  - Packages/**/Generated
+  - Packages/**/Preview Content
+  - Packages/**/Resources
+  - fastlane
+  - Scripts
+  - vendor
+  - graphify
 
 line_length:
   warning: 120
@@ -42,32 +54,25 @@ identifier_name:
     warning: 1
 
 custom_rules:
-  # Enforce token-driven design: no hardcoded Color.white
-  hardcoded_white_color:
+  # Enforce token-driven design: no hardcoded Color.white in components
+  # Allow in Design/App*.swift files (design primitives only)
+  hardcoded_swiftui_color:
     name: "Hardcoded Color.white"
     description: "Use AppColors tokens instead of Color.white"
-    regex: "Color\\.white(?!\\()"
+    regex: "\\bColor\\."
     message: "Use AppColors.textPrimary or appropriate AppColors token"
     severity: error
-    excluded: "Tests"
+    excluded: "Tests|Design/App|Packages/FinanceCore/Sources/FinanceCore/Design/App|DesignTokens"
 
-  # Enforce token-driven design: no direct font system calls
+  # Enforce token-driven design: no direct font system calls in components
+  # Allow in Design/AppTypography.swift (typography primitives only)
   hardcoded_font_system:
     name: "Hardcoded font(.system(size:))"
     description: "Use typography modifiers instead of .font(.system(size:))"
     regex: "\\.font\\(\\.system\\(size:"
     message: "Use typography modifiers like .bodyMedium(), .captionSmall(), etc"
     severity: warning
-    excluded: "Tests"
-
-  # Enforce AppColors: no direct Color.black
-  hardcoded_black_color:
-    name: "Hardcoded Color.black"
-    description: "Use AppColors tokens instead of Color.black"
-    regex: "Color\\.black"
-    message: "Use appropriate AppColors token"
-    severity: error
-    excluded: "Tests"
+    excluded: "Tests|AppTypography"
 
   # Enforce AppSpacing: no magic numbers in padding/spacing
   magic_spacing_numbers:
@@ -82,8 +87,7 @@ custom_rules:
   direct_text_in_bodies:
     name: "Direct Text() outside Picker"
     description: "Use FDSLabel for text display, Text() only in Picker selections"
-    regex: "(VStack|HStack|ZStack|ScrollView|Group).*Text\\("
+    regex: "(VStack|HStack|ZStack|ScrollView|Group).*\\bText\\("
     message: "Use FDSLabel instead of Text() for display text"
     severity: warning
     excluded: "Tests|Previews"
-

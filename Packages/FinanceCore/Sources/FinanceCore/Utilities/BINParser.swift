@@ -26,52 +26,30 @@ public enum BINParser {
         let firstThree = String(bin.prefix(3))
         let firstFour = String(bin.prefix(4))
 
-        // Visa: starts with 4
-        if firstDigit == "4" {
-            return "visa"
-        }
+        if firstDigit == "4" { return "visa" }
+        if let network = detectMastercard(firstTwo: firstTwo, firstFour: firstFour) { return network }
+        if firstTwo == "34" || firstTwo == "37" { return "amex" }
+        if firstDigit == "3", let network = detectDiners(firstTwo: firstTwo, firstThree: firstThree) { return network }
+        if firstDigit == "6" { return detectSixNetwork(bin: bin, firstFour: firstFour) }
+        return "other"
+    }
 
-        // Mastercard: starts with 51-55 or 2221-2720
-        if let num = Int(firstTwo), (51 ... 55).contains(num) {
-            return "mastercard"
-        }
-        if let num = Int(firstFour), (2221 ... 2720).contains(num) {
-            return "mastercard"
-        }
+    private static func detectMastercard(firstTwo: String, firstFour: String) -> String? {
+        if let num = Int(firstTwo), (51...55).contains(num) { return "mastercard" }
+        if let num = Int(firstFour), (2221...2720).contains(num) { return "mastercard" }
+        return nil
+    }
 
-        // Amex: starts with 34 or 37
-        if firstTwo == "34" || firstTwo == "37" {
-            return "amex"
-        }
+    private static func detectDiners(firstTwo: String, firstThree: String) -> String? {
+        if let num = Int(firstThree), (300...305).contains(num) { return "diners" }
+        if firstTwo == "36" || firstTwo == "38" { return "diners" }
+        return nil
+    }
 
-        // Diners Club: starts with 300-305, 36, 38
-        if firstDigit == "3" {
-            if let num = Int(firstThree), (300 ... 305).contains(num) {
-                return "diners"
-            }
-            if firstTwo == "36" || firstTwo == "38" {
-                return "diners"
-            }
-        }
-
-        // RuPay: starts with 6 (Indian cards)
-        if firstDigit == "6" && firstFour.hasPrefix("60") || firstFour.hasPrefix("65") {
-            return "rupay"
-        }
-
-        // Discover: starts with 6011, 644-649, 65, 622126-622925
-        if firstDigit == "6" {
-            if bin.hasPrefix("6011") {
-                return "discover"
-            }
-            if let num = Int(firstFour), (644 ... 649).contains(num) {
-                return "discover"
-            }
-            if bin.hasPrefix("65") {
-                return "discover"
-            }
-        }
-
+    private static func detectSixNetwork(bin: String, firstFour: String) -> String {
+        if firstFour.hasPrefix("60") || firstFour.hasPrefix("65") { return "rupay" }
+        if bin.hasPrefix("6011") || bin.hasPrefix("65") { return "discover" }
+        if let num = Int(firstFour), (644...649).contains(num) { return "discover" }
         return "other"
     }
 

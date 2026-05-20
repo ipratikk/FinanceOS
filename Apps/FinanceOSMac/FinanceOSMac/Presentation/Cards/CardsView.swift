@@ -52,7 +52,7 @@ struct CardsView: View {
                 }
             }
         } message: {
-            Text("This will permanently delete this card and all associated transactions.")
+            FDSLabel("This will permanently delete this card and all associated transactions.")
         }
         .alert("Delete Failed", isPresented: Binding(
             get: { viewModel.deleteError != nil },
@@ -61,7 +61,7 @@ struct CardsView: View {
             Button("OK") { viewModel.deleteError = nil }
         } message: {
             if let error = viewModel.deleteError {
-                Text(error)
+                FDSLabel(error)
             }
         }
         .task {
@@ -88,10 +88,10 @@ struct CardsView: View {
 
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Credit Cards")
+            FDSLabel("Credit Cards")
                 .font(AppTypography.headingXL)
                 .foregroundColor(DesignTokens.Text.primary)
-            Text("Manage and track your cards")
+            FDSLabel("Manage and track your cards")
                 .font(AppTypography.captionLgMedium)
                 .tracking(0.3)
                 .foregroundColor(DesignTokens.Text.secondary)
@@ -119,20 +119,20 @@ struct CardsView: View {
             .frame(width: 76, height: 48)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
+                FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                     .font(AppTypography.bodySmSemibold)
                     .foregroundColor(DesignTokens.Text.primary)
                     .lineLimit(1)
 
                 HStack(spacing: 4) {
                     if let cardType = ledger.cardType {
-                        Text(cardType.rawValue.uppercased())
+                        FDSLabel(cardType.rawValue.uppercased())
                             .font(AppTypography.captionSmMedium)
                             .tracking(0.2)
                             .foregroundColor(DesignTokens.Text.secondary)
                     }
                     if !ledger.last4.isEmpty {
-                        Text("•••• \(ledger.last4)")
+                        FDSLabel("•••• \(ledger.last4)")
                             .maskedAccount()
                             .foregroundColor(DesignTokens.Text.secondary)
                     }
@@ -141,7 +141,7 @@ struct CardsView: View {
 
             Spacer()
         }
-        .padding(12)
+        .padding(AppSpacing.xs)
     }
 
     private func cardRowActions(_ ledger: Ledger) -> some View {
@@ -179,10 +179,10 @@ extension CardsView {
     private func bankSection(bankName: String, rows: [CardsViewModel.CardRow]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(bankName)
+                FDSLabel(bankName)
                     .font(AppTypography.bodyMdSemibold)
                     .foregroundColor(DesignTokens.Text.primary)
-                Text("\(rows.count) card\(rows.count == 1 ? "" : "s")")
+                FDSLabel("\(rows.count) card\(rows.count == 1 ? "" : "s")")
                     .font(AppTypography.captionLgMedium)
                     .foregroundColor(DesignTokens.Text.secondary)
             }
@@ -262,7 +262,7 @@ extension CardsView {
             }
             Spacer()
         }
-        .padding(12)
+        .padding(AppSpacing.xs)
         .background {
             RoundedRectangle(cornerRadius: 12)
                 .fill(DesignTokens.Background.surfaceGlass)

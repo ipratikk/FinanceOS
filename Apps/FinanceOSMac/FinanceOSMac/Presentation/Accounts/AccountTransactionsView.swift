@@ -35,7 +35,7 @@ struct AccountTransactionsView: View {
             Button("OK") { viewModel.deleteError = nil }
         } message: {
             if let error = viewModel.deleteError {
-                Text(error)
+                FDSLabel(error)
             }
         }
         .task {
@@ -59,16 +59,16 @@ struct AccountTransactionsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(viewModel.bank?.name ?? "Bank")
+                    FDSLabel(viewModel.bank?.name ?? "Bank")
                         .font(AppTypography.bodySmMedium)
                         .foregroundStyle(.secondary)
 
-                    Text(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
+                    FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
                         .font(AppTypography.subheadline)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
 
-                    Text("\((ledger.accountType ?? "Account").capitalized) · •••• \(ledger.last4)")
+                    FDSLabel("\((ledger.accountType ?? "Account").capitalized) · •••• \(ledger.last4)")
                         .font(AppTypography.captionSm.monospacedDigit())
                         .foregroundStyle(.tertiary)
                 }
@@ -76,25 +76,25 @@ struct AccountTransactionsView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("Balance")
+                    FDSLabel("Balance")
                         .font(AppTypography.labelMedium)
                         .tracking(0.5)
                         .foregroundStyle(.tertiary)
 
                     if let balance = ledger.closingBalance {
-                        Text(formattedBalance(balance))
+                        FDSLabel(formattedBalance(balance))
                             .font(AppTypography.displaySmall.monospacedDigit())
                             .foregroundStyle(AppColors.accentIce)
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
 
                         if let asOf = ledger.closingBalanceAsOf {
-                            Text("as of \(formattedDate(asOf))")
+                            FDSLabel("as of \(formattedDate(asOf))")
                                 .font(AppTypography.label)
                                 .foregroundStyle(.quaternary)
                         }
                     } else {
-                        Text("—")
+                        FDSLabel("—")
                             .font(AppTypography.displaySmall)
                             .foregroundStyle(.tertiary)
                     }

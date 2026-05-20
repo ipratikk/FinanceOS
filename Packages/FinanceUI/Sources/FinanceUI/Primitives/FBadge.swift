@@ -49,7 +49,7 @@ public struct FBadge: View {
                 Image(systemName: icon)
                     .font(AppTypography.captionSmSemibold)
             }
-            Text(text)
+            FDSLabel(text)
                 .font(AppTypography.captionLgMedium)
         }
         .foregroundColor(color.foreground)

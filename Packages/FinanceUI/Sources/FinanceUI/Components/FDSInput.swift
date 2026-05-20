@@ -34,24 +34,24 @@ public struct FDSInput: View {
     public var body: some View {
         HStack(spacing: 8) {
             if let prefix {
-                Text(prefix)
-                    .font(.system(size: 13, weight: .regular, design: isMono ? .monospaced : .default))
+                FDSLabel(prefix)
+                    .font(AppTypography.custom(size: 13, weight: .regular, design: isMono ? .monospaced : .default))
                     .foregroundColor(AppColors.textTertiary)
             }
 
             if isSecure {
                 SecureField(placeholder, text: $text)
-                    .font(.system(size: 14, weight: .regular, design: isMono ? .monospaced : .default))
+                    .font(AppTypography.custom(size: 14, weight: .regular, design: isMono ? .monospaced : .default))
                     .focused($isFocused)
             } else {
                 TextField(placeholder, text: $text)
-                    .font(.system(size: 14, weight: .regular, design: isMono ? .monospaced : .default))
+                    .font(AppTypography.custom(size: 14, weight: .regular, design: isMono ? .monospaced : .default))
                     .focused($isFocused)
             }
 
             if let suffix {
-                Text(suffix)
-                    .font(.system(size: 12, weight: .regular, design: isMono ? .monospaced : .default))
+                FDSLabel(suffix)
+                    .font(AppTypography.custom(size: 12, weight: .regular, design: isMono ? .monospaced : .default))
                     .foregroundColor(AppColors.textTertiary)
             }
         }

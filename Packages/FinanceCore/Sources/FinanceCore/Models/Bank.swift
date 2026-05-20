@@ -70,8 +70,7 @@ public struct Bank:
     Codable,
     Sendable,
     FetchableRecord,
-    PersistableRecord
-{
+    PersistableRecord {
     public let id: UUID
     public let bank: Banks
 

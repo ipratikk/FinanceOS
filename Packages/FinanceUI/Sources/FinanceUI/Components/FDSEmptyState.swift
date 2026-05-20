@@ -23,9 +23,9 @@ public struct FDSEmptyState: View {
                 .symbolRenderingMode(.hierarchical)
 
             VStack(spacing: AppSpacing.tight) {
-                Text(title)
+                FDSLabel(title)
                     .bodyLarge()
-                Text(subtitle)
+                FDSLabel(subtitle)
                     .font(AppTypography.captionLg)
                     .foregroundStyle(.tertiary)
             }

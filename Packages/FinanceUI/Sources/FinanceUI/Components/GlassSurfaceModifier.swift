@@ -23,10 +23,10 @@ struct GlassSurface: ViewModifier {
                     .strokeBorder(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.16),
-                                Color.white.opacity(0.06),
+                                AppColors.textPrimary.opacity(0.16),
+                                AppColors.textPrimary.opacity(0.06),
                                 .clear,
-                                Color.black.opacity(0.20)
+                                AppColors.base.opacity(0.20)
                             ],
                             startPoint: .top,
                             endPoint: .bottom
@@ -35,7 +35,7 @@ struct GlassSurface: ViewModifier {
                     )
             }
             .shadow(
-                color: .black.opacity(liftShadow ? 0.25 : 0),
+                color: AppColors.base.opacity(liftShadow ? 0.25 : 0),
                 radius: liftShadow ? 12 : 0,
                 y: liftShadow ? 4 : 0
             )
@@ -54,7 +54,7 @@ extension View {
     ///   - lifted: Apply drop shadow for lifted appearance (default true)
     func glassSurface(
         radius: CGFloat = 18,
-        tint: Color = .white,
+        tint: Color = AppColors.textPrimary,
         strong: Bool = false,
         lifted: Bool = true
     ) -> some View {
@@ -72,7 +72,7 @@ extension View {
                 Capsule()
                     .fill(.regularMaterial)
                 Capsule()
-                    .fill(Color.white.opacity(strong ? 0.10 : 0.06))
+                    .fill(AppColors.textPrimary.opacity(strong ? 0.10 : 0.06))
             }
         }
         .overlay {
@@ -80,10 +80,10 @@ extension View {
                 .strokeBorder(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.16),
-                            Color.white.opacity(0.06),
+                            AppColors.textPrimary.opacity(0.16),
+                            AppColors.textPrimary.opacity(0.06),
                             .clear,
-                            Color.black.opacity(0.20)
+                            AppColors.base.opacity(0.20)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -92,7 +92,7 @@ extension View {
                 )
         }
         .shadow(
-            color: .black.opacity(lifted ? 0.25 : 0),
+            color: AppColors.base.opacity(lifted ? 0.25 : 0),
             radius: lifted ? 12 : 0,
             y: lifted ? 4 : 0
         )

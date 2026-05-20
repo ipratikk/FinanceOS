@@ -10,7 +10,7 @@ extension ImportPreviewView {
                 Button(action: {
                     viewModel.selectedTarget = nil
                 }, label: {
-                    Text("Clear Selection")
+                    FDSLabel("Clear Selection")
                 })
                 Divider()
             }
@@ -25,14 +25,14 @@ extension ImportPreviewView {
                             if case let .ledger(id) = viewModel.selectedTarget, id == account.id {
                                 Label(account.displayName, systemImage: "checkmark")
                             } else {
-                                Text(account.displayName)
+                                FDSLabel(account.displayName)
                             }
                         })
                     }
                 }
             }
             Button(action: { initializeCreateSheet(isCard: false) }, label: {
-                Text("Create New Account...")
+                FDSLabel("Create New Account...")
             })
 
             let cards = viewModel.ledgers.filter { $0.kind == .creditCard }
@@ -45,14 +45,14 @@ extension ImportPreviewView {
                             if case let .ledger(id) = viewModel.selectedTarget, id == card.id {
                                 Label(card.displayName, systemImage: "checkmark")
                             } else {
-                                Text(card.displayName)
+                                FDSLabel(card.displayName)
                             }
                         })
                     }
                 }
             }
             Button(action: { initializeCreateSheet(isCard: true) }, label: {
-                Text("Create New Card...")
+                FDSLabel("Create New Card...")
             })
         } label: {
             let displayText: String = {
@@ -65,7 +65,7 @@ extension ImportPreviewView {
             }()
 
             HStack(spacing: 6) {
-                Text(displayText)
+                FDSLabel(displayText)
                     .font(AppTypography.labelMedium)
                     .foregroundColor(DesignTokens.Text.primary)
             }
@@ -103,14 +103,14 @@ extension ImportPreviewView {
         let dupCount = viewModel.duplicateTransactionIndices.count
 
         return HStack(spacing: AppSpacing.md) {
-            Text("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
+            FDSLabel("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
                 .font(AppTypography.labelSmall)
                 .foregroundColor(DesignTokens.Text.secondary)
 
             Spacer()
 
             Button(action: { viewModel.backToUpload() }, label: {
-                Text("Cancel")
+                FDSLabel("Cancel")
                     .font(AppTypography.labelMedium)
                     .foregroundColor(DesignTokens.Text.primary)
                     .padding(.horizontal, AppSpacing.md)
@@ -123,12 +123,12 @@ extension ImportPreviewView {
             .buttonStyle(.plain)
 
             Button(action: { viewModel.importTransactions() }, label: {
-                Text("Import \(newCount) transaction\(newCount == 1 ? "" : "s")")
+                FDSLabel("Import \(newCount) transaction\(newCount == 1 ? "" : "s")")
                     .font(AppTypography.labelMedium)
-                    .foregroundColor(.white)
+                    .foregroundColor(AppColors.textPrimary)
                     .padding(.horizontal, AppSpacing.md)
                     .padding(.vertical, AppSpacing.sm)
-                    .background(newCount > 0 ? AppColors.accent : Color.gray)
+                    .background(newCount > 0 ? AppColors.accent : AppColors.textDisabled)
                     .cornerRadius(AppRadius.sm)
             })
             .buttonStyle(.plain)

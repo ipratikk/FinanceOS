@@ -34,7 +34,7 @@ public struct FDSCard<Content: View>: View {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(.regularMaterial)
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(Color.white.opacity(0.06))
+                        .fill(AppColors.textPrimary.opacity(0.06))
                 }
             }
             .overlay {
@@ -42,10 +42,10 @@ public struct FDSCard<Content: View>: View {
                     .strokeBorder(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.16),
-                                Color.white.opacity(0.06),
+                                AppColors.textPrimary.opacity(0.16),
+                                AppColors.textPrimary.opacity(0.06),
                                 .clear,
-                                Color.black.opacity(0.20)
+                                AppColors.base.opacity(0.20)
                             ],
                             startPoint: .top,
                             endPoint: .bottom
@@ -54,7 +54,7 @@ public struct FDSCard<Content: View>: View {
                     )
             }
             .shadow(
-                color: .black.opacity(0.25),
+                color: AppColors.base.opacity(0.25),
                 radius: 12,
                 y: 4
             )

@@ -17,11 +17,11 @@ public struct SectionHeader: View {
     public var body: some View {
         HStack(spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.xxs) {
-                Text(title)
+                FDSLabel(title)
                     .headingMedium()
 
                 if let subtitle {
-                    Text(subtitle)
+                    FDSLabel(subtitle)
                         .caption()
                 }
             }
@@ -29,11 +29,11 @@ public struct SectionHeader: View {
             Spacer()
 
             if let action, let actionLabel {
-                Button(action: action) {
-                    Text(actionLabel)
+                Button(action: action, label: {
+                    FDSLabel(actionLabel)
                         .captionLarge()
                         .foregroundColor(AppColors.accent)
-                }
+                })
             }
         }
         .padding(.horizontal, AppSpacing.md)

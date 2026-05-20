@@ -1,7 +1,13 @@
 import Foundation
 
 class HDFCTextBasedParser {
-    private let datePattern = try! NSRegularExpression(pattern: "^\\s*\\d{2}/\\d{2}/\\d{2}")
+    private let datePattern: NSRegularExpression = {
+        do {
+            return try NSRegularExpression(pattern: "^\\s*\\d{2}/\\d{2}/\\d{2}")
+        } catch {
+            preconditionFailure("Invalid HDFC date regex: \(error)")
+        }
+    }()
     private let dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateFormat = "dd/MM/yy"
@@ -91,8 +97,7 @@ class HDFCTextBasedParser {
                 lower.contains("contents of this statement") || lower.contains("hdfc bank limited") ||
                 lower.contains("closing balance includes") || lower.contains("registered office") ||
                 lower.contains("gstin") || lower.contains("nominated") ||
-                lower.contains("we understand your world") || narration.count > 500
-            {
+                lower.contains("we understand your world") || narration.count > 500 {
                 continue
             }
 
@@ -210,11 +215,10 @@ class HDFCTextBasedParser {
 
         // Fallback: pick smallest valid amount (usually transaction, not balance)
         let txnAmounts = filtered.filter { $0 >= 100 && $0 < 1_000_000 }
-        guard !txnAmounts.isEmpty else {
+        guard let amount = txnAmounts.min() else {
             return (nil, nil)
         }
 
-        let amount = txnAmounts.min()!
         if amount >= 100_000 {
             return (nil, amount)
         } else {

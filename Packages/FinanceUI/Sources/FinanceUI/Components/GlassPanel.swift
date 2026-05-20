@@ -30,7 +30,7 @@ public struct GlassPanel<Content: View>: View {
 
 #Preview {
     GlassPanel {
-        Text("Glass Panel Content")
+        FDSLabel("Glass Panel Content")
             .headingMedium()
     }
     .padding(AppSpacing.lg)

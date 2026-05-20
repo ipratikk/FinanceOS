@@ -22,11 +22,11 @@ struct ImportSourceCard: View {
                     bankLogoView
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(matchedBank?.displayName ?? source.bankName)
+                        FDSLabel(matchedBank?.displayName ?? source.bankName)
                             .font(AppTypography.bodyMd)
                             .foregroundColor(DesignTokens.Text.primary)
 
-                        Text(source.sourceType.rawValue)
+                        FDSLabel(source.sourceType.rawValue)
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
                     }
@@ -34,11 +34,11 @@ struct ImportSourceCard: View {
                     Spacer()
 
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(AppTypography.bodySmSemibold)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
 
-                Text(formatLabel)
+                FDSLabel(formatLabel)
                     .font(AppTypography.labelSmall)
                     .foregroundColor(DesignTokens.Text.quaternary)
             }
@@ -75,7 +75,7 @@ struct ImportSourceCard: View {
                 .frame(width: AppSpacing.xxxl, height: AppSpacing.xxxl)
                 .overlay(
                     Image(systemName: "building.columns")
-                        .font(.system(size: 16))
+                        .font(AppTypography.bodyMd)
                         .foregroundColor(DesignTokens.Text.tertiary)
                 )
         }

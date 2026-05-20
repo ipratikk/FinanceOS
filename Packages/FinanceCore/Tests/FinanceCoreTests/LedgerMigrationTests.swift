@@ -30,9 +30,9 @@ func ledgersOfBothKindsCanBeInsertedAfterMigration() throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let accountLedger = Ledger(
         bankId: bank.id,
@@ -73,9 +73,9 @@ func ledgerPropertiesArePersistedCorrectly() throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let original = Ledger(
         bankId: bank.id,
@@ -117,9 +117,9 @@ func cardLedgerPropertiesArePersistedCorrectly() throws {
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let accountLedger = Ledger(
         bankId: bank.id,

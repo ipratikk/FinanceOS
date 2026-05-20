@@ -60,7 +60,7 @@ struct ImportTransactionListView: View {
     private var ellipsisIndicator: some View {
         if let limit = rowLimit, transactions.count > limit {
             HStack {
-                Text("… and \(transactions.count - limit) more")
+                FDSLabel("… and \(transactions.count - limit) more")
                     .font(AppTypography.labelSmall)
                     .foregroundColor(DesignTokens.Text.quaternary)
                 Spacer()
@@ -72,27 +72,27 @@ struct ImportTransactionListView: View {
 
     private var tableHeader: some View {
         HStack(spacing: AppSpacing.md) {
-            Text("Status")
+            FDSLabel("Status")
                 .font(AppTypography.labelMedium)
                 .foregroundColor(DesignTokens.Text.secondary)
                 .frame(width: 80, alignment: .leading)
 
-            Text("Date")
+            FDSLabel("Date")
                 .font(AppTypography.labelMedium)
                 .foregroundColor(DesignTokens.Text.secondary)
                 .frame(width: 80, alignment: .leading)
 
-            Text("Description")
+            FDSLabel("Description")
                 .font(AppTypography.labelMedium)
                 .foregroundColor(DesignTokens.Text.secondary)
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 
-            Text("Reference")
+            FDSLabel("Reference")
                 .font(AppTypography.labelMedium)
                 .foregroundColor(DesignTokens.Text.secondary)
                 .frame(width: 120, alignment: .leading)
 
-            Text("Amount")
+            FDSLabel("Amount")
                 .font(AppTypography.labelMedium)
                 .foregroundColor(DesignTokens.Text.secondary)
                 .frame(width: 100, alignment: .trailing)
@@ -124,18 +124,18 @@ struct ImportTransactionListView: View {
             statusBadge(isDuplicate: isDuplicate)
                 .frame(width: 80, alignment: .leading)
 
-            Text(ImportFormatting.formatDate(txn.postedAt))
+            FDSLabel(ImportFormatting.formatDate(txn.postedAt))
                 .font(AppTypography.labelMedium)
                 .foregroundColor(DesignTokens.Text.tertiary)
                 .frame(width: 80, alignment: .leading)
 
-            Text(txn.description)
+            FDSLabel(txn.description)
                 .font(AppTypography.bodySm)
                 .foregroundColor(DesignTokens.Text.primary)
                 .lineLimit(1)
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 
-            Text(shortReference(txn.sourceFingerprint))
+            FDSLabel(shortReference(txn.sourceFingerprint))
                 .font(AppTypography.labelSmall)
                 .foregroundColor(DesignTokens.Text.quaternary)
                 .lineLimit(1)
@@ -146,7 +146,7 @@ struct ImportTransactionListView: View {
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.sm)
-        .background(isDuplicate ? DesignTokens.Background.surfaceGlass.opacity(0.5) : Color.clear)
+        .background(isDuplicate ? DesignTokens.Background.surfaceGlass.opacity(0.5) : AppColors.clear)
     }
 
     @ViewBuilder
@@ -160,8 +160,8 @@ struct ImportTransactionListView: View {
 
     private func amountLabel(minorUnits: Int64, isDebit: Bool) -> some View {
         HStack(spacing: 2) {
-            Text(isDebit ? "−" : "+")
-            Text(ImportFormatting.formatAmount(abs(minorUnits)))
+            FDSLabel(isDebit ? "−" : "+")
+            FDSLabel(ImportFormatting.formatAmount(abs(minorUnits)))
         }
         .font(AppTypography.amountSm)
         .foregroundColor(isDebit ? AppColors.debit : AppColors.credit)

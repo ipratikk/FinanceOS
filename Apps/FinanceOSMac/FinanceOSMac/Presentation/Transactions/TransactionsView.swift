@@ -26,8 +26,8 @@ struct TransactionsView: View {
                 VStack(spacing: 12) {
                     ProgressView()
                         .controlSize(.large)
-                    Text("Loading transactions...")
-                        .font(.system(size: 12, weight: .medium))
+                    FDSLabel("Loading transactions...")
+                        .font(AppTypography.captionSmMedium)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -35,13 +35,13 @@ struct TransactionsView: View {
             } else if viewModel.transactionRows.isEmpty {
                 VStack(spacing: 12) {
                     Image(systemName: "creditcard.fill")
-                        .font(.system(size: 32, weight: .light))
+                        .font(AppTypography.displaySmall)
                         .foregroundColor(DesignTokens.Text.tertiary.opacity(DesignTokens.Opacity.muted))
-                    Text("No Transactions")
-                        .font(.system(size: 14, weight: .semibold))
+                    FDSLabel("No Transactions")
+                        .font(AppTypography.bodySmSemibold)
                         .foregroundColor(DesignTokens.Text.primary)
-                    Text("Import statements to get started")
-                        .font(.system(size: 12, weight: .regular))
+                    FDSLabel("Import statements to get started")
+                        .font(AppTypography.captionSmMedium)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -51,11 +51,11 @@ struct TransactionsView: View {
                     VStack(alignment: .leading, spacing: 24) {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Transactions")
-                                    .font(.system(size: 22, weight: .semibold))
+                                FDSLabel("Transactions")
+                                    .font(AppTypography.headingLg)
                                     .foregroundColor(DesignTokens.Text.primary)
-                                Text("\(viewModel.transactionRows.count) total")
-                                    .font(.system(size: 12, weight: .medium))
+                                FDSLabel("\(viewModel.transactionRows.count) total")
+                                    .font(AppTypography.captionSmMedium)
                                     .foregroundColor(DesignTokens.Text.secondary)
                             }
                             Spacer()
@@ -89,7 +89,7 @@ struct TransactionsView: View {
             Button("OK") { viewModel.deleteError = nil }
         } message: {
             if let error = viewModel.deleteError {
-                Text(error)
+                FDSLabel(error)
             }
         }
         .task {
@@ -104,8 +104,8 @@ struct TransactionsView: View {
     }
 
     private func sectionHeader(_ date: Date) -> some View {
-        Text(dateHeaderString(date))
-            .font(.system(size: 11, weight: .semibold))
+        FDSLabel(dateHeaderString(date))
+            .font(AppTypography.captionSmSemibold)
             .foregroundColor(DesignTokens.Text.tertiary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
@@ -116,20 +116,20 @@ struct TransactionsView: View {
         FDSCard(cornerRadius: 12, padded: false) {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(txn.title)
-                        .font(.system(size: 13, weight: .semibold))
+                    FDSLabel(txn.title)
+                        .font(AppTypography.bodySmSemibold)
                         .foregroundColor(DesignTokens.Text.primary)
-                    Text(dateString(txn.postedAt))
-                        .font(.system(size: 11, weight: .regular))
+                    FDSLabel(dateString(txn.postedAt))
+                        .font(AppTypography.captionSm)
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
                 Spacer()
-                Text(txn.amountText)
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                FDSLabel(txn.amountText)
+                    .font(AppTypography.bodySmSemibold)
                     .foregroundColor(txn.transactionType == .debit ? DesignTokens.System.red : DesignTokens.System
                         .green)
             }
-            .padding(12)
+            .padding(AppSpacing.xs)
         }
     }
 

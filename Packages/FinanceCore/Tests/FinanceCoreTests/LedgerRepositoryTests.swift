@@ -17,9 +17,9 @@ func ledgerRepositoryCRUD() async throws {
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -48,9 +48,9 @@ func ledgerRepositoryFetchByKind() async throws {
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let account = Ledger(
         bankId: bank.id,
@@ -139,9 +139,9 @@ func ledgerRepositoryUpdate() async throws {
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -178,9 +178,9 @@ func ledgerRepositoryArchive() async throws {
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,
@@ -196,7 +196,7 @@ func ledgerRepositoryArchive() async throws {
     try await repo.archive(id: ledger.id)
 
     let activeAfter = try await repo.fetchLedgers()
-    #expect(activeAfter.count == 0)
+    #expect(activeAfter.isEmpty)
 
     let archived = try await repo.fetchLedger(id: ledger.id)
     #expect(archived?.isArchived == true)
@@ -216,9 +216,9 @@ func ledgerRepositoryDeleteBlocked() async throws {
 
     let repo = GRDBLedgerRepository(dbQueue: dbQueue)
 
-    let bank = try await dbQueue.read { database in
-        try Bank.fetchAll(database).first!
-    }
+    let bank = try #require(await dbQueue.read { database in
+        try Bank.fetchAll(database).first
+    })
 
     let ledger = Ledger(
         bankId: bank.id,

@@ -33,9 +33,9 @@ private extension View {
     func applyAmountStyle(_ size: FDSAmountSize) -> some View {
         switch size {
         case .normal:
-            return AnyView(font(.system(size: 14, weight: .semibold, design: .monospaced)).lineSpacing(0))
+            return AnyView(font(AppTypography.amountSm.weight(.semibold)).lineSpacing(0))
         case .small:
-            return AnyView(font(.system(size: 12, weight: .regular, design: .monospaced)).lineSpacing(0))
+            return AnyView(font(AppTypography.amountXs).lineSpacing(0))
         }
     }
 }

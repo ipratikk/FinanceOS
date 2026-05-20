@@ -29,7 +29,7 @@ struct PasswordPromptSheet: View {
                                 .textFieldStyle(.roundedBorder)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .stroke(isPasswordInvalid ? AppColors.debit : Color.clear, lineWidth: 2)
+                                        .stroke(isPasswordInvalid ? AppColors.debit : AppColors.clear, lineWidth: 2)
                                 )
 
                             if isPasswordInvalid {

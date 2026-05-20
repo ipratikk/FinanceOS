@@ -116,7 +116,7 @@ struct CardEditView: View {
                 }
             }
         } message: {
-            Text("This will permanently delete this item.")
+            FDSLabel("This will permanently delete this item.")
         }
     }
 }

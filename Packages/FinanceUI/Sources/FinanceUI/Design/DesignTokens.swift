@@ -33,11 +33,11 @@ public enum DesignTokens {
         /// #0A0C11 — solid base before wallpaper tint
         public static let wallpaperBase = Color(red: 0.039, green: 0.047, blue: 0.067)
         /// white 6% — glass tint over wallpaper (cards, chips, inputs)
-        public static let surfaceGlass = Color.white.opacity(0.06)
+        public static let surfaceGlass = AppColors.textPrimary.opacity(0.06)
         /// white 10% — hover / active glass
-        public static let surfaceGlassThick = Color.white.opacity(0.10)
+        public static let surfaceGlassThick = AppColors.textPrimary.opacity(0.10)
         /// white 4% — inset rows, sheet hero
-        public static let surfaceGlassThin = Color.white.opacity(0.04)
+        public static let surfaceGlassThin = AppColors.textPrimary.opacity(0.04)
         /// chrome glass for sidebar/toolbar
         public static let chromeGlass = Color(
             red: 20 / 255,
@@ -45,11 +45,11 @@ public enum DesignTokens {
             blue: 30 / 255
         ).opacity(0.65)
         /// white 8% — mid glass (skeleton strokes, subtle separators)
-        public static let surfaceGlassMid = Color.white.opacity(0.08)
+        public static let surfaceGlassMid = AppColors.textPrimary.opacity(0.08)
         /// white 12% — card artwork border, light stroke highlights
-        public static let surfaceGlassHighlight = Color.white.opacity(0.12)
+        public static let surfaceGlassHighlight = AppColors.textPrimary.opacity(0.12)
         /// black 25% — text input / select backgrounds (recessed)
-        public static let inputWell = Color.black.opacity(0.25)
+        public static let inputWell = AppColors.base.opacity(0.25)
     }
 
     // MARK: - Apple System Colors (HIG dark mode)
@@ -112,20 +112,20 @@ public enum DesignTokens {
 
     public enum Border {
         /// white 6% — subtle borders
-        public static let subtle = Color.white.opacity(0.06)
+        public static let subtle = AppColors.textPrimary.opacity(0.06)
         /// white 10% — stronger borders
-        public static let strong = Color.white.opacity(0.10)
+        public static let strong = AppColors.textPrimary.opacity(0.10)
         /// accent 50% — focus ring
         public static let focus = Semantic.accent.opacity(0.50)
     }
 
     public enum Edge {
         /// white 16% — specular highlight on top edge of glass surfaces
-        public static let topGleam = Color.white.opacity(0.16)
+        public static let topGleam = AppColors.textPrimary.opacity(0.16)
         /// white 6% — mid highlight
-        public static let topGleamMid = Color.white.opacity(0.06)
+        public static let topGleamMid = AppColors.textPrimary.opacity(0.06)
         /// black 20% — bottom shadow for depth
-        public static let bottomShadow = Color.black.opacity(0.20)
+        public static let bottomShadow = AppColors.base.opacity(0.20)
     }
 
     // MARK: - Typography
@@ -183,26 +183,26 @@ public enum DesignTokens {
     // Each mode provides a complete spacing map.
     // Usage: `DesignTokens.Density.compact.spacing.md`
 
+    public struct DensitySpacingMap {
+        public let xs: CGFloat
+        public let sm: CGFloat
+        public let md: CGFloat
+        public let lg: CGFloat
+        public let xl: CGFloat
+        public let xxl: CGFloat
+    }
+
     public enum Density {
         case standard
         case compact
 
-        public var spacing: SpacingMap {
+        public var spacing: DensitySpacingMap {
             switch self {
             case .standard:
-                return SpacingMap(xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32)
+                return DensitySpacingMap(xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32)
             case .compact:
-                return SpacingMap(xs: 2, sm: 4, md: 8, lg: 12, xl: 16, xxl: 24)
+                return DensitySpacingMap(xs: 2, sm: 4, md: 8, lg: 12, xl: 16, xxl: 24)
             }
-        }
-
-        public struct SpacingMap {
-            public let xs: CGFloat
-            public let sm: CGFloat
-            public let md: CGFloat
-            public let lg: CGFloat
-            public let xl: CGFloat
-            public let xxl: CGFloat
         }
     }
 

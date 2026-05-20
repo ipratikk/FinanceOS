@@ -18,8 +18,7 @@ public enum CardCatalogLoader {
         let assetName = size == .small ? logos[issuer]?.small : logos[issuer]?.large
 
         if let assetName,
-           let assetURL = Bundle.module.url(forResource: assetName, withExtension: nil)
-        {
+           let assetURL = Bundle.module.url(forResource: assetName, withExtension: nil) {
             return assetURL
         }
 
@@ -88,6 +87,37 @@ public enum CardCatalogLoader {
 
 // MARK: - Catalog Structures
 
+private struct CardBINRange: Decodable {
+    let start: String
+    let end: String
+}
+
+private struct CardImage: Decodable {
+    let front: String
+    let thumbnail: String
+    let localAssetName: String
+    let aspectRatio: String
+}
+
+private struct CardTheme: Decodable {
+    let primaryColor: String
+    let secondaryColor: String
+    let textColor: String
+    let accentColor: String
+}
+
+private struct CardDetails: Decodable {
+    let annualFee: String?
+    let joiningBenefit: String?
+    let features: [String]
+    let eligibility: String
+}
+
+private struct CardParsingHints: Decodable {
+    let statementAliases: [String]
+    let issuerName: String
+}
+
 private struct CardCatalog: Decodable {
     struct Issuer: Decodable {
         let id: String
@@ -108,42 +138,11 @@ private struct CardCatalog: Decodable {
         let active: Bool
         let premiumTier: Bool
         let aliases: [String]
-        let binRanges: [BINRange]
-        let image: Image
-        let theme: Theme
-        let details: Details
-        let parsingHints: ParsingHints
-
-        struct BINRange: Decodable {
-            let start: String
-            let end: String
-        }
-
-        struct Image: Decodable {
-            let front: String
-            let thumbnail: String
-            let localAssetName: String
-            let aspectRatio: String
-        }
-
-        struct Theme: Decodable {
-            let primaryColor: String
-            let secondaryColor: String
-            let textColor: String
-            let accentColor: String
-        }
-
-        struct Details: Decodable {
-            let annualFee: String?
-            let joiningBenefit: String?
-            let features: [String]
-            let eligibility: String
-        }
-
-        struct ParsingHints: Decodable {
-            let statementAliases: [String]
-            let issuerName: String
-        }
+        let binRanges: [CardBINRange]
+        let image: CardImage
+        let theme: CardTheme
+        let details: CardDetails
+        let parsingHints: CardParsingHints
     }
 
     struct Network: Decodable {

@@ -7,8 +7,7 @@ public struct Ledger:
     Sendable,
     FetchableRecord,
     PersistableRecord,
-    Equatable
-{
+    Equatable {
     public let id: UUID
     public let bankId: UUID
     public let kind: LedgerKind

@@ -4,6 +4,28 @@ public enum CardDatabase {
     private static let defaultCards: [CardMetadata] = CardCatalogLoader.loadCardMetadata().isEmpty ?
         fallbackCards : CardCatalogLoader.loadCardMetadata()
 
+    public static func allCards() -> [CardMetadata] {
+        defaultCards
+    }
+
+    public static func cardsByIssuer(_ issuer: String) -> [CardMetadata] {
+        defaultCards.filter { $0.issuer.lowercased() == issuer.lowercased() }
+    }
+
+    public static func findCard(by bin: String) -> CardMetadata? {
+        defaultCards.first { $0.matches(bin) }
+    }
+
+    public static func issuers() -> [String] {
+        Array(Set(defaultCards.map(\.issuer))).sorted()
+    }
+
+    public static func supportedCards() -> [CardMetadata] {
+        defaultCards.filter(\.isSupported)
+    }
+}
+
+private extension CardDatabase {
     private static let fallbackCards: [CardMetadata] = [
         // HDFC Cards
         CardMetadata(
@@ -304,23 +326,4 @@ public enum CardDatabase {
         )
     ]
 
-    public static func allCards() -> [CardMetadata] {
-        defaultCards
-    }
-
-    public static func cardsByIssuer(_ issuer: String) -> [CardMetadata] {
-        defaultCards.filter { $0.issuer.lowercased() == issuer.lowercased() }
-    }
-
-    public static func findCard(by bin: String) -> CardMetadata? {
-        defaultCards.first { $0.matches(bin) }
-    }
-
-    public static func issuers() -> [String] {
-        Array(Set(defaultCards.map(\.issuer))).sorted()
-    }
-
-    public static func supportedCards() -> [CardMetadata] {
-        defaultCards.filter(\.isSupported)
-    }
 }

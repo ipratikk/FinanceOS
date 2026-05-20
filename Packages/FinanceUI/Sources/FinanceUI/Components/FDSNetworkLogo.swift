@@ -24,17 +24,17 @@ public struct FDSNetworkLogo: View {
         case .rupay:
             rupayLogo
         default:
-            Text(network.displayName)
-                .font(.system(size: 9, weight: .semibold))
-                .foregroundColor(.white)
+            FDSLabel(network.displayName)
+                .font(AppTypography.custom(size: 9, weight: .semibold))
+                .foregroundColor(AppColors.textPrimary)
         }
     }
 
     private var visaLogo: some View {
-        Text("VISA")
-            .font(.system(size: 10, weight: .bold, design: .default))
+        FDSLabel("VISA")
+            .font(AppTypography.custom(size: 10, weight: .bold, design: .default))
             .italic()
-            .foregroundColor(.white)
+            .foregroundColor(AppColors.textPrimary)
             .tracking(-0.02)
     }
 
@@ -53,12 +53,12 @@ public struct FDSNetworkLogo: View {
 
     private var amexLogo: some View {
         VStack(spacing: 0.5) {
-            Text("AMERICAN")
-                .font(.system(size: 6, weight: .semibold))
-            Text("EXPRESS")
-                .font(.system(size: 6, weight: .semibold))
+            FDSLabel("AMERICAN")
+                .font(AppTypography.custom(size: 6, weight: .semibold))
+            FDSLabel("EXPRESS")
+                .font(AppTypography.custom(size: 6, weight: .semibold))
         }
-        .foregroundColor(.white)
+        .foregroundColor(AppColors.textPrimary)
         .tracking(0.01)
     }
 
@@ -76,11 +76,11 @@ public struct FDSNetworkLogo: View {
 
     private var rupayLogo: some View {
         HStack(spacing: 1) {
-            Text("Ru")
-                .font(.system(size: 7, weight: .bold))
+            FDSLabel("Ru")
+                .font(AppTypography.custom(size: 7, weight: .bold))
                 .foregroundColor(AppColors.accent)
-            Text("Pay")
-                .font(.system(size: 7, weight: .bold))
+            FDSLabel("Pay")
+                .font(AppTypography.custom(size: 7, weight: .bold))
                 .foregroundColor(AppColors.accent)
         }
     }

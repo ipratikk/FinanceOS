@@ -27,24 +27,24 @@ public struct FDSErrorState: View {
                 .font(AppTypography.displayLargeLight)
                 .foregroundColor(.orange)
 
-            Text(title)
+            FDSLabel(title)
                 .font(AppTypography.headingMd)
                 .foregroundColor(.primary)
 
-            Text(message)
+            FDSLabel(message)
                 .font(AppTypography.bodyMd)
                 .foregroundColor(.secondary)
                 .lineLimit(3)
                 .multilineTextAlignment(.center)
 
-            Button(action: action) {
-                Text(actionTitle)
+            Button(action: action, label: {
+                FDSLabel(actionTitle)
                     .frame(maxWidth: .infinity)
                     .padding(AppSpacing.md)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
+                    .background(AppColors.accentBlue)
+                    .foregroundColor(AppColors.textPrimary)
                     .cornerRadius(8)
-            }
+            })
         }
         .padding(AppSpacing.xl)
     }

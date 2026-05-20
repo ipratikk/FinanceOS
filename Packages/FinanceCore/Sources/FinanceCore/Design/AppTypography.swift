@@ -56,6 +56,7 @@ public enum AppTypography {
     public static let amountMedium = Font.system(size: 16, weight: .semibold, design: .monospaced)
     public static let amountMd = Font.system(size: 16, weight: .semibold, design: .monospaced)
     public static let amountSm = Font.system(size: 14, weight: .regular, design: .monospaced)
+    public static let amountXs = Font.system(size: 12, weight: .regular, design: .monospaced)
 
     // MARK: - Icons (Font sizing for SF Symbols)
 
