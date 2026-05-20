@@ -93,7 +93,7 @@ extension ImportView {
                             .font(AppTypography.labelSmall)
                             .foregroundColor(DesignTokens.Text.tertiary)
 
-                        Button(action: { openFilePicker() }) {
+                        Button(action: { openFilePicker() }, label: {
                             HStack(spacing: 6) {
                                 Image(systemName: "doc")
                                     .font(.system(size: 14, weight: .semibold))
@@ -105,7 +105,7 @@ extension ImportView {
                             .padding(.vertical, 8)
                             .background(AppColors.accent)
                             .cornerRadius(AppRadius.md)
-                        }
+                        })
                         .buttonStyle(.plain)
 
                         let formatHint = viewModel.selectedSource

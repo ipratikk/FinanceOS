@@ -187,11 +187,11 @@ struct DashboardView: View {
                         .foregroundColor(DesignTokens.Text.secondary)
                 }
                 Spacer()
-                Button(action: { navigator.navigate(to: .transactions) }) {
+                Button(action: { navigator.navigate(to: .transactions) }, label: {
                     Text("View All →")
                         .font(AppTypography.captionLgSemibold)
                         .foregroundColor(AppColors.accentOrange)
-                }
+                })
                 .help("View all transactions")
             }
 

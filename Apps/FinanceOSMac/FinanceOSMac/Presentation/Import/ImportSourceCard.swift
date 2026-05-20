@@ -16,7 +16,7 @@ struct ImportSourceCard: View {
     }
 
     var body: some View {
-        Button(action: { onSelect(source) }) {
+        Button(action: { onSelect(source) }, label: {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 12) {
                     bankLogoView
@@ -57,7 +57,7 @@ struct ImportSourceCard: View {
                         lineWidth: 1
                     )
             )
-        }
+        })
         .buttonStyle(.plain)
         .contentShape(Rectangle())
     }

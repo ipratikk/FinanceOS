@@ -35,9 +35,9 @@ final class AccountsViewModel {
 
         var formattedDate: String? {
             guard let date = latestPostedAt else { return nil }
-            let df = DateFormatter()
-            df.dateFormat = "dd/MM/yyyy"
-            return df.string(from: date)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            return dateFormatter.string(from: date)
         }
     }
 

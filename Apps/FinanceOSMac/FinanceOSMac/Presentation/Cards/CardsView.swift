@@ -113,7 +113,7 @@ struct CardsView: View {
         return HStack(spacing: 16) {
             FDSCardArt(
                 ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname,
-                network: ledger.cardType?.uppercased() ?? "CARD",
+                network: ledger.cardType?.rawValue.uppercased() ?? "CARD",
                 last4: ledger.last4
             )
             .frame(width: 76, height: 48)
@@ -126,7 +126,7 @@ struct CardsView: View {
 
                 HStack(spacing: 4) {
                     if let cardType = ledger.cardType {
-                        Text(cardType.uppercased())
+                        Text(cardType.rawValue.uppercased())
                             .font(AppTypography.captionSmMedium)
                             .tracking(0.2)
                             .foregroundColor(DesignTokens.Text.secondary)

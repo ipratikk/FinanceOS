@@ -40,22 +40,9 @@ struct CardTransactionsView: View {
         }
     }
 
-    private func networkLogo(for cardType: String) -> NSImage? {
-        let assetNames: [String: String] = [
-            "visa": "visa",
-            "mastercard": "mastercard",
-            "amex": "amex",
-            "rupay": "rupay",
-            "diners": "diners"
-        ]
-
-        if let assetName = assetNames[cardType.lowercased()],
-           let nsImage = NSImage(named: assetName)
-        {
-            return nsImage
-        }
-
-        return nil
+    private func networkLogo(for network: CardNetwork) -> NSImage? {
+        guard let assetName = network.logoAssetName else { return nil }
+        return NSImage(named: assetName)
     }
 
     private var cardHeader: some View {
@@ -74,7 +61,7 @@ struct CardTransactionsView: View {
                                 .frame(width: 24, height: 12)
                         }
 
-                        Text(cardType.uppercased())
+                        Text(cardType.displayName.uppercased())
                             .font(AppTypography.captionLgMedium)
                             .foregroundStyle(.secondary)
                     }

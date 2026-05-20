@@ -19,8 +19,8 @@ extension ImportViewModel {
         selectedBank: Banks? = nil,
         ownerName: String = "",
         accountType: String = "savings",
-        cardType: String = "other",
-        cardProduct: String = "",
+        cardType: CardNetwork = .other,
+        cardProductId: String = "",
         encryptedCardNumber: String = "",
         linkedLedgerId: UUID? = nil,
         isCard: Bool? = nil
@@ -47,7 +47,7 @@ extension ImportViewModel {
                 try await createCard(
                     params,
                     cardType: cardType,
-                    cardProduct: cardProduct,
+                    cardProductId: cardProductId,
                     encryptedCardNumber: encryptedCardNumber,
                     linkedLedgerId: linkedLedgerId
                 )
@@ -92,8 +92,8 @@ extension ImportViewModel {
 
     private func createCard(
         _ params: TargetParams,
-        cardType: String,
-        cardProduct: String = "",
+        cardType: CardNetwork,
+        cardProductId: String = "",
         encryptedCardNumber: String = "",
         linkedLedgerId: UUID? = nil
     ) async throws {
@@ -111,16 +111,14 @@ extension ImportViewModel {
             nickname: params.nickname,
             ownerName: "",
             cardType: cardType,
-            cardProduct: cardProduct.isEmpty ? nil : cardProduct,
+            cardProductId: cardProductId.isEmpty ? nil : cardProductId,
             linkedLedgerId: linkedLedgerId
         )
         try await ledgerRepository.insert(ledger)
         ledgers = try await ledgerRepository.fetchLedgers()
         importSession.selectedTarget = .ledger(ledger.id)
-        logger
-            .info(
-                "Created credit card: \(cardDisplayName) [encrypted: \(encryptedCardNumber.isEmpty ? "not provided" : "provided")]"
-            )
+        let encryptedStatus = encryptedCardNumber.isEmpty ? "not provided" : "provided"
+        logger.info("Created credit card: \(cardDisplayName) [encrypted: \(encryptedStatus)]")
     }
 
     private func createAccount(

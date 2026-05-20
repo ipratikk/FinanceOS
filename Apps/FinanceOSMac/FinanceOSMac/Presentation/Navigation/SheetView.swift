@@ -25,7 +25,7 @@ struct SheetView: View {
                     accounts: accounts,
                     onUpdate: navigator.cardReloadCallback
                 )
-                CardEditView(card: ledger, context: context)
+                CardEditView(mode: .edit(ledger, context))
             case let .bankEdit(bank):
                 let context = BankEditContext(
                     repository: appContainer.bankRepository,

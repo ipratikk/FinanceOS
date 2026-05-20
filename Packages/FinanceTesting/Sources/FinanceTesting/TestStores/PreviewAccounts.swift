@@ -47,8 +47,8 @@ public enum PreviewLedgers {
             nickname: "Amex",
             ownerName: "John Doe",
             createdAt: Date(timeIntervalSince1970: 1_740_000_000),
-            cardType: "amex",
-            cardProduct: "Premium Rewards",
+            cardType: .amex,
+            cardProductId: "Premium Rewards",
             bin: "378282"
         )
     }

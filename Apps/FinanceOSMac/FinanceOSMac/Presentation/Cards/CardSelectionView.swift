@@ -43,16 +43,7 @@ struct CardSelectionView: View {
             Text("Select Card")
                 .bodyMedium()
             Spacer()
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .labelSmall()
-                    .foregroundStyle(.secondary)
-                    .frame(width: 22, height: 22)
-                    .background(Circle().fill(.ultraThinMaterial))
-            }
-            .buttonStyle(.plain)
-            .frame(minWidth: 44, minHeight: 44)
-            .contentShape(Rectangle())
+            AccessibleIconButton.close(action: onDismiss)
         }
         .padding(AppSpacing.md)
     }
@@ -62,15 +53,14 @@ struct CardSelectionView: View {
             Image(systemName: "magnifyingglass")
                 .font(AppTypography.captionLgSemibold)
                 .foregroundStyle(.tertiary)
-            TextField("Search cards", text: $searchText)
-                .font(AppTypography.bodySm)
+            FDSTextInput("Search cards", text: $searchText, style: .bodyMedium)
                 .textFieldStyle(.plain)
             if !searchText.isEmpty {
-                Button(action: { searchText = "" }) {
+                Button(action: { searchText = "" }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(AppTypography.captionLg)
                         .foregroundStyle(.tertiary)
-                }
+                })
                 .buttonStyle(.plain)
             }
         }
@@ -212,7 +202,7 @@ struct CardSelectionView: View {
     }
 
     private func networkBadge(for card: CardMetadata) -> some View {
-        Text(card.cardType.uppercased())
+        Text(card.cardType.displayName.uppercased())
             .font(AppTypography.iconSm)
             .tracking(0.4)
             .foregroundStyle(networkColor(for: card.cardType))
@@ -224,15 +214,15 @@ struct CardSelectionView: View {
             }
     }
 
-    private func networkColor(for type: String) -> Color {
-        switch type.lowercased() {
-        case "visa": return Color(red: 0.13, green: 0.20, blue: 0.79)
-        case "mastercard": return Color(red: 0.92, green: 0, blue: 0.1)
-        case "amex": return Color(red: 0.01, green: 0.33, blue: 0.76)
-        case "rupay": return Color(red: 0.11, green: 0.15, blue: 0.32)
-        case "discover": return Color(red: 1, green: 0.6, blue: 0)
-        case "diners": return Color(red: 0, green: 0.51, blue: 0.73)
-        default: return AppColors.textSecondary
+    private func networkColor(for network: CardNetwork) -> Color {
+        switch network {
+        case .visa: Color(red: 0.13, green: 0.20, blue: 0.79)
+        case .mastercard: Color(red: 0.92, green: 0, blue: 0.1)
+        case .amex: Color(red: 0.01, green: 0.33, blue: 0.76)
+        case .rupay: Color(red: 0.11, green: 0.15, blue: 0.32)
+        case .discover: Color(red: 1, green: 0.6, blue: 0)
+        case .diners: Color(red: 0, green: 0.51, blue: 0.73)
+        case .other: AppColors.textSecondary
         }
     }
 }
