@@ -26,7 +26,7 @@ public enum ImportTargetMatcher {
         let genericWords = Set(["bank", "credit", "card", "union"])
 
         // Reject if both inputs are single generic words (e.g., "Bank" vs "Bank")
-        if storedWords.count == 1 && parsedWords.count == 1 && genericWords.contains(storedWords[0]) {
+        if storedWords.count == 1, parsedWords.count == 1, genericWords.contains(storedWords[0]) {
             return false
         }
 

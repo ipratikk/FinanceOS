@@ -163,6 +163,15 @@ public final class GRDBLedgerRepository:
                     throw RepositoryError.notFound(entity: "Ledger", id: id.uuidString)
                 }
 
+                let transactionCount = try Transaction.filter(Column("ledgerId") == id).fetchCount(database)
+                if transactionCount > 0 {
+                    throw RepositoryError.deleteFailed(
+                        entity: "Ledger",
+                        id: id.uuidString,
+                        reason: "Cannot delete ledger with \(transactionCount) transaction(s)"
+                    )
+                }
+
                 try ledger.delete(database)
 
                 self.logger.logInfo(
