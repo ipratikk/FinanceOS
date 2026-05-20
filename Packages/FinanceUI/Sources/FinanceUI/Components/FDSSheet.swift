@@ -86,7 +86,7 @@ public struct FDSSheet<Content: View>: View {
         }
     }
 
-    private var sheetHeader: some View {
+    @ViewBuilder private var sheetHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel(title)
@@ -99,11 +99,11 @@ public struct FDSSheet<Content: View>: View {
                 }
             }
             Spacer()
-            Button(action: { dismiss(); onDismiss() }) {
+            Button(action: { dismiss(); onDismiss() }, label: {
                 Image(systemName: "xmark.circle.fill")
                     .font(AppTypography.headingMdRegular)
                     .foregroundColor(AppColors.textTertiary)
-            }
+            })
             .buttonStyle(.plain)
         }
     }
