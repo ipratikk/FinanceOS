@@ -64,6 +64,11 @@ public enum AppTypography {
     public static let iconSm = Font.system(size: 14)
     public static let iconXs = Font.system(size: 12)
 
+    // MARK: - Screen & Section Titles
+
+    public static let screenTitle = Font.system(size: 30, weight: .semibold, design: .default)
+    public static let titleSm = Font.system(size: 19, weight: .semibold, design: .default)
+
     // MARK: - Specialized
 
     public static let netHeroAmount: Font = .system(size: 48, weight: .semibold)
