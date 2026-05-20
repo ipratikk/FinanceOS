@@ -8,7 +8,7 @@ import XCTest
 
 final class ImportFileListViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_import_file_list_view() {

@@ -6,7 +6,7 @@ import XCTest
 
 final class TopMerchantsChartSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_top_merchants_chart() {

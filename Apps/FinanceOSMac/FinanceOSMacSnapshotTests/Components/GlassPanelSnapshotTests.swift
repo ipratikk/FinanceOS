@@ -8,7 +8,7 @@ import XCTest
 
 final class GlassPanelSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_glass_panel() {

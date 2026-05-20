@@ -7,7 +7,7 @@ import XCTest
 
 final class AnalyticsViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_analytics_view() {

@@ -7,7 +7,7 @@ import XCTest
 
 final class FDSLabelSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_label_display_large() {

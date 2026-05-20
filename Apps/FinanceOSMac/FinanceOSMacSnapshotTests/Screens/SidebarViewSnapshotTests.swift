@@ -6,7 +6,7 @@ import XCTest
 
 final class SidebarViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_sidebar_initial() {

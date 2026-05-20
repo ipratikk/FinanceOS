@@ -6,7 +6,7 @@ import XCTest
 
 final class CardSelectionViewSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_card_selection_view() {

@@ -8,7 +8,7 @@ import XCTest
 
 final class FinanceSearchBarSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_search_bar_empty() {

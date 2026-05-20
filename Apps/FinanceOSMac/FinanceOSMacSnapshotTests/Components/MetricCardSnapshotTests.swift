@@ -8,7 +8,7 @@ import XCTest
 
 final class MetricCardSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_metric_card_basic() {

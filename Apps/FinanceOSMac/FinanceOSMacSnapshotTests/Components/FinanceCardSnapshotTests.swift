@@ -8,7 +8,7 @@ import XCTest
 
 final class FinanceCardSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_finance_card_basic() {

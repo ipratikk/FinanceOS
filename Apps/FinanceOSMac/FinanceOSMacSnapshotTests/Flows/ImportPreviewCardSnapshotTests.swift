@@ -8,7 +8,7 @@ import XCTest
 
 final class ImportPreviewCardSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_import_preview_card() {

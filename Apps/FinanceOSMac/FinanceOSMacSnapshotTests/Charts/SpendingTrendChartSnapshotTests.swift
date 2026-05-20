@@ -7,7 +7,7 @@ import XCTest
 
 final class SpendingTrendChartSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_spending_trend_chart() {

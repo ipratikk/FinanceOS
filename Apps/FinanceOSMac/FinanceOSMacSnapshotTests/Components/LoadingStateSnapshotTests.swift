@@ -8,7 +8,7 @@ import XCTest
 
 final class LoadingStateSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_loading_skeleton_view() {

@@ -8,7 +8,7 @@ import XCTest
 
 final class ChartContainerSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_chart_container() {

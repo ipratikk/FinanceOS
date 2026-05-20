@@ -7,7 +7,7 @@ import XCTest
 
 final class FAmountSnapshotTests: SnapshotTestable {
     override var record: Bool {
-        true
+        false
     }
 
     func test_amount_debit_small() {
