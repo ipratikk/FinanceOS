@@ -80,27 +80,27 @@ private extension FDSLabelStyle {
     var font: Font {
         switch self {
         case .displayLarge:
-            return .system(size: 34, weight: .bold)
+            return AppTypography.displayLarge
         case .displayMedium:
             return .system(size: 28, weight: .bold)
         case .headingLarge:
-            return .system(size: 24, weight: .bold)
+            return AppTypography.headingXL
         case .heading:
-            return .system(size: 24, weight: .bold)
+            return AppTypography.headingXL
         case .headingMedium:
-            return .system(size: 20, weight: .semibold)
+            return AppTypography.headingLg
         case .headingSmall:
-            return .system(size: 16, weight: .semibold)
+            return AppTypography.headingSmall
         case .subheading:
-            return .system(size: 16, weight: .semibold)
+            return AppTypography.headingSmall
         case .bodyLarge:
-            return .system(size: 16, weight: .regular)
+            return AppTypography.bodyLg
         case .bodyMedium:
-            return .system(size: 14, weight: .regular)
+            return AppTypography.bodyMd
         case .labelSmall:
-            return .system(size: 12, weight: .medium)
+            return AppTypography.captionLgMedium
         case .captionLarge:
-            return .system(size: 12, weight: .regular)
+            return AppTypography.captionLg
         case .caption:
             return .system(size: 10, weight: .regular)
         case .hint:

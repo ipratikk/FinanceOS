@@ -50,10 +50,10 @@ public struct FDSBanner: View {
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.sm)
-        .background(tintColor.opacity(0.12))
+        .background(tintColor.opacity(0.12)) // 12% tint — between Opacity.low (20%) and Opacity.medium (30%)
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                .stroke(tintColor.opacity(0.25), lineWidth: 1)
+                .stroke(tintColor.opacity(0.25), lineWidth: 1) // 25% stroke — closest to Opacity.medium (30%)
         )
         .cornerRadius(AppRadius.sm)
     }

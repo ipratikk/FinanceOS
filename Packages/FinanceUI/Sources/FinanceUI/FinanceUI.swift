@@ -35,16 +35,15 @@ public typealias Animation = AppAnimation
 // Primitives
 public typealias Amount = FAmount
 public typealias Badge = FBadge
-public typealias Label = FLabel
 
 // Components
-public typealias Card = FinanceCard
+public typealias Card = FDSCard
 public typealias Metric = MetricCard
 public typealias Glass = GlassPanel
 public typealias TransactionRow = FDSTransactionRow
 public typealias SearchBar = FinanceSearchBar
-public typealias Section = SectionHeader
-public typealias Empty = EmptyStateView
+public typealias Section = FDSSectionHeader
+public typealias Empty = FDSEmptyState
 public typealias Skeleton = LoadingSkeletonView
 public typealias Chart = ChartContainer
 public typealias Insight = InsightCard

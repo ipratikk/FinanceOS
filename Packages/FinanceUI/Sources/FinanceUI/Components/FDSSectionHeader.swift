@@ -59,12 +59,12 @@ public struct FDSSectionHeader: View {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 FDSLabel(title)
                     .font(AppTypography.subheadline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(DesignTokens.Text.primary)
 
                 if let subtitle {
                     FDSLabel(subtitle)
                         .font(AppTypography.captionSm)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(DesignTokens.Text.tertiary)
                 }
             }
 

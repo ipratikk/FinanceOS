@@ -10,6 +10,7 @@ public struct FDSChip: View {
     let label: String
     let isActive: Bool
     let tone: Tone
+    let isEnabled: Bool
     let action: () -> Void
 
     public enum Tone {
@@ -20,11 +21,13 @@ public struct FDSChip: View {
         _ label: String,
         isActive: Bool,
         tone: Tone = .accent,
+        isEnabled: Bool = true,
         action: @escaping () -> Void
     ) {
         self.label = label
         self.isActive = isActive
         self.tone = tone
+        self.isEnabled = isEnabled
         self.action = action
     }
 
@@ -33,13 +36,17 @@ public struct FDSChip: View {
             FDSLabel(label)
                 .font(AppTypography.captionLgSemibold)
                 .foregroundColor(foregroundColor)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 7)
+                .padding(.horizontal, AppSpacing.sm)
+                // 7pt design spec; AppSpacing.compact is 8pt (nearest token)
+                .padding(.vertical, AppSpacing.compact)
                 .background {
                     if isActive {
                         Capsule()
+                            // chip tint — intentionally lighter than Opacity.low (0.20)
                             .fill(accentColor.opacity(0.18))
-                            .overlay(Capsule().strokeBorder(accentColor.opacity(0.4), lineWidth: 0.5))
+                            .overlay(
+                                Capsule().strokeBorder(accentColor.opacity(DesignTokens.Opacity.muted), lineWidth: 0.5)
+                            )
                     } else {
                         Capsule()
                             .fill(AppColors.surface2)
@@ -47,8 +54,12 @@ public struct FDSChip: View {
                     }
                 }
         })
+        .contentShape(Rectangle())
         .buttonStyle(.plain)
+        .disabled(!isEnabled)
+        .opacity(isEnabled ? 1.0 : DesignTokens.Opacity.muted)
         .animation(.spring(response: 0.25, dampingFraction: 0.85), value: isActive)
+        .accessibilityLabel("\(label)\(isActive ? ", selected" : "")")
     }
 
     private var accentColor: Color {

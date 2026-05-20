@@ -32,6 +32,7 @@ public struct GlassStyleModifier: ViewModifier {
 }
 
 public extension View {
+    @available(*, deprecated, renamed: "glassSurface")
     func glassStyle() -> some View {
         modifier(GlassStyleModifier())
     }

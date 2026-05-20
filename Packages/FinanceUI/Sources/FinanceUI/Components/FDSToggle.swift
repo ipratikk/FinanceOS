@@ -7,34 +7,26 @@ import SwiftUI
 /// Knob: 16×16 white circle with subtle inset highlight.
 public struct FDSToggle: View {
     @Binding var isOn: Bool
+    let label: String
+    let isEnabled: Bool
 
-    public init(isOn: Binding<Bool>) {
+    public init(isOn: Binding<Bool>, label: String = "", isEnabled: Bool = true) {
         _isOn = isOn
+        self.label = label
+        self.isEnabled = isEnabled
     }
 
     public var body: some View {
         ZStack {
             Capsule()
-                .fill(isOn ? Color(red: 0.19, green: 0.82, blue: 0.35) : AppColors.base.opacity(0.25))
+                .fill(isOn ? AppColors.accent : DesignTokens.Background.inputWell)
                 .overlay {
                     Capsule()
                         .strokeBorder(
                             isOn
-                                ? LinearGradient(
-                                    colors: [
-                                        AppColors.textPrimary.opacity(0.16),
-                                        AppColors.textPrimary.opacity(0.06),
-                                        .clear,
-                                        AppColors.base.opacity(0.20)
-                                    ],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
+                                ? DesignTokens.Edge.gleamBorder
                                 : LinearGradient(
-                                    colors: [
-                                        AppColors.textPrimary.opacity(0.0),
-                                        AppColors.textPrimary.opacity(0.0)
-                                    ],
+                                    colors: [.clear, .clear],
                                     startPoint: .top,
                                     endPoint: .bottom
                                 ),
@@ -43,9 +35,7 @@ public struct FDSToggle: View {
                 }
 
             HStack {
-                if !isOn {
-                    Spacer()
-                }
+                if !isOn { Spacer() }
 
                 Circle()
                     .fill(AppColors.textPrimary)
@@ -65,18 +55,22 @@ public struct FDSToggle: View {
                             )
                     }
 
-                if isOn {
-                    Spacer()
-                }
+                if isOn { Spacer() }
             }
             .padding(3)
         }
         .frame(width: 36, height: 22)
+        .opacity(isEnabled ? 1.0 : 0.4)
+        .disabled(!isEnabled)
         .onTapGesture {
+            guard isEnabled else { return }
             withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
                 isOn.toggle()
             }
         }
+        .accessibilityLabel(label.isEmpty ? "Toggle" : label)
+        .accessibilityValue(isOn ? "On" : "Off")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -85,13 +79,19 @@ public struct FDSToggle: View {
         HStack {
             FDSLabel("Auto-deduplicate")
             Spacer()
-            FDSToggle(isOn: .constant(false))
+            FDSToggle(isOn: .constant(false), label: "Auto-deduplicate")
         }
 
         HStack {
             FDSLabel("Preview before import")
             Spacer()
-            FDSToggle(isOn: .constant(true))
+            FDSToggle(isOn: .constant(true), label: "Preview before import")
+        }
+
+        HStack {
+            FDSLabel("Disabled toggle")
+            Spacer()
+            FDSToggle(isOn: .constant(true), label: "Disabled toggle", isEnabled: false)
         }
     }
     .padding()

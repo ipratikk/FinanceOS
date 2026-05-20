@@ -1,6 +1,9 @@
 import FinanceCore
 import SwiftUI
 
+// MARK: - Deprecated — use ToastManager + ToastContainerView instead
+
+@available(*, deprecated, message: "Use ToastManager.shared with ToastContainerView instead")
 public struct ToastContainer: View {
     @State private var toasts: [Toast] = []
 
