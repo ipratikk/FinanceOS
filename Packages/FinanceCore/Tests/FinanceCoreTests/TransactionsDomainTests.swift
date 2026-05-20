@@ -81,7 +81,7 @@ func transactionsCanBeInsertedAgainstLedger() throws {
 }
 
 @Test
-func transactionInsertionIsIdempotentViaFingerprint() throws {
+func transactionInsertionIsIdempotentViaFingerprint() async throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(
         in: &migrator
@@ -90,11 +90,11 @@ func transactionInsertionIsIdempotentViaFingerprint() throws {
     let dbQueue = try DatabaseQueue()
     try migrator.migrate(dbQueue)
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try DatabaseSeeder.seedBanks(in: database)
     }
 
-    let bank = try dbQueue.read { database in
+    let bank = try await dbQueue.read { database in
         try Bank.fetchAll(database).first!
     }
 
@@ -104,7 +104,7 @@ func transactionInsertionIsIdempotentViaFingerprint() throws {
         displayName: "Test Account"
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try ledger.insert(database)
     }
 
@@ -119,25 +119,25 @@ func transactionInsertionIsIdempotentViaFingerprint() throws {
         sourceFingerprint: "unique-fp-001"
     )
 
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         try txn.insert(database)
     }
 
-    var countAfterFirst = try dbQueue.read { database in
+    var countAfterFirst = try await dbQueue.read { database in
         try Transaction.fetchCount(database)
     }
     #expect(countAfterFirst == 1)
 
     // Inserting the same row again should fail the unique index — count stays 1
-    try dbQueue.write { database in
+    try await dbQueue.write { database in
         do {
             try txn.insert(database)
-        } catch let error as DatabaseError where error.resultCode == .SQLITE_CONSTRAINT {
+        } catch let error as GRDB.DatabaseError where error.resultCode == .SQLITE_CONSTRAINT {
             // Expected: fingerprint uniqueness enforced
         }
     }
 
-    countAfterFirst = try dbQueue.read { database in
+    countAfterFirst = try await dbQueue.read { database in
         try Transaction.fetchCount(database)
     }
     #expect(countAfterFirst == 1)

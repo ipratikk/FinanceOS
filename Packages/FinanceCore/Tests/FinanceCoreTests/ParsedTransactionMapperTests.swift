@@ -16,7 +16,7 @@ func mapperSignsDebitCorrectly() {
     let ledgerId = UUID()
     let target = TransactionImportTarget.ledger(ledgerId)
 
-    let mapped = ParsedTransactionMapper.map(debitParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(debitParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .debit)
     #expect(mapped.amountMinorUnits == 50000)
@@ -35,7 +35,7 @@ func mapperSignsCreditCorrectly() {
     let accountID = UUID()
     let target = TransactionImportTarget.account(accountID)
 
-    let mapped = ParsedTransactionMapper.map(creditParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(creditParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .credit)
     #expect(mapped.amountMinorUnits == 100_000)
@@ -54,7 +54,7 @@ func mapperHandlesCardDebit() {
     let ledgerId = UUID()
     let target = TransactionImportTarget.ledger(ledgerId)
 
-    let mapped = ParsedTransactionMapper.map(debitParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(debitParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .debit)
     #expect(mapped.amountMinorUnits == 5000)
@@ -74,7 +74,7 @@ func mapperHandlesCardCredit() {
     let cardID = UUID()
     let target = TransactionImportTarget.card(cardID)
 
-    let mapped = ParsedTransactionMapper.map(creditParsed, target: target)
+    let mapped = ParsedTransactionMapper.map(creditParsed, target: target, ledgerKind: .bankAccount)
 
     #expect(mapped.transactionType == .credit)
     #expect(mapped.amountMinorUnits == 10000)
