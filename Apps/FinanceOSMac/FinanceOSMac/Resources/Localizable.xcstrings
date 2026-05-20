@@ -4,133 +4,6 @@
     "" : {
 
     },
-    "—" : {
-
-    },
-    "… and %lld more" : {
-
-    },
-    "·" : {
-
-    },
-    "%@ · %@ · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$@ · %3$@"
-          }
-        }
-      }
-    },
-    "%@ · %lld rows · %lld new, %lld duplicate" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · %2$lld rows · %3$lld new, %4$lld duplicate"
-          }
-        }
-      }
-    },
-    "%@ · •••• %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ · •••• %2$@"
-          }
-        }
-      }
-    },
-    "%@ · up to 25 MB" : {
-
-    },
-    "%lld" : {
-
-    },
-    "%lld account%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld account%2$@"
-          }
-        }
-      }
-    },
-    "%lld card%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld card%2$@"
-          }
-        }
-      }
-    },
-    "%lld new · %lld duplicate%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld new · %2$lld duplicate%3$@"
-          }
-        }
-      }
-    },
-    "%lld total" : {
-
-    },
-    "%lld txns" : {
-
-    },
-    "%lld%%" : {
-
-    },
-    "• %@ %@%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "• %1$@ %2$@%3$@"
-          }
-        }
-      }
-    },
-    "• ••••%@" : {
-
-    },
-    "•••• %@" : {
-
-    },
-    "•••• •••• " : {
-
-    },
-    "+" : {
-
-    },
-    "−" : {
-
-    },
-    "⌘I" : {
-
-    },
-    "⌘K" : {
-
-    },
-    "6-Month Trend" : {
-
-    },
-    "ACCOUNT DETAILS" : {
-
-    },
-    "ACCOUNT INFORMATION" : {
-
-    },
-    "Account not found" : {
-
-    },
     "Accounts" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -167,9 +40,6 @@
     "Amount" : {
 
     },
-    "Analytics" : {
-
-    },
     "ANALYTICS" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -181,15 +51,6 @@
         }
       }
     },
-    "as of %@" : {
-
-    },
-    "Auto-categorization with smart detection" : {
-
-    },
-    "Balance" : {
-
-    },
     "Bank" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -200,9 +61,6 @@
           }
         }
       }
-    },
-    "BANK" : {
-
     },
     "BANK & ACCOUNT" : {
       "extractionState" : "manual",
@@ -226,9 +84,6 @@
         }
       }
     },
-    "BANK INFORMATION" : {
-
-    },
     "Banks" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -239,9 +94,6 @@
           }
         }
       }
-    },
-    "Browse Card Database" : {
-
     },
     "Cancel" : {
       "extractionState" : "manual",
@@ -254,9 +106,6 @@
         }
       }
     },
-    "CARD DETAILS" : {
-
-    },
     "CARD INFORMATION" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -267,9 +116,6 @@
           }
         }
       }
-    },
-    "Card not found" : {
-
     },
     "Cards" : {
       "extractionState" : "manual",
@@ -282,15 +128,6 @@
         }
       }
     },
-    "Categories" : {
-
-    },
-    "Change source" : {
-
-    },
-    "Choose file" : {
-
-    },
     "Clear" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -302,31 +139,10 @@
         }
       }
     },
-    "Clear All Data" : {
-
-    },
     "Clear All Data?" : {
 
     },
-    "Clear Selection" : {
-
-    },
-    "Coming Soon" : {
-
-    },
     "Continue" : {
-
-    },
-    "Create Account" : {
-
-    },
-    "Create Card" : {
-
-    },
-    "Create New Account..." : {
-
-    },
-    "Create New Card..." : {
 
     },
     "Credit" : {
@@ -351,16 +167,7 @@
         }
       }
     },
-    "Credit Utilization" : {
-
-    },
-    "CREDITED" : {
-
-    },
     "Credits" : {
-
-    },
-    "CSV and XLSX for CSV-based statements; TXT for delimited text (HDFC); PDF for scanned statements." : {
 
     },
     "Custom" : {
@@ -384,9 +191,6 @@
           }
         }
       }
-    },
-    "Database healthy · 2,148 txns" : {
-
     },
     "Date" : {
       "extractionState" : "manual",
@@ -421,9 +225,6 @@
         }
       }
     },
-    "DEBITED" : {
-
-    },
     "Debits" : {
 
     },
@@ -431,9 +232,6 @@
 
     },
     "Delete \"%@\"?" : {
-
-    },
-    "Delete %@?" : {
 
     },
     "Delete Account?" : {
@@ -470,9 +268,6 @@
     "Delete?" : {
 
     },
-    "Description" : {
-
-    },
     "Done" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -483,12 +278,6 @@
           }
         }
       }
-    },
-    "Drag your file here" : {
-
-    },
-    "Drop your statement" : {
-
     },
     "Edit Card" : {
       "extractionState" : "manual",
@@ -518,9 +307,6 @@
         }
       }
     },
-    "FinanceOS" : {
-
-    },
     "From" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -532,9 +318,6 @@
         }
       }
     },
-    "Highest outflow activity" : {
-
-    },
     "IMPORT" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -542,16 +325,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "IMPORT"
-          }
-        }
-      }
-    },
-    "Import %lld transaction%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Import %1$lld transaction%2$@"
           }
         }
       }
@@ -567,22 +340,7 @@
         }
       }
     },
-    "Import statement" : {
-
-    },
-    "Import Statements" : {
-
-    },
-    "Import statements to get started" : {
-
-    },
-    "Importing %@" : {
-
-    },
     "Inflows" : {
-
-    },
-    "Inflows vs outflows over time" : {
 
     },
     "INSTITUTIONS" : {
@@ -596,46 +354,10 @@
         }
       }
     },
-    "into %@" : {
-
-    },
-    "Last 6 transactions" : {
-
-    },
-    "Ledger not found" : {
-
-    },
-    "Loading transactions..." : {
-
-    },
-    "Loading…" : {
-
-    },
-    "Manage and track your cards" : {
-
-    },
-    "Manage connected institutions" : {
-
-    },
-    "Manage your accounts and balances" : {
-
-    },
     "Merchant" : {
 
     },
     "Month" : {
-
-    },
-    "Negative" : {
-
-    },
-    "Net Flow This Month" : {
-
-    },
-    "New Account" : {
-
-    },
-    "New Card" : {
 
     },
     "Nickname" : {
@@ -715,53 +437,13 @@
         }
       }
     },
-    "No transactions yet" : {
-
-    },
     "OK" : {
-
-    },
-    "or" : {
 
     },
     "Outflows" : {
 
     },
-    "Overview" : {
-
-    },
-    "Parsing file %lld of %lld..." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Parsing file %1$lld of %2$lld..."
-          }
-        }
-      }
-    },
-    "Parsing statement..." : {
-
-    },
     "PDF Password" : {
-
-    },
-    "Personal · INR" : {
-
-    },
-    "Positive" : {
-
-    },
-    "Preferences" : {
-
-    },
-    "Recent Activity" : {
-
-    },
-    "Reference" : {
-
-    },
-    "Release to upload" : {
 
     },
     "Reset" : {
@@ -774,9 +456,6 @@
           }
         }
       }
-    },
-    "Review parsed transactions" : {
-
     },
     "Save password to Keychain" : {
 
@@ -792,24 +471,6 @@
         }
       }
     },
-    "Select a source" : {
-
-    },
-    "Select Bank" : {
-
-    },
-    "Select Card" : {
-
-    },
-    "Select destination below" : {
-
-    },
-    "Settings" : {
-
-    },
-    "Show Less" : {
-
-    },
     "Spending Insights" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -820,12 +481,6 @@
           }
         }
       }
-    },
-    "Spending Trend" : {
-
-    },
-    "Spending trends and merchant insights" : {
-
     },
     "Statements" : {
       "extractionState" : "manual",
@@ -838,15 +493,6 @@
         }
       }
     },
-    "Statistics" : {
-
-    },
-    "Status" : {
-
-    },
-    "Supported: %@" : {
-
-    },
     "This will delete this bank and all associated cards, accounts, and transactions." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -857,24 +503,6 @@
           }
         }
       }
-    },
-    "This will permanently delete \"%@\"." : {
-
-    },
-    "This will permanently delete all data including banks, accounts, cards, and transactions." : {
-
-    },
-    "This will permanently delete this %@ and all associated transactions." : {
-
-    },
-    "This will permanently delete this account and all associated transactions." : {
-
-    },
-    "This will permanently delete this account and all associated transactions. This cannot be undone." : {
-
-    },
-    "This will permanently delete this bank and all associated accounts/cards/transactions." : {
-
     },
     "This will permanently delete this card and all associated transactions." : {
       "extractionState" : "manual",
@@ -887,9 +515,6 @@
         }
       }
     },
-    "This will permanently delete this item." : {
-
-    },
     "To" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -900,9 +525,6 @@
           }
         }
       }
-    },
-    "Top Merchants" : {
-
     },
     "TRANSACTION TYPE" : {
       "extractionState" : "manual",
@@ -918,16 +540,7 @@
     "Transactions" : {
 
     },
-    "Transactions: %lld" : {
-
-    },
     "Type" : {
-
-    },
-    "View All" : {
-
-    },
-    "View All →" : {
 
     },
     "View all transactions" : {

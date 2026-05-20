@@ -7,8 +7,6 @@ struct DashboardView: View {
     @State private var isLoading = true
     @Environment(AppNavigator.self) private var navigator
 
-    private let appContainer = AppContainer.shared
-
     init() {}
 
     init(viewModel: DashboardViewModel) {
@@ -55,9 +53,10 @@ struct DashboardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
             .task {
+                let container = AppContainer.shared
                 viewModel = DashboardViewModel(
-                    spendingService: appContainer.spendingService,
-                    transactionRepository: appContainer.transactionRepository
+                    spendingService: container.spendingService,
+                    transactionRepository: container.transactionRepository
                 )
             }
         }

@@ -7,8 +7,6 @@ struct AnalyticsView: View {
     @State private var viewModel: AnalyticsViewModel?
     @State private var isLoading = true
 
-    private let appContainer = AppContainer.shared
-
     init() {}
 
     init(viewModel: AnalyticsViewModel) {
@@ -50,9 +48,10 @@ struct AnalyticsView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(AppColors.base)
             .task {
+                let container = AppContainer.shared
                 viewModel = AnalyticsViewModel(
-                    spendingService: appContainer.spendingService,
-                    transactionRepository: appContainer.transactionRepository
+                    spendingService: container.spendingService,
+                    transactionRepository: container.transactionRepository
                 )
             }
         }
