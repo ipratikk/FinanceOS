@@ -76,14 +76,8 @@ struct BankEditView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(0.2)
                 .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
-<<<<<<< HEAD
-            TextField("", text: text)
-                .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
-=======
             FDSTextInput("", text: text, style: .labelSmall)
                 .foregroundColor(DesignTokens.Text.primary)
->>>>>>> 50e856e (refactor: Replace hardcoded frames, corners, and shadows with design tokens)
                 .padding(8)
                 .background(DesignTokens.Background.inputWell)
                 .cornerRadius(6)

@@ -40,15 +40,9 @@ struct SidebarView: View {
     private var brandHeader: some View {
         HStack(spacing: 12) {
             ZStack {
-<<<<<<< HEAD
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(Color(red: 1.0, green: 0.62, blue: 0.04))
-                    .frame(width: 32, height: 32)
-=======
                 RoundedRectangle(cornerRadius: AppRadius.xs)
                     .fill(DesignTokens.System.orange)
                     .frame(width: AppSpacing.xxl, height: AppSpacing.xxl)
->>>>>>> 50e856e (refactor: Replace hardcoded frames, corners, and shadows with design tokens)
 
                 VStack(spacing: 3) {
                     Triangle().fill(DesignTokens.Text.primary).frame(height: 3)
@@ -89,13 +83,8 @@ struct SidebarView: View {
         }
         .padding(.horizontal, 10)
         .frame(height: 32)
-<<<<<<< HEAD
-        .background(Color.black.opacity(0.25))
-        .cornerRadius(16)
-=======
         .background(DesignTokens.Background.inputWell)
         .cornerRadius(AppRadius.lg)
->>>>>>> 50e856e (refactor: Replace hardcoded frames, corners, and shadows with design tokens)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
     }
