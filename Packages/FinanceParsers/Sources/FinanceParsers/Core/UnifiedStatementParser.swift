@@ -122,23 +122,28 @@ public struct UnifiedStatementParser: Sendable {
         case .hdfcCard:
             metadata = HDFCCardMetadataExtractor().extract(from: context.fileContent)
             cardLast4 = metadata?.accountNumber
-            try appendRows(context, mapper: HDFCCardCSVMapper(), normalizer: HDFCCardCSVNormalizer(), into: &transactions)
+            try appendRows(context, mapper: HDFCCardCSVMapper(), normalizer: HDFCCardCSVNormalizer(),
+                           into: &transactions)
         case .iciciCard:
             metadata = ICICICardMetadataExtractor().extract(from: context.allRows)
             cardLast4 = metadata?.accountNumber
-            try appendRows(context, mapper: ICICICardCSVMapper(), normalizer: ICICICardCSVNormalizer(), into: &transactions)
+            try appendRows(context, mapper: ICICICardCSVMapper(), normalizer: ICICICardCSVNormalizer(),
+                           into: &transactions)
         case .iciciBank:
             metadata = ICICIMetadataExtractor().extract(from: context.rawRows)
             accountLast4 = metadata?.accountNumber
-            try appendRows(context, mapper: ICICIBankCSVMapper(), normalizer: ICICIBankCSVNormalizer(), into: &transactions)
+            try appendRows(context, mapper: ICICIBankCSVMapper(), normalizer: ICICIBankCSVNormalizer(),
+                           into: &transactions)
         case .hdfcBank:
             metadata = HDFCBankMetadataExtractor().extract(from: context.fileContent)
             accountLast4 = metadata?.accountNumber
-            try appendRows(context, mapper: HDFCBankTXTMapper(), normalizer: HDFCBankTXTNormalizer(), into: &transactions)
+            try appendRows(context, mapper: HDFCBankTXTMapper(), normalizer: HDFCBankTXTNormalizer(),
+                           into: &transactions)
         case .amex:
             metadata = AmexCardMetadataExtractor().extract(from: context.allRows)
             cardLast4 = metadata?.accountNumber
-            try appendRows(context, mapper: AmexCardCSVMapper(), normalizer: AmexCardCSVNormalizer(), into: &transactions)
+            try appendRows(context, mapper: AmexCardCSVMapper(), normalizer: AmexCardCSVNormalizer(),
+                           into: &transactions)
         }
     }
 
