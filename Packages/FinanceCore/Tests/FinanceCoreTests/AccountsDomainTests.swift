@@ -22,9 +22,9 @@ func bankSeedingCreatesExpectedBanks() throws {
     }
 
     #expect(banks.count == 4)
-    #expect(banks.contains { $0.name == "HDFC" })
-    #expect(banks.contains { $0.name == "ICICI" })
-    #expect(banks.contains { $0.name == "Amex" })
+    #expect(banks.contains { $0.name == "HDFC Bank" })
+    #expect(banks.contains { $0.name == "ICICI Bank" })
+    #expect(banks.contains { $0.name == "American Express" })
     #expect(banks.contains { $0.name == "Scapia" })
 }
 
@@ -46,8 +46,8 @@ func ledgersCanBeLinkedAcrossBankAccountAndCard() throws {
         try Bank.fetchAll(database)
     }
 
-    let hdfcBank = try #require(banks.first { $0.name == "HDFC" })
-    let iciciBank = try #require(banks.first { $0.name == "ICICI" })
+    let hdfcBank = try #require(banks.first { $0.name == "HDFC Bank" })
+    let iciciBank = try #require(banks.first { $0.name == "ICICI Bank" })
 
     let hdfcAccount = Ledger(
         bankId: hdfcBank.id,

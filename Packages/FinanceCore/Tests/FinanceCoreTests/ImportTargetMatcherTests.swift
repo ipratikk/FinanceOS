@@ -120,7 +120,7 @@ func bestTargetCardMultipleCardsNoMatchReturnsNil() {
         bankName: "HDFC",
         accountName: "HDFC Card",
         accountLast4: nil,
-        cardLast4: "1234",
+        cardLast4: "9998",
         transactions: [],
         metadata: nil
     )

@@ -151,8 +151,8 @@ func ledgerFilterByBankAndKind() async throws {
         fatalError("Need at least 2 banks")
     }
 
-    let hdfcBank = try #require(banks.first(where: { $0.name == "HDFC" }))
-    let iciciBank = try #require(banks.first(where: { $0.name == "ICICI" }))
+    let hdfcBank = try #require(banks.first(where: { $0.name == "HDFC Bank" }))
+    let iciciBank = try #require(banks.first(where: { $0.name == "ICICI Bank" }))
 
     let hdfcAccount = Ledger(
         bankId: hdfcBank.id,
