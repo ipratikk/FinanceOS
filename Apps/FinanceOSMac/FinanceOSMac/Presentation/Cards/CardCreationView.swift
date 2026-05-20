@@ -14,7 +14,7 @@ struct CardCreationView: View {
         self.state = state
         self.onCommit = onCommit
         _nickname = State(initialValue: state.nickname)
-        _cardType = State(initialValue: state.cardType ?? .visa)
+        _cardType = State(initialValue: state.cardType)
         _last4 = State(initialValue: state.last4)
     }
 
@@ -46,7 +46,7 @@ struct CardCreationView: View {
                         .font(.system(size: 13, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(12)
-                        .background(DesignTokens.Background.primary)
+                        .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(6)
                 }

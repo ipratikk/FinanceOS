@@ -46,7 +46,7 @@ struct AccountCreationView: View {
                         .font(.system(size: 13, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(12)
-                        .background(DesignTokens.Background.primary)
+                        .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(6)
                 }
