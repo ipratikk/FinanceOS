@@ -9,7 +9,14 @@ import Foundation
 
 @MainActor
 public final class AppContainer {
-    public static let shared = AppContainer()
+    public static let shared: AppContainer = {
+        do {
+            let databaseManager = DatabaseManager.shared
+            return AppContainer(databaseManager: databaseManager)
+        } catch {
+            fatalError("Failed to initialize AppContainer: \(error)")
+        }
+    }()
 
     public let transactionRepository: any TransactionRepository
     public let bankRepository: any BankRepository
@@ -19,8 +26,7 @@ public final class AppContainer {
 
     public let spendingService: any SpendingServiceProtocol
 
-    private init() {
-        let databaseManager = DatabaseManager.shared
+    public init(databaseManager: DatabaseManager = DatabaseManager.shared) {
 
         transactionRepository = GRDBTransactionRepository(
             dbQueue: databaseManager.dbQueue

@@ -122,6 +122,9 @@
     "6-Month Trend" : {
 
     },
+    "ACCOUNT DETAILS" : {
+
+    },
     "ACCOUNT INFORMATION" : {
 
     },
@@ -251,6 +254,9 @@
         }
       }
     },
+    "CARD DETAILS" : {
+
+    },
     "CARD INFORMATION" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -309,6 +315,12 @@
 
     },
     "Continue" : {
+
+    },
+    "Create Account" : {
+
+    },
+    "Create Card" : {
 
     },
     "Create New Account..." : {
@@ -453,6 +465,9 @@
 
     },
     "Delete Transaction?" : {
+
+    },
+    "Delete?" : {
 
     },
     "Description" : {
@@ -871,6 +886,9 @@
           }
         }
       }
+    },
+    "This will permanently delete this item." : {
+
     },
     "To" : {
       "extractionState" : "manual",

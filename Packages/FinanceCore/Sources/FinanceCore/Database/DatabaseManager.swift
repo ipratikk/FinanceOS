@@ -40,6 +40,26 @@ public final class DatabaseManager: @unchecked Sendable {
 
         try seedDatabase()
     }
+
+    public init(inMemory: Bool) throws {
+        var config = Configuration()
+        config.prepareDatabase { db in
+            try db.execute(sql: "PRAGMA foreign_keys = ON")
+        }
+
+        if inMemory {
+            dbQueue = try DatabaseQueue(configuration: config)
+        } else {
+            let databaseURL = try Self.makeDatabaseURL()
+            dbQueue = try DatabaseQueue(
+                path: databaseURL.path,
+                configuration: config
+            )
+        }
+
+        try migrator.migrate(dbQueue)
+        try seedDatabase()
+    }
 }
 
 private extension DatabaseManager {

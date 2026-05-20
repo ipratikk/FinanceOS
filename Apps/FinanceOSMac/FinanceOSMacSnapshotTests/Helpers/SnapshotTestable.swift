@@ -20,6 +20,19 @@ import AppKit
 /// - Call `verifySnapshots(view)` from test methods
 @MainActor
 class SnapshotTestable: XCTestCase {
+    private var testContainer: AppContainer!
+
+    override func setUp() {
+        super.setUp()
+        // Create in-memory database for this test to avoid locking issues
+        do {
+            let testDatabaseManager = try DatabaseManager(inMemory: true)
+            testContainer = AppContainer(databaseManager: testDatabaseManager)
+        } catch {
+            fatalError("Failed to initialize test database: \(error)")
+        }
+    }
+
     /// Set to true in subclass to record new snapshots.
     var record: Bool {
         false
