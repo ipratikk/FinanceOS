@@ -42,10 +42,7 @@ export function normalizeCard(
             rawCard.slug ??
             rawCard.name
                 ?.toLowerCase()
-                ?.replaceAll(
-                    " ",
-                    "-"
-                ) ??
+                ?.replaceAll(" ", "-") ??
             null,
 
         name:
@@ -53,6 +50,9 @@ export function normalizeCard(
             rawCard.name ??
             rawCard.title ??
             null,
+
+        network:
+            rawCard.network ?? null,
 
         description:
             rawCard.cardDescription ??

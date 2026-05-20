@@ -40,37 +40,49 @@ ${imageList.length > 30 ? `\n... (${imageList.length - 30} more images) ...` : "
 
 TASK - Process each card:
 
-1. **Normalize name**: Remove bank prefix (ICICI Bank, HDFC Bank), remove "Credit Card" suffix. Keep brand + key variant (Signature, Platinum, etc.)
+1. **Normalize name**: Remove bank prefix (ICICI Bank, HDFC Bank), remove "Credit Card" suffix. Keep brand + key variant (Signature, Platinum, etc.). Fix double spaces and double hyphens.
    - "HDFC Bank Millennia Credit Card" → "Millennia Credit Card"
    - "ICICI Bank Sapphiro Credit Card" → "Sapphiro Credit Card"
+   - "MoneyBack+ Credit Card" → "MoneyBack+" (no trailing space/hyphen artifacts)
 
-2. **Match image**: Find best image URL match using semantic similarity
+2. **Pass through card network**: The `network` field is already scraped from the bank's detail page. Do NOT infer or guess it.
+   - Valid values: "Visa", "Mastercard", "Amex", "RuPay", "Diners"
+   - If `network` is present in raw data, keep it unchanged
+   - If `network` is null, leave it null — the validator will flag it as a warning
+
+3. **Write description**: Must be a non-empty sentence (≥20 characters) describing the card's primary value proposition.
+   - If the raw description is empty or generic filler, synthesize a 1-sentence description from the rewards/benefits data
+   - Example: "" → "Earn 5% cashback on online shopping at Amazon, Flipkart, and Myntra."
+   - Never leave description empty
+
+4. **Match image**: Find best image URL match using semantic similarity
    - Fuzzy match card name to image card name
    - Return the full HTTPS image URL from imageList
    - If no match found, set to null (card will be dropped in validation)
 
-3. **Extract rewards array**: Parse description/benefits text for concrete rewards
+5. **Extract rewards array**: Parse description/benefits text for concrete rewards
    - Look for: cashback %, points earned, vouchers, discounts, fee waivers
    - Examples: "5% cashback on Amazon", "₹1000 voucher on ₹1L spend", "No annual fee"
    - Return array of 1-5 reward strings, minimum 15 characters each
-   - If can't find specific rewards, extract from benefit descriptions
+   - Remove duplicates
 
-4. **Extract benefits array**: Categorize benefits into standard categories
+6. **Extract benefits array**: Categorize benefits into standard categories
    - Valid categories: ${VALID_BENEFIT_CATEGORIES.join(", ")}
    - Parse text keywords (lounge, airport, travel, dining, shopping, etc.)
-   - Return 1-4 categories from the valid list
+   - Return 1-4 unique categories from the valid list — no duplicates
    - If unknown category, use "Lifestyle"
 
-5. **Validate fields**:
-   - name: non-empty string (required)
-   - description: string, can be empty
+7. **Validate fields**:
+   - name: non-empty string, no double spaces or leading/trailing spaces (required)
+   - network: one of Visa/Mastercard/Amex/RuPay/Diners or null
+   - description: non-empty string ≥20 chars (required — synthesize if missing)
    - image: HTTPS URL or null (card dropped if null)
    - applyLink: HTTPS URL (required, card dropped if missing)
-   - detailsLink: HTTPS URL (required)
-   - rewards: array of strings, ≥1 item (required)
-   - benefits: array of categories, ≥1 item (required)
+   - detailsLink: full HTTPS URL (required — prepend bank domain if relative)
+   - rewards: array of unique strings, ≥1 item (required)
+   - benefits: array of unique categories, ≥1 item (required)
 
-6. **Deduplicate**: Keep only one card per name (prefer cards with images)
+8. **Deduplicate**: Keep only one card per name (prefer cards with images)
 
 OUTPUT:
 Return ONLY valid JSON array wrapped in \`\`\`json ... \`\`\`, no extra text.
@@ -79,8 +91,9 @@ Example output structure:
 \`\`\`json
 [
   {
-    "name": "Millennia Credit Card",
-    "description": "Earn 5% cashback on online shopping.",
+    "name": "Millennia",
+    "network": "Visa",
+    "description": "Earn 5% cashback on online shopping at Amazon, Flipkart, Myntra, and more.",
     "image": "https://www.hdfcbank.com/content/dam/.../millennia.png",
     "applyLink": "https://applyonline.hdfc.bank.in/...",
     "detailsLink": "https://www.hdfc.bank.in/credit-cards/millennia",
@@ -138,77 +151,49 @@ Process ALL ${rawCards.length} cards. Ensure image URLs are complete HTTPS URLs 
     );
 }
 
+const VALID_NETWORKS = new Set([
+    "Visa", "Mastercard", "Amex", "RuPay", "Diners"
+]);
+
 function validateCard(card) {
     const errors = [];
+    const warnings = [];
 
-    if (
-        !card.name ||
-        typeof card.name !==
-        "string"
-    ) {
-        errors.push(
-            "Missing name"
-        );
+    if (!card.name || typeof card.name !== "string" || card.name.trim().length === 0) {
+        errors.push("Missing name");
+    } else if (/  |--/.test(card.name)) {
+        warnings.push("Name has double spaces or hyphens");
     }
 
-    if (
-        !card.image ||
-        !card.image.startsWith(
-            "http"
-        )
-    ) {
-        errors.push(
-            "Missing/invalid image URL"
-        );
+    if (!card.network || !VALID_NETWORKS.has(card.network)) {
+        warnings.push(`Missing/unknown network: ${card.network ?? "null"}`);
     }
 
-    if (
-        !card.applyLink ||
-        !card.applyLink.startsWith(
-            "http"
-        )
-    ) {
-        errors.push(
-            "Missing/invalid applyLink"
-        );
+    if (!card.description || card.description.trim().length < 20) {
+        warnings.push(`Short/missing description (${card.description?.length ?? 0} chars)`);
     }
 
-    if (
-        !card.detailsLink ||
-        !card.detailsLink.startsWith(
-            "http"
-        )
-    ) {
-        errors.push(
-            "Missing/invalid detailsLink"
-        );
+    if (!card.image || !card.image.startsWith("http")) {
+        errors.push("Missing/invalid image URL");
     }
 
-    if (
-        !Array.isArray(
-            card.rewards
-        ) ||
-        card.rewards.length ===
-        0
-    ) {
-        errors.push(
-            "Missing rewards"
-        );
+    if (!card.applyLink || !card.applyLink.startsWith("http")) {
+        errors.push("Missing/invalid applyLink");
     }
 
-    if (
-        !Array.isArray(
-            card.benefits
-        ) ||
-        card.benefits.length ===
-        0
-    ) {
-        errors.push(
-            "Missing benefits"
-        );
+    if (!card.detailsLink || !card.detailsLink.startsWith("http")) {
+        errors.push("Missing/invalid detailsLink");
     }
 
-    return errors;
+    if (!Array.isArray(card.rewards) || card.rewards.length === 0) {
+        errors.push("Missing rewards");
+    }
+
+    if (!Array.isArray(card.benefits) || card.benefits.length === 0) {
+        errors.push("Missing benefits");
+    }
+
+    return { errors, warnings };
 }
 
 async function processBank(
@@ -276,33 +261,34 @@ async function processBank(
     // Validate
     const valid = [];
     const invalid = [];
+    const warned = [];
 
     for (const card of enriched) {
-        const errors =
-            validateCard(card);
+        const { errors, warnings } = validateCard(card);
 
         if (errors.length === 0) {
             valid.push(card);
+            if (warnings.length > 0) {
+                warned.push({ name: card.name, warnings });
+            }
         } else {
-            invalid.push({
-                name: card.name,
-                errors
-            });
+            invalid.push({ name: card.name, errors });
         }
     }
 
-    console.log(
-        `Valid: ${valid.length}, Invalid: ${invalid.length}`
-    );
+    console.log(`Valid: ${valid.length}, Invalid: ${invalid.length}, Warnings: ${warned.length}`);
 
     if (invalid.length > 0) {
-        console.log(
-            "Dropped cards:"
-        );
+        console.log("Dropped cards:");
         for (const item of invalid) {
-            console.log(
-                `  - ${item.name}: ${item.errors.join(", ")}`
-            );
+            console.log(`  ✗ ${item.name}: ${item.errors.join(", ")}`);
+        }
+    }
+
+    if (warned.length > 0) {
+        console.log("Quality warnings:");
+        for (const item of warned) {
+            console.log(`  ⚠ ${item.name}: ${item.warnings.join(", ")}`);
         }
     }
 
