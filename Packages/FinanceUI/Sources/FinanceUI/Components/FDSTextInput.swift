@@ -50,8 +50,8 @@ private extension View {
 }
 
 #Preview {
-    @State var password = ""
-    @State var text = ""
+    @Previewable @State var password = ""
+    @Previewable @State var text = ""
 
     return VStack(spacing: 12) {
         VStack(alignment: .leading, spacing: 4) {

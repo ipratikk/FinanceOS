@@ -33,7 +33,7 @@ public struct FinanceSearchBar: View {
 }
 
 #Preview {
-    @State var text = ""
+    @Previewable @State var text = ""
 
     return VStack {
         FinanceSearchBar("Search transactions", text: $text)
