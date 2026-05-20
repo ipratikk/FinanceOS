@@ -65,23 +65,23 @@ public struct FDSInputField: View {
 
     private var borderColor: Color {
         switch state {
-        case .normal:   return DesignTokens.Border.subtle
-        case .error:    return AppColors.danger.opacity(0.5)
-        case .success:  return AppColors.success.opacity(0.5)
+        case .normal: return DesignTokens.Border.subtle
+        case .error: return AppColors.danger.opacity(0.5)
+        case .success: return AppColors.success.opacity(0.5)
         }
     }
 
     private var statusMessage: String? {
         switch state {
         case .normal, .success: return helper
-        case .error(let msg):   return msg
+        case let .error(msg): return msg
         }
     }
 
     private var messageColor: Color {
         switch state {
         case .normal, .success: return DesignTokens.Text.tertiary
-        case .error:            return AppColors.danger
+        case .error: return AppColors.danger
         }
     }
 }
@@ -91,12 +91,25 @@ public struct FDSInputField: View {
     @Previewable @State var password = ""
 
     return VStack(spacing: AppSpacing.lg) {
-        FDSInputField("Account name", text: $name, placeholder: "e.g. HDFC Savings",
-                      helper: "Used to identify this account")
-        FDSInputField("Password", text: $password, placeholder: "Enter password",
-                      state: .error("Password is required"), isSecure: true)
-        FDSInputField("IFSC code", text: .constant("HDFC0001234"),
-                      placeholder: "HDFC0001234", state: .success)
+        FDSInputField(
+            "Account name",
+            text: $name,
+            placeholder: "e.g. HDFC Savings",
+            helper: "Used to identify this account"
+        )
+        FDSInputField(
+            "Password",
+            text: $password,
+            placeholder: "Enter password",
+            state: .error("Password is required"),
+            isSecure: true
+        )
+        FDSInputField(
+            "IFSC code",
+            text: .constant("HDFC0001234"),
+            placeholder: "HDFC0001234",
+            state: .success
+        )
     }
     .padding(AppSpacing.xl)
     .background(AppColors.base)

@@ -44,14 +44,14 @@ public struct FDSSectionHeader: View {
 
     // MARK: - ViewBuilder trailing init
 
-    public init<Trailing: View>(
+    public init(
         _ title: String,
         subtitle: String? = nil,
-        @ViewBuilder trailing: () -> Trailing
+        @ViewBuilder trailing: () -> some View
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.trailingView = AnyView(trailing())
+        trailingView = AnyView(trailing())
     }
 
     public var body: some View {

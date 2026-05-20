@@ -60,21 +60,21 @@ public struct FDSBanner: View {
 
     private var tintColor: Color {
         switch style {
-        case .info:     return AppColors.info
-        case .success:  return AppColors.success
-        case .warning:  return AppColors.warning
-        case .error:    return AppColors.danger
-        case .neutral:  return DesignTokens.Text.tertiary
+        case .info: return AppColors.info
+        case .success: return AppColors.success
+        case .warning: return AppColors.warning
+        case .error: return AppColors.danger
+        case .neutral: return DesignTokens.Text.tertiary
         }
     }
 
     private var icon: String {
         switch style {
-        case .info:     return "info.circle.fill"
-        case .success:  return "checkmark.circle.fill"
-        case .warning:  return "exclamationmark.triangle.fill"
-        case .error:    return "xmark.circle.fill"
-        case .neutral:  return "circle.fill"
+        case .info: return "info.circle.fill"
+        case .success: return "checkmark.circle.fill"
+        case .warning: return "exclamationmark.triangle.fill"
+        case .error: return "xmark.circle.fill"
+        case .neutral: return "circle.fill"
         }
     }
 }

@@ -122,5 +122,7 @@ public struct FDSLiquidButton: View {
         }
     }
 
-    private var gleamGradient: LinearGradient { DesignTokens.Edge.gleamBorder }
+    private var gleamGradient: LinearGradient {
+        DesignTokens.Edge.gleamBorder
+    }
 }

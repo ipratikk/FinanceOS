@@ -34,7 +34,7 @@ public struct StickyFooterModifier<Footer: View>: ViewModifier {
 }
 
 public extension View {
-    func stickyFooter<Footer: View>(@ViewBuilder content: () -> Footer) -> some View {
+    func stickyFooter(@ViewBuilder content: () -> some View) -> some View {
         modifier(StickyFooterModifier(footer: content()))
     }
 }
