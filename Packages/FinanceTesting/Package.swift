@@ -39,6 +39,10 @@ let package = Package(
                     "-suppress-warnings"
                 ])
             ]
+        ),
+        .testTarget(
+            name: "FinanceTestingTests",
+            dependencies: ["FinanceTesting"]
         )
     ]
 )
