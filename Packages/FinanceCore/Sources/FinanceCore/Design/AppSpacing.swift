@@ -20,4 +20,36 @@ public enum AppSpacing {
     // Component-specific targets
     public static let hitTarget: CGFloat = 44
     public static let minTouchTarget: CGFloat = 44
+
+    // MARK: - Density Modes
+
+    public struct DensityMap {
+        public let xs: CGFloat
+        public let sm: CGFloat
+        public let md: CGFloat
+        public let lg: CGFloat
+        public let xl: CGFloat
+        public let xxl: CGFloat
+    }
+
+    public enum Density {
+        case standard
+        case compact
+
+        public var spacing: DensityMap {
+            switch self {
+            case .standard:
+                return DensityMap(xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32)
+            case .compact:
+                return DensityMap(xs: 2, sm: 4, md: 8, lg: 12, xl: 16, xxl: 24)
+            }
+        }
+    }
+
+    // MARK: - Layout Constants
+
+    public enum Layout {
+        /// Standard sidebar width. Replaces any hardcoded 232.
+        public static let sidebarWidth: CGFloat = 232
+    }
 }

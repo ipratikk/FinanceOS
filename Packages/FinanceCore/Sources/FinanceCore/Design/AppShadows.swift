@@ -6,28 +6,28 @@ public enum AppShadows {
     // MARK: - Elevation Levels
 
     public static let subtle = Shadow(
-        color: AppColors.base.opacity(0.05),
+        color: Color.black.opacity(0.40),
         radius: 4,
         x: 0,
         y: 2
     )
 
     public static let standard = Shadow(
-        color: AppColors.base.opacity(0.08),
+        color: Color.black.opacity(0.50),
         radius: 8,
         x: 0,
         y: 4
     )
 
     public static let elevated = Shadow(
-        color: AppColors.base.opacity(0.12),
+        color: Color.black.opacity(0.60),
         radius: 16,
         x: 0,
         y: 8
     )
 
     public static let prominent = Shadow(
-        color: AppColors.base.opacity(0.16),
+        color: Color.black.opacity(0.70),
         radius: 24,
         x: 0,
         y: 12

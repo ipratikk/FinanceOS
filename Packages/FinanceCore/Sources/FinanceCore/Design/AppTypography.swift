@@ -70,8 +70,31 @@ public enum AppTypography {
     // MARK: - Specialized
 
     public static let netHeroAmount: Font = .system(size: 48, weight: .semibold)
-    public static let maskedAccount: Font = .system(size: 10, weight: .regular, design: .monospaced)
+    public static let maskedAccount: Font = .system(size: 11, weight: .regular, design: .monospaced)
 }
+
+// MARK: - Semantic System Fonts (respond to macOS Larger Text accessibility setting)
+
+/// Use for primary body content where Larger Text support is needed
+public let bodySystem: Font = .body
+/// Use for secondary body content
+public let calloutSystem: Font = .callout
+/// Use for subheadings
+public let subheadlineSystem: Font = .subheadline
+/// Use for captions and footnotes
+public let footnoteSystem: Font = .footnote
+/// Use for minimum-size captions
+public let captionSystem: Font = .caption
+/// Use for headlines/section titles
+public let headlineSystem: Font = .headline
+
+// MARK: - Reduce Motion
+
+//
+// Components using AppAnimation should respect @Environment(\.accessibilityReduceMotion).
+// Pattern:
+//   @Environment(\.accessibilityReduceMotion) var reduceMotion
+//   let anim = reduceMotion ? .easeOut(duration: 0.1) : AppAnimation.springSnappy
 
 // MARK: - View Extension Modifiers
 
