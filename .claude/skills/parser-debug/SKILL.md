@@ -9,7 +9,7 @@ Root-cause parser bugs without dumping the whole codebase into context.
 
 ## Default agent
 
-**opus-agent** for the hypothesis. **haiku-agent** for the probing.
+**opus-agent** for the hypothesis. **haiku-agent** for the probing. **sonnet-agent** for implementing the fix once opus has a plan.
 
 This is one of the few skills where opus is appropriate by default — parser bugs are inherently cross-component reasoning.
 
