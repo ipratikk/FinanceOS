@@ -1,5 +1,5 @@
-import * as cheerio
-from "cheerio";
+import * as cheerio from "cheerio";
+import { detectNetworkFromHTML } from "../../utils/networkDetector.js";
 
 const PAGE_URL =
     "https://www.icici.bank.in/personal-banking/cards/credit-card";
@@ -373,6 +373,8 @@ async function fetchCardDetails(
                 .first()
                 .attr("href") || null;
 
+        const network = detectNetworkFromHTML($);
+
         return {
             description,
 
@@ -386,6 +388,8 @@ async function fetchCardDetails(
                 benefits.slice(0, 5),
 
             applyLink,
+
+            network,
 
             detailsLink:
                 cardDetailUrl
@@ -707,6 +711,9 @@ export async function fetchICICICards() {
             name,
 
             image,
+
+            network:
+                details.network ?? null,
 
             description:
                 details.description,

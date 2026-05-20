@@ -1,5 +1,5 @@
-import { chromium }
-from "playwright";
+import { chromium } from "playwright";
+import { fetchNetworkFromURL } from "../../utils/networkDetector.js";
 
 const PAGE_URL =
     "https://www.hdfcbank.com/personal/pay/cards/credit-cards";
@@ -59,18 +59,36 @@ export async function fetchHDFCCards() {
             5000
         );
 
-        if (
-            !apiResponse
-        ) {
+        if (!apiResponse) {
             throw new Error(
                 "Failed to capture HDFC API response"
             );
         }
 
-        return (
-            apiResponse.response ??
-            []
-        );
+        const rawCards = apiResponse.response ?? [];
+
+        // API response doesn't include network — fetch from each card's detail page
+        const HDFC_BASE = "https://www.hdfc.bank.in";
+
+        for (const card of rawCards) {
+            const detailPath =
+                card.secondaryButtonLink ??
+                card.detailsLink ??
+                null;
+
+            if (!detailPath) {
+                card.network = null;
+                continue;
+            }
+
+            const detailUrl = detailPath.startsWith("http")
+                ? detailPath
+                : `${HDFC_BASE}${detailPath}`;
+
+            card.network = await fetchNetworkFromURL(detailUrl);
+        }
+
+        return rawCards;
     } finally {
         await browser.close();
     }
