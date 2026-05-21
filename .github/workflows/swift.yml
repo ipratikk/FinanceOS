@@ -251,6 +251,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Swift 6.1
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
+
       - name: Cache SPM Resolved Dependencies
         id: cache-resolve
         uses: actions/cache@v4
@@ -306,6 +311,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Swift 6.1
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
+
       - name: Cache SPM Build Artifacts
         uses: actions/cache@v4
         with:
@@ -360,11 +370,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Swift 6.1
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.1"
+
       - name: Setup Xcode
         run: |
           set -euo pipefail
 
           echo "ℹ️ Xcode version: $(/usr/bin/xcodebuild -version)"
+          echo "ℹ️ Swift version: $(swift --version)"
 
       - name: Cache Derived Data
         uses: actions/cache@v4
