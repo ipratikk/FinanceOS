@@ -25,8 +25,8 @@ case "$mode" in
     on|true|record)
         echo "Setting record = true in all snapshot tests..."
         find "$TESTS_DIR" -name "*.swift" -exec \
-            sed -i '' '/override var record: Bool {/{N;s/        false/        true/;}' {} \;
-        count_on=$(grep -rA 1 "override var record" "$TESTS_DIR" 2>/dev/null | grep -c "true" || true)
+            sed -i '' 's/override var record: Bool { false }/override var record: Bool { true }/g' {} \;
+        count_on=$(grep -c "override var record: Bool { true }" "$TESTS_DIR"/**/*.swift 2>/dev/null || true)
         echo "Done. $count_on test classes set to record = true"
         echo ""
         echo "Run tests: xcodebuild -workspace FinanceOS.xcworkspace -scheme FinanceOSMac test"
@@ -35,8 +35,8 @@ case "$mode" in
     off|false|verify)
         echo "Setting record = false in all snapshot tests..."
         find "$TESTS_DIR" -name "*.swift" -exec \
-            sed -i '' '/override var record: Bool {/{N;s/        true/        false/;}' {} \;
-        count_off=$(grep -rA 1 "override var record" "$TESTS_DIR" 2>/dev/null | grep -c "false" || true)
+            sed -i '' 's/override var record: Bool { true }/override var record: Bool { false }/g' {} \;
+        count_off=$(grep -c "override var record: Bool { false }" "$TESTS_DIR"/**/*.swift 2>/dev/null || true)
         echo "Done. $count_off test classes set to record = false (verify mode)"
         ;;
     status|"")
