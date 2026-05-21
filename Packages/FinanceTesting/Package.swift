@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "FinanceTesting",
     platforms: [
-        .macOS(.v14),
+        .macOS("26.0"),
         .iOS(.v17)
     ],
     products: [
