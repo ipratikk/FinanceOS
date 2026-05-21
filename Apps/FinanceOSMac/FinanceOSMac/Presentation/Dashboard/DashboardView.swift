@@ -17,7 +17,7 @@ struct DashboardView: View {
     var body: some View {
         if let viewModel {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxl) {
                     header
 
                     if let totals = viewModel.currentTotals {
@@ -33,9 +33,9 @@ struct DashboardView: View {
                         recentActivitySection(viewModel)
                     }
                 }
-                .padding(.horizontal, AppSpacing.xl)
-                .padding(.vertical, AppSpacing.xl)
-                .frame(maxWidth: 960)
+                .padding(.horizontal, AppSpacing.xxl)
+                .padding(.vertical, AppSpacing.xxl)
+                .frame(maxWidth: 1080)
                 .frame(maxWidth: .infinity)
             }
             .background(AppColors.base)
@@ -48,7 +48,7 @@ struct DashboardView: View {
                 ProgressView()
                     .controlSize(.small)
                 FDSLabel("Loading…")
-                    .font(AppTypography.captionSmMedium)
+                    .font(AppTypography.captionLgMedium)
                     .foregroundColor(AppColors.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -64,12 +64,12 @@ struct DashboardView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.compact) {
             FDSLabel("Overview")
                 .font(AppTypography.screenTitle)
                 .foregroundColor(AppColors.Text.primary)
             FDSLabel(currentMonth)
-                .font(AppTypography.captionLgMedium)
+                .font(AppTypography.labelMedium)
                 .tracking(0.2)
                 .foregroundColor(AppColors.Text.secondary)
         }
@@ -81,10 +81,10 @@ struct DashboardView: View {
         let isPositive = net >= 0
         return FDSCard(padded: false) {
             HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                VStack(alignment: .leading, spacing: AppSpacing.sm) {
                     FDSLabel("Net Flow This Month")
-                        .font(AppTypography.captionSmSemibold)
-                        .tracking(0.5)
+                        .font(AppTypography.labelMedium)
+                        .tracking(0.2)
                         .foregroundColor(AppColors.Text.secondary)
 
                     FDSLabel(formatAmount(net))
@@ -98,11 +98,11 @@ struct DashboardView: View {
 
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: isPositive ? "arrow.up.right" : "arrow.down.right")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(isPositive ? AppColors.success : AppColors.danger)
 
                     FDSLabel(isPositive ? "Positive" : "Negative")
-                        .font(AppTypography.bodySmSemibold)
+                        .font(AppTypography.bodyMdSemibold)
                         .foregroundColor(isPositive ? AppColors.success : AppColors.danger)
                 }
                 .padding(.horizontal, AppSpacing.md)
@@ -112,8 +112,8 @@ struct DashboardView: View {
                         .fill((isPositive ? AppColors.success : AppColors.danger).opacity(0.12))
                 )
             }
-            .padding(.horizontal, AppSpacing.xl)
-            .padding(.vertical, AppSpacing.xl)
+            .padding(.horizontal, AppSpacing.xxl)
+            .padding(.vertical, AppSpacing.xxl)
             .frame(maxWidth: .infinity)
         }
     }
@@ -143,13 +143,13 @@ struct DashboardView: View {
 
     private func metricTile(_ label: String, value: String, symbol: String, color: Color) -> some View {
         FDSCard(padded: false) {
-            VStack(alignment: .leading, spacing: AppSpacing.compact) {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 HStack(spacing: AppSpacing.tight) {
                     Image(systemName: symbol)
-                        .font(AppTypography.captionSmSemibold)
+                        .font(AppTypography.captionLgSemibold)
                         .foregroundColor(color.opacity(0.7))
                     FDSLabel(label.uppercased())
-                        .font(AppTypography.captionSmSemibold)
+                        .font(AppTypography.captionLgSemibold)
                         .tracking(0.5)
                         .foregroundColor(AppColors.Text.secondary)
                 }
@@ -160,7 +160,8 @@ struct DashboardView: View {
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(AppSpacing.md)
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.vertical, AppSpacing.lg)
         }
     }
 
@@ -170,8 +171,8 @@ struct DashboardView: View {
 
             FDSCard(padded: false) {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
-                    .frame(height: 200)
-                    .padding(AppSpacing.md)
+                    .frame(height: 260)
+                    .padding(AppSpacing.xl)
             }
         }
     }
@@ -185,7 +186,7 @@ struct DashboardView: View {
                 actionSymbol: "chevron.right"
             ) { navigator.navigate(to: .transactions) }
 
-            FDSCard(cornerRadius: 12, padded: false) {
+            FDSCard(cornerRadius: AppRadius.lg, padded: false) {
                 VStack(spacing: 0) {
                     ForEach(
                         Array(viewModel.recentTransactions.prefix(6).enumerated()),
@@ -199,11 +200,11 @@ struct DashboardView: View {
                                 amount: formatAmount(txn.amountMinorUnits, currencyCode: txn.currencyCode),
                                 isDebit: txn.transactionType == .debit
                             )
-                            .padding(AppSpacing.xs)
 
                             if index < min(viewModel.recentTransactions.count, 6) - 1 {
                                 Divider()
-                                    .opacity(0.2)
+                                    .padding(.leading, 64)
+                                    .opacity(0.15)
                             }
                         }
                     }
@@ -216,8 +217,6 @@ struct DashboardView: View {
         FormatterCache.formatMonthYear(Date()).uppercased()
     }
 
-    /// For totals (aggregated across accounts) we display in INR — the app's primary currency.
-    /// Individual transaction rows use their own currencyCode via the overload below.
     private func formatAmount(_ minorUnits: Int64) -> String {
         FormatterCache.formatCurrency(Decimal(minorUnits) / 100, currencyCode: "INR")
     }

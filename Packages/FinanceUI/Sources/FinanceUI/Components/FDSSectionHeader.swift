@@ -30,7 +30,7 @@ public struct FDSSectionHeader: View {
                             .font(AppTypography.captionLgMedium)
                         if let actionSymbol {
                             Image(systemName: actionSymbol)
-                                .font(AppTypography.captionSmSemibold)
+                                .font(AppTypography.captionLgSemibold)
                         }
                     }
                     .foregroundStyle(AppColors.accent)
@@ -58,12 +58,12 @@ public struct FDSSectionHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 FDSLabel(title)
-                    .font(AppTypography.subheadline)
+                    .font(AppTypography.headingSmall)
                     .foregroundStyle(AppColors.Text.primary)
 
                 if let subtitle {
                     FDSLabel(subtitle)
-                        .font(AppTypography.captionSm)
+                        .font(AppTypography.captionLg)
                         .foregroundStyle(AppColors.Text.tertiary)
                 }
             }

@@ -79,7 +79,7 @@ public struct FDSTransactionRow: View {
                     .lineLimit(1)
 
                 FDSLabel(subtitle)
-                    .font(AppTypography.captionSm)
+                    .font(AppTypography.captionLg)
                     .foregroundStyle(AppColors.Text.tertiary)
                     .lineLimit(1)
             }
@@ -94,14 +94,14 @@ public struct FDSTransactionRow: View {
 
                 if let balance = runningBalance {
                     FDSLabel(balance)
-                        .font(AppTypography.captionSm.monospacedDigit())
+                        .font(AppTypography.captionLg.monospacedDigit())
                         .foregroundStyle(AppColors.Text.tertiary)
                 } else if let chip = accountChip {
                     HStack(spacing: 3) {
                         FDSLabel(chip.bankName)
-                            .font(AppTypography.captionSmSemibold)
+                            .font(AppTypography.captionLgSemibold)
                         FDSLabel("· \(chip.last4)")
-                            .font(AppTypography.captionSm.monospacedDigit())
+                            .font(AppTypography.captionLg.monospacedDigit())
                     }
                     .foregroundStyle(AppColors.Text.tertiary)
                 }
