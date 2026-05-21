@@ -106,7 +106,6 @@ extension DashboardView {
         }
         .chartXAxis { AxisMarks(format: .dateTime.month(.abbreviated)) }
         .chartYAxis(.hidden)
-        .chartPlotStyle { $0.background(AppColors.base) }
     }
 
     private func legendDot(_ label: String, _ value: String, _ color: Color) -> some View {
