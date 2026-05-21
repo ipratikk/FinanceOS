@@ -50,7 +50,8 @@ extension DashboardView {
                 // Amount + delta badge
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     FDSLabel(amount(net))
-                        .font(.system(size: 44, weight: .bold, design: .monospaced))
+                        .font(AppTypography.displayLarge)
+                        .monospacedDigit()
                         .foregroundStyle(isPositive ? AppColors.success : AppColors.danger)
                         .lineLimit(1)
 
@@ -105,7 +106,7 @@ extension DashboardView {
         }
         .chartXAxis { AxisMarks(format: .dateTime.month(.abbreviated)) }
         .chartYAxis(.hidden)
-        .chartPlotStyle { $0.background(Color.clear) }
+        .chartPlotStyle { $0.background(AppColors.base) }
     }
 
     private func legendDot(_ label: String, _ value: String, _ color: Color) -> some View {
