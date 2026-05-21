@@ -8,11 +8,11 @@ import SwiftUI
 // The system handles blur, tint, specular highlights, light/dark adaptation,
 // and Reduce Transparency fallback automatically.
 
-struct GlassSurface: ViewModifier {
+public struct GlassSurface: ViewModifier {
     let radius: CGFloat
     let liftShadow: Bool
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .glassEffect(in: RoundedRectangle(cornerRadius: radius, style: .continuous))
             .shadow(
@@ -25,7 +25,7 @@ struct GlassSurface: ViewModifier {
 
 // MARK: - View Extensions
 
-extension View {
+public extension View {
     /// Apply Liquid Glass surface (macOS 26 native .glassEffect).
     ///
     /// - Parameters:
