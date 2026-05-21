@@ -17,7 +17,8 @@ struct ImportPreviewView: View {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.red)
                     FDSLabel(error)
-                        .caption()
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(AppColors.Text.tertiary)
                         .foregroundColor(.red)
                     Spacer()
                     Button(action: { viewModel.errorMessage = nil }, label: {

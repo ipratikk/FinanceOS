@@ -25,7 +25,8 @@ struct SpendingTrendChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             FDSLabel("Spending Trend")
-                .headingSmall()
+                .font(AppTypography.headingSmall)
+                .foregroundStyle(AppColors.Text.primary)
 
             Chart(chartData, id: \.date) { item in
                 BarMark(

@@ -40,7 +40,9 @@ struct CardSelectionView: View {
                 .font(AppTypography.headlineSm)
                 .foregroundStyle(AppColors.accent)
                 .symbolRenderingMode(.hierarchical)
-            FDSLabel("Select Card", style: .bodyMedium)
+            FDSLabel("Select Card")
+                .font(AppTypography.bodyMd)
+                .foregroundStyle(AppColors.Text.primary)
             Spacer()
             AccessibleIconButton.close(action: onDismiss)
         }

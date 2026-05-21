@@ -7,4 +7,6 @@ public enum AppRadius {
     public static let lg: CGFloat = 16 // cards
     public static let xl: CGFloat = 20 // large panels
     public static let xxl: CGFloat = 28 // sheets
+    public static let full: CGFloat = 9999 // pill / capsule shapes
+    public static let chip: CGFloat = 6 // inline chips and tags
 }

@@ -24,10 +24,11 @@ public struct FDSEmptyState: View {
 
             VStack(spacing: AppSpacing.tight) {
                 FDSLabel(title)
-                    .bodyLarge()
+                    .font(AppTypography.bodyLg)
+                    .foregroundColor(AppColors.Text.primary)
                 FDSLabel(subtitle)
                     .font(AppTypography.captionLg)
-                    .foregroundStyle(.tertiary)
+                    .foregroundColor(AppColors.Text.tertiary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

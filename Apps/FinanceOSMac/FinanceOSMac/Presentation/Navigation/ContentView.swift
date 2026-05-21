@@ -4,6 +4,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var navigator = AppNavigator()
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
     private let appContainer = AppContainer.shared
 
     var body: some View {
@@ -12,7 +13,7 @@ struct ContentView: View {
 
             Group {
                 #if os(macOS)
-                NavigationSplitView(columnVisibility: .constant(.all)) {
+                NavigationSplitView(columnVisibility: $columnVisibility) {
                     SidebarView()
                 } detail: {
                     DetailRouter(appContainer: appContainer)

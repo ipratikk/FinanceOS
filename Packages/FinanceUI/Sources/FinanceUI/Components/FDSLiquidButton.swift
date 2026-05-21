@@ -97,23 +97,13 @@ public struct FDSLiquidButton: View {
     private var buttonBackground: some View {
         switch variant {
         case .primary:
+            // Solid accent fill — Liquid Glass tint applied via .tint() at the root
             Capsule()
                 .fill(AppColors.accentGreen)
-                .overlay {
-                    Capsule()
-                        .strokeBorder(gleamGradient, lineWidth: 1)
-                }
         case .ghost:
+            // Native Liquid Glass Small UI surface
             Capsule()
-                .fill(.regularMaterial)
-                .overlay {
-                    Capsule()
-                        .fill(AppColors.Glass.surface)
-                }
-                .overlay {
-                    Capsule()
-                        .strokeBorder(gleamGradient, lineWidth: 1)
-                }
+                .glassEffect()
         case .danger:
             Capsule()
                 .fill(AppColors.danger.opacity(0.18))
@@ -141,9 +131,5 @@ public struct FDSLiquidButton: View {
         case .link:
             return AppColors.accent
         }
-    }
-
-    private var gleamGradient: LinearGradient {
-        AppColors.Glass.gleamBorder
     }
 }

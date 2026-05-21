@@ -3,28 +3,20 @@ import SwiftUI
 
 // MARK: - Glass Surface Modifier
 
-struct GlassSurface: ViewModifier {
+//
+// Uses the native macOS 26 .glassEffect() API (Liquid Glass).
+// The system handles blur, tint, specular highlights, light/dark adaptation,
+// and Reduce Transparency fallback automatically.
+
+public struct GlassSurface: ViewModifier {
     let radius: CGFloat
-    let tint: Color
-    let strong: Bool
     let liftShadow: Bool
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
-            .background {
-                ZStack {
-                    RoundedRectangle(cornerRadius: radius, style: .continuous)
-                        .fill(.regularMaterial)
-                    RoundedRectangle(cornerRadius: radius, style: .continuous)
-                        .fill(tint.opacity(strong ? 0.10 : 0.06))
-                }
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .strokeBorder(AppColors.Glass.gleamBorder, lineWidth: 1)
-            }
+            .glassEffect(in: RoundedRectangle(cornerRadius: radius, style: .continuous))
             .shadow(
-                color: AppColors.base.opacity(liftShadow ? 0.25 : 0),
+                color: .black.opacity(liftShadow ? 0.20 : 0),
                 radius: liftShadow ? 12 : 0,
                 y: liftShadow ? 4 : 0
             )
@@ -33,45 +25,21 @@ struct GlassSurface: ViewModifier {
 
 // MARK: - View Extensions
 
-extension View {
-    /// Apply glass surface styling with specular gleam edge highlight.
+public extension View {
+    /// Apply Liquid Glass surface (macOS 26 native .glassEffect).
     ///
     /// - Parameters:
-    ///   - radius: Corner radius (default 18pt for standard cards)
-    ///   - tint: Tint color for semi-transparent fill (default white)
-    ///   - strong: Use thicker fill for hover/active states (default false)
-    ///   - lifted: Apply drop shadow for lifted appearance (default true)
+    ///   - radius: Corner radius. Defaults to `AppRadius.lg` (16pt).
+    ///   - lifted: Add drop shadow to suggest elevation. Default true.
     func glassSurface(
-        radius: CGFloat = 18,
-        tint: Color = AppColors.textPrimary,
-        strong: Bool = false,
+        radius: CGFloat = AppRadius.lg,
         lifted: Bool = true
     ) -> some View {
-        modifier(GlassSurface(radius: radius, tint: tint, strong: strong, liftShadow: lifted))
+        modifier(GlassSurface(radius: radius, liftShadow: lifted))
     }
 
-    /// Glass pill variant using Capsule shape instead of RoundedRectangle.
-    ///
-    /// - Parameters:
-    ///   - strong: Use thicker fill for active states (default false)
-    ///   - lifted: Apply drop shadow (default false)
-    func glassPill(strong: Bool = false, lifted: Bool = false) -> some View {
-        background {
-            ZStack {
-                Capsule()
-                    .fill(.regularMaterial)
-                Capsule()
-                    .fill(AppColors.textPrimary.opacity(strong ? 0.10 : 0.06))
-            }
-        }
-        .overlay {
-            Capsule()
-                .strokeBorder(AppColors.Glass.gleamBorder, lineWidth: 1)
-        }
-        .shadow(
-            color: AppColors.base.opacity(lifted ? 0.25 : 0),
-            radius: lifted ? 12 : 0,
-            y: lifted ? 4 : 0
-        )
+    /// Glass pill — Liquid Glass with a Capsule clip shape.
+    func glassPill() -> some View {
+        glassEffect(in: Capsule())
     }
 }

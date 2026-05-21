@@ -12,16 +12,21 @@ struct SourcePickerSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("1. Statement Source", style: .subheading)
+                    FDSLabel("1. Statement Source")
+                        .font(AppTypography.headingSmall)
+                        .foregroundStyle(AppColors.Text.primary)
 
-                    FDSLabel("Select your bank", style: .hint)
+                    FDSLabel("Select your bank")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
                 }
 
                 Spacer()
 
                 if selectedSource != nil {
                     Image(systemName: "checkmark.circle.fill")
-                        .headingSmall()
+                        .font(AppTypography.headingSmall)
+                        .foregroundStyle(AppColors.Text.primary)
                         .foregroundColor(AppColors.accent)
                 }
             }
@@ -33,7 +38,9 @@ struct SourcePickerSection: View {
                             .font(AppTypography.captionLg)
                             .foregroundColor(AppColors.debit)
 
-                        FDSLabel(error, style: .hint)
+                        FDSLabel(error)
+                            .font(AppTypography.captionSm)
+                            .foregroundStyle(AppColors.Text.primary)
                             .lineLimit(3)
                     }
                 }
@@ -71,13 +78,17 @@ struct DropZoneView: View {
                     .foregroundColor(AppColors.accent)
 
                 VStack(spacing: 4) {
-                    FDSLabel("Drop files here", style: .monoAmount)
+                    FDSLabel("Drop files here")
+                        .font(AppTypography.amountMd)
+                        .foregroundStyle(AppColors.Text.primary)
 
-                    FDSLabel("or click button below", style: .hint)
+                    FDSLabel("or click button below")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
 
                     FDSLabel("Supported: \(formatNames)")
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
+                        .font(AppTypography.labelSmall)
+                        .foregroundStyle(AppColors.Text.tertiary)
                         .padding(.top, 4)
                 }
             }
@@ -108,9 +119,13 @@ struct FileSelectionPlaceholder: View {
                 .foregroundColor(AppColors.textTertiary)
 
             VStack(spacing: 4) {
-                FDSLabel("Select a bank above", style: .monoAmount, color: .tertiary)
+                FDSLabel("Select a bank above")
+                    .font(AppTypography.amountMd)
+                    .foregroundStyle(AppColors.Text.tertiary)
 
-                FDSLabel("to start importing", style: .hint)
+                FDSLabel("to start importing")
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.primary)
             }
         }
         .frame(maxWidth: .infinity)

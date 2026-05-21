@@ -9,7 +9,8 @@ struct TopMerchantsChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             FDSLabel("Top Merchants")
-                .headingSmall()
+                .font(AppTypography.headingSmall)
+                .foregroundStyle(AppColors.Text.primary)
 
             Chart(merchants, id: \.name) { item in
                 BarMark(

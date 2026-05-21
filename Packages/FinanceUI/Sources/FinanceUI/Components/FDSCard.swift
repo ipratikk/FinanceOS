@@ -1,10 +1,7 @@
 import FinanceCore
 import SwiftUI
 
-/// Liquid Glass card container for the Finance Design System.
-///
-/// Uses glassSurface modifier with specular edge gleam. Owns material, gleam highlight,
-/// corner radius, and drop shadow. Callers control internal padding and layout.
+/// Liquid Glass card container — uses the native macOS 26 glass effect.
 ///
 /// Usage:
 /// ```swift

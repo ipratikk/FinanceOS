@@ -55,13 +55,17 @@ private extension View {
 
     return VStack(spacing: 12) {
         VStack(alignment: .leading, spacing: 4) {
-            FDSLabel("Name", style: .caption)
+            FDSLabel("Name")
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.primary)
             FDSTextInput("Enter name", text: $text, style: .bodyMedium)
                 .textFieldStyle(.roundedBorder)
         }
 
         VStack(alignment: .leading, spacing: 4) {
-            FDSLabel("Password", style: .caption)
+            FDSLabel("Password")
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.primary)
             FDSTextInput("Enter password", text: $password, style: .bodyMedium, isSecure: true)
                 .textFieldStyle(.roundedBorder)
         }

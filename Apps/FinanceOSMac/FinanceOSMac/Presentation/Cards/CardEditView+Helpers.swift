@@ -9,9 +9,13 @@ struct CardCatalogWidget: View {
         HStack(spacing: AppSpacing.md) {
             CardArtworkDisplay(card: card)
             VStack(alignment: .leading, spacing: 3) {
-                FDSLabel(card.name, style: .bodyMedium, color: .primary)
+                FDSLabel(card.name)
+                    .font(AppTypography.bodyMd)
+                    .foregroundStyle(AppColors.Text.primary)
                     .lineLimit(1)
-                FDSLabel(card.cardType.displayName.uppercased(), style: .caption, color: .secondary)
+                FDSLabel(card.cardType.displayName.uppercased())
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.secondary)
                     .tracking(0.5)
             }
             Spacer()
@@ -76,13 +80,15 @@ struct CardDeleteConfirmationAlert: View {
                     .font(AppTypography.netHeroAmount)
                     .foregroundStyle(AppColors.danger)
 
-                FDSLabel("Delete \(isCard ? "Card" : "Account")?", style: .headingMedium)
+                FDSLabel("Delete \(isCard ? "Card" : "Account")?")
+                    .font(AppTypography.headingLg)
+                    .foregroundStyle(AppColors.Text.primary)
 
                 FDSLabel(
-                    "This will permanently delete this \(isCard ? "card" : "account") and all associated transactions.",
-                    style: .bodyMedium,
-                    color: .secondary
+                    "This will permanently delete this \(isCard ? "card" : "account") and all associated transactions."
                 )
+                .font(AppTypography.bodyMd)
+                .foregroundStyle(AppColors.Text.secondary)
             }
 
             HStack(spacing: AppSpacing.compact) {

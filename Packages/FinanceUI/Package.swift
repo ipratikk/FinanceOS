@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "FinanceUI",
     platforms: [
-        .macOS(.v14),
+        .macOS("26.0"),
         .iOS(.v17),
         .macCatalyst(.v16)
     ],

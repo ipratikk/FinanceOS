@@ -8,5 +8,10 @@ struct FinanceOSMacApp: App {
             ContentView()
                 .preferredColorScheme(.dark)
         }
+
+        Settings {
+            SettingsView()
+                .preferredColorScheme(.dark)
+        }
     }
 }

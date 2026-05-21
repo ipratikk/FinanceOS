@@ -22,7 +22,9 @@ struct PasswordPromptSheet: View {
             Form {
                 Section("PDF Password") {
                     Group {
-                        FDSLabel("The file \"\(filename)\" is password-protected.", style: .caption)
+                        FDSLabel("The file \"\(filename)\" is password-protected.")
+                            .font(AppTypography.captionSm)
+                            .foregroundStyle(AppColors.Text.primary)
 
                         VStack(alignment: .leading, spacing: 4) {
                             FDSTextInput("Password", text: $password, style: .bodyMedium, isSecure: true)
@@ -33,7 +35,9 @@ struct PasswordPromptSheet: View {
                                 )
 
                             if isPasswordInvalid {
-                                FDSLabel("Incorrect password. Please try again.", style: .caption)
+                                FDSLabel("Incorrect password. Please try again.")
+                                    .font(AppTypography.captionSm)
+                                    .foregroundStyle(AppColors.Text.primary)
                             }
                         }
                     }

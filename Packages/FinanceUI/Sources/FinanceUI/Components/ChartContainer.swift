@@ -13,7 +13,8 @@ public struct ChartContainer<Content: View>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             FDSLabel(title)
-                .headingMedium()
+                .font(AppTypography.headingMd)
+                .foregroundColor(AppColors.Text.primary)
 
             content
                 .frame(height: 200)

@@ -43,12 +43,13 @@ public struct MetricCard: View {
                         .foregroundColor(AppColors.textTertiary)
                 }
                 FDSLabel(label)
-                    .headingMedium()
+                    .font(AppTypography.headingMd).foregroundColor(AppColors.Text.primary)
                 Spacer()
             }
 
             FDSLabel(value)
-                .displayMedium()
+                .font(AppTypography.displayLarge)
+                .foregroundColor(AppColors.Text.primary)
 
             if let delta {
                 HStack(spacing: AppSpacing.xs) {
@@ -58,11 +59,11 @@ public struct MetricCard: View {
                         .foregroundColor(delta.isPositive ? AppColors.credit : AppColors.debit)
 
                     FDSLabel(delta.text)
-                        .caption()
+                        .font(AppTypography.captionLg).foregroundColor(AppColors.Text.tertiary)
                         .foregroundColor(delta.isPositive ? AppColors.credit : AppColors.debit)
 
                     FDSLabel("vs \(delta.period)")
-                        .caption()
+                        .font(AppTypography.captionLg).foregroundColor(AppColors.Text.tertiary)
                 }
             }
         }

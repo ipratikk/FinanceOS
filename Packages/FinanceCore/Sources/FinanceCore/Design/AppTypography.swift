@@ -1,186 +1,105 @@
 import SwiftUI
 
-// MARK: - Typography Enum (Static Font Properties)
+// MARK: - Typography Tokens
+
+//
+// All tokens use explicit sizes tuned for a spacious, readable finance app on macOS.
+// Sizes are larger than Apple's default system text styles to give the UI breathing room.
+//
+// Use AppTypography.Dynamic for accessibility-critical contexts that must scale
+// with macOS Accessibility → Display → Text Size (Larger Text).
 
 public enum AppTypography {
-    // MARK: - Display (Hero/Marketing)
+    // MARK: - Display (Hero / Marketing)
 
-    public static let displayLarge = Font.system(size: 34, weight: .bold, design: .default)
-    public static let displayLargeLight = Font.system(size: 34, weight: .light, design: .default)
-    public static let displaySmall = Font.system(size: 22, weight: .bold, design: .default)
+    public static let displayLarge = Font.system(size: 36, weight: .bold)
+    public static let displayLargeLight = Font.system(size: 36, weight: .light)
+    public static let displaySmall = Font.system(size: 28, weight: .bold)
 
-    // MARK: - Headline (Section Headers, Titles)
+    // MARK: - Heading
 
-    public static let headingXL = Font.system(size: 24, weight: .bold, design: .default)
-    public static let headingXLLight = Font.system(size: 24, weight: .light, design: .default)
-    public static let headingLg = Font.system(size: 20, weight: .bold, design: .default)
-    public static let headingLgLight = Font.system(size: 20, weight: .light, design: .default)
-    public static let headingMd = Font.system(size: 18, weight: .semibold, design: .default)
-    public static let headingMdRegular = Font.system(size: 18, weight: .regular, design: .default)
-    public static let headingSmall = Font.system(size: 16, weight: .semibold, design: .default)
-    // alias — prefer headingSmall
-    public static let headlineSm = Font.system(size: 16, weight: .semibold, design: .default)
-    public static let headlineSmLight = Font.system(size: 16, weight: .light, design: .default)
-    public static let subheadline = Font.system(size: 15, weight: .semibold, design: .default)
+    public static let headingXL = Font.system(size: 28, weight: .bold)
+    public static let headingXLLight = Font.system(size: 28, weight: .light)
+    public static let headingLg = Font.system(size: 24, weight: .bold)
+    public static let headingLgLight = Font.system(size: 24, weight: .light)
+    public static let headingMd = Font.system(size: 20, weight: .semibold)
+    public static let headingMdRegular = Font.system(size: 20, weight: .regular)
+    public static let headingSmall = Font.system(size: 17, weight: .semibold)
+    public static let headlineSmLight = Font.system(size: 17, weight: .light)
+    public static let subheadline = Font.system(size: 16, weight: .semibold)
+    public static let headlineSm = Font.system(size: 17, weight: .semibold) // alias
 
-    // MARK: - Body (Primary Content)
+    // MARK: - Screen Title
 
-    public static let bodyLg = Font.system(size: 16, weight: .regular, design: .default)
-    public static let bodyMd = Font.system(size: 14, weight: .regular, design: .default)
-    public static let bodyMdLight = Font.system(size: 14, weight: .light, design: .default)
-    public static let bodyMdSemibold = Font.system(size: 14, weight: .semibold, design: .default)
-    public static let bodySm = Font.system(size: 13, weight: .regular, design: .default)
-    public static let bodySmMedium = Font.system(size: 13, weight: .medium, design: .default)
-    public static let bodySmSemibold = Font.system(size: 13, weight: .semibold, design: .default)
+    public static let screenTitle = Font.system(size: 32, weight: .semibold)
+    public static let titleSm = Font.system(size: 20, weight: .semibold)
+
+    // MARK: - Body
+
+    public static let bodyLg = Font.system(size: 16, weight: .regular)
+    public static let bodyMd = Font.system(size: 15, weight: .regular)
+    public static let bodyMdLight = Font.system(size: 15, weight: .light)
+    public static let bodyMdSemibold = Font.system(size: 15, weight: .semibold)
+    public static let bodySm = Font.system(size: 14, weight: .regular)
+    public static let bodySmMedium = Font.system(size: 14, weight: .medium)
+    public static let bodySmSemibold = Font.system(size: 14, weight: .semibold)
 
     // MARK: - Label & Caption
 
-    public static let labelSemibold = Font.system(size: 13, weight: .semibold, design: .default)
-    public static let labelMedium = Font.system(size: 13, weight: .medium, design: .default)
-    public static let labelRegular = Font.system(size: 13, weight: .regular, design: .default)
-    public static let labelSmall = Font.system(size: 12, weight: .regular, design: .default)
-    /// alias — prefer labelSmall
-    public static let label = Font.system(size: 12, weight: .regular, design: .default)
-
-    public static let captionLg = Font.system(size: 12, weight: .regular, design: .default)
-    public static let captionLgSemibold = Font.system(size: 12, weight: .semibold, design: .default)
-    public static let captionLgMedium = Font.system(size: 12, weight: .medium, design: .default)
-    public static let captionSm = Font.system(size: 11, weight: .regular, design: .default)
-    public static let captionSmSemibold = Font.system(size: 11, weight: .semibold, design: .default)
-    public static let captionSmMedium = Font.system(size: 11, weight: .medium, design: .default)
+    public static let labelSemibold = Font.system(size: 14, weight: .semibold)
+    public static let labelMedium = Font.system(size: 14, weight: .medium)
+    public static let labelRegular = Font.system(size: 14, weight: .regular)
+    public static let labelSmall = Font.system(size: 13, weight: .regular)
+    public static let label = Font.system(size: 13, weight: .regular) // alias
+    public static let captionLg = Font.system(size: 13, weight: .regular)
+    public static let captionLgSemibold = Font.system(size: 13, weight: .semibold)
+    public static let captionLgMedium = Font.system(size: 13, weight: .medium)
+    public static let captionSm = Font.system(size: 12, weight: .regular)
+    public static let captionSmSemibold = Font.system(size: 12, weight: .semibold)
+    public static let captionSmMedium = Font.system(size: 12, weight: .medium)
 
     // MARK: - Amount (Monospaced Currency)
 
-    public static let amountLarge = Font.system(size: 20, weight: .semibold, design: .monospaced)
-    public static let amountMd = Font.system(size: 16, weight: .semibold, design: .monospaced)
-    public static let amountSm = Font.system(size: 14, weight: .regular, design: .monospaced)
-    public static let amountXs = Font.system(size: 12, weight: .regular, design: .monospaced)
+    public static let amountLarge = Font.system(size: 22, weight: .semibold, design: .monospaced)
+    public static let amountMd = Font.system(size: 18, weight: .semibold, design: .monospaced)
+    public static let amountSm = Font.system(size: 15, weight: .regular, design: .monospaced)
+    public static let amountXs = Font.system(size: 13, weight: .regular, design: .monospaced)
 
-    // MARK: - Icons (Font sizing for SF Symbols)
+    // MARK: - Icons
 
-    public static let iconMd = Font.system(size: 16)
-    public static let iconSm = Font.system(size: 14)
-    public static let iconXs = Font.system(size: 12)
-
-    // MARK: - Screen & Section Titles
-
-    public static let screenTitle = Font.system(size: 30, weight: .semibold, design: .default)
-    public static let titleSm = Font.system(size: 19, weight: .semibold, design: .default)
+    public static let iconMd = Font.system(size: 17)
+    public static let iconSm = Font.system(size: 15)
+    public static let iconXs = Font.system(size: 13)
 
     // MARK: - Specialized
 
-    public static let netHeroAmount: Font = .system(size: 48, weight: .semibold)
-    public static let maskedAccount: Font = .system(size: 11, weight: .regular, design: .monospaced)
+    /// 52pt — net flow hero amount on the Dashboard.
+    public static let netHeroAmount = Font.system(size: 52, weight: .semibold)
+    public static let maskedAccount = Font.system(size: 12, weight: .regular, design: .monospaced)
+
+    // MARK: - Dynamic Type (fully adaptive, use in accessibility-critical contexts)
+
+    public enum Dynamic {
+        public static let display: Font = .largeTitle.bold()
+        public static let title: Font = .title.bold()
+        public static let title2: Font = .title2.weight(.semibold)
+        public static let title3: Font = .title3.weight(.semibold)
+        public static let headline: Font = .headline
+        public static let body: Font = .body
+        public static let callout: Font = .callout
+        public static let subheadline: Font = .subheadline
+        public static let footnote: Font = .footnote
+        public static let caption: Font = .caption
+        public static let caption2: Font = .caption2
+    }
 }
 
-// MARK: - Semantic System Fonts (respond to macOS Larger Text accessibility setting)
-
-/// Use for primary body content where Larger Text support is needed
-public let bodySystem: Font = .body
-/// Use for secondary body content
-public let calloutSystem: Font = .callout
-/// Use for subheadings
-public let subheadlineSystem: Font = .subheadline
-/// Use for captions and footnotes
-public let footnoteSystem: Font = .footnote
-/// Use for minimum-size captions
-public let captionSystem: Font = .caption
-/// Use for headlines/section titles
-public let headlineSystem: Font = .headline
-
-// MARK: - Reduce Motion
-
-//
-// Components using AppAnimation should respect @Environment(\.accessibilityReduceMotion).
-// Pattern:
-//   @Environment(\.accessibilityReduceMotion) var reduceMotion
-//   let anim = reduceMotion ? .easeOut(duration: 0.1) : AppAnimation.springSnappy
-
-// MARK: - View Extension Modifiers
-
-/// Migrate callers to FDSLabel(text, style:) then remove this block
-public extension View {
-    func displayLarge() -> some View {
-        font(.system(size: 34, weight: .bold, design: .default))
-            .foregroundColor(AppColors.textPrimary)
-            .lineSpacing(2)
+private extension Font {
+    func semibold() -> Font {
+        weight(.semibold)
     }
 
-    func displayMedium() -> some View {
-        font(.system(size: 28, weight: .bold, design: .default))
-            .foregroundColor(AppColors.textPrimary)
-            .lineSpacing(2)
-    }
-
-    func headingLarge() -> some View {
-        font(.system(size: 22, weight: .bold, design: .default))
-            .foregroundColor(AppColors.textPrimary)
-            .lineSpacing(1.5)
-    }
-
-    func headingMedium() -> some View {
-        font(.system(size: 18, weight: .semibold, design: .default))
-            .foregroundColor(AppColors.textPrimary)
-            .lineSpacing(1.5)
-    }
-
-    func headingSmall() -> some View {
-        font(.system(size: 16, weight: .semibold, design: .default))
-            .foregroundColor(AppColors.textPrimary)
-            .lineSpacing(1.4)
-    }
-
-    func bodyLarge() -> some View {
-        font(.system(size: 15, weight: .medium, design: .default))
-            .foregroundColor(AppColors.textPrimary)
-            .lineSpacing(1.2)
-    }
-
-    func bodyMedium() -> some View {
-        font(.system(size: 14, weight: .regular, design: .default))
-            .foregroundColor(AppColors.textSecondary)
-            .lineSpacing(1.2)
-    }
-
-    func labelSmall() -> some View {
-        font(.system(size: 12, weight: .regular, design: .default))
-            .foregroundColor(AppColors.textTertiary)
-            .lineSpacing(1)
-    }
-
-    func monoAmount() -> some View {
-        font(.system(size: 14, weight: .semibold, design: .monospaced))
-            .foregroundColor(AppColors.textPrimary)
-            .lineSpacing(0)
-    }
-
-    func monoAmountSmall() -> some View {
-        font(.system(size: 12, weight: .regular, design: .monospaced))
-            .foregroundColor(AppColors.textSecondary)
-            .lineSpacing(0)
-    }
-
-    func monoAmountDebit() -> some View {
-        font(.system(size: 14, weight: .semibold, design: .monospaced))
-            .foregroundColor(AppColors.debit)
-            .lineSpacing(0)
-    }
-
-    func monoAmountCredit() -> some View {
-        font(.system(size: 14, weight: .semibold, design: .monospaced))
-            .foregroundColor(AppColors.credit)
-            .lineSpacing(0)
-    }
-
-    func captionLarge() -> some View {
-        font(.system(size: 13, weight: .semibold, design: .default))
-            .foregroundColor(AppColors.textSecondary)
-            .lineSpacing(1)
-    }
-
-    func caption() -> some View {
-        font(.system(size: 12, weight: .regular, design: .default))
-            .foregroundColor(AppColors.textTertiary)
-            .lineSpacing(1)
+    func bold() -> Font {
+        weight(.bold)
     }
 }

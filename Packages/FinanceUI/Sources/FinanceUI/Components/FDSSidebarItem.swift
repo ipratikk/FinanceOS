@@ -14,6 +14,7 @@ public struct FDSSidebarItem: View {
     let action: () -> Void
 
     @State private var isHovered = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(
         _ title: String,
@@ -34,28 +35,20 @@ public struct FDSSidebarItem: View {
             HStack(spacing: 8) {
                 Image(systemName: symbol)
                     .font(isSelected ? AppTypography.bodySmSemibold : AppTypography.bodySmMedium)
-                    .foregroundColor(
-                        isSelected
-                            ? AppColors.accent
-                            : AppColors.textSecondary
-                    )
+                    .foregroundColor(isSelected ? AppColors.accent : AppColors.Text.secondary)
                     .symbolRenderingMode(.hierarchical)
                     .frame(width: 18)
 
                 FDSLabel(title)
                     .font(isSelected ? AppTypography.bodySmSemibold : AppTypography.bodySm)
-                    .foregroundColor(
-                        isSelected || isHovered
-                            ? AppColors.textPrimary
-                            : AppColors.textSecondary
-                    )
+                    .foregroundColor(isSelected || isHovered ? AppColors.Text.primary : AppColors.Text.secondary)
 
                 Spacer(minLength: 4)
 
                 if let badge {
                     FDSLabel(badge)
                         .font(AppTypography.maskedAccount.monospacedDigit())
-                        .foregroundColor(AppColors.textTertiary)
+                        .foregroundColor(AppColors.Text.quaternary)
                 }
             }
             .padding(.horizontal, 8)
@@ -73,8 +66,8 @@ public struct FDSSidebarItem: View {
         })
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
-        .animation(.easeOut(duration: 0.12), value: isHovered)
-        .animation(.spring(response: 0.25, dampingFraction: 0.85), value: isSelected)
+        .motionAnimation(AppAnimation.hover, value: isHovered)
+        .motionAnimation(AppAnimation.selection, value: isSelected)
     }
 }
 
@@ -90,7 +83,7 @@ public struct FDSSidebarSectionHeader: View {
         FDSLabel(title.uppercased())
             .font(AppTypography.captionSmSemibold)
             .tracking(0.08)
-            .foregroundColor(AppColors.textTertiary)
+            .foregroundColor(AppColors.Text.tertiary)
             .padding(.horizontal, 8)
             .padding(.top, 12)
             .padding(.bottom, 6)

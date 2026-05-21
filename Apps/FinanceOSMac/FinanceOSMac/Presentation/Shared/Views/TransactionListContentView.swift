@@ -226,7 +226,9 @@ struct TransactionListContentView: View {
                 .symbolRenderingMode(.hierarchical)
 
             VStack(spacing: AppSpacing.tight) {
-                FDSLabel("No Transactions").bodyLarge()
+                FDSLabel("No Transactions")
+                    .font(AppTypography.bodyLg)
+                    .foregroundStyle(AppColors.Text.primary)
                 FDSLabel(listState.isFilterActive ? "No transactions match your filters." : "No transactions found.")
                     .font(AppTypography.captionLg)
                     .foregroundStyle(.tertiary)
