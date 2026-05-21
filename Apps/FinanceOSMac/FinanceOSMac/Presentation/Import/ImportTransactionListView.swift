@@ -4,14 +4,10 @@ import FinanceUI
 import SwiftUI
 
 struct ImportTransactionListView: View {
-    // MARK: - Properties
-
     let transactions: [ParsedTransaction]
     let duplicateIndices: Set<Int>
     let scrollable: Bool
     let rowLimit: Int?
-
-    // MARK: - Init
 
     init(
         transactions: [ParsedTransaction],
@@ -25,36 +21,83 @@ struct ImportTransactionListView: View {
         self.rowLimit = rowLimit
     }
 
+    // MARK: - Row Model
+
+    private struct RowItem: Identifiable {
+        let id: Int
+        let transaction: ParsedTransaction
+        let isDuplicate: Bool
+    }
+
+    private var rows: [RowItem] {
+        transactions.prefix(rowLimit ?? transactions.count).enumerated().map { index, txn in
+            RowItem(id: index, transaction: txn, isDuplicate: duplicateIndices.contains(index))
+        }
+    }
+
+    /// Estimated height for fixed-frame collapsed mode (36pt rows + 28pt header)
+    private var tableHeight: CGFloat? {
+        guard let limit = rowLimit else { return nil }
+        return CGFloat(min(limit, transactions.count)) * 36 + 28
+    }
+
     // MARK: - Body
 
+    @SceneStorage("import.table.columnCustomization")
+    private var columnCustomization: TableColumnCustomization<RowItem>
+
     var body: some View {
-        VStack {
-            tableHeader
-            tableView
-        }
-    }
-
-    // MARK: - Table View
-
-    @ViewBuilder
-    private var tableView: some View {
-        if scrollable {
-            ScrollView {
-                tableViewContent
-            }
-        } else {
-            tableViewContent
-        }
-    }
-
-    private var tableViewContent: some View {
         VStack(spacing: 0) {
-            tableRows
+            Table(of: RowItem.self, columnCustomization: $columnCustomization) {
+                TableColumn("Status") { row in
+                    statusBadge(isDuplicate: row.isDuplicate)
+                }
+                .width(min: 70, ideal: 90, max: 120)
+                .customizationID("status")
+
+                TableColumn("Date") { row in
+                    FDSLabel(ImportFormatting.formatDate(row.transaction.postedAt))
+                        .font(AppTypography.labelMedium)
+                        .foregroundColor(AppColors.Text.tertiary)
+                }
+                .width(min: 80, ideal: 100, max: 140)
+                .customizationID("date")
+
+                TableColumn("Description") { row in
+                    FDSLabel(row.transaction.description)
+                        .font(AppTypography.bodySm)
+                        .foregroundColor(AppColors.Text.primary)
+                        .lineLimit(1)
+                }
+                .customizationID("description")
+
+                TableColumn("Reference") { row in
+                    FDSLabel(shortReference(row.transaction.sourceFingerprint))
+                        .font(AppTypography.labelSmall)
+                        .foregroundColor(AppColors.Text.quaternary)
+                        .lineLimit(1)
+                }
+                .width(min: 120, ideal: 160, max: 240)
+                .customizationID("reference")
+
+                TableColumn("Amount") { row in
+                    amountLabel(minorUnits: row.transaction.amountMinorUnits)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .width(min: 90, ideal: 120, max: 160)
+                .customizationID("amount")
+            } rows: {
+                ForEach(rows) { row in
+                    TableRow(row)
+                }
+            }
+            .frame(maxHeight: tableHeight ?? .infinity)
+
             ellipsisIndicator
         }
-        .background(AppColors.base)
-        .cornerRadius(AppRadius.md)
     }
+
+    // MARK: - Subviews
 
     @ViewBuilder
     private var ellipsisIndicator: some View {
@@ -70,85 +113,6 @@ struct ImportTransactionListView: View {
         }
     }
 
-    private var tableHeader: some View {
-        HStack(spacing: AppSpacing.md) {
-            FDSLabel("Status")
-                .font(AppTypography.labelMedium)
-                .foregroundColor(AppColors.Text.secondary)
-                .frame(width: 80, alignment: .leading)
-
-            FDSLabel("Date")
-                .font(AppTypography.labelMedium)
-                .foregroundColor(AppColors.Text.secondary)
-                .frame(width: 80, alignment: .leading)
-
-            FDSLabel("Description")
-                .font(AppTypography.labelMedium)
-                .foregroundColor(AppColors.Text.secondary)
-                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-
-            FDSLabel("Reference")
-                .font(AppTypography.labelMedium)
-                .foregroundColor(AppColors.Text.secondary)
-                .frame(width: 120, alignment: .leading)
-
-            FDSLabel("Amount")
-                .font(AppTypography.labelMedium)
-                .foregroundColor(AppColors.Text.secondary)
-                .frame(width: 100, alignment: .trailing)
-        }
-        .padding(.horizontal, AppSpacing.md)
-        .padding(.vertical, AppSpacing.sm)
-        .background(AppColors.surface)
-    }
-
-    private var tableRows: some View {
-        let visibleTransactions = Array(transactions.prefix(rowLimit ?? transactions.count))
-        return VStack(spacing: 0) {
-            ForEach(visibleTransactions.indices, id: \.self) { index in
-                tableRow(at: index)
-
-                if index < visibleTransactions.count - 1 {
-                    Divider()
-                }
-            }
-        }
-    }
-
-    private func tableRow(at index: Int) -> some View {
-        let txn = transactions[index]
-        let isDuplicate = duplicateIndices.contains(index)
-        let isDebit = txn.amountMinorUnits < 0
-
-        return HStack(spacing: AppSpacing.md) {
-            statusBadge(isDuplicate: isDuplicate)
-                .frame(width: 80, alignment: .leading)
-
-            FDSLabel(ImportFormatting.formatDate(txn.postedAt))
-                .font(AppTypography.labelMedium)
-                .foregroundColor(AppColors.Text.tertiary)
-                .frame(width: 80, alignment: .leading)
-
-            FDSLabel(txn.description)
-                .font(AppTypography.bodySm)
-                .foregroundColor(AppColors.Text.primary)
-                .lineLimit(1)
-                .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-
-            FDSLabel(shortReference(txn.sourceFingerprint))
-                .font(AppTypography.labelSmall)
-                .foregroundColor(AppColors.Text.quaternary)
-                .lineLimit(1)
-                .frame(width: 120, alignment: .leading)
-
-            amountLabel(minorUnits: txn.amountMinorUnits, isDebit: isDebit)
-                .frame(width: 100, alignment: .trailing)
-        }
-        .padding(.horizontal, AppSpacing.md)
-        .padding(.vertical, AppSpacing.sm)
-        .background(isDuplicate ? AppColors.Glass.surface.opacity(0.5) : AppColors.clear)
-    }
-
     @ViewBuilder
     private func statusBadge(isDuplicate: Bool) -> some View {
         if isDuplicate {
@@ -158,18 +122,15 @@ struct ImportTransactionListView: View {
         }
     }
 
-    private func amountLabel(minorUnits: Int64, isDebit: Bool) -> some View {
-        HStack(spacing: 2) {
+    private func amountLabel(minorUnits: Int64) -> some View {
+        let isDebit = minorUnits < 0
+        return HStack(spacing: 2) {
             FDSLabel(isDebit ? "−" : "+")
             FDSLabel(ImportFormatting.formatAmount(abs(minorUnits)))
         }
         .font(AppTypography.amountSm)
         .foregroundColor(isDebit ? AppColors.debit : AppColors.credit)
     }
-
-    // MARK: - List Content
-
-    // MARK: - Helpers
 
     private func shortReference(_ fingerprint: String) -> String {
         let prefix = fingerprint.prefix(16)

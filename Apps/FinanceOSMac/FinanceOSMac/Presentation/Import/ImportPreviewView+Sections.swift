@@ -97,49 +97,57 @@ extension ImportPreviewView {
         viewModel.importSession.targetBeingCreated = state
     }
 
-    var confirmBar: some View {
+    @ViewBuilder var confirmBar: some View {
         let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
         let newCount = allTransactions.count - viewModel.duplicateTransactionIndices.count
         let dupCount = viewModel.duplicateTransactionIndices.count
 
-        return HStack(spacing: AppSpacing.md) {
-            FDSLabel("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
-                .font(AppTypography.labelSmall)
-                .foregroundColor(AppColors.Text.secondary)
-
-            Spacer()
-
-            Button(action: { viewModel.backToUpload() }, label: {
-                FDSLabel("Cancel")
-                    .font(AppTypography.labelMedium)
-                    .foregroundColor(AppColors.Text.primary)
-                    .padding(.horizontal, AppSpacing.md)
-                    .padding(.vertical, AppSpacing.sm)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppRadius.sm)
-                            .stroke(AppColors.Text.secondary.opacity(0.3), lineWidth: 1)
-                    )
-            })
-            .buttonStyle(.plain)
-
-            Button(action: { viewModel.importTransactions() }, label: {
-                FDSLabel("Import \(newCount) transaction\(newCount == 1 ? "" : "s")")
-                    .font(AppTypography.labelMedium)
-                    .foregroundColor(AppColors.textPrimary)
-                    .padding(.horizontal, AppSpacing.md)
-                    .padding(.vertical, AppSpacing.sm)
-                    .background(newCount > 0 ? AppColors.accent : AppColors.textDisabled)
-                    .cornerRadius(AppRadius.sm)
-            })
-            .buttonStyle(.plain)
-            .disabled(newCount == 0 || viewModel.selectedTarget == nil)
+        if newCount == 0, dupCount > 0 {
+            allCaughtUpBar(dupCount: dupCount)
+        } else {
+            normalConfirmBar(newCount: newCount, dupCount: dupCount)
         }
-        .padding(.horizontal, AppSpacing.lg)
-        .padding(.vertical, AppSpacing.md)
-        .background(AppColors.Glass.surface)
-        .overlay(
-            Divider(),
-            alignment: .top
-        )
+    }
+
+    private func allCaughtUpBar(dupCount: Int) -> some View {
+        FDSCard(padded: false) {
+            HStack(spacing: AppSpacing.md) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(AppColors.success)
+
+                FDSLabel("All \(dupCount) transaction\(dupCount == 1 ? "" : "s") already imported")
+                    .font(AppTypography.labelSmall)
+                    .foregroundColor(AppColors.Text.secondary)
+
+                Spacer()
+
+                FDSLiquidButton("Import Another", variant: .primary, action: viewModel.backToUpload)
+            }
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.vertical, AppSpacing.md)
+        }
+    }
+
+    private func normalConfirmBar(newCount: Int, dupCount: Int) -> some View {
+        FDSCard(padded: false) {
+            HStack(spacing: AppSpacing.md) {
+                FDSLabel("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
+                    .font(AppTypography.labelSmall)
+                    .foregroundColor(AppColors.Text.secondary)
+
+                Spacer()
+
+                FDSLiquidButton("Cancel", variant: .ghost, action: viewModel.backToUpload)
+
+                FDSLiquidButton(
+                    "Import \(newCount) transaction\(newCount == 1 ? "" : "s")",
+                    variant: .primary,
+                    isEnabled: newCount > 0 && viewModel.selectedTarget != nil,
+                    action: viewModel.importTransactions
+                )
+            }
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.vertical, AppSpacing.md)
+        }
     }
 }

@@ -9,111 +9,93 @@ extension ImportView {
     // MARK: - Step 1: Source Selection
 
     var sourceStep: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Header
-                VStack(alignment: .leading, spacing: 8) {
-                    FDSLabel("Select a source")
-                        .font(AppTypography.headingLg)
-                        .foregroundColor(AppColors.Text.primary)
+        VStack(alignment: .leading) {
+            // Header
+            VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                FDSLabel("Where is your statement from?")
+                    .font(AppTypography.headingXL)
+                    .foregroundColor(AppColors.accent)
 
-                    FDSLabel(
-                        "Pick the institution and ledger type. Each parser maps " +
-                            "statement-specific columns to a normalised transaction."
-                    )
-                    .font(AppTypography.bodySm)
-                    .foregroundColor(AppColors.Text.secondary)
-                }
-
-                // Source grid
-                ImportSourceGrid(
-                    sources: StatementSource.allCases,
-                    selectedSource: viewModel.selectedSource,
-                    onSelectSource: viewModel.selectSourceAndAdvance(_:)
+                FDSLabel(
+                    "Select an institution and ledger type to begin the secure import process."
                 )
-
-                Spacer()
+                .font(AppTypography.captionSm)
+                .foregroundColor(AppColors.Text.tertiaryElevated)
             }
-            .padding(AppSpacing.lg)
+            .padding(.bottom, AppSpacing.md)
+
+            Divider()
+
+            // Source grid
+            ScrollView {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                    ImportSourceGrid(
+                        sources: StatementSource.allCases,
+                        selectedSource: viewModel.selectedSource,
+                        onSelectSource: viewModel.selectSourceAndAdvance(_:)
+                    )
+
+                    Spacer()
+                }
+            }
+            .padding(.top, AppSpacing.xxxl)
         }
+        .padding(AppSpacing.lg)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     // MARK: - Step 2: File Upload
 
     var uploadStep: some View {
-        VStack(spacing: 0) {
+        VStack {
             // Header with back button
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Drop your statement")
-                        .font(AppTypography.headingMd)
-                        .foregroundColor(AppColors.Text.primary)
+            FDSCard(content: {
+                HStack {
+                    VStack(alignment: .leading, spacing: AppSpacing.tight) {
+                        FDSLabel("Source Selected")
+                            .font(AppTypography.headingMd)
+                            .foregroundColor(AppColors.accent)
 
-                    if let source = viewModel.selectedSource {
-                        let formats = source.allowedFormats.map { $0.rawValue.uppercased() }.joined(separator: " · ")
-                        FDSLabel("\(source.bankName) · \(source.sourceType.rawValue) · \(formats)")
-                            .font(AppTypography.labelSmall)
-                            .foregroundColor(AppColors.Text.tertiary)
+                        if let source = viewModel.selectedSource {
+                            let formats = source.allowedFormats.map { $0.rawValue.uppercased() }
+                                .joined(separator: " · ")
+                            FDSLabel("\(source.bankName) · \(source.sourceType.rawValue) · \(formats)")
+                                .font(AppTypography.labelSmall)
+                                .foregroundColor(AppColors.Text.tertiary)
+                        }
                     }
+
+                    Spacer()
+
+                    FDSLiquidButton(
+                        "Change source",
+                        symbol: "chevron.left",
+                        variant: .link,
+                        action: viewModel.resetToSource
+                    )
                 }
-
-                Spacer()
-
-                Button(action: viewModel.resetToSource) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "chevron.left")
-                            .font(AppTypography.captionSmSemibold)
-                        FDSLabel("Change source")
-                    }
-                    .font(AppTypography.labelMedium)
-                    .foregroundColor(AppColors.accent)
-                }
-                .buttonStyle(.plain)
-                .contentShape(Rectangle())
-            }
-            .padding(AppSpacing.lg)
-            .background(AppColors.Glass.surface)
-
-            Divider()
+                .padding(AppSpacing.lg)
+            })
 
             // Drop zone
             ZStack {
-                VStack(spacing: 16) {
+                VStack(spacing: AppSpacing.xl) {
                     Image(systemName: "arrow.down.doc.fill")
                         .font(AppTypography.displaySmall)
                         .foregroundColor(AppColors.accent)
 
-                    VStack(spacing: 4) {
-                        FDSLabel(viewModel.isDraggedOver ? "Release to upload" : "Drag your file here")
-                            .font(AppTypography.headingSmall)
+                    VStack(spacing: AppSpacing.md) {
+                        FDSLabel(viewModel.isDraggedOver ? "Release to upload" : "Drag and drop statement")
+                            .font(AppTypography.headingXL)
                             .foregroundColor(AppColors.Text.primary)
 
-                        FDSLabel("or")
-                            .font(AppTypography.labelSmall)
-                            .foregroundColor(AppColors.Text.tertiary)
+                        if !viewModel.isDraggedOver {
+                            FDSLabel("Upload your bank statement in PDF, CSV, or XLSX format. Max file size is 10MB.")
+                                .font(AppTypography.bodyLg)
+                                .foregroundColor(AppColors.Text.tertiary)
+                        }
 
-                        Button(action: { openFilePicker() }, label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "doc")
-                                    .font(AppTypography.bodySmSemibold)
-                                FDSLabel("Choose file")
-                            }
-                            .font(AppTypography.labelMedium)
-                            .foregroundColor(AppColors.textPrimary)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(AppColors.accent)
-                            .cornerRadius(AppRadius.md)
-                        })
-                        .buttonStyle(.plain)
-
-                        let formatHint = viewModel.selectedSource
-                            .map { $0.allowedFormats.map { $0.rawValue.uppercased() }.joined(separator: " · ") }
-                            ?? "CSV · XLSX · PDF"
-                        FDSLabel("\(formatHint) · up to 25 MB")
-                            .font(AppTypography.labelSmall)
-                            .foregroundColor(AppColors.Text.quaternary)
+                        FDSLiquidButton("Choose file", symbol: "doc", variant: .primary, action: openFilePicker)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -146,6 +128,7 @@ extension ImportView {
                     }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .layoutPriority(1)
             .background(viewModel.isDraggedOver ? AppColors.accent.opacity(0.05) : AppColors.base)
 
             if viewModel.isLoading {
@@ -182,6 +165,46 @@ extension ImportView {
                 .background(AppColors.danger.opacity(0.1))
                 .cornerRadius(AppRadius.sm)
                 .padding(AppSpacing.lg)
+            }
+
+            Divider()
+            uploadTrustBanners
+        }
+    }
+
+    private var uploadTrustBanners: some View {
+        HStack(spacing: AppSpacing.md) {
+            uploadTrustBanner(
+                icon: "lock.shield.fill",
+                title: "Local Processing",
+                body: "Files are parsed on-device. Your financial data never leaves your computer."
+            )
+            uploadTrustBanner(
+                icon: "key.fill",
+                title: "Password Protected?",
+                body: "You'll be prompted if your file requires a password to open."
+            )
+        }
+        .padding(AppSpacing.lg)
+    }
+
+    private func uploadTrustBanner(icon: String, title: String, body: String) -> some View {
+        FDSCard {
+            HStack(alignment: .top, spacing: AppSpacing.sm) {
+                FDSImage(fallbackSymbol: icon)
+                    .font(AppTypography.bodyLg)
+                    .foregroundColor(AppColors.accent)
+
+                VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                    FDSLabel(title)
+                        .font(AppTypography.labelMedium)
+                        .foregroundColor(AppColors.Text.primary)
+                    FDSLabel(body)
+                        .font(AppTypography.labelSmall)
+                        .foregroundColor(AppColors.Text.secondary)
+                }
+
+                Spacer()
             }
         }
     }

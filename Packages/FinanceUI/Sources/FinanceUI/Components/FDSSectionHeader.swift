@@ -58,7 +58,7 @@ public struct FDSSectionHeader: View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
                 FDSLabel(title)
-                    .font(AppTypography.headingSmall)
+                    .font(AppTypography.headingMd)
                     .foregroundStyle(AppColors.Text.primary)
 
                 if let subtitle {

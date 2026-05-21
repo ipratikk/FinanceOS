@@ -14,8 +14,9 @@ struct ImportSourceGrid: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.section) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxxl) {
             sourceSection("Banks", sourceType: .bankAccount)
+            Divider()
             sourceSection("Cards", sourceType: .creditCard)
         }
     }
@@ -25,9 +26,7 @@ struct ImportSourceGrid: View {
         let sectionSources = sources.filter { $0.sourceType == sourceType }
         if !sectionSources.isEmpty {
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                FDSLabel(title)
-                    .font(AppTypography.headingSmall)
-                    .foregroundColor(AppColors.Text.primary)
+                FDSSectionHeader(title)
 
                 LazyVGrid(columns: columns, spacing: AppSpacing.md) {
                     ForEach(sectionSources, id: \.self) { source in

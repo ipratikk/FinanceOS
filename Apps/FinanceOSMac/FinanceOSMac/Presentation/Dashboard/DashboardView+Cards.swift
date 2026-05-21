@@ -69,7 +69,7 @@ extension DashboardView {
 
                 // Trend line chart
                 netWorthChart(viewModel.monthlySummaries)
-                    .frame(height: 140)
+                    .frame(height: 250)
 
                 // Legend
                 HStack(spacing: 20) {
