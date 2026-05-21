@@ -31,7 +31,7 @@ public struct GlassPanel<Content: View>: View {
 #Preview {
     GlassPanel {
         FDSLabel("Glass Panel Content")
-            .headingMedium()
+            .font(AppTypography.headingMd).foregroundColor(AppColors.Text.primary)
     }
     .padding(AppSpacing.lg)
     .background(AppColors.base)

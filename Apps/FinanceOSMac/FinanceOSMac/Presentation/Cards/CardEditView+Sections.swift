@@ -9,8 +9,8 @@ extension CardEditView {
             Spacer()
             Button(action: { dismiss() }, label: {
                 Image(systemName: "xmark.circle.fill")
-                    .headingSmall()
-                    .foregroundStyle(AppColors.textSecondary)
+                    .font(AppTypography.headingSmall)
+                    .foregroundStyle(AppColors.Text.secondary)
             })
         }
         .padding(AppSpacing.md)

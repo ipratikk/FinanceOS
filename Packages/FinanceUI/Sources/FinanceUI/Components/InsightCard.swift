@@ -16,10 +16,11 @@ public struct InsightCard<Content: View>: View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 FDSLabel(title)
-                    .caption()
+                    .font(AppTypography.captionLg).foregroundColor(AppColors.Text.tertiary)
 
                 FDSLabel(value)
-                    .displayMedium()
+                    .font(AppTypography.displayLarge)
+                    .foregroundColor(AppColors.Text.primary)
             }
 
             content

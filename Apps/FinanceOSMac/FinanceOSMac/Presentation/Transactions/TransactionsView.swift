@@ -75,7 +75,7 @@ struct TransactionsView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, 32)
+                    .padding(.horizontal, AppSpacing.xl)
                     .padding(.vertical, 24)
                 }
                 .background(AppColors.base)

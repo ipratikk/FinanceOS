@@ -24,7 +24,7 @@ public struct GlassStyleModifier: ViewModifier {
             .background(AppColors.surface.opacity(0.4))
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.md)
-                    .stroke(AppColors.accentSlate.opacity(0.08), lineWidth: 0.5)
+                    .stroke(AppColors.Border.subtle, lineWidth: 0.5)
             )
             .cornerRadius(AppRadius.md)
             .shadow(color: AppColors.base.opacity(0.15), radius: 8, x: 0, y: 2)

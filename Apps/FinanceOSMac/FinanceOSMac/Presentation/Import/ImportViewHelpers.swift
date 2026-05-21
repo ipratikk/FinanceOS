@@ -21,7 +21,8 @@ struct SourcePickerSection: View {
 
                 if selectedSource != nil {
                     Image(systemName: "checkmark.circle.fill")
-                        .headingSmall()
+                        .font(AppTypography.headingSmall)
+                        .foregroundStyle(AppColors.Text.primary)
                         .foregroundColor(AppColors.accent)
                 }
             }
@@ -76,8 +77,8 @@ struct DropZoneView: View {
                     FDSLabel("or click button below", style: .hint)
 
                     FDSLabel("Supported: \(formatNames)")
-                        .labelSmall()
-                        .foregroundColor(AppColors.textTertiary)
+                        .font(AppTypography.labelSmall)
+                        .foregroundStyle(AppColors.Text.tertiary)
                         .padding(.top, 4)
                 }
             }

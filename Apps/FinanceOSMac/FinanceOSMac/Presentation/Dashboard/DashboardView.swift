@@ -17,7 +17,7 @@ struct DashboardView: View {
     var body: some View {
         if let viewModel {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
                     header
 
                     if let totals = viewModel.currentTotals {
@@ -33,9 +33,10 @@ struct DashboardView: View {
                         recentActivitySection(viewModel)
                     }
                 }
-                .padding(.horizontal, 40)
-                .padding(.vertical, 24)
-                .frame(maxWidth: 1080)
+                .padding(.horizontal, AppSpacing.xl)
+                .padding(.vertical, AppSpacing.xl)
+                .frame(maxWidth: 960)
+                .frame(maxWidth: .infinity)
             }
             .background(AppColors.base)
             .task {
@@ -43,7 +44,7 @@ struct DashboardView: View {
                 isLoading = false
             }
         } else {
-            VStack(spacing: 12) {
+            VStack(spacing: AppSpacing.md) {
                 ProgressView()
                     .controlSize(.small)
                 FDSLabel("Loading…")
@@ -77,122 +78,112 @@ struct DashboardView: View {
 
     private func heroNet(_ totals: SpendingTotals) -> some View {
         let net = totals.totalCredit - totals.totalDebit
-        return FDSCard(cornerRadius: 18, padded: false) {
-            VStack(alignment: .leading, spacing: 12) {
-                FDSLabel("Net Flow This Month")
-                    .font(AppTypography.captionLgMedium)
-                    .tracking(0.2)
-                    .foregroundColor(AppColors.Text.secondary)
+        let isPositive = net >= 0
+        return FDSCard(padded: false) {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                    FDSLabel("Net Flow This Month")
+                        .font(AppTypography.captionSmSemibold)
+                        .tracking(0.5)
+                        .foregroundColor(AppColors.Text.secondary)
 
-                HStack(alignment: .firstTextBaseline, spacing: 12) {
                     FDSLabel(formatAmount(net))
                         .netHeroAmount()
                         .monospacedDigit()
-                        .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
+                        .foregroundColor(isPositive ? AppColors.success : AppColors.danger)
                         .contentTransition(.numericText())
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Image(systemName: net >= 0 ? "arrow.up.right" : "arrow.down.right")
-                            .font(AppTypography.captionLgSemibold)
-                            .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
-
-                        FDSLabel(net >= 0 ? "Positive" : "Negative")
-                            .font(AppTypography.captionSmMedium)
-                            .foregroundColor(net >= 0 ? AppColors.success : AppColors.danger)
-                    }
                 }
+
+                Spacer()
+
+                HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: isPositive ? "arrow.up.right" : "arrow.down.right")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(isPositive ? AppColors.success : AppColors.danger)
+
+                    FDSLabel(isPositive ? "Positive" : "Negative")
+                        .font(AppTypography.bodySmSemibold)
+                        .foregroundColor(isPositive ? AppColors.success : AppColors.danger)
+                }
+                .padding(.horizontal, AppSpacing.md)
+                .padding(.vertical, AppSpacing.compact)
+                .background(
+                    Capsule()
+                        .fill((isPositive ? AppColors.success : AppColors.danger).opacity(0.12))
+                )
             }
-            .padding(AppSpacing.md)
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.vertical, AppSpacing.xl)
+            .frame(maxWidth: .infinity)
         }
     }
 
     private func metricsRow(_ totals: SpendingTotals) -> some View {
-        HStack(spacing: 12) {
-            metricCard(
+        HStack(spacing: AppSpacing.md) {
+            metricTile(
                 "Income",
                 value: formatAmount(totals.totalCredit),
                 symbol: "arrow.down.left.circle.fill",
                 color: AppColors.success
             )
-
-            metricCard(
+            metricTile(
                 "Spending",
                 value: formatAmount(totals.totalDebit),
                 symbol: "arrow.up.right.circle.fill",
                 color: AppColors.danger
             )
-
-            metricCard(
+            metricTile(
                 "Transactions",
                 value: "\(totals.transactionCount)",
                 symbol: "list.bullet",
-                color: AppColors.Text.tertiary
+                color: AppColors.Text.secondary
             )
         }
     }
 
-    private func metricCard(_ label: String, value: String, symbol: String, color: Color) -> some View {
-        FDSCard(cornerRadius: 12, padded: false) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 6) {
+    private func metricTile(_ label: String, value: String, symbol: String, color: Color) -> some View {
+        FDSCard(padded: false) {
+            VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                HStack(spacing: AppSpacing.tight) {
                     Image(systemName: symbol)
-                        .font(AppTypography.captionLgSemibold)
-                        .foregroundColor(color.opacity(0.6))
-
+                        .font(AppTypography.captionSmSemibold)
+                        .foregroundColor(color.opacity(0.7))
                     FDSLabel(label.uppercased())
                         .font(AppTypography.captionSmSemibold)
-                        .tracking(0.2)
+                        .tracking(0.5)
                         .foregroundColor(AppColors.Text.secondary)
                 }
-
                 FDSLabel(value)
-                    .font(AppTypography.headingSmall)
+                    .font(AppTypography.headingLg)
                     .monospacedDigit()
                     .foregroundColor(color)
+                    .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(AppSpacing.xs)
+            .padding(AppSpacing.md)
         }
     }
 
     private func chartSection(_ viewModel: DashboardViewModel) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                FDSLabel("6-Month Trend")
-                    .font(AppTypography.headingSmall)
-                    .foregroundColor(AppColors.Text.primary)
-                FDSLabel("Inflows vs outflows over time")
-                    .font(AppTypography.captionLgMedium)
-                    .foregroundColor(AppColors.Text.secondary)
-            }
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader("6-Month Trend", subtitle: "Inflows vs outflows over time")
 
-            FDSCard(cornerRadius: 12, padded: false) {
+            FDSCard(padded: false) {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
-                    .frame(height: 240)
-                    .padding(AppSpacing.xs)
+                    .frame(height: 200)
+                    .padding(AppSpacing.md)
             }
         }
     }
 
     private func recentActivitySection(_ viewModel: DashboardViewModel) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Recent Activity")
-                        .font(AppTypography.headingSmall)
-                        .foregroundColor(AppColors.Text.primary)
-                    FDSLabel("Last 6 transactions")
-                        .font(AppTypography.captionLgMedium)
-                        .foregroundColor(AppColors.Text.secondary)
-                }
-                Spacer()
-                Button(action: { navigator.navigate(to: .transactions) }, label: {
-                    FDSLabel("View All →")
-                        .font(AppTypography.captionLgSemibold)
-                        .foregroundColor(AppColors.accentOrange)
-                })
-                .help("View all transactions")
-            }
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            FDSSectionHeader(
+                "Recent Activity",
+                subtitle: "Last 6 transactions",
+                actionLabel: "View All",
+                actionSymbol: "chevron.right"
+            ) { navigator.navigate(to: .transactions) }
 
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 0) {

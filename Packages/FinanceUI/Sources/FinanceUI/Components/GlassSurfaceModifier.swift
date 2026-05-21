@@ -42,8 +42,8 @@ extension View {
     ///   - strong: Use thicker fill for hover/active states (default false)
     ///   - lifted: Apply drop shadow for lifted appearance (default true)
     func glassSurface(
-        radius: CGFloat = 18,
-        tint: Color = AppColors.textPrimary,
+        radius: CGFloat = AppRadius.lg,
+        tint: Color = .white,
         strong: Bool = false,
         lifted: Bool = true
     ) -> some View {
@@ -61,7 +61,7 @@ extension View {
                 Capsule()
                     .fill(.regularMaterial)
                 Capsule()
-                    .fill(AppColors.textPrimary.opacity(strong ? 0.10 : 0.06))
+                    .fill(Color.white.opacity(strong ? 0.10 : 0.06))
             }
         }
         .overlay {

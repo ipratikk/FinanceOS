@@ -30,7 +30,8 @@ struct ImportFileListView: View {
                         Spacer()
 
                         FDSLabel("\(pair.statement.transactions.count) txns")
-                            .caption()
+                            .font(AppTypography.captionLg)
+                            .foregroundStyle(AppColors.Text.tertiary)
                     }
                     .padding(AppSpacing.sm)
                     .background(AppColors.surface2)

@@ -40,7 +40,7 @@ public struct FDSGlassSurface<Content: View>: View {
             }
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(AppColors.accentSlate.opacity(strokeOpacity * 1.5), lineWidth: 0.5)
+                    .strokeBorder(AppColors.Border.subtle, lineWidth: 0.5)
             }
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
     }

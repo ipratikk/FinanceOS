@@ -14,7 +14,8 @@ struct SupportedSourcesView: View {
                     let isFullySupported = source.bankName == "ICICI" && source.sourceType == .bankAccount
                     let status = isFullySupported ? "" : " (coming soon)"
                     FDSLabel("• \(source.bankName) \(source.sourceType.rawValue)\(status)")
-                        .caption()
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(AppColors.Text.tertiary)
                 }
             }
             Divider()
@@ -22,7 +23,8 @@ struct SupportedSourcesView: View {
                 "CSV and XLSX for CSV-based statements; "
                     + "TXT for delimited text (HDFC); PDF for scanned statements."
             )
-            .caption()
+            .font(AppTypography.captionLg)
+            .foregroundStyle(AppColors.Text.tertiary)
         }
         .padding()
         .background(AppColors.surface2)
@@ -46,7 +48,8 @@ struct TargetSelectionSection: View {
 
                 if viewModel.selectedTarget != nil {
                     Image(systemName: "checkmark.circle.fill")
-                        .headingSmall()
+                        .font(AppTypography.headingSmall)
+                        .foregroundStyle(AppColors.Text.primary)
                         .foregroundColor(AppColors.accent)
                 }
             }

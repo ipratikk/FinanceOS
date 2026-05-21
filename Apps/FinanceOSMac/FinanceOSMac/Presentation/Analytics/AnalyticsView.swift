@@ -17,7 +17,7 @@ struct AnalyticsView: View {
     var body: some View {
         if let viewModel {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
                     header
 
                     if !viewModel.monthlySummaries.isEmpty {
@@ -30,8 +30,8 @@ struct AnalyticsView: View {
 
                     categoriesPlaceholder
                 }
-                .padding(.horizontal, 32)
-                .padding(.vertical, 24)
+                .padding(.horizontal, AppSpacing.xl)
+                .padding(.vertical, AppSpacing.xl)
             }
             .background(AppColors.base)
             .task {
@@ -39,7 +39,7 @@ struct AnalyticsView: View {
                 isLoading = false
             }
         } else {
-            VStack(spacing: 12) {
+            VStack(spacing: AppSpacing.md) {
                 ProgressView().controlSize(.small)
                 FDSLabel("Loading…")
                     .font(AppTypography.captionSmMedium)
@@ -71,7 +71,7 @@ struct AnalyticsView: View {
     }
 
     private func spendingTrendSection(_ viewModel: AnalyticsViewModel) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel("6-Month Trend")
                     .font(AppTypography.headingSmall)
@@ -116,7 +116,7 @@ struct AnalyticsView: View {
     }
 
     private func topMerchantsSection(_ viewModel: AnalyticsViewModel) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel("Top Merchants")
                     .font(AppTypography.headingSmall)
@@ -138,13 +138,13 @@ struct AnalyticsView: View {
     }
 
     private var categoriesPlaceholder: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
             FDSLabel("Categories")
                 .font(AppTypography.headingSmall)
                 .foregroundColor(AppColors.Text.primary)
 
             FDSCard(cornerRadius: 12, padded: false) {
-                VStack(spacing: 12) {
+                VStack(spacing: AppSpacing.md) {
                     Image(systemName: "tag.circle.fill")
                         .font(AppTypography.headingXLLight)
                         .foregroundColor(AppColors.Text.tertiary.opacity(0.4))
