@@ -3,10 +3,16 @@ import SwiftUI
 public enum AppColors {
     // MARK: - Backgrounds
 
-    public static let base = Color(red: 0.06, green: 0.06, blue: 0.07) // #0f0f12 — main background
-    public static let surface = Color(red: 0.12, green: 0.12, blue: 0.13) // #1e1e21 — primary surface
-    public static let surface2 = Color(red: 0.16, green: 0.16, blue: 0.17) // #292a2b — elevated surface
-    public static let surface3 = Color(red: 0.20, green: 0.20, blue: 0.22) // #333537 — top elevation
+    /// App wallpaper canvas — intentionally dark, sits behind all glass surfaces.
+    public static let base = Color(red: 0.06, green: 0.06, blue: 0.07) // #0f0f12
+
+    /// macOS system surfaces — adaptive (light/dark mode via NSColor semantics).
+    /// Dark: ~#252526  Light: #FFFFFF — sidebar/list/control backgrounds
+    public static let surface = Color(NSColor.controlBackgroundColor)
+    /// Dark: ~#1E1E1E  Light: #ECECEC — window-level panels and cards
+    public static let surface2 = Color(NSColor.windowBackgroundColor)
+    /// Dark: ~#1E1E1E  Light: #FFFFFF — text fields and top-level inputs
+    public static let surface3 = Color(NSColor.textBackgroundColor)
 
     // MARK: - Borders & Dividers (legacy — prefer Border.* enum)
 
