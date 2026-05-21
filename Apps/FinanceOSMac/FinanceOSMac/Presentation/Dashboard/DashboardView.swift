@@ -21,19 +21,18 @@ struct DashboardView: View {
         Group {
             if let viewModel {
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxl) {
                         // Row 1: Net Worth hero + Wealth Intelligence
                         if isWide {
-                            HStack(alignment: .top, spacing: 20) {
+                            HStack(alignment: .top, spacing: AppSpacing.xxl) {
                                 netWorthHero(viewModel)
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 wealthIntelCard
                                     .containerRelativeFrame(.horizontal) { width, _ in width * 0.30 }
                                     .frame(maxHeight: .infinity)
                             }
-                            .fixedSize(horizontal: false, vertical: true)
                         } else {
-                            VStack(spacing: 20) {
+                            VStack(spacing: AppSpacing.xl) {
                                 netWorthHero(viewModel)
                                 wealthIntelCard
                             }
@@ -45,13 +44,13 @@ struct DashboardView: View {
                         }
 
                         // Row 3: Asset Distribution + Recent Activity
-                        HStack(alignment: .top, spacing: 20) {
+                        HStack(alignment: .top, spacing: AppSpacing.xxl) {
                             assetDistCard
-                                .frame(width: 340)
+                                .containerRelativeFrame(.horizontal) { width, _ in width * 0.20 }
                             recentActivityCard(viewModel)
                         }
                     }
-                    .padding(AppSpacing.xl)
+                    .padding(AppSpacing.xxxl)
                 }
                 .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { windowWidth = $0 }
                 .background(AppColors.base)

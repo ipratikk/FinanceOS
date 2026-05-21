@@ -14,8 +14,9 @@ struct ImportSourceGrid: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.section) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxxl) {
             sourceSection("Banks", sourceType: .bankAccount)
+            Divider()
             sourceSection("Cards", sourceType: .creditCard)
         }
     }
