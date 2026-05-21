@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class DashboardViewSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_dashboard_initial() {
         let spending = MockSpendingService()

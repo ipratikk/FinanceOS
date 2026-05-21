@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class FDSAmountSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_amount_debit() {
         let view = FDSAmount("$65.43", type: .debit)

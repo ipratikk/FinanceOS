@@ -7,9 +7,7 @@ import SwiftUI
 import XCTest
 
 final class ChartContainerSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_chart_container() {
         let view = ChartContainer("6-Month Trend") {

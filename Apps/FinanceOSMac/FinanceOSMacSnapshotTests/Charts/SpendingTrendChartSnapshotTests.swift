@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class SpendingTrendChartSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_spending_trend_chart() {
         let view = SpendingTrendChart(monthlySummaries: PreviewSpendingData.monthlySummaries)

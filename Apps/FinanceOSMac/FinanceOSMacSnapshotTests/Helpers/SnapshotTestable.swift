@@ -1,3 +1,4 @@
+import FinanceCore
 @testable import FinanceOSMac
 import FinanceTesting
 import SnapshotTesting
@@ -61,6 +62,27 @@ class SnapshotTestable: XCTestCase {
             as: .image(precision: 0.95, perceptualPrecision: 0.95, size: size),
             named: "default",
             record: record,
+            file: file,
+            testName: testName
+        )
+    }
+
+    /// Verify a FDS component on the canonical dark app background.
+    ///
+    /// Use this instead of `verifyComponentSnapshots` for any component that renders
+    /// white or near-white text — those are invisible on the default white hosting-view
+    /// background that bare `verifyComponentSnapshots` produces.
+    func verifyFDSComponent(
+        _ view: some View,
+        size: CGSize = CGSize(width: 420, height: 80),
+        file: StaticString = #file,
+        testName: String = #function
+    ) {
+        verifyComponentSnapshots(
+            view
+                .padding(AppSpacing.md)
+                .background(AppColors.base),
+            size: size,
             file: file,
             testName: testName
         )

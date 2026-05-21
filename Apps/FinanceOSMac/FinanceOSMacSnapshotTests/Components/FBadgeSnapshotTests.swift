@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class FBadgeSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_badge_default() {
         let view = FBadge("Active")

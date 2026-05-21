@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class FLabelSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_label_basic() {
         let view = FDSLabel("Section Title")

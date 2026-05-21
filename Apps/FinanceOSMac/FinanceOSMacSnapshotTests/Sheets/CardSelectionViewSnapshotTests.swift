@@ -5,9 +5,7 @@ import SwiftUI
 import XCTest
 
 final class CardSelectionViewSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_card_selection_view() {
         let view = CardSelectionView(

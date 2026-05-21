@@ -7,9 +7,7 @@ import SwiftUI
 import XCTest
 
 final class FinanceSearchBarSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_search_bar_empty() {
         let view = StatefulSearchBar(initialText: "", placeholder: "Search transactions")

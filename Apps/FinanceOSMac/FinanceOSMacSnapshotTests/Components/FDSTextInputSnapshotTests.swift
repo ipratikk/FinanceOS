@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class FDSTextInputSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_text_input_empty() {
         let view = StatefulTextInput(initial: "", placeholder: "Enter name", isSecure: false)

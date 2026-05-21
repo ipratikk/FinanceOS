@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class AnalyticsViewSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_analytics_view() {
         let spending = MockSpendingService()

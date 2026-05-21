@@ -7,9 +7,7 @@ import SwiftUI
 import XCTest
 
 final class SectionHeaderSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_section_header_basic() {
         let view = FDSSectionHeader("Recent Activity")

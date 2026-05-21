@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class CardEditViewSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_card_edit_view() {
         let ledgerRepo = MockLedgerRepository()

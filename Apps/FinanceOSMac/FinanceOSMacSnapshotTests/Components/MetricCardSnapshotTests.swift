@@ -7,9 +7,7 @@ import SwiftUI
 import XCTest
 
 final class MetricCardSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_metric_card_basic() {
         let view = MetricCard("Spent", value: "$2,345.67")

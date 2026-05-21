@@ -7,9 +7,7 @@ import SwiftUI
 import XCTest
 
 final class ImportFileListViewSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_import_file_list_view() {
         let pairs: [(url: URL, statement: ParsedStatement)] = [

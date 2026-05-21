@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class TransactionsViewSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_transactions_view() {
         let transactionRepo = MockTransactionRepository()

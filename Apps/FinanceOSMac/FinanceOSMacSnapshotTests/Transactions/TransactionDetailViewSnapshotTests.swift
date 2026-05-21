@@ -6,9 +6,7 @@ import SwiftUI
 import XCTest
 
 final class TransactionDetailViewSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_transaction_detail_debit() {
         let row = TransactionRow(

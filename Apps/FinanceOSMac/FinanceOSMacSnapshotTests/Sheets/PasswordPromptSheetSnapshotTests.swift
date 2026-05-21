@@ -5,9 +5,7 @@ import SwiftUI
 import XCTest
 
 final class PasswordPromptSheetSnapshotTests: SnapshotTestable {
-    override var record: Bool {
-        false
-    }
+    override var record: Bool { false }
 
     func test_password_prompt_initial() {
         let view = PasswordPromptSheet(
