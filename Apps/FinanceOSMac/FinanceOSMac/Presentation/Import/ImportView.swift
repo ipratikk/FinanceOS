@@ -35,7 +35,10 @@ struct ImportView: View {
             Group {
                 switch viewModel.currentStep {
                 case .source:
-                    sourceStep
+                    FDSCard(content: {
+                        sourceStep
+                            .padding(AppSpacing.xl)
+                    })
                 case .upload:
                     uploadStep
                 case .review:
@@ -43,6 +46,7 @@ struct ImportView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(AppSpacing.x6l)
         }
         .animation(.easeInOut(duration: 0.2), value: viewModel.currentStep)
         .onChange(of: viewModel.lastImportResult) { _, newValue in

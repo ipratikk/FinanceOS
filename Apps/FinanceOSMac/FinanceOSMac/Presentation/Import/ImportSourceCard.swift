@@ -9,21 +9,15 @@ struct ImportSourceCard: View {
     let isSelected: Bool
     let onSelect: (StatementSource) -> Void
 
-    private var formatLabel: String {
-        source.allowedFormats
-            .map { $0.rawValue.uppercased() }
-            .joined(separator: " · ")
-    }
-
     var body: some View {
         Button(action: { onSelect(source) }, label: {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppSpacing.lg) {
                 HStack(spacing: 12) {
                     bankLogoView
 
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: AppSpacing.tight) {
                         FDSLabel(matchedBank?.displayName ?? source.bankName)
-                            .font(AppTypography.bodyMd)
+                            .font(AppTypography.headingSmall)
                             .foregroundColor(AppColors.Text.primary)
 
                         FDSLabel(source.sourceType.rawValue)
@@ -38,11 +32,9 @@ struct ImportSourceCard: View {
                         .foregroundColor(AppColors.Text.secondary)
                 }
 
-                FDSLabel(formatLabel)
-                    .font(AppTypography.labelSmall)
-                    .foregroundColor(AppColors.Text.quaternary)
+                formatBadges
             }
-            .padding(AppSpacing.md)
+            .padding(AppSpacing.xl)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 isSelected
@@ -60,6 +52,16 @@ struct ImportSourceCard: View {
         })
         .buttonStyle(.plain)
         .contentShape(Rectangle())
+    }
+
+    private var formatBadges: some View {
+        let labels = source.allowedFormats.map { $0.rawValue.uppercased() }
+        return HStack(spacing: 6) {
+            ForEach(labels, id: \.self) { label in
+                FDSChip(label, isActive: false) {}
+            }
+            Spacer()
+        }
     }
 
     @ViewBuilder

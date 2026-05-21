@@ -34,33 +34,37 @@ struct ImportPreviewView: View {
             }
 
             // Header with Review heading and Import to dropdown
-            HStack(spacing: AppSpacing.md) {
-                VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Review parsed transactions")
-                        .font(AppTypography.headingMd)
-                        .foregroundColor(AppColors.Text.primary)
+            FDSCard(padded: false) {
+                HStack(spacing: AppSpacing.md) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        FDSLabel("Review parsed transactions")
+                            .font(AppTypography.headingMd)
+                            .foregroundColor(AppColors.Text.primary)
 
-                    if !viewModel.parsedStatements.isEmpty {
-                        let newCount = viewModel.parsedStatements.count - viewModel.duplicateTransactionIndices.count
-                        let dupCount = viewModel.duplicateTransactionIndices.count
-                        let fileName = viewModel.fileURLs.first?.lastPathComponent ?? "File"
-                        let total = viewModel.parsedStatements.count
-                        FDSLabel("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
-                            .font(AppTypography.labelSmall)
-                            .foregroundColor(AppColors.Text.tertiary)
+                        if !viewModel.parsedStatements.isEmpty {
+                            let newCount = viewModel.parsedStatements.count - viewModel.duplicateTransactionIndices
+                                .count
+                            let dupCount = viewModel.duplicateTransactionIndices.count
+                            let fileName = viewModel.fileURLs.first?.lastPathComponent ?? "File"
+                            let total = viewModel.parsedStatements.count
+                            FDSLabel("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
+                                .font(AppTypography.labelSmall)
+                                .foregroundColor(AppColors.Text.tertiary)
+                        }
                     }
+
+                    Spacer()
+
+                    targetSelectionMenu
+                }
+                .padding(AppSpacing.lg)
+            }
+
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                if importedTransactions.isEmpty, !duplicateTransactions.isEmpty {
+                    allCaughtUpBanner
                 }
 
-                Spacer()
-
-                targetSelectionMenu
-            }
-            .padding(AppSpacing.lg)
-            .background(AppColors.Glass.surface)
-
-            Divider()
-
-            VStack(alignment: .leading, spacing: 16) {
                 if !importedTransactions.isEmpty {
                     ImportTransactionSection(
                         title: "New Transactions",
@@ -85,6 +89,11 @@ struct ImportPreviewView: View {
 
             confirmBar
         }
+        .onAppear {
+            if importedTransactions.isEmpty, !duplicateTransactions.isEmpty {
+                duplicatesExpanded = true
+            }
+        }
         .sheet(item: $sheetCreationItem) { item in
             if item.isCard {
                 CardCreationView(state: item, onCommit: handleCreationCommit)
@@ -98,6 +107,24 @@ struct ImportPreviewView: View {
     }
 
     // MARK: - Computed Properties
+
+    private var allCaughtUpBanner: some View {
+        HStack(spacing: AppSpacing.sm) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundColor(AppColors.success)
+            FDSLabel("All transactions already imported — nothing new to add.")
+                .font(AppTypography.labelSmall)
+                .foregroundColor(AppColors.Text.secondary)
+            Spacer()
+        }
+        .padding(AppSpacing.md)
+        .background(AppColors.success.opacity(0.08))
+        .cornerRadius(AppRadius.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.md)
+                .strokeBorder(AppColors.success.opacity(0.2), lineWidth: 1)
+        )
+    }
 
     private var allTransactions: [ParsedTransaction] {
         viewModel.parsedStatements.flatMap(\.transactions)
