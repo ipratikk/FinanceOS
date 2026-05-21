@@ -59,78 +59,113 @@ jobs:
           echo "🔍 Detecting changed packages..."
 
           # Get list of changed files
+          CHANGED_FILES=""
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+            # PR: compare origin/main to current branch
+            CHANGED_FILES=$(git diff --name-only origin/main...HEAD 2>/dev/null || echo "")
           else
-            CHANGED_FILES=$(git diff --name-only HEAD~1...HEAD 2>/dev/null || echo "")
+            # Push: compare previous commit to current
+            # Handle first commit case (no HEAD~1)
+            if git rev-parse HEAD~1 >/dev/null 2>&1; then
+              CHANGED_FILES=$(git diff --name-only HEAD~1...HEAD 2>/dev/null || echo "")
+            else
+              echo "ℹ️ First commit on branch — testing all packages"
+              CHANGED_FILES="INITIAL_COMMIT"
+            fi
           fi
 
-          # Initialize packages to test
-          declare -A packages_to_test
-          declare -A all_packages=(
-            [FinanceParsers]=1
-            [FinanceCore]=1
-            [FinanceUI]=1
-            [FinanceTesting]=1
-          )
-
-          # Check for changes in each package
-          if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceParsers/"; then
-            echo "📦 FinanceParsers changed → testing all packages"
-            packages_to_test[FinanceParsers]=1
-            packages_to_test[FinanceCore]=1
-            packages_to_test[FinanceUI]=1
-            packages_to_test[FinanceTesting]=1
-
+          echo "📋 Changed files:"
+          if [[ -z "$CHANGED_FILES" ]]; then
+            echo "  (none detected)"
           else
+            echo "$CHANGED_FILES" | sed 's/^/  /'
+          fi
 
+          # Initialize packages to test (associative array)
+          declare -a packages_to_test=()
+
+          # =========================================================
+          # Package Dependency Graph:
+          #   FinanceParsers (no deps)
+          #     ↓
+          #   FinanceCore (depends on Parsers)
+          #     ↓
+          #   FinanceUI (depends on Core)
+          #     ↓
+          #   FinanceTesting (depends on all)
+          # =========================================================
+
+          # Check if FinanceParsers changed (base level)
+          if [[ "$CHANGED_FILES" == "INITIAL_COMMIT" ]] || echo "$CHANGED_FILES" | grep -q "^Packages/FinanceParsers/"; then
+            echo "📦 FinanceParsers changed → cascade: test all packages"
+            packages_to_test=(FinanceParsers FinanceCore FinanceUI FinanceTesting)
+          else
+            # FinanceParsers NOT changed — check dependent packages
+
+            # Check if FinanceCore changed (mid level)
             if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceCore/"; then
-              echo "📦 FinanceCore changed → testing Core, UI, Testing"
-              packages_to_test[FinanceCore]=1
-              packages_to_test[FinanceUI]=1
-              packages_to_test[FinanceTesting]=1
+              echo "📦 FinanceCore changed → cascade: Core, UI, Testing"
+              packages_to_test+=(FinanceCore FinanceUI FinanceTesting)
             fi
 
+            # Check if FinanceUI changed (mid level)
             if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceUI/"; then
-              echo "📦 FinanceUI changed → testing UI, Testing"
-              packages_to_test[FinanceUI]=1
-              packages_to_test[FinanceTesting]=1
+              echo "📦 FinanceUI changed → cascade: UI, Testing"
+              # Add if not already present
+              if [[ ! " ${packages_to_test[@]} " =~ " FinanceUI " ]]; then
+                packages_to_test+=(FinanceUI FinanceTesting)
+              fi
             fi
 
+            # Check if FinanceTesting changed (leaf level)
             if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceTesting/"; then
-              echo "📦 FinanceTesting changed → testing Testing"
-              packages_to_test[FinanceTesting]=1
+              echo "📦 FinanceTesting changed → test: Testing only"
+              if [[ ! " ${packages_to_test[@]} " =~ " FinanceTesting " ]]; then
+                packages_to_test+=(FinanceTesting)
+              fi
             fi
 
+            # Check for non-package file changes (App, CI, config, docs)
+            # If any changed file is NOT in Packages/, test everything
+            if [[ "$CHANGED_FILES" != "INITIAL_COMMIT" ]] && echo "$CHANGED_FILES" | grep -v "^Packages/" | grep -q "."; then
+              echo "📦 Non-package files changed (.github, Apps, docs, etc.) → test all packages"
+              packages_to_test=(FinanceParsers FinanceCore FinanceUI FinanceTesting)
+            fi
           fi
 
-          # If non-package files changed (App, CI, config), test everything
-          if echo "$CHANGED_FILES" | grep -qvE "^Packages/"; then
-            echo "📦 Non-package files changed → testing all packages"
-            packages_to_test[FinanceParsers]=1
-            packages_to_test[FinanceCore]=1
-            packages_to_test[FinanceUI]=1
-            packages_to_test[FinanceTesting]=1
-          fi
+          # =========================================================
+          # Deduplicate and output
+          # =========================================================
 
-          # Output results
           if [[ ${#packages_to_test[@]} -eq 0 ]]; then
+            # No changes in any package
             echo "packages=[]" >> "$GITHUB_OUTPUT"
             echo "has-changes=false" >> "$GITHUB_OUTPUT"
-            echo "✓ No package changes detected"
+            echo "✅ No package changes detected — skipping tests"
 
           else
-            # Format as JSON array
-            PACKAGES_JSON="["
-            for pkg in "${!packages_to_test[@]}"; do
-              PACKAGES_JSON+="\"$pkg\","
+            # Remove duplicates while preserving order
+            declare -a unique_packages=()
+            for pkg in "${packages_to_test[@]}"; do
+              if [[ ! " ${unique_packages[@]} " =~ " ${pkg} " ]]; then
+                unique_packages+=("$pkg")
+              fi
             done
-            PACKAGES_JSON="${PACKAGES_JSON%,}]"
+
+            # Format as JSON array: ["pkg1","pkg2",...]
+            PACKAGES_JSON="["
+            for i in "${!unique_packages[@]}"; do
+              if [[ $i -gt 0 ]]; then
+                PACKAGES_JSON+=","
+              fi
+              PACKAGES_JSON+="\"${unique_packages[$i]}\""
+            done
+            PACKAGES_JSON+="]"
 
             echo "packages=$PACKAGES_JSON" >> "$GITHUB_OUTPUT"
             echo "has-changes=true" >> "$GITHUB_OUTPUT"
 
-            echo "✓ Packages to test: $PACKAGES_JSON"
+            echo "✅ Packages to test: $(echo "${unique_packages[@]}" | tr ' ' ', ')"
           fi
 
   # =======================================================
