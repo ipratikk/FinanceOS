@@ -33,14 +33,14 @@ struct FDSPickerRow: View {
             )
 
             VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
-                FDSLabel(
-                    option.title,
-                    style: .bodyMedium,
-                    color: isSelected ? .accent : .primary
-                )
+                FDSLabel(option.title)
+                    .font(AppTypography.bodyMd)
+                    .foregroundStyle(isSelected ? AppColors.accent : AppColors.Text.primary)
 
                 if let subtitle = option.subtitle {
-                    FDSLabel(subtitle, style: .caption, color: .secondary)
+                    FDSLabel(subtitle)
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.secondary)
                 }
 
                 if let badge = option.badge {
@@ -70,7 +70,9 @@ struct FDSPickerRow: View {
                 width: 36
             )
 
-            FDSLabel(option.title, style: .caption)
+            FDSLabel(option.title)
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.primary)
 
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
@@ -87,14 +89,14 @@ struct FDSPickerRow: View {
     private var textOnlyVariant: some View {
         HStack(spacing: AppSpacing.compact) {
             VStack(alignment: .leading, spacing: AppSpacing.xxxs) {
-                FDSLabel(
-                    option.title,
-                    style: .bodyMedium,
-                    color: isSelected ? .accent : .primary
-                )
+                FDSLabel(option.title)
+                    .font(AppTypography.bodyMd)
+                    .foregroundStyle(isSelected ? AppColors.accent : AppColors.Text.primary)
 
                 if let subtitle = option.subtitle {
-                    FDSLabel(subtitle, style: .caption, color: .secondary)
+                    FDSLabel(subtitle)
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.secondary)
                 }
             }
 

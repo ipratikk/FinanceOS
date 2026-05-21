@@ -5,7 +5,9 @@ import SwiftUI
 extension CardEditView {
     func inputField(_ label: String, text: Binding<String>, style: FDSTextInputStyle = .bodyMedium) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSLabel(label, style: .hint)
+            FDSLabel(label)
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.primary)
             FDSTextInput("", text: text, style: style)
                 .padding(AppSpacing.xs)
                 .cornerRadius(AppRadius.sm)
@@ -66,7 +68,9 @@ extension CardEditView {
         ]
 
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            FDSLabel("Account Type", style: .hint)
+            FDSLabel("Account Type")
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.primary)
             FDSPicker(
                 selection: Binding(
                     get: { form.accountType },
@@ -85,7 +89,9 @@ extension CardEditView {
         }
         return VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("Bank", style: .hint)
+                FDSLabel("Bank")
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.primary)
                 FDSPicker(
                     selection: Binding(get: { form.selectedBank }, set: { form.selectedBank = $0 }),
                     options: bankOptions,

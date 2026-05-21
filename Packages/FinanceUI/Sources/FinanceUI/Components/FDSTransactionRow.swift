@@ -69,10 +69,10 @@ public struct FDSTransactionRow: View {
                 name: merchant,
                 symbol: categorySymbol ?? "creditcard.fill",
                 imageName: merchantLogo,
-                size: 36
+                size: 40
             )
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 3) {
                 FDSLabel(merchant)
                     .font(AppTypography.bodySmMedium)
                     .foregroundStyle(AppColors.Text.primary)
@@ -107,8 +107,8 @@ public struct FDSTransactionRow: View {
                 }
             }
         }
-        .padding(.vertical, AppSpacing.compact)
-        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.sm)
+        .padding(.horizontal, AppSpacing.xl)
         .contentShape(Rectangle())
     }
 }

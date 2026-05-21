@@ -8,7 +8,9 @@ struct ImportFileListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            FDSLabel("Files", style: .heading)
+            FDSLabel("Files")
+                .font(AppTypography.headingSmall)
+                .foregroundStyle(AppColors.Text.primary)
 
             VStack(spacing: 8) {
                 ForEach(fileStatementPairs.indices, id: \.self) { index in
@@ -21,10 +23,14 @@ struct ImportFileListView: View {
                             .frame(width: 16)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            FDSLabel(pair.url.lastPathComponent, style: .bodyLarge)
+                            FDSLabel(pair.url.lastPathComponent)
+                                .font(AppTypography.bodyLg)
+                                .foregroundStyle(AppColors.Text.primary)
                                 .lineLimit(1)
 
-                            FDSLabel(pair.statement.bankName, style: .caption)
+                            FDSLabel(pair.statement.bankName)
+                                .font(AppTypography.captionSm)
+                                .foregroundStyle(AppColors.Text.primary)
                         }
 
                         Spacer()

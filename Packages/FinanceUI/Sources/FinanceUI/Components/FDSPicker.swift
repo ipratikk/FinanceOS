@@ -58,7 +58,9 @@ public struct FDSPicker<V: Hashable>: View {
                    let selectedOption = options.first(where: { ($0.value as? V) == selectedValue }) {
                     FDSPickerRow(option: selectedOption, variant: variant, isSelected: false)
                 } else {
-                    FDSLabel(placeholder, style: .hint)
+                    FDSLabel(placeholder)
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
                     Spacer()
                 }
 

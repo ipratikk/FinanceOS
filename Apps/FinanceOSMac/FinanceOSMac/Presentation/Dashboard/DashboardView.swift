@@ -17,7 +17,7 @@ struct DashboardView: View {
     var body: some View {
         if let viewModel {
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: AppSpacing.xxl) {
+                VStack(alignment: .leading, spacing: 36) {
                     header
 
                     if let totals = viewModel.currentTotals {
@@ -33,9 +33,8 @@ struct DashboardView: View {
                         recentActivitySection(viewModel)
                     }
                 }
-                .padding(.horizontal, AppSpacing.xxl)
-                .padding(.vertical, AppSpacing.xxl)
-                .frame(maxWidth: 1080)
+                .padding(40)
+                .frame(maxWidth: 1120)
                 .frame(maxWidth: .infinity)
             }
             .background(AppColors.base)
@@ -46,9 +45,9 @@ struct DashboardView: View {
         } else {
             VStack(spacing: AppSpacing.md) {
                 ProgressView()
-                    .controlSize(.small)
+                    .controlSize(.regular)
                 FDSLabel("Loading…")
-                    .font(AppTypography.captionLgMedium)
+                    .font(AppTypography.bodyMd)
                     .foregroundColor(AppColors.Text.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -63,25 +62,29 @@ struct DashboardView: View {
         }
     }
 
+    // MARK: - Header
+
     private var header: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.compact) {
+        VStack(alignment: .leading, spacing: 6) {
             FDSLabel("Overview")
                 .font(AppTypography.screenTitle)
                 .foregroundColor(AppColors.Text.primary)
             FDSLabel(currentMonth)
                 .font(AppTypography.labelMedium)
-                .tracking(0.2)
+                .tracking(0.3)
                 .foregroundColor(AppColors.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
+
+    // MARK: - Hero Net Flow
 
     private func heroNet(_ totals: SpendingTotals) -> some View {
         let net = totals.totalCredit - totals.totalDebit
         let isPositive = net >= 0
         return FDSCard(padded: false) {
             HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                VStack(alignment: .leading, spacing: 10) {
                     FDSLabel("Net Flow This Month")
                         .font(AppTypography.labelMedium)
                         .tracking(0.2)
@@ -98,7 +101,7 @@ struct DashboardView: View {
 
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: isPositive ? "arrow.up.right" : "arrow.down.right")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 22, weight: .semibold))
                         .foregroundColor(isPositive ? AppColors.success : AppColors.danger)
 
                     FDSLabel(isPositive ? "Positive" : "Negative")
@@ -112,11 +115,13 @@ struct DashboardView: View {
                         .fill((isPositive ? AppColors.success : AppColors.danger).opacity(0.12))
                 )
             }
-            .padding(.horizontal, AppSpacing.xxl)
-            .padding(.vertical, AppSpacing.xxl)
+            .padding(.horizontal, 36)
+            .padding(.vertical, 32)
             .frame(maxWidth: .infinity)
         }
     }
+
+    // MARK: - Metrics Row
 
     private func metricsRow(_ totals: SpendingTotals) -> some View {
         HStack(spacing: AppSpacing.md) {
@@ -146,11 +151,11 @@ struct DashboardView: View {
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 HStack(spacing: AppSpacing.tight) {
                     Image(systemName: symbol)
-                        .font(AppTypography.captionLgSemibold)
-                        .foregroundColor(color.opacity(0.7))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(color.opacity(0.8))
                     FDSLabel(label.uppercased())
                         .font(AppTypography.captionLgSemibold)
-                        .tracking(0.5)
+                        .tracking(0.6)
                         .foregroundColor(AppColors.Text.secondary)
                 }
                 FDSLabel(value)
@@ -160,31 +165,46 @@ struct DashboardView: View {
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, AppSpacing.xl)
-            .padding(.vertical, AppSpacing.lg)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 20)
         }
     }
 
+    // MARK: - Chart
+
     private func chartSection(_ viewModel: DashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader("6-Month Trend", subtitle: "Inflows vs outflows over time")
+            sectionHeader("6-Month Trend", subtitle: "Inflows vs outflows over time")
 
             FDSCard(padded: false) {
                 SpendingTrendChart(monthlySummaries: viewModel.monthlySummaries)
-                    .frame(height: 260)
+                    .frame(height: 280)
                     .padding(AppSpacing.xl)
             }
         }
     }
 
+    // MARK: - Recent Activity
+
     private func recentActivitySection(_ viewModel: DashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSSectionHeader(
-                "Recent Activity",
-                subtitle: "Last 6 transactions",
-                actionLabel: "View All",
-                actionSymbol: "chevron.right"
-            ) { navigator.navigate(to: .transactions) }
+            HStack {
+                sectionHeader(
+                    "Recent Activity",
+                    subtitle: "Last \(min(viewModel.recentTransactions.count, 6)) transactions"
+                )
+                Spacer()
+                Button { navigator.navigate(to: .transactions) } label: {
+                    HStack(spacing: 4) {
+                        FDSLabel("View All")
+                            .font(AppTypography.captionLgMedium)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .semibold))
+                    }
+                    .foregroundStyle(AppColors.accent)
+                }
+                .buttonStyle(.plain)
+            }
 
             FDSCard(cornerRadius: AppRadius.lg, padded: false) {
                 VStack(spacing: 0) {
@@ -203,8 +223,8 @@ struct DashboardView: View {
 
                             if index < min(viewModel.recentTransactions.count, 6) - 1 {
                                 Divider()
-                                    .padding(.leading, 64)
-                                    .opacity(0.15)
+                                    .padding(.leading, 68)
+                                    .opacity(0.12)
                             }
                         }
                     }
@@ -212,6 +232,21 @@ struct DashboardView: View {
             }
         }
     }
+
+    // MARK: - Shared section header
+
+    private func sectionHeader(_ title: String, subtitle: String) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            FDSLabel(title)
+                .font(AppTypography.headingSmall)
+                .foregroundStyle(AppColors.Text.primary)
+            FDSLabel(subtitle)
+                .font(AppTypography.captionLg)
+                .foregroundStyle(AppColors.Text.tertiary)
+        }
+    }
+
+    // MARK: - Helpers
 
     private var currentMonth: String {
         FormatterCache.formatMonthYear(Date()).uppercased()
@@ -231,21 +266,11 @@ struct DashboardView: View {
 
     private func categorySymbol(for description: String) -> String {
         let lower = description.lowercased()
-        if lower.contains("salary") || lower.contains("deposit") {
-            return "arrow.down.left.circle.fill"
-        }
-        if lower.contains("food") || lower.contains("foods") || lower.contains("market") {
-            return "fork.knife"
-        }
-        if lower.contains("gas") || lower.contains("shell") {
-            return "fuelpump.fill"
-        }
-        if lower.contains("coffee") || lower.contains("starbucks") {
-            return "cup.and.saucer.fill"
-        }
-        if lower.contains("amazon") || lower.contains("target") || lower.contains("shop") {
-            return "bag.fill"
-        }
+        if lower.contains("salary") || lower.contains("deposit") { return "arrow.down.left.circle.fill" }
+        if lower.contains("food") || lower.contains("foods") || lower.contains("market") { return "fork.knife" }
+        if lower.contains("gas") || lower.contains("shell") { return "fuelpump.fill" }
+        if lower.contains("coffee") || lower.contains("starbucks") { return "cup.and.saucer.fill" }
+        if lower.contains("amazon") || lower.contains("target") || lower.contains("shop") { return "bag.fill" }
         return "creditcard.fill"
     }
 }

@@ -20,11 +20,15 @@ struct ImportPreviewCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            FDSLabel("Import Summary", style: .heading)
+            FDSLabel("Import Summary")
+                .font(AppTypography.headingSmall)
+                .foregroundStyle(AppColors.Text.primary)
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Total Files", style: .caption)
+                    FDSLabel("Total Files")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
                     FDSLabel("\(parsedStatements.count)")
                         .font(AppTypography.bodyLg)
                         .foregroundStyle(AppColors.Text.primary)
@@ -33,7 +37,9 @@ struct ImportPreviewCard: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    FDSLabel("Total Transactions", style: .caption)
+                    FDSLabel("Total Transactions")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
                     FDSLabel("\(totalTransactions)")
                         .font(AppTypography.bodyLg)
                         .foregroundStyle(AppColors.Text.primary)
@@ -42,7 +48,9 @@ struct ImportPreviewCard: View {
 
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Total Debits", style: .caption)
+                    FDSLabel("Total Debits")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
                     FDSLabel(ImportFormatting.formatAmount(totalDebit))
                         .font(AppTypography.bodyLg)
                         .foregroundStyle(AppColors.Text.primary)
@@ -52,7 +60,9 @@ struct ImportPreviewCard: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 4) {
-                    FDSLabel("Total Credits", style: .caption)
+                    FDSLabel("Total Credits")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
                     FDSLabel(ImportFormatting.formatAmount(totalCredit))
                         .font(AppTypography.bodyLg)
                         .foregroundStyle(AppColors.Text.primary)

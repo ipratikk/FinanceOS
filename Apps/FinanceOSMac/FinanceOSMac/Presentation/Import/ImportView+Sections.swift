@@ -8,7 +8,9 @@ struct SupportedSourcesView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            FDSLabel("Supported Statements", style: .subheading)
+            FDSLabel("Supported Statements")
+                .font(AppTypography.headingSmall)
+                .foregroundStyle(AppColors.Text.primary)
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(viewModel.supportedSources.enumerated()), id: \.offset) { _, source in
                     let isFullySupported = source.bankName == "ICICI" && source.sourceType == .bankAccount
@@ -39,9 +41,13 @@ struct TargetSelectionSection: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    FDSLabel("Import To", style: .subheading)
+                    FDSLabel("Import To")
+                        .font(AppTypography.headingSmall)
+                        .foregroundStyle(AppColors.Text.primary)
 
-                    FDSLabel("Select or create target", style: .hint)
+                    FDSLabel("Select or create target")
+                        .font(AppTypography.captionSm)
+                        .foregroundStyle(AppColors.Text.primary)
                 }
 
                 Spacer()
@@ -58,6 +64,8 @@ struct TargetSelectionSection: View {
                 if viewModel.selectedTarget != nil {
                     Button(action: { viewModel.selectedTarget = nil }, label: {
                         FDSLabel("Clear")
+                            .font(AppTypography.bodyMd)
+                            .foregroundStyle(AppColors.Text.primary)
                     })
                     Divider()
                 }
@@ -71,6 +79,8 @@ struct TargetSelectionSection: View {
                                     Label(account.displayName, systemImage: "checkmark")
                                 } else {
                                     FDSLabel(account.displayName)
+                                        .font(AppTypography.bodyMd)
+                                        .foregroundStyle(AppColors.Text.primary)
                                 }
                             })
                         }
@@ -86,6 +96,8 @@ struct TargetSelectionSection: View {
                                     Label(card.displayName, systemImage: "checkmark")
                                 } else {
                                     FDSLabel(card.displayName)
+                                        .font(AppTypography.bodyMd)
+                                        .foregroundStyle(AppColors.Text.primary)
                                 }
                             })
                         }
@@ -93,8 +105,16 @@ struct TargetSelectionSection: View {
                 }
 
                 Divider()
-                Button(action: {}, label: { FDSLabel("New Account") })
-                Button(action: {}, label: { FDSLabel("New Card") })
+                Button(action: {}, label: {
+                    FDSLabel("New Account")
+                        .font(AppTypography.bodyMd)
+                        .foregroundStyle(AppColors.Text.primary)
+                })
+                Button(action: {}, label: {
+                    FDSLabel("New Card")
+                        .font(AppTypography.bodyMd)
+                        .foregroundStyle(AppColors.Text.primary)
+                })
             } label: {
                 let displayText: String = {
                     if let target = viewModel.selectedTarget {
@@ -107,6 +127,8 @@ struct TargetSelectionSection: View {
 
                 HStack {
                     FDSLabel(displayText)
+                        .font(AppTypography.bodyMd)
+                        .foregroundStyle(AppColors.Text.primary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Image(systemName: "chevron.down")
                 }

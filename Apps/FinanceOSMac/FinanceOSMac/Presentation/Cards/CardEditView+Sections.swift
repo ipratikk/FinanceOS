@@ -5,7 +5,9 @@ import SwiftUI
 extension CardEditView {
     var headerBar: some View {
         HStack {
-            FDSLabel(titleText, style: .headingMedium)
+            FDSLabel(titleText)
+                .font(AppTypography.headingLg)
+                .foregroundStyle(AppColors.Text.primary)
             Spacer()
             Button(action: { dismiss() }, label: {
                 Image(systemName: "xmark.circle.fill")
@@ -31,7 +33,9 @@ extension CardEditView {
     var basicInfoSurface: some View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                FDSLabel("BASIC INFORMATION", style: .subheading)
+                FDSLabel("BASIC INFORMATION")
+                    .font(AppTypography.headingSmall)
+                    .foregroundStyle(AppColors.Text.primary)
                 VStack(spacing: AppSpacing.md) {
                     if isCard { cardBasicFields } else { accountBasicFields }
                 }
@@ -88,13 +92,17 @@ extension CardEditView {
     var cardNumberRow: some View {
         HStack(spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("First 4 (Optional)", style: .hint)
+                FDSLabel("First 4 (Optional)")
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.tertiary)
                 FDSTextInput("", text: $form.first4, style: .bodyMedium)
                     .padding(AppSpacing.xs)
                     .cornerRadius(AppRadius.sm)
             }
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("Last 4", style: .hint)
+                FDSLabel("Last 4")
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.tertiary)
                 FDSTextInput("", text: $form.last4, style: .bodyMedium)
                     .padding(AppSpacing.xs)
                     .cornerRadius(AppRadius.sm)
@@ -103,7 +111,9 @@ extension CardEditView {
                     }
             }
             VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("Card Network", style: .hint)
+                FDSLabel("Card Network")
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.tertiary)
                 FDSPicker(
                     selection: Binding<CardNetwork?>(
                         get: { form.cardType },
@@ -120,7 +130,9 @@ extension CardEditView {
     var bankSurface: some View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                FDSLabel("BANK & ACCOUNT", style: .subheading)
+                FDSLabel("BANK & ACCOUNT")
+                    .font(AppTypography.headingSmall)
+                    .foregroundStyle(AppColors.Text.primary)
                 bankField()
             }
         }
@@ -129,7 +141,9 @@ extension CardEditView {
     var dangerZoneSurface: some View {
         FDSGlassSurface(cornerRadius: AppRadius.lg) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                FDSLabel("DANGER ZONE", style: .subheading)
+                FDSLabel("DANGER ZONE")
+                    .font(AppTypography.headingSmall)
+                    .foregroundStyle(AppColors.Text.primary)
                 FDSLiquidButton(
                     "Delete \(isCard ? "Card" : "Account")",
                     symbol: "trash.fill",
