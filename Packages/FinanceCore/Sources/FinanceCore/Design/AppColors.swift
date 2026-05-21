@@ -7,18 +7,12 @@ public enum AppColors {
     public static let surface = Color(red: 0.12, green: 0.12, blue: 0.13) // #1e1e21 — primary surface
     public static let surface2 = Color(red: 0.16, green: 0.16, blue: 0.17) // #292a2b — elevated surface
     public static let surface3 = Color(red: 0.20, green: 0.20, blue: 0.22) // #333537 — top elevation
-    public static let elevated = surface2
 
     // MARK: - Borders & Dividers (legacy — prefer Border.* enum)
 
     public static let border = Color.white.opacity(0.08)
     public static let borderAccent = Color.white.opacity(0.12)
-    public static let borderSubtle = Color.white.opacity(0.05)
-
-    // MARK: - Glass & Material overlays (legacy — use Border.* instead)
-
     public static let glass = Color.white.opacity(0.02)
-    public static let borderGlass = Color.white.opacity(0.08)
 
     // MARK: - Primary Accents (Apple System Colors)
 
@@ -45,14 +39,6 @@ public enum AppColors {
     public static let credit = success
     public static let debit = danger
     public static let purple = accentPurple
-
-    // MARK: - Legacy neon aliases (do not use in new code)
-
-    public static let accentCyan = accentBlue
-    public static let accentBlueDeprecated = accentBlue
-    public static let accentPurpleDeprecated = accentPurple
-    public static let accentPink = danger
-    public static let accentLime = success
 
     // MARK: - Legacy flat text tokens (migrate to Text.* enum in new code)
 

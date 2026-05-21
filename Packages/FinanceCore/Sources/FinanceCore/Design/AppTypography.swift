@@ -2,101 +2,84 @@ import SwiftUI
 
 // MARK: - Typography Tokens
 
+//
+// All tokens use system text styles so they scale automatically with
+// macOS Accessibility → Display → Text Size (Larger Text).
+//
+// Weight is applied via .weight() on the text style font.
+// Monospaced fonts use .monospaced() modifier on the scaled base.
+
 public enum AppTypography {
     // MARK: - Display (Hero / Marketing)
 
-    public static let displayLarge = Font.system(size: 34, weight: .bold)
-    public static let displayLargeLight = Font.system(size: 34, weight: .light)
-    public static let displaySmall = Font.system(size: 22, weight: .bold)
+    // largeTitle = 26pt base on macOS, scales up
+
+    public static let displayLarge = Font.largeTitle.weight(.bold)
+    public static let displayLargeLight = Font.largeTitle.weight(.light)
+    public static let displaySmall = Font.title.weight(.bold)
 
     // MARK: - Heading
 
-    public static let headingXL = Font.system(size: 24, weight: .bold)
-    public static let headingXLLight = Font.system(size: 24, weight: .light)
-    public static let headingLg = Font.system(size: 20, weight: .bold)
-    public static let headingLgLight = Font.system(size: 20, weight: .light)
-    public static let headingMd = Font.system(size: 18, weight: .semibold)
-    public static let headingMdRegular = Font.system(size: 18, weight: .regular)
-    public static let headingSmall = Font.system(size: 16, weight: .semibold)
-    public static let headlineSmLight = Font.system(size: 16, weight: .light)
-    public static let subheadline = Font.system(size: 15, weight: .semibold)
+    // title = 22pt, title2 = 17pt, title3 = 15pt on macOS
 
-    public static let headlineSm = Font.system(size: 16, weight: .semibold) // alias — prefer headingSmall
+    public static let headingXL = Font.title.weight(.bold)
+    public static let headingXLLight = Font.title.weight(.light)
+    public static let headingLg = Font.title2.weight(.bold)
+    public static let headingLgLight = Font.title2.weight(.light)
+    public static let headingMd = Font.title2.weight(.semibold)
+    public static let headingMdRegular = Font.title2.weight(.regular)
+    public static let headingSmall = Font.title3.weight(.semibold)
+    public static let headlineSmLight = Font.title3.weight(.light)
+    public static let subheadline = Font.title3.weight(.semibold)
+    public static let headlineSm = Font.title3.weight(.semibold) // alias — prefer headingSmall
 
     // MARK: - Body
 
-    public static let bodyLg = Font.system(size: 16, weight: .regular)
-    public static let bodyMd = Font.system(size: 14, weight: .regular)
-    public static let bodyMdLight = Font.system(size: 14, weight: .light)
-    public static let bodyMdSemibold = Font.system(size: 14, weight: .semibold)
-    public static let bodySm = Font.system(size: 13, weight: .regular)
-    public static let bodySmMedium = Font.system(size: 13, weight: .medium)
-    public static let bodySmSemibold = Font.system(size: 13, weight: .semibold)
+    // headline/body = 13pt, callout = 12pt on macOS
+
+    public static let bodyLg = Font.headline.weight(.regular)
+    public static let bodyMd = Font.body.weight(.regular)
+    public static let bodyMdLight = Font.body.weight(.light)
+    public static let bodyMdSemibold = Font.body.weight(.semibold)
+    public static let bodySm = Font.callout.weight(.regular)
+    public static let bodySmMedium = Font.callout.weight(.medium)
+    public static let bodySmSemibold = Font.callout.weight(.semibold)
 
     // MARK: - Label & Caption
 
-    public static let labelSemibold = Font.system(size: 13, weight: .semibold)
-    public static let labelMedium = Font.system(size: 13, weight: .medium)
-    public static let labelRegular = Font.system(size: 13, weight: .regular)
-    public static let labelSmall = Font.system(size: 12, weight: .regular)
-    public static let captionLg = Font.system(size: 12, weight: .regular)
-    public static let captionLgSemibold = Font.system(size: 12, weight: .semibold)
-    public static let captionLgMedium = Font.system(size: 12, weight: .medium)
-    public static let captionSm = Font.system(size: 11, weight: .regular)
-    public static let captionSmSemibold = Font.system(size: 11, weight: .semibold)
-    public static let captionSmMedium = Font.system(size: 11, weight: .medium)
+    // subheadline = 11pt, footnote = 10pt, caption = 10pt on macOS
 
-    public static let label = Font.system(size: 12, weight: .regular) // alias — prefer labelSmall
+    public static let labelSemibold = Font.callout.weight(.semibold)
+    public static let labelMedium = Font.callout.weight(.medium)
+    public static let labelRegular = Font.callout.weight(.regular)
+    public static let labelSmall = Font.subheadline.weight(.regular)
+    public static let label = Font.subheadline.weight(.regular) // alias — prefer labelSmall
+    public static let captionLg = Font.subheadline.weight(.regular)
+    public static let captionLgSemibold = Font.subheadline.weight(.semibold)
+    public static let captionLgMedium = Font.subheadline.weight(.medium)
+    public static let captionSm = Font.footnote.weight(.regular)
+    public static let captionSmSemibold = Font.footnote.weight(.semibold)
+    public static let captionSmMedium = Font.footnote.weight(.medium)
 
     // MARK: - Amount (Monospaced Currency)
 
-    public static let amountLarge = Font.system(size: 20, weight: .semibold, design: .monospaced)
-    public static let amountMd = Font.system(size: 16, weight: .semibold, design: .monospaced)
-    public static let amountSm = Font.system(size: 14, weight: .regular, design: .monospaced)
-    public static let amountXs = Font.system(size: 12, weight: .regular, design: .monospaced)
+    // Scaled from body/callout base, then monospaced
 
-    // MARK: - Icons (SF Symbol sizing)
+    public static let amountLarge = Font.title2.weight(.semibold).monospaced()
+    public static let amountMd = Font.headline.weight(.semibold).monospaced()
+    public static let amountSm = Font.body.weight(.regular).monospaced()
+    public static let amountXs = Font.subheadline.weight(.regular).monospaced()
 
-    public static let iconMd = Font.system(size: 16)
-    public static let iconSm = Font.system(size: 14)
-    public static let iconXs = Font.system(size: 12)
+    // MARK: - Icons (SF Symbol sizing — uses body scale)
+
+    public static let iconMd = Font.body
+    public static let iconSm = Font.callout
+    public static let iconXs = Font.subheadline
 
     // MARK: - Screen & Specialized
 
-    public static let screenTitle = Font.system(size: 30, weight: .semibold)
-    public static let titleSm = Font.system(size: 19, weight: .semibold)
-    public static let netHeroAmount: Font = .system(size: 48, weight: .semibold)
-    public static let maskedAccount: Font = .system(size: 11, weight: .regular, design: .monospaced)
-
-    // MARK: - Dynamic Type scale (scales with macOS Accessibility Text Size)
-
-    //
-    // Use these for user-facing content where accessibility scaling is critical.
-    // They correspond to the fixed-size tokens above but respond to Larger Text.
-
-    public enum Dynamic {
-        public static let display: Font = .largeTitle.bold()
-        public static let title: Font = .title.bold()
-        public static let title2: Font = .title2.semibold()
-        public static let title3: Font = .title3.semibold()
-        public static let headline: Font = .headline
-        public static let body: Font = .body
-        public static let callout: Font = .callout
-        public static let subheadline: Font = .subheadline
-        public static let footnote: Font = .footnote
-        public static let caption: Font = .caption
-        public static let caption2: Font = .caption2
-    }
-}
-
-// MARK: - Font.semibold / Font.bold convenience
-
-private extension Font {
-    func semibold() -> Font {
-        weight(.semibold)
-    }
-
-    func bold() -> Font {
-        weight(.bold)
-    }
+    public static let screenTitle = Font.largeTitle.weight(.semibold)
+    public static let titleSm = Font.title3.weight(.semibold)
+    public static let netHeroAmount = Font.largeTitle.weight(.semibold).monospaced()
+    public static let maskedAccount = Font.footnote.weight(.regular).monospaced()
 }
