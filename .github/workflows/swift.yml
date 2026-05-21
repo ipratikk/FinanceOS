@@ -174,7 +174,7 @@ jobs:
 
   lint:
     name: SwiftLint
-    runs-on: macos-14
+    runs-on: macos-26
 
     timeout-minutes: 10
 
@@ -244,17 +244,13 @@ jobs:
 
   resolve-deps:
     name: Resolve Dependencies
-    runs-on: macos-14
+    runs-on: macos-26
 
     timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Swift 6.1
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.1"
 
       - name: Cache SPM Resolved Dependencies
         id: cache-resolve
@@ -292,7 +288,7 @@ jobs:
 
   package-tests:
     name: Test ${{ matrix.package }}
-    runs-on: macos-14
+    runs-on: macos-26
 
     timeout-minutes: 25
 
@@ -311,10 +307,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Swift 6.1
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.1"
 
       - name: Cache SPM Build Artifacts
         uses: actions/cache@v4
@@ -361,7 +353,7 @@ jobs:
 
   macos-build:
     name: Build macOS App
-    runs-on: macos-14
+    runs-on: macos-26
 
     timeout-minutes: 30
 
@@ -370,10 +362,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Swift 6.1
-        uses: swift-actions/setup-swift@v2
-        with:
-          swift-version: "6.1"
 
       - name: Setup Xcode
         run: |
@@ -455,7 +443,7 @@ jobs:
 
   validate:
     name: Validation Summary
-    runs-on: macos-14
+    runs-on: macos-26
 
     timeout-minutes: 5
 
