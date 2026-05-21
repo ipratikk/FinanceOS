@@ -11,6 +11,9 @@ public enum AppSpacing {
     public static let xxl: CGFloat = 32
     public static let xxxl: CGFloat = 40
     public static let section: CGFloat = 48
+    public static let x4l: CGFloat = 48
+    public static let x5l: CGFloat = 56
+    public static let x6l: CGFloat = 64
 
     // MARK: - Legacy values (kept for source compatibility — prefer canonical scale in new code)
 
