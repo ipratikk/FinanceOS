@@ -5,7 +5,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var viewModel: DashboardViewModel?
-    @Environment(AppNavigator.self) private var navigator
+    @Environment(AppNavigator.self) var navigator
 
     init() {}
     init(viewModel: DashboardViewModel) {
@@ -43,10 +43,10 @@ struct DashboardView: View {
             } else {
                 loadingView
                     .task {
-                        let c = AppContainer.shared
+                        let container = AppContainer.shared
                         viewModel = DashboardViewModel(
-                            spendingService: c.spendingService,
-                            transactionRepository: c.transactionRepository
+                            spendingService: container.spendingService,
+                            transactionRepository: container.transactionRepository
                         )
                     }
             }

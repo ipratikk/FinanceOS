@@ -3,6 +3,27 @@ import FinanceCore
 import FinanceUI
 import SwiftUI
 
+// MARK: - Configuration Models
+
+struct MetricConfig {
+    let label: String
+    let value: String
+    let badge: String
+    let badgeColor: Color
+    let amountColor: Color
+    let progress: Double
+}
+
+struct AssetRowConfig {
+    let symbol: String
+    let tint: Color
+    let label: String
+    let sub: String
+    let amount: String
+    let pct: String
+    let color: Color
+}
+
 // MARK: - Net Worth Hero
 
 extension DashboardView {
@@ -117,7 +138,8 @@ extension DashboardView {
 
                 intelInsight(
                     title: "Portfolio Rebalance",
-                    body: "Your exposure to Tech stocks has grown to 45%. Consider diversifying into Bonds to reduce risk."
+                    body: "Your exposure to Tech stocks has grown to 45%. "
+                        + "Consider diversifying into Bonds to reduce risk."
                 )
                 intelInsight(
                     title: "Savings Target",
@@ -169,61 +191,64 @@ extension DashboardView {
     func metricsRow(_ totals: SpendingTotals) -> some View {
         HStack(spacing: 20) {
             metricTile(
-                label: "MONTHLY INFLOWS",
-                value: amount(totals.totalCredit),
-                badge: "+12.4%",
-                badgeColor: AppColors.success,
-                amountColor: AppColors.Text.primary,
-                progress: 0.62
+                .init(
+                    label: "MONTHLY INFLOWS",
+                    value: amount(totals.totalCredit),
+                    badge: "+12.4%",
+                    badgeColor: AppColors.success,
+                    amountColor: AppColors.Text.primary,
+                    progress: 0.62
+                )
             )
             metricTile(
-                label: "MONTHLY OUTFLOWS",
-                value: amount(totals.totalDebit),
-                badge: "-4.2%",
-                badgeColor: AppColors.danger,
-                amountColor: AppColors.danger,
-                progress: 0.44
+                .init(
+                    label: "MONTHLY OUTFLOWS",
+                    value: amount(totals.totalDebit),
+                    badge: "-4.2%",
+                    badgeColor: AppColors.danger,
+                    amountColor: AppColors.danger,
+                    progress: 0.44
+                )
             )
             let net = totals.totalCredit - totals.totalDebit
             metricTile(
-                label: "NET SAVINGS",
-                value: amount(max(0, net)),
-                badge: "\(totals.transactionCount) Txns",
-                badgeColor: AppColors.Text.tertiary,
-                amountColor: AppColors.success,
-                progress: 0.78
+                .init(
+                    label: "NET SAVINGS",
+                    value: amount(max(0, net)),
+                    badge: "\(totals.transactionCount) Txns",
+                    badgeColor: AppColors.Text.tertiary,
+                    amountColor: AppColors.success,
+                    progress: 0.78
+                )
             )
         }
     }
 
-    private func metricTile(
-        label: String,
-        value: String,
-        badge: String,
-        badgeColor: Color,
-        amountColor: Color,
-        progress: Double
-    ) -> some View {
+    private func metricTile(_ config: MetricConfig) -> some View {
         FDSCard(padded: false) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    FDSLabel(label)
+                    FDSLabel(config.label)
                         .font(AppTypography.captionSmSemibold)
                         .tracking(0.7)
                         .foregroundStyle(AppColors.Text.tertiary)
                     Spacer()
-                    FDSLabel(badge)
+                    FDSLabel(config.badge)
                         .font(AppTypography.captionSmSemibold)
-                        .foregroundStyle(badgeColor)
+                        .foregroundStyle(config.badgeColor)
                 }
 
-                FDSLabel(value)
+                FDSLabel(config.value)
                     .font(AppTypography.headingMd)
                     .monospacedDigit()
-                    .foregroundStyle(amountColor)
+                    .foregroundStyle(config.amountColor)
                     .lineLimit(1)
 
-                progressBar(progress, color: amountColor == AppColors.danger ? AppColors.danger : AppColors.success)
+                progressBar(
+                    config.progress,
+                    color: config.amountColor == AppColors.danger
+                        ? AppColors.danger : AppColors.success
+                )
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 18)
@@ -255,7 +280,7 @@ extension DashboardView {
                     .font(AppTypography.headingSmall)
                     .foregroundStyle(AppColors.Text.primary)
 
-                assetRow(
+                assetRow(.init(
                     symbol: "banknote",
                     tint: AppColors.success,
                     label: "Cash & Savings",
@@ -263,9 +288,9 @@ extension DashboardView {
                     amount: "₹24.8L",
                     pct: "18%",
                     color: AppColors.success
-                )
+                ))
 
-                assetRow(
+                assetRow(.init(
                     symbol: "chart.line.uptrend.xyaxis",
                     tint: AppColors.accentBlue,
                     label: "Stock Portfolio",
@@ -273,9 +298,9 @@ extension DashboardView {
                     amount: "₹64.2L",
                     pct: "48%",
                     color: AppColors.accentBlue
-                )
+                ))
 
-                assetRow(
+                assetRow(.init(
                     symbol: "building.columns",
                     tint: AppColors.accentOrange,
                     label: "Mutual Funds",
@@ -283,29 +308,28 @@ extension DashboardView {
                     amount: "₹45.6L",
                     pct: "34%",
                     color: AppColors.accentOrange
-                )
+                ))
             }
             .padding(20)
         }
     }
 
-    private func assetRow(
-        symbol: String, tint: Color,
-        label: String, sub: String,
-        amount: String, pct: String, color: Color
-    ) -> some View {
+    private func assetRow(_ config: AssetRowConfig) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: symbol)
+            Image(systemName: config.symbol)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(tint)
+                .foregroundStyle(config.tint)
                 .frame(width: 32, height: 32)
-                .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.chip))
+                .background(
+                    config.tint.opacity(0.12),
+                    in: RoundedRectangle(cornerRadius: AppRadius.chip)
+                )
 
             VStack(alignment: .leading, spacing: 1) {
-                FDSLabel(label)
+                FDSLabel(config.label)
                     .font(AppTypography.bodySmMedium)
                     .foregroundStyle(AppColors.Text.primary)
-                FDSLabel(sub)
+                FDSLabel(config.sub)
                     .font(AppTypography.captionSm)
                     .foregroundStyle(AppColors.Text.tertiary)
             }
@@ -313,128 +337,14 @@ extension DashboardView {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 1) {
-                FDSLabel(amount)
+                FDSLabel(config.amount)
                     .font(AppTypography.bodySmSemibold)
                     .foregroundStyle(AppColors.Text.primary)
                     .monospacedDigit()
-                FDSLabel(pct)
+                FDSLabel(config.pct)
                     .font(AppTypography.captionSm)
-                    .foregroundStyle(color)
+                    .foregroundStyle(config.color)
             }
         }
-    }
-}
-
-// MARK: - Recent Activity
-
-extension DashboardView {
-    func recentActivityCard(_ viewModel: DashboardViewModel) -> some View {
-        FDSCard(padded: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                // Header
-                HStack {
-                    FDSLabel("Recent Activity")
-                        .font(AppTypography.headingSmall)
-                        .foregroundStyle(AppColors.Text.primary)
-                    Spacer()
-                    Button { navigator.navigate(to: .transactions) } label: {
-                        FDSLabel("View all")
-                            .font(AppTypography.captionLgSemibold)
-                            .foregroundStyle(AppColors.accent)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 16)
-
-                // Column headers
-                HStack {
-                    FDSLabel("STATUS").frame(width: 72, alignment: .leading)
-                    FDSLabel("MERCHANT").frame(maxWidth: .infinity, alignment: .leading)
-                    FDSLabel("CATEGORY").frame(width: 110, alignment: .leading)
-                    FDSLabel("AMOUNT").frame(width: 100, alignment: .trailing)
-                }
-                .font(AppTypography.captionSmSemibold)
-                .tracking(0.6)
-                .foregroundStyle(AppColors.Text.quaternary)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 8)
-
-                Divider().opacity(0.1)
-
-                // Rows
-                let txns = Array(viewModel.recentTransactions.prefix(6))
-                ForEach(Array(txns.enumerated()), id: \.element.id) { idx, txn in
-                    activityRow(txn, isNew: idx < 2)
-                    if idx < txns.count - 1 {
-                        Divider().padding(.horizontal, 20).opacity(0.08)
-                    }
-                }
-            }
-            .padding(.bottom, 8)
-        }
-    }
-
-    private func activityRow(_ txn: Transaction, isNew: Bool) -> some View {
-        HStack(spacing: 0) {
-            statusBadge(isNew: isNew)
-                .frame(width: 72, alignment: .leading)
-
-            HStack(spacing: 10) {
-                Circle()
-                    .fill(AppColors.Fill.secondary)
-                    .frame(width: 30, height: 30)
-                    .overlay {
-                        Image(systemName: categorySymbol(for: txn.description))
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(AppColors.Text.secondary)
-                    }
-                FDSLabel(txn.description)
-                    .font(AppTypography.bodySmMedium)
-                    .foregroundStyle(AppColors.Text.primary)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            FDSLabel(categoryName(for: txn.description))
-                .font(AppTypography.captionLg)
-                .foregroundStyle(AppColors.Text.tertiary)
-                .frame(width: 110, alignment: .leading)
-                .lineLimit(1)
-
-            let isDebit = txn.transactionType == .debit
-            FDSLabel((isDebit ? "-" : "+") + amount(txn.amountMinorUnits, code: txn.currencyCode))
-                .font(AppTypography.bodySmSemibold)
-                .monospacedDigit()
-                .foregroundStyle(isDebit ? AppColors.danger : AppColors.success)
-                .frame(width: 100, alignment: .trailing)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
-    }
-
-    private func statusBadge(isNew: Bool) -> some View {
-        FDSLabel(isNew ? "NEW" : "CLEARED")
-            .font(AppTypography.captionSmSemibold)
-            .tracking(0.4)
-            .foregroundStyle(isNew ? AppColors.Text.primary : AppColors.Text.tertiary)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background(
-                isNew ? AppColors.Fill.tertiary : AppColors.Fill.primary,
-                in: RoundedRectangle(cornerRadius: AppRadius.chip)
-            )
-    }
-
-    private func categorySymbol(for description: String) -> String {
-        let lower = description.lowercased()
-        if lower.contains("salary") || lower.contains("credit") { return "arrow.down.left.circle.fill" }
-        if lower.contains("food") || lower.contains("zomato") { return "fork.knife" }
-        if lower.contains("netflix") || lower.contains("spotify") { return "play.tv.fill" }
-        if lower.contains("amazon") || lower.contains("flipkart") { return "bag.fill" }
-        if lower.contains("apple") { return "laptopcomputer" }
-        if lower.contains("uber") || lower.contains("ola") { return "car.fill" }
-        return "creditcard.fill"
     }
 }
