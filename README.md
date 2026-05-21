@@ -1,4 +1,5 @@
 # FinanceOS
+[![Build and Test](https://github.com/ipratikk/FinanceOS/actions/workflows/swift.yml/badge.svg)](https://github.com/ipratikk/FinanceOS/actions/workflows/swift.yml)
 
 A native macOS financial management application for importing, analyzing, and tracking bank statements and credit card transactions with deterministic ingestion and deduplication.
 
