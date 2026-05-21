@@ -5,46 +5,40 @@ import SwiftUI
 struct BankEditView: View {
     let bank: Bank
     let context: BankEditContext
-    @State private var name: String
-    @State private var providerType: String
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteConfirm = false
 
     init(bank: Bank, context: BankEditContext) {
         self.bank = bank
         self.context = context
-        _name = State(initialValue: bank.name)
-        _providerType = State(initialValue: bank.providerType.rawValue)
     }
 
     var body: some View {
         FDSSheet(
-            title: "Edit Bank",
+            title: "Bank Details",
             subtitle: bank.name,
             onDismiss: { dismiss() },
             content: {
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
-                    FDSCard(cornerRadius: 12, padded: false) {
+                    FDSCard(padded: false) {
                         VStack(alignment: .leading, spacing: AppSpacing.xs) {
                             FDSLabel("BANK INFORMATION")
                                 .font(AppTypography.captionSmSemibold)
                                 .tracking(0.2)
                                 .foregroundColor(AppColors.Text.secondary)
 
-                            fieldInput("Bank Name", text: $name)
+                            infoRow("Bank Name", value: bank.name)
                             Divider().opacity(AppColors.Opacity.low)
-                            fieldInput("Provider Type", text: $providerType)
+                            infoRow("Provider Type", value: bank.providerType.rawValue.capitalized)
                         }
                         .padding(AppSpacing.xs)
                     }
 
-                    FDSCard(cornerRadius: 12, padded: false) {
-                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                            FDSLiquidButton("Delete Bank", symbol: "trash.fill", variant: .danger) {
-                                showDeleteConfirm = true
-                            }
-                            .padding(AppSpacing.xs)
+                    FDSCard(padded: false) {
+                        FDSLiquidButton("Delete Bank", symbol: "trash.fill", variant: .danger) {
+                            showDeleteConfirm = true
                         }
+                        .padding(AppSpacing.xs)
                     }
                 }
             }
@@ -58,21 +52,31 @@ struct BankEditView: View {
                 }
             }
         } message: {
-            FDSLabel("This will permanently delete this bank and all associated accounts/cards/transactions.")
+            FDSLabel("This will permanently delete this bank and all associated accounts, cards, and transactions.")
+        }
+        .alert("Error", isPresented: Binding(
+            get: { context.error != nil },
+            set: { if !$0 { context.clearError() } }
+        )) {
+            Button("OK") { context.clearError() }
+        } message: {
+            if let error = context.error {
+                FDSLabel(error)
+            }
         }
     }
 
-    private func fieldInput(_ label: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    private func infoRow(_ label: String, value: String) -> some View {
+        HStack {
             FDSLabel(label.uppercased())
-                .font(AppTypography.maskedAccount)
+                .font(AppTypography.captionSmSemibold)
                 .tracking(0.2)
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
-            FDSTextInput("", text: text, style: .labelSmall)
+                .foregroundColor(AppColors.Text.secondary)
+            Spacer()
+            FDSLabel(value)
+                .font(AppTypography.captionSmMedium)
                 .foregroundColor(AppColors.Text.primary)
-                .padding(8)
-                .background(AppColors.Glass.inputWell)
-                .cornerRadius(6)
         }
+        .padding(AppSpacing.xs)
     }
 }

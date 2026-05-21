@@ -77,25 +77,24 @@ struct AccountTransactionsView: View {
 
                 VStack(alignment: .trailing, spacing: 4) {
                     FDSLabel("Balance")
-                        .font(AppTypography.labelMedium)
-                        .tracking(0.5)
+                        .font(AppTypography.captionSmMedium)
+                        .tracking(0.2)
                         .foregroundStyle(.tertiary)
 
                     if let balance = ledger.closingBalance {
                         FDSLabel(formattedBalance(balance))
-                            .font(AppTypography.displaySmall.monospacedDigit())
+                            .font(AppTypography.amountLarge)
                             .foregroundStyle(AppColors.accentIce)
                             .lineLimit(1)
-                            .minimumScaleFactor(0.7)
 
                         if let asOf = ledger.closingBalanceAsOf {
                             FDSLabel("as of \(formattedDate(asOf))")
-                                .font(AppTypography.label)
+                                .font(AppTypography.captionSm)
                                 .foregroundStyle(.quaternary)
                         }
                     } else {
                         FDSLabel("—")
-                            .font(AppTypography.displaySmall)
+                            .font(AppTypography.headingSmall)
                             .foregroundStyle(.tertiary)
                     }
                 }

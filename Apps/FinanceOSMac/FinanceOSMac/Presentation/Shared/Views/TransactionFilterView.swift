@@ -51,7 +51,7 @@ struct TransactionFilterView: View {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 FDSLabel("TRANSACTION TYPE")
                     .font(AppTypography.labelSemibold)
-                    .tracking(0.6)
+                    .tracking(0.5)
                     .foregroundStyle(.tertiary)
 
                 Picker("Type", selection: $listState.typeFilter) {
@@ -70,7 +70,7 @@ struct TransactionFilterView: View {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
                 FDSLabel("DATE RANGE")
                     .font(AppTypography.labelSemibold)
-                    .tracking(0.6)
+                    .tracking(0.5)
                     .foregroundStyle(.tertiary)
 
                 ForEach(DateRangeFilter.standardPresets, id: \.label) { preset in

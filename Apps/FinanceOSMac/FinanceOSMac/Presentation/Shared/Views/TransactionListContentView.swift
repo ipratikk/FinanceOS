@@ -252,7 +252,7 @@ struct DateFilterPopover: View {
         VStack(alignment: .leading, spacing: 0) {
             FDSLabel("DATE RANGE")
                 .font(AppTypography.labelSemibold)
-                .tracking(0.6)
+                .tracking(0.5)
                 .foregroundStyle(.tertiary)
                 .padding(.horizontal, AppSpacing.md)
                 .padding(.top, AppSpacing.md)

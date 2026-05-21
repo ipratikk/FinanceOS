@@ -174,7 +174,7 @@ struct SettingsView: View {
         HStack(spacing: AppSpacing.sm) {
             FDSLabel(label.uppercased())
                 .font(AppTypography.captionSmSemibold)
-                .tracking(0.6)
+                .tracking(0.5)
                 .foregroundColor(AppColors.Text.tertiary)
             Spacer()
             FDSLabel(value)

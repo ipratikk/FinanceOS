@@ -22,6 +22,15 @@ final class BankEditContext {
         }
     }
 
+    func updateBank(_ bank: Bank) async {
+        do {
+            try await repository.update(bank)
+            error = nil
+        } catch {
+            self.error = error.localizedDescription
+        }
+    }
+
     func deleteBank(id: UUID) async {
         do {
             try await repository.delete(id: id)
