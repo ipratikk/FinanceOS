@@ -55,7 +55,7 @@ extension DashboardView {
                         .lineLimit(1)
 
                     if !viewModel.monthlySummaries.isEmpty {
-                        Text(isPositive ? "+12.4%" : "-4.2%")
+                        FDSLabel(isPositive ? "+12.4%" : "-4.2%")
                             .font(AppTypography.captionLgSemibold)
                             .foregroundStyle(AppColors.success)
                             .padding(.horizontal, 8)
@@ -76,7 +76,7 @@ extension DashboardView {
                     legendDot("Investments", "₹89.3L", AppColors.accentBlue)
                 }
             }
-            .padding(24)
+            .padding(AppSpacing.xl)
         }
     }
 
@@ -129,7 +129,7 @@ extension DashboardView {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(spacing: 8) {
                     Image(systemName: "sparkles")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(AppTypography.captionLgSemibold)
                         .foregroundStyle(AppColors.accent)
                     FDSLabel("Wealth Intelligence")
                         .font(AppTypography.bodyMdSemibold)
@@ -156,7 +156,7 @@ extension DashboardView {
                             .font(AppTypography.bodySmSemibold)
                             .foregroundStyle(AppColors.accent)
                         Image(systemName: "arrow.right")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(AppTypography.captionSmSemibold)
                             .foregroundStyle(AppColors.accent)
                     }
                     .frame(maxWidth: .infinity)
@@ -165,7 +165,7 @@ extension DashboardView {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(20)
+            .padding(AppSpacing.lg)
         }
     }
 
@@ -179,7 +179,7 @@ extension DashboardView {
                 .foregroundStyle(AppColors.Text.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(12)
+        .padding(AppSpacing.md)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppColors.Fill.primary, in: RoundedRectangle(cornerRadius: AppRadius.sm))
     }
@@ -310,14 +310,14 @@ extension DashboardView {
                     color: AppColors.accentOrange
                 ))
             }
-            .padding(20)
+            .padding(AppSpacing.lg)
         }
     }
 
     private func assetRow(_ config: AssetRowConfig) -> some View {
         HStack(spacing: 12) {
             Image(systemName: config.symbol)
-                .font(.system(size: 14, weight: .semibold))
+                .font(AppTypography.captionSmSemibold)
                 .foregroundStyle(config.tint)
                 .frame(width: 32, height: 32)
                 .background(
