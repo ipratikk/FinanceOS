@@ -81,11 +81,11 @@ jobs:
             echo "$CHANGED_FILES" | sed 's/^/  /'
           fi
 
-          # Initialize packages to test (associative array)
+          # Initialize packages to test
           declare -a packages_to_test=()
 
           # =========================================================
-          # Package Dependency Graph:
+          # Package Dependency Graph (cascade testing):
           #   FinanceParsers (no deps)
           #     ↓
           #   FinanceCore (depends on Parsers)
@@ -95,42 +95,42 @@ jobs:
           #   FinanceTesting (depends on all)
           # =========================================================
 
-          # Check if FinanceParsers changed (base level)
-          if [[ "$CHANGED_FILES" == "INITIAL_COMMIT" ]] || echo "$CHANGED_FILES" | grep -q "^Packages/FinanceParsers/"; then
-            echo "📦 FinanceParsers changed → cascade: test all packages"
-            packages_to_test=(FinanceParsers FinanceCore FinanceUI FinanceTesting)
-          else
-            # FinanceParsers NOT changed — check dependent packages
+          # Only test if Packages/* changed (ignore Apps, .github, docs)
+          if echo "$CHANGED_FILES" | grep -q "^Packages/"; then
 
-            # Check if FinanceCore changed (mid level)
-            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceCore/"; then
-              echo "📦 FinanceCore changed → cascade: Core, UI, Testing"
-              packages_to_test+=(FinanceCore FinanceUI FinanceTesting)
-            fi
-
-            # Check if FinanceUI changed (mid level)
-            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceUI/"; then
-              echo "📦 FinanceUI changed → cascade: UI, Testing"
-              # Add if not already present
-              if [[ ! " ${packages_to_test[@]} " =~ " FinanceUI " ]]; then
-                packages_to_test+=(FinanceUI FinanceTesting)
-              fi
-            fi
-
-            # Check if FinanceTesting changed (leaf level)
-            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceTesting/"; then
-              echo "📦 FinanceTesting changed → test: Testing only"
-              if [[ ! " ${packages_to_test[@]} " =~ " FinanceTesting " ]]; then
-                packages_to_test+=(FinanceTesting)
-              fi
-            fi
-
-            # Check for non-package file changes (App, CI, config, docs)
-            # If any changed file is NOT in Packages/, test everything
-            if [[ "$CHANGED_FILES" != "INITIAL_COMMIT" ]] && echo "$CHANGED_FILES" | grep -v "^Packages/" | grep -q "."; then
-              echo "📦 Non-package files changed (.github, Apps, docs, etc.) → test all packages"
+            # Check if FinanceParsers changed (base) → cascade to all
+            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceParsers/"; then
+              echo "📦 FinanceParsers changed → cascade: test all"
               packages_to_test=(FinanceParsers FinanceCore FinanceUI FinanceTesting)
+
+            else
+              # FinanceParsers NOT changed, check dependents
+
+              # FinanceCore changed → cascade to Core, UI, Testing
+              if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceCore/"; then
+                echo "📦 FinanceCore changed → cascade: Core, UI, Testing"
+                packages_to_test+=(FinanceCore FinanceUI FinanceTesting)
+              fi
+
+              # FinanceUI changed → cascade to UI, Testing
+              if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceUI/"; then
+                echo "📦 FinanceUI changed → cascade: UI, Testing"
+                if [[ ! " ${packages_to_test[@]} " =~ " FinanceUI " ]]; then
+                  packages_to_test+=(FinanceUI FinanceTesting)
+                fi
+              fi
+
+              # FinanceTesting changed → test Testing only
+              if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceTesting/"; then
+                echo "📦 FinanceTesting changed → test Testing"
+                if [[ ! " ${packages_to_test[@]} " =~ " FinanceTesting " ]]; then
+                  packages_to_test+=(FinanceTesting)
+                fi
+              fi
             fi
+          else
+            # Non-package files changed (Apps, .github, docs, README) → skip tests
+            echo "📦 Only non-package files changed → skipping tests"
           fi
 
           # =========================================================
@@ -314,6 +314,7 @@ jobs:
           path: |
             ${{ env.SPM_BUILD_PATH }}
             ~/.cache/swift-build-cache
+            Packages/**/Package.resolved
           key: >
             spm-build-${{ runner.os }}-${{ matrix.package }}-${{
               hashFiles(
@@ -373,7 +374,9 @@ jobs:
       - name: Cache Derived Data
         uses: actions/cache@v4
         with:
-          path: ${{ env.DERIVED_DATA_PATH }}
+          path: |
+            ${{ env.DERIVED_DATA_PATH }}
+            Packages/**/Package.resolved
           key: >
             xcode-${{ runner.os }}-${{
               hashFiles(
