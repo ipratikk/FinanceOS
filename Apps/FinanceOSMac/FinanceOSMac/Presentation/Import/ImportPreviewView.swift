@@ -39,7 +39,7 @@ struct ImportPreviewView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         FDSLabel("Review parsed transactions")
                             .font(AppTypography.headingMd)
-                            .foregroundColor(AppColors.Text.primary)
+                            .foregroundColor(AppColors.accent)
 
                         if !viewModel.parsedStatements.isEmpty {
                             let newCount = viewModel.parsedStatements.count - viewModel.duplicateTransactionIndices
@@ -87,6 +87,7 @@ struct ImportPreviewView: View {
             }
             .padding(AppSpacing.lg)
 
+            Spacer()
             confirmBar
         }
         .onAppear {

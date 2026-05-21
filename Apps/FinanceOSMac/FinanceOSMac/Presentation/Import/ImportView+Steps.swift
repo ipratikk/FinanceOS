@@ -54,7 +54,7 @@ extension ImportView {
                     VStack(alignment: .leading, spacing: AppSpacing.tight) {
                         FDSLabel("Source Selected")
                             .font(AppTypography.headingMd)
-                            .foregroundColor(AppColors.Text.primary)
+                            .foregroundColor(AppColors.accent)
 
                         if let source = viewModel.selectedSource {
                             let formats = source.allowedFormats.map { $0.rawValue.uppercased() }
@@ -177,7 +177,7 @@ extension ImportView {
             uploadTrustBanner(
                 icon: "lock.shield.fill",
                 title: "Local Processing",
-                body: "Your files are parsed securely on your device. Your sensitive financial data never leaves your computer."
+                body: "Files are parsed on-device. Your financial data never leaves your computer."
             )
             uploadTrustBanner(
                 icon: "key.fill",
