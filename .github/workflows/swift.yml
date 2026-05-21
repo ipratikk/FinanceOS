@@ -273,9 +273,13 @@ jobs:
 
           echo "📦 Resolving package dependencies..."
 
-          swift package resolve
+          for package in Packages/*/; do
+            package_name=$(basename "$package")
+            echo "  Resolving $package_name..."
+            swift package resolve --package-path "$package"
+          done
 
-          echo "✓ Dependencies resolved"
+          echo "✓ All dependencies resolved"
 
   # =======================================================
   # Package Tests (Matrix)
