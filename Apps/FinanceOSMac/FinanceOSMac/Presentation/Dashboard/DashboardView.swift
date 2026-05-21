@@ -8,7 +8,9 @@ struct DashboardView: View {
     @State private var windowWidth: CGFloat = 1200
     @Environment(AppNavigator.self) var navigator
 
-    private var isWide: Bool { windowWidth >= 900 }
+    private var isWide: Bool {
+        windowWidth >= 900
+    }
 
     init() {}
     init(viewModel: DashboardViewModel) {
