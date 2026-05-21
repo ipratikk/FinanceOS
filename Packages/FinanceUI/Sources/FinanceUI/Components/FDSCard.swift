@@ -18,7 +18,7 @@ public struct FDSCard<Content: View>: View {
     private let padded: Bool
 
     public init(
-        cornerRadius: CGFloat = 18,
+        cornerRadius: CGFloat = AppRadius.lg,
         padded: Bool = true,
         @ViewBuilder content: () -> Content
     ) {

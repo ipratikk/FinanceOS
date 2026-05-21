@@ -46,7 +46,7 @@ struct BanksView: View {
                         .foregroundColor(AppColors.Text.primary)
                     FDSLabel("Manage connected institutions")
                         .font(AppTypography.captionSmMedium)
-                        .tracking(0.3)
+                        .tracking(0.2)
                         .foregroundColor(AppColors.Text.secondary)
                 }
                 .padding(.horizontal, 32)
@@ -151,7 +151,7 @@ struct BanksView: View {
                         .foregroundColor(AppColors.Text.primary)
                     FDSLabel("Manage connected institutions")
                         .font(AppTypography.captionSmMedium)
-                        .tracking(0.3)
+                        .tracking(0.2)
                         .foregroundColor(AppColors.Text.secondary)
                 }
                 .padding(.horizontal, 32)

@@ -203,7 +203,7 @@ struct CardSelectionView: View {
     private func networkBadge(for card: CardMetadata) -> some View {
         FDSLabel(card.cardType.displayName.uppercased())
             .font(AppTypography.iconSm)
-            .tracking(0.4)
+            .tracking(0.5)
             .foregroundStyle(networkColor(for: card.cardType))
             .padding(.horizontal, 5)
             .padding(.vertical, 2)

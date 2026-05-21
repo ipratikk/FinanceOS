@@ -61,11 +61,11 @@ struct AnalyticsView: View {
         VStack(alignment: .leading, spacing: 4) {
             FDSLabel("Analytics")
                 .font(AppTypography.displaySmall)
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                .foregroundColor(AppColors.Text.primary)
             FDSLabel("Spending trends and merchant insights")
                 .font(AppTypography.captionLgMedium)
-                .tracking(0.3)
-                .foregroundColor(Color(red: 0.741, green: 0.761, blue: 0.800))
+                .tracking(0.2)
+                .foregroundColor(AppColors.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -75,7 +75,7 @@ struct AnalyticsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel("6-Month Trend")
                     .font(AppTypography.headingSmall)
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    .foregroundColor(AppColors.Text.primary)
                 FDSLabel("Inflows vs outflows over time")
                     .font(AppTypography.captionLgMedium)
                     .foregroundColor(AppColors.Text.secondary)
@@ -87,7 +87,7 @@ struct AnalyticsView: View {
                         x: .value("Month", item.id, unit: .month),
                         y: .value("Outflows", Double(item.totalDebit) / 100.0)
                     )
-                    .foregroundStyle(Color(red: 1.0, green: 0.27, blue: 0.23).opacity(0.8))
+                    .foregroundStyle(AppColors.debit.opacity(0.8))
                     .cornerRadius(AppRadius.xs)
                     .position(by: .value("Type", "Outflows"))
 
@@ -95,7 +95,7 @@ struct AnalyticsView: View {
                         x: .value("Month", item.id, unit: .month),
                         y: .value("Inflows", Double(item.totalCredit) / 100.0)
                     )
-                    .foregroundStyle(Color(red: 0.19, green: 0.82, blue: 0.35).opacity(0.8))
+                    .foregroundStyle(AppColors.credit.opacity(0.8))
                     .cornerRadius(AppRadius.xs)
                     .position(by: .value("Type", "Inflows"))
                 }
@@ -120,7 +120,7 @@ struct AnalyticsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 FDSLabel("Top Merchants")
                     .font(AppTypography.headingSmall)
-                    .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                    .foregroundColor(AppColors.Text.primary)
                 FDSLabel("Highest outflow activity")
                     .font(AppTypography.captionLgMedium)
                     .foregroundColor(AppColors.Text.secondary)
@@ -141,18 +141,18 @@ struct AnalyticsView: View {
         VStack(alignment: .leading, spacing: 12) {
             FDSLabel("Categories")
                 .font(AppTypography.headingSmall)
-                .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                .foregroundColor(AppColors.Text.primary)
 
             FDSCard(cornerRadius: 12, padded: false) {
                 VStack(spacing: 12) {
                     Image(systemName: "tag.circle.fill")
                         .font(AppTypography.headingXLLight)
-                        .foregroundColor(Color(red: 0.518, green: 0.541, blue: 0.580).opacity(0.4))
+                        .foregroundColor(AppColors.Text.tertiary.opacity(0.4))
                         .symbolRenderingMode(.hierarchical)
                     VStack(spacing: 4) {
                         FDSLabel("Coming Soon")
                             .font(AppTypography.bodyMdSemibold)
-                            .foregroundColor(Color(red: 0.945, green: 0.953, blue: 0.965))
+                            .foregroundColor(AppColors.Text.primary)
                         FDSLabel("Auto-categorization with smart detection")
                             .font(AppTypography.captionLg)
                             .foregroundColor(AppColors.Text.secondary)

@@ -69,7 +69,7 @@ struct DashboardView: View {
                 .foregroundColor(AppColors.Text.primary)
             FDSLabel(currentMonth)
                 .font(AppTypography.captionLgMedium)
-                .tracking(0.3)
+                .tracking(0.2)
                 .foregroundColor(AppColors.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -81,7 +81,7 @@ struct DashboardView: View {
             VStack(alignment: .leading, spacing: 12) {
                 FDSLabel("Net Flow This Month")
                     .font(AppTypography.captionLgMedium)
-                    .tracking(0.3)
+                    .tracking(0.2)
                     .foregroundColor(AppColors.Text.secondary)
 
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
@@ -205,7 +205,7 @@ struct DashboardView: View {
                                 merchant: txn.description,
                                 categorySymbol: categorySymbol(for: txn.description),
                                 subtitle: dateString(txn.postedAt),
-                                amount: formatAmount(txn.amountMinorUnits),
+                                amount: formatAmount(txn.amountMinorUnits, currencyCode: txn.currencyCode),
                                 isDebit: txn.transactionType == .debit
                             )
                             .padding(AppSpacing.xs)
@@ -222,24 +222,21 @@ struct DashboardView: View {
     }
 
     private var currentMonth: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: Date()).uppercased()
+        FormatterCache.formatMonthYear(Date()).uppercased()
     }
 
+    /// For totals (aggregated across accounts) we display in INR — the app's primary currency.
+    /// Individual transaction rows use their own currencyCode via the overload below.
     private func formatAmount(_ minorUnits: Int64) -> String {
-        let amount = Double(minorUnits) / 100.0
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "INR"
-        formatter.currencySymbol = "₹"
-        return formatter.string(from: NSNumber(value: amount)) ?? "₹0.00"
+        FormatterCache.formatCurrency(Decimal(minorUnits) / 100, currencyCode: "INR")
+    }
+
+    private func formatAmount(_ minorUnits: Int64, currencyCode: String) -> String {
+        FormatterCache.formatCurrency(Decimal(minorUnits) / 100, currencyCode: currencyCode)
     }
 
     private func dateString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d · h:mm a"
-        return formatter.string(from: date)
+        FormatterCache.formatDateTime(date)
     }
 
     private func categorySymbol(for description: String) -> String {

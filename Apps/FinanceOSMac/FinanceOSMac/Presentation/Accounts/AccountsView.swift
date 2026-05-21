@@ -95,7 +95,7 @@ struct AccountsView: View {
                 .foregroundColor(AppColors.Text.primary)
             FDSLabel("Manage your accounts and balances")
                 .font(AppTypography.captionLgMedium)
-                .tracking(0.3)
+                .tracking(0.2)
                 .foregroundColor(AppColors.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

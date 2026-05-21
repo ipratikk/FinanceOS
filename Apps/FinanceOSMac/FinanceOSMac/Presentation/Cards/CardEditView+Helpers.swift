@@ -12,7 +12,7 @@ struct CardCatalogWidget: View {
                 FDSLabel(card.name, style: .bodyMedium, color: .primary)
                     .lineLimit(1)
                 FDSLabel(card.cardType.displayName.uppercased(), style: .caption, color: .secondary)
-                    .tracking(0.4)
+                    .tracking(0.5)
             }
             Spacer()
         }
