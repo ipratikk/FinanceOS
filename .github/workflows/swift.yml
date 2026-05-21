@@ -14,8 +14,9 @@ defaults:
     shell: bash
 
 env:
-  SPM_BUILD_PATH: .spm-build
+  SPM_BUILD_PATH: .build
   DERIVED_DATA_PATH: .derivedData
+  XCODE_VERSION: "15"
 
 # =========================================================
 # Concurrency
@@ -32,6 +33,142 @@ concurrency:
 jobs:
 
   # =======================================================
+  # Detect Changed Packages
+  # =======================================================
+
+  detect-changes:
+    name: Detect Changed Packages
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 5
+
+    outputs:
+      packages: ${{ steps.detect.outputs.packages }}
+      has-changes: ${{ steps.detect.outputs.has-changes }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Changed Packages
+        id: detect
+        run: |
+          set -euo pipefail
+
+          echo "🔍 Detecting changed packages..."
+
+          # Get list of changed files
+          CHANGED_FILES=""
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # PR: compare origin/main to current branch
+            CHANGED_FILES=$(git diff --name-only origin/main...HEAD 2>/dev/null || echo "")
+          else
+            # Push: compare previous commit to current
+            # Handle first commit case (no HEAD~1)
+            if git rev-parse HEAD~1 >/dev/null 2>&1; then
+              CHANGED_FILES=$(git diff --name-only HEAD~1...HEAD 2>/dev/null || echo "")
+            else
+              echo "ℹ️ First commit on branch — testing all packages"
+              CHANGED_FILES="INITIAL_COMMIT"
+            fi
+          fi
+
+          echo "📋 Changed files:"
+          if [[ -z "$CHANGED_FILES" ]]; then
+            echo "  (none detected)"
+          else
+            echo "$CHANGED_FILES" | sed 's/^/  /'
+          fi
+
+          # Initialize packages to test (associative array)
+          declare -a packages_to_test=()
+
+          # =========================================================
+          # Package Dependency Graph:
+          #   FinanceParsers (no deps)
+          #     ↓
+          #   FinanceCore (depends on Parsers)
+          #     ↓
+          #   FinanceUI (depends on Core)
+          #     ↓
+          #   FinanceTesting (depends on all)
+          # =========================================================
+
+          # Check if FinanceParsers changed (base level)
+          if [[ "$CHANGED_FILES" == "INITIAL_COMMIT" ]] || echo "$CHANGED_FILES" | grep -q "^Packages/FinanceParsers/"; then
+            echo "📦 FinanceParsers changed → cascade: test all packages"
+            packages_to_test=(FinanceParsers FinanceCore FinanceUI FinanceTesting)
+          else
+            # FinanceParsers NOT changed — check dependent packages
+
+            # Check if FinanceCore changed (mid level)
+            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceCore/"; then
+              echo "📦 FinanceCore changed → cascade: Core, UI, Testing"
+              packages_to_test+=(FinanceCore FinanceUI FinanceTesting)
+            fi
+
+            # Check if FinanceUI changed (mid level)
+            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceUI/"; then
+              echo "📦 FinanceUI changed → cascade: UI, Testing"
+              # Add if not already present
+              if [[ ! " ${packages_to_test[@]} " =~ " FinanceUI " ]]; then
+                packages_to_test+=(FinanceUI FinanceTesting)
+              fi
+            fi
+
+            # Check if FinanceTesting changed (leaf level)
+            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceTesting/"; then
+              echo "📦 FinanceTesting changed → test: Testing only"
+              if [[ ! " ${packages_to_test[@]} " =~ " FinanceTesting " ]]; then
+                packages_to_test+=(FinanceTesting)
+              fi
+            fi
+
+            # Check for non-package file changes (App, CI, config, docs)
+            # If any changed file is NOT in Packages/, test everything
+            if [[ "$CHANGED_FILES" != "INITIAL_COMMIT" ]] && echo "$CHANGED_FILES" | grep -v "^Packages/" | grep -q "."; then
+              echo "📦 Non-package files changed (.github, Apps, docs, etc.) → test all packages"
+              packages_to_test=(FinanceParsers FinanceCore FinanceUI FinanceTesting)
+            fi
+          fi
+
+          # =========================================================
+          # Deduplicate and output
+          # =========================================================
+
+          if [[ ${#packages_to_test[@]} -eq 0 ]]; then
+            # No changes in any package
+            echo "packages=[]" >> "$GITHUB_OUTPUT"
+            echo "has-changes=false" >> "$GITHUB_OUTPUT"
+            echo "✅ No package changes detected — skipping tests"
+
+          else
+            # Remove duplicates while preserving order
+            declare -a unique_packages=()
+            for pkg in "${packages_to_test[@]}"; do
+              if [[ ! " ${unique_packages[@]} " =~ " ${pkg} " ]]; then
+                unique_packages+=("$pkg")
+              fi
+            done
+
+            # Format as JSON array: ["pkg1","pkg2",...]
+            PACKAGES_JSON="["
+            for i in "${!unique_packages[@]}"; do
+              if [[ $i -gt 0 ]]; then
+                PACKAGES_JSON+=","
+              fi
+              PACKAGES_JSON+="\"${unique_packages[$i]}\""
+            done
+            PACKAGES_JSON+="]"
+
+            echo "packages=$PACKAGES_JSON" >> "$GITHUB_OUTPUT"
+            echo "has-changes=true" >> "$GITHUB_OUTPUT"
+
+            echo "✅ Packages to test: $(echo "${unique_packages[@]}" | tr ' ' ', ')"
+          fi
+
+  # =======================================================
   # SwiftLint
   # =======================================================
 
@@ -46,15 +183,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache Homebrew Tools
+        id: cache-brew
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/Homebrew/swiftlint--*
+            /Library/Caches/Homebrew/swiftlint--*
+          key: brew-swiftlint-${{ runner.os }}
+          restore-keys: |
+            brew-swiftlint-${{ runner.os }}-
+
       - name: Install SwiftLint
         run: |
           set -euo pipefail
 
           if ! command -v swiftlint >/dev/null 2>&1; then
             brew install swiftlint
+          else
+            echo "✓ SwiftLint already installed: $(swiftlint version)"
           fi
 
-      - name: Lint Changed Files
+      - name: Lint Changed Files (PR) / All Files (Push)
         run: |
           set -euo pipefail
 
@@ -66,17 +216,15 @@ jobs:
             )
 
             if [[ -z "$CHANGED_FILES" ]]; then
-              echo "No Swift files changed"
+              echo "ℹ️ No Swift files changed"
               exit 0
             fi
 
-            echo "Linting changed Swift files"
+            echo "📝 Linting $( echo "$CHANGED_FILES" | wc -l ) changed Swift files"
 
             while IFS= read -r file; do
 
               [[ -z "$file" ]] && continue
-
-              echo "Linting $file"
 
               swiftlint lint \
                 --strict \
@@ -86,165 +234,208 @@ jobs:
             done <<< "$CHANGED_FILES"
 
           else
+            echo "📝 Linting all Swift files"
             swiftlint lint --strict --quiet
           fi
 
   # =======================================================
-  # Package Tests
+  # Resolve Dependencies (Shared Cache Setup)
+  # =======================================================
+
+  resolve-deps:
+    name: Resolve Dependencies
+    runs-on: macos-26
+
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+
+      - name: Cache SPM Resolved Dependencies
+        id: cache-resolve
+        uses: actions/cache@v4
+        with:
+          path: |
+            Packages/**/Package.resolved
+            .build/repositories
+          key: >
+            spm-resolved-${{ runner.os }}-${{
+              hashFiles(
+                'Packages/**/Package.swift'
+              )
+            }}
+          restore-keys: |
+            spm-resolved-${{ runner.os }}-
+
+      - name: Resolve All Package Dependencies
+        run: |
+          set -euo pipefail
+
+          echo "📦 Resolving package dependencies..."
+
+          for package in Packages/*/; do
+            package_name=$(basename "$package")
+            echo "  Resolving $package_name..."
+            swift package resolve --package-path "$package"
+          done
+
+          echo "✓ All dependencies resolved"
+
+  # =======================================================
+  # Package Tests (Matrix)
   # =======================================================
 
   package-tests:
-    name: Package Tests (${{ matrix.package }})
+    name: Test ${{ matrix.package }}
     runs-on: macos-26
 
-    timeout-minutes: 20
+    timeout-minutes: 25
+
+    needs:
+      - detect-changes
+      - resolve-deps
+
+    if: needs.detect-changes.outputs.has-changes == 'true'
 
     strategy:
       fail-fast: false
 
       matrix:
-        package:
-          - FinanceCore
-          - FinanceParsers
-          - FinanceUI
-          - FinanceTesting
+        package: ${{ fromJson(needs.detect-changes.outputs.packages) }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Shared SPM Build
+
+      - name: Cache SPM Build Artifacts
         uses: actions/cache@v4
         with:
-          path: ${{ env.SPM_BUILD_PATH }}
-
+          path: |
+            ${{ env.SPM_BUILD_PATH }}
+            ~/.cache/swift-build-cache
           key: >
-            spm-${{ runner.os }}-${{ matrix.package }}-${{
+            spm-build-${{ runner.os }}-${{ matrix.package }}-${{
               hashFiles(
-                'Packages/**/Package.swift',
-                'Packages/**/Package.resolved'
+                'Packages/**/Package.resolved',
+                'Packages/**/Package.swift'
               )
             }}
-
           restore-keys: |
-            spm-${{ runner.os }}-${{ matrix.package }}-
-            spm-${{ runner.os }}-
+            spm-build-${{ runner.os }}-${{ matrix.package }}-
+            spm-build-${{ runner.os }}-
 
-      - name: Resolve Package Dependencies
+      - name: Cache Swift Module Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.swiftpm
+          key: swiftpm-${{ runner.os }}-${{ hashFiles('Packages/**/Package.swift') }}
+          restore-keys: |
+            swiftpm-${{ runner.os }}-
+
+      - name: Test ${{ matrix.package }}
         run: |
           set -euo pipefail
 
-          swift package resolve \
-            --package-path Packages/${{ matrix.package }}
-
-      - name: Run Package Tests
-        run: |
-          set -euo pipefail
+          echo "🧪 Testing ${{ matrix.package }}..."
 
           swift test \
             --package-path Packages/${{ matrix.package }} \
             --build-path ${{ env.SPM_BUILD_PATH }} \
-            --parallel
+            --parallel \
+            --verbose
+
+          echo "✓ Tests passed for ${{ matrix.package }}"
 
   # =======================================================
   # macOS Build
   # =======================================================
 
   macos-build:
-    name: macOS Build
+    name: Build macOS App
     runs-on: macos-26
 
-    timeout-minutes: 20
+    timeout-minutes: 30
+
+    needs: resolve-deps
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache DerivedData
+
+      - name: Setup Xcode
+        run: |
+          set -euo pipefail
+
+          echo "ℹ️ Xcode version: $(/usr/bin/xcodebuild -version)"
+          echo "ℹ️ Swift version: $(swift --version)"
+
+      - name: Cache Derived Data
         uses: actions/cache@v4
         with:
           path: ${{ env.DERIVED_DATA_PATH }}
-
           key: >
-            deriveddata-${{ runner.os }}-${{
+            xcode-${{ runner.os }}-${{
               hashFiles(
                 '**/Package.resolved',
-                '**/*.xcodeproj/project.pbxproj'
+                'Apps/**/*.pbxproj',
+                'Apps/**/*.xcconfig'
               )
             }}
-
           restore-keys: |
-            deriveddata-${{ runner.os }}-
+            xcode-${{ runner.os }}-
 
-      - name: Build macOS App
+      - name: Cache Xcode Build Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/ModuleCache
+          key: xcode-modulecache-${{ runner.os }}
+          restore-keys: |
+            xcode-modulecache-${{ runner.os }}-
+
+      - name: Cache Swift Build Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/swift-build-cache
+          key: swift-build-cache-${{ runner.os }}
+
+      - name: Build FinanceOSMac (arm64)
         run: |
           set -euo pipefail
+
+          echo "🔨 Building FinanceOSMac for arm64..."
 
           xcodebuild \
             build \
             -scheme FinanceOSMac \
             -destination 'platform=macOS,arch=arm64' \
             -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
-            COMPILER_INDEX_STORE_ENABLE=NO \
             -parallelizeTargets \
-            -quiet
+            -quiet \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            SWIFT_COMPILATION_MODE=wholemodule \
+            DEBUG_INFORMATION_FORMAT=dwarf
 
-  # =======================================================
-  # Snapshot Tests
-  # =======================================================
+          echo "✓ Build successful"
 
-  # snapshot-tests:
-  #   name: Snapshot Tests
-  #   runs-on: macos-26
+      - name: Build FinanceOSMac (x86_64) - Optional
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
 
-  #   timeout-minutes: 30
+          echo "🔨 Building FinanceOSMac for x86_64..."
 
-  #   needs:
-  #     - package-tests
-  #     - macos-build
+          xcodebuild \
+            build \
+            -scheme FinanceOSMac \
+            -destination 'platform=macOS,arch=x86_64' \
+            -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
+            -parallelizeTargets \
+            -quiet \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            SWIFT_COMPILATION_MODE=wholemodule
 
-  #   steps:
-  #     - uses: actions/checkout@v4
-
-  #     - name: Cache DerivedData
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: ${{ env.DERIVED_DATA_PATH }}
-
-  #         key: >
-  #           snapshot-deriveddata-${{ runner.os }}-${{
-  #             hashFiles(
-  #               '**/Package.resolved',
-  #               '**/*.xcodeproj/project.pbxproj'
-  #             )
-  #           }}
-
-  #         restore-keys: |
-  #           snapshot-deriveddata-${{ runner.os }}-
-
-  #     - name: Run Snapshot Tests
-  #       env:
-  #         IS_RUNNING_IN_CI: true
-
-  #       run: |
-  #         set -euo pipefail
-
-  #         xcodebuild \
-  #           test \
-  #           -scheme FinanceOSMac \
-  #           -destination 'platform=macOS,arch=arm64' \
-  #           -derivedDataPath ${{ env.DERIVED_DATA_PATH }} \
-  #           COMPILER_INDEX_STORE_ENABLE=NO \
-  #           -parallel-testing-enabled YES \
-  #           -parallelizeTargets \
-  #           -resultBundlePath TestResults \
-  #           -quiet
-
-  #     - name: Upload Snapshot Test Results
-  #       if: failure()
-
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: snapshot-test-results
-  #         path: TestResults
+          echo "✓ Build successful"
 
   # =======================================================
   # Validation Summary
@@ -257,12 +448,36 @@ jobs:
     timeout-minutes: 5
 
     needs:
+      - detect-changes
       - lint
       - package-tests
       - macos-build
-      # - snapshot-tests
+
+    if: always()
 
     steps:
-      - name: Validation Passed
+      - name: Check Results
         run: |
+          set -euo pipefail
+
+          if [[ "${{ needs.lint.result }}" != "success" ]]; then
+            echo "❌ Linting failed"
+            exit 1
+          fi
+
+          # Skip package tests check if no changes detected
+          if [[ "${{ needs.detect-changes.outputs.has-changes }}" == "true" ]]; then
+            if [[ "${{ needs.package-tests.result }}" != "success" ]]; then
+              echo "❌ Package tests failed"
+              exit 1
+            fi
+          else
+            echo "ℹ️ No package changes detected, skipped package tests"
+          fi
+
+          if [[ "${{ needs.macos-build.result }}" != "success" ]]; then
+            echo "❌ macOS build failed"
+            exit 1
+          fi
+
           echo "✅ All CI validations passed"

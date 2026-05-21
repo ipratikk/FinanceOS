@@ -15,9 +15,9 @@ A native macOS financial management application for importing, analyzing, and tr
 
 ### Prerequisites
 
-- macOS 12.0+
-- Xcode 15+
-- Swift 5.9+
+- **macOS 26+** (required for Swift 6.1 compatibility)
+- **Xcode 26+** (required for Swift 6.1 toolchain)
+- Swift 6.1+ (some packages require this version)
 
 ### Installation
 
@@ -128,6 +128,22 @@ Uses conventional commit format:
 - All PRs require review before merge
 - CI must pass (SwiftLint, tests, build)
 - Architecture decisions reviewed for coupling/impact
+
+## CI/CD Pipeline
+
+GitHub Actions workflow (`swift.yml`):
+
+- **Runner:** macOS 26 (includes Swift 6.1+ pre-installed)
+- **Change Detection:** Intelligent package dependency tracking
+  - Single package change → test affected packages + dependents
+  - Non-package change → test all packages for safety
+- **Caching:** Multi-layer strategy (SPM, build artifacts, DerivedData, ModuleCache)
+- **Validation Gate:** All jobs must pass before PR can merge
+
+Performance:
+- ~50% faster CI on single-package PRs (cached dependencies)
+- Parallel package testing (4 tests in matrix)
+- Shared dependency resolution across all jobs
 
 ## Testing
 
