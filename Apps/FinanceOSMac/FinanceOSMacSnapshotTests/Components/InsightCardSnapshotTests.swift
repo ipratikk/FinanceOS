@@ -7,7 +7,9 @@ import SwiftUI
 import XCTest
 
 final class InsightCardSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_insight_card() {
         let view = InsightCard("Net Balance", value: "$2,654.33") {

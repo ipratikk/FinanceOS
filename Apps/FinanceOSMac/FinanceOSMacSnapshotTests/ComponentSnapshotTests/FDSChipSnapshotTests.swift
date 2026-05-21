@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSChipSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_chip_active_accent() {
         let view = FDSChip("All", isActive: true, tone: .accent) {}

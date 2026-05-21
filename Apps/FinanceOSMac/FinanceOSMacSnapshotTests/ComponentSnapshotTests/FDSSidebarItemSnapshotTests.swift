@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSSidebarItemSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_sidebar_item_unselected() {
         let view = FDSSidebarItem("Dashboard", symbol: "square.grid.2x2", isSelected: false) {}

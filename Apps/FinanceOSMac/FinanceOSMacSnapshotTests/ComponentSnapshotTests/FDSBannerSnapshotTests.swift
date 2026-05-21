@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSBannerSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_banner_info() {
         let view = FDSBanner("Statement period: Jan 2025 – Mar 2025.", style: .info)

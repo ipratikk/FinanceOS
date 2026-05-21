@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSToggleSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_toggle_off() {
         let view = FDSToggle(isOn: .constant(false), label: "Notifications")

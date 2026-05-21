@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSTransactionRowSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_row_debit_with_symbol() {
         let view = FDSTransactionRow(

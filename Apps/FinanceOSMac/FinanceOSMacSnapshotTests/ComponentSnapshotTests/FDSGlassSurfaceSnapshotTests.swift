@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSGlassSurfaceSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_glass_surface_basic() {
         let view = FDSGlassSurface(cornerRadius: AppRadius.lg) {

@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSRowSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_row_basic() {
         let view = FDSRow {

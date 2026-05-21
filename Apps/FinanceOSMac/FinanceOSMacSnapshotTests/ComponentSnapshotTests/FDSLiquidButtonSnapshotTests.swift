@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSLiquidButtonSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_button_primary() {
         let view = FDSLiquidButton("Save", variant: .primary) {}

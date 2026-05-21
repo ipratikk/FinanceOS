@@ -8,7 +8,9 @@ import XCTest
 // MARK: - FDSErrorState
 
 final class FDSErrorStateSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_error_state_basic() {
         let view = FDSErrorState(
@@ -33,7 +35,9 @@ final class FDSErrorStateSnapshotTests: SnapshotTestable {
 // MARK: - FDSAccountChip
 
 final class FDSAccountChipSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_chip_compact() {
         let view = FDSAccountChip(bankName: "Chase", last4: "1234", style: .compact)
@@ -54,7 +58,9 @@ final class FDSAccountChipSnapshotTests: SnapshotTestable {
 // MARK: - FDSStepper
 
 final class FDSStepperSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_stepper_middle_value() {
         let view = FDSStepper("Statement Day", value: .constant(15))
@@ -75,7 +81,9 @@ final class FDSStepperSnapshotTests: SnapshotTestable {
 // MARK: - FDSRadio
 
 final class FDSRadioSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_radio_unselected() {
         let view = FDSRadio(isSelected: .constant(false), label: "Option A")
@@ -110,7 +118,9 @@ final class FDSRadioSnapshotTests: SnapshotTestable {
 // MARK: - FDSMetricTile
 
 final class FDSMetricTileSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_metric_tile_basic() {
         let view = FDSMetricTile("Total Spending", value: "₹2,345.67", symbol: "arrow.up.right.circle.fill")

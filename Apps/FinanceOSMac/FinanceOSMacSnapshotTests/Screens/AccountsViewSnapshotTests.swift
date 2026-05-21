@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class AccountsViewSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_accounts_view() {
         let ledgerRepo = MockLedgerRepository()

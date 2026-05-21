@@ -7,7 +7,9 @@ import SwiftUI
 import XCTest
 
 final class ImportTransactionListViewSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_import_transaction_list_no_dupes() {
         let view = ImportTransactionListView(

@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class TransactionListContentViewSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_transaction_list_content() {
         let rows = PreviewTransactions.samples.map { txn in

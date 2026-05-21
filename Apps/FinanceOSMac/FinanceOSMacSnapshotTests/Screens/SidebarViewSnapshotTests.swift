@@ -5,7 +5,9 @@ import SwiftUI
 import XCTest
 
 final class SidebarViewSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_sidebar_initial() {
         verifySnapshots(SidebarView())

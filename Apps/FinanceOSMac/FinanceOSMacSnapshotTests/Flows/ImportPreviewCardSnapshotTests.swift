@@ -7,7 +7,9 @@ import SwiftUI
 import XCTest
 
 final class ImportPreviewCardSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_import_preview_card() {
         let view = ImportPreviewCard(parsedStatements: [

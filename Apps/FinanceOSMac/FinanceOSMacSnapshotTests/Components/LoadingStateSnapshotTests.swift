@@ -7,7 +7,9 @@ import SwiftUI
 import XCTest
 
 final class LoadingStateSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_loading_skeleton_view() {
         let view = LoadingSkeletonView()

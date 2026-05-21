@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSCardSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_card_padded_default() {
         let view = FDSCard {

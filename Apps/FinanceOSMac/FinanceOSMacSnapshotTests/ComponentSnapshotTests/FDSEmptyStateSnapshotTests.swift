@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSEmptyStateComponentSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_empty_state_accounts() {
         let view = FDSEmptyState(

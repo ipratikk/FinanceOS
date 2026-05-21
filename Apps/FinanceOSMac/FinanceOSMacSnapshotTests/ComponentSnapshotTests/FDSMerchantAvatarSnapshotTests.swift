@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSMerchantAvatarSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_avatar_initial_fallback() {
         let view = FDSMerchantAvatar(name: "Whole Foods Market", size: 36)

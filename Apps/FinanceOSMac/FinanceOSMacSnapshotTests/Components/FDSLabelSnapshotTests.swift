@@ -6,7 +6,9 @@ import SwiftUI
 import XCTest
 
 final class FDSLabelSnapshotTests: SnapshotTestable {
-    override var record: Bool { false }
+    override var record: Bool {
+        false
+    }
 
     func test_label_display_large() {
         let view = FDSLabel("$5,234.56", style: .displayLarge)
