@@ -51,7 +51,7 @@ struct DashboardView: View {
                             recentActivityCard(viewModel)
                         }
                     }
-                    .padding(28)
+                    .padding(AppSpacing.xl)
                 }
                 .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { windowWidth = $0 }
                 .background(AppColors.base)

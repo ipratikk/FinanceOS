@@ -59,7 +59,7 @@ extension DashboardView {
                     .frame(width: 30, height: 30)
                     .overlay {
                         Image(systemName: categorySymbol(for: txn.description))
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(AppTypography.captionSmSemibold)
                             .foregroundStyle(AppColors.Text.secondary)
                     }
                 FDSLabel(txn.description)
