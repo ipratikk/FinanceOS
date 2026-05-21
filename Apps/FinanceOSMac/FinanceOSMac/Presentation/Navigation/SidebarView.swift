@@ -32,8 +32,7 @@ struct SidebarView: View {
 
             footerImport
         }
-        .frame(minWidth: AppSpacing.Layout.sidebarWidth, idealWidth: AppSpacing.Layout.sidebarWidth, maxWidth: 240)
-        .background(.regularMaterial)
+        .frame(minWidth: AppSpacing.Layout.sidebarWidth, idealWidth: AppSpacing.Layout.sidebarWidth)
         .colorScheme(.dark)
     }
 

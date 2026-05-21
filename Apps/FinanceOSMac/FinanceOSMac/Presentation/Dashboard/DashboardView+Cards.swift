@@ -64,11 +64,11 @@ extension DashboardView {
                     }
                 }
 
+                Spacer()
+
                 // Trend line chart
-                if !viewModel.monthlySummaries.isEmpty {
-                    netWorthChart(viewModel.monthlySummaries)
-                        .frame(height: 140)
-                }
+                netWorthChart(viewModel.monthlySummaries)
+                    .frame(height: 140)
 
                 // Legend
                 HStack(spacing: 20) {

@@ -5,7 +5,10 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var viewModel: DashboardViewModel?
+    @State private var windowWidth: CGFloat = 1200
     @Environment(AppNavigator.self) var navigator
+
+    private var isWide: Bool { windowWidth >= 900 }
 
     init() {}
     init(viewModel: DashboardViewModel) {
@@ -18,10 +21,20 @@ struct DashboardView: View {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 20) {
                         // Row 1: Net Worth hero + Wealth Intelligence
-                        HStack(alignment: .top, spacing: 20) {
-                            netWorthHero(viewModel)
-                            wealthIntelCard
-                                .frame(width: 310)
+                        if isWide {
+                            HStack(alignment: .top, spacing: 20) {
+                                netWorthHero(viewModel)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                wealthIntelCard
+                                    .containerRelativeFrame(.horizontal) { width, _ in width * 0.30 }
+                                    .frame(maxHeight: .infinity)
+                            }
+                            .fixedSize(horizontal: false, vertical: true)
+                        } else {
+                            VStack(spacing: 20) {
+                                netWorthHero(viewModel)
+                                wealthIntelCard
+                            }
                         }
 
                         // Row 2: three metric tiles
@@ -38,6 +51,7 @@ struct DashboardView: View {
                     }
                     .padding(28)
                 }
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { windowWidth = $0 }
                 .background(AppColors.base)
                 .task { await viewModel.load() }
             } else {
