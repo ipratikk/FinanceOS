@@ -35,7 +35,7 @@ struct BankEditView: View {
                     }
 
                     FDSCard(padded: false) {
-                        FDSLiquidButton("Delete Bank", symbol: "trash.fill", variant: .danger) {
+                        FDSLiquidButton("Delete Bank", leadingIcon: "trash.fill", variant: .danger) {
                             showDeleteConfirm = true
                         }
                         .padding(AppSpacing.xs)

@@ -83,7 +83,7 @@ struct AccountEditView: View {
                     }
 
                     FDSCard(padded: false) {
-                        FDSLiquidButton("Delete Account", symbol: "trash.fill", variant: .danger) {
+                        FDSLiquidButton("Delete Account", leadingIcon: "trash.fill", variant: .danger) {
                             showDeleteConfirm = true
                         }
                         .padding(AppSpacing.xs)
@@ -92,7 +92,7 @@ struct AccountEditView: View {
                     // Save
                     FDSLiquidButton(
                         "Save Changes",
-                        symbol: "checkmark",
+                        leadingIcon: "checkmark",
                         variant: .primary,
                         isEnabled: hasChanges && !isSaving,
                         isLoading: isSaving

@@ -60,7 +60,7 @@ struct AccountCreationView: View {
                         .padding(AppSpacing.xs)
                     }
 
-                    FDSLiquidButton("Create Account", symbol: "plus", variant: .primary) {
+                    FDSLiquidButton("Create Account", leadingIcon: "plus", variant: .primary) {
                         commit()
                     }
                     .disabled(last4.trimmingCharacters(in: .whitespaces).isEmpty)

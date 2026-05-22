@@ -30,7 +30,7 @@ final class FDSGlassSurfaceSnapshotTests: SnapshotTestable {
                 FDSLabel("DANGER ZONE")
                     .font(AppTypography.captionSmSemibold)
                     .foregroundColor(AppColors.Text.secondary)
-                FDSLiquidButton("Delete Card", symbol: "trash.fill", variant: .danger) {}
+                FDSLiquidButton("Delete Card", leadingIcon: "trash.fill", variant: .danger) {}
             }
         }
         verifyFDSComponent(view, size: CGSize(width: 480, height: 140))

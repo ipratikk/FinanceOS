@@ -21,7 +21,7 @@ final class FDSLiquidButtonSnapshotTests: SnapshotTestable {
     }
 
     func test_button_danger() {
-        let view = FDSLiquidButton("Delete Card", symbol: "trash.fill", variant: .danger) {}
+        let view = FDSLiquidButton("Delete Card", leadingIcon: "trash.fill", variant: .danger) {}
         verifyFDSComponent(view, size: CGSize(width: 240, height: 72))
     }
 
@@ -41,7 +41,7 @@ final class FDSLiquidButtonSnapshotTests: SnapshotTestable {
     }
 
     func test_button_primary_with_symbol() {
-        let view = FDSLiquidButton("Import", symbol: "arrow.down.doc.fill", variant: .primary) {}
+        let view = FDSLiquidButton("Import", leadingIcon: "arrow.down.doc.fill", variant: .primary) {}
         verifyFDSComponent(view, size: CGSize(width: 240, height: 72))
     }
 

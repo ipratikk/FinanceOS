@@ -9,6 +9,7 @@ struct ImportPreviewView: View {
     @State private var sheetCreationItem: TargetCreationState?
     @State private var importedExpanded = false
     @State private var duplicatesExpanded = false
+    @State var isTargetMenuOpen = false
 
     var body: some View {
         VStack(spacing: 0) {

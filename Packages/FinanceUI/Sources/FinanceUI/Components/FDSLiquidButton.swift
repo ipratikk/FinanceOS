@@ -10,7 +10,8 @@ import SwiftUI
 /// - `.link`    — bare AppColors.accent text with hover pill
 public struct FDSLiquidButton: View {
     let title: String
-    let symbol: String?
+    let leadingIcon: String?
+    let trailingIcon: String?
     let variant: Variant
     let isEnabled: Bool
     let isLoading: Bool
@@ -25,14 +26,16 @@ public struct FDSLiquidButton: View {
 
     public init(
         _ title: String,
-        symbol: String? = nil,
+        leadingIcon: String? = nil,
+        trailingIcon: String? = nil,
         variant: Variant = .ghost,
         isEnabled: Bool = true,
         isLoading: Bool = false,
         action: @escaping () -> Void
     ) {
         self.title = title
-        self.symbol = symbol
+        self.leadingIcon = leadingIcon
+        self.trailingIcon = trailingIcon
         self.variant = variant
         self.isEnabled = isEnabled
         self.isLoading = isLoading
@@ -60,12 +63,16 @@ public struct FDSLiquidButton: View {
         ZStack {
             // Stable sizing frame — always render the label for layout
             HStack(spacing: 6) {
-                if let symbol {
-                    Image(systemName: symbol)
+                if let leadingIcon {
+                    Image(systemName: leadingIcon)
                         .font(AppTypography.bodySmSemibold)
                 }
                 FDSLabel(title)
                     .font(AppTypography.bodySmSemibold)
+                if let trailingIcon {
+                    Image(systemName: trailingIcon)
+                        .font(AppTypography.bodySmSemibold)
+                }
             }
             .opacity(isLoading ? 0 : 1)
 
