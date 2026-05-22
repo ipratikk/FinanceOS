@@ -146,7 +146,7 @@ extension CardEditView {
                     .foregroundStyle(AppColors.Text.primary)
                 FDSLiquidButton(
                     "Delete \(isCard ? "Card" : "Account")",
-                    symbol: "trash.fill",
+                    leadingIcon: "trash.fill",
                     variant: .danger
                 ) {
                     showDeleteConfirm = true

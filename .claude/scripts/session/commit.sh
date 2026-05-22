@@ -82,9 +82,12 @@ for i in "${!GROUP_LABELS[@]}"; do
   # Stage group files
   git add -- "${group_files[@]}"
 
-  # Generate commit message via caveman-commit, fall back to generic
-  if command -v caveman-commit &>/dev/null; then
-    msg=$(caveman-commit 2>/dev/null || echo "chore($label): update files")
+  # Generate commit message via claude, fall back to generic
+  if command -v claude &>/dev/null; then
+    diff_summary=$(git diff --cached --stat 2>/dev/null | tail -5)
+    diff_patch=$(git diff --cached 2>/dev/null | head -200)
+    prompt="Write a git commit message for these changes. Conventional Commits format. Subject ≤50 chars. Body only if why is non-obvious. No filler. Layer: $label.\n\nStat:\n$diff_summary\n\nDiff:\n$diff_patch"
+    msg=$(echo -e "$prompt" | claude -p --output-format text 2>/dev/null | head -20 || echo "chore($label): update ${#group_files[@]} file(s)")
   else
     msg="chore($label): update ${#group_files[@]} file(s)"
   fi

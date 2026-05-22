@@ -69,7 +69,7 @@ extension ImportView {
 
                     FDSLiquidButton(
                         "Change source",
-                        symbol: "chevron.left",
+                        leadingIcon: "chevron.left",
                         variant: .link,
                         action: viewModel.resetToSource
                     )
@@ -95,7 +95,7 @@ extension ImportView {
                                 .foregroundColor(AppColors.Text.tertiary)
                         }
 
-                        FDSLiquidButton("Choose file", symbol: "doc", variant: .primary, action: openFilePicker)
+                        FDSLiquidButton("Choose file", leadingIcon: "doc", variant: .primary, action: openFilePicker)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
