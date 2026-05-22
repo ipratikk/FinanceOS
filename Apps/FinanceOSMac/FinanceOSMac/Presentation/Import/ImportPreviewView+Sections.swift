@@ -123,7 +123,7 @@ extension ImportPreviewView {
             }
             .padding(.vertical, AppSpacing.compact)
             .padding(.horizontal, AppSpacing.md)
-            .background(isSelected ? AppColors.accent.opacity(0.08) : Color.clear)
+            .background(isSelected ? AppColors.accent.opacity(0.08) : AppColors.clear)
             .contentShape(Rectangle())
         })
         .buttonStyle(.plain)
