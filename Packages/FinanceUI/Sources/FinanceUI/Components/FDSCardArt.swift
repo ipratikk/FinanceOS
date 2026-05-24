@@ -79,8 +79,8 @@ public struct FDSCardArt: View {
         .shadow(
             color: AppShadows.subtle.color,
             radius: AppShadows.subtle.radius,
-            x: AppShadows.subtle.x,
-            y: AppShadows.subtle.y
+            x: AppShadows.subtle.offsetX,
+            y: AppShadows.subtle.offsetY
         )
     }
 }

@@ -34,7 +34,7 @@ class DashboardViewModel {
             recentTransactions = try await recent
         } catch {
             self.error = error.localizedDescription
-            FinanceLogger.ui.logError("Dashboard load failed", caughtError: error, [:])
+            FinanceLogger.userInterface.logError("Dashboard load failed", caughtError: error, [:])
         }
     }
 }

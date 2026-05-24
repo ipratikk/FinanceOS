@@ -32,7 +32,7 @@ class AnalyticsViewModel {
             topMerchants = aggregateTopMerchants(from: allTransactions)
         } catch {
             self.error = error.localizedDescription
-            FinanceLogger.ui.logError("Analytics load failed", caughtError: error, [:])
+            FinanceLogger.userInterface.logError("Analytics load failed", caughtError: error, [:])
         }
     }
 

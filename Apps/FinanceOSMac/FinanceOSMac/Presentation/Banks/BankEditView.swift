@@ -48,7 +48,9 @@ struct BankEditView: View {
                     .foregroundStyle(AppColors.Text.secondary)
             }
             Spacer()
-            Button(action: { dismiss() }) {
+            Button {
+                dismiss()
+            } label: {
                 Image(systemName: "xmark.circle.fill")
                     .font(AppTypography.headingSmall)
                     .foregroundStyle(AppColors.Text.secondary)

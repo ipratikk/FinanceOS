@@ -9,7 +9,7 @@ import Foundation
 import OSLog
 
 public enum FinanceLogger {
-    public static let ui = Logger(
+    public static let userInterface = Logger(
         subsystem: subsystem,
         category: "UI"
     )

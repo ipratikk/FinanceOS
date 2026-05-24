@@ -27,8 +27,8 @@ public final class DatabaseManager: @unchecked Sendable {
         )
 
         var config = Configuration()
-        config.prepareDatabase { db in
-            try db.execute(sql: "PRAGMA foreign_keys = ON")
+        config.prepareDatabase { database in
+            try database.execute(sql: "PRAGMA foreign_keys = ON")
         }
 
         dbQueue = try DatabaseQueue(

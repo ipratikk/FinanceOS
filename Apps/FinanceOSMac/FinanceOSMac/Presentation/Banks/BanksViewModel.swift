@@ -42,7 +42,7 @@ final class BanksViewModel {
             }
             ledgersByBank = ledgerMap
         } catch {
-            FinanceLogger.ui.logError("Failed to load banks", caughtError: error, [:])
+            FinanceLogger.userInterface.logError("Failed to load banks", caughtError: error, [:])
         }
     }
 
@@ -51,7 +51,7 @@ final class BanksViewModel {
             try await repository.update(bank)
             await loadBanks()
         } catch {
-            FinanceLogger.ui.logError("Failed to load banks", caughtError: error, [:])
+            FinanceLogger.userInterface.logError("Failed to load banks", caughtError: error, [:])
         }
     }
 

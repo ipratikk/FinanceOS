@@ -18,8 +18,8 @@ public final class GRDBBankRepository:
     }
 
     public func fetchBanks() async throws -> [Bank] {
-        try await dbQueue.read { db in
-            try Bank.fetchAll(db)
+        try await dbQueue.read { database in
+            try Bank.fetchAll(database)
         }
     }
 

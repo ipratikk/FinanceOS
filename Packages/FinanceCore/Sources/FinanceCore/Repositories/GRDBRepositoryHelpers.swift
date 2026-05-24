@@ -2,14 +2,14 @@ import Foundation
 import GRDB
 
 func grdbInsert(_ record: some PersistableRecord & Sendable, in queue: DatabaseQueue) async throws {
-    try await queue.write { db in
-        try record.insert(db)
+    try await queue.write { database in
+        try record.insert(database)
     }
 }
 
 func grdbUpdate(_ record: some PersistableRecord & Sendable, in queue: DatabaseQueue) async throws {
-    try await queue.write { db in
-        try record.update(db)
+    try await queue.write { database in
+        try record.update(database)
     }
 }
 
@@ -18,7 +18,7 @@ func grdbDelete<T: PersistableRecord & Identifiable & Sendable>(
     key: UUID,
     in queue: DatabaseQueue
 ) async throws {
-    try await queue.write { db in
-        try T.deleteOne(db, key: key)
+    try await queue.write { database in
+        _ = try T.deleteOne(database, key: key)
     }
 }
