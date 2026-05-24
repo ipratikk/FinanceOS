@@ -19,8 +19,7 @@ public struct AmexCardCSVNormalizer: Sendable, CSVRowNormalizer {
             return nil
         }
 
-        let isDebit = amountMinorUnits > 0
-        let amount = isDebit ? amountMinorUnits : -amountMinorUnits
+        let amount = amountMinorUnits
         let description = descStr.trimmingCharacters(in: .whitespaces)
 
         let fingerprint = "\(dateStr)|\(description)|\(amountMinorUnits)"

@@ -107,9 +107,9 @@ for PKG in "${PACKAGES[@]}"; do
       --parallel \
       2>&1 | tee "$LOG" | grep -E "Test Suite|error:|FAILED|passed|failed" | tail -5; then
 
-    if grep -q "FAILED\|error:" "$LOG" 2>/dev/null; then
+    if grep -v "^Internal Error:" "$LOG" 2>/dev/null | grep -q "FAILED\| error:"; then
       red "$PKG tests FAILED"
-      grep -E "FAILED|error:" "$LOG" | head -10 | sed 's/^/  /'
+      grep -v "^Internal Error:" "$LOG" | grep -E "FAILED| error:" | head -10 | sed 's/^/  /'
       FAIL=$((FAIL + 1))
       [ "$FAIL_REASON" -lt 2 ] && FAIL_REASON=2
     else
@@ -138,7 +138,7 @@ if [ ! -d "$WORKSPACE" ]; then
 else
   BUILD_LOG="/tmp/pre-pr-macos-build.log"
   echo "Building FinanceOSMac..."
-  if xcodebuild \
+  xcodebuild \
       build \
       -workspace "$WORKSPACE" \
       -scheme FinanceOSMac \
@@ -146,21 +146,18 @@ else
       COMPILER_INDEX_STORE_ENABLE=NO \
       -parallelizeTargets \
       -quiet \
-      2>&1 | tee "$BUILD_LOG" | grep -E "error:|BUILD (SUCCEEDED|FAILED)" | head -20; then
+      2>&1 | tee "$BUILD_LOG" | grep -E " error:|BUILD (SUCCEEDED|FAILED)" || true
+  BUILD_EXIT=${PIPESTATUS[0]}
 
-    if grep -q "BUILD FAILED\|error:" "$BUILD_LOG" 2>/dev/null; then
-      red "macOS build FAILED"
-      grep "error:" "$BUILD_LOG" | head -10 | sed 's/^/  /'
-      FAIL=$((FAIL + 1))
-      [ "$FAIL_REASON" -lt 3 ] && FAIL_REASON=3
-    else
-      green "macOS build succeeded"
-      PASS=$((PASS + 1))
-    fi
-  else
+  if [ "$BUILD_EXIT" -ne 0 ] || grep -q "BUILD FAILED" "$BUILD_LOG" 2>/dev/null || \
+     grep -v "^Internal Error:" "$BUILD_LOG" 2>/dev/null | grep -q " error:"; then
     red "macOS build FAILED"
+    grep -v "^Internal Error:" "$BUILD_LOG" | grep " error:" | head -10 | sed 's/^/  /'
     FAIL=$((FAIL + 1))
     [ "$FAIL_REASON" -lt 3 ] && FAIL_REASON=3
+  else
+    green "macOS build succeeded"
+    PASS=$((PASS + 1))
   fi
 fi
 

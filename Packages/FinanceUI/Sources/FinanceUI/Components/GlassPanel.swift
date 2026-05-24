@@ -22,8 +22,8 @@ public struct GlassPanel<Content: View>: View {
             .shadow(
                 color: AppShadows.standard.color,
                 radius: AppShadows.standard.radius,
-                x: AppShadows.standard.x,
-                y: AppShadows.standard.y
+                x: AppShadows.standard.offsetX,
+                y: AppShadows.standard.offsetY
             )
     }
 }

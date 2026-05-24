@@ -15,7 +15,7 @@ final class AccountsViewModel {
     private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
-    private let logger = FinanceLogger.ui
+    private let logger = FinanceLogger.userInterface
 
     struct AccountLedgerBalance {
         let netMinorUnits: Int64
@@ -81,18 +81,24 @@ final class AccountsViewModel {
     private func loadBalances(for accounts: [Ledger]) async {
         var result: [UUID: AccountLedgerBalance] = [:]
         for account in accounts {
-            guard let txns = try? await transactionRepository.fetchTransactionsForAccount(account.id),
-                  !txns.isEmpty else { continue }
-            // closingBalanceAsOf is the statement date of the most recent imported statement
-            let balanceDate = account.closingBalanceAsOf ?? txns.map(\.postedAt).max()
-            let balanceMinorUnits: Int64 = if let closing = account.closingBalance {
-                closing
-            } else {
-                txns.reduce(into: Int64(0)) { acc, txn in
-                    acc += txn.transactionType == .credit ? txn.amountMinorUnits : -txn.amountMinorUnits
+            do {
+                let txns = try await transactionRepository.fetchTransactionsForLedger(account.id)
+                guard !txns.isEmpty else { continue }
+                let balanceDate = account.closingBalanceAsOf ?? txns.map(\.postedAt).max()
+                let balanceMinorUnits: Int64 = if let closing = account.closingBalance {
+                    closing
+                } else {
+                    txns.reduce(into: Int64(0)) { acc, txn in
+                        acc += txn.transactionType == .credit ? txn.amountMinorUnits : -txn.amountMinorUnits
+                    }
                 }
+                result[account.id] = AccountLedgerBalance(netMinorUnits: balanceMinorUnits, latestPostedAt: balanceDate)
+            } catch {
+                logger.logError(
+                    "Failed to load transactions for account: {error}",
+                    ["accountId": account.id.uuidString, "error": error.localizedDescription]
+                )
             }
-            result[account.id] = AccountLedgerBalance(netMinorUnits: balanceMinorUnits, latestPostedAt: balanceDate)
         }
         balancesByAccount = result
     }

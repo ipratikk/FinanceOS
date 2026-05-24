@@ -26,6 +26,7 @@ public final class AccountMatcher {
 
         if let exactMatch = findExactMatch(
             ledgers: ledgers,
+            banks: banks,
             bankName: targetBankName,
             last4: targetLast4,
             isCard: lookingForCard
@@ -35,6 +36,8 @@ public final class AccountMatcher {
 
         if let fuzzyMatch = findFuzzyMatch(
             ledgers: ledgers,
+            banks: banks,
+            bankName: targetBankName,
             last4: targetLast4,
             isCard: lookingForCard
         ) {
@@ -51,29 +54,39 @@ public final class AccountMatcher {
 
     private func findExactMatch(
         ledgers: [Ledger],
+        banks: [Bank],
         bankName: String,
         last4: String?,
         isCard: Bool
     ) -> Ledger? {
         guard let last4 else { return nil }
+        guard let matchingBank = banks.first(where: {
+            ImportTargetMatcher.fuzzyMatch($0.name, bankName)
+        }) else { return nil }
 
         return ledgers.first { ledger in
             ledger.kind == (isCard ? .creditCard : .bankAccount) &&
                 ledger.last4 == last4 &&
-                ledger.bankId != nil
+                ledger.bankId == matchingBank.id
         }
     }
 
     private func findFuzzyMatch(
         ledgers: [Ledger],
+        banks: [Bank],
+        bankName: String,
         last4: String?,
         isCard: Bool
     ) -> Ledger? {
         guard let last4 else { return nil }
+        guard let matchingBank = banks.first(where: {
+            ImportTargetMatcher.fuzzyMatch($0.name, bankName)
+        }) else { return nil }
 
         return ledgers.first { ledger in
             ledger.kind == (isCard ? .creditCard : .bankAccount) &&
-                ledger.last4 == last4
+                ledger.last4 == last4 &&
+                ledger.bankId == matchingBank.id
         }
     }
 

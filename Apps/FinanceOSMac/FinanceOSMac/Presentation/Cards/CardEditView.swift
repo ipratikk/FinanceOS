@@ -103,6 +103,7 @@ struct CardEditView: View {
         VStack(spacing: 0) {
             headerBar
             scrollContent
+            footerBar
         }
         .background(AppColors.base)
         .alert("Delete?", isPresented: $showDeleteConfirm) {
@@ -117,6 +118,9 @@ struct CardEditView: View {
             }
         } message: {
             FDSLabel("This will permanently delete this item.")
+        }
+        .sheet(isPresented: $showCardSelection) {
+            cardSelectionSheet
         }
     }
 }

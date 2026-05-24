@@ -31,7 +31,7 @@ final class CardsViewModel {
     private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
-    private let logger = FinanceLogger.ui
+    private let logger = FinanceLogger.userInterface
 
     var cardRows: [CardRow] = []
     var isLoading = false

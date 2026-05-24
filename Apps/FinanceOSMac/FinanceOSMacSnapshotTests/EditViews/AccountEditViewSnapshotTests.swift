@@ -12,8 +12,8 @@ final class AccountEditViewSnapshotTests: SnapshotTestable {
 
     func test_account_edit_create() {
         let ledgerRepo = MockLedgerRepository()
-        let context = AccountEditContext(repository: ledgerRepo, banks: PreviewBanks.all)
-        let view = AccountEditView(account: PreviewLedgers.checking(), context: context)
+        let context = CardEditContext(repository: ledgerRepo, banks: PreviewBanks.all, accounts: [])
+        let view = CardEditView(mode: .edit(PreviewLedgers.checking(), context))
         verifySnapshots(view)
     }
 }

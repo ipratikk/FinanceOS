@@ -46,7 +46,7 @@ final class CardTransactionsViewModel {
             listState.updateAvailableYears(from: transactionRows)
 
         } catch {
-            FinanceLogger.ui.logError(
+            FinanceLogger.userInterface.logError(
                 "Failed to load transactions for {cardID}",
                 caughtError: error,
                 ["cardID": cardID.uuidString]

@@ -52,7 +52,7 @@ final class TransactionsViewModel {
             listState.updateAvailableYears(from: transactionRows)
 
         } catch {
-            FinanceLogger.ui.logError("Failed to load all transactions", caughtError: error, [:])
+            FinanceLogger.userInterface.logError("Failed to load all transactions", caughtError: error, [:])
         }
     }
 

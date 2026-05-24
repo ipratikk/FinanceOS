@@ -1,9 +1,11 @@
 import Foundation
 
 public enum DateParser {
-    private static let formatter = DateFormatter()
-
     public static func parse(_ string: String, formats: [String]) -> Date? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = TimeZone(identifier: "Asia/Kolkata")
         for format in formats {
             formatter.dateFormat = format
             if let date = formatter.date(from: string) {

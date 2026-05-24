@@ -59,7 +59,7 @@ final class AccountTransactionsViewModel {
             listState.updateAvailableYears(from: transactionRows)
 
         } catch {
-            FinanceLogger.ui.logError(
+            FinanceLogger.userInterface.logError(
                 "Failed to load account transactions for {accountID}",
                 caughtError: error,
                 ["accountID": accountID.uuidString]

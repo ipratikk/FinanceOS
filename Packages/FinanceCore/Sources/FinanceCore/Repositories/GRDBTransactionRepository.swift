@@ -36,6 +36,24 @@ public final class GRDBTransactionRepository:
         }
     }
 
+    public func fetchTransactionsForLedger(
+        _ ledgerID: UUID
+    ) async throws -> [Transaction] {
+        try await dbQueue.read { database in
+            let txns = try Transaction
+                .filter(Transaction.Columns.ledgerId == ledgerID)
+                .order(Transaction.Columns.postedAt.desc)
+                .fetchAll(database)
+
+            self.logger.logDebug(
+                "Fetched {count} txns for ledger",
+                ["count": txns.count, "ledgerId": ledgerID.uuidString]
+            )
+
+            return txns
+        }
+    }
+
     public func fetchTransactionsForAccount(
         _ accountID: UUID
     ) async throws -> [Transaction] {
@@ -78,11 +96,12 @@ public final class GRDBTransactionRepository:
         try await dbQueue.write { database in
             var inserted = 0
             var skipped = 0
-            var batchFingerprints = Set<String>()
+            var batchKeys = Set<String>()
 
             for (idx, transaction) in transactions.enumerated() {
-                if let fp = transaction.sourceFingerprint {
-                    guard batchFingerprints.insert(fp).inserted else {
+                if let fingerprint = transaction.sourceFingerprint {
+                    let key = "\(transaction.ledgerId?.uuidString ?? "")|\(fingerprint)"
+                    guard batchKeys.insert(key).inserted else {
                         skipped += 1
                         continue
                     }

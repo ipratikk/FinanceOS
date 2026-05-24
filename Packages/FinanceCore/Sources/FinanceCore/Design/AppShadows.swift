@@ -8,29 +8,29 @@ public enum AppShadows {
     public static let subtle = Shadow(
         color: Color.black.opacity(0.40),
         radius: 4,
-        x: 0,
-        y: 2
+        offsetX: 0,
+        offsetY: 2
     )
 
     public static let standard = Shadow(
         color: Color.black.opacity(0.50),
         radius: 8,
-        x: 0,
-        y: 4
+        offsetX: 0,
+        offsetY: 4
     )
 
     public static let elevated = Shadow(
         color: Color.black.opacity(0.60),
         radius: 16,
-        x: 0,
-        y: 8
+        offsetX: 0,
+        offsetY: 8
     )
 
     public static let prominent = Shadow(
         color: Color.black.opacity(0.70),
         radius: 24,
-        x: 0,
-        y: 12
+        offsetX: 0,
+        offsetY: 12
     )
 
     // MARK: - Shadow Struct
@@ -38,11 +38,11 @@ public enum AppShadows {
     public struct Shadow: Sendable {
         public let color: Color
         public let radius: CGFloat
-        public let x: CGFloat
-        public let y: CGFloat
+        public let offsetX: CGFloat
+        public let offsetY: CGFloat
 
         public func apply(to view: some View) -> some View {
-            view.shadow(color: color, radius: radius, x: x, y: y)
+            view.shadow(color: color, radius: radius, x: offsetX, y: offsetY)
         }
     }
 }

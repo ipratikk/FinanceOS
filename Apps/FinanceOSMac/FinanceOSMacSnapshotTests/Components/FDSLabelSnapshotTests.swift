@@ -1,3 +1,4 @@
+import FinanceCore
 @testable import FinanceOSMac
 import FinanceTesting
 import FinanceUI

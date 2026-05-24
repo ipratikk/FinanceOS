@@ -39,7 +39,7 @@ struct AccountTransactionsDestinationView: View {
             let ledgers = try await ledgerRepository.fetchLedgers()
             ledger = ledgers.first(where: { $0.id == ledgerId })
         } catch {
-            FinanceLogger.ui.logError(
+            FinanceLogger.userInterface.logError(
                 "Error loading ledger: {error}",
                 caughtError: error,
                 ["error": error.localizedDescription]
@@ -83,7 +83,7 @@ struct CardTransactionsDestinationView: View {
             let ledgers = try await ledgerRepository.fetchLedgers()
             ledger = ledgers.first(where: { $0.id == ledgerId })
         } catch {
-            FinanceLogger.ui.logError(
+            FinanceLogger.userInterface.logError(
                 "Error loading ledger: {error}",
                 caughtError: error,
                 ["error": error.localizedDescription]

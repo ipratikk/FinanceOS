@@ -3,6 +3,10 @@ import FinanceParsers
 import Foundation
 
 struct MockTransactionRepository: TransactionRepository {
+    func fetchTransactionsForLedger(_ ledgerID: UUID) async throws -> [FinanceCore.Transaction] {
+        []
+    }
+
     func fetchTransactionsForAccount(_ accountID: UUID) async throws -> [FinanceCore.Transaction] {
         []
     }
