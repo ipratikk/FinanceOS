@@ -26,7 +26,7 @@ struct CardSelectionView: View {
             Divider().opacity(0.3)
             cardList
         }
-        .glassSurface(radius: 20)
+        .glassSurface(radius: 20, lifted: true)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .onAppear {
             allCards = CardDatabase.supportedCards()

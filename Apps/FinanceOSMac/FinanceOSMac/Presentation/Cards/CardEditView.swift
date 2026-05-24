@@ -144,8 +144,7 @@ struct CardEditView: View {
             .padding(AppSpacing.xl)
         }
         .padding(AppSpacing.xxl)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .glassSurface(radius: 20)
+        .background(AppColors.base)
         .frame(width: sheetWidth, height: sheetHeight)
         .onAppear { seedBankFromCatalogIfNeeded() }
         .onChange(of: contextBanksCount) { _, count in
