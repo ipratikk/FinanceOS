@@ -11,7 +11,7 @@ public struct HDFCCardCSVMapper: Sendable, CSVRowMapper {
             switch header {
             case "date":
                 roles.append(.date)
-            case "description":
+            case "description", "transaction details":
                 roles.append(.description)
             case "amt":
                 roles.append(.amount)
