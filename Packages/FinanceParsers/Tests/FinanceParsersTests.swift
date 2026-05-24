@@ -149,7 +149,7 @@ func iciciBank_withdrawalIsPositive() throws {
     let url = try fixtureURL("icici_bank.csv")
     let result = try UnifiedStatementParser().parse(fileURL: url, detectedSource: .iciciBank)
     let atm = try #require(result.statement.transactions.first { $0.description.contains("ATM") })
-    #expect(atm.amountMinorUnits == 200000, "2000.00 withdrawal → 200000 minor units")
+    #expect(atm.amountMinorUnits == 200_000, "2000.00 withdrawal → 200000 minor units")
 }
 
 @Test
@@ -207,7 +207,7 @@ func amex_positiveAmountIsDebit() throws {
     let url = try fixtureURL("amex_card.csv")
     let result = try UnifiedStatementParser().parse(fileURL: url, detectedSource: .amex)
     let amazon = try #require(result.statement.transactions.first { $0.description.contains("Amazon") })
-    #expect(amazon.amountMinorUnits == 150000, "1500.00 → 150000 minor units")
+    #expect(amazon.amountMinorUnits == 150_000, "1500.00 → 150000 minor units")
 }
 
 @Test

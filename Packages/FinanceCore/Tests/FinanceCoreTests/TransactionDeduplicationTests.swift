@@ -93,7 +93,7 @@ func sameLedgerReimport_skipped() async throws {
     let bank = try await #require(dbQueue.read { database in try Bank.fetchAll(database).first })
     let ledger = try await insertLedger(dbQueue, bankId: bank.id, kind: .bankAccount)
 
-    let txns = (1...3).map { index in
+    let txns = (1 ... 3).map { index in
         makeTxn(ledgerId: ledger.id, accountID: ledger.id, fingerprint: "fp-\(index)")
     }
 
