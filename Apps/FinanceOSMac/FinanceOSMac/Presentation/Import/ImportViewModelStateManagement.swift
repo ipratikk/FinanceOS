@@ -38,10 +38,14 @@ extension ImportViewModel {
                 throw FinanceCore.TransactionImportError.malformedFile("Parsed statement not available")
             }
 
-            let ledgerKind: LedgerKind = if case let .ledger(ledgerId) = target {
-                ledgers.first { $0.id == ledgerId }?.kind ?? .bankAccount
+            let ledgerKind: LedgerKind
+            if case let .ledger(ledgerId) = target {
+                guard let found = ledgers.first(where: { $0.id == ledgerId }) else {
+                    throw ImportError.targetNotFound(ledgerId)
+                }
+                ledgerKind = found.kind
             } else {
-                .bankAccount
+                ledgerKind = .bankAccount
             }
 
             let statement = importSession.parsedStatements[index]
@@ -54,7 +58,7 @@ extension ImportViewModel {
 
             if case let .ledger(ledgerId) = target, let closingBalance = statement.metadata?.closingBalance,
                let statementDate = statement.metadata?.generatedAt {
-                try? await ledgerRepository.updateClosingBalance(
+                try await ledgerRepository.updateClosingBalance(
                     id: ledgerId,
                     balance: closingBalance,
                     asOf: statementDate
