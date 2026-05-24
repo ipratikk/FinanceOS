@@ -70,7 +70,7 @@ public struct FDSPicker<V: Hashable>: View {
                 }
 
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 11, weight: .medium))
+                    .font(AppTypography.captionSmMedium)
                     .foregroundStyle(AppColors.Text.tertiary)
             }
             .padding(.vertical, AppSpacing.compact)

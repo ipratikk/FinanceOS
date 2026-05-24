@@ -22,7 +22,7 @@ struct CardDisplayPreview: View {
                     .fill(cardGradient)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                            .strokeBorder(AppColors.Fill.quaternary, lineWidth: 1)
                     )
 
                 VStack(alignment: .leading, spacing: 0) {
@@ -44,7 +44,7 @@ struct CardDisplayPreview: View {
                                 Spacer()
                             }
                             .font(AppTypography.maskedAccount)
-                            .foregroundStyle(Color.white)
+                            .foregroundStyle(AppColors.Text.primary)
                             .tracking(2)
                         }
 
@@ -52,7 +52,7 @@ struct CardDisplayPreview: View {
                             if !cardholderName.isEmpty {
                                 FDSLabel(cardholderName.uppercased())
                                     .font(AppTypography.captionSmSemibold)
-                                    .foregroundStyle(Color.white)
+                                    .foregroundStyle(AppColors.Text.primary)
                                     .lineLimit(1)
                             }
                             Spacer()
@@ -98,7 +98,7 @@ struct CardDisplayPreview: View {
             .frame(width: 32, height: 24)
             .overlay(
                 RoundedRectangle(cornerRadius: 4)
-                    .strokeBorder(Color.white.opacity(0.25), lineWidth: 0.5)
+                    .strokeBorder(AppColors.Glass.highlight, lineWidth: 0.5)
             )
     }
 

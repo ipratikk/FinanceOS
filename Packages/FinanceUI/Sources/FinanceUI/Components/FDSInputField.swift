@@ -180,7 +180,7 @@ public struct FDSInputField: View {
         FDSInputField("CARDHOLDER NAME", text: $filled)
         FDSInputField("PASSWORD", text: $pwd, state: .error("Required"), isSecure: true)
     }
-    .padding(24)
+    .padding(AppSpacing.xl)
     .background(AppColors.base)
     .frame(width: 360)
 }

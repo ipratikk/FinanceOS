@@ -45,7 +45,7 @@ extension CardEditView {
     private func securityBadge(icon: String, label: String) -> some View {
         HStack(spacing: 5) {
             Image(systemName: icon)
-                .font(.system(size: 10, weight: .medium))
+                .font(AppTypography.captionSmMedium)
                 .foregroundStyle(AppColors.accent)
             FDSLabel(label)
                 .font(AppTypography.captionSm)
@@ -65,7 +65,7 @@ extension CardEditView {
             Spacer()
             Button(action: { dismiss() }, label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(AppTypography.captionSmSemibold)
                     .foregroundStyle(AppColors.Text.secondary)
                     .frame(width: 22, height: 22)
                     .background(Circle().fill(AppColors.Glass.thinTint))
@@ -122,14 +122,14 @@ extension CardEditView {
             Button(action: { showCardSelection = true }, label: {
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: "magnifyingglass")
-                        .font(.system(size: 12))
+                        .font(AppTypography.captionSm)
                         .foregroundStyle(AppColors.Text.tertiary)
                     FDSLabel(catalogPickerLabel)
                         .font(AppTypography.bodyMd)
                         .foregroundStyle(form.cardProductId.isEmpty ? AppColors.Text.tertiary : AppColors.Text.primary)
                     Spacer()
                     Image(systemName: "chevron.down")
-                        .font(.system(size: 11, weight: .medium))
+                        .font(AppTypography.captionSmMedium)
                         .foregroundStyle(AppColors.Text.tertiary)
                 }
                 .padding(.horizontal, AppSpacing.md)
@@ -219,7 +219,7 @@ extension CardEditView {
     var securityChip: some View {
         HStack(alignment: .top, spacing: AppSpacing.compact) {
             Image(systemName: "lock.shield")
-                .font(.system(size: 12))
+                .font(AppTypography.captionSm)
                 .foregroundStyle(AppColors.accent)
                 .padding(.top, 1)
             FDSLabel(
