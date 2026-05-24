@@ -266,12 +266,6 @@ extension CardEditView {
                     }
                     primaryActionButton
                 }
-                FDSLiquidButton(
-                    "Cancel",
-                    variant: .link,
-                    fullWidth: true,
-                    action: { dismiss() }
-                )
             }
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, AppSpacing.compact)

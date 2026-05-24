@@ -121,7 +121,7 @@ struct CardEditView: View {
     }
 
     private var sheetHeight: CGFloat {
-        screenFrame.height * 0.74
+        screenFrame.height * 0.7
     }
 
     private var cardPanelWidth: CGFloat {
