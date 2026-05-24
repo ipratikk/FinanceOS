@@ -48,6 +48,7 @@ public struct FDSLiquidButton: View {
     public var body: some View {
         Button(action: action, label: { buttonLabel })
             .buttonStyle(.plain)
+            .frame(maxWidth: fullWidth && variant != .link ? .infinity : nil)
             .disabled(!isEnabled || isLoading)
             .opacity(isEnabled && !isLoading ? 1.0 : 0.4)
             .onHover { isHovered = $0 }

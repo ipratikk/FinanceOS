@@ -173,7 +173,7 @@ extension CardEditView {
     }
 
     private var networkPickerRow: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+        VStack(alignment: .leading, spacing: AppSpacing.compact) {
             FDSLabel("CARD NETWORK")
                 .font(AppTypography.captionSm)
                 .tracking(1.0)
@@ -184,7 +184,7 @@ extension CardEditView {
                     set: { if let net = $0 { form.cardType = net } }
                 ),
                 options: cardTypeOptions,
-                variant: .logoOnly,
+                variant: .symbolText,
                 placeholder: "Select"
             )
         }
@@ -260,15 +260,18 @@ extension CardEditView {
                             "Delete Card",
                             leadingIcon: "trash",
                             variant: .danger,
+                            fullWidth: true,
                             action: { showDeleteConfirm = true }
                         )
-                        .frame(maxWidth: .infinity)
                     }
                     primaryActionButton
-                        .frame(maxWidth: .infinity)
                 }
-                FDSLiquidButton("Cancel", variant: .link, action: { dismiss() })
-                    .frame(maxWidth: .infinity)
+                FDSLiquidButton(
+                    "Cancel",
+                    variant: .link,
+                    fullWidth: true,
+                    action: { dismiss() }
+                )
             }
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, AppSpacing.compact)
