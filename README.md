@@ -5,7 +5,7 @@ A native macOS financial management application for importing, analyzing, and tr
 
 ## Features
 
-- **Multi-Bank Statement Import** — CSV/XLSX support for Indian banks (ICICI, HDFC, Axis, and more)
+- **Multi-Bank Statement Import** — CSV/TXT support for Indian banks (HDFC, ICICI, Amex)
 - **Intelligent Deduplication** — Deterministic duplicate detection and merging across imports
 - **Transaction Ledger** — Unified ledger view with accounts, tags, and filtering
 - **Dashboard Analytics** — Net worth tracking, spending insights, and wealth intelligence
@@ -173,7 +173,7 @@ make parser-parse FILE=path/to/statement.csv  # Parse single file
 
 ## Current Focus (Phase 10+)
 
-1. CSV/XLSX parser hardening (Indian banks)
+1. CSV/TXT parser hardening (additional Indian banks)
 2. Statement format auto-detection
 3. Bank-specific parsing rules
 4. Duplicate detection at scale

@@ -78,18 +78,17 @@ Avoid:
 
 # Parsing Strategy
 
-## CSV
+## CSV (fully supported)
 
-* CodableCSV
+* SwiftCSV
 
-## XLSX
+## TXT (fully supported)
 
-* CoreXLSX
+* Custom line parser (HDFC Bank)
 
-## PDF
+## XLSX (not yet implemented)
 
-* PDFKit
-* OCR fallback only when necessary
+## PDF (experimental — HDFCPDFParser skeleton only)
 
 Architecture:
 
@@ -142,7 +141,7 @@ Single Ledger model replaces Account/Card split:
 
 # Near-Term Targets
 
-1. CSV/XLSX parser hardening (ICICI, HDFC, Axis, etc.)
+1. CSV/TXT parser hardening (additional Indian banks — Axis, SBI planned)
 2. Statement format auto-detection
 3. Bank-specific parsing rules
 4. OCR for scanned statements (fallback only)

@@ -74,7 +74,7 @@ SwiftUI View
 * Bank repository with seeding
 * Ledger model with 6 LedgerKind variants
 * Transaction model with ledgerId foreign key
-* Deterministic deduplication via sourceFingerprint UNIQUE INDEX
+* Deterministic deduplication via UNIQUE INDEX on (ledgerId, sourceFingerprint) — ledger-scoped
 * Import pipeline: ParsedStatement → Transaction with proper sign convention
 * Target matching by last4 digits (accountLast4/cardLast4)
 * Full UI layer: accounts, cards, transactions views all using Ledger
@@ -100,7 +100,7 @@ SwiftUI View
 
 Packages/
 ├── FinanceCore ✅ (complete: models, DB, repositories, logging)
-├── FinanceParsers ✅ (CSV/XLSX/TXT parsing with bank-specific rules)
+├── FinanceParsers ✅ (CSV/TXT parsing with bank-specific rules — HDFC, ICICI, Amex)
 ├── FinanceUI ✅ (design system, components, tokens)
 └── FinanceTesting ✅ (mocks, fixtures, test utilities)
 
