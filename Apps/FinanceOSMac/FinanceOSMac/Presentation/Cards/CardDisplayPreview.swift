@@ -5,6 +5,7 @@ import SwiftUI
 struct CardDisplayPreview: View {
     let cardName: String?
     let bankName: String?
+    let selectedBank: Banks?
     let cardholderName: String
     let cardNetwork: CardNetwork
     let first4: String
@@ -12,70 +13,74 @@ struct CardDisplayPreview: View {
     let bankLogo: String?
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(cardGradient)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
-                )
+        GeometryReader { geo in
+            let logoHeight = geo.size.width * 0.055
+            let bankMarkSize = geo.size.width * 0.08
 
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    chipIcon
+            ZStack {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(cardGradient)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                    )
+
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack {
+                        chipIcon
+                        Spacer()
+                        bankLogoView(logoHeight: logoHeight, markSize: bankMarkSize, cardWidth: geo.size.width)
+                    }
+                    .padding(AppSpacing.md)
+
                     Spacer()
-                    Image(systemName: "wave.3.right.circle")
-                        .font(.system(size: 20, weight: .ultraLight))
-                        .foregroundStyle(Color.white.opacity(0.55))
-                }
-                .padding(AppSpacing.md)
 
-                Spacer()
-
-                VStack(alignment: .leading, spacing: AppSpacing.compact) {
-                    HStack(spacing: 6) {
-                        FDSLabel(first4.isEmpty ? "XXXX" : first4)
-                        FDSLabel("••••  ••••")
-                        FDSLabel(last4.isEmpty ? "XXXX" : last4)
-                        Spacer()
-                    }
-                    .font(AppTypography.maskedAccount)
-                    .foregroundStyle(Color.white)
-                    .tracking(2)
-
-                    HStack(alignment: .bottom) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            FDSLabel("CARD HOLDER")
-                                .font(AppTypography.captionSm)
-                                .foregroundStyle(Color.white.opacity(0.5))
-                                .tracking(0.5)
-                            FDSLabel(cardholderName.isEmpty ? "YOUR NAME" : cardholderName.uppercased())
-                                .font(AppTypography.captionSmSemibold)
-                                .foregroundStyle(Color.white)
-                                .lineLimit(1)
+                    VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                        if !first4.isEmpty || !last4.isEmpty {
+                            HStack(spacing: 6) {
+                                FDSLabel(first4.isEmpty ? "••••" : first4)
+                                FDSLabel("••••  ••••")
+                                FDSLabel(last4.isEmpty ? "••••" : last4)
+                                Spacer()
+                            }
+                            .font(AppTypography.maskedAccount)
+                            .foregroundStyle(Color.white)
+                            .tracking(2)
                         }
-                        Spacer()
-                        VStack(alignment: .trailing, spacing: 2) {
-                            FDSLabel("INSTITUTION")
-                                .font(AppTypography.captionSm)
-                                .foregroundStyle(Color.white.opacity(0.5))
-                                .tracking(0.5)
-                            FDSLabel(institutionLabel.uppercased())
-                                .font(AppTypography.captionSmSemibold)
-                                .foregroundStyle(Color.white)
-                                .lineLimit(1)
+
+                        HStack(alignment: .bottom) {
+                            if !cardholderName.isEmpty {
+                                FDSLabel(cardholderName.uppercased())
+                                    .font(AppTypography.captionSmSemibold)
+                                    .foregroundStyle(Color.white)
+                                    .lineLimit(1)
+                            }
+                            Spacer()
+                            if let asset = cardNetwork.logoAssetName {
+                                Image(asset)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: logoHeight)
+                            }
                         }
                     }
+                    .padding(AppSpacing.md)
                 }
-                .padding(AppSpacing.md)
             }
         }
         .aspectRatio(1.586, contentMode: .fit)
     }
 
-    private var institutionLabel: String {
-        if let bankName, !bankName.isEmpty { return bankName }
-        return cardNetwork == .other ? "Other" : cardNetwork.displayName
+    @ViewBuilder
+    private func bankLogoView(logoHeight: CGFloat, markSize: CGFloat, cardWidth: CGFloat) -> some View {
+        if let bankLogo {
+            Image(bankLogo)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: cardWidth * 0.22, maxHeight: logoHeight)
+        } else if let bank = selectedBank {
+            FDSBankMark(bank, size: markSize)
+        }
     }
 
     private var chipIcon: some View {

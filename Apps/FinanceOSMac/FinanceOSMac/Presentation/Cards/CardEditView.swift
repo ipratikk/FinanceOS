@@ -144,8 +144,14 @@ struct CardEditView: View {
             .padding(AppSpacing.xl)
         }
         .padding(AppSpacing.xxl)
-        .background(AppColors.base)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .glassSurface(radius: 20)
         .frame(width: sheetWidth, height: sheetHeight)
+        .onAppear { seedBankFromCatalogIfNeeded() }
+        .onChange(of: contextBanksCount) { _, count in
+            guard count > 0 else { return }
+            seedBankFromEditContext()
+        }
         .alert(
             "Delete \"\(isCard ? "Card" : "Account")\"?",
             isPresented: $showDeleteConfirm
@@ -165,6 +171,26 @@ struct CardEditView: View {
         .sheet(isPresented: $showCardSelection) {
             cardSelectionSheet
         }
+    }
+
+    private var contextBanksCount: Int {
+        if case let .edit(_, context) = mode { return context.banks.count }
+        return 0
+    }
+
+    private func seedBankFromCatalogIfNeeded() {
+        guard form.selectedBank == nil, !form.cardProductId.isEmpty,
+              let card = CardDatabase.supportedCards().first(where: { $0.id == form.cardProductId })
+        else { return }
+        form.selectedBank = Banks.allCases.first { bank in
+            card.issuer.localizedCaseInsensitiveContains(bank.displayName) ||
+                bank.displayName.localizedCaseInsensitiveContains(card.issuer)
+        }
+    }
+
+    private func seedBankFromEditContext() {
+        guard form.selectedBank == nil, case let .edit(card, context) = mode else { return }
+        form.selectedBank = context.banks.first { $0.id == card.bankId }?.bank
     }
 }
 

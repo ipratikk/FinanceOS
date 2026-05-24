@@ -22,6 +22,7 @@ extension CardEditView {
             CardDisplayPreview(
                 cardName: selectedCatalogCard?.name ?? (form.customName.isEmpty ? nil : form.customName),
                 bankName: form.selectedBank?.displayName,
+                selectedBank: form.selectedBank,
                 cardholderName: form.cardholderName,
                 cardNetwork: form.cardType,
                 first4: form.first4,
@@ -303,6 +304,10 @@ extension CardEditView {
                 }
                 form.cardType = card.cardType
                 form.cardProductId = card.id
+                form.selectedBank = Banks.allCases.first { bank in
+                    card.issuer.localizedCaseInsensitiveContains(bank.displayName) ||
+                        bank.displayName.localizedCaseInsensitiveContains(card.issuer)
+                }
                 showCardSelection = false
             },
             onDismiss: { showCardSelection = false }
