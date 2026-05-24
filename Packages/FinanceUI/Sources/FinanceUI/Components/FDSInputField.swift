@@ -1,12 +1,15 @@
 import FinanceCore
 import SwiftUI
 
-/// Input field with label, validation state, and helper/error messaging.
+/// Input field with floating label, focus border, and validation states.
 ///
-/// States:
-/// - `.normal` — default, shows optional helper text in tertiary color
-/// - `.error(String)` — red border + error message below
-/// - `.success` — green border, shows helper text if present
+/// Replicates PDSTextInput floating-label pattern:
+/// - Label starts inside the field as bodyMd placeholder text
+/// - On focus or input: label instantly shrinks to captionSm and Y-offset animates up
+/// - TextField fades in below the floated label
+/// - Border thickens and turns accent on focus
+///
+/// States: `.normal` / `.error(String)` / `.success`
 public enum FDSInputState: Equatable {
     case normal
     case error(String)
@@ -15,11 +18,20 @@ public enum FDSInputState: Equatable {
 
 public struct FDSInputField: View {
     let label: String
-    @Binding var text: String
     let placeholder: String
     let helper: String?
     let state: FDSInputState
     let isSecure: Bool
+    @Binding var text: String
+
+    @FocusState private var isFocused: Bool
+    @State private var labelSmall = false // font: instant switch, no animation
+    @State private var labelFloated = false // Y offset: animated
+
+    private static let fieldHeight: CGFloat = 56
+    private static let hPad: CGFloat = AppSpacing.compact
+    private static let vPad: CGFloat = AppSpacing.compact
+    private static let labelRestingOffset: CGFloat = 10 // push label down to visual center
 
     public init(
         _ label: String,
@@ -37,38 +49,110 @@ public struct FDSInputField: View {
         self.isSecure = isSecure
     }
 
+    private var isFloated: Bool {
+        isFocused || !text.isEmpty
+    }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            FDSLabel(label)
-                .font(AppTypography.captionSmSemibold)
-                .foregroundStyle(AppColors.Text.secondary)
-
-            FDSTextInput(placeholder, text: $text, isSecure: isSecure)
-                .padding(.horizontal, AppSpacing.sm)
-                .padding(.vertical, AppSpacing.compact)
-                .background(AppColors.Glass.inputWell)
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
-                        .stroke(borderColor, lineWidth: 1)
-                )
-                .cornerRadius(AppRadius.sm)
+            ZStack(alignment: .topLeading) {
+                fieldBackground
+                fieldContent
+            }
+            .frame(height: Self.fieldHeight)
+            .contentShape(Rectangle())
+            .onTapGesture { isFocused = true }
 
             if let message = statusMessage {
                 FDSLabel(message)
                     .font(AppTypography.captionSm)
                     .foregroundStyle(messageColor)
                     .transition(.opacity.combined(with: .move(edge: .top)))
+                    .padding(.horizontal, Self.hPad)
             }
         }
         .animation(AppAnimation.easeSmooth, value: state)
+        .onChange(of: isFloated) { _, floated in
+            // Font switch is instant (matches PDSFloatingLabel behavior)
+            labelSmall = floated
+            // Y offset animates
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                labelFloated = floated
+            }
+        }
+        .onAppear {
+            // Seed state for pre-filled values
+            if isFloated {
+                labelSmall = true
+                labelFloated = true
+            }
+        }
+    }
+
+    // MARK: - Background
+
+    private var fieldBackground: some View {
+        RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
+            .fill(AppColors.Glass.surface)
+            .overlay(
+                RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
+                    .strokeBorder(borderColor, lineWidth: borderWidth)
+            )
+    }
+
+    // MARK: - Label + Input content
+
+    private var fieldContent: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            // Floating label — font switches instantly, offset animates
+            FDSLabel(label)
+                .font(labelSmall ? AppTypography.captionSm : AppTypography.bodyMd)
+                .tracking(labelSmall ? 1.0 : 0)
+                .foregroundStyle(labelColor)
+                .offset(y: labelFloated ? 0 : Self.labelRestingOffset)
+                .allowsHitTesting(false)
+
+            // TextField — fades in when floated
+            inputField
+                .opacity(labelFloated ? 1 : 0)
+        }
+        .padding(.horizontal, Self.hPad)
+        .padding(.top, Self.vPad)
+    }
+
+    @ViewBuilder private var inputField: some View {
+        if isSecure {
+            SecureField(placeholder, text: $text)
+                .font(AppTypography.bodyMd)
+                .foregroundStyle(AppColors.Text.primary)
+                .focused($isFocused)
+                .textFieldStyle(.plain)
+        } else {
+            TextField(placeholder, text: $text)
+                .font(AppTypography.bodyMd)
+                .foregroundStyle(AppColors.Text.primary)
+                .focused($isFocused)
+                .textFieldStyle(.plain)
+        }
+    }
+
+    // MARK: - Derived style
+
+    private var labelColor: Color {
+        if isFocused { return AppColors.accent }
+        return labelSmall ? AppColors.Text.secondary : AppColors.Text.tertiary
     }
 
     private var borderColor: Color {
+        if isFocused { return AppColors.Border.focus }
         switch state {
-        case .normal: return AppColors.Border.subtle
-        case .error: return AppColors.danger.opacity(0.5)
-        case .success: return AppColors.success.opacity(0.5)
+        case .normal, .success: return AppColors.Border.input
+        case .error: return AppColors.danger.opacity(0.6)
         }
+    }
+
+    private var borderWidth: CGFloat {
+        isFocused ? 1.5 : 0.5
     }
 
     private var statusMessage: String? {
@@ -88,29 +172,15 @@ public struct FDSInputField: View {
 
 #Preview {
     @Previewable @State var name = ""
-    @Previewable @State var password = ""
+    @Previewable @State var filled = "ICICI Amazon Pay"
+    @Previewable @State var pwd = ""
 
-    return VStack(spacing: AppSpacing.lg) {
-        FDSInputField(
-            "Account name",
-            text: $name,
-            placeholder: "e.g. HDFC Savings",
-            helper: "Used to identify this account"
-        )
-        FDSInputField(
-            "Password",
-            text: $password,
-            placeholder: "Enter password",
-            state: .error("Password is required"),
-            isSecure: true
-        )
-        FDSInputField(
-            "IFSC code",
-            text: .constant("HDFC0001234"),
-            placeholder: "HDFC0001234",
-            state: .success
-        )
+    return VStack(spacing: 16) {
+        FDSInputField("CARD NICKNAME", text: $name, placeholder: "e.g. Primary Travel Card")
+        FDSInputField("CARDHOLDER NAME", text: $filled)
+        FDSInputField("PASSWORD", text: $pwd, state: .error("Required"), isSecure: true)
     }
     .padding(AppSpacing.xl)
     .background(AppColors.base)
+    .frame(width: 360)
 }

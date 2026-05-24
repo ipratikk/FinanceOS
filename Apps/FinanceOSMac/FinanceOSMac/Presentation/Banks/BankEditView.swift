@@ -13,7 +13,7 @@ struct BankEditView: View {
             headerBar
             scrollContent
         }
-        .background(AppColors.base)
+        .glassSurface(radius: 20, lifted: true)
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -58,7 +58,7 @@ struct BankEditView: View {
             .buttonStyle(.plain)
         }
         .padding(AppSpacing.md)
-        .background(AppColors.base)
+        .glassSurface(radius: AppRadius.md, lifted: true)
     }
 
     private var scrollContent: some View {

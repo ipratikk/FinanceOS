@@ -15,6 +15,7 @@ public struct FDSLiquidButton: View {
     let variant: Variant
     let isEnabled: Bool
     let isLoading: Bool
+    let fullWidth: Bool
     let action: () -> Void
 
     @State private var isHovered = false
@@ -31,6 +32,7 @@ public struct FDSLiquidButton: View {
         variant: Variant = .ghost,
         isEnabled: Bool = true,
         isLoading: Bool = false,
+        fullWidth: Bool = false,
         action: @escaping () -> Void
     ) {
         self.title = title
@@ -39,12 +41,14 @@ public struct FDSLiquidButton: View {
         self.variant = variant
         self.isEnabled = isEnabled
         self.isLoading = isLoading
+        self.fullWidth = fullWidth
         self.action = action
     }
 
     public var body: some View {
         Button(action: action, label: { buttonLabel })
             .buttonStyle(.plain)
+            .frame(maxWidth: fullWidth && variant != .link ? .infinity : nil)
             .disabled(!isEnabled || isLoading)
             .opacity(isEnabled && !isLoading ? 1.0 : 0.4)
             .onHover { isHovered = $0 }
@@ -81,9 +85,10 @@ public struct FDSLiquidButton: View {
                     .controlSize(.small)
             }
         }
+        .frame(maxWidth: fullWidth && variant != .link ? .infinity : nil)
+        .padding(.horizontal, variant == .link ? 0 : 16)
+        .padding(.vertical, variant == .link ? 0 : 11)
         .foregroundColor(foregroundColor)
-        .padding(.horizontal, variant == .link ? 0 : 12)
-        .padding(.vertical, variant == .link ? 0 : 8)
         .background {
             if variant != .link {
                 buttonBackground

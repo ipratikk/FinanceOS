@@ -3,15 +3,13 @@ import FinanceUI
 import SwiftUI
 
 extension CardEditView {
-    func inputField(_ label: String, text: Binding<String>, style: FDSTextInputStyle = .bodyMedium) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            FDSLabel(label)
-                .font(AppTypography.captionSm)
-                .foregroundStyle(AppColors.Text.primary)
-            FDSTextInput("", text: text, style: style)
-                .padding(AppSpacing.xs)
-                .cornerRadius(AppRadius.sm)
-        }
+    func inputField(
+        _ label: String,
+        placeholder: String = "",
+        text: Binding<String>,
+        style: FDSTextInputStyle = .bodyLarge
+    ) -> some View {
+        FDSInputField(label, text: text, placeholder: placeholder)
     }
 
     func catalogCardWidget(_ card: CardMetadata) -> some View {
@@ -40,43 +38,25 @@ extension CardEditView {
     }
 
     func accountTypeField() -> some View {
-        let accountTypeOptions = [
+        let options = [
+            FDSPickerOption(id: "savings", value: "savings", title: "Savings", symbol: "building.columns.fill"),
+            FDSPickerOption(id: "checking", value: "checking", title: "Checking", symbol: "checkmark.rectangle.fill"),
             FDSPickerOption(
-                id: "savings",
-                value: "savings",
-                title: "Savings",
-                symbol: "building.columns.fill"
+                id: "money_market", value: "money_market", title: "Money Market", symbol: "chart.line.uptrend.xyaxis"
             ),
-            FDSPickerOption(
-                id: "checking",
-                value: "checking",
-                title: "Checking",
-                symbol: "checkmark.rectangle.fill"
-            ),
-            FDSPickerOption(
-                id: "money_market",
-                value: "money_market",
-                title: "Money Market",
-                symbol: "chart.line.uptrend.xyaxis"
-            ),
-            FDSPickerOption(
-                id: "other",
-                value: "other",
-                title: "Other",
-                symbol: "banknote.fill"
-            )
+            FDSPickerOption(id: "other", value: "other", title: "Other", symbol: "banknote.fill")
         ]
-
         return VStack(alignment: .leading, spacing: AppSpacing.tight) {
-            FDSLabel("Account Type")
+            FDSLabel("ACCOUNT TYPE")
                 .font(AppTypography.captionSm)
-                .foregroundStyle(AppColors.Text.primary)
+                .tracking(1.0)
+                .foregroundStyle(AppColors.Text.secondary)
             FDSPicker(
                 selection: Binding(
                     get: { form.accountType },
                     set: { if let value = $0 { form.accountType = value } }
                 ),
-                options: accountTypeOptions,
+                options: options,
                 variant: .symbolText,
                 placeholder: "Select type"
             )
@@ -87,18 +67,52 @@ extension CardEditView {
         let bankOptions = Banks.allCases.map {
             FDSPickerOption(id: $0.rawValue, value: $0, title: $0.displayName, imageName: $0.symbolAssetName)
         }
-        return VStack(alignment: .leading, spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("Bank")
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(AppColors.Text.primary)
-                FDSPicker(
-                    selection: Binding(get: { form.selectedBank }, set: { form.selectedBank = $0 }),
-                    options: bankOptions,
-                    variant: .symbolText,
-                    placeholder: "Select bank"
-                )
-            }
-        }
+        return FDSPicker(
+            selection: Binding(get: { form.selectedBank }, set: { form.selectedBank = $0 }),
+            options: bankOptions,
+            variant: .symbolText,
+            placeholder: "Select bank"
+        )
+    }
+
+    // MARK: - Business Logic
+
+    func buildCreationState() -> TargetCreationState {
+        var state = TargetCreationState()
+        state.customName = form.customName
+        state.nickname = form.nickname
+        state.first4 = form.first4
+        state.last4 = form.last4
+        state.cardholderName = form.cardholderName
+        state.selectedBank = form.selectedBank
+        state.isCard = isCard
+        state.accountType = form.accountType
+        state.cardType = form.cardType
+        state.cardProductId = form.cardProductId
+        state.linkedLedgerId = form.linkedLedgerId
+        return state
+    }
+
+    func commitEdit(card: Ledger, context: CardEditContext) async {
+        let newBankId = context.banks.first { $0.bank == form.selectedBank }?.id ?? card.bankId
+        let updated = Ledger(
+            id: card.id,
+            bankId: newBankId,
+            kind: card.kind,
+            displayName: form.customName.isEmpty ? card.displayName : form.customName,
+            last4: form.last4,
+            nickname: form.nickname,
+            ownerName: form.cardholderName,
+            createdAt: card.createdAt,
+            accountType: !isCard ? form.accountType : nil,
+            cardType: isCard ? form.cardType : nil,
+            cardProductId: form.cardProductId.isEmpty ? nil : form.cardProductId,
+            bin: card.bin,
+            linkedLedgerId: form.linkedLedgerId,
+            isArchived: card.isArchived,
+            closingBalance: card.closingBalance,
+            closingBalanceAsOf: card.closingBalanceAsOf
+        )
+        await context.updateCard(updated)
     }
 }
