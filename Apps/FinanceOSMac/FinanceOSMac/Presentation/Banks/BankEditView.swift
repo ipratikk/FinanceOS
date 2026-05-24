@@ -8,41 +8,12 @@ struct BankEditView: View {
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteConfirm = false
 
-    init(bank: Bank, context: BankEditContext) {
-        self.bank = bank
-        self.context = context
-    }
-
     var body: some View {
-        FDSSheet(
-            title: "Bank Details",
-            subtitle: bank.name,
-            onDismiss: { dismiss() },
-            content: {
-                VStack(alignment: .leading, spacing: AppSpacing.md) {
-                    FDSCard(padded: false) {
-                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                            FDSLabel("BANK INFORMATION")
-                                .font(AppTypography.captionSmSemibold)
-                                .tracking(0.2)
-                                .foregroundColor(AppColors.Text.secondary)
-
-                            infoRow("Bank Name", value: bank.name)
-                            Divider().opacity(AppColors.Opacity.low)
-                            infoRow("Provider Type", value: bank.providerType.rawValue.capitalized)
-                        }
-                        .padding(AppSpacing.xs)
-                    }
-
-                    FDSCard(padded: false) {
-                        FDSLiquidButton("Delete Bank", leadingIcon: "trash.fill", variant: .danger) {
-                            showDeleteConfirm = true
-                        }
-                        .padding(AppSpacing.xs)
-                    }
-                }
-            }
-        )
+        VStack(spacing: 0) {
+            headerBar
+            scrollContent
+        }
+        .background(AppColors.base)
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
@@ -66,17 +37,73 @@ struct BankEditView: View {
         }
     }
 
+    private var headerBar: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                FDSLabel("Bank Details")
+                    .font(AppTypography.headingLg)
+                    .foregroundStyle(AppColors.Text.primary)
+                FDSLabel(bank.name)
+                    .font(AppTypography.captionSm)
+                    .foregroundStyle(AppColors.Text.secondary)
+            }
+            Spacer()
+            Button(action: { dismiss() }) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(AppTypography.headingSmall)
+                    .foregroundStyle(AppColors.Text.secondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(AppSpacing.md)
+        .background(AppColors.base)
+    }
+
+    private var scrollContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                infoSurface
+                dangerZoneSurface
+            }
+            .padding(AppSpacing.md)
+        }
+    }
+
+    private var infoSurface: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                FDSLabel("BANK INFORMATION")
+                    .font(AppTypography.headingSmall)
+                    .foregroundStyle(AppColors.Text.primary)
+                infoRow("Bank Name", value: bank.name)
+                Divider().opacity(AppColors.Opacity.low)
+                infoRow("Provider Type", value: bank.providerType.rawValue.capitalized)
+            }
+        }
+    }
+
+    private var dangerZoneSurface: some View {
+        FDSGlassSurface(cornerRadius: AppRadius.lg) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                FDSLabel("DANGER ZONE")
+                    .font(AppTypography.headingSmall)
+                    .foregroundStyle(AppColors.Text.primary)
+                FDSLiquidButton("Delete Bank", leadingIcon: "trash.fill", variant: .danger) {
+                    showDeleteConfirm = true
+                }
+            }
+        }
+    }
+
     private func infoRow(_ label: String, value: String) -> some View {
         HStack {
-            FDSLabel(label.uppercased())
-                .font(AppTypography.captionSmSemibold)
-                .tracking(0.2)
-                .foregroundColor(AppColors.Text.secondary)
+            FDSLabel(label)
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.secondary)
             Spacer()
             FDSLabel(value)
-                .font(AppTypography.captionSmMedium)
-                .foregroundColor(AppColors.Text.primary)
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.primary)
         }
-        .padding(AppSpacing.xs)
     }
 }

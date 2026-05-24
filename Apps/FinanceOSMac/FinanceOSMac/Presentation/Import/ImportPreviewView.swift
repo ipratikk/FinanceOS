@@ -98,9 +98,9 @@ struct ImportPreviewView: View {
         }
         .sheet(item: $sheetCreationItem) { item in
             if item.isCard {
-                CardCreationView(state: item, onCommit: handleCreationCommit)
+                CardEditView(mode: .createCard(prefill: item, onCommit: handleCreationCommit))
             } else {
-                AccountCreationView(state: item, onCommit: handleCreationCommit)
+                CardEditView(mode: .createAccount(prefill: item, onCommit: handleCreationCommit))
             }
         }
         .onChange(of: viewModel.importSession.targetBeingCreated) { _, newValue in

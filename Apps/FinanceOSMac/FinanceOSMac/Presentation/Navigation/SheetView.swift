@@ -12,12 +12,13 @@ struct SheetView: View {
         Group {
             switch route {
             case let .accountEdit(ledger):
-                let context = AccountEditContext(
+                let context = CardEditContext(
                     repository: appContainer.ledgerRepository,
                     banks: banks,
+                    accounts: [],
                     onUpdate: navigator.accountReloadCallback
                 )
-                AccountEditView(account: ledger, context: context)
+                CardEditView(mode: .edit(ledger, context))
             case let .cardEdit(ledger):
                 let context = CardEditContext(
                     repository: appContainer.ledgerRepository,
