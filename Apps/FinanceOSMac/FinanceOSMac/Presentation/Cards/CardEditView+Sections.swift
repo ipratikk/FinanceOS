@@ -3,171 +3,280 @@ import FinanceUI
 import SwiftUI
 
 extension CardEditView {
-    var headerBar: some View {
-        HStack {
-            FDSLabel(titleText)
-                .font(AppTypography.headingLg)
-                .foregroundStyle(AppColors.Text.primary)
+    // MARK: - Left Hero Panel
+
+    var heroPanelSection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xl) {
             Spacer()
-            Button(action: { dismiss() }, label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(AppTypography.headingSmall)
+
+            VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                FDSLabel(titleText)
+                    .font(AppTypography.headingXL)
+                    .foregroundStyle(AppColors.Text.primary)
+                FDSLabel(subtitleText)
+                    .font(AppTypography.bodyMd)
                     .foregroundStyle(AppColors.Text.secondary)
-            })
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            CardDisplayPreview(
+                cardName: selectedCatalogCard?.name ?? (form.customName.isEmpty ? nil : form.customName),
+                bankName: form.selectedBank?.displayName,
+                cardholderName: form.cardholderName,
+                cardNetwork: form.cardType,
+                first4: form.first4,
+                last4: form.last4,
+                bankLogo: form.selectedBank?.logoAssetName
+            )
+
+            HStack(spacing: AppSpacing.md) {
+                securityBadge(icon: "lock.shield.fill", label: "PCI COMPLIANT")
+                securityBadge(icon: "lock.fill", label: "AES-256 ENCRYPTION")
+                Spacer()
+            }
+
+            Spacer()
         }
-        .padding(AppSpacing.md)
-        .background(AppColors.base)
+        .padding(AppSpacing.xl)
+        .frame(maxWidth: .infinity)
     }
 
+    private func securityBadge(icon: String, label: String) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: icon)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(AppColors.accent)
+            FDSLabel(label)
+                .font(AppTypography.captionSm)
+                .tracking(0.8)
+                .foregroundStyle(AppColors.Text.secondary)
+        }
+    }
+
+    // MARK: - Right Panel Header
+
+    var headerBar: some View {
+        HStack {
+            FDSLabel("EDIT CONFIGURATION")
+                .font(AppTypography.captionSm)
+                .tracking(1.2)
+                .foregroundStyle(AppColors.accent)
+            Spacer()
+            Button(action: { dismiss() }, label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(AppColors.Text.secondary)
+                    .frame(width: 22, height: 22)
+                    .background(Circle().fill(AppColors.Glass.thinTint))
+            })
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.vertical, AppSpacing.compact)
+    }
+
+    // MARK: - Scroll Content
+
     var scrollContent: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                basicInfoSurface
-                bankSurface
-                if isEdit { dangerZoneSurface }
+                if isCard {
+                    catalogModeTabs
+                    if catalogMode { catalogPickerSection }
+                    cardCommonFields
+                    bankSurface
+                    securityChip
+                } else {
+                    accountBasicFields
+                    bankSurface
+                    if isEdit { dangerZoneSection }
+                }
             }
             .padding(AppSpacing.md)
         }
     }
 
-    var basicInfoSurface: some View {
-        FDSGlassSurface(cornerRadius: AppRadius.lg) {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
-                FDSLabel("BASIC INFORMATION")
-                    .font(AppTypography.headingSmall)
-                    .foregroundStyle(AppColors.Text.primary)
-                VStack(spacing: AppSpacing.md) {
-                    if isCard { cardBasicFields } else { accountBasicFields }
-                }
-            }
-        }
-    }
+    // MARK: - Catalog / Manual Toggle
 
-    @ViewBuilder var cardBasicFields: some View {
-        inputField("Nickname", text: $form.nickname)
-        if !form.cardProductId.isEmpty, let catalogCard = selectedCatalogCard {
-            catalogCardWidget(catalogCard)
-        } else {
-            cardBrowseButton
-        }
-        CardDisplayPreview(
-            cardName: selectedCatalogCard?.name,
-            bankName: form.selectedBank?.displayName,
-            cardholderName: form.cardholderName,
-            cardNetwork: form.cardType,
-            first4: form.first4,
-            last4: form.last4,
-            bankLogo: form.selectedBank?.logoAssetName
+    var catalogModeTabs: some View {
+        FDSChoiceGroup(
+            selection: Binding(
+                get: { catalogMode ? "CATALOG" : "MANUAL" },
+                set: { catalogMode = $0 == "CATALOG" }
+            ),
+            options: ["CATALOG", "MANUAL"],
+            optionLabel: { $0 }
         )
-        cardNumberRow
-        inputField("Cardholder Name", text: $form.cardholderName)
     }
 
-    @ViewBuilder var accountBasicFields: some View {
-        inputField("Account Name (Optional)", text: $form.customName)
-        inputField("Account Holder", text: $form.cardholderName)
-        inputField("Last 4 Digits", text: $form.last4)
-            .onChange(of: form.last4) { _, newValue in
-                if newValue.count > 4 { form.last4 = String(newValue.prefix(4)) }
-            }
-        accountTypeField()
+    // MARK: - Catalog Picker
+
+    var catalogPickerSection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.compact) {
+            FDSLabel("SELECT & BROWSE CARDS")
+                .font(AppTypography.captionSm)
+                .tracking(1.0)
+                .foregroundStyle(AppColors.Text.secondary)
+
+            Button(action: { showCardSelection = true }, label: {
+                HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 12))
+                        .foregroundStyle(AppColors.Text.tertiary)
+                    FDSLabel(catalogPickerLabel)
+                        .font(AppTypography.bodyMd)
+                        .foregroundStyle(form.cardProductId.isEmpty ? AppColors.Text.tertiary : AppColors.Text.primary)
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(AppColors.Text.tertiary)
+                }
+                .padding(.horizontal, AppSpacing.md)
+                .padding(.vertical, AppSpacing.compact)
+                .background(
+                    RoundedRectangle(cornerRadius: AppRadius.sm)
+                        .fill(AppColors.Glass.surface)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppRadius.sm)
+                        .strokeBorder(AppColors.border, lineWidth: 0.5)
+                )
+                .contentShape(Rectangle())
+            })
+            .buttonStyle(.plain)
+        }
     }
 
-    var cardBrowseButton: some View {
-        Button(action: { showCardSelection = true }, label: {
-            HStack(spacing: AppSpacing.compact) {
-                Image(systemName: "creditcard.fill")
-                FDSLabel("Browse Card Database")
-                Spacer()
-                Image(systemName: "chevron.right")
-            }
-            .foregroundStyle(AppColors.accent)
-            .padding(.horizontal, AppSpacing.compact)
-            .padding(.vertical, 6)
-            .contentShape(Rectangle())
-        })
-        .buttonStyle(.plain)
+    private var catalogPickerLabel: String {
+        guard let card = selectedCatalogCard else { return "Select a card..." }
+        return card.issuer.isEmpty ? card.name : "\(card.issuer) - \(card.name)"
     }
 
-    var cardNumberRow: some View {
-        HStack(spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("First 4 (Optional)")
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(AppColors.Text.tertiary)
-                FDSTextInput("", text: $form.first4, style: .bodyMedium)
-                    .padding(AppSpacing.xs)
-                    .cornerRadius(AppRadius.sm)
-            }
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("Last 4")
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(AppColors.Text.tertiary)
-                FDSTextInput("", text: $form.last4, style: .bodyMedium)
-                    .padding(AppSpacing.xs)
-                    .cornerRadius(AppRadius.sm)
+    // MARK: - Card Common Fields
+
+    var cardCommonFields: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            inputField("CARD NICKNAME", placeholder: "e.g. Primary Travel Card", text: $form.nickname)
+            inputField("CARDHOLDER NAME", placeholder: "Full name on card", text: $form.cardholderName)
+            HStack(spacing: AppSpacing.md) {
+                inputField("FIRST 4 DIGITS", placeholder: "4242", text: $form.first4)
+                    .frame(maxWidth: .infinity)
+                inputField("LAST 4 DIGITS", placeholder: "9012", text: $form.last4)
+                    .frame(maxWidth: .infinity)
                     .onChange(of: form.last4) { _, newValue in
                         if newValue.count > 4 { form.last4 = String(newValue.prefix(4)) }
                     }
             }
-            VStack(alignment: .leading, spacing: AppSpacing.tight) {
-                FDSLabel("Card Network")
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(AppColors.Text.tertiary)
-                FDSPicker(
-                    selection: Binding<CardNetwork?>(
-                        get: { form.cardType },
-                        set: { if let value = $0 { form.cardType = value } }
-                    ),
-                    options: cardTypeOptions,
-                    variant: .logoOnly,
-                    placeholder: "Select"
-                )
-            }
+            networkPickerRow
+        }
+    }
+
+    private var networkPickerRow: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.tight) {
+            FDSLabel("CARD NETWORK")
+                .font(AppTypography.captionSm)
+                .tracking(1.0)
+                .foregroundStyle(AppColors.Text.secondary)
+            FDSPicker(
+                selection: Binding<CardNetwork?>(
+                    get: { form.cardType },
+                    set: { if let net = $0 { form.cardType = net } }
+                ),
+                options: cardTypeOptions,
+                variant: .logoOnly,
+                placeholder: "Select"
+            )
+        }
+    }
+
+    // MARK: - Account Fields
+
+    var accountBasicFields: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            inputField("ACCOUNT NAME", placeholder: "Optional", text: $form.customName)
+            inputField("ACCOUNT HOLDER", placeholder: "Full name", text: $form.cardholderName)
+            inputField("LAST 4 DIGITS", placeholder: "XXXX", text: $form.last4)
+                .onChange(of: form.last4) { _, newValue in
+                    if newValue.count > 4 { form.last4 = String(newValue.prefix(4)) }
+                }
+            accountTypeField()
         }
     }
 
     var bankSurface: some View {
-        FDSGlassSurface(cornerRadius: AppRadius.lg) {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
-                FDSLabel("BANK & ACCOUNT")
-                    .font(AppTypography.headingSmall)
-                    .foregroundStyle(AppColors.Text.primary)
-                bankField()
-            }
+        VStack(alignment: .leading, spacing: AppSpacing.compact) {
+            FDSLabel("BANK")
+                .font(AppTypography.captionSm)
+                .tracking(1.0)
+                .foregroundStyle(AppColors.Text.secondary)
+            bankField()
         }
     }
 
-    var dangerZoneSurface: some View {
-        FDSGlassSurface(cornerRadius: AppRadius.lg) {
-            VStack(alignment: .leading, spacing: AppSpacing.md) {
-                FDSLabel("DANGER ZONE")
-                    .font(AppTypography.headingSmall)
-                    .foregroundStyle(AppColors.Text.primary)
-                FDSLiquidButton(
-                    "Delete \(isCard ? "Card" : "Account")",
-                    leadingIcon: "trash.fill",
-                    variant: .danger
-                ) {
-                    showDeleteConfirm = true
-                }
-            }
+    // MARK: - Security Chip
+
+    var securityChip: some View {
+        HStack(alignment: .top, spacing: AppSpacing.compact) {
+            Image(systemName: "lock.shield")
+                .font(.system(size: 12))
+                .foregroundStyle(AppColors.accent)
+                .padding(.top, 1)
+            FDSLabel(
+                "Full card numbers are never stored on our servers. We use localized encryption for secure display."
+            )
+            .font(AppTypography.captionSm)
+            .foregroundStyle(AppColors.Text.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(AppSpacing.compact)
+        .background(
+            RoundedRectangle(cornerRadius: AppRadius.sm)
+                .fill(AppColors.accent.opacity(0.06))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.sm)
+                .strokeBorder(AppColors.accent.opacity(0.18), lineWidth: 0.5)
+        )
+    }
+
+    // MARK: - Danger Zone
+
+    var dangerZoneSection: some View {
+        FDSLiquidButton("Delete Account", leadingIcon: "trash.fill", variant: .danger) {
+            showDeleteConfirm = true
         }
     }
+
+    // MARK: - Footer
 
     var footerBar: some View {
-        HStack(spacing: AppSpacing.compact) {
-            FDSLiquidButton("Cancel", variant: .ghost) { dismiss() }
-            Spacer()
-            primaryActionButton
+        VStack(spacing: 0) {
+            VStack(spacing: AppSpacing.md) {
+                HStack(spacing: AppSpacing.md) {
+                    if isEdit, isCard {
+                        FDSLiquidButton(
+                            "Delete Card",
+                            leadingIcon: "trash",
+                            variant: .danger,
+                            action: { showDeleteConfirm = true }
+                        )
+                        .frame(maxWidth: .infinity)
+                    }
+                    primaryActionButton
+                        .frame(maxWidth: .infinity)
+                }
+                FDSLiquidButton("Cancel", variant: .link, action: { dismiss() })
+                    .frame(maxWidth: .infinity)
+            }
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.compact)
         }
-        .padding(AppSpacing.md)
     }
 
     @ViewBuilder var primaryActionButton: some View {
         switch mode {
         case let .edit(card, context):
-            FDSLiquidButton("Save", variant: .primary) {
+            FDSLiquidButton("Save", trailingIcon: "arrow.right", variant: .primary) {
                 Task {
                     await commitEdit(card: card, context: context)
                     dismiss()
@@ -175,7 +284,7 @@ extension CardEditView {
             }
             .disabled(form.last4.trimmingCharacters(in: .whitespaces).isEmpty)
         case let .createCard(_, onCommit), let .createAccount(_, onCommit):
-            FDSLiquidButton("Create", variant: .primary) {
+            FDSLiquidButton("Create", trailingIcon: "arrow.right", variant: .primary) {
                 onCommit(buildCreationState())
                 dismiss()
             }
@@ -183,16 +292,7 @@ extension CardEditView {
         }
     }
 
-    @ViewBuilder var deleteSheet: some View {
-        if case let .edit(card, context) = mode {
-            CardDeleteConfirmationAlert(
-                isCard: isCard,
-                card: card,
-                context: context,
-                isPresented: $showDeleteConfirm
-            )
-        }
-    }
+    // MARK: - Card Selection Sheet
 
     var cardSelectionSheet: some View {
         CardSelectionView(
@@ -207,44 +307,5 @@ extension CardEditView {
             onDismiss: { showCardSelection = false }
         )
         .frame(minWidth: 700, maxHeight: 500)
-    }
-
-    func buildCreationState() -> TargetCreationState {
-        var state = TargetCreationState()
-        state.customName = form.customName
-        state.nickname = form.nickname
-        state.first4 = form.first4
-        state.last4 = form.last4
-        state.cardholderName = form.cardholderName
-        state.selectedBank = form.selectedBank
-        state.isCard = isCard
-        state.accountType = form.accountType
-        state.cardType = form.cardType
-        state.cardProductId = form.cardProductId
-        state.linkedLedgerId = form.linkedLedgerId
-        return state
-    }
-
-    func commitEdit(card: Ledger, context: CardEditContext) async {
-        let newBankId = context.banks.first { $0.bank == form.selectedBank }?.id ?? card.bankId
-        let updated = Ledger(
-            id: card.id,
-            bankId: newBankId,
-            kind: card.kind,
-            displayName: form.customName.isEmpty ? card.displayName : form.customName,
-            last4: form.last4,
-            nickname: form.nickname,
-            ownerName: form.cardholderName,
-            createdAt: card.createdAt,
-            accountType: !isCard ? form.accountType : nil,
-            cardType: isCard ? form.cardType : nil,
-            cardProductId: form.cardProductId.isEmpty ? nil : form.cardProductId,
-            bin: card.bin,
-            linkedLedgerId: form.linkedLedgerId,
-            isArchived: card.isArchived,
-            closingBalance: card.closingBalance,
-            closingBalanceAsOf: card.closingBalanceAsOf
-        )
-        await context.updateCard(updated)
     }
 }
