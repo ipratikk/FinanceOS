@@ -51,6 +51,11 @@ public struct FDSPicker<V: Hashable>: View {
         .background(AppColors.base)
     }
 
+    private var hasSelection: Bool {
+        guard let selectedValue = selection else { return false }
+        return options.contains { ($0.value as? V) == selectedValue }
+    }
+
     private var triggerView: some View {
         Button(action: { isOpen.toggle() }, label: {
             HStack(spacing: AppSpacing.compact) {
@@ -59,29 +64,32 @@ public struct FDSPicker<V: Hashable>: View {
                     FDSPickerRow(option: selectedOption, variant: variant, isSelected: false)
                 } else {
                     FDSLabel(placeholder)
-                        .font(AppTypography.captionSm)
-                        .foregroundStyle(AppColors.Text.primary)
+                        .font(AppTypography.bodyMd)
+                        .foregroundStyle(AppColors.Text.tertiary)
                     Spacer()
                 }
 
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(AppTypography.captionSmSemibold)
-                    .foregroundStyle(AppColors.textTertiary)
-                    .padding(.trailing, AppSpacing.compact)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(AppColors.Text.tertiary)
             }
             .padding(.vertical, AppSpacing.compact)
             .padding(.horizontal, AppSpacing.md)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
-                RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
+                    .fill(AppColors.Glass.surface)
                     .overlay {
-                        RoundedRectangle(cornerRadius: AppRadius.md, style: .continuous)
-                            .strokeBorder(AppColors.textPrimary.opacity(0.06), lineWidth: 0.5)
+                        RoundedRectangle(cornerRadius: AppRadius.sm, style: .continuous)
+                            .strokeBorder(
+                                isOpen ? AppColors.Border.focus : AppColors.Border.input,
+                                lineWidth: isOpen ? 1.5 : 0.5
+                            )
                     }
             }
         })
         .buttonStyle(.plain)
+        .animation(AppAnimation.easeSmooth, value: isOpen)
     }
 }
 

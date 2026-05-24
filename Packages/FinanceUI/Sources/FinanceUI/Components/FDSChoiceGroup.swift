@@ -20,29 +20,23 @@ public struct FDSChoiceGroup<T: Hashable>: View {
     }
 
     public var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: AppSpacing.tight) {
             ForEach(options, id: \.self) { option in
-                Button(action: { selection = option }, label: {
-                    FDSLabel(optionLabel(option))
-                        .font(AppTypography.captionLgSemibold)
-                        .foregroundColor(
-                            selection == option
-                                ? AppColors.textPrimary
-                                : AppColors.textSecondary
-                        )
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 32)
-                        .background {
-                            if selection == option {
-                                Capsule().fill(AppColors.surface2)
-                            }
-                        }
-                })
-                .buttonStyle(.plain)
+                let isSelected = selection == option
+                FDSLiquidButton(
+                    optionLabel(option),
+                    variant: isSelected ? .primary : .ghost,
+                    fullWidth: true,
+                    action: { selection = option }
+                )
             }
         }
-        .padding(4)
-        .background(AppColors.surface)
+        .padding(AppSpacing.tight)
+        .background(AppColors.Glass.surface)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.xl, style: .continuous)
+                .strokeBorder(AppColors.Border.subtle, lineWidth: 0.5)
+        )
         .cornerRadius(AppRadius.xl)
         .animation(.spring(response: 0.25, dampingFraction: 0.85), value: selection)
     }
