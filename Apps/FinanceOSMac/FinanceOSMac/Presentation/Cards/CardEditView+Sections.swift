@@ -228,6 +228,7 @@ extension CardEditView {
             .foregroundStyle(AppColors.Text.secondary)
             .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(AppSpacing.compact)
         .background(
             RoundedRectangle(cornerRadius: AppRadius.sm)
@@ -276,7 +277,7 @@ extension CardEditView {
     @ViewBuilder var primaryActionButton: some View {
         switch mode {
         case let .edit(card, context):
-            FDSLiquidButton("Save", trailingIcon: "arrow.right", variant: .primary) {
+            FDSLiquidButton("Save", trailingIcon: "arrow.right", variant: .primary, fullWidth: true) {
                 Task {
                     await commitEdit(card: card, context: context)
                     dismiss()
@@ -284,7 +285,7 @@ extension CardEditView {
             }
             .disabled(form.last4.trimmingCharacters(in: .whitespaces).isEmpty)
         case let .createCard(_, onCommit), let .createAccount(_, onCommit):
-            FDSLiquidButton("Create", trailingIcon: "arrow.right", variant: .primary) {
+            FDSLiquidButton("Create", trailingIcon: "arrow.right", variant: .primary, fullWidth: true) {
                 onCommit(buildCreationState())
                 dismiss()
             }

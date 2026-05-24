@@ -9,14 +9,7 @@ extension CardEditView {
         text: Binding<String>,
         style: FDSTextInputStyle = .bodyLarge
     ) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.compact) {
-            FDSLabel(label)
-                .font(AppTypography.captionSm)
-                .tracking(1.0)
-                .foregroundStyle(AppColors.Text.secondary)
-            FDSTextInput(placeholder, text: text, style: style)
-                .cornerRadius(AppRadius.sm)
-        }
+        FDSInputField(label, text: text, placeholder: placeholder)
     }
 
     func catalogCardWidget(_ card: CardMetadata) -> some View {

@@ -70,6 +70,7 @@ struct CardDisplayPreview: View {
                 .padding(AppSpacing.md)
             }
         }
+        .aspectRatio(1.586, contentMode: .fit)
     }
 
     private var institutionLabel: String {
