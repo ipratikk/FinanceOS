@@ -10,6 +10,10 @@ import Foundation
 public protocol TransactionRepository: Sendable {
     func fetchTransactions() async throws -> [Transaction]
 
+    func fetchTransactionsForLedger(
+        _ ledgerID: UUID
+    ) async throws -> [Transaction]
+
     func fetchTransactionsForAccount(
         _ accountID: UUID
     ) async throws -> [Transaction]

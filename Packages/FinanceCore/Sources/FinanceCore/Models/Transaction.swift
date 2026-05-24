@@ -114,17 +114,8 @@ public extension Transaction {
                 .defaults(to: "debit")
 
             table.column("sourceFingerprint", .text)
-                .unique()
 
-            table.check(
-                sql: """
-                (
-                    ("accountID" IS NOT NULL AND "cardID" IS NULL)
-                    OR
-                    ("accountID" IS NULL AND "cardID" IS NOT NULL)
-                )
-                """
-            )
+            table.uniqueKey(["ledgerId", "sourceFingerprint"])
         }
     }
 }

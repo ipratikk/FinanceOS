@@ -41,7 +41,7 @@ public final class MockLedgerRepository: LedgerRepository, @unchecked Sendable {
 
     public func updateClosingBalance(id: UUID, balance: Int64, asOf: Date) async throws {
         if let idx = ledgers.firstIndex(where: { $0.id == id }) {
-            var updated = ledgers[idx]
+            let updated = ledgers[idx]
             ledgers[idx] = Ledger(
                 id: updated.id,
                 bankId: updated.bankId,
@@ -113,6 +113,10 @@ public final class MockTransactionRepository: TransactionRepository, @unchecked 
 
     public func fetchTransactions() async throws -> [Transaction] {
         transactions
+    }
+
+    public func fetchTransactionsForLedger(_ ledgerID: UUID) async throws -> [Transaction] {
+        transactions.filter { $0.ledgerId == ledgerID }
     }
 
     public func fetchTransactionsForAccount(_ accountID: UUID) async throws -> [Transaction] {
