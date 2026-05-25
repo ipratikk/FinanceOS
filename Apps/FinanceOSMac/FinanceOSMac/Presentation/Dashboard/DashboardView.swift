@@ -66,7 +66,6 @@ struct DashboardView: View {
                     }
             }
         }
-        .navigationTitle("Dashboard")
         .toolbar {
             ToolbarItem(placement: .principal) {
                 FDSLabel(currentMonthLabel)

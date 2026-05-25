@@ -23,7 +23,6 @@ struct BanksView: View {
             }
         }
         .background(AppColors.base)
-        .navigationTitle("Banks")
         .task { await viewModel.loadBanks() }
         .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) {}
