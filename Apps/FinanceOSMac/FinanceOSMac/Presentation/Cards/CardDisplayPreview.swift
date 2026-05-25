@@ -4,6 +4,7 @@ import SwiftUI
 
 struct CardDisplayPreview: View {
     let cardName: String?
+    let cardNickName: String?
     let bankName: String?
     let selectedBank: Banks?
     let cardholderName: String
@@ -11,6 +12,10 @@ struct CardDisplayPreview: View {
     let first4: String
     let last4: String
     let bankLogo: String?
+
+    @State private var tilt: CGSize = .zero
+    @State private var glareCenter: UnitPoint = .center
+    @State private var isHovered = false
 
     var body: some View {
         GeometryReader { geo in
@@ -25,13 +30,22 @@ struct CardDisplayPreview: View {
                             .strokeBorder(AppColors.Fill.quaternary, lineWidth: 1)
                     )
 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .center, spacing: 0) {
                     HStack {
                         chipIcon
                         Spacer()
                         bankLogoView(logoHeight: logoHeight, markSize: bankMarkSize, cardWidth: geo.size.width)
                     }
                     .padding(AppSpacing.md)
+
+                    Spacer()
+
+                    if let cardNickName {
+                        FDSLabel(cardNickName.uppercased())
+                            .font(AppTypography.headlineSm)
+                            .foregroundStyle(AppColors.Text.tertiaryElevated)
+                            .lineLimit(1)
+                    }
 
                     Spacer()
 
@@ -66,9 +80,40 @@ struct CardDisplayPreview: View {
                     }
                     .padding(AppSpacing.md)
                 }
+
+                RadialGradient(
+                    colors: [Color.white.opacity(isHovered ? 0.18 : 0), .clear],
+                    center: glareCenter,
+                    startRadius: 0,
+                    endRadius: geo.size.width * 0.7
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .blendMode(.overlay)
+                .allowsHitTesting(false)
+            }
+            .onContinuousHover { phase in
+                switch phase {
+                case let .active(location):
+                    let nx = (location.x / geo.size.width) - 0.5
+                    let ny = (location.y / geo.size.height) - 0.5
+                    withAnimation(.interactiveSpring(duration: 0.12)) {
+                        tilt = CGSize(width: nx, height: ny)
+                        glareCenter = UnitPoint(x: location.x / geo.size.width, y: location.y / geo.size.height)
+                        isHovered = true
+                    }
+                case .ended:
+                    withAnimation(.spring(duration: 0.5, bounce: 0.3)) {
+                        tilt = .zero
+                        isHovered = false
+                    }
+                }
             }
         }
         .aspectRatio(1.586, contentMode: .fit)
+        .rotation3DEffect(.degrees(tilt.height * -14), axis: (x: 1, y: 0, z: 0), perspective: 0.4)
+        .rotation3DEffect(.degrees(tilt.width * 14), axis: (x: 0, y: 1, z: 0), perspective: 0.4)
+        .scaleEffect(isHovered ? 1.03 : 1.0)
+        .animation(.interactiveSpring(duration: 0.12), value: tilt)
     }
 
     @ViewBuilder

@@ -6,6 +6,7 @@ import SwiftUI
 struct CardsView: View {
     @State private var viewModel: CardsViewModel
     @State private var cardPendingDelete: Ledger?
+    @State private var hoveredCardId: UUID?
     @Environment(AppNavigator.self) private var navigator
     private let transactionRepository: any TransactionRepository
     private let ledgerRepository: any LedgerRepository
@@ -31,7 +32,6 @@ struct CardsView: View {
             }
         }
         .background(AppColors.base)
-        .navigationTitle("Cards")
         .onAppear {
             navigator.cardReloadCallback = {
                 await viewModel.loadCards()
@@ -71,14 +71,20 @@ struct CardsView: View {
 
     private var cardsList: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 32) {
                 listHeader
 
-                ForEach(
-                    groupedCardsByBank.sorted(by: { $0.key < $1.key }),
-                    id: \.key
-                ) { bankName, cardRows in
-                    bankSection(bankName: bankName, rows: cardRows)
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.flexible(), spacing: 16)
+                    ],
+                    spacing: 16
+                ) {
+                    ForEach(viewModel.cardRows, id: \.card.id) { row in
+                        cardGridItem(row)
+                    }
                 }
             }
             .padding(.horizontal, 32)
@@ -88,82 +94,15 @@ struct CardsView: View {
 
     private var listHeader: some View {
         VStack(alignment: .leading, spacing: 4) {
-            FDSLabel("Credit Cards")
-                .font(AppTypography.headingXL)
+            FDSLabel("Card Management")
+                .font(AppTypography.displayLarge)
                 .foregroundColor(AppColors.Text.primary)
             FDSLabel("Manage and track your cards")
-                .font(AppTypography.captionLgMedium)
+                .font(AppTypography.captionSm)
                 .tracking(0.2)
-                .foregroundColor(AppColors.Text.secondary)
+                .foregroundColor(AppColors.Text.tertiary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func cardRowView(_ ledger: Ledger) -> some View {
-        FDSCard(cornerRadius: 12, padded: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                cardRowHeader(ledger)
-                Divider().opacity(0.2).padding(.horizontal, 12)
-                cardRowActions(ledger)
-            }
-        }
-    }
-
-    private func cardRowHeader(_ ledger: Ledger) -> some View {
-        return HStack(spacing: 16) {
-            FDSCardArt(
-                ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname,
-                network: ledger.cardType?.rawValue.uppercased() ?? "CARD",
-                last4: ledger.last4
-            )
-            .frame(width: 76, height: 48)
-
-            VStack(alignment: .leading, spacing: 4) {
-                FDSLabel(ledger.nickname.isEmpty ? ledger.displayName : ledger.nickname)
-                    .font(AppTypography.bodySmSemibold)
-                    .foregroundColor(AppColors.Text.primary)
-                    .lineLimit(1)
-
-                HStack(spacing: 4) {
-                    if let cardType = ledger.cardType {
-                        FDSLabel(cardType.rawValue.uppercased())
-                            .font(AppTypography.captionSmMedium)
-                            .tracking(0.2)
-                            .foregroundColor(AppColors.Text.secondary)
-                    }
-                    if !ledger.last4.isEmpty {
-                        FDSLabel("•••• \(ledger.last4)")
-                            .maskedAccount()
-                            .foregroundColor(AppColors.Text.secondary)
-                    }
-                }
-            }
-
-            Spacer()
-        }
-        .padding(AppSpacing.xs)
-    }
-
-    private func cardRowActions(_ ledger: Ledger) -> some View {
-        HStack(spacing: 12) {
-            Spacer()
-
-            actionIconButton("plus", color: AppColors.Text.tertiary) {
-                let bank = viewModel.banks.first { $0.id == ledger.bankId }
-                navigator.pendingImportTarget = .ledger(ledger.id)
-                navigator.pendingImportSource = importSource(for: ledger, bank: bank)
-                navigator.navigate(to: .importStatement)
-            }
-
-            actionIconButton("pencil", color: AppColors.Text.tertiary) {
-                navigator.present(.cardEdit(ledger))
-            }
-
-            actionIconButton("trash", color: AppColors.danger) {
-                cardPendingDelete = ledger
-            }
-        }
-        .padding(8)
     }
 
     private var emptyState: some View {
@@ -176,32 +115,54 @@ struct CardsView: View {
 }
 
 extension CardsView {
-    private func bankSection(bankName: String, rows: [CardsViewModel.CardRow]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                FDSLabel(bankName)
-                    .font(AppTypography.bodyMdSemibold)
-                    .foregroundColor(AppColors.Text.primary)
-                FDSLabel("\(rows.count) card\(rows.count == 1 ? "" : "s")")
-                    .font(AppTypography.captionLgMedium)
-                    .foregroundColor(AppColors.Text.secondary)
-            }
+    private func cardGridItem(_ row: CardsViewModel.CardRow) -> some View {
+        let ledger = row.card
+        let bank = viewModel.banks.first { $0.id == ledger.bankId }
 
-            VStack(spacing: 4) {
-                ForEach(Array(rows.enumerated()), id: \.element.card.id) { _, row in
-                    NavigationLink(value: DetailDestination.cardTransactions(row.card.id)) {
-                        cardRowView(row.card)
-                    }
-                    .buttonStyle(.plain)
-                }
+        return ZStack(alignment: .bottom) {
+            NavigationLink(value: DetailDestination.cardTransactions(ledger.id)) {
+                CardDisplayPreview(
+                    cardName: ledger.displayName,
+                    cardNickName: ledger.nickname,
+                    bankName: bank?.bank.displayName,
+                    selectedBank: bank?.bank,
+                    cardholderName: ledger.ownerName,
+                    cardNetwork: ledger.cardType ?? .other,
+                    first4: ledger.bin.map { String($0.prefix(4)) } ?? "",
+                    last4: ledger.last4,
+                    bankLogo: bank?.logoAssetName
+                )
+            }
+            .buttonStyle(.plain)
+
+            cardItemActions(ledger: ledger, bank: bank)
+                .padding(.bottom, AppSpacing.compact)
+                .opacity(hoveredCardId == ledger.id ? 1 : 0)
+        }
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.15)) {
+                hoveredCardId = hovering ? ledger.id : nil
             }
         }
     }
 
-    private var groupedCardsByBank: [String: [CardsViewModel.CardRow]] {
-        Dictionary(grouping: viewModel.cardRows) { cardRow in
-            viewModel.banks.first { $0.id == cardRow.card.bankId }?.name ?? "Unknown"
+    private func cardItemActions(ledger: Ledger, bank: Bank?) -> some View {
+        HStack(spacing: AppSpacing.compact) {
+            actionIconButton("plus", color: AppColors.Text.primary) {
+                navigator.pendingImportTarget = .ledger(ledger.id)
+                navigator.pendingImportSource = importSource(for: ledger, bank: bank)
+                navigator.navigate(to: .importStatement)
+            }
+            actionIconButton("pencil", color: AppColors.Text.primary) {
+                navigator.present(.cardEdit(ledger))
+            }
+            actionIconButton("trash", color: AppColors.danger) {
+                cardPendingDelete = ledger
+            }
         }
+        .padding(.horizontal, AppSpacing.sm)
+        .padding(.vertical, AppSpacing.tight)
+        .glassPill()
     }
 
     private func importSource(for ledger: Ledger, bank: Bank?) -> StatementSource? {
@@ -234,38 +195,36 @@ extension CardsView {
     }
 
     private var loadingState: some View {
-        ScrollView {
-            VStack(spacing: 4) {
-                ForEach(0 ..< 3, id: \.self) { _ in
-                    skeletonRow
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 32) {
+                VStack(alignment: .leading, spacing: 4) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(AppColors.Glass.thinTint)
+                        .frame(height: 20)
+                        .frame(maxWidth: 200)
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(AppColors.Glass.thinTint)
+                        .frame(height: 12)
+                        .frame(maxWidth: 120)
+                }
+
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.flexible(), spacing: 16)
+                    ],
+                    spacing: 16
+                ) {
+                    ForEach(0 ..< 6, id: \.self) { _ in
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(AppColors.Glass.surface)
+                            .aspectRatio(1.586, contentMode: .fit)
+                    }
                 }
             }
             .padding(.horizontal, 32)
             .padding(.vertical, 24)
-        }
-    }
-
-    private var skeletonRow: some View {
-        HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 6)
-                .fill(AppColors.Glass.thinTint)
-                .frame(width: 56, height: 36)
-            VStack(alignment: .leading, spacing: 4) {
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(AppColors.Glass.thinTint)
-                    .frame(height: 11)
-                    .frame(maxWidth: 160)
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(AppColors.Glass.thinTint)
-                    .frame(height: 9)
-                    .frame(maxWidth: 110)
-            }
-            Spacer()
-        }
-        .padding(AppSpacing.xs)
-        .background {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(AppColors.Glass.surface)
         }
     }
 }
