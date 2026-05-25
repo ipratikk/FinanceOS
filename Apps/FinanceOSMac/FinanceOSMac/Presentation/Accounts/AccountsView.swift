@@ -31,7 +31,6 @@ struct AccountsView: View {
             }
         }
         .background(AppColors.base)
-        .navigationTitle("Accounts")
         .alert(
             "Delete \"\(accountPendingDelete?.displayName ?? "")\"?",
             isPresented: Binding(

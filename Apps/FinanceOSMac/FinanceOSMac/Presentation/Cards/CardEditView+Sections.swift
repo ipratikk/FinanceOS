@@ -20,7 +20,8 @@ extension CardEditView {
             }
 
             CardDisplayPreview(
-                cardName: selectedCatalogCard?.name ?? (form.customName.isEmpty ? nil : form.customName),
+                cardName: selectedCatalogCard?.name,
+                cardNickName: form.customName,
                 bankName: form.selectedBank?.displayName,
                 selectedBank: form.selectedBank,
                 cardholderName: form.cardholderName,

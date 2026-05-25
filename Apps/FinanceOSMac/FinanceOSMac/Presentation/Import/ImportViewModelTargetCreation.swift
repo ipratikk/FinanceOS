@@ -46,6 +46,7 @@ extension ImportViewModel {
             if isCardTarget {
                 try await createCard(
                     params,
+                    ownerName: ownerName,
                     cardType: cardType,
                     cardProductId: cardProductId,
                     encryptedCardNumber: encryptedCardNumber,
@@ -92,6 +93,7 @@ extension ImportViewModel {
 
     private func createCard(
         _ params: TargetParams,
+        ownerName: String = "",
         cardType: CardNetwork,
         cardProductId: String = "",
         encryptedCardNumber: String = "",
@@ -109,7 +111,7 @@ extension ImportViewModel {
             displayName: cardDisplayName,
             last4: params.last4,
             nickname: params.nickname,
-            ownerName: "",
+            ownerName: ownerName,
             cardType: cardType,
             cardProductId: cardProductId.isEmpty ? nil : cardProductId,
             linkedLedgerId: linkedLedgerId
