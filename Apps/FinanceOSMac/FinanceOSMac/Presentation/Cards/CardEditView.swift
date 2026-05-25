@@ -68,6 +68,7 @@ struct CardEditView: View {
     @State var showDeleteConfirm = false
     @State var showCardSelection = false
     @State var catalogMode = true
+    @State private var sizing = WindowSizing()
 
     init(mode: CardEditMode) {
         self.mode = mode
@@ -112,20 +113,11 @@ struct CardEditView: View {
         return CardDatabase.supportedCards().first { $0.id == form.cardProductId }
     }
 
-    private var screenFrame: CGRect {
-        NSScreen.main?.visibleFrame ?? CGRect(x: 0, y: 0, width: 1440, height: 900)
-    }
-
-    private var sheetWidth: CGFloat {
-        screenFrame.width * 0.4
-    }
-
-    private var sheetHeight: CGFloat {
-        screenFrame.height * 0.7
-    }
-
     private var cardPanelWidth: CGFloat {
-        max(300, min(sheetWidth * 0.5, 420))
+        max(
+            300,
+            min(sizing.clampedWidth(fraction: 0.7, min: 820, max: 1300) * 0.35, 420)
+        )
     }
 
     var body: some View {
@@ -145,7 +137,14 @@ struct CardEditView: View {
         }
         .padding(AppSpacing.xxl)
         .background(AppColors.base)
-        .frame(width: sheetWidth, height: sheetHeight)
+        .responsiveFrame(
+            widthFraction: 0.7,
+            heightFraction: 0.7,
+            minWidth: 900,
+            maxWidth: 1300,
+            minHeight: 700,
+            maxHeight: 900
+        )
         .onAppear { seedBankFromCatalogIfNeeded() }
         .onChange(of: contextBanksCount) { _, count in
             guard count > 0 else { return }
