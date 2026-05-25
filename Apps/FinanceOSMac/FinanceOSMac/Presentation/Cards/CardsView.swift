@@ -70,10 +70,9 @@ struct CardsView: View {
     }
 
     private var cardsList: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 32) {
-                listHeader
-
+        VStack(alignment: .leading, spacing: 32) {
+            listHeader
+            ScrollView(showsIndicators: false) {
                 LazyVGrid(
                     columns: [
                         GridItem(.flexible(), spacing: 16),
@@ -87,9 +86,9 @@ struct CardsView: View {
                     }
                 }
             }
-            .padding(.horizontal, 32)
-            .padding(.vertical, 24)
         }
+        .padding(.horizontal, 32)
+        .padding(.vertical, 24)
     }
 
     private var listHeader: some View {
