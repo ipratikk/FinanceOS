@@ -82,7 +82,7 @@ struct CardDisplayPreview: View {
                 }
 
                 RadialGradient(
-                    colors: [Color.white.opacity(isHovered ? 0.18 : 0), .clear],
+                    colors: [AppColors.Text.primary.opacity(isHovered ? 0.18 : 0), .clear],
                     center: glareCenter,
                     startRadius: 0,
                     endRadius: geo.size.width * 0.7
