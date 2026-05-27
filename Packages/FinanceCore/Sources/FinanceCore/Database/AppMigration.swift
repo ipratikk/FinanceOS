@@ -24,5 +24,11 @@ enum AppMigration {
 
         // v2 migration removed: columns already exist in initial schema (Ledger.createTable)
         // Fresh database creation includes closingBalance + closingBalanceAsOf
+
+        migrator.registerMigration("v3_add_ledger_opening_balance") { database in
+            try database.alter(table: "ledgers") { table in
+                table.add(column: "openingBalance", .integer)
+            }
+        }
     }
 }

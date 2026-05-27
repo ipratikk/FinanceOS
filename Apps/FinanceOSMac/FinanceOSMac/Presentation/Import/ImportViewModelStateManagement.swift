@@ -56,13 +56,18 @@ extension ImportViewModel {
                 context: context
             )
 
-            if case let .ledger(ledgerId) = target, let closingBalance = statement.metadata?.closingBalance,
-               let statementDate = statement.metadata?.generatedAt {
-                try await ledgerRepository.updateClosingBalance(
-                    id: ledgerId,
-                    balance: closingBalance,
-                    asOf: statementDate
-                )
+            if case let .ledger(ledgerId) = target {
+                if let openingBalance = statement.metadata?.openingBalance {
+                    try await ledgerRepository.updateOpeningBalance(id: ledgerId, balance: openingBalance)
+                }
+                if let closingBalance = statement.metadata?.closingBalance,
+                   let statementDate = statement.metadata?.generatedAt {
+                    try await ledgerRepository.updateClosingBalance(
+                        id: ledgerId,
+                        balance: closingBalance,
+                        asOf: statementDate
+                    )
+                }
             }
 
             totalInserted += result.inserted

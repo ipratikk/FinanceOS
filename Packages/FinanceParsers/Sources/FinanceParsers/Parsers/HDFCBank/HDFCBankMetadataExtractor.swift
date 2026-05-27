@@ -12,14 +12,59 @@ public struct HDFCBankMetadataExtractor: Sendable {
         let accountType = extractAccountType(from: lines)
         let statementDate = extractStatementDate(from: lines)
 
+        let openingBalance = extractOpeningBalance(from: content)
+
         return StatementMetadata(
             customerName: customerName,
             accountNumber: accountLast4,
             fullAccountNumber: fullAccountNumber,
             accountType: accountType,
             cardType: nil,
+            openingBalance: openingBalance,
             generatedAt: statementDate
         )
+    }
+
+    /// Derives opening balance from the first data row:
+    /// opening = closing_balance + debit - credit
+    private func extractOpeningBalance(from content: String) -> Int64? {
+        let lines = content.components(separatedBy: .newlines)
+        var headerIdx: Int?
+        var closingCol: Int?
+        var debitCol: Int?
+        var creditCol: Int?
+
+        for (idx, line) in lines.enumerated() {
+            let parts = line.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces).lowercased() }
+            guard parts.contains(where: { $0.contains("narration") }),
+                  parts.contains(where: { $0.contains("closing balance") }) else { continue }
+            headerIdx = idx
+            closingCol = parts.firstIndex(where: { $0.contains("closing balance") })
+            debitCol = parts.firstIndex(where: { $0 == "debit amount" || $0 == "debit" })
+            creditCol = parts.firstIndex(where: { $0 == "credit amount" || $0 == "credit" })
+            break
+        }
+
+        guard let hi = headerIdx, let cbCol = closingCol, let dCol = debitCol, let crCol = creditCol else {
+            return nil
+        }
+
+        for line in lines.dropFirst(hi + 1) {
+            guard !line.trimmingCharacters(in: .whitespaces).isEmpty else { continue }
+            let parts = line.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            guard parts.count > max(cbCol, dCol, crCol) else { continue }
+            guard let closing = parseAmountToMinorUnits(parts[cbCol]),
+                  let debit = parseAmountToMinorUnits(parts[dCol]),
+                  let credit = parseAmountToMinorUnits(parts[crCol]) else { continue }
+            return closing + debit - credit
+        }
+        return nil
+    }
+
+    private func parseAmountToMinorUnits(_ raw: String) -> Int64? {
+        let cleaned = raw.replacingOccurrences(of: ",", with: "").trimmingCharacters(in: .whitespaces)
+        guard let value = Double(cleaned) else { return nil }
+        return Int64((value * 100).rounded())
     }
 
     private func extractCustomerName(from lines: [String]) -> String? {
