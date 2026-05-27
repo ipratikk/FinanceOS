@@ -167,9 +167,6 @@
         }
       }
     },
-    "Credits" : {
-
-    },
     "Custom" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -224,9 +221,6 @@
           }
         }
       }
-    },
-    "Debits" : {
-
     },
     "Delete" : {
 

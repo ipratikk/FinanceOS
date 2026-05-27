@@ -5,12 +5,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var viewModel: DashboardViewModel?
-    @State private var windowWidth: CGFloat = 1200
     @Environment(AppNavigator.self) var navigator
-
-    private var isWide: Bool {
-        windowWidth >= 900
-    }
 
     init() {}
     init(viewModel: DashboardViewModel) {
@@ -22,37 +17,17 @@ struct DashboardView: View {
             if let viewModel {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: AppSpacing.xxl) {
-                        // Row 1: Net Worth hero + Wealth Intelligence
-                        if isWide {
-                            HStack(alignment: .top, spacing: AppSpacing.xxl) {
-                                netWorthHero(viewModel)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                wealthIntelCard
-                                    .containerRelativeFrame(.horizontal) { width, _ in width * 0.30 }
-                                    .frame(maxHeight: .infinity)
-                            }
-                        } else {
-                            VStack(spacing: AppSpacing.xl) {
-                                netWorthHero(viewModel)
-                                wealthIntelCard
-                            }
-                        }
+                        netWorthHero(viewModel)
 
                         // Row 2: three metric tiles
-                        if let totals = viewModel.currentTotals {
+                        if let totals = viewModel.effectiveTotals {
                             metricsRow(totals)
                         }
 
-                        // Row 3: Asset Distribution + Recent Activity
-                        HStack(alignment: .top, spacing: AppSpacing.xxl) {
-                            assetDistCard
-                                .containerRelativeFrame(.horizontal) { width, _ in width * 0.20 }
-                            recentActivityCard(viewModel)
-                        }
+                        recentActivityCard(viewModel)
                     }
                     .padding(AppSpacing.xxxl)
                 }
-                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { windowWidth = $0 }
                 .background(AppColors.base)
                 .task { await viewModel.load() }
             } else {
@@ -68,7 +43,7 @@ struct DashboardView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                FDSLabel(currentMonthLabel)
+                FDSLabel(viewModel.map { effectiveMonthLabel($0) } ?? currentMonthLabel)
                     .font(AppTypography.bodyMdSemibold)
                     .foregroundStyle(AppColors.Text.secondary)
             }
@@ -90,6 +65,10 @@ struct DashboardView: View {
 
     var currentMonthLabel: String {
         FormatterCache.formatMonthYear(Date()).uppercased()
+    }
+
+    func effectiveMonthLabel(_ viewModel: DashboardViewModel) -> String {
+        FormatterCache.formatMonthYear(viewModel.effectiveMonth).uppercased()
     }
 
     func amount(_ minorUnits: Int64, code: String = "INR") -> String {

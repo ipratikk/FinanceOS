@@ -3,6 +3,18 @@ import FinanceCore
 import FinanceUI
 import SwiftUI
 
+private struct ChartHoverState: Equatable {
+    let hoveredDate: Date?
+    let nearestNetWorthPoint: NetWorthPoint?
+
+    static let idle = ChartHoverState()
+
+    init(hoveredDate: Date? = nil, nearestNetWorthPoint: NetWorthPoint? = nil) {
+        self.hoveredDate = hoveredDate
+        self.nearestNetWorthPoint = nearestNetWorthPoint
+    }
+}
+
 struct CombinedFinancialChartView: View {
     let netWorth: [NetWorthPoint]
 

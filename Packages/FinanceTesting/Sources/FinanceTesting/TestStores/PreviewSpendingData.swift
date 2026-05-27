@@ -23,4 +23,14 @@ public enum PreviewSpendingData {
             )
         }
     }
+
+    public static var netWorthSeries: [NetWorthPoint] {
+        let calendar = Calendar(identifier: .gregorian)
+        let now = SnapshotConfiguration.referenceDate
+        return (0 ..< 6).reversed().map { offset in
+            let date = calendar.date(byAdding: .month, value: -offset, to: now) ?? now
+            let netWorth = Decimal(100_000 + offset * 10000)
+            return NetWorthPoint(timestamp: date, netWorth: netWorth)
+        }
+    }
 }

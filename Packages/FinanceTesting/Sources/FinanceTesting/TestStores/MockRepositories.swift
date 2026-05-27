@@ -57,8 +57,34 @@ public final class MockLedgerRepository: LedgerRepository, @unchecked Sendable {
                 bin: updated.bin,
                 linkedLedgerId: updated.linkedLedgerId,
                 isArchived: updated.isArchived,
+                openingBalance: updated.openingBalance,
                 closingBalance: balance,
                 closingBalanceAsOf: asOf
+            )
+        }
+    }
+
+    public func updateOpeningBalance(id: UUID, balance: Int64) async throws {
+        if let idx = ledgers.firstIndex(where: { $0.id == id }) {
+            let updated = ledgers[idx]
+            ledgers[idx] = Ledger(
+                id: updated.id,
+                bankId: updated.bankId,
+                kind: updated.kind,
+                displayName: updated.displayName,
+                last4: updated.last4,
+                nickname: updated.nickname,
+                ownerName: updated.ownerName,
+                createdAt: updated.createdAt,
+                accountType: updated.accountType,
+                cardType: updated.cardType,
+                cardProductId: updated.cardProductId,
+                bin: updated.bin,
+                linkedLedgerId: updated.linkedLedgerId,
+                isArchived: updated.isArchived,
+                openingBalance: balance,
+                closingBalance: updated.closingBalance,
+                closingBalanceAsOf: updated.closingBalanceAsOf
             )
         }
     }
@@ -150,15 +176,18 @@ public final class MockSpendingService: SpendingServiceProtocol, @unchecked Send
     public var summaries: [MonthlySpendingSummary]
     public var totals: SpendingTotals
     public var recent: [Transaction]
+    public var series: [NetWorthPoint]
 
     public init(
         summaries: [MonthlySpendingSummary] = PreviewSpendingData.monthlySummaries,
         totals: SpendingTotals = PreviewSpendingData.currentTotals,
-        recent: [Transaction] = PreviewTransactions.samples
+        recent: [Transaction] = PreviewTransactions.samples,
+        series: [NetWorthPoint] = PreviewSpendingData.netWorthSeries
     ) {
         self.summaries = summaries
         self.totals = totals
         self.recent = recent
+        self.series = series
     }
 
     public func monthlySummary(months: Int) async throws -> [MonthlySpendingSummary] {
@@ -171,5 +200,9 @@ public final class MockSpendingService: SpendingServiceProtocol, @unchecked Send
 
     public func recentTransactions(limit: Int) async throws -> [Transaction] {
         Array(recent.prefix(limit))
+    }
+
+    public func netWorthTimeSeries(months: Int) async throws -> [NetWorthPoint] {
+        series
     }
 }

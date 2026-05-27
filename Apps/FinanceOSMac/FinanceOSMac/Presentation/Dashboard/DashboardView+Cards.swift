@@ -14,29 +14,17 @@ struct MetricConfig {
     let progress: Double
 }
 
-struct AssetRowConfig {
-    let symbol: String
-    let tint: Color
-    let label: String
-    let sub: String
-    let amount: String
-    let pct: String
-    let color: Color
-}
-
 // MARK: - Net Worth Hero
 
 extension DashboardView {
     func netWorthHero(_ viewModel: DashboardViewModel) -> some View {
-        let totals = viewModel.currentTotals
-        let net = (totals?.totalCredit ?? 0) - (totals?.totalDebit ?? 0)
-        let isPositive = net >= 0
+        let netWorth = viewModel.currentNetWorth
+        let isPositive = netWorth >= 0
 
         return FDSCard(padded: false) {
             VStack(alignment: .leading, spacing: 16) {
-                // Header row
                 HStack {
-                    FDSLabel("NET FLOW THIS MONTH")
+                    FDSLabel("NET WORTH")
                         .font(AppTypography.captionSmSemibold)
                         .tracking(0.8)
                         .foregroundStyle(AppColors.Text.tertiary)
@@ -47,21 +35,26 @@ extension DashboardView {
                         .foregroundStyle(AppColors.Text.quaternary)
                 }
 
-                // Amount + delta badge
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
-                    FDSLabel(amount(net))
+                    FDSLabel(FormatterCache.formatCurrency(netWorth, currencyCode: "INR"))
                         .font(AppTypography.displayLarge)
                         .monospacedDigit()
-                        .foregroundStyle(isPositive ? AppColors.success : AppColors.danger)
+                        .foregroundStyle(isPositive ? AppColors.Text.primary : AppColors.danger)
                         .lineLimit(1)
 
-                    if !viewModel.monthlySummaries.isEmpty {
-                        FDSLabel(isPositive ? "+12.4%" : "-4.2%")
+                    if let delta = viewModel.netWorthMoMDelta {
+                        let deltaStr = delta >= 0
+                            ? String(format: "+%.1f%%", delta * 100)
+                            : String(format: "%.1f%%", delta * 100)
+                        FDSLabel(deltaStr)
                             .font(AppTypography.captionLgSemibold)
-                            .foregroundStyle(AppColors.success)
+                            .foregroundStyle(delta >= 0 ? AppColors.success : AppColors.danger)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
-                            .background(AppColors.success.opacity(0.15), in: Capsule())
+                            .background(
+                                (delta >= 0 ? AppColors.success : AppColors.danger).opacity(0.15),
+                                in: Capsule()
+                            )
                     }
                 }
 
@@ -69,13 +62,6 @@ extension DashboardView {
 
                 CombinedFinancialChartView(netWorth: viewModel.netWorthTimeSeries)
                     .frame(height: 220)
-
-                let currentNetWorth = viewModel.netWorthTimeSeries.last?.netWorth ?? 0
-                legendDot(
-                    "Net Worth",
-                    FormatterCache.formatCurrency(currentNetWorth, currencyCode: "INR"),
-                    AppColors.accentBlue
-                )
             }
             .padding(AppSpacing.xl)
         }
@@ -94,70 +80,6 @@ extension DashboardView {
     }
 }
 
-// MARK: - Wealth Intelligence
-
-extension DashboardView {
-    var wealthIntelCard: some View {
-        FDSCard(padded: false) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack(spacing: 8) {
-                    Image(systemName: "sparkles")
-                        .font(AppTypography.captionLgSemibold)
-                        .foregroundStyle(AppColors.accent)
-                    FDSLabel("Wealth Intelligence")
-                        .font(AppTypography.bodyMdSemibold)
-                        .foregroundStyle(AppColors.Text.primary)
-                }
-
-                intelInsight(
-                    title: "Portfolio Rebalance",
-                    body: "Your exposure to Tech stocks has grown to 45%. "
-                        + "Consider diversifying into Bonds to reduce risk."
-                )
-                intelInsight(
-                    title: "Savings Target",
-                    body: "You're 84% through your Q2 retirement goal. ₹1.2L more needed to stay on track."
-                )
-
-                Spacer()
-
-                Button {
-                    // future: navigate to AI insights
-                } label: {
-                    HStack {
-                        FDSLabel("Run full analysis")
-                            .font(AppTypography.bodySmSemibold)
-                            .foregroundStyle(AppColors.accent)
-                        Image(systemName: "arrow.right")
-                            .font(AppTypography.captionSmSemibold)
-                            .foregroundStyle(AppColors.accent)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .glassSurface(radius: AppRadius.md, lifted: false)
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(AppSpacing.lg)
-        }
-    }
-
-    private func intelInsight(title: String, body: String) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            FDSLabel(title)
-                .font(AppTypography.bodySmSemibold)
-                .foregroundStyle(AppColors.Text.primary)
-            FDSLabel(body)
-                .font(AppTypography.captionLg)
-                .foregroundStyle(AppColors.Text.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(AppSpacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(AppColors.Fill.primary, in: RoundedRectangle(cornerRadius: AppRadius.sm))
-    }
-}
-
 // MARK: - Metric Tiles
 
 extension DashboardView {
@@ -167,20 +89,20 @@ extension DashboardView {
                 .init(
                     label: "MONTHLY INFLOWS",
                     value: amount(totals.totalCredit),
-                    badge: "+12.4%",
-                    badgeColor: AppColors.success,
+                    badge: "",
+                    badgeColor: AppColors.Text.tertiary,
                     amountColor: AppColors.Text.primary,
-                    progress: 0.62
+                    progress: 0.0
                 )
             )
             metricTile(
                 .init(
                     label: "MONTHLY OUTFLOWS",
                     value: amount(totals.totalDebit),
-                    badge: "-4.2%",
-                    badgeColor: AppColors.danger,
+                    badge: "",
+                    badgeColor: AppColors.Text.tertiary,
                     amountColor: AppColors.danger,
-                    progress: 0.44
+                    progress: 0.0
                 )
             )
             let net = totals.totalCredit - totals.totalDebit
@@ -191,7 +113,7 @@ extension DashboardView {
                     badge: "\(totals.transactionCount) Txns",
                     badgeColor: AppColors.Text.tertiary,
                     amountColor: AppColors.success,
-                    progress: 0.78
+                    progress: 0.0
                 )
             )
         }
@@ -240,84 +162,5 @@ extension DashboardView {
             }
         }
         .frame(height: 4)
-    }
-}
-
-// MARK: - Asset Distribution
-
-extension DashboardView {
-    var assetDistCard: some View {
-        FDSCard(padded: false) {
-            VStack(alignment: .leading, spacing: 16) {
-                FDSLabel("Asset Distribution")
-                    .font(AppTypography.headingSmall)
-                    .foregroundStyle(AppColors.Text.primary)
-
-                assetRow(.init(
-                    symbol: "banknote",
-                    tint: AppColors.success,
-                    label: "Cash & Savings",
-                    sub: "3 Accounts",
-                    amount: "₹24.8L",
-                    pct: "18%",
-                    color: AppColors.success
-                ))
-
-                assetRow(.init(
-                    symbol: "chart.line.uptrend.xyaxis",
-                    tint: AppColors.accentBlue,
-                    label: "Stock Portfolio",
-                    sub: "2 Brokers",
-                    amount: "₹64.2L",
-                    pct: "48%",
-                    color: AppColors.accentBlue
-                ))
-
-                assetRow(.init(
-                    symbol: "building.columns",
-                    tint: AppColors.accentOrange,
-                    label: "Mutual Funds",
-                    sub: "12 Folios",
-                    amount: "₹45.6L",
-                    pct: "34%",
-                    color: AppColors.accentOrange
-                ))
-            }
-            .padding(AppSpacing.lg)
-        }
-    }
-
-    private func assetRow(_ config: AssetRowConfig) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: config.symbol)
-                .font(AppTypography.captionSmSemibold)
-                .foregroundStyle(config.tint)
-                .frame(width: 32, height: 32)
-                .background(
-                    config.tint.opacity(0.12),
-                    in: RoundedRectangle(cornerRadius: AppRadius.chip)
-                )
-
-            VStack(alignment: .leading, spacing: 1) {
-                FDSLabel(config.label)
-                    .font(AppTypography.bodySmMedium)
-                    .foregroundStyle(AppColors.Text.primary)
-                FDSLabel(config.sub)
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(AppColors.Text.tertiary)
-            }
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: 1) {
-                FDSLabel(config.amount)
-                    .font(AppTypography.bodySmSemibold)
-                    .foregroundStyle(AppColors.Text.primary)
-                    .monospacedDigit()
-                FDSLabel(config.pct)
-                    .font(AppTypography.captionSm)
-                    .foregroundStyle(config.color)
-            }
-        }
     }
 }
