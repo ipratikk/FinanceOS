@@ -67,45 +67,18 @@ extension DashboardView {
 
                 Spacer()
 
-                // Trend line chart
-                netWorthChart(viewModel.monthlySummaries)
-                    .frame(height: 250)
+                CombinedFinancialChartView(netWorth: viewModel.netWorthTimeSeries)
+                    .frame(height: 220)
 
-                // Legend
-                HStack(spacing: 20) {
-                    legendDot("Liquid Assets", "₹45.2L", AppColors.success)
-                    legendDot("Investments", "₹89.3L", AppColors.accentBlue)
-                }
+                let currentNetWorth = viewModel.netWorthTimeSeries.last?.netWorth ?? 0
+                legendDot(
+                    "Net Worth",
+                    FormatterCache.formatCurrency(currentNetWorth, currencyCode: "INR"),
+                    AppColors.accentBlue
+                )
             }
             .padding(AppSpacing.xl)
         }
-    }
-
-    private func netWorthChart(_ data: [MonthlySpendingSummary]) -> some View {
-        Chart(data, id: \.id) { item in
-            AreaMark(
-                x: .value("Month", item.month, unit: .month),
-                y: .value("Amount", Double(item.totalCredit) / 100)
-            )
-            .foregroundStyle(
-                LinearGradient(
-                    colors: [AppColors.success.opacity(0.25), AppColors.success.opacity(0)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-            .interpolationMethod(.catmullRom)
-
-            LineMark(
-                x: .value("Month", item.month, unit: .month),
-                y: .value("Amount", Double(item.totalCredit) / 100)
-            )
-            .foregroundStyle(AppColors.success)
-            .lineStyle(StrokeStyle(lineWidth: 2.5))
-            .interpolationMethod(.catmullRom)
-        }
-        .chartXAxis { AxisMarks(format: .dateTime.month(.abbreviated)) }
-        .chartYAxis(.hidden)
     }
 
     private func legendDot(_ label: String, _ value: String, _ color: Color) -> some View {
