@@ -115,7 +115,9 @@ actor PersonalizedClassifier {
                 .components(separatedBy: CharacterSet.alphanumerics.inverted)
                 .filter { $0.count >= 2 }
         )
-        let array = try! MLMultiArray(shape: [NSNumber(value: vocabulary.count)], dataType: .float32)
+        guard let array = try? MLMultiArray(shape: [NSNumber(value: vocabulary.count)], dataType: .float32) else {
+            return MLMultiArray()
+        }
         for (i, word) in vocabulary.enumerated() {
             array[i] = NSNumber(value: tokens.contains(word) ? 1.0 : 0.0)
         }
