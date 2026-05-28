@@ -25,11 +25,6 @@ final class CoreMLCategorizer: @unchecked Sendable {
 
     static func load() async -> CoreMLCategorizer {
         let (model, version) = await loadModel()
-        if model != nil {
-            print("[CoreML] ✓ Model loaded (version: \(version))")
-        } else {
-            print("[CoreML] ✗ Model failed to load (version: \(version))")
-        }
         return CoreMLCategorizer(model: model, modelVersion: version)
     }
 
@@ -38,23 +33,10 @@ final class CoreMLCategorizer: @unchecked Sendable {
     }
 
     func predict(features: TransactionFeatures) -> CategoryPrediction? {
-        guard let model else {
-            print("[CoreML] Model not loaded")
-            return nil
-        }
-        guard let provider = buildProvider(features: features) else {
-            print("[CoreML] Failed to build feature provider")
-            return nil
-        }
-        guard let output = try? model.prediction(from: provider) else {
-            print("[CoreML] Prediction failed for: \(features.normalizedDescription)")
-            return nil
-        }
-        let result = parseOutput(output)
-        if result != nil {
-            print("[CoreML] Predicted: \(result?.categoryId ?? "nil")")
-        }
-        return result
+        guard let model else { return nil }
+        guard let provider = buildProvider(features: features) else { return nil }
+        guard let output = try? model.prediction(from: provider) else { return nil }
+        return parseOutput(output)
     }
 }
 
@@ -68,9 +50,14 @@ private extension CoreMLCategorizer {
         ) else {
             return (nil, "none")
         }
-        guard let model = try? await MLModel.load(contentsOf: url) else { return (nil, "load-failed") }
-        let version = model.modelDescription.metadata[MLModelMetadataKey.versionString] as? String ?? "unknown"
-        return (model, version)
+        do {
+            let compiledUrl = try await MLModel.compileModel(at: url)
+            let model = try await MLModel.load(contentsOf: compiledUrl)
+            let version = model.modelDescription.metadata[MLModelMetadataKey.versionString] as? String ?? "unknown"
+            return (model, version)
+        } catch {
+            return (nil, "load-failed")
+        }
     }
 }
 
