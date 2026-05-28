@@ -1,10 +1,10 @@
 import Foundation
 
 public protocol SpendingServiceProtocol: Sendable {
-    func monthlySummary(months: Int) async throws -> [MonthlySpendingSummary]
+    func monthlySummary(months: Int?) async throws -> [MonthlySpendingSummary]
     func currentMonthTotals() async throws -> SpendingTotals
     func recentTransactions(limit: Int) async throws -> [Transaction]
-    func netWorthTimeSeries(months: Int) async throws -> [NetWorthPoint]
+    func netWorthTimeSeries(months: Int?) async throws -> [NetWorthPoint]
 }
 
 // MARK: - Chart Models

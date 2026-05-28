@@ -190,7 +190,7 @@ public final class MockSpendingService: SpendingServiceProtocol, @unchecked Send
         self.series = series
     }
 
-    public func monthlySummary(months: Int) async throws -> [MonthlySpendingSummary] {
+    public func monthlySummary(months: Int?) async throws -> [MonthlySpendingSummary] {
         summaries
     }
 
@@ -202,7 +202,7 @@ public final class MockSpendingService: SpendingServiceProtocol, @unchecked Send
         Array(recent.prefix(limit))
     }
 
-    public func netWorthTimeSeries(months: Int) async throws -> [NetWorthPoint] {
+    public func netWorthTimeSeries(months: Int?) async throws -> [NetWorthPoint] {
         series
     }
 }
