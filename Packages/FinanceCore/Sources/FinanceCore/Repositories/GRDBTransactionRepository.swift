@@ -170,4 +170,14 @@ public final class GRDBTransactionRepository:
             )
         }
     }
+
+    public func updateIntelligence(id: UUID, categoryId: String?, merchantName: String?) async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: """
+                UPDATE transactions
+                SET "categoryId" = ?, "merchantName" = ?
+                WHERE "id" = ?
+            """, arguments: [categoryId, merchantName, id])
+        }
+    }
 }
