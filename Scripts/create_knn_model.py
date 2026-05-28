@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/opt/homebrew/opt/python@3.12/bin/python3.12
 """
 Creates the updatable CoreML kNN model and vocabulary for on-device personalization.
 
