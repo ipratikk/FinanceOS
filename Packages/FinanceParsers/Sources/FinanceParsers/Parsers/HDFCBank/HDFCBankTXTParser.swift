@@ -3,6 +3,8 @@ import Foundation
 public struct HDFCBankTXTParser: Sendable {
     public init() {}
 
+    // MARK: - Shared helpers
+
     private func parseDate(_ text: String) -> Date? {
         let formats = ["dd/MM/yy", "dd/MM/yyyy"]
         for format in formats {
@@ -19,59 +21,137 @@ public struct HDFCBankTXTParser: Sendable {
         parseDate(text) != nil
     }
 
+    // MARK: - Fixed-width detection
+
+    private func isFixedWidth(_ content: String) -> Bool {
+        content.components(separatedBy: .newlines).contains { line in
+            line.hasPrefix("--------  ---")
+        }
+    }
+
+    // MARK: - Fixed-width column range extraction
+
+    func columnRanges(from separator: String) -> [(Int, Int)] {
+        var ranges: [(Int, Int)] = []
+        var inDash = false
+        var start = 0
+        for (i, ch) in separator.enumerated() {
+            if ch == "-", !inDash { start = i; inDash = true } else if ch != "-", inDash {
+                ranges.append((start, i)); inDash = false
+            }
+        }
+        if inDash { ranges.append((start, separator.count)) }
+        return ranges
+    }
+
+    func extractField(_ line: String, _ range: (Int, Int)) -> String {
+        let chars = Array(line.unicodeScalars)
+        let start = min(range.0, chars.count)
+        let end = min(range.1, chars.count)
+        guard start < end else { return "" }
+        return String(String.UnicodeScalarView(chars[start ..< end])).trimmingCharacters(in: .whitespaces)
+    }
+
+    // MARK: - Fixed-width parse
+
+    private func parseFixedWidth(_ content: String) -> [[String]] {
+        let lines = content.components(separatedBy: .newlines)
+        guard let sepLine = lines.first(where: { $0.hasPrefix("--------  ---") }) else { return [] }
+        let ranges = columnRanges(from: sepLine)
+        guard ranges.count >= 7 else { return [] }
+
+        let header = [
+            "Date",
+            "Narration",
+            "Chq./Ref.No.",
+            "Value Dt",
+            "Withdrawal Amt.",
+            "Deposit Amt.",
+            "Closing Balance"
+        ]
+        var result: [[String]] = [header]
+        var seenSeparatorCount = 0
+        var pastData = false
+        var pending: [String]?
+
+        func flush() {
+            if let row = pending { result.append(row); pending = nil }
+        }
+
+        for line in lines {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if trimmed.contains("**Continue**") || trimmed.contains("** Continue **") { continue }
+            if line.hasPrefix("--------  ---") {
+                seenSeparatorCount += 1
+                if seenSeparatorCount % 2 == 0 { pastData = true }
+                continue
+            }
+            if !pastData { continue }
+            if trimmed.isEmpty { continue }
+
+            let dateField = extractField(line, ranges[0])
+            if !dateField.isEmpty {
+                flush()
+                pending = ranges.map { extractField(line, $0) }
+            } else {
+                if pending != nil {
+                    let cont = extractField(line, ranges[1])
+                    if !cont.isEmpty {
+                        pending![1] = (pending![1] + " " + cont).trimmingCharacters(in: .whitespaces)
+                    }
+                }
+            }
+        }
+        flush()
+        return result
+    }
+
+    // MARK: - Delimited helpers
+
     private func reconstructRow(_ parts: [String]) -> [String] {
         guard parts.count >= 7 else { return parts }
-
-        // Standard format: [date, narration, valueDate, debit, credit, ref, balance]
-        // If narration contains commas, it becomes: [date, narr_part1, narr_part2..., valueDate, debit, credit, ref,
-        // balance]
-        // Re-anchor by finding valueDate scanning backward from end
-
         let date = parts[0]
-
-        // Try standard layout first: valueDate at index 2
         if parts.count >= 3, isDateString(parts[2]) {
             return parts
         }
-
-        // Re-anchor: scan backward from end to find valueDate
-        // Last 4 cols are: [debit, credit, ref, balance]
         guard parts.count > 4 else { return parts }
-
         var anchorIdx: Int?
         for i in stride(from: parts.count - 4 - 1, through: 1, by: -1) where isDateString(parts[i]) {
             anchorIdx = i
             break
         }
-
         guard let anchor = anchorIdx else { return parts }
-
-        // Reconstruct with correct column assignments
         var reconstructed = [String]()
         reconstructed.append(date)
         reconstructed.append(parts[1 ... anchor - 1].joined(separator: ","))
         reconstructed.append(parts[anchor])
-
         if anchor + 1 < parts.count { reconstructed.append(parts[anchor + 1]) } else { reconstructed.append("") }
         if anchor + 2 < parts.count { reconstructed.append(parts[anchor + 2]) } else { reconstructed.append("") }
         if anchor + 3 < parts.count { reconstructed.append(parts[anchor + 3]) } else { reconstructed.append("") }
         if anchor + 4 < parts.count { reconstructed.append(parts[anchor + 4]) } else { reconstructed.append("") }
-
         return reconstructed
     }
 
+    // MARK: - Public API
+
     public func parse(fileURL: URL) throws -> [[String]] {
         let content = try String(contentsOf: fileURL, encoding: .utf8)
-        let lines = content.components(separatedBy: .newlines)
+        if isFixedWidth(content) {
+            let rows = parseFixedWidth(content)
+            if rows.count <= 1 { throw TransactionImportError.malformedFile("No data rows found") }
+            return rows
+        }
+        return try parseDelimited(content: content)
+    }
 
+    private func parseDelimited(content: String) throws -> [[String]] {
+        let lines = content.components(separatedBy: .newlines)
         var result: [[String]] = []
         var headerRow: [String]?
 
         for line in lines {
             guard !line.trimmingCharacters(in: .whitespaces).isEmpty else { continue }
-
             let rawParts = line.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
-
             if headerRow == nil {
                 let normalized = rawParts.map { $0.lowercased() }
                 if normalized.contains("narration"), normalized.contains("closing balance") {
@@ -80,27 +160,23 @@ public struct HDFCBankTXTParser: Sendable {
                     continue
                 }
             }
-
             if headerRow != nil {
                 let row = reconstructRow(rawParts)
                 result.append(row)
             }
         }
-
         return result
     }
 
     public func canParse(fileURL: URL) throws -> Bool {
         let content = try String(contentsOf: fileURL, encoding: .utf8)
         let lines = content.components(separatedBy: .newlines)
-
         for line in lines {
             let normalized = line.lowercased()
             if normalized.contains("narration"), normalized.contains("closing balance") {
                 return true
             }
         }
-
         return false
     }
 }

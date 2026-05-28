@@ -57,7 +57,9 @@ extension ImportViewModel {
             )
 
             if case let .ledger(ledgerId) = target {
-                if let openingBalance = statement.metadata?.openingBalance {
+                if let openingBalance = statement.metadata?.openingBalance,
+                   let ledger = try await ledgerRepository.fetchLedger(id: ledgerId),
+                   ledger.openingBalance == nil {
                     try await ledgerRepository.updateOpeningBalance(id: ledgerId, balance: openingBalance)
                 }
                 if let closingBalance = statement.metadata?.closingBalance,
