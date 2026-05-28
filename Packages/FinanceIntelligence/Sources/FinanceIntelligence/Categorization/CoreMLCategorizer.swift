@@ -4,7 +4,7 @@ import Foundation
 /// Core ML inference wrapper. Loads TransactionCategoryClassifier.mlmodel from the module bundle.
 /// Returns nil when the model is not present — service falls back to RuleBasedCategorizer.
 ///
-/// Model: Trained tabular classifier (text + numeric features) via CreateML.
+/// Model: Trained tabular classifier via CreateML.
 /// Inputs: description (String), amount_cents (Int64), is_income (Int64), is_debit (Int64)
 /// Outputs: label (String), labelProbability (Dict[String: Double])
 ///
