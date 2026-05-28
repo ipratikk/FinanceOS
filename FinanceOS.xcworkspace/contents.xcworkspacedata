@@ -11,6 +11,9 @@
       location = "group:Packages/FinanceTesting">
    </FileRef>
    <FileRef
+      location = "group:Packages/FinanceIntelligence">
+   </FileRef>
+   <FileRef
       location = "group:Apps/FinanceOSMac/FinanceOSMac.xcodeproj">
    </FileRef>
    <FileRef
