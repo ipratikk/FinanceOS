@@ -1,9 +1,11 @@
 import FinanceCore
+import FinanceIntelligence
 import SwiftUI
 
 struct AdaptiveNavigation: View {
     @Environment(AppNavigator.self) private var navigator
     @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.transactionIntelligence) private var intelligence
     private let appContainer = AppContainer.shared
 
     var body: some View {
@@ -28,7 +30,8 @@ struct AdaptiveNavigation: View {
             TransactionsView(
                 viewModel: TransactionsViewModel(
                     transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository
+                    ledgerRepository: appContainer.ledgerRepository,
+                    intelligenceService: intelligence
                 )
             )
             .tabItem {
@@ -88,6 +91,7 @@ struct AdaptiveNavigation: View {
 
 struct DetailRouter: View {
     @Environment(AppNavigator.self) private var navigator
+    @Environment(\.transactionIntelligence) private var intelligence
     let appContainer: AppContainer
 
     var body: some View {
@@ -111,7 +115,8 @@ struct DetailRouter: View {
             TransactionsView(
                 viewModel: TransactionsViewModel(
                     transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository
+                    ledgerRepository: appContainer.ledgerRepository,
+                    intelligenceService: intelligence
                 )
             )
         case .accounts:
