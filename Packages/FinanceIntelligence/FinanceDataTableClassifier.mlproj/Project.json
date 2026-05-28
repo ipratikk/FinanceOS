@@ -1,0 +1,29 @@
+{
+  "activityEntities" : [
+    "projectCreated",
+    [
+      {
+        "createdDate" : "2026-05-28T13:02:26Z",
+        "event" : "projectCreated",
+        "id" : "B55B316C-AF2C-4FE4-8890-99E46004F6F7",
+        "subtitle" : "FinanceDataTableClassifier",
+        "title" : "Project Created"
+      }
+    ]
+  ],
+  "authorName" : "Pratik Goel",
+  "createdDate" : "2026-05-28T13:02:26Z",
+  "description" : "",
+  "id" : "82BD7143-BD4A-4219-AAF2-B5F91F6CAB09",
+  "license" : "",
+  "location" : "",
+  "modifiedDate" : "2026-05-28T13:02:26Z",
+  "projectName" : "FinanceDataTableClassifier",
+  "settingsEntity" : {
+    "snapshotOnExtendTraining" : true,
+    "snapshotOnResumeTraining" : false
+  },
+  "taskType" : "generalClassifier",
+  "title" : "Tabular Classification",
+  "version" : "1.1"
+}

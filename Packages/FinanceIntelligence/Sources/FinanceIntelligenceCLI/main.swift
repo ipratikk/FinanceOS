@@ -9,7 +9,7 @@ struct FinanceIntelligenceCLI: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "intelligence",
         abstract: "Run transaction intelligence pipeline against a FinanceOS SQLite database.",
-        subcommands: [EvalCommand.self, SampleCommand.self, ExportCommand.self],
+        subcommands: [EvalCommand.self, SampleCommand.self, ExportCommand.self, TrainCommand.self],
         defaultSubcommand: EvalCommand.self
     )
 }
@@ -214,6 +214,26 @@ private func fetchTransactions(from dbQueue: DatabaseQueue, limit: Int) async th
     let all = try await dbQueue.read { db in try Transaction.fetchAll(db) }
     let sorted = all.sorted { $0.postedAt > $1.postedAt }
     return limit > 0 ? Array(sorted.prefix(limit)) : sorted
+}
+
+// MARK: - train
+
+struct TrainCommand: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "train",
+        abstract: "Train LocalTransactionLearner from CSV transactions (for reference only)."
+    )
+
+    @Argument(help: "Path to training CSV")
+    var dataPath: String
+
+    @Option(help: "Output directory")
+    var output: String = "models/"
+
+    mutating func run() async throws {
+        print("Training CLI stub. Use CreateML for actual model training.")
+        print("Data: \(dataPath)")
+    }
 }
 
 // MARK: - export

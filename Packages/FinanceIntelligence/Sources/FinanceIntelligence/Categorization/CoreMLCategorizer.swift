@@ -1,15 +1,13 @@
 import CoreML
 import Foundation
 
-/// Core ML inference wrapper. Loads TransactionCategoryClassifier.mlpackage from the module bundle.
+/// Core ML inference wrapper. Loads TransactionCategoryClassifier.mlmodel from the module bundle.
 /// Returns nil when the model is not present — service falls back to RuleBasedCategorizer.
 ///
-/// @unchecked Sendable: model is a let constant; MLModel.prediction(from:) is thread-safe for reads.
+/// Model: Trained tabular classifier (text + numeric features) via CreateML.
+/// Features: normalized_description, amount_cents, is_income, is_debit
 ///
-/// To update the model:
-///   1. Run `make intelligence-train` to generate a new .mlpackage
-///   2. Copy the artifact to Sources/FinanceIntelligence/Resources/
-///   3. Rebuild the package
+/// @unchecked Sendable: model is a let constant; MLModel.prediction(from:) is thread-safe for reads.
 final class CoreMLCategorizer: @unchecked Sendable {
     static let descriptionFeatureKey = "normalized_description"
     static let amountFeatureKey = "amount_cents"
@@ -45,7 +43,7 @@ private extension CoreMLCategorizer {
     static func loadModel() async -> (MLModel?, String) {
         guard let url = Bundle.module.url(
             forResource: "TransactionCategoryClassifier",
-            withExtension: "mlpackage"
+            withExtension: "mlmodel"
         ) else {
             return (nil, "none")
         }

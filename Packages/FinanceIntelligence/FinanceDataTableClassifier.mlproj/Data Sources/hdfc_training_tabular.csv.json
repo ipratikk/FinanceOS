@@ -1,0 +1,125 @@
+{
+  "activityEntities" : [
+    "dataSourceTrainingStarted",
+    [
+      {
+        "createdDate" : "2026-05-28T13:09:16Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "F9E82131-9799-43BB-A47F-C8678B8393AE",
+        "subtitle" : "FinanceDataTableClassifier 1",
+        "title" : "Used By"
+      },
+      {
+        "createdDate" : "2026-05-28T13:12:44Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "0E5CB946-61F9-40AA-8340-E9C4B43886AD",
+        "subtitle" : "FinanceDataTableClassifier 1 copy",
+        "title" : "Used By"
+      },
+      {
+        "createdDate" : "2026-05-28T13:14:18Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "D60BD22A-DC2B-4071-AC03-10FD6F045BB1",
+        "subtitle" : "FinanceDataTableClassifier 1",
+        "title" : "Used By"
+      }
+    ],
+    "dataSourceMetrics",
+    [
+      {
+        "createdDate" : "2026-05-28T13:09:16Z",
+        "event" : "dataSourceMetrics",
+        "id" : "C42484AE-F549-45CE-B3BC-5E2975D3A042",
+        "subtitle" : "7 Classes, 432 Items",
+        "title" : "Data Summary"
+      },
+      {
+        "createdDate" : "2026-05-28T13:12:44Z",
+        "event" : "dataSourceMetrics",
+        "id" : "06DD8C79-04E1-425D-B723-250B01C5A297",
+        "subtitle" : "7 Classes, 432 Items",
+        "title" : "Data Summary"
+      },
+      {
+        "createdDate" : "2026-05-28T13:14:18Z",
+        "event" : "dataSourceMetrics",
+        "id" : "9DFF4E40-00E6-430C-AD6C-934040389858",
+        "subtitle" : "6 Classes, 432 Items",
+        "title" : "Data Summary"
+      }
+    ]
+  ],
+  "createdDate" : "2026-05-28T13:06:19Z",
+  "dataPathRelativeToProjectURL" : "../../../../../../../../private/tmp/hdfc_training_tabular.csv/",
+  "dataResult" : {
+    "columnTypes" : [
+      "String",
+      "Int",
+      "Int",
+      "Int",
+      "String"
+    ],
+    "columnValues" : [
+      "UPI-MANASA  MANASA SHARM-SHARMA.MANASA1409@OKSBI-SBIN0017744-122408597680-UPI, ACH D- INDIAN CLEARING CORP-0000LDSEYEFT, UPI-ZEPTO MARKETPLACE PR-ZEPTOMARKETPLAC675861.RZP@RXAXIS-UTIB0000RZP-190153900654-NO REMARKS, ACH D- INDIAN CLEARING CORP-00008CC2Y37W, ACH D- INDIAN CLEARING CORP-000059KIO6NG, UPI-DAYANIDHI  NATH-NIDHIDAYA76@OKHDFCBANK-CNRB0000033-122502827837-UPI, TP-MAX LIFE INS CO LTD-1999505580-9647, UPI-PRATIK GOEL-PMESSI1998@OKICICI-ICIC0001283-649082211121-UPI, INW 050526I049903643 USD2382.62@95.2648, 050526I049903643 DPO2712595243131 IGST, UPI-AMERICAN EXPRESS-AEBC373008620701005@SC-SCBL0036051-122626002592-UPI, UPI-CRED CLUB-CRED.CLUB@AXISB-UTIB0000114-122630443738-PAYMENT ON CRED, UPI-PEP TECHNOLOGIES PRI-PEPTECHNOLOGIES.PAYU@AXISBANK-UTIB0000100-122639512105-UPI, ACH D- INDIAN CLEARING CORP-0000KMZ6WD9G, ACH D- INDIAN CLEARING CORP-00001I15H47E, UPI-ZEPTO MARKETPLACE PR-CF.ZEPTOMARKETPLACEPR@CASHFREENSDLPB-NSPB0000011-100118306699-NO REMARKS, UPI-AUTOPAY-APPLE INDIA PRIVATE -APPLEINDIAPVTLTD.BDSI@ICICI-ICIC0DC0099-109798376067-MANDATEREQUEST, UPI-CRED CLUB-CRED.CLUB@AXISB-UTIB0000114-123071624587-PAYMENT ON CRED, UPI-ZEPTO MARKETPLACE PR-ZEPTOMARKETPLAC675861.RZP@RXAXIS-UTIB0000RZP-123107311622-UPI, UPI-SHAKE SHEHNAZ-SHEHNAZSHEIK7@YBL-UBIN0807257-102389969879-UPI, UPI-RITIK GUPTA-RITIKGUPTA0912@IBL-ICIC0000319-102443797863-1804 MANA CAPITOL, UPI-LOCHAN  SHARMA-LOCHANKUMAR8292-1@OKICICI-KKBK0008107-102478731026-UPI, UPI-BLINKIT-BLINKIT104020.RZP@RXAIRTEL-AIRP0000011-102490929434-BLINKIT, TP-MAX LIFE INS CO LTD-1999505580-10662, UPI-SWAGATH KUMAR-SHRISHRIYAN@OKAXIS-BARB0VJKAUP-102548348701-UPI, UPI-APPLE MEDIA SERVICES-APPLESERVICES.BDSI@HDFCBANK-HDFC0MERUPI-100297144737-UPI MANDATE, UPI-BHUVANESH  MANDORA-MANDORA.BHUVANESH@OKSBI-SBIN0031785-509561205795-AMAZON ORDER, UPI-MR  MANJUNATH  S-8123873020-1@OKBIZAXIS-UTIB0000553-102661421283-UPI, UPI-DEEPIKA M-DEEPLKARAVI@YBL-CNRB0000033-102664646458-UPI, UPI-MANJUNATHA  ESHWARAP-BHARATPE.90071794396@FBPE-FDRL0001382-102670945720-PAY TO BHARATPE ME",
+      "5,00,000, 5,00,000, 79,900, 5,00,000, 5,00,000, 2,50,000, 73,964, 7,00,000, 2,26,97,982, 29,427, 73,91,200, 39,31,287, 82,700, 5,00,000, 5,00,000, 21,340, 1,04,900, 6,60,003, 50,900, 2,50,000, 22,00,000, 20,000, 46,900, 87,278, 5,500, 19,500, 8,67,900, 6,200, 6,200, 23,800",
+      "0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0",
+      "1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1",
+      "transfers, transfers, groceries, transfers, transfers, transfers, insurance, income, income, transfers, transfers, fees, transfers, transfers, transfers, groceries, subscriptions, fees, groceries, transfers, transfers, transfers, transfers, insurance, transfers, subscriptions, income, transfers, transfers, transfers"
+    ],
+    "columns" : [
+      "description",
+      "amount_cents",
+      "is_income",
+      "is_debit",
+      "label"
+    ],
+    "createdDate" : "2026-05-28T13:06:19Z",
+    "dataAnalysis" : {
+      "classifierAnalysis" : {
+
+      },
+      "issues" : [
+        {
+          "description" : "No target selected",
+          "severity" : "notReady"
+        },
+        {
+          "description" : "Data has 432 rows",
+          "severity" : "info"
+        },
+        {
+          "description" : "No features selected",
+          "severity" : "notReady"
+        }
+      ],
+      "objectDetectorAnalysis" : {
+        "details" : {
+
+        }
+      },
+      "summary" : {
+        "canUseValidation" : 1,
+        "sampleCount" : 432
+      }
+    },
+    "dataSourceID" : "09A56C7F-654C-4F67-9C63-6F5B2F6A76B4",
+    "dataURL" : "file:///private/tmp/hdfc_training_tabular.csv",
+    "error" : {
+      "code" : 1000,
+      "domain" : "composer.error.domain",
+      "errorType" : "notReady",
+      "reason" : "No target selected"
+    },
+    "itemsCount" : 432
+  },
+  "dataURL" : "file:///private/tmp/hdfc_training_tabular.csv",
+  "experimentIDs" : [
+    "422A5D70-442A-40CB-A324-C46AC4B90039"
+  ],
+  "id" : "09A56C7F-654C-4F67-9C63-6F5B2F6A76B4",
+  "modifiedDate" : "2026-05-28T13:14:18Z",
+  "pathType" : 0,
+  "preferredFilename" : "hdfc_training_tabular.csv",
+  "title" : "hdfc_training_tabular.csv",
+  "version" : "1.0"
+}

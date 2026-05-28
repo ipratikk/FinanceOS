@@ -13,11 +13,11 @@ help:
 	@echo "  make intelligence-build    - Build FinanceIntelligence package"
 	@echo "  make intelligence-test     - Run FinanceIntelligence tests"
 	@echo "  make intelligence-validate - Validate fixture training data"
-	@echo "  make intelligence-train    - Train Core ML model on fixture data"
-	@echo "  make intelligence-evaluate - Evaluate trained model against fixture data"
+	@echo "  make intelligence-train    - Generate training metrics (validation only)"
+	@echo "  make intelligence-evaluate - Show training data statistics"
 	@echo "  make intelligence-export   - Export user corrections to CSV"
 	@echo "  make intelligence-merge    - Merge corrections into training data"
-	@echo "  make intelligence-retrain  - Full loop: export → merge → train → validate → bundle"
+	@echo "  make intelligence-retrain  - Full loop: export → merge → train → validate"
 
 parser-build:
 	cd Packages/FinanceParsers && swift build
@@ -71,7 +71,7 @@ intelligence-run:
 # Full correction-driven retrain loop:
 #   1. Export user corrections from the app's corrections.json
 #   2. Merge corrections into training data
-#   3. Retrain Core ML model
+#   3. Generate training metrics
 #   4. Validate accuracy meets threshold
 #   5. Copy model artifact to Resources/ for bundling
 #
