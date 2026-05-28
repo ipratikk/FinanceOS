@@ -19,7 +19,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
     }
 
     public static var `default`: IntelligenceServiceConfiguration {
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+        let appSupport = base.first ?? FileManager.default.temporaryDirectory
         let dir = appSupport.appendingPathComponent("FinanceIntelligence", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return IntelligenceServiceConfiguration(
@@ -99,7 +100,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         previousPrediction: CategoryPrediction?
     ) async throws {
         // 1. Persist for audit trail + future batch retraining
-        try await correctionStore.record(
+        let input = CorrectionInput(
             transactionId: transaction.id,
             originalCategory: previousPrediction?.categoryId,
             correctedCategory: correctedCategoryId,
@@ -108,6 +109,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             originalConfidence: previousPrediction?.confidence,
             modelVersion: previousPrediction?.modelVersion
         )
+        try await correctionStore.record(input)
 
         // 2. Add to personal layer for immediate improvement (base layer untouched)
         let normalized = MerchantTextCleaner().normalizedForMatching(transaction.description)

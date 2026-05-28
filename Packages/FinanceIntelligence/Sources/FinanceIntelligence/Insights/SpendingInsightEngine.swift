@@ -57,7 +57,7 @@ extension SpendingInsightEngine {
                 ? "Likely subscription: \(merchant)"
                 : "Recurring charge: \(merchant)"
             let explanation = isConsistentAmount
-                ? "Monthly charge of ~\(formatMinorUnits(transactions.last?.amountMinorUnits ?? 0)). Appears on a consistent schedule."
+                ? "Monthly charge of ~\(formatMinorUnits(transactions.last?.amountMinorUnits ?? 0)). Consistent."
                 : "Recurring monthly charge from \(merchant)."
             return TransactionInsight(
                 kind: kind, title: title, explanation: explanation,
@@ -139,7 +139,7 @@ extension SpendingInsightEngine {
             return TransactionInsight(
                 kind: .unusuallyLargeTransaction,
                 title: "Unusually large transaction",
-                explanation: "\(txn.description): \(formatMinorUnits(txn.amountMinorUnits)) is significantly above your average.",
+                explanation: "\(txn.description): \(formatMinorUnits(txn.amountMinorUnits)) — above average.",
                 affectedTransactionIDs: [txn.id.uuidString],
                 confidence: 0.78, severity: .alert
             )

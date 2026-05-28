@@ -151,7 +151,7 @@ func correctionStore_recordAndRetrieve() async throws {
     let store = UserCorrectionStore(storageURL: url)
 
     let txnId = UUID()
-    try await store.record(
+    try await store.record(CorrectionInput(
         transactionId: txnId,
         originalCategory: "uncategorized",
         correctedCategory: "groceries",
@@ -159,7 +159,7 @@ func correctionStore_recordAndRetrieve() async throws {
         correctedMerchant: "D-Mart",
         originalConfidence: 0.3,
         modelVersion: "rules-1.0.0"
-    )
+    ))
 
     let correction = await store.correction(for: txnId)
     #expect(correction?.correctedCategory == "groceries")
@@ -185,7 +185,7 @@ func correctionStore_exportTrainingEligible() async throws {
     let store = UserCorrectionStore(storageURL: url)
 
     for _ in 0 ..< 3 {
-        try await store.record(
+        let input = CorrectionInput(
             transactionId: UUID(),
             originalCategory: "uncategorized",
             correctedCategory: "dining",
@@ -194,11 +194,14 @@ func correctionStore_exportTrainingEligible() async throws {
             originalConfidence: nil,
             modelVersion: nil
         )
+        try await store.record(input)
     }
 
     let eligible = await store.exportTrainingEligible()
     #expect(eligible.count == 3)
-    #expect(eligible.allSatisfy(\.isTrainingEligible))
+    for correction in eligible {
+        #expect(correction.isTrainingEligible)
+    }
 
     try? FileManager.default.removeItem(at: url)
 }

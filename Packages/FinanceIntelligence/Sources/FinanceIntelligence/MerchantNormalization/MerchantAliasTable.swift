@@ -11,6 +11,12 @@ struct MerchantAliasFile: Codable {
     let aliases: [MerchantAliasEntry]
 }
 
+public struct AliasMatch: Sendable {
+    public let canonical: String
+    public let confidence: Double
+    public let categoryId: String?
+}
+
 /// Loads merchant alias table from bundled JSON and performs substring matching.
 public struct MerchantAliasTable: Sendable {
     private let entries: [MerchantAliasEntry]
@@ -26,14 +32,11 @@ public struct MerchantAliasTable: Sendable {
         return MerchantAliasTable(entries: file.aliases, version: file.version)
     }
 
-    /// Returns (canonical, confidence, categoryId?) for the first matching alias entry.
-    public func match(normalizedDescription: String) -> (canonical: String, confidence: Double, categoryId: String?)? {
+    public func match(normalizedDescription: String) -> AliasMatch? {
         let lower = normalizedDescription.lowercased()
         for entry in entries {
-            for pattern in entry.patterns {
-                if lower.contains(pattern.lowercased()) {
-                    return (entry.canonical, 0.92, entry.categoryId)
-                }
+            for pattern in entry.patterns where lower.contains(pattern.lowercased()) {
+                return AliasMatch(canonical: entry.canonical, confidence: 0.92, categoryId: entry.categoryId)
             }
         }
         return nil

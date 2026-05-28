@@ -57,67 +57,81 @@ struct SampleCommand: AsyncParsableCommand {
     )
 
     mutating func run() async throws {
-        let samples = [
-            "SQ *BLUE BOTTLE 000123 SAN FRANCISCO CA",
-            "UBER TRIP HELP.UBER.COM",
-            "AMZN MKTP US*8A2K91",
-            "TST* SWEETGREEN #1042",
-            "SPOTIFY AB STOCKHOLM",
-            "NETFLIX.COM",
-            "SALARY CREDIT JUNE 2026",
-            "NEFT TO JOHN DOE REF 20260601",
-            "ATM WITHDRAWAL HDFC BANK 12345",
-            "ZOMATO FOOD ORDER",
-            "SWIGGY ORDER 123456",
-            "AIRTEL POSTPAID BILL",
-            "STARBUCKS STORE 12345 MUMBAI MH",
-            "REFUND FROM AMAZON ORDER 456789",
-            "HDFC BANK ANNUAL FEE"
-        ]
-
+        let samples = sampleDescriptions()
         let normalizer = MerchantNormalizer()
         let categorizer = RuleBasedCategorizer()
         let extractor = TransactionFeatureExtractor()
-
         let width = 45
         print(String(repeating: "─", count: 110))
         print(padRight("Raw Description", width) + padRight("Merchant", 25) + padRight("Category", 20) + "Conf  Source")
         print(String(repeating: "─", count: 110))
-
         for raw in samples {
-            let date = Date()
-            let txn = Transaction(
-                postedAt: date, description: raw,
-                amountMinorUnits: 10000, currencyCode: "INR",
-                transactionType: .debit
-            )
-            let features = extractor.extract(from: txn)
-            let merchant = normalizer.normalize(raw)
-            let rulePred = categorizer.categorize(features)
-            // Prefer alias-derived category (mirrors full service pipeline)
-            let categoryId: String
-            let confidence: Double
-            let source: String
-            if let aliasId = merchant.categoryId {
-                categoryId = aliasId.components(separatedBy: ".").first ?? aliasId
-                confidence = merchant.confidence
-                source = "alias"
-            } else {
-                categoryId = rulePred.categoryId
-                confidence = rulePred.confidence
-                source = rulePred.source.rawValue
-            }
-
-            print(
-                padRight(raw, width) +
-                    padRight(merchant.canonicalName, 25) +
-                    padRight(categoryId, 20) +
-                    String(format: "%.2f  ", confidence) +
-                    source
+            printSampleRow(
+                raw: raw,
+                normalizer: normalizer,
+                categorizer: categorizer,
+                extractor: extractor,
+                width: width
             )
         }
         print(String(repeating: "─", count: 110))
     }
+}
+
+private func sampleDescriptions() -> [String] {
+    [
+        "SQ *BLUE BOTTLE 000123 SAN FRANCISCO CA",
+        "UBER TRIP HELP.UBER.COM",
+        "AMZN MKTP US*8A2K91",
+        "TST* SWEETGREEN #1042",
+        "SPOTIFY AB STOCKHOLM",
+        "NETFLIX.COM",
+        "SALARY CREDIT JUNE 2026",
+        "NEFT TO JOHN DOE REF 20260601",
+        "ATM WITHDRAWAL HDFC BANK 12345",
+        "ZOMATO FOOD ORDER",
+        "SWIGGY ORDER 123456",
+        "AIRTEL POSTPAID BILL",
+        "STARBUCKS STORE 12345 MUMBAI MH",
+        "REFUND FROM AMAZON ORDER 456789",
+        "HDFC BANK ANNUAL FEE"
+    ]
+}
+
+private func printSampleRow(
+    raw: String,
+    normalizer: MerchantNormalizer,
+    categorizer: RuleBasedCategorizer,
+    extractor: TransactionFeatureExtractor,
+    width: Int
+) {
+    let txn = Transaction(
+        postedAt: Date(), description: raw,
+        amountMinorUnits: 10000, currencyCode: "INR",
+        transactionType: .debit
+    )
+    let features = extractor.extract(from: txn)
+    let merchant = normalizer.normalize(raw)
+    let rulePred = categorizer.categorize(features)
+    let categoryId: String
+    let confidence: Double
+    let source: String
+    if let aliasId = merchant.categoryId {
+        categoryId = aliasId.components(separatedBy: ".").first ?? aliasId
+        confidence = merchant.confidence
+        source = "alias"
+    } else {
+        categoryId = rulePred.categoryId
+        confidence = rulePred.confidence
+        source = rulePred.source.rawValue
+    }
+    print(
+        padRight(raw, width) +
+            padRight(merchant.canonicalName, 25) +
+            padRight(categoryId, 20) +
+            String(format: "%.2f  ", confidence) +
+            source
+    )
 }
 
 // MARK: - Report Printing
@@ -155,12 +169,8 @@ private func printReport(_ results: [AnalyzedTransaction], verbose: Bool) {
     print("\nCategory breakdown:")
     for (cat, txns) in categoryGroups.sorted(by: { $0.value.count > $1.value.count }) {
         let total = txns.reduce(0) { $0 + $1.transaction.amountMinorUnits }
-        print(String(
-            format: "  %-22s %3d txns   %10.2f",
-            (cat as NSString).utf8String!,
-            txns.count,
-            Double(total) / 100
-        ))
+        let amount = String(format: "%10.2f", Double(total) / 100)
+        print("  \(padRight(cat, 22)) \(String(format: "%3d", txns.count)) txns   \(amount)")
     }
 
     let uncategorized = results.count(where: { $0.categoryPrediction.categoryId == "uncategorized" })
@@ -224,66 +234,57 @@ struct ExportCommand: AsyncParsableCommand {
     var db: String?
 
     mutating func run() async throws {
-        let corrURL: URL
-        if let path = corrections {
-            corrURL = URL(fileURLWithPath: path)
-        } else {
-            let appSupport = FileManager.default.urls(
-                for: .applicationSupportDirectory, in: .userDomainMask
-            ).first!
-            corrURL = appSupport
-                .appendingPathComponent("FinanceIntelligence")
-                .appendingPathComponent("corrections.json")
-        }
-
+        let corrURL = resolveCorrectionsURL(path: corrections)
         guard FileManager.default.fileExists(atPath: corrURL.path) else {
             print("No corrections.json found at \(corrURL.path)")
             print("Make corrections in the app first, then re-run.")
             return
         }
-
         let store = UserCorrectionStore(storageURL: corrURL)
         let eligible = await store.exportTrainingEligible()
-
         guard !eligible.isEmpty else {
             print("No training-eligible corrections found.")
             return
         }
+        let txnDescriptions = try await loadDescriptions(dbPath: db)
+        let csv = buildCSV(from: eligible, txnDescriptions: txnDescriptions)
+        try csv.write(to: URL(fileURLWithPath: output), atomically: true, encoding: .utf8)
+        print("Exported \(eligible.count) corrections → \(output)")
+    }
 
-        var txnDescriptions: [UUID: String] = [:]
-        if let dbPath = db {
-            let dbQueue = try openDB(path: dbPath)
-            let txns = try await fetchTransactions(from: dbQueue, limit: 0)
-            for txn in txns {
-                txnDescriptions[txn.id] = txn.description
-            }
-        }
+    private func resolveCorrectionsURL(path: String?) -> URL {
+        if let path { return URL(fileURLWithPath: path) }
+        let dirs = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+        let base = dirs.first ?? FileManager.default.temporaryDirectory
+        return base.appendingPathComponent("FinanceIntelligence").appendingPathComponent("corrections.json")
+    }
 
-        var lines =
-            [
-                "id,date,raw_description,user_category,corrected_merchant,original_category,original_confidence,model_version,source"
-            ]
+    private func loadDescriptions(dbPath: String?) async throws -> [UUID: String] {
+        guard let dbPath else { return [:] }
+        let dbQueue = try openDB(path: dbPath)
+        let txns = try await fetchTransactions(from: dbQueue, limit: 0)
+        return Dictionary(uniqueKeysWithValues: txns.map { ($0.id, $0.description) })
+    }
+
+    private func buildCSV(from eligible: [UserCorrection], txnDescriptions: [UUID: String]) -> String {
+        let header = "id,date,raw_description,user_category,corrected_merchant," +
+            "original_category,original_confidence,model_version,source"
         let formatter = ISO8601DateFormatter()
-
-        for c in eligible {
-            let raw = txnDescriptions[c.transactionId] ?? ""
-            let escaped = raw.replacingOccurrences(of: "\"", with: "\"\"")
+        let rows = eligible.map { c -> String in
+            let raw = (txnDescriptions[c.transactionId] ?? "").replacingOccurrences(of: "\"", with: "\"\"")
             let merchant = (c.correctedMerchant ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            lines.append([
+            return [
                 c.id.uuidString,
                 formatter.string(from: c.timestamp),
-                "\"\(escaped)\"",
+                "\"\(raw)\"",
                 c.correctedCategory,
                 "\"\(merchant)\"",
                 c.originalCategory ?? "",
                 c.originalConfidence.map { String(format: "%.3f", $0) } ?? "",
                 c.modelVersion ?? "",
                 "user_correction"
-            ].joined(separator: ","))
+            ].joined(separator: ",")
         }
-
-        let csv = lines.joined(separator: "\n")
-        try csv.write(to: URL(fileURLWithPath: output), atomically: true, encoding: .utf8)
-        print("Exported \(eligible.count) corrections → \(output)")
+        return ([header] + rows).joined(separator: "\n")
     }
 }

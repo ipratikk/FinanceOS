@@ -91,8 +91,8 @@ private extension MerchantNormalizer {
             (["airbnb"], "Airbnb")
         ]
         for entry in knownMerchants {
-            for token in entry.tokens {
-                if normalized.contains(token) { return entry.canonical }
+            for token in entry.tokens where normalized.contains(token) {
+                return entry.canonical
             }
         }
         return nil

@@ -1,5 +1,33 @@
 import Foundation
 
+public struct CorrectionInput: Sendable {
+    public let transactionId: UUID
+    public let originalCategory: String?
+    public let correctedCategory: String
+    public let originalMerchant: String?
+    public let correctedMerchant: String?
+    public let originalConfidence: Double?
+    public let modelVersion: String?
+
+    public init(
+        transactionId: UUID,
+        originalCategory: String?,
+        correctedCategory: String,
+        originalMerchant: String?,
+        correctedMerchant: String?,
+        originalConfidence: Double?,
+        modelVersion: String?
+    ) {
+        self.transactionId = transactionId
+        self.originalCategory = originalCategory
+        self.correctedCategory = correctedCategory
+        self.originalMerchant = originalMerchant
+        self.correctedMerchant = correctedMerchant
+        self.originalConfidence = originalConfidence
+        self.modelVersion = modelVersion
+    }
+}
+
 /// Persists user category/merchant corrections locally as JSON.
 /// Thread-safe via actor isolation.
 public actor UserCorrectionStore {
@@ -11,26 +39,18 @@ public actor UserCorrectionStore {
         corrections = Self.loadFromDisk(at: storageURL)
     }
 
-    public func record(
-        transactionId: UUID,
-        originalCategory: String?,
-        correctedCategory: String,
-        originalMerchant: String?,
-        correctedMerchant: String?,
-        originalConfidence: Double?,
-        modelVersion: String?
-    ) throws {
+    public func record(_ input: CorrectionInput) throws {
         let correction = UserCorrection(
-            transactionId: transactionId,
-            originalCategory: originalCategory,
-            correctedCategory: correctedCategory,
-            originalMerchant: originalMerchant,
-            correctedMerchant: correctedMerchant,
-            originalConfidence: originalConfidence,
-            modelVersion: modelVersion,
+            transactionId: input.transactionId,
+            originalCategory: input.originalCategory,
+            correctedCategory: input.correctedCategory,
+            originalMerchant: input.originalMerchant,
+            correctedMerchant: input.correctedMerchant,
+            originalConfidence: input.originalConfidence,
+            modelVersion: input.modelVersion,
             isTrainingEligible: true
         )
-        corrections[transactionId] = correction
+        corrections[input.transactionId] = correction
         try saveToDisk()
     }
 

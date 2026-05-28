@@ -56,10 +56,9 @@ public struct RuleBasedCategorizer {
 
         for rule in rules {
             let score = rule.keywords.count(where: { desc.contains($0) })
-            if score > 0 {
-                if topMatch == nil || score > topMatch!.score {
-                    topMatch = (rule, score)
-                }
+            guard score > 0 else { continue }
+            if topMatch == nil || score > topMatch?.score ?? 0 {
+                topMatch = (rule, score)
             }
         }
 
@@ -106,110 +105,133 @@ private extension RuleBasedCategorizer {
 
 private extension RuleBasedCategorizer {
     static func buildRules() -> [CategoryRule] {
+        incomeRules + transferRules + housingUtilityRules +
+            groceryDiningRules + transportTravelRules +
+            healthInsuranceRules + subscriptionRules +
+            shoppingEntertainmentRules + miscRules
+    }
+
+    static var incomeRules: [CategoryRule] {
         [
             CategoryRule(["salary", "payroll", "paycheck", "wages"], "income", "income.salary", confidence: 0.9),
             CategoryRule(["dividend", "interest earned", "interest credit"], "income", "income.dividend"),
             CategoryRule(["freelance", "consulting fee", "invoice"], "income", "income.freelance"),
             CategoryRule(["refund", "cashback", "reversal"], "income", "income.refund", confidence: 0.85),
+            CategoryRule(["inw ", "swift inward", "forex credit", "usd@", "usd2"], "income")
+        ]
+    }
+
+    static var transferRules: [CategoryRule] {
+        [
             CategoryRule(
                 ["neft", "imps", "rtgs", "upi transfer", "wire transfer", "ach transfer"],
-                "transfers",
-                nil,
-                confidence: 0.88
-            ),
+                "transfers", nil, confidence: 0.88
+            )
+        ]
+    }
+
+    static var housingUtilityRules: [CategoryRule] {
+        [
             CategoryRule(["rent", "lease payment", "housing"], "housing", "housing.rent"),
             CategoryRule(["mortgage", "home loan emi", "housing loan"], "housing", "housing.mortgage"),
             CategoryRule(["electricity", "power bill", "electric bill"], "utilities", "utilities.electricity"),
             CategoryRule(
                 ["internet", "broadband", "wifi", "airtel", "jio", "comcast", "at&t"],
-                "utilities",
-                "utilities.internet"
+                "utilities", "utilities.internet"
             ),
-            CategoryRule(["phone bill", "mobile bill", "wireless"], "utilities", "utilities.phone"),
+            CategoryRule(["phone bill", "mobile bill", "wireless"], "utilities", "utilities.phone")
+        ]
+    }
+
+    static var groceryDiningRules: [CategoryRule] {
+        [
             CategoryRule(
                 ["grocery", "groceries", "supermarket", "d-mart", "big bazaar", "reliance fresh"],
                 "groceries"
             ),
             CategoryRule(
                 ["restaurant", "cafe", "diner", "eatery", "food court", "sweetgreen", "chipotle"],
-                "dining",
-                "dining.restaurant"
+                "dining", "dining.restaurant"
             ),
             CategoryRule(["starbucks", "coffee", "blue bottle", "third wave"], "dining", "dining.coffee"),
             CategoryRule(
                 ["doordash", "swiggy", "zomato", "ubereats", "grubhub", "food delivery"],
-                "dining",
-                "dining.delivery"
-            ),
+                "dining", "dining.delivery"
+            )
+        ]
+    }
+
+    static var transportTravelRules: [CategoryRule] {
+        [
             CategoryRule(["uber", "lyft", "ola", "rapido"], "transportation", "transportation.rideshare"),
             CategoryRule(
                 ["petrol", "fuel", "gasoline", "shell", "bp ", "exxon", "indian oil"],
-                "transportation",
-                "transportation.fuel"
+                "transportation", "transportation.fuel"
             ),
             CategoryRule(["parking", "park fee"], "transportation", "transportation.parking"),
             CategoryRule(
                 ["metro", "subway", "bus pass", "transit", "train ticket"],
-                "transportation",
-                "transportation.transit"
+                "transportation", "transportation.transit"
             ),
             CategoryRule(
                 ["flight", "airline", "airways", "air india", "indigo", "makemytrip"],
-                "travel",
-                "travel.flight"
+                "travel", "travel.flight"
             ),
-            CategoryRule(["hotel", "airbnb", "booking.com", "oyo rooms"], "travel", "travel.hotel"),
+            CategoryRule(["hotel", "airbnb", "booking.com", "oyo rooms"], "travel", "travel.hotel")
+        ]
+    }
+
+    static var healthInsuranceRules: [CategoryRule] {
+        [
             CategoryRule(
                 ["pharmacy", "chemist", "medicine", "apollo pharmacy", "walgreens", "cvs"],
-                "healthcare",
-                "healthcare.pharmacy"
+                "healthcare", "healthcare.pharmacy"
             ),
             CategoryRule(
                 ["doctor", "clinic", "hospital", "consultation", "diagnostic"],
-                "healthcare",
-                "healthcare.doctor"
+                "healthcare", "healthcare.doctor"
             ),
-            CategoryRule(["spotify", "apple music", "youtube music", "gaana"], "subscriptions", "subscriptions.music"),
+            CategoryRule(
+                ["max life ins", "lic premium", "hdfc life", "icici pru", "star health", "bajaj allianz", "tp-max"],
+                "insurance"
+            ),
+            CategoryRule(["ecs debit", "nach debit"], "insurance")
+        ]
+    }
+
+    static var subscriptionRules: [CategoryRule] {
+        [
+            CategoryRule(
+                ["spotify", "apple music", "youtube music", "gaana"], "subscriptions", "subscriptions.music"
+            ),
             CategoryRule(
                 ["netflix", "hulu", "disney", "prime video", "hotstar"],
-                "subscriptions",
-                "subscriptions.streaming"
+                "subscriptions", "subscriptions.streaming"
             ),
             CategoryRule(
                 ["microsoft", "adobe", "notion", "slack", "github", "dropbox"],
-                "subscriptions",
-                "subscriptions.software"
-            ),
+                "subscriptions", "subscriptions.software"
+            )
+        ]
+    }
+
+    static var shoppingEntertainmentRules: [CategoryRule] {
+        [
+            CategoryRule(["amazon", "flipkart", "myntra", "nykaa", "meesho"], "shopping", "shopping.online"),
+            CategoryRule(["giva", "tanishq", "malabar", "kalyan jewellers"], "shopping"),
+            CategoryRule(["movie", "cinema", "pvr", "inox", "amc"], "entertainment", "entertainment.movies")
+        ]
+    }
+
+    static var miscRules: [CategoryRule] {
+        [
+            CategoryRule(["tuition", "school fee", "college fee", "udemy", "coursera"], "education"),
             CategoryRule(
-                ["amazon", "flipkart", "myntra", "nykaa", "meesho"],
-                "shopping",
-                "shopping.online"
-            ),
-            CategoryRule(["movie", "cinema", "pvr", "inox", "amc"], "entertainment", "entertainment.movies"),
-            CategoryRule(
-                ["tuition", "school fee", "college fee", "udemy", "coursera"],
-                "education"
-            ),
-            CategoryRule(
-                ["bank fee", "annual fee", "service charge", "maintenance charge"],
-                "fees",
-                "fees.bank"
+                ["bank fee", "annual fee", "service charge", "maintenance charge"], "fees", "fees.bank"
             ),
             CategoryRule(["interest charged", "finance charge", "late fee"], "fees", "fees.interest"),
             CategoryRule(["atm withdrawal", "cash withdrawal", "atm cash"], "atm"),
             CategoryRule(["income tax", "gst payment", "tds"], "taxes"),
-            CategoryRule([
-                "max life ins",
-                "lic premium",
-                "hdfc life",
-                "icici pru",
-                "star health",
-                "bajaj allianz",
-                "tp-max"
-            ], "insurance"),
-            CategoryRule(["ecs debit", "nach debit"], "insurance"),
-            CategoryRule(["inw ", "swift inward", "forex credit", "usd@", "usd2"], "income"),
-            CategoryRule(["giva", "tanishq", "malabar", "kalyan jewellers"], "shopping"),
             CategoryRule(["ach d-", "sip debit", "mutual fund", "zerodha", "groww", "kuvera"], "business")
         ]
     }

@@ -46,15 +46,15 @@ Known packages:
 
 ### Phase 2: SwiftLint (skip if `--skipValidation`)
 
-For each changed `.swift` file, run:
+Run SwiftLint across the whole repo (do NOT use `--path <file>` — it bypasses the config):
 ```bash
-swiftlint lint --strict --quiet --path <file>
+swiftlint lint --strict --quiet 2>&1
 ```
 
 **Rules:**
-- Any `error:` output → fix the violation immediately, then re-lint that file until clean
-- `warning:` output → fix it, warnings are not acceptable in PR
-- Only proceed to Phase 3 once all changed files lint clean
+- Any `error:` or `warning:` line → fix the violation, then re-run until output is empty
+- Only proceed to Phase 3 when `swiftlint lint --strict --quiet` produces zero output
+- SwiftFormat and SwiftLint may conflict — run `swiftlint --fix --quiet` first to auto-fix trivial violations, then address remaining manually
 
 ---
 

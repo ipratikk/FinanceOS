@@ -34,11 +34,8 @@ private extension MerchantTextCleaner {
             "AMZN*"
         ]
         var result = input
-        for prefix in prefixes {
-            if result.uppercased().hasPrefix(prefix) {
-                result = String(result.dropFirst(prefix.count))
-                break
-            }
+        if let prefix = prefixes.first(where: { result.uppercased().hasPrefix($0) }) {
+            result = String(result.dropFirst(prefix.count))
         }
         return result.trimmingCharacters(in: .whitespaces)
     }
