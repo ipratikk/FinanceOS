@@ -169,6 +169,19 @@ public final class MockTransactionRepository: TransactionRepository, @unchecked 
     public func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {
         // No-op for snapshots
     }
+
+    public func updateIntelligence(id: UUID, categoryId: String?, merchantName: String?) async throws {
+        if let idx = transactions.firstIndex(where: { $0.id == id }) {
+            let t = transactions[idx]
+            transactions[idx] = Transaction(
+                id: t.id, ledgerId: t.ledgerId, accountID: t.accountID, cardID: t.cardID,
+                postedAt: t.postedAt, description: t.description,
+                amountMinorUnits: t.amountMinorUnits, currencyCode: t.currencyCode,
+                transactionType: t.transactionType, sourceFingerprint: t.sourceFingerprint,
+                categoryId: categoryId, merchantName: merchantName
+            )
+        }
+    }
 }
 
 /// Mock SpendingService for snapshot tests.

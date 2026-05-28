@@ -1,75 +1,147 @@
 # Create PR
 
-Orchestrates pull request creation with local CI validation before pushing.
+Orchestrates pull request creation with inline CI validation. Claude runs each step directly,
+waits for the result, and fixes any failures before proceeding. Does not delegate to a script.
 
 ## Usage
 
 - `/create-pr` — Full workflow
-- `/create-pr --skipValidation` — Skip local CI (use only when CI already passed on a prior push)
+- `/create-pr --skipValidation` — Skip CI steps (only when already validated)
 - `/create-pr --base=<branch>` — Stacked PR against a non-main branch
 
-## Options
-
-- **`--skipValidation`** — Skip `pre-pr.sh` (branch already validated or trivial change)
-- **`--base=<branch>`** — Target branch for stacked PRs (default: `main`)
+---
 
 ## Execution Flow
 
-### Phase 0: Branch naming check (always runs)
+### Phase 0: Branch check (always runs)
 
-Verify branch follows `<type>/<description>` convention:
-- ✓ `fix/fds-tokens`, `feat/parser-hdfc`, `refactor/ledger-model`
-- ✗ `my-branch`, `test`, bare `main`
-
-Warn but do not block on mismatch.
-
-### Phase 1: Local CI validation (unless `--skipValidation`)
-
+Run:
 ```bash
-.claude/scripts/validate/pre-pr.sh
+git branch --show-current
 ```
 
-Mirrors `.github/workflows/swift.yml` — runs in order:
-1. **SwiftLint** — strict mode on changed files vs `origin/main`
-2. **Package tests** — `swift test --parallel` for each affected package
-3. **macOS build** — `xcodebuild -scheme FinanceOSMac -quiet`
+Warn (do not block) if branch does not follow `<type>/<description>` convention.
 
-If any step fails → stop, report, ask:
-> "Fix before creating PR? (yes/no)"
-- Yes → pause and wait for user to fix, then re-run validation
-- No → proceed at user's risk
+---
 
-### Phase 2: Branch sync check
+### Phase 1: Identify changed files
 
+Run:
+```bash
+git diff --name-only origin/main...HEAD
+```
+
+Use this list to determine:
+- Which `.swift` files need linting
+- Which packages under `Packages/` have changes and need tests run
+
+Known packages:
+- `Packages/FinanceCore`
+- `Packages/FinanceParsers`
+- `Packages/FinanceUI`
+- `Packages/FinanceTesting`
+- `Packages/FinanceIntelligence`
+
+---
+
+### Phase 2: SwiftLint (skip if `--skipValidation`)
+
+Run SwiftLint across the whole repo (do NOT use `--path <file>` — it bypasses the config):
+```bash
+swiftlint lint --strict --quiet 2>&1
+```
+
+**Rules:**
+- Any `error:` or `warning:` line → fix the violation, then re-run until output is empty
+- Only proceed to Phase 3 when `swiftlint lint --strict --quiet` produces zero output
+- SwiftFormat and SwiftLint may conflict — run `swiftlint --fix --quiet` first to auto-fix trivial violations, then address remaining manually
+
+---
+
+### Phase 3: Package tests (skip if `--skipValidation`)
+
+For each package that has changed files, run:
+```bash
+swift test --package-path Packages/<PackageName> --parallel
+```
+
+Wait for the full output.
+
+**Rules:**
+- Any test failure → read the failure output, fix the failing code, re-run tests for that package
+- Only proceed to Phase 4 when all affected packages pass
+- If a fix introduces changes in another package, re-lint and re-test that package too
+
+---
+
+### Phase 4: macOS build (skip if `--skipValidation`)
+
+Run:
+```bash
+xcodebuild build \
+  -workspace FinanceOS.xcworkspace \
+  -scheme FinanceOSMac \
+  -destination 'platform=macOS,arch=arm64' \
+  COMPILER_INDEX_STORE_ENABLE=NO \
+  -quiet 2>&1 | grep -E "error:|BUILD SUCCEEDED|BUILD FAILED"
+```
+
+**Rules:**
+- `BUILD FAILED` or any `error:` line → fix the error, re-run build until `BUILD SUCCEEDED`
+- Only proceed to Phase 5 after seeing `BUILD SUCCEEDED`
+
+---
+
+### Phase 5: Branch sync
+
+Run:
 ```bash
 git fetch origin main
 git rev-list --count HEAD..origin/main
 ```
 
-If behind → rebase: `git pull --rebase origin main`, then push branch.
+If behind → run `git pull --rebase origin main`, then push.
 
-### Phase 3: PR creation
+Run:
+```bash
+git push -u origin HEAD
+```
 
+---
+
+### Phase 6: PR creation
+
+Inspect commits on this branch vs `origin/main`:
+```bash
+git log origin/main..HEAD --oneline
+```
+
+Then create the PR:
 ```bash
 gh pr create \
   --title "<type>(<scope>): <description>" \
   --body "$(cat <<'EOF'
 ## Summary
-- <what changed>
-- <why>
+- <bullet points from commit messages>
 
 ## Test plan
-- [ ] Local CI passed (`pre-pr.sh`)
-- [ ] Manual smoke test on affected screens
-- [ ] Parser tests (`/parser-test`) — if parsers touched
+- [ ] SwiftLint clean on all changed files
+- [ ] Package tests pass (affected packages only)
+- [ ] macOS build succeeded
 
 ## Notes
-<migration notes, breaking changes, follow-ups>
+<migration notes, breaking changes, follow-ups if any>
 EOF
 )" \
   --base <base-branch>
 ```
 
-**Title format:** matches conventional commit style — `fix(parser): handle HDFC date format`
+Return the PR URL.
 
-Return the PR URL when done.
+---
+
+## Rules
+
+- **Never create the PR if Phase 2, 3, or 4 produced any error or failure.**
+- Fix failures inline. Do not ask "should I proceed anyway?" — fix, then proceed.
+- `--skipValidation` is the only bypass. If the user did not pass it, run all phases.

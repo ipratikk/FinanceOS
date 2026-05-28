@@ -13,6 +13,7 @@
 		0413062D2FBA467700133C99 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 0413062C2FBA467700133C99 /* SnapshotTesting */; };
 		0413062F2FBA470000133C99 /* FinanceParsers in Frameworks */ = {isa = PBXBuildFile; productRef = 0413062E2FBA470000133C99 /* FinanceParsers */; };
 		041306312FBA470000133C99 /* FinanceParsers in Frameworks */ = {isa = PBXBuildFile; productRef = 041306302FBA470000133C99 /* FinanceParsers */; };
+		0494F6482FC8300800800859 /* FinanceIntelligence in Frameworks */ = {isa = PBXBuildFile; productRef = 0494F6472FC8300800800859 /* FinanceIntelligence */; };
 		049E34262FB3B303002A3820 /* FinanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34252FB3B303002A3820 /* FinanceCore */; };
 		049E34292FB3B303002A3820 /* FinanceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34282FB3B303002A3820 /* FinanceUI */; };
 /* End PBXBuildFile section */
@@ -64,6 +65,7 @@
 			files = (
 				049E34262FB3B303002A3820 /* FinanceCore in Frameworks */,
 				049E34292FB3B303002A3820 /* FinanceUI in Frameworks */,
+				0494F6482FC8300800800859 /* FinanceIntelligence in Frameworks */,
 				041306312FBA470000133C99 /* FinanceParsers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,6 +152,7 @@
 				049E34252FB3B303002A3820 /* FinanceCore */,
 				049E34282FB3B303002A3820 /* FinanceUI */,
 				041306302FBA470000133C99 /* FinanceParsers */,
+				0494F6472FC8300800800859 /* FinanceIntelligence */,
 			);
 			productName = FinanceOSMac;
 			productReference = 049E34102FB3B1D2002A3820 /* FinanceOSMac.app */;
@@ -189,6 +192,7 @@
 				99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */,
 				99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */,
 				0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				0494F6462FC8300800800859 /* XCLocalSwiftPackageReference "../../Packages/FinanceIntelligence" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 049E34112FB3B1D2002A3820 /* Products */;
@@ -576,6 +580,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		0494F6462FC8300800800859 /* XCLocalSwiftPackageReference "../../Packages/FinanceIntelligence" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/FinanceIntelligence;
+		};
 		99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../Packages/FinanceCore;
@@ -635,6 +643,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */;
 			productName = FinanceParsers;
+		};
+		0494F6472FC8300800800859 /* FinanceIntelligence */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FinanceIntelligence;
 		};
 		049E34252FB3B303002A3820 /* FinanceCore */ = {
 			isa = XCSwiftPackageProductDependency;

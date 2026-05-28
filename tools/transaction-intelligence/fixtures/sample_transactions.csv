@@ -1,0 +1,21 @@
+id,date,amount,currency,raw_description,merchant_name,canonical_merchant,mcc,account_type,institution,user_category,user_subcategory,is_transfer,is_income,source
+1,2026-01-05,-5500,INR,SALARY CREDIT JAN 2026,,Employer,,,HDFC Bank,income,income.salary,false,true,hdfc_csv
+2,2026-01-06,2200,INR,UBER TRIP HELP.UBER.COM,Uber,Uber,4121,bank_account,ICICI Bank,transportation,transportation.rideshare,false,false,icici_csv
+3,2026-01-07,450,INR,STARBUCKS COFFEE 12345 MUMBAI,Starbucks,Starbucks,5812,credit_card,Amex,dining,dining.coffee,false,false,amex_csv
+4,2026-01-08,32000,INR,AMAZON.IN ORDER 123456,Amazon,Amazon,5999,bank_account,HDFC Bank,shopping,shopping.online,false,false,hdfc_csv
+5,2026-01-09,12900,INR,SPOTIFY AB,Spotify,Spotify,5735,bank_account,ICICI Bank,subscriptions,subscriptions.music,false,false,icici_csv
+6,2026-01-10,64900,INR,NETFLIX.COM,Netflix,Netflix,7812,credit_card,Amex,subscriptions,subscriptions.streaming,false,false,amex_csv
+7,2026-01-11,8000,INR,DOORDASH DELIVERY,DoorDash,DoorDash,5812,bank_account,HDFC Bank,dining,dining.delivery,false,false,hdfc_csv
+8,2026-01-12,5500,INR,BIGBASKET ORDER 789012,,Big Basket,5411,bank_account,ICICI Bank,groceries,,false,false,icici_csv
+9,2026-01-13,150000,INR,NEFT TO JOHN DOE REF 20260113,,Internal Transfer,,,HDFC Bank,transfers,transfers.internal,true,false,hdfc_csv
+10,2026-01-14,25000,INR,ATM WITHDRAWAL HDFC 12345,,Cash,6011,bank_account,HDFC Bank,atm,,false,false,hdfc_csv
+11,2026-01-15,3500,INR,APOLLO PHARMACY MUMBAI,,Apollo Pharmacy,5912,bank_account,ICICI Bank,healthcare,healthcare.pharmacy,false,false,icici_csv
+12,2026-01-16,18000,INR,RENT PAYMENT JAN 2026,,Landlord,,,HDFC Bank,housing,housing.rent,false,false,hdfc_csv
+13,2026-01-17,45000,INR,OLA CABS BOOKING,Ola,Ola,4121,credit_card,Amex,transportation,transportation.rideshare,false,false,amex_csv
+14,2026-01-18,1200,INR,TST* SWEETGREEN 1042,Sweetgreen,Sweetgreen,5812,bank_account,HDFC Bank,dining,dining.restaurant,false,false,hdfc_csv
+15,2026-01-19,2500,INR,SQ *BLUE BOTTLE 000123 SAN FRANCISCO CA,Blue Bottle Coffee,Blue Bottle Coffee,5812,bank_account,HDFC Bank,dining,dining.coffee,false,false,hdfc_csv
+16,2026-01-20,-3200,INR,REFUND FROM AMAZON ORDER,,Amazon,5999,bank_account,HDFC Bank,income,income.refund,false,true,hdfc_csv
+17,2026-01-21,12000,INR,AIRTEL POSTPAID BILL,,Airtel,4813,bank_account,ICICI Bank,utilities,utilities.phone,false,false,icici_csv
+18,2026-01-22,5000,INR,HDFC BANK ANNUAL FEE,,HDFC Bank,6012,credit_card,Amex,fees,fees.bank,false,false,amex_csv
+19,2026-01-23,89000,INR,MAKEMYTRIP FLIGHT BOOKING,,MakeMyTrip,4511,bank_account,HDFC Bank,travel,travel.flight,false,false,hdfc_csv
+20,2026-01-24,4000,INR,DMART STORE MUMBAI,,D-Mart,5411,bank_account,ICICI Bank,groceries,,false,false,icici_csv

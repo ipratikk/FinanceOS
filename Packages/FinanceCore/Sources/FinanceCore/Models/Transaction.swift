@@ -29,6 +29,10 @@ public struct Transaction:
     public let currencyCode: String
     public let transactionType: TransactionType
     public let sourceFingerprint: String?
+    /// Predicted or user-confirmed category ID from the intelligence layer. Matches CategoryTaxonomy IDs.
+    public let categoryId: String?
+    /// Canonical merchant name resolved by MerchantNormalizer.
+    public let merchantName: String?
 
     public init(
         id: UUID = UUID(),
@@ -40,7 +44,9 @@ public struct Transaction:
         amountMinorUnits: Int64,
         currencyCode: String,
         transactionType: TransactionType = .debit,
-        sourceFingerprint: String? = nil
+        sourceFingerprint: String? = nil,
+        categoryId: String? = nil,
+        merchantName: String? = nil
     ) {
         self.id = id
         self.ledgerId = ledgerId
@@ -52,6 +58,8 @@ public struct Transaction:
         self.currencyCode = currencyCode
         self.transactionType = transactionType
         self.sourceFingerprint = sourceFingerprint
+        self.categoryId = categoryId
+        self.merchantName = merchantName
     }
 }
 
@@ -67,6 +75,8 @@ public extension Transaction {
         static let currencyCode = Column(CodingKeys.currencyCode)
         static let transactionType = Column(CodingKeys.transactionType)
         static let sourceFingerprint = Column(CodingKeys.sourceFingerprint)
+        static let categoryId = Column(CodingKeys.categoryId)
+        static let merchantName = Column(CodingKeys.merchantName)
     }
 }
 

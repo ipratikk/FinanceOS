@@ -32,5 +32,15 @@ enum AppMigration {
                 table.add(column: "openingBalance", .integer)
             }
         }
+
+        migrator.registerMigration("v8_add_intelligence_fields") { database in
+            let txnCols = try database.columns(in: "transactions")
+            let hasCategory = txnCols.contains(where: { $0.name == "categoryId" })
+            let hasMerchant = txnCols.contains(where: { $0.name == "merchantName" })
+            try database.alter(table: "transactions") { table in
+                if !hasCategory { table.add(column: "categoryId", .text) }
+                if !hasMerchant { table.add(column: "merchantName", .text) }
+            }
+        }
     }
 }
