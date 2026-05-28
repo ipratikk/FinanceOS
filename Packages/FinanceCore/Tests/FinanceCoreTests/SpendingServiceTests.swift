@@ -13,7 +13,8 @@ private func makeSpendingDB() throws -> (DatabaseQueue, GRDBSpendingService) {
     try migrator.migrate(dbQueue)
     try dbQueue.write { database in try DatabaseSeeder.seedBanks(in: database) }
     let txnRepo = GRDBTransactionRepository(dbQueue: dbQueue)
-    let service = GRDBSpendingService(dbQueue: dbQueue, transactionRepository: txnRepo)
+    let ledgerRepo = GRDBLedgerRepository(dbQueue: dbQueue)
+    let service = GRDBSpendingService(dbQueue: dbQueue, transactionRepository: txnRepo, ledgerRepository: ledgerRepo)
     return (dbQueue, service)
 }
 

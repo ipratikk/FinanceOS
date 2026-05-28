@@ -26,6 +26,8 @@ enum AppMigration {
         // Fresh database creation includes closingBalance + closingBalanceAsOf
 
         migrator.registerMigration("v3_add_ledger_opening_balance") { database in
+            let columns = try database.columns(in: "ledgers")
+            guard !columns.contains(where: { $0.name == "openingBalance" }) else { return }
             try database.alter(table: "ledgers") { table in
                 table.add(column: "openingBalance", .integer)
             }
