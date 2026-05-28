@@ -49,7 +49,7 @@ extension DashboardView {
     private func heroActions(_ viewModel: DashboardViewModel) -> some View {
         HStack(spacing: 4) {
             Button {
-                showNetWorthDetail = true
+                navigator.navigate(to: .analytics)
             } label: {
                 Image(systemName: "arrow.up.left.and.arrow.down.right")
                     .foregroundStyle(AppColors.Text.quaternary)

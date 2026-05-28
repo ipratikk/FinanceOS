@@ -5,7 +5,6 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var viewModel: DashboardViewModel?
-    @State var showNetWorthDetail = false
     @State var showOpeningBalanceSheet = false
     @Environment(AppNavigator.self) var navigator
 
@@ -32,9 +31,6 @@ struct DashboardView: View {
                 }
                 .background(AppColors.base)
                 .task { await viewModel.load() }
-                .sheet(isPresented: $showNetWorthDetail) {
-                    NetWorthDetailSheet(viewModel: viewModel)
-                }
                 .sheet(isPresented: $showOpeningBalanceSheet) {
                     OpeningBalanceSheet(viewModel: viewModel)
                 }
