@@ -15,6 +15,9 @@ help:
 	@echo "  make intelligence-validate - Validate fixture training data"
 	@echo "  make intelligence-train    - Train Core ML model on fixture data"
 	@echo "  make intelligence-evaluate - Evaluate trained model against fixture data"
+	@echo "  make intelligence-export   - Export user corrections to CSV"
+	@echo "  make intelligence-merge    - Merge corrections into training data"
+	@echo "  make intelligence-retrain  - Full loop: export → merge → train → validate → bundle"
 
 parser-build:
 	cd Packages/FinanceParsers && swift build
@@ -64,3 +67,44 @@ intelligence-run:
 		exit 1; \
 	fi
 	cd Packages/FinanceIntelligence && swift run FinanceIntelligenceCLI eval --db "$(DB)"
+
+# Full correction-driven retrain loop:
+#   1. Export user corrections from the app's corrections.json
+#   2. Merge corrections into training data
+#   3. Retrain Core ML model
+#   4. Validate accuracy meets threshold
+#   5. Copy model artifact to Resources/ for bundling
+#
+# Usage (with live DB):
+#   make intelligence-retrain DB=~/Library/Application\ Support/FinanceOS/finance.sqlite
+#
+# Usage (corrections-only, no DB):
+#   make intelligence-retrain
+CORRECTIONS_STORE ?= $(HOME)/Library/Application Support/FinanceIntelligence/corrections.json
+INTELLIGENCE_RESOURCES = Packages/FinanceIntelligence/Sources/FinanceIntelligence/Resources
+
+intelligence-export:
+	cd Packages/FinanceIntelligence && swift run FinanceIntelligenceCLI export \
+		--corrections "$(CORRECTIONS_STORE)" \
+		--output ../../tools/transaction-intelligence/corrections_export.csv \
+		$(if $(DB),--db "$(DB)",)
+
+intelligence-merge:
+	cd tools/transaction-intelligence && python3 merge_corrections.py \
+		--corrections corrections_export.csv \
+		--training fixtures/sample_transactions.csv \
+		--output merged_training.csv
+
+intelligence-retrain: intelligence-export intelligence-merge
+	cd tools/transaction-intelligence && \
+		python3 validate_data.py --data merged_training.csv && \
+		python3 train.py --data merged_training.csv --output models/ && \
+		python3 evaluate.py --data merged_training.csv --model models/TransactionCategoryClassifier.mlpackage
+	@if [ -d "tools/transaction-intelligence/models/TransactionCategoryClassifier.mlpackage" ]; then \
+		echo "Copying model to Resources..."; \
+		cp -r tools/transaction-intelligence/models/TransactionCategoryClassifier.mlpackage \
+			$(INTELLIGENCE_RESOURCES)/TransactionCategoryClassifier.mlpackage; \
+		cp tools/transaction-intelligence/models/TransactionCategoryClassifier.metadata.json \
+			$(INTELLIGENCE_RESOURCES)/TransactionCategoryClassifier.metadata.json; \
+		echo "Model bundled. Rebuild app to activate."; \
+	fi

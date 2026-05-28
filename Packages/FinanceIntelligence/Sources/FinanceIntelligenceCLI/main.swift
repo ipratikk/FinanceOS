@@ -9,7 +9,7 @@ struct FinanceIntelligenceCLI: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "intelligence",
         abstract: "Run transaction intelligence pipeline against a FinanceOS SQLite database.",
-        subcommands: [EvalCommand.self, SampleCommand.self],
+        subcommands: [EvalCommand.self, SampleCommand.self, ExportCommand.self],
         defaultSubcommand: EvalCommand.self
     )
 }
@@ -196,4 +196,81 @@ private func fetchTransactions(from dbQueue: DatabaseQueue, limit: Int) async th
     let all = try await dbQueue.read { db in try Transaction.fetchAll(db) }
     let sorted = all.sorted { $0.postedAt > $1.postedAt }
     return limit > 0 ? Array(sorted.prefix(limit)) : sorted
+}
+
+// MARK: - export
+
+struct ExportCommand: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "export",
+        abstract: "Export user corrections from corrections.json to a training-ready CSV."
+    )
+
+    @Option(name: .long, help: "Path to corrections.json (default: app support dir).")
+    var corrections: String?
+
+    @Option(name: .long, help: "Output CSV path.")
+    var output: String = "corrections_export.csv"
+
+    @Option(name: .long, help: "Path to SQLite DB (needed to resolve raw descriptions).")
+    var db: String?
+
+    mutating func run() async throws {
+        let corrURL: URL
+        if let path = corrections {
+            corrURL = URL(fileURLWithPath: path)
+        } else {
+            let appSupport = FileManager.default.urls(
+                for: .applicationSupportDirectory, in: .userDomainMask
+            ).first!
+            corrURL = appSupport
+                .appendingPathComponent("FinanceIntelligence")
+                .appendingPathComponent("corrections.json")
+        }
+
+        guard FileManager.default.fileExists(atPath: corrURL.path) else {
+            print("No corrections.json found at \(corrURL.path)")
+            print("Make corrections in the app first, then re-run.")
+            return
+        }
+
+        let store = UserCorrectionStore(storageURL: corrURL)
+        let eligible = await store.exportTrainingEligible()
+
+        guard !eligible.isEmpty else {
+            print("No training-eligible corrections found.")
+            return
+        }
+
+        var txnDescriptions: [UUID: String] = [:]
+        if let dbPath = db {
+            let dbQueue = try openDB(path: dbPath)
+            let txns = try await fetchTransactions(from: dbQueue, limit: 0)
+            for txn in txns { txnDescriptions[txn.id] = txn.description }
+        }
+
+        var lines = ["id,date,raw_description,user_category,corrected_merchant,original_category,original_confidence,model_version,source"]
+        let formatter = ISO8601DateFormatter()
+
+        for c in eligible {
+            let raw = txnDescriptions[c.transactionId] ?? ""
+            let escaped = raw.replacingOccurrences(of: "\"", with: "\"\"")
+            let merchant = (c.correctedMerchant ?? "").replacingOccurrences(of: "\"", with: "\"\"")
+            lines.append([
+                c.id.uuidString,
+                formatter.string(from: c.timestamp),
+                "\"\(escaped)\"",
+                c.correctedCategory,
+                "\"\(merchant)\"",
+                c.originalCategory ?? "",
+                c.originalConfidence.map { String(format: "%.3f", $0) } ?? "",
+                c.modelVersion ?? "",
+                "user_correction"
+            ].joined(separator: ","))
+        }
+
+        let csv = lines.joined(separator: "\n")
+        try csv.write(to: URL(fileURLWithPath: output), atomically: true, encoding: .utf8)
+        print("Exported \(eligible.count) corrections → \(output)")
+    }
 }
