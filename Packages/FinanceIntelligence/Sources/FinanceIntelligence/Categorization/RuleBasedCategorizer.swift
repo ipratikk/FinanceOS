@@ -198,8 +198,15 @@ private extension RuleBasedCategorizer {
             CategoryRule(["interest charged", "finance charge", "late fee"], "fees", "fees.interest"),
             CategoryRule(["atm withdrawal", "cash withdrawal", "atm cash"], "atm"),
             CategoryRule(["income tax", "gst payment", "tds"], "taxes"),
-            CategoryRule(["max life ins", "lic premium", "hdfc life", "icici pru", "star health",
-                          "bajaj allianz", "tp-max"], "insurance"),
+            CategoryRule([
+                "max life ins",
+                "lic premium",
+                "hdfc life",
+                "icici pru",
+                "star health",
+                "bajaj allianz",
+                "tp-max"
+            ], "insurance"),
             CategoryRule(["ecs debit", "nach debit"], "insurance"),
             CategoryRule(["inw ", "swift inward", "forex credit", "usd@", "usd2"], "income"),
             CategoryRule(["giva", "tanishq", "malabar", "kalyan jewellers"], "shopping"),

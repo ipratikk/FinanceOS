@@ -81,7 +81,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
                 group.addTask { try await self.analyze(txn, context: context) }
             }
             var results: [AnalyzedTransaction] = []
-            for try await result in group { results.append(result) }
+            for try await result in group {
+                results.append(result)
+            }
             return results
         }
     }

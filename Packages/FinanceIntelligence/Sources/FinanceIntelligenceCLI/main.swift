@@ -72,7 +72,7 @@ struct SampleCommand: AsyncParsableCommand {
             "AIRTEL POSTPAID BILL",
             "STARBUCKS STORE 12345 MUMBAI MH",
             "REFUND FROM AMAZON ORDER 456789",
-            "HDFC BANK ANNUAL FEE",
+            "HDFC BANK ANNUAL FEE"
         ]
 
         let normalizer = MerchantNormalizer()
@@ -110,10 +110,10 @@ struct SampleCommand: AsyncParsableCommand {
 
             print(
                 padRight(raw, width) +
-                padRight(merchant.canonicalName, 25) +
-                padRight(categoryId, 20) +
-                String(format: "%.2f  ", confidence) +
-                source
+                    padRight(merchant.canonicalName, 25) +
+                    padRight(categoryId, 20) +
+                    String(format: "%.2f  ", confidence) +
+                    source
             )
         }
         print(String(repeating: "─", count: 110))
@@ -127,10 +127,10 @@ private func printReport(_ results: [AnalyzedTransaction], verbose: Bool) {
     print(String(repeating: "─", count: 115))
     print(
         padRight("Description", width) +
-        padRight("Merchant", 25) +
-        padRight("Category", 22) +
-        padRight("Conf", 6) +
-        "Source"
+            padRight("Merchant", 25) +
+            padRight("Category", 22) +
+            padRight("Conf", 6) +
+            "Source"
     )
     print(String(repeating: "─", count: 115))
 
@@ -140,10 +140,10 @@ private func printReport(_ results: [AnalyzedTransaction], verbose: Bool) {
         let correctedMark = result.isUserCorrected ? " ✓" : ""
         print(
             padRight(result.transaction.description, width) +
-            padRight(merch.canonicalName + correctedMark, 25) +
-            padRight(pred.categoryId, 22) +
-            padRight(String(format: "%.2f", pred.confidence), 6) +
-            pred.source.rawValue
+                padRight(merch.canonicalName + correctedMark, 25) +
+                padRight(pred.categoryId, 22) +
+                padRight(String(format: "%.2f", pred.confidence), 6) +
+                pred.source.rawValue
         )
         if verbose {
             print("  tokens: \(result.features.tokens.prefix(8).joined(separator: ", "))")
@@ -155,10 +155,15 @@ private func printReport(_ results: [AnalyzedTransaction], verbose: Bool) {
     print("\nCategory breakdown:")
     for (cat, txns) in categoryGroups.sorted(by: { $0.value.count > $1.value.count }) {
         let total = txns.reduce(0) { $0 + $1.transaction.amountMinorUnits }
-        print(String(format: "  %-22s %3d txns   %10.2f", (cat as NSString).utf8String!, txns.count, Double(total) / 100))
+        print(String(
+            format: "  %-22s %3d txns   %10.2f",
+            (cat as NSString).utf8String!,
+            txns.count,
+            Double(total) / 100
+        ))
     }
 
-    let uncategorized = results.filter { $0.categoryPrediction.categoryId == "uncategorized" }.count
+    let uncategorized = results.count(where: { $0.categoryPrediction.categoryId == "uncategorized" })
     let pct = results.isEmpty ? 0 : Double(uncategorized) / Double(results.count) * 100
     print(String(format: "\nUncategorized: %d / %d  (%.1f%%)", uncategorized, results.count, pct))
 
@@ -169,15 +174,18 @@ private func printReport(_ results: [AnalyzedTransaction], verbose: Bool) {
 private func printInsights(_ insights: [TransactionInsight]) {
     print("\n─── Insights ──────────────────────────────────")
     for insight in insights {
-        let icon: String
-        switch insight.severity {
-        case .info: icon = "ℹ"
-        case .warning: icon = "⚠"
-        case .alert: icon = "🚨"
+        let icon: String = switch insight.severity {
+        case .info: "ℹ"
+        case .warning: "⚠"
+        case .alert: "🚨"
         }
         print("\(icon)  [\(insight.kind.rawValue)]  \(insight.title)")
         print("   \(insight.explanation)")
-        print(String(format: "   Confidence: %.0f%%  |  Affects %d txns", insight.confidence * 100, insight.affectedTransactionIDs.count))
+        print(String(
+            format: "   Confidence: %.0f%%  |  Affects %d txns",
+            insight.confidence * 100,
+            insight.affectedTransactionIDs.count
+        ))
     }
 }
 
@@ -246,10 +254,15 @@ struct ExportCommand: AsyncParsableCommand {
         if let dbPath = db {
             let dbQueue = try openDB(path: dbPath)
             let txns = try await fetchTransactions(from: dbQueue, limit: 0)
-            for txn in txns { txnDescriptions[txn.id] = txn.description }
+            for txn in txns {
+                txnDescriptions[txn.id] = txn.description
+            }
         }
 
-        var lines = ["id,date,raw_description,user_category,corrected_merchant,original_category,original_confidence,model_version,source"]
+        var lines =
+            [
+                "id,date,raw_description,user_category,corrected_merchant,original_category,original_confidence,model_version,source"
+            ]
         let formatter = ISO8601DateFormatter()
 
         for c in eligible {

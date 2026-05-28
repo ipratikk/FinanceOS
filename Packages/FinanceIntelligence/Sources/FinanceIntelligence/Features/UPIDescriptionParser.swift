@@ -6,29 +6,29 @@ import Foundation
 // NEFT CR:     "NEFT CR-BANKCODE-PARTY NAME-REF"
 // NEFT DR:     "NEFT DR-BANKCODE-PARTY NAME-REF"
 // IMPS:        "IMPS-TXNID-PARTY NAME-BANKCODE"
-struct UPIDescriptionParser {
+enum UPIDescriptionParser {
     struct ParsedUPI {
         let merchantName: String
         let vpa: String?
-        let isPersonTransfer: Bool   // true when VPA/name looks like a person, not a business
-        let isMerchantPayment: Bool  // true when VPA is a known merchant/business handle
+        let isPersonTransfer: Bool // true when VPA/name looks like a person, not a business
+        let isMerchantPayment: Bool // true when VPA is a known merchant/business handle
     }
 
-    // Known business VPA suffixes that indicate merchant payments (not P2P transfers)
+    /// Known business VPA suffixes that indicate merchant payments (not P2P transfers)
     private static let businessVPASuffixes = [
         "@rzp", "@razorpay", "@paytm", "@upi", "@ybl", "@okhdfcbank",
         "@okicici", "@okaxis", "@oksbi", "@apl", "@ikwik", "@airtelpaymentsbank",
         "marketplace", "services", "store", "shop", "retail", "online",
         "blinkit", "zepto", "swiggy", "zomato", "ola", "uber",
-        "amazon", "flipkart", "netflix", "spotify", "hotstar",
+        "amazon", "flipkart", "netflix", "spotify", "hotstar"
     ]
 
-    // Keywords in merchant name segment that indicate business
+    /// Keywords in merchant name segment that indicate business
     private static let businessNameKeywords = [
         "marketplace", "services", "pvt", "ltd", "private limited", "llp",
         "retail", "technologies", "payments", "enterprises", "solutions",
         "swiggy", "zomato", "blinkit", "zepto", "ola", "uber", "amazon",
-        "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio",
+        "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio"
     ]
 
     static func parse(_ rawDescription: String) -> ParsedUPI? {
@@ -39,7 +39,7 @@ struct UPIDescriptionParser {
         return nil
     }
 
-    // Extract merchant name + determine if P2P or merchant payment
+    /// Extract merchant name + determine if P2P or merchant payment
     static func merchantName(from rawDescription: String) -> String? {
         guard let parsed = parse(rawDescription) else { return nil }
         return parsed.merchantName

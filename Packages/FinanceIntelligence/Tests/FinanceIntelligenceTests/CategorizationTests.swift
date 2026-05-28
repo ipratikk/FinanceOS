@@ -198,7 +198,7 @@ func correctionStore_exportTrainingEligible() async throws {
 
     let eligible = await store.exportTrainingEligible()
     #expect(eligible.count == 3)
-    #expect(eligible.allSatisfy { $0.isTrainingEligible })
+    #expect(eligible.allSatisfy(\.isTrainingEligible))
 
     try? FileManager.default.removeItem(at: url)
 }

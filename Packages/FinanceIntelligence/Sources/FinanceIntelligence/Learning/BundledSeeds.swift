@@ -1,8 +1,8 @@
 import Foundation
 
-// Seed examples bundled with the app for cold-start accuracy.
-// These are generic labeled descriptions derived from the alias table and common patterns.
-// User corrections automatically override and supplement these over time.
+/// Seed examples bundled with the app for cold-start accuracy.
+/// These are generic labeled descriptions derived from the alias table and common patterns.
+/// User corrections automatically override and supplement these over time.
 enum BundledSeeds {
     static func load() -> [LocalTransactionLearner.LabeledExample] {
         seeds.map { desc, category in
@@ -22,7 +22,7 @@ enum BundledSeeds {
             .filter { $0.count >= 2 }
     }
 
-    // (normalized description, categoryId)
+    /// (normalized description, categoryId)
     private static let seeds: [(String, String)] = [
         // Income
         ("salary credit monthly", "income"),
@@ -134,6 +134,6 @@ enum BundledSeeds {
 
         // Taxes
         ("income tax payment tds", "taxes"),
-        ("gst payment government tax", "taxes"),
+        ("gst payment government tax", "taxes")
     ]
 }

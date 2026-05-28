@@ -42,8 +42,8 @@ public actor LocalTransactionLearner {
         }
     }
 
-    // Layer 1: base examples from BundledSeeds — never written to by user corrections.
-    // Updated automatically when a new app version ships with an updated BundledSeeds.
+    /// Layer 1: base examples from BundledSeeds — never written to by user corrections.
+    /// Updated automatically when a new app version ships with an updated BundledSeeds.
     private let baseExamples: [LabeledExample]
 
     // Layer 2: user corrections — append-only, persists across app updates.
@@ -52,7 +52,7 @@ public actor LocalTransactionLearner {
 
     private let k: Int
     private let minimumSimilarity: Double
-    private let personalWeight: Double  // multiplier for personal examples vs base
+    private let personalWeight: Double // multiplier for personal examples vs base
 
     public init(
         personalStoreURL: URL,
@@ -110,16 +110,24 @@ public actor LocalTransactionLearner {
 
     // MARK: - Stats
 
-    public var baseExampleCount: Int { baseExamples.count }
-    public var personalExampleCount: Int { personalExamples.count }
-    public var totalExampleCount: Int { baseExamples.count + personalExamples.count }
+    public var baseExampleCount: Int {
+        baseExamples.count
+    }
+
+    public var personalExampleCount: Int {
+        personalExamples.count
+    }
+
+    public var totalExampleCount: Int {
+        baseExamples.count + personalExamples.count
+    }
 }
 
 // MARK: - k-NN
 
 private extension LocalTransactionLearner {
     struct ScoredNeighbor {
-        let score: Double   // similarity × weight
+        let score: Double // similarity × weight
         let categoryId: String
     }
 
@@ -137,7 +145,9 @@ private extension LocalTransactionLearner {
 
     func majorityVote(_ neighbors: [ScoredNeighbor]) -> (categoryId: String, confidence: Double)? {
         var votes: [String: Double] = [:]
-        for n in neighbors { votes[n.categoryId, default: 0] += n.score }
+        for n in neighbors {
+            votes[n.categoryId, default: 0] += n.score
+        }
         guard let winner = votes.max(by: { $0.value < $1.value }) else { return nil }
         let total = votes.values.reduce(0, +)
         let confidence = total > 0 ? min(winner.value / total, 0.95) : 0
