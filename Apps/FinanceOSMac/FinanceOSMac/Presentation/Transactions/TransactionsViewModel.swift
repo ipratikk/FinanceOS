@@ -62,26 +62,43 @@ final class TransactionsViewModel {
         }
     }
 
-    /// Called when the user corrects a category. Updates memory + persists to DB.
+    /// Called when the user corrects a category. Updates memory, persists to DB, trains kNN,
+    /// then re-analyzes auto-categorized transactions so similar ones update immediately.
     func applyCorrection(transactionId: UUID, correctedCategoryId: String) async {
-        // Update row in memory immediately
-        if let idx = transactionRows.firstIndex(where: { $0.id == transactionId }) {
-            let old = transactionRows[idx]
-            transactionRows[idx] = TransactionRow(
-                id: old.id, title: old.title, subtitle: old.subtitle,
-                amountText: old.amountText, transactionType: old.transactionType,
-                postedAt: old.postedAt, merchantName: old.merchantName,
-                categoryId: correctedCategoryId, isUserCorrected: true,
-                sourceTransaction: old.sourceTransaction
-            )
-        }
-        // Persist to DB so next launch reads the corrected value directly
+        guard let idx = transactionRows.firstIndex(where: { $0.id == transactionId }) else { return }
+        let old = transactionRows[idx]
+
+        // Update row in memory immediately — preserve existing merchantName (Bug 1 fix)
+        transactionRows[idx] = TransactionRow(
+            id: old.id, title: old.title, subtitle: old.subtitle,
+            amountText: old.amountText, transactionType: old.transactionType,
+            postedAt: old.postedAt, merchantName: old.merchantName,
+            categoryId: correctedCategoryId, isUserCorrected: true,
+            sourceTransaction: old.sourceTransaction
+        )
+
+        // Persist to DB — preserve merchantName so displayTitle stays stable (Bug 1 fix)
         do {
             try await transactionRepository.updateIntelligence(
-                id: transactionId, categoryId: correctedCategoryId, merchantName: nil
+                id: transactionId, categoryId: correctedCategoryId, merchantName: old.merchantName
             )
         } catch {
             FinanceLogger.userInterface.logError("Failed to persist correction", caughtError: error, [:])
+        }
+
+        // Train kNN on this correction so similar transactions benefit (Bug 2 fix)
+        if let service = intelligenceService, let transaction = old.sourceTransaction {
+            try? await service.learn(
+                transaction: transaction,
+                correctedCategoryId: correctedCategoryId,
+                correctedMerchant: old.merchantName,
+                previousPrediction: nil
+            )
+        }
+
+        // Re-analyze auto-categorized transactions with updated kNN (Bug 2 fix)
+        Task.detached(priority: .background) { [weak self] in
+            await self?.reAnalyzeAutoCategorized()
         }
     }
 }
@@ -89,23 +106,40 @@ final class TransactionsViewModel {
 // MARK: - Intelligence
 
 private extension TransactionsViewModel {
+    /// Re-analyze transactions already auto-categorized — called after user correction
+    /// so the updated kNN applies to similar transactions immediately.
+    func reAnalyzeAutoCategorized() async {
+        guard let service = intelligenceService else { return }
+        let (allTransactions, userCorrectedIds) = await MainActor.run {
+            let corrected = Set(transactionRows.filter(\.isUserCorrected).map(\.id))
+            return (rawTransactions, corrected)
+        }
+        // Re-analyze everything NOT manually corrected by the user
+        let toReanalyze = allTransactions.filter { !userCorrectedIds.contains($0.id) }
+        guard !toReanalyze.isEmpty else { return }
+        await runAnalysis(service: service, transactions: toReanalyze)
+    }
+
     func analyzeUncategorized() async {
         guard let service = intelligenceService else { return }
         let allTransactions = await MainActor.run { rawTransactions }
-
-        // Only analyze transactions not yet in the DB cache.
-        // Corrected transactions have categoryId set by applyCorrection → also skipped.
         let uncategorized = allTransactions.filter { $0.categoryId == nil }
         guard !uncategorized.isEmpty else { return }
+        await runAnalysis(service: service, transactions: uncategorized)
+    }
 
+    func runAnalysis(service: any TransactionIntelligenceService, transactions: [Transaction]) async {
+        let allTransactions = await MainActor.run { rawTransactions }
         await MainActor.run { isAnalyzing = true }
         do {
-            let results = try await service.analyzeBatch(uncategorized, context: .empty)
+            let results = try await service.analyzeBatch(transactions, context: .empty)
             let byId = Dictionary(uniqueKeysWithValues: results.map { ($0.transaction.id, $0) })
 
-            // Persist new results to DB for future launches (no re-analysis needed next time).
+            // Persist results — only overwrite merchantName if intelligence produced one.
+            // User-corrected merchantNames are preserved via applyCorrection.
+            let repo = await MainActor.run { transactionRepository }
             for result in results {
-                try? await MainActor.run { transactionRepository }.updateIntelligence(
+                try? await repo.updateIntelligence(
                     id: result.transaction.id,
                     categoryId: result.categoryPrediction.categoryId,
                     merchantName: result.merchantCandidate.canonicalName
@@ -115,7 +149,14 @@ private extension TransactionsViewModel {
             let ledgers = await MainActor.run { cachedLedgers }
             let updated = makeRows(transactions: allTransactions, results: byId, ledgers: ledgers)
             await MainActor.run {
-                transactionRows = updated
+                // Preserve isUserCorrected flag — don't overwrite user corrections in the row list
+                let correctedIds = Set(transactionRows.filter(\.isUserCorrected).map(\.id))
+                transactionRows = updated.map { row in
+                    guard correctedIds.contains(row.id),
+                          let existing = transactionRows.first(where: { $0.id == row.id })
+                    else { return row }
+                    return existing
+                }
                 isAnalyzing = false
             }
         } catch {

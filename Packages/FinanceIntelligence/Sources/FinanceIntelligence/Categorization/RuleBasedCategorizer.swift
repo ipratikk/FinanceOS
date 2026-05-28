@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CategoryRule {
+public struct CategoryRule: Sendable {
     public let keywords: [String]
     public let categoryId: String
     public let subcategoryId: String?
@@ -16,7 +16,7 @@ public struct CategoryRule {
 
 /// Deterministic rule-based categorizer. Scores each transaction by keyword matching.
 /// Used as the primary categorizer when no Core ML model is available.
-public struct RuleBasedCategorizer {
+public struct RuleBasedCategorizer: Sendable {
     private let taxonomy: CategoryTaxonomy
     private let rules: [CategoryRule]
 
