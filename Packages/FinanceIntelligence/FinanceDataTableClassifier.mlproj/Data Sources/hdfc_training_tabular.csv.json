@@ -22,6 +22,20 @@
         "id" : "D60BD22A-DC2B-4071-AC03-10FD6F045BB1",
         "subtitle" : "FinanceDataTableClassifier 1",
         "title" : "Used By"
+      },
+      {
+        "createdDate" : "2026-05-28T13:30:59Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "53369D5F-0510-4708-A254-8AC0C1EDBE84",
+        "subtitle" : "FinanceDataTableClassifier 1",
+        "title" : "Used By"
+      },
+      {
+        "createdDate" : "2026-05-28T13:32:40Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "DD78C889-6EB5-4751-AFF6-0F7B8426D121",
+        "subtitle" : "FinanceDataTableClassifier 1",
+        "title" : "Used By"
       }
     ],
     "dataSourceMetrics",
@@ -44,6 +58,20 @@
         "createdDate" : "2026-05-28T13:14:18Z",
         "event" : "dataSourceMetrics",
         "id" : "9DFF4E40-00E6-430C-AD6C-934040389858",
+        "subtitle" : "6 Classes, 432 Items",
+        "title" : "Data Summary"
+      },
+      {
+        "createdDate" : "2026-05-28T13:30:59Z",
+        "event" : "dataSourceMetrics",
+        "id" : "7122C258-EC55-4878-AD37-3709E1D04B96",
+        "subtitle" : "6 Classes, 432 Items",
+        "title" : "Data Summary"
+      },
+      {
+        "createdDate" : "2026-05-28T13:32:40Z",
+        "event" : "dataSourceMetrics",
+        "id" : "76BD8118-27C8-4551-A5DE-4EF8D930B0EB",
         "subtitle" : "6 Classes, 432 Items",
         "title" : "Data Summary"
       }
@@ -114,10 +142,10 @@
   },
   "dataURL" : "file:///private/tmp/hdfc_training_tabular.csv",
   "experimentIDs" : [
-    "422A5D70-442A-40CB-A324-C46AC4B90039"
+    "CF991C4C-98C5-477E-A967-4D9343A04B69"
   ],
   "id" : "09A56C7F-654C-4F67-9C63-6F5B2F6A76B4",
-  "modifiedDate" : "2026-05-28T13:14:18Z",
+  "modifiedDate" : "2026-05-28T13:32:40Z",
   "pathType" : 0,
   "preferredFilename" : "hdfc_training_tabular.csv",
   "title" : "hdfc_training_tabular.csv",
