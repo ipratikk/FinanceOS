@@ -25,6 +25,7 @@ public struct Ledger:
     public let linkedLedgerId: UUID?
 
     public let isArchived: Bool
+    public let openingBalance: Int64?
     public let closingBalance: Int64?
     public let closingBalanceAsOf: Date?
 
@@ -44,6 +45,7 @@ public struct Ledger:
         case bin
         case linkedLedgerId
         case isArchived
+        case openingBalance
         case closingBalance
         case closingBalanceAsOf
     }
@@ -63,6 +65,7 @@ public struct Ledger:
         bin: String? = nil,
         linkedLedgerId: UUID? = nil,
         isArchived: Bool = false,
+        openingBalance: Int64? = nil,
         closingBalance: Int64? = nil,
         closingBalanceAsOf: Date? = nil
     ) {
@@ -80,6 +83,7 @@ public struct Ledger:
         self.bin = bin
         self.linkedLedgerId = linkedLedgerId
         self.isArchived = isArchived
+        self.openingBalance = openingBalance
         self.closingBalance = closingBalance
         self.closingBalanceAsOf = closingBalanceAsOf
     }
@@ -101,6 +105,7 @@ public extension Ledger {
         static let bin = Column(CodingKeys.bin)
         static let linkedLedgerId = Column(CodingKeys.linkedLedgerId)
         static let isArchived = Column(CodingKeys.isArchived)
+        static let openingBalance = Column(CodingKeys.openingBalance)
         static let closingBalance = Column(CodingKeys.closingBalance)
         static let closingBalanceAsOf = Column(CodingKeys.closingBalanceAsOf)
     }
@@ -157,6 +162,8 @@ public extension Ledger {
             table.column("isArchived", .integer)
                 .notNull()
                 .defaults(to: false)
+
+            table.column("openingBalance", .integer)
 
             table.column("closingBalance", .integer)
 

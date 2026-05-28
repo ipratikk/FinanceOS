@@ -40,8 +40,8 @@ class AnalyticsViewModel {
         var merchantTotals: [String: Int64] = [:]
 
         for txn in transactions {
-            guard txn.amountMinorUnits < 0 else { continue }
-            merchantTotals[txn.description, default: 0] -= txn.amountMinorUnits
+            guard txn.transactionType == .debit else { continue }
+            merchantTotals[txn.description, default: 0] += txn.amountMinorUnits
         }
 
         return merchantTotals

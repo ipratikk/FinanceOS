@@ -10,26 +10,33 @@ struct SidebarView: View {
             brandHeader
             searchInput
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 0) {
-                    FDSSidebarSectionHeader("Overview")
+            List {
+                Section {
                     sidebarItem(.dashboard, shortcut: "⌘1")
                     sidebarItem(.analytics, shortcut: "⌘2")
+                } header: {
+                    FDSSidebarSectionHeader("Overview")
+                }
 
-                    FDSSidebarSectionHeader("Money")
+                Section {
                     sidebarItem(.accounts, shortcut: "⌘3")
                     sidebarItem(.cards, shortcut: "⌘4")
                     sidebarItem(.transactions, shortcut: "⌘5")
+                } header: {
+                    FDSSidebarSectionHeader("Money")
+                }
 
-                    FDSSidebarSectionHeader("Manage")
+                Section {
                     sidebarItem(.banks, shortcut: "⌘6")
                     sidebarItem(.settings, shortcut: "⌘7")
+                } header: {
+                    FDSSidebarSectionHeader("Manage")
                 }
-                .padding(.horizontal, 8)
             }
-
-            Spacer()
-
+            .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
             footerImport
         }
         .frame(minWidth: AppSpacing.Layout.sidebarWidth, idealWidth: AppSpacing.Layout.sidebarWidth)
@@ -156,6 +163,9 @@ struct SidebarView: View {
                     .foregroundColor(AppColors.Text.tertiary)
             }
         }
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+        .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8))
     }
 }
 

@@ -4,7 +4,34 @@ public protocol SpendingServiceProtocol: Sendable {
     func monthlySummary(months: Int) async throws -> [MonthlySpendingSummary]
     func currentMonthTotals() async throws -> SpendingTotals
     func recentTransactions(limit: Int) async throws -> [Transaction]
+    func netWorthTimeSeries(months: Int) async throws -> [NetWorthPoint]
 }
+
+// MARK: - Chart Models
+
+public enum TransactionCategory: String, Codable, Equatable, Sendable, CaseIterable {
+    case food, transport, utilities, entertainment, shopping, healthcare, finance, income, transfer, other
+}
+
+public struct NetWorthPoint: Identifiable, Sendable {
+    public let id: UUID
+    public let timestamp: Date
+    public let netWorth: Decimal
+
+    public init(timestamp: Date, netWorth: Decimal) {
+        id = UUID()
+        self.timestamp = timestamp
+        self.netWorth = netWorth
+    }
+}
+
+extension NetWorthPoint: Equatable {
+    public static func == (lhs: NetWorthPoint, rhs: NetWorthPoint) -> Bool {
+        lhs.timestamp == rhs.timestamp && lhs.netWorth == rhs.netWorth
+    }
+}
+
+// MARK: - Aggregate Models
 
 public struct MonthlySpendingSummary: Identifiable, Codable, Equatable, Sendable {
     public let id: Date

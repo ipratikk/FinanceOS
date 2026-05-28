@@ -40,7 +40,8 @@ public final class AppContainer {
 
         spendingService = GRDBSpendingService(
             dbQueue: databaseManager.dbQueue,
-            transactionRepository: transactionRepository
+            transactionRepository: transactionRepository,
+            ledgerRepository: ledgerRepository
         )
     }
 }

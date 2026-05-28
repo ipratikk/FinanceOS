@@ -40,6 +40,9 @@
     "Amount" : {
 
     },
+    "Amount in ₹" : {
+
+    },
     "ANALYTICS" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -167,9 +170,6 @@
         }
       }
     },
-    "Credits" : {
-
-    },
     "Custom" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -225,9 +225,6 @@
         }
       }
     },
-    "Debits" : {
-
-    },
     "Delete" : {
 
     },
@@ -276,6 +273,9 @@
         }
       }
     },
+    "Edit" : {
+
+    },
     "Edit Card" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -291,6 +291,9 @@
 
     },
     "Error" : {
+
+    },
+    "Export Chart Data" : {
 
     },
     "Filters" : {
@@ -355,6 +358,9 @@
 
     },
     "Month" : {
+
+    },
+    "Net Worth" : {
 
     },
     "Nickname" : {
@@ -440,6 +446,9 @@
     "Outflows" : {
 
     },
+    "Range" : {
+
+    },
     "Reference" : {
 
     },
@@ -454,6 +463,9 @@
         }
       }
     },
+    "Save" : {
+
+    },
     "Save password to Keychain" : {
 
     },
@@ -467,6 +479,9 @@
           }
         }
       }
+    },
+    "Set Opening Balance" : {
+
     },
     "Spending Insights" : {
       "extractionState" : "manual",
@@ -514,6 +529,9 @@
           }
         }
       }
+    },
+    "Time Range" : {
+
     },
     "To" : {
       "extractionState" : "manual",

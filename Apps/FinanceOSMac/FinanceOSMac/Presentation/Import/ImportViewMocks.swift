@@ -45,6 +45,10 @@ struct MockBankRepository: BankRepository {
 }
 
 struct MockLedgerRepository: LedgerRepository {
+    func updateOpeningBalance(id: UUID, balance: Int64) async throws {
+        ()
+    }
+
     func fetchLedgers() async throws -> [Ledger] {
         []
     }

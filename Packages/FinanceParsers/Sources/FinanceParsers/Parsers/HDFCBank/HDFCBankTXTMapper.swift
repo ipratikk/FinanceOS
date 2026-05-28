@@ -13,13 +13,13 @@ public struct HDFCBankTXTMapper: Sendable, CSVRowMapper {
                 roles.append(.date)
             case "narration":
                 roles.append(.description)
-            case "valuedat", "value dat":
+            case "valuedat", "value dat", "value dt":
                 roles.append(.ignored)
-            case "debitamount", "debit amount":
+            case "debitamount", "debit amount", "withdrawal amt.", "withdrawal amt":
                 roles.append(.debit)
-            case "creditamount", "credit amount":
+            case "creditamount", "credit amount", "deposit amt.", "deposit amt":
                 roles.append(.credit)
-            case "chq/refnumber", "chq/ref number":
+            case "chq/refnumber", "chq/ref number", "chq./ref.no.", "chq/ref.no.", "chq./ref.no":
                 roles.append(.reference)
             case "closingbalance", "closing balance":
                 roles.append(.balance)

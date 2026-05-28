@@ -118,6 +118,19 @@ public final class GRDBLedgerRepository:
         }
     }
 
+    public func updateOpeningBalance(id: UUID, balance: Int64) async throws {
+        try await dbQueue.write { database in
+            try database.execute(
+                sql: "UPDATE ledgers SET openingBalance = ? WHERE id = ?",
+                arguments: [balance, id]
+            )
+            self.logger.logInfo(
+                "Updated opening balance",
+                ["ledgerId": id.uuidString, "balance": String(balance)]
+            )
+        }
+    }
+
     public func updateClosingBalance(id: UUID, balance: Int64, asOf: Date) async throws {
         try await dbQueue.write { database in
             try database.execute(
