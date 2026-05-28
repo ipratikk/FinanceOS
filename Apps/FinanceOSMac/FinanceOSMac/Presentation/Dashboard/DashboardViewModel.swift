@@ -11,21 +11,21 @@ enum TimeRange: String, CaseIterable, Identifiable {
         rawValue
     }
 
-    var months: Int {
+    var months: Int? {
         switch self {
         case .threeMonths: return 3
         case .sixMonths: return 6
         case .oneYear: return 12
-        case .all: return 120
+        case .all: return nil
         }
     }
 
-    var visibleDays: Int {
+    var visibleDays: Int? {
         switch self {
         case .threeMonths: return 90
         case .sixMonths: return 180
         case .oneYear: return 365
-        case .all: return 3650
+        case .all: return nil
         }
     }
 }

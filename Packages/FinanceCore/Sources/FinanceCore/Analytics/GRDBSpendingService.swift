@@ -16,7 +16,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         self.ledgerRepository = ledgerRepository
     }
 
-    public func monthlySummary(months: Int) async throws -> [MonthlySpendingSummary] {
+    public func monthlySummary(months: Int?) async throws -> [MonthlySpendingSummary] {
         let allTransactions = try await transactionRepository.fetchTransactions()
         var summaryByMonth: [Date: (debit: Int64, credit: Int64)] = [:]
         let calendar = Calendar.current
@@ -33,11 +33,11 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
             }
         }
 
-        return summaryByMonth
+        let sorted = summaryByMonth
             .map { MonthlySpendingSummary(month: $0.key, totalDebit: $0.value.debit, totalCredit: $0.value.credit) }
             .sorted { $0.month < $1.month }
-            .suffix(months)
-            .map(\.self)
+        if let months { return Array(sorted.suffix(months)) }
+        return sorted
     }
 
     public func currentMonthTotals() async throws -> SpendingTotals {
@@ -70,25 +70,14 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return Array(allTransactions.prefix(limit))
     }
 
-    public func netWorthTimeSeries(months: Int) async throws -> [NetWorthPoint] {
+    public func netWorthTimeSeries(months: Int?) async throws -> [NetWorthPoint] {
         let calendar = Calendar.current
         let now = Date()
-        guard let cutoff = calendar.date(byAdding: .month, value: -months, to: now),
-              let windowStart = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: cutoff))
-        else { return [] }
 
         let assetKinds: Set<LedgerKind> = [.bankAccount, .wallet, .crypto, .investment]
         let liabilityKinds: Set<LedgerKind> = [.creditCard, .loan]
 
-        var openingTotal: Decimal = 0
-        for kind in assetKinds {
-            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
-            openingTotal += ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
-        }
-        for kind in liabilityKinds {
-            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
-            openingTotal -= ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
-        }
+        let openingTotal = try await openingNetWorth(assetKinds: assetKinds, liabilityKinds: liabilityKinds)
 
         let allLedgers = try await ledgerRepository.fetchLedgers()
         let ledgerKindById = Dictionary(uniqueKeysWithValues: allLedgers.map { ($0.id, $0.kind) })
@@ -114,6 +103,17 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         }
 
         let sortedDays = byDay.keys.sorted()
+        let windowStart: Date = if let months,
+                                   let cutoff = calendar.date(byAdding: .month, value: -months, to: now),
+                                   let ws = calendar.date(from: calendar.dateComponents(
+                                       [.year, .month, .day],
+                                       from: cutoff
+                                   )) {
+            ws
+        } else {
+            sortedDays.first ?? now
+        }
+
         var running: Decimal = openingTotal
         for day in sortedDays where day < windowStart {
             running += byDay[day] ?? 0
@@ -128,5 +128,18 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
             day = next
         }
         return points
+    }
+
+    private func openingNetWorth(assetKinds: Set<LedgerKind>, liabilityKinds: Set<LedgerKind>) async throws -> Decimal {
+        var total: Decimal = 0
+        for kind in assetKinds {
+            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
+            total += ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
+        }
+        for kind in liabilityKinds {
+            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
+            total -= ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
+        }
+        return total
     }
 }

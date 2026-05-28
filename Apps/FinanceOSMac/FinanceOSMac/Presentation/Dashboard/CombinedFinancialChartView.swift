@@ -17,31 +17,67 @@ private struct ChartHoverState: Equatable {
 
 struct CombinedFinancialChartView: View {
     let netWorth: [NetWorthPoint]
-    let visibleDays: Int
+    let visibleDays: Int?
 
     @State private var hoverState: ChartHoverState = .idle
     @State private var scrollPosition: Date
 
-    init(netWorth: [NetWorthPoint], visibleDays: Int = 90) {
+    init(netWorth: [NetWorthPoint], visibleDays: Int? = 90) {
         self.netWorth = netWorth
         self.visibleDays = visibleDays
+        let days = visibleDays ?? 90
         _scrollPosition = State(
-            initialValue: Calendar.current.date(byAdding: .day, value: -visibleDays, to: Date()) ?? Date()
+            initialValue: Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
         )
     }
 
     var body: some View {
+        Group {
+            if let days = visibleDays {
+                baseChart
+                    .chartScrollableAxes(.horizontal)
+                    .chartScrollPosition(x: $scrollPosition)
+                    .chartXVisibleDomain(length: days * 24 * 3600)
+            } else {
+                baseChart
+            }
+        }
+    }
+
+    @AxisContentBuilder
+    private var axisMarks: some AxisContent {
+        switch visibleDays {
+        case .none:
+            AxisMarks(values: .stride(by: .year, count: 1)) { _ in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(AppColors.border)
+                AxisValueLabel(format: .dateTime.year()).foregroundStyle(AppColors.Text.tertiary)
+            }
+        case let .some(days) where days <= 90:
+            AxisMarks(values: .stride(by: .weekOfYear, count: 2)) { _ in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(AppColors.border)
+                AxisValueLabel(format: .dateTime.day().month(.abbreviated))
+                    .foregroundStyle(AppColors.Text.tertiary)
+            }
+        case let .some(days) where days <= 180:
+            AxisMarks(values: .stride(by: .month, count: 1)) { _ in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(AppColors.border)
+                AxisValueLabel(format: .dateTime.month(.abbreviated))
+                    .foregroundStyle(AppColors.Text.tertiary)
+            }
+        default:
+            AxisMarks(values: .stride(by: .month, count: 2)) { _ in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(AppColors.border)
+                AxisValueLabel(format: .dateTime.month(.abbreviated))
+                    .foregroundStyle(AppColors.Text.tertiary)
+            }
+        }
+    }
+
+    private var baseChart: some View {
         StaticNetWorthChart(netWorth: netWorth)
             .chartYAxis(.hidden)
-            .chartScrollableAxes(.horizontal)
-            .chartScrollPosition(x: $scrollPosition)
-            .chartXVisibleDomain(length: visibleDays * 24 * 3600)
             .chartXAxis {
-                AxisMarks(values: .stride(by: .month, count: 1)) { _ in
-                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(AppColors.border)
-                    AxisValueLabel(format: .dateTime.month(.abbreviated))
-                        .foregroundStyle(AppColors.Text.tertiary)
-                }
+                axisMarks
             }
             .chartOverlay { proxy in
                 GeometryReader { geo in
