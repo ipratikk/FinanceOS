@@ -17,14 +17,16 @@ private struct ChartHoverState: Equatable {
 
 struct CombinedFinancialChartView: View {
     let netWorth: [NetWorthPoint]
+    let visibleDays: Int
 
     @State private var hoverState: ChartHoverState = .idle
     @State private var scrollPosition: Date
 
-    init(netWorth: [NetWorthPoint]) {
+    init(netWorth: [NetWorthPoint], visibleDays: Int = 90) {
         self.netWorth = netWorth
+        self.visibleDays = visibleDays
         _scrollPosition = State(
-            initialValue: Calendar.current.date(byAdding: .day, value: -90, to: Date()) ?? Date()
+            initialValue: Calendar.current.date(byAdding: .day, value: -visibleDays, to: Date()) ?? Date()
         )
     }
 
@@ -33,7 +35,7 @@ struct CombinedFinancialChartView: View {
             .chartYAxis(.hidden)
             .chartScrollableAxes(.horizontal)
             .chartScrollPosition(x: $scrollPosition)
-            .chartXVisibleDomain(length: 90 * 24 * 3600)
+            .chartXVisibleDomain(length: visibleDays * 24 * 3600)
             .chartXAxis {
                 AxisMarks(values: .stride(by: .month, count: 1)) { _ in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(AppColors.border)
