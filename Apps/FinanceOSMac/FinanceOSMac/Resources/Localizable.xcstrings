@@ -40,6 +40,9 @@
     "Amount" : {
 
     },
+    "Amount in ₹" : {
+
+    },
     "ANALYTICS" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -270,6 +273,9 @@
         }
       }
     },
+    "Edit" : {
+
+    },
     "Edit Card" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -285,6 +291,9 @@
 
     },
     "Error" : {
+
+    },
+    "Export Chart Data" : {
 
     },
     "Filters" : {
@@ -437,6 +446,9 @@
     "Outflows" : {
 
     },
+    "Range" : {
+
+    },
     "Reference" : {
 
     },
@@ -451,6 +463,9 @@
         }
       }
     },
+    "Save" : {
+
+    },
     "Save password to Keychain" : {
 
     },
@@ -464,6 +479,9 @@
           }
         }
       }
+    },
+    "Set Opening Balance" : {
+
     },
     "Spending Insights" : {
       "extractionState" : "manual",
@@ -511,6 +529,9 @@
           }
         }
       }
+    },
+    "Time Range" : {
+
     },
     "To" : {
       "extractionState" : "manual",

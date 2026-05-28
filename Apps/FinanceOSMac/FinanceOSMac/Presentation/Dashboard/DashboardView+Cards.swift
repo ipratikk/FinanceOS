@@ -1,3 +1,4 @@
+import AppKit
 import Charts
 import FinanceCore
 import FinanceUI
@@ -18,52 +19,115 @@ struct MetricConfig {
 
 extension DashboardView {
     func netWorthHero(_ viewModel: DashboardViewModel) -> some View {
-        let netWorth = viewModel.currentNetWorth
-        let isPositive = netWorth >= 0
-
-        return FDSCard(padded: false) {
+        FDSCard(padded: false) {
             VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    FDSLabel("NET WORTH")
-                        .font(AppTypography.captionSmSemibold)
-                        .tracking(0.8)
-                        .foregroundStyle(AppColors.Text.tertiary)
-                    Spacer()
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .foregroundStyle(AppColors.Text.quaternary)
-                    Image(systemName: "ellipsis")
-                        .foregroundStyle(AppColors.Text.quaternary)
-                }
-
-                HStack(alignment: .firstTextBaseline, spacing: 12) {
-                    FDSLabel(FormatterCache.formatCurrency(netWorth, currencyCode: "INR"))
-                        .font(AppTypography.displayLarge)
-                        .monospacedDigit()
-                        .foregroundStyle(isPositive ? AppColors.Text.primary : AppColors.danger)
-                        .lineLimit(1)
-
-                    if let delta = viewModel.netWorthMoMDelta {
-                        let deltaStr = delta >= 0
-                            ? String(format: "+%.1f%%", delta * 100)
-                            : String(format: "%.1f%%", delta * 100)
-                        FDSLabel(deltaStr)
-                            .font(AppTypography.captionLgSemibold)
-                            .foregroundStyle(delta >= 0 ? AppColors.success : AppColors.danger)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(
-                                (delta >= 0 ? AppColors.success : AppColors.danger).opacity(0.15),
-                                in: Capsule()
-                            )
-                    }
-                }
-
+                heroHeader(viewModel)
+                heroAmount(viewModel)
                 Spacer()
-
-                CombinedFinancialChartView(netWorth: viewModel.netWorthTimeSeries)
-                    .frame(height: 220)
+                CombinedFinancialChartView(
+                    netWorth: viewModel.netWorthTimeSeries,
+                    visibleDays: viewModel.selectedTimeRange.visibleDays
+                )
+                .id(viewModel.selectedTimeRange)
+                .frame(height: 220)
             }
             .padding(AppSpacing.xl)
+        }
+    }
+
+    private func heroHeader(_ viewModel: DashboardViewModel) -> some View {
+        HStack {
+            FDSLabel("NET WORTH")
+                .font(AppTypography.captionSmSemibold)
+                .tracking(0.8)
+                .foregroundStyle(AppColors.Text.tertiary)
+            Spacer()
+            heroActions(viewModel)
+        }
+    }
+
+    private func heroActions(_ viewModel: DashboardViewModel) -> some View {
+        HStack(spacing: 4) {
+            Button {
+                showNetWorthDetail = true
+            } label: {
+                Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    .foregroundStyle(AppColors.Text.quaternary)
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            Menu {
+                heroTimeRangeMenu(viewModel)
+                Divider()
+                Button("Set Opening Balance") {
+                    showOpeningBalanceSheet = true
+                }
+                Button("Export Chart Data") {
+                    let csv = viewModel.exportNetWorthCSV()
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(csv, forType: .string)
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .foregroundStyle(AppColors.Text.quaternary)
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func heroTimeRangeMenu(_ viewModel: DashboardViewModel) -> some View {
+        Menu("Time Range") {
+            ForEach(TimeRange.allCases) { range in
+                Button {
+                    Task { await viewModel.setTimeRange(range) }
+                } label: {
+                    if viewModel.selectedTimeRange == range {
+                        Label(range.rawValue, systemImage: "checkmark")
+                    } else {
+                        Text(range.rawValue)
+                    }
+                }
+            }
+        }
+    }
+
+    private func heroAmount(_ viewModel: DashboardViewModel) -> some View {
+        let netWorth = viewModel.currentNetWorth
+        let isPositive = netWorth >= 0
+        return HStack(alignment: .firstTextBaseline, spacing: 12) {
+            FDSLabel(FormatterCache.formatCurrency(netWorth, currencyCode: "INR"))
+                .font(AppTypography.displayLarge)
+                .monospacedDigit()
+                .foregroundStyle(isPositive ? AppColors.Text.primary : AppColors.danger)
+                .lineLimit(1)
+            if let delta = viewModel.netWorthMoMDelta {
+                heroDeltaBadge(delta)
+            }
+        }
+    }
+
+    private func heroDeltaBadge(_ delta: Double) -> some View {
+        let deltaStr = delta >= 0
+            ? String(format: "+%.1f%%", delta * 100)
+            : String(format: "%.1f%%", delta * 100)
+        return VStack(alignment: .leading, spacing: 2) {
+            FDSLabel(deltaStr)
+                .font(AppTypography.captionLgSemibold)
+                .foregroundStyle(delta >= 0 ? AppColors.success : AppColors.danger)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 3)
+                .background(
+                    (delta >= 0 ? AppColors.success : AppColors.danger).opacity(0.15),
+                    in: Capsule()
+                )
+            FDSLabel("vs last month")
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.quaternary)
+                .padding(.leading, 8)
         }
     }
 

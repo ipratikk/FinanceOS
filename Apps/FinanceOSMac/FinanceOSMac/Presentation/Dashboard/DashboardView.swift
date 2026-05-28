@@ -5,6 +5,8 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var viewModel: DashboardViewModel?
+    @State var showNetWorthDetail = false
+    @State var showOpeningBalanceSheet = false
     @Environment(AppNavigator.self) var navigator
 
     init() {}
@@ -30,22 +32,22 @@ struct DashboardView: View {
                 }
                 .background(AppColors.base)
                 .task { await viewModel.load() }
+                .sheet(isPresented: $showNetWorthDetail) {
+                    NetWorthDetailSheet(viewModel: viewModel)
+                }
+                .sheet(isPresented: $showOpeningBalanceSheet) {
+                    OpeningBalanceSheet(viewModel: viewModel)
+                }
             } else {
                 loadingView
                     .task {
                         let container = AppContainer.shared
                         viewModel = DashboardViewModel(
                             spendingService: container.spendingService,
-                            transactionRepository: container.transactionRepository
+                            transactionRepository: container.transactionRepository,
+                            ledgerRepository: container.ledgerRepository
                         )
                     }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                FDSLabel(viewModel.map { effectiveMonthLabel($0) } ?? currentMonthLabel)
-                    .font(AppTypography.bodyMdSemibold)
-                    .foregroundStyle(AppColors.Text.secondary)
             }
         }
     }
@@ -62,14 +64,6 @@ struct DashboardView: View {
     }
 
     // MARK: - Helpers
-
-    var currentMonthLabel: String {
-        FormatterCache.formatMonthYear(Date()).uppercased()
-    }
-
-    func effectiveMonthLabel(_ viewModel: DashboardViewModel) -> String {
-        FormatterCache.formatMonthYear(viewModel.effectiveMonth).uppercased()
-    }
 
     func amount(_ minorUnits: Int64, code: String = "INR") -> String {
         FormatterCache.formatCurrency(Decimal(minorUnits) / 100, currencyCode: code)
