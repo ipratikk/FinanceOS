@@ -55,8 +55,11 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         for txn in allTransactions {
             guard txn.postedAt >= currentMonthStart, txn.postedAt < currentMonthEnd else { continue }
             count += 1
-            if txn.transactionType == .debit { totalDebit += txn.amountMinorUnits }
-            else { totalCredit += txn.amountMinorUnits }
+            if txn.transactionType == .debit {
+                totalDebit += txn.amountMinorUnits
+            } else {
+                totalCredit += txn.amountMinorUnits
+            }
         }
 
         return SpendingTotals(totalDebit: totalDebit, totalCredit: totalCredit, transactionCount: count)
@@ -113,7 +116,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         let sortedDays = byDay.keys.sorted()
         var running: Decimal = openingTotal
         for day in sortedDays where day < windowStart {
-            running += byDay[day]!
+            running += byDay[day] ?? 0
         }
 
         var points: [NetWorthPoint] = []

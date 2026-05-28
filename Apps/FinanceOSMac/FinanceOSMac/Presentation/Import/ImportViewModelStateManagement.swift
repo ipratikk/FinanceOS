@@ -56,21 +56,7 @@ extension ImportViewModel {
                 context: context
             )
 
-            if case let .ledger(ledgerId) = target {
-                if let openingBalance = statement.metadata?.openingBalance,
-                   let ledger = try await ledgerRepository.fetchLedger(id: ledgerId),
-                   ledger.openingBalance == nil {
-                    try await ledgerRepository.updateOpeningBalance(id: ledgerId, balance: openingBalance)
-                }
-                if let closingBalance = statement.metadata?.closingBalance,
-                   let statementDate = statement.metadata?.generatedAt {
-                    try await ledgerRepository.updateClosingBalance(
-                        id: ledgerId,
-                        balance: closingBalance,
-                        asOf: statementDate
-                    )
-                }
-            }
+            try await applyStatementMetadata(statement.metadata, to: target)
 
             totalInserted += result.inserted
             totalSkipped += result.skipped
@@ -86,6 +72,22 @@ extension ImportViewModel {
             "skipped": totalSkipped
         ])
         return ImportResult(inserted: totalInserted, skipped: totalSkipped)
+    }
+
+    private func applyStatementMetadata(
+        _ metadata: FinanceParsers.StatementMetadata?,
+        to target: TransactionImportTarget
+    ) async throws {
+        guard case let .ledger(ledgerId) = target else { return }
+        if let openingBalance = metadata?.openingBalance,
+           let ledger = try await ledgerRepository.fetchLedger(id: ledgerId),
+           ledger.openingBalance == nil {
+            try await ledgerRepository.updateOpeningBalance(id: ledgerId, balance: openingBalance)
+        }
+        if let closingBalance = metadata?.closingBalance,
+           let statementDate = metadata?.generatedAt {
+            try await ledgerRepository.updateClosingBalance(id: ledgerId, balance: closingBalance, asOf: statementDate)
+        }
     }
 
     func autoSelectMatchingTarget() async {

@@ -64,8 +64,9 @@ while IFS= read -r file; do
   [ -z "$file" ] && continue
   [ -f "$REPO_ROOT/$file" ] || continue
   VIOLATIONS=$(swiftlint lint --strict --quiet --path "$REPO_ROOT/$file" 2>/dev/null || true)
-  ERRORS=$(echo "$VIOLATIONS" | grep -c "error:" || echo 0)
-  if [ "$ERRORS" -gt 0 ]; then
+  ERRORS=$(echo "$VIOLATIONS" | grep -c "error:" 2>/dev/null) || ERRORS=0
+  ERRORS=$(echo "$ERRORS" | tr -d '[:space:]')
+  if [ "${ERRORS:-0}" -gt 0 ] 2>/dev/null; then
     echo "$VIOLATIONS" | grep "error:" | head -5
     LINT_ERRORS=$((LINT_ERRORS + ERRORS))
   fi

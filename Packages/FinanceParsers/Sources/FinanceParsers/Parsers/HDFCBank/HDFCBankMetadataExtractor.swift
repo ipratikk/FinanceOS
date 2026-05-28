@@ -139,14 +139,12 @@ public struct HDFCBankMetadataExtractor: Sendable {
         // Left column is the name; split at first double-space to strip right-column address.
         for line in lines.prefix(100) {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
-            for title in ["MR ", "MRS ", "MS ", "DR ", "MR. ", "MRS. "] {
-                if trimmed.uppercased().hasPrefix(title) {
-                    let afterTitle = String(trimmed.dropFirst(title.count)).trimmingCharacters(in: .whitespaces)
-                    let leftColumn = afterTitle.components(separatedBy: "  ").first ?? afterTitle
-                    let name = leftColumn.components(separatedBy: .whitespaces)
-                        .filter { !$0.isEmpty }.joined(separator: " ")
-                    if !name.isEmpty { return name }
-                }
+            for title in ["MR ", "MRS ", "MS ", "DR ", "MR. ", "MRS. "] where trimmed.uppercased().hasPrefix(title) {
+                let afterTitle = String(trimmed.dropFirst(title.count)).trimmingCharacters(in: .whitespaces)
+                let leftColumn = afterTitle.components(separatedBy: "  ").first ?? afterTitle
+                let name = leftColumn.components(separatedBy: .whitespaces)
+                    .filter { !$0.isEmpty }.joined(separator: " ")
+                if !name.isEmpty { return name }
             }
         }
         return nil

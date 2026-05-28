@@ -53,7 +53,7 @@ struct NetWorthDetailSheet: View {
             set: { range in Task { await viewModel.setTimeRange(range) } }
         )) {
             ForEach(TimeRange.allCases) { range in
-                Text(range.rawValue).tag(range)
+                FDSLabel(range.rawValue).tag(range)
             }
         }
         .pickerStyle(.segmented)

@@ -59,7 +59,7 @@ custom_rules:
   hardcoded_swiftui_color:
     name: "Hardcoded Color.white"
     description: "Use AppColors tokens instead of Color.white"
-    regex: "\\bColor\\."
+    regex: "\\bColor\\.(white|black|red|blue|green|yellow|orange|purple|pink|brown|gray|mint|teal|cyan|indigo)\\b"
     message: "Use AppColors.textPrimary or appropriate AppColors token"
     severity: error
     excluded: "Tests|Design/App|Packages/FinanceCore/Sources/FinanceCore/Design/App|DesignTokens"

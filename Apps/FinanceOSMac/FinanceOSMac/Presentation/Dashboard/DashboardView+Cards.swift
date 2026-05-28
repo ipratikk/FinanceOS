@@ -88,7 +88,7 @@ extension DashboardView {
                     if viewModel.selectedTimeRange == range {
                         Label(range.rawValue, systemImage: "checkmark")
                     } else {
-                        Text(range.rawValue)
+                        FDSLabel(range.rawValue)
                     }
                 }
             }

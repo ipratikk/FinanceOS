@@ -94,16 +94,19 @@ public struct HDFCBankTXTParser: Sendable {
                 flush()
                 pending = ranges.map { extractField(line, $0) }
             } else {
-                if pending != nil {
-                    let cont = extractField(line, ranges[1])
-                    if !cont.isEmpty {
-                        pending![1] = (pending![1] + " " + cont).trimmingCharacters(in: .whitespaces)
-                    }
-                }
+                appendContinuation(line, to: &pending, ranges: ranges)
             }
         }
         flush()
         return result
+    }
+
+    private func appendContinuation(_ line: String, to pending: inout [String]?, ranges: [(Int, Int)]) {
+        guard var row = pending else { return }
+        let cont = extractField(line, ranges[1])
+        guard !cont.isEmpty else { return }
+        row[1] = (row[1] + " " + cont).trimmingCharacters(in: .whitespaces)
+        pending = row
     }
 
     // MARK: - Delimited helpers
