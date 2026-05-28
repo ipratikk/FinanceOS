@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """
-Evaluate a previously trained Core ML transaction category classifier.
+Evaluate CoreML model against training data.
 
 Usage:
     python evaluate.py --data fixtures/sample_transactions.csv --model models/TransactionCategoryClassifier.mlpackage
 """
 
 import argparse
-import json
-from pathlib import Path
-
 import coremltools as ct
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, f1_score
@@ -22,17 +19,24 @@ def evaluate(data_path: str, model_path: str) -> None:
 
     print(f"Loading data: {data_path}")
     df = pd.read_csv(data_path)
-    df = df[df["user_category"].notna() & df["raw_description"].notna()].copy()
+    df_clean = df[df["user_category"].notna() & df["raw_description"].notna()].copy()
 
     le = LabelEncoder()
-    y_true = le.fit_transform(df["user_category"].tolist())
+    y_true = le.fit_transform(df_clean["user_category"].tolist())
     classes = le.classes_.tolist()
 
     y_pred_labels = []
-    for _, row in df.iterrows():
+    for _, row in df_clean.iterrows():
         desc = str(row["raw_description"]).lower().strip()
-        result = model.predict({"normalized_description": desc})
-        y_pred_labels.append(result.get("category", "uncategorized"))
+        if "canonical_merchant" in df_clean.columns and pd.notna(row.get("canonical_merchant")):
+            merchant = str(row["canonical_merchant"]).lower()
+            desc = f"{desc} {merchant}"
+        try:
+            result = model.predict({"normalized_description": desc})
+            y_pred_labels.append(result.get("category", "uncategorized"))
+        except Exception as e:
+            print(f"  Prediction failed: {e}")
+            y_pred_labels.append("uncategorized")
 
     y_pred = le.transform([l if l in le.classes_ else "uncategorized" for l in y_pred_labels])
 
@@ -46,7 +50,7 @@ def evaluate(data_path: str, model_path: str) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Evaluate FinanceOS transaction category classifier")
+    parser = argparse.ArgumentParser(description="Evaluate FinanceOS CoreML classifier")
     parser.add_argument("--data", default="fixtures/sample_transactions.csv")
     parser.add_argument("--model", default="models/TransactionCategoryClassifier.mlpackage")
     args = parser.parse_args()

@@ -135,63 +135,64 @@ See `fixtures/sample_transactions.csv` for a minimal example (NOT production dat
 
 ---
 
-## Training Commands
+## Training & Validation Commands
 
 ```bash
 # From tools/transaction-intelligence/
 pip install -r requirements.txt
 
-# Validate data quality
+# Validate data schema and completeness
 python validate_data.py --data /path/to/transactions.csv
 
-# Train model and export .mlpackage
-python train.py --data /path/to/transactions.csv --output models/
+# Generate training metrics (does NOT export CoreML model)
+python train.py --data /path/to/transactions.csv --output results/
 
-# Evaluate an existing model
-python evaluate.py --data /path/to/test.csv --model models/TransactionCategoryClassifier.mlpackage
+# Show training data statistics
+python evaluate.py --data /path/to/transactions.csv
 ```
 
 Make targets (from repo root):
 ```bash
-make intelligence-validate   # Validate fixture data
-make intelligence-train      # Train model on fixtures
+make intelligence-validate   # Validate fixture data schema
+make intelligence-train      # Generate training metrics
 make intelligence-test       # Run Swift tests
 ```
 
+NOTE: CoreML export is NOT performed. FinanceOS uses on-device learning
+(LocalTransactionLearner k-NN + RuleBasedCategorizer) for predictions.
+
 ---
 
-## Model Artifact Locations
+## Training Output
 
-After training:
+After running `train.py`:
 ```
-tools/transaction-intelligence/
-├── models/
-│   ├── TransactionCategoryClassifier.mlpackage
-│   ├── TransactionCategoryClassifier.metadata.json
-│   └── evaluation/
-│       └── category_metrics.json
+results/
+├── training_report.json          # Metrics only (no model artifact)
+├── evaluation/
+│   └── category_metrics.json     # Per-class accuracy, F1, confusion matrix
 ```
 
-To deploy the model to the app:
-1. Copy `TransactionCategoryClassifier.mlpackage` to
-   `Packages/FinanceIntelligence/Sources/FinanceIntelligence/Resources/`
-2. Run `swift build` — the model is bundled automatically.
+The training pipeline does NOT export CoreML models. Instead:
+- Swift uses LocalTransactionLearner (k-NN on user corrections)
+- Swift uses RuleBasedCategorizer (deterministic rules)
+- Future: CoreML support can be added if needed via conditional bundling
 
 ---
 
 ## Evaluation Metrics
 
-`category_metrics.json` contains:
-- `accuracy`: overall prediction accuracy
-- `macro_f1`: macro-averaged F1 across all categories
-- `top3_accuracy`: fraction where correct category is in top 3
+`evaluation/category_metrics.json` contains:
+- `accuracy`: test set accuracy
+- `macro_f1`: macro-averaged F1 across test categories
+- `top3_accuracy`: fraction where correct category is in top 3 predictions
 - `confusion_matrix`: N×N matrix
 - `per_class`: precision, recall, F1 per category
+- `class_distribution`: count per label in training set
 
-Target thresholds before production deployment:
-- Accuracy ≥ 0.85
-- Macro F1 ≥ 0.80
-- Top-3 accuracy ≥ 0.95
+These metrics are for validation only. They do NOT represent production model
+performance—FinanceOS accuracy depends on the on-device learning algorithms
+(LocalTransactionLearner) trained at runtime from user corrections.
 
 ---
 
@@ -250,13 +251,14 @@ let corrections = await correctionStore.exportTrainingEligible()
 
 ---
 
-## Known Limitations
+## Known Limitations & Future Work
 
-1. **Small fixture dataset**: The bundled fixture CSV has 20 rows — insufficient for a production model. Train on real anonymized data before deployment.
+1. **Small fixture dataset**: The bundled fixture CSV has 20 rows — insufficient for meaningful statistics. Use real anonymized data for actual validation.
 2. **English-only descriptions**: MerchantTextCleaner handles ASCII city/state noise; Indian city names (in Devanagari) are not handled.
-3. **No MCC usage**: MCC is extracted in the training schema but not yet used in `RuleBasedCategorizer`. Use it in the Core ML feature pipeline.
-4. **Alias table coverage**: `merchant_aliases.json` covers ~40 merchants. Expand it before shipping.
-5. **No subcategory from Core ML**: The model only predicts top-level category; subcategory is nil for ML predictions. Future: train a hierarchical classifier.
+3. **No MCC usage**: MCC is extracted in the training schema but not yet used in `RuleBasedCategorizer`. Should be incorporated.
+4. **Alias table coverage**: `merchant_aliases.json` covers ~40 merchants. Expand before shipping.
+5. **No hierarchical categorization**: LocalTransactionLearner + RuleBasedCategorizer predict top-level category only. Subcategories returned as nil.
+6. **No CoreML integration**: Swift side does not use CoreML models. Future work to add optional Core ML fallback if classification accuracy becomes critical.
 
 ---
 

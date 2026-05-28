@@ -1,30 +1,42 @@
 import CoreML
 import Foundation
+import NaturalLanguage
 
-/// Core ML inference wrapper. Loads TransactionCategoryClassifier.mlpackage from the module bundle.
-/// Returns nil when the model is not present — service falls back to RuleBasedCategorizer.
+/// NaturalLanguage model wrapper for the bundled CreateML text classifier.
+/// Uses NLModel — the correct API for CreateML text classifiers. It handles
+/// tokenization and preprocessing identically to the training pipeline,
+/// unlike using MLModel directly which requires manual feature construction.
 ///
-/// @unchecked Sendable: model is a let constant; MLModel.prediction(from:) is thread-safe for reads.
+/// Load flow: .mlmodel (bundle) → MLModel.compileModel → NLModel(mlModel:)
+/// Returns nil on any failure — service falls back to kNN → rules.
 ///
-/// To update the model:
-///   1. Run `make intelligence-train` to generate a new .mlpackage
-///   2. Copy the artifact to Sources/FinanceIntelligence/Resources/
-///   3. Rebuild the package
+/// @unchecked Sendable: NLModel is internally thread-safe for concurrent reads.
 final class CoreMLCategorizer: @unchecked Sendable {
-    static let descriptionFeatureKey = "normalized_description"
-    static let amountFeatureKey = "amount_cents"
-
-    private let model: MLModel?
+    private let model: NLModel?
     let modelVersion: String
 
-    private init(model: MLModel?, modelVersion: String) {
+    private init(model: NLModel?, modelVersion: String) {
         self.model = model
         self.modelVersion = modelVersion
     }
 
     static func load() async -> CoreMLCategorizer {
-        let (model, version) = await loadModel()
-        return CoreMLCategorizer(model: model, modelVersion: version)
+        guard let url = Bundle.module.url(
+            forResource: "TransactionCategoryClassifier",
+            withExtension: "mlmodel"
+        ) else {
+            return CoreMLCategorizer(model: nil, modelVersion: "none")
+        }
+        do {
+            let compiledUrl = try await MLModel.compileModel(at: url)
+            let mlModel = try await MLModel.load(contentsOf: compiledUrl)
+            let nlModel = try NLModel(mlModel: mlModel)
+            let version = mlModel.modelDescription.metadata[MLModelMetadataKey.versionString] as? String
+                ?? "text-classifier-v1"
+            return CoreMLCategorizer(model: nlModel, modelVersion: version)
+        } catch {
+            return CoreMLCategorizer(model: nil, modelVersion: "load-failed")
+        }
     }
 
     var isAvailable: Bool {
@@ -33,47 +45,14 @@ final class CoreMLCategorizer: @unchecked Sendable {
 
     func predict(features: TransactionFeatures) -> CategoryPrediction? {
         guard let model else { return nil }
-        guard let provider = buildProvider(features: features) else { return nil }
-        guard let output = try? model.prediction(from: provider) else { return nil }
-        return parseOutput(output)
-    }
-}
-
-// MARK: - Model Loading
-
-private extension CoreMLCategorizer {
-    static func loadModel() async -> (MLModel?, String) {
-        guard let url = Bundle.module.url(
-            forResource: "TransactionCategoryClassifier",
-            withExtension: "mlpackage"
-        ) else {
-            return (nil, "none")
-        }
-        guard let model = try? await MLModel.load(contentsOf: url) else { return (nil, "load-failed") }
-        let version = model.modelDescription.metadata[MLModelMetadataKey.versionString] as? String ?? "unknown"
-        return (model, version)
-    }
-}
-
-// MARK: - Inference
-
-private extension CoreMLCategorizer {
-    func buildProvider(features: TransactionFeatures) -> MLFeatureProvider? {
-        let dict: [String: MLFeatureValue] = [
-            Self.descriptionFeatureKey: MLFeatureValue(string: features.normalizedDescription),
-            Self.amountFeatureKey: MLFeatureValue(int64: features.absoluteAmountMinorUnits)
-        ]
-        return try? MLDictionaryFeatureProvider(dictionary: dict)
-    }
-
-    func parseOutput(_ output: MLFeatureProvider) -> CategoryPrediction? {
-        guard let categoryLabel = output.featureValue(for: "category")?.stringValue else { return nil }
-        let confidence = output.featureValue(for: "categoryProbability")?.dictionaryValue
-            .compactMapValues { $0.doubleValue }[categoryLabel] ?? 0.7
+        let text = features.normalizedDescription
+        guard let label = model.predictedLabel(for: text) else { return nil }
+        let hypotheses = model.predictedLabelHypotheses(for: text, maximumCount: 5)
+        let confidence = hypotheses[label] ?? 0.7
         return CategoryPrediction(
-            categoryId: categoryLabel,
+            categoryId: label,
             subcategoryId: nil,
-            displayName: categoryLabel,
+            displayName: label,
             confidence: confidence,
             alternatives: [],
             source: .mlModel,
