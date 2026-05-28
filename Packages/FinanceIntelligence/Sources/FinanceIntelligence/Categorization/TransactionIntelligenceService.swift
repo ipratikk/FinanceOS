@@ -20,4 +20,13 @@ public protocol TransactionIntelligenceService: Sendable {
         context: IntelligenceContext
     ) async throws -> [AnalyzedTransaction]
     func generateInsights(for transactions: [Transaction]) async throws -> [TransactionInsight]
+
+    /// Record a user correction and immediately learn from it for future predictions.
+    /// Call this whenever the user changes a transaction's category or merchant.
+    func learn(
+        transaction: Transaction,
+        correctedCategoryId: String,
+        correctedMerchant: String?,
+        previousPrediction: CategoryPrediction?
+    ) async throws
 }
