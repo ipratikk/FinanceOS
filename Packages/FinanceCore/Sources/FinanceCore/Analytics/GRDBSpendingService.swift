@@ -77,15 +77,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         let assetKinds: Set<LedgerKind> = [.bankAccount, .wallet, .crypto, .investment]
         let liabilityKinds: Set<LedgerKind> = [.creditCard, .loan]
 
-        var openingTotal: Decimal = 0
-        for kind in assetKinds {
-            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
-            openingTotal += ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
-        }
-        for kind in liabilityKinds {
-            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
-            openingTotal -= ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
-        }
+        let openingTotal = try await openingNetWorth(assetKinds: assetKinds, liabilityKinds: liabilityKinds)
 
         let allLedgers = try await ledgerRepository.fetchLedgers()
         let ledgerKindById = Dictionary(uniqueKeysWithValues: allLedgers.map { ($0.id, $0.kind) })
@@ -136,5 +128,18 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
             day = next
         }
         return points
+    }
+
+    private func openingNetWorth(assetKinds: Set<LedgerKind>, liabilityKinds: Set<LedgerKind>) async throws -> Decimal {
+        var total: Decimal = 0
+        for kind in assetKinds {
+            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
+            total += ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
+        }
+        for kind in liabilityKinds {
+            let ledgers = try await ledgerRepository.fetchLedgers(kind: kind)
+            total -= ledgers.compactMap(\.openingBalance).reduce(Decimal(0)) { $0 + Decimal($1) / 100 }
+        }
+        return total
     }
 }
