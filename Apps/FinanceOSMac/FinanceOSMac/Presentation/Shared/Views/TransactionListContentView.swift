@@ -20,6 +20,8 @@ struct TransactionListContentView: View {
         .background(AppColors.base)
         .sheet(item: $selectedTransaction) { transaction in
             TransactionDetailView(row: transaction)
+            // Note: onCorrected not wired here — account/card VMs don't have applyCorrection yet.
+            // Corrections still persist via service.learn() and will be visible on next load.
         }
         .alert(
             "Delete Transaction?",
@@ -197,8 +199,8 @@ struct TransactionListContentView: View {
                 ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
                     Button(action: { selectedTransaction = row }, label: {
                         FDSTransactionRow(
-                            merchant: row.title,
-                            categorySymbol: nil,
+                            merchant: row.displayTitle,
+                            categorySymbol: CategorySymbol.symbol(for: row.categoryId),
                             subtitle: row.subtitle,
                             amount: row.amountText,
                             isDebit: row.transactionType == .debit,

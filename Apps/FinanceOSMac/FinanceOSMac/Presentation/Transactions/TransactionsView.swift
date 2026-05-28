@@ -11,6 +11,7 @@ import SwiftUI
 
 struct TransactionsView: View {
     @State private var viewModel: TransactionsViewModel
+    @State private var selectedTransaction: TransactionRow?
 
     init(
         viewModel: TransactionsViewModel
@@ -61,16 +62,17 @@ struct TransactionsView: View {
                             Spacer()
                         }
 
-                        VStack(alignment: .leading, spacing: 12) {
+                        LazyVStack(alignment: .leading, spacing: 12, pinnedViews: [.sectionHeaders]) {
                             ForEach(
                                 groupedTransactions.sorted(by: { $0.key > $1.key }),
                                 id: \.key
                             ) { date, transactions in
-                                sectionHeader(date)
-                                VStack(spacing: 8) {
+                                Section {
                                     ForEach(transactions, id: \.id) { txn in
                                         transactionRow(txn)
                                     }
+                                } header: {
+                                    sectionHeader(date)
                                 }
                             }
                         }
@@ -95,6 +97,11 @@ struct TransactionsView: View {
         .task {
             await viewModel.loadTransactions()
         }
+        .sheet(item: $selectedTransaction) { row in
+            TransactionDetailView(row: row, onCorrected: { id, categoryId in
+                Task { await viewModel.applyCorrection(transactionId: id, correctedCategoryId: categoryId) }
+            })
+        }
     }
 
     private var groupedTransactions: [Date: [TransactionRow]] {
@@ -113,24 +120,34 @@ struct TransactionsView: View {
     }
 
     private func transactionRow(_ txn: TransactionRow) -> some View {
-        FDSCard(cornerRadius: 12, padded: false) {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
-                    FDSLabel(txn.title)
+        Button(action: { selectedTransaction = txn }, label: {
+            FDSCard(cornerRadius: 12, padded: false) {
+                HStack(spacing: 12) {
+                    if let categoryId = txn.categoryId {
+                        Image(systemName: CategorySymbol.symbol(for: categoryId))
+                            .foregroundStyle(CategorySymbol.color(for: categoryId))
+                            .font(AppTypography.bodySmSemibold)
+                            .frame(width: 24)
+                    }
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        FDSLabel(txn.displayTitle)
+                            .font(AppTypography.bodySmSemibold)
+                            .foregroundColor(AppColors.Text.primary)
+                            .lineLimit(1)
+                        FDSLabel(dateString(txn.postedAt))
+                            .font(AppTypography.captionSm)
+                            .foregroundColor(AppColors.Text.secondary)
+                    }
+                    Spacer()
+                    FDSLabel(txn.amountText)
                         .font(AppTypography.bodySmSemibold)
-                        .foregroundColor(AppColors.Text.primary)
-                    FDSLabel(dateString(txn.postedAt))
-                        .font(AppTypography.captionSm)
-                        .foregroundColor(AppColors.Text.secondary)
+                        .foregroundColor(txn.transactionType == .debit ? AppColors.System.red : AppColors.System.green)
                 }
-                Spacer()
-                FDSLabel(txn.amountText)
-                    .font(AppTypography.bodySmSemibold)
-                    .foregroundColor(txn.transactionType == .debit ? AppColors.System.red : AppColors.System
-                        .green)
+                .padding(AppSpacing.xs)
             }
-            .padding(AppSpacing.xs)
-        }
+        })
+        .buttonStyle(.plain)
     }
 
     private func formatAmount(_ minorUnits: Int64) -> String {

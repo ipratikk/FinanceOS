@@ -58,6 +58,11 @@ public actor UserCorrectionStore {
         corrections[transactionId]
     }
 
+    /// Returns all corrections as a dictionary — single actor hop for batch operations.
+    public func allCorrections() -> [UUID: UserCorrection] {
+        corrections
+    }
+
     public func exportTrainingEligible() -> [UserCorrection] {
         corrections.values
             .filter(\.isTrainingEligible)

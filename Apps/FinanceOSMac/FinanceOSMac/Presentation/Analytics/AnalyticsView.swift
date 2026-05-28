@@ -1,166 +1,82 @@
 import Charts
 import FinanceCore
+import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
 struct AnalyticsView: View {
     @State private var viewModel: AnalyticsViewModel?
-    @State private var isLoading = true
-
-    init() {}
-
-    init(viewModel: AnalyticsViewModel) {
-        _viewModel = State(initialValue: viewModel)
-        _isLoading = State(initialValue: false)
-    }
+    @Environment(\.transactionIntelligence) private var intelligence
 
     var body: some View {
-        if let viewModel {
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                    header
-
-                    if !viewModel.monthlySummaries.isEmpty {
-                        spendingTrendSection(viewModel)
-                    }
-
-                    if !viewModel.topMerchants.isEmpty {
-                        topMerchantsSection(viewModel)
-                    }
-
-                    categoriesPlaceholder
-                }
-                .padding(.horizontal, AppSpacing.xl)
-                .padding(.vertical, AppSpacing.xl)
+        Group {
+            if let viewModel {
+                content(viewModel)
+            } else {
+                loadingState
             }
-            .background(AppColors.base)
-            .task {
-                await viewModel.load()
-                isLoading = false
-            }
-        } else {
-            VStack(spacing: AppSpacing.md) {
-                ProgressView().controlSize(.small)
-                FDSLabel("Loading…")
-                    .font(AppTypography.captionSmMedium)
-                    .foregroundColor(AppColors.Text.secondary)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(AppColors.base)
-            .task {
+        }
+        .task {
+            if viewModel == nil {
                 let container = AppContainer.shared
                 viewModel = AnalyticsViewModel(
                     spendingService: container.spendingService,
-                    transactionRepository: container.transactionRepository
+                    transactionRepository: container.transactionRepository,
+                    intelligenceService: intelligence
                 )
             }
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            FDSLabel("Analytics")
-                .font(AppTypography.displaySmall)
-                .foregroundColor(AppColors.Text.primary)
-            FDSLabel("Spending trends and merchant insights")
-                .font(AppTypography.captionLgMedium)
-                .tracking(0.2)
-                .foregroundColor(AppColors.Text.secondary)
+    private func content(_ vm: AnalyticsViewModel) -> some View {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: AppSpacing.md) {
+                pageHeader
+                topRow(vm)
+                middleRow(vm)
+                RecentFluctuationsCard(transactions: vm.recentFluctuations)
+            }
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.vertical, AppSpacing.xl)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.base)
+        .task { await vm.load() }
     }
 
-    private func spendingTrendSection(_ viewModel: AnalyticsViewModel) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: 4) {
-                FDSLabel("6-Month Trend")
-                    .font(AppTypography.headingSmall)
-                    .foregroundColor(AppColors.Text.primary)
-                FDSLabel("Inflows vs outflows over time")
-                    .font(AppTypography.captionLgMedium)
-                    .foregroundColor(AppColors.Text.secondary)
-            }
+    private var loadingState: some View {
+        VStack(spacing: AppSpacing.md) {
+            ProgressView().controlSize(.small)
+            FDSLabel("Loading…")
+                .font(AppTypography.captionSmMedium)
+                .foregroundStyle(AppColors.Text.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AppColors.base)
+    }
 
-            FDSCard(cornerRadius: 12, padded: false) {
-                Chart(viewModel.monthlySummaries, id: \.id) { item in
-                    BarMark(
-                        x: .value("Month", item.id, unit: .month),
-                        y: .value("Outflows", Double(item.totalDebit) / 100.0)
-                    )
-                    .foregroundStyle(AppColors.debit.opacity(0.8))
-                    .cornerRadius(AppRadius.xs)
-                    .position(by: .value("Type", "Outflows"))
+    private var pageHeader: some View {
+        FDSLabel("Analytics")
+            .font(AppTypography.displaySmall)
+            .foregroundStyle(AppColors.Text.primary)
+    }
 
-                    BarMark(
-                        x: .value("Month", item.id, unit: .month),
-                        y: .value("Inflows", Double(item.totalCredit) / 100.0)
-                    )
-                    .foregroundStyle(AppColors.credit.opacity(0.8))
-                    .cornerRadius(AppRadius.xs)
-                    .position(by: .value("Type", "Inflows"))
-                }
-                .frame(height: 240)
-                .chartLegend(position: .bottom)
-                .chartXAxis {
-                    AxisMarks(format: .dateTime.month(.abbreviated))
-                }
-                .chartYAxis {
-                    AxisMarks { _ in
-                        AxisGridLine().foregroundStyle(AppColors.textPrimary.opacity(0.06))
-                        AxisValueLabel()
-                    }
-                }
-                .padding(AppSpacing.sm)
-            }
+    private func topRow(_ vm: AnalyticsViewModel) -> some View {
+        HStack(alignment: .top, spacing: AppSpacing.md) {
+            SpendingTrendCard(
+                summaries: vm.monthlySummaries,
+                totalOutflow: vm.totalOutflow,
+                outflowChange: vm.outflowChange
+            )
+            CategoriesCard(items: vm.categorySpend)
+                .frame(width: 280)
         }
     }
 
-    private func topMerchantsSection(_ viewModel: AnalyticsViewModel) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            VStack(alignment: .leading, spacing: 4) {
-                FDSLabel("Top Merchants")
-                    .font(AppTypography.headingSmall)
-                    .foregroundColor(AppColors.Text.primary)
-                FDSLabel("Highest outflow activity")
-                    .font(AppTypography.captionLgMedium)
-                    .foregroundColor(AppColors.Text.secondary)
-            }
-
-            FDSCard(cornerRadius: 12, padded: false) {
-                let merchants = viewModel.topMerchants.prefix(10).map { name, amount in
-                    (name: name, amount: Double(amount) / 100.0)
-                }
-                TopMerchantsChart(merchants: Array(merchants))
-                    .frame(height: 240)
-                    .padding(AppSpacing.sm)
-            }
-        }
-    }
-
-    private var categoriesPlaceholder: some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
-            FDSLabel("Categories")
-                .font(AppTypography.headingSmall)
-                .foregroundColor(AppColors.Text.primary)
-
-            FDSCard(cornerRadius: 12, padded: false) {
-                VStack(spacing: AppSpacing.md) {
-                    Image(systemName: "tag.circle.fill")
-                        .font(AppTypography.headingXLLight)
-                        .foregroundColor(AppColors.Text.tertiary.opacity(0.4))
-                        .symbolRenderingMode(.hierarchical)
-                    VStack(spacing: 4) {
-                        FDSLabel("Coming Soon")
-                            .font(AppTypography.bodyMdSemibold)
-                            .foregroundColor(AppColors.Text.primary)
-                        FDSLabel("Auto-categorization with smart detection")
-                            .font(AppTypography.captionLg)
-                            .foregroundColor(AppColors.Text.secondary)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(AppSpacing.xl)
-            }
+    private func middleRow(_ vm: AnalyticsViewModel) -> some View {
+        HStack(alignment: .top, spacing: AppSpacing.md) {
+            TopMerchantsCard(merchants: vm.merchantSummaries)
+            SmartInsightsCard(insights: vm.insights)
+                .frame(width: 280)
         }
     }
 }
