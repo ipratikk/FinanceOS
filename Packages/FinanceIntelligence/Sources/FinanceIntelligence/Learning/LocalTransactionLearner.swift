@@ -77,7 +77,7 @@ public actor LocalTransactionLearner {
     /// Add a user correction to the personal layer. Immediately available for inference.
     /// Does not touch the base layer.
     public func addExample(normalizedDescription: String, categoryId: String) throws {
-        let tokens = Self.tokenize(normalizedDescription)
+        let tokens = Snapshot.tokenize(normalizedDescription)
         guard !tokens.isEmpty else { return }
         personalExamples.append(LabeledExample(
             tokens: tokens,
@@ -88,24 +88,21 @@ public actor LocalTransactionLearner {
         try saveToDisk()
     }
 
-    // MARK: - Inference
+    // MARK: - Snapshot (batch inference without actor contention)
 
-    /// Merge both layers and return the best prediction.
-    /// Returns nil when combined confidence is below threshold.
+    /// Returns a Sendable snapshot of both layers for concurrent batch inference.
+    /// Callers run k-NN on the snapshot without holding the actor.
+    public func snapshot() -> Snapshot {
+        Snapshot(
+            base: baseExamples, personal: personalExamples,
+            k: k, minimumSimilarity: minimumSimilarity, personalWeight: personalWeight
+        )
+    }
+
+    // MARK: - Inference (single, convenience — acquires actor for each call)
+
     public func predict(normalizedDescription: String) -> (categoryId: String, confidence: Double)? {
-        let queryTokens = Set(Self.tokenize(normalizedDescription))
-        guard !queryTokens.isEmpty else { return nil }
-
-        let baseNeighbors = scoredNeighbors(from: baseExamples, query: queryTokens, weight: 1.0)
-        let personalNeighbors = scoredNeighbors(from: personalExamples, query: queryTokens, weight: personalWeight)
-
-        // Merge: personal neighbors go first (higher weight → naturally ranked higher)
-        let merged = (personalNeighbors + baseNeighbors)
-            .sorted { $0.score > $1.score }
-            .prefix(k)
-
-        guard !merged.isEmpty else { return nil }
-        return majorityVote(Array(merged))
+        snapshot().predict(normalizedDescription: normalizedDescription)
     }
 
     // MARK: - Stats
@@ -123,46 +120,63 @@ public actor LocalTransactionLearner {
     }
 }
 
-// MARK: - k-NN
+// MARK: - Snapshot
 
-private extension LocalTransactionLearner {
-    struct ScoredNeighbor {
-        let score: Double // similarity × weight
-        let categoryId: String
-    }
+public extension LocalTransactionLearner {
+    /// Sendable value type holding both layers for lock-free batch inference.
+    /// Obtain via `learner.snapshot()` (one actor hop), then call `predict` concurrently.
+    struct Snapshot: Sendable {
+        let base: [LabeledExample]
+        let personal: [LabeledExample]
+        let k: Int
+        let minimumSimilarity: Double
+        let personalWeight: Double
 
-    func scoredNeighbors(
-        from examples: [LabeledExample],
-        query: Set<String>,
-        weight: Double
-    ) -> [ScoredNeighbor] {
-        examples.compactMap { ex in
-            let sim = jaccard(query, Set(ex.tokens))
-            guard sim >= minimumSimilarity else { return nil }
-            return ScoredNeighbor(score: sim * weight, categoryId: ex.categoryId)
+        public func predict(normalizedDescription: String) -> (categoryId: String, confidence: Double)? {
+            let queryTokens = Set(Self.tokenize(normalizedDescription))
+            guard !queryTokens.isEmpty else { return nil }
+            let baseN = scoredNeighbors(from: base, query: queryTokens, weight: 1.0)
+            let personalN = scoredNeighbors(from: personal, query: queryTokens, weight: personalWeight)
+            let merged = (personalN + baseN).sorted(by: { $0.score > $1.score }).prefix(k)
+            guard !merged.isEmpty else { return nil }
+            return majorityVote(Array(merged))
         }
-    }
 
-    func majorityVote(_ neighbors: [ScoredNeighbor]) -> (categoryId: String, confidence: Double)? {
-        var votes: [String: Double] = [:]
-        for n in neighbors {
-            votes[n.categoryId, default: 0] += n.score
+        // swiftlint:disable:next nesting
+        private struct ScoredNeighbor { let score: Double; let categoryId: String }
+
+        private func scoredNeighbors(
+            from examples: [LabeledExample],
+            query: Set<String>,
+            weight: Double
+        ) -> [ScoredNeighbor] {
+            examples.compactMap { ex in
+                let sim = jaccard(query, Set(ex.tokens))
+                guard sim >= minimumSimilarity else { return nil }
+                return ScoredNeighbor(score: sim * weight, categoryId: ex.categoryId)
+            }
         }
-        guard let winner = votes.max(by: { $0.value < $1.value }) else { return nil }
-        let total = votes.values.reduce(0, +)
-        let confidence = total > 0 ? min(winner.value / total, 0.95) : 0
-        return (winner.key, confidence)
-    }
 
-    func jaccard(_ a: Set<String>, _ b: Set<String>) -> Double {
-        guard !a.isEmpty, !b.isEmpty else { return 0 }
-        return Double(a.intersection(b).count) / Double(a.union(b).count)
-    }
+        private func majorityVote(_ neighbors: [ScoredNeighbor]) -> (categoryId: String, confidence: Double)? {
+            var votes: [String: Double] = [:]
+            for n in neighbors {
+                votes[n.categoryId, default: 0] += n.score
+            }
+            guard let winner = votes.max(by: { $0.value < $1.value }) else { return nil }
+            let total = votes.values.reduce(0, +)
+            return (winner.key, total > 0 ? min(winner.value / total, 0.95) : 0)
+        }
 
-    static func tokenize(_ text: String) -> [String] {
-        text.lowercased()
-            .components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .filter { $0.count >= 2 }
+        private func jaccard(_ a: Set<String>, _ b: Set<String>) -> Double {
+            guard !a.isEmpty, !b.isEmpty else { return 0 }
+            return Double(a.intersection(b).count) / Double(a.union(b).count)
+        }
+
+        static func tokenize(_ text: String) -> [String] {
+            text.lowercased()
+                .components(separatedBy: CharacterSet.alphanumerics.inverted)
+                .filter { $0.count >= 2 }
+        }
     }
 }
 

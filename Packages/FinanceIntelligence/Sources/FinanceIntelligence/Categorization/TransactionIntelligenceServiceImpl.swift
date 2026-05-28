@@ -77,16 +77,56 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         _ transactions: [Transaction],
         context: IntelligenceContext
     ) async throws -> [AnalyzedTransaction] {
-        try await withThrowingTaskGroup(of: AnalyzedTransaction.self) { group in
-            for txn in transactions {
-                group.addTask { try await self.analyze(txn, context: context) }
+        guard !transactions.isEmpty else { return [] }
+
+        // Pre-fetch shared state — 2 actor hops total regardless of batch size.
+        // Tasks then run fully in parallel with no further actor contention.
+        let learnerSnap = await learner.snapshot()
+        let allCorrections = await correctionStore.allCorrections()
+
+        let norm = normalizer
+        let ext = extractor
+        let rules = ruleCategorizer
+        let coreML = coreMLCategorizer
+        let tax = taxonomy
+
+        // Serial loop: no actor contention (snapshot used), no Swift 6 Sendable issues.
+        // k-NN is CPU-bound — parallelism over an actor was never beneficial.
+        var results = [AnalyzedTransaction]()
+        results.reserveCapacity(transactions.count)
+        let ctx = FeatureExtractionContext(ledgerKind: context.ledgerKind, institution: context.institution)
+
+        for txn in transactions {
+            let features = ext.extract(from: txn, context: ctx)
+            let merchant = norm.normalize(txn.description)
+
+            if let correction = allCorrections[txn.id] {
+                let name = tax.category(forId: correction.correctedCategory)?.displayName
+                    ?? correction.correctedCategory
+                let prediction = CategoryPrediction(
+                    categoryId: correction.correctedCategory, subcategoryId: nil,
+                    displayName: name, confidence: 1.0, alternatives: [],
+                    source: .userCorrection, modelVersion: "user-correction",
+                    taxonomyVersion: tax.version
+                )
+                results.append(AnalyzedTransaction(
+                    transaction: txn, merchantCandidate: merchant,
+                    categoryPrediction: prediction, features: features, isUserCorrected: true
+                ))
+                continue
             }
-            var results: [AnalyzedTransaction] = []
-            for try await result in group {
-                results.append(result)
-            }
-            return results
+
+            let prediction = Self.buildPrediction(
+                features: features, merchant: merchant,
+                learnerSnap: learnerSnap, coreML: coreML,
+                rules: rules, taxonomy: tax
+            )
+            results.append(AnalyzedTransaction(
+                transaction: txn, merchantCandidate: merchant,
+                categoryPrediction: prediction, features: features, isUserCorrected: false
+            ))
         }
+        return results
     }
 
     public func generateInsights(for transactions: [Transaction]) async throws -> [TransactionInsight] {
@@ -125,6 +165,42 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
                 categoryId: correctedCategoryId
             )
         }
+    }
+}
+
+// MARK: - Static Prediction (no actor needed — called from concurrent tasks)
+
+extension TransactionIntelligenceServiceImpl {
+    // swiftlint:disable:next function_parameter_count
+    static func buildPrediction(
+        features: TransactionFeatures,
+        merchant: MerchantCandidate,
+        learnerSnap: LocalTransactionLearner.Snapshot,
+        coreML: CoreMLCategorizer?,
+        rules: RuleBasedCategorizer,
+        taxonomy: CategoryTaxonomy
+    ) -> CategoryPrediction {
+        if let local = learnerSnap.predict(normalizedDescription: features.normalizedDescription),
+           local.confidence >= 0.6 {
+            let topLevel = local.categoryId.components(separatedBy: ".").first ?? local.categoryId
+            let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
+            return CategoryPrediction(
+                categoryId: topLevel, subcategoryId: nil, displayName: name,
+                confidence: local.confidence, alternatives: [], source: .mlModel,
+                modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version
+            )
+        }
+        if let coreML, coreML.isAvailable, let pred = coreML.predict(features: features) { return pred }
+        if let categoryId = merchant.categoryId {
+            let topLevel = categoryId.components(separatedBy: ".").first ?? categoryId
+            let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
+            return CategoryPrediction(
+                categoryId: topLevel, subcategoryId: categoryId, displayName: name,
+                confidence: 0.88, alternatives: [], source: .alias,
+                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version
+            )
+        }
+        return rules.categorize(features)
     }
 }
 
