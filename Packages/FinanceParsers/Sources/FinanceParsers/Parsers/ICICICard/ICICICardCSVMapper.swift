@@ -1,8 +1,12 @@
 import Foundation
 
+/// Maps ICICI card CSV column headers to typed `ColumnRole` values.
+///
+/// Key mappings: "Amount(in Rs)" → `.amount`, "BillingAmountSign" → `.sign`.
 public struct ICICICardCSVMapper: Sendable, CSVRowMapper {
     public init() {}
 
+    /// Matches lowercased, trimmed header strings against known ICICI card column names.
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

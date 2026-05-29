@@ -1,8 +1,12 @@
 import Foundation
 
+/// Top-level parser that dispatches to the correct bank-specific Parser → Mapper → Normalizer
+/// chain based on a pre-detected `StatementSource`, then assembles a `ParseResult`.
 public struct UnifiedStatementParser: Sendable {
     public init() {}
 
+    /// Parses `fileURL` as `detectedSource`, running the full pipeline and returning a `ParseResult`
+    /// that includes diagnostics and parser timing. Throws if the file is unreadable or has no data rows.
     public func parse(fileURL: URL, detectedSource: StatementSource) throws -> ParseResult {
         let startTime = Date()
 
@@ -50,6 +54,7 @@ public struct UnifiedStatementParser: Sendable {
         )
     }
 
+    /// Delegates file reading to the institution-specific raw parser, returning normalized rows.
     private func loadRows(from fileURL: URL, source: StatementSource) throws -> [[String]] {
         switch source {
         case .hdfcCard:
@@ -70,6 +75,7 @@ public struct UnifiedStatementParser: Sendable {
         }
     }
 
+    /// Intermediate value grouping all row views and source metadata for a single parse run.
     private struct BuildContext {
         let dataRows: [[String]]
         let allRows: [[String]]
@@ -79,6 +85,7 @@ public struct UnifiedStatementParser: Sendable {
         let fileContent: String
     }
 
+    /// Extracts metadata and transactions from `context`, then assembles and returns a `ParsedStatement`.
     private func buildStatement(context: BuildContext) throws -> ParsedStatement {
         var transactions: [ParsedTransaction] = []
         var metadata: StatementMetadata?
@@ -111,6 +118,8 @@ public struct UnifiedStatementParser: Sendable {
         )
     }
 
+    /// Runs the institution-specific metadata extractor and mapper/normalizer pair,
+    /// appending parsed transactions and setting account identifiers via inout parameters.
     private func populateTransactions(
         context: BuildContext,
         transactions: inout [ParsedTransaction],
@@ -167,6 +176,8 @@ public struct UnifiedStatementParser: Sendable {
         }
     }
 
+    /// Maps and normalizes every data row using the provided `mapper` and `normalizer`,
+    /// appending non-nil results to `transactions`.
     private func appendRows(
         _ context: BuildContext,
         mapper: some CSVRowMapper,
@@ -181,6 +192,7 @@ public struct UnifiedStatementParser: Sendable {
         }
     }
 
+    /// Returns the institution version tag recorded in `ParseResult.institutionVersion`.
     private func sourceVersion(_ source: StatementSource) -> String {
         switch source {
         case .hdfcCard:

@@ -1,8 +1,13 @@
 import Foundation
 
+/// Extracts metadata from an HDFC credit card statement (tilde-pipe `~|~` delimited format).
+///
+/// Customer name comes from the `"Name~|~<value>"` header line.
+/// Card number is read from `"Card No: XXXX XXXX XXXX 1234"` in the first 50 lines.
 public struct HDFCCardMetadataExtractor: Sendable {
     public init() {}
 
+    /// Extracts name, card last-4, full masked card number, card type, and statement date.
     public func extract(from content: String) -> StatementMetadata {
         let lines = content.components(separatedBy: .newlines)
 

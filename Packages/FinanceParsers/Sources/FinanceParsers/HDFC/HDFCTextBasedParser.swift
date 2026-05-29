@@ -1,5 +1,9 @@
 import Foundation
 
+/// Reconstructs HDFC bank transactions from flat text lines extracted by PDFKit or Vision.
+///
+/// Lines are grouped by leading `dd/MM/yy` date tokens; continuation lines (no date) are
+/// appended to the current narration. Amount columns follow a debit | credit | balance layout.
 class HDFCTextBasedParser {
     private let datePattern: NSRegularExpression = {
         do {
@@ -11,6 +15,7 @@ class HDFCTextBasedParser {
 
     private let dateFormatter: DateFormatter = DateParser.ddMMYY
 
+    /// Intermediate representation before amount disambiguation.
     struct ReconstructedTransaction {
         let date: String
         let narrationLines: [String]
@@ -19,6 +24,7 @@ class HDFCTextBasedParser {
         let deposit: Double?
     }
 
+    /// Splits flat lines into per-transaction groups using leading date token as boundary.
     func reconstructTransactions(from lines: [String]) -> [ReconstructedTransaction] {
         var transactions: [ReconstructedTransaction] = []
         var currentDate: String?
@@ -79,6 +85,8 @@ class HDFCTextBasedParser {
         return transactions
     }
 
+    /// Converts reconstructed transactions to `ParsedTransaction`, skipping footer/metadata rows.
+    /// Debit produces a negative `amountMinorUnits`; credit produces a positive value.
     func parseToNormalizedTransactions(_ reconstructed: [ReconstructedTransaction]) -> [ParsedTransaction] {
         var transactions: [ParsedTransaction] = []
 
@@ -183,6 +191,8 @@ class HDFCTextBasedParser {
         return value
     }
 
+    /// Applies HDFC column heuristic: looks for a [nonZero, 0] or [0, nonZero] pair
+    /// among the first four amounts in range 100–1M (filters dates and reference numbers).
     private func extractDebitCredit(from amounts: [Double]) -> (debit: Double?, credit: Double?) {
         // HDFC format: Debit Amt | Credit Amt | Closing Balance
         // With Vision column detection, amounts are in column order:

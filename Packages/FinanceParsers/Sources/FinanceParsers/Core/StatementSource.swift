@@ -1,3 +1,5 @@
+/// Identifies a specific bank-product combination that the parser pipeline supports.
+/// Each case maps to exactly one `bankName`, `sourceType`, and set of `allowedFormats`.
 public enum StatementSource: String, CaseIterable, Sendable, Hashable {
     case hdfcBank
     case hdfcCard
@@ -5,6 +7,7 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
     case iciciCard
     case amex
 
+    /// User-facing label shown in import UI.
     public var displayName: String {
         switch self {
         case .hdfcBank:
@@ -20,6 +23,7 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
         }
     }
 
+    /// File formats the institution's export tool actually produces for this product.
     public var allowedFormats: [StatementFileFormat] {
         switch self {
         case .hdfcBank:
@@ -35,6 +39,7 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
         }
     }
 
+    /// Short institution identifier shared between bank and card products, e.g. `"HDFC"`.
     public var bankName: String {
         switch self {
         case .hdfcBank, .hdfcCard:
@@ -46,6 +51,7 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
         }
     }
 
+    /// Whether this source represents a bank account or credit card.
     public var sourceType: StatementSourceType {
         switch self {
         case .hdfcBank, .iciciBank:

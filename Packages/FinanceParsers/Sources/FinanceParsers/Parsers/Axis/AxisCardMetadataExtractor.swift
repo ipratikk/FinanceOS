@@ -1,8 +1,12 @@
 import Foundation
 
+/// Extracts card metadata from Axis card CSV rows (header block in first 10 rows).
+///
+/// Only card last-4 digits are reliably available; all other fields return `nil`.
 public struct AxisCardMetadataExtractor: Sendable {
     public init() {}
 
+    /// Scans the first 10 rows for "CARD NO" or "CARD NUMBER" keywords to extract last-4 digits.
     public func extract(from rows: [[String]]) -> StatementMetadata {
         let cardLast4 = extractCardLast4(from: rows)
         return StatementMetadata(

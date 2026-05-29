@@ -1,3 +1,5 @@
+/// Static helpers that expose the universe of supported statement sources
+/// without requiring callers to enumerate `StatementSource` directly.
 public enum StatementSourceRegistry {
     /// Returns all fully supported statement sources (with at least one enabled format).
     public static var supportedSources: [(bankName: String, sourceType: StatementSourceType)] {

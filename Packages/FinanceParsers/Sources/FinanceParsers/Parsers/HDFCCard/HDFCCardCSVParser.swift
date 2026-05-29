@@ -1,8 +1,14 @@
 import Foundation
 
+/// Parses HDFC credit card statements in tilde-pipe (`~|~`) delimited TXT format.
+///
+/// Detection signals: file contains `"~|~"` and `"Card No:"`.
+/// Data rows begin after the `"Domestic / International"` section header.
 public struct HDFCCardCSVParser: Sendable {
     public init() {}
 
+    /// Collects rows starting from the line after "Domestic / International",
+    /// using `~|~` as the field delimiter.
     public func parse(fileURL: URL) throws -> [[String]] {
         let content = try String(contentsOf: fileURL, encoding: .utf8)
         let lines = content.components(separatedBy: .newlines)

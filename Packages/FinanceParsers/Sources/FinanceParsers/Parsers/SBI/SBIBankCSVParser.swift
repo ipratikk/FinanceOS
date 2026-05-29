@@ -1,8 +1,13 @@
 import Foundation
 
+/// Parses SBI bank account statements in comma-delimited CSV format.
+///
+/// Detection signal: a row containing "Value Date" or "Date" plus "Description"/"Narration"
+/// and either "Debit" or "Credit". Rows starting with "Closing" are excluded as footer entries.
 public struct SBIBankCSVParser: Sendable {
     public init() {}
 
+    /// Locates the column-header row, then collects all non-empty data rows until EOF.
     public func parse(fileURL: URL) throws -> [[String]] {
         let rows = try CSVReader.readRows(from: fileURL, delimiter: ",")
 

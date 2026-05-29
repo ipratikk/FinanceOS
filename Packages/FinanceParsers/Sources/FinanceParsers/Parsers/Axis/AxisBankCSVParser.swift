@@ -1,8 +1,14 @@
 import Foundation
 
+/// Parses Axis Bank account statements in comma-delimited CSV format.
+///
+/// Detection signal: a row containing "Tran. Date" or "Transaction Date" plus "Description"
+/// and either "Deposit"/"Credit" or "Withdrawal"/"Debit". Rows starting with "CLOSING BALANCE"
+/// are excluded as footer entries.
 public struct AxisBankCSVParser: Sendable {
     public init() {}
 
+    /// Locates the column-header row, then collects all non-empty data rows until EOF.
     public func parse(fileURL: URL) throws -> [[String]] {
         let rows = try CSVReader.readRows(from: fileURL, delimiter: ",")
 
