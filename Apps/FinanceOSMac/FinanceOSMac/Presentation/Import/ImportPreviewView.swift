@@ -43,12 +43,14 @@ struct ImportPreviewView: View {
                             .foregroundColor(AppColors.accent)
 
                         if !viewModel.parsedStatements.isEmpty {
-                            let newCount = viewModel.parsedStatements.count - viewModel.duplicateTransactionIndices
-                                .count
-                            let dupCount = viewModel.duplicateTransactionIndices.count
-                            let fileName = viewModel.fileURLs.first?.lastPathComponent ?? "File"
-                            let total = viewModel.parsedStatements.count
-                            FDSLabel("\(fileName) · \(total) rows · \(newCount) new, \(dupCount) duplicate")
+                            let totalTxns = viewModel.parsedStatements.flatMap(\.transactions).count
+                            let newCount = totalTxns - viewModel.duplicateTransactionIndices.count
+                            let dupCount = viewModel.alreadyInDBIndices.count
+                            let fileCount = viewModel.parsedStatements.count
+                            let fileLabel = fileCount == 1
+                                ? (viewModel.fileURLs.first?.lastPathComponent ?? "1 file")
+                                : "\(fileCount) files"
+                            FDSLabel("\(fileLabel) · \(newCount) new · \(dupCount) already imported")
                                 .font(AppTypography.labelSmall)
                                 .foregroundColor(AppColors.Text.tertiary)
                         }
@@ -140,7 +142,7 @@ struct ImportPreviewView: View {
 
     private var duplicateTransactions: [ParsedTransaction] {
         allTransactions.enumerated().compactMap { index, txn in
-            viewModel.duplicateTransactionIndices.contains(index) ? txn : nil
+            viewModel.alreadyInDBIndices.contains(index) ? txn : nil
         }
     }
 
