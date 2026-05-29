@@ -21,24 +21,7 @@ public struct FAmount: View {
     }
 
     var formattedAmount: String {
-        let amount = Double(amountMinorUnits) / 100.0
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = currencyCode
-        formatter.currencySymbol = currencySymbol
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: amount)) ?? "₹0.00"
-    }
-
-    var currencySymbol: String {
-        switch currencyCode {
-        case "INR": return "₹"
-        case "USD": return "$"
-        case "EUR": return "€"
-        case "GBP": return "£"
-        default: return "₹"
-        }
+        FormatterCache.formatCurrency(minorUnits: amountMinorUnits, currencyCode: currencyCode)
     }
 
     var textColor: Color {
