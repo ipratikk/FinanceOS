@@ -162,7 +162,7 @@ private extension TransactionDetailView {
                 }
                 Spacer()
                 if intelligence != nil, row.sourceTransaction != nil {
-                    Button(action: { showCategoryPicker = true }) {
+                    Button(action: { showCategoryPicker = true }, label: {
                         HStack(spacing: 4) {
                             FDSLabel("Change")
                                 .font(AppTypography.captionLgSemibold)
@@ -175,7 +175,7 @@ private extension TransactionDetailView {
                         .padding(.vertical, AppSpacing.tight)
                         .background(AppColors.accent.opacity(0.1))
                         .clipShape(Capsule())
-                    }
+                    })
                     .buttonStyle(.plain)
                 }
             }
@@ -235,13 +235,12 @@ private extension TransactionDetailView {
         .padding(AppSpacing.md)
     }
 
-    // TODO: FDS candidate — display-only category label chip
     func categoryBadge(_ categoryId: String) -> some View {
         let label = CategoryTaxonomy.current.category(forId: categoryId)?.displayName
             ?? categoryId.capitalized
         let color = CategorySymbol.color(for: categoryId)
         return FDSLabel(label.uppercased())
-            .font(.system(size: 9, weight: .semibold, design: .rounded))
+            .font(AppTypography.captionSmSemibold)
             .foregroundStyle(color)
             .padding(.horizontal, 5)
             .padding(.vertical, 2)

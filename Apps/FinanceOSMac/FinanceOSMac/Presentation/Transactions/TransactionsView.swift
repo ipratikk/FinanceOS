@@ -17,6 +17,7 @@ struct TransactionsView: View {
     }
 
     var body: some View {
+        // swiftlint:disable:next direct_text_in_bodies
         VStack(spacing: 0) {
             if viewModel.isLoading, viewModel.transactionRows.isEmpty {
                 FDSEmptyState(symbol: "arrow.clockwise", title: "Loading transactions…", subtitle: "")
@@ -127,14 +128,14 @@ private extension TransactionsView {
                     categoryChip
                     dateChip
                     if listState.isFilterActive {
-                        Button(action: { listState.reset() }) {
+                        Button(action: { listState.reset() }, label: {
                             HStack(spacing: 3) {
                                 Image(systemName: "xmark.circle.fill")
                                     .font(AppTypography.captionSm)
                                 FDSLabel("Clear").font(AppTypography.captionLgMedium)
                             }
                             .foregroundStyle(AppColors.textSecondary)
-                        }
+                        })
                         .buttonStyle(.plain)
                         .transition(.opacity.combined(with: .scale(scale: 0.9)))
                     }
@@ -326,13 +327,12 @@ private extension TransactionsView {
         .padding(.horizontal, AppSpacing.md)
     }
 
-    // TODO: FDS candidate — display-only category label chip
     func categoryBadge(_ categoryId: String) -> some View {
         let label = CategoryTaxonomy.current.category(forId: categoryId)?.displayName
             ?? categoryId.capitalized
         let color = CategorySymbol.color(for: categoryId)
         return FDSLabel(label.uppercased())
-            .font(.system(size: 9, weight: .semibold, design: .rounded))
+            .font(AppTypography.captionSmSemibold)
             .foregroundStyle(color)
             .padding(.horizontal, 5)
             .padding(.vertical, 2)

@@ -42,5 +42,5 @@ actor CategorizationScheduler {
 }
 
 extension EnvironmentValues {
-    @Entry var categorizationScheduler: CategorizationScheduler? = nil
+    @Entry var categorizationScheduler: CategorizationScheduler?
 }

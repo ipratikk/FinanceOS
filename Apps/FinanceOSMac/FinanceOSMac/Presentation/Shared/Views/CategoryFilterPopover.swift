@@ -38,7 +38,7 @@ struct CategoryFilterPopover: View {
 
     private func row(id: String?, name: String, icon: String) -> some View {
         let isSelected = selectedCategoryId == id
-        return Button(action: { selectedCategoryId = id }) {
+        return Button(action: { selectedCategoryId = id }, label: {
             HStack(spacing: AppSpacing.md) {
                 Image(systemName: icon)
                     .font(AppTypography.captionLg)
@@ -57,7 +57,7 @@ struct CategoryFilterPopover: View {
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, AppSpacing.compact)
             .background(isSelected ? AppColors.accentPurple.opacity(0.08) : Color.clear)
-        }
+        })
         .buttonStyle(.plain)
     }
 }

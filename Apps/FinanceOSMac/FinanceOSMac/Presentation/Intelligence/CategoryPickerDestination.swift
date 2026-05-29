@@ -36,7 +36,7 @@ struct CategoryPickerDestination: View {
         .navigationBarBackButtonHidden(false)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: { Task { await save() } }) {
+                Button(action: { Task { await save() } }, label: {
                     if isSaving {
                         ProgressView().controlSize(.small)
                     } else {
@@ -44,7 +44,7 @@ struct CategoryPickerDestination: View {
                             .font(AppTypography.bodySmSemibold)
                             .foregroundStyle(AppColors.accent)
                     }
-                }
+                })
                 .disabled(isSaving || selectedCategoryId == row.categoryId)
             }
         }
@@ -52,7 +52,7 @@ struct CategoryPickerDestination: View {
 
     private func categoryRow(_ category: TaxonomyCategory) -> some View {
         let isSelected = selectedCategoryId == category.id
-        return Button(action: { selectedCategoryId = category.id }) {
+        return Button(action: { selectedCategoryId = category.id }, label: {
             HStack(spacing: AppSpacing.md) {
                 FDSCategoryGlyph(category.id, icon: CategorySymbol.symbol(for: category.id), size: 32)
                 FDSLabel(category.displayName)
@@ -69,7 +69,7 @@ struct CategoryPickerDestination: View {
             .padding(.vertical, AppSpacing.compact)
             .background(isSelected ? AppColors.accent.opacity(0.08) : Color.clear)
             .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
-        }
+        })
         .buttonStyle(.plain)
     }
 
