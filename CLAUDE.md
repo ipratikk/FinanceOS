@@ -256,7 +256,41 @@ Large refactors require reasoning first.
 
 Phases 1–10 complete (Ledger unification, import pipeline, dedup engine, UI migration).
 
-Current priorities:
+## Active: MVVM Refactoring (Phases 1–7)
+
+**Current phase: Phase 1 — Missing ViewModels**
+
+Full plan: `docs/MVVM_REFACTORING_PLAN.md`
+Architecture standards being enforced: `docs/ARCHITECTURE.md` (Presentation Layer section)
+
+### Phase Tracker
+
+| Phase | Title | Status |
+|-------|-------|--------|
+| **1** | Missing ViewModels | 🔲 pending |
+| 2 | Fix Transactions Split State | 🔲 pending |
+| 3 | Dashboard Cleanup | 🔲 pending |
+| 4 | Remove Repository Access from Views | 🔲 pending |
+| 5 | Service Layer Extraction | 🔲 pending |
+| 6 | Pre-format All Display Strings | 🔲 pending |
+| 7 | Protocol Abstractions + Misc Cleanup | 🔲 pending |
+
+### Session Protocol (ENFORCED)
+
+When user says **"continue Phase N"** or **"start Phase N"**:
+
+1. Read `docs/MVVM_REFACTORING_PLAN.md` for that phase's spec
+2. Read `docs/ARCHITECTURE.md` (Presentation Layer section) for enforced rules
+3. Implement the phase in a worktree branch
+4. Run lint and build before creating PR
+5. Create PR via `/create-pr`
+6. Update phase status in `docs/MVVM_REFACTORING_PLAN.md` (→ ✅, add PR link)
+7. **STOP — do not advance to next phase**
+8. Tell user: "Phase N complete. PR created. Start next session to continue Phase N+1."
+
+**One phase = one PR. Never implement multiple phases in one session.**
+
+## Parser / ingestion priorities (parallel track)
 
 1. CSV/XLSX parser hardening (ICICI, HDFC, Axis, and other Indian banks)
 2. Statement format auto-detection
