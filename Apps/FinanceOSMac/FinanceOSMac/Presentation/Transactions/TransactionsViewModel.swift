@@ -182,6 +182,7 @@ private extension TransactionsViewModel {
                     currencyCode: transaction.currencyCode,
                     transactionType: transaction.transactionType
                 ),
+                amountMinorUnits: abs(transaction.amountMinorUnits),
                 transactionType: transaction.transactionType,
                 postedAt: transaction.postedAt,
                 merchantName: merchantName,

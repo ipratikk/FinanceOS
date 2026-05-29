@@ -6,6 +6,7 @@ struct TransactionRow: Identifiable {
     let title: String
     let subtitle: String
     let amountText: String
+    let amountMinorUnits: Int64
     let transactionType: TransactionType
     let postedAt: Date
     let runningBalance: String?
@@ -22,6 +23,7 @@ struct TransactionRow: Identifiable {
         title: String,
         subtitle: String,
         amountText: String,
+        amountMinorUnits: Int64 = 0,
         transactionType: TransactionType,
         postedAt: Date,
         runningBalance: String? = nil,
@@ -34,6 +36,7 @@ struct TransactionRow: Identifiable {
         self.title = title
         self.subtitle = subtitle
         self.amountText = amountText
+        self.amountMinorUnits = amountMinorUnits
         self.transactionType = transactionType
         self.postedAt = postedAt
         self.runningBalance = runningBalance
