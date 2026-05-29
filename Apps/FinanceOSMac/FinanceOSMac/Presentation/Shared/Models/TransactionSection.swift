@@ -1,3 +1,4 @@
+import FinanceUI
 import Foundation
 
 struct TransactionSection: Identifiable {
@@ -6,4 +7,8 @@ struct TransactionSection: Identifiable {
     let date: Date
     let rows: [TransactionRow]
     let netAmountMinorUnits: Int64
+
+    var netAmountText: String {
+        FormatterCache.formatCurrency(minorUnits: abs(netAmountMinorUnits))
+    }
 }

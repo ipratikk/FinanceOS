@@ -32,7 +32,7 @@ struct NetWorthDetailSheet: View {
                     .font(AppTypography.captionSmSemibold)
                     .tracking(0.8)
                     .foregroundStyle(AppColors.Text.tertiary)
-                FDSLabel(FormatterCache.formatCurrency(viewModel.currentNetWorth, currencyCode: "INR"))
+                FDSLabel(viewModel.currentNetWorthText)
                     .font(AppTypography.displayLarge)
                     .monospacedDigit()
                     .foregroundStyle(AppColors.Text.primary)

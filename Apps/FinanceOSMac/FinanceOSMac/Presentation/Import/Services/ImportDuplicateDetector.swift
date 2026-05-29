@@ -3,9 +3,16 @@ import FinanceParsers
 import FinanceUI
 import Foundation
 
+protocol DuplicateDetectingProtocol: Sendable {
+    func detect(
+        statements: [ParsedStatement],
+        existingTransactions: [Transaction]
+    ) -> (skipAll: Set<Int>, inDB: Set<Int>)
+}
+
 /// Pure value-type deduplication engine. No async, no MainActor — fully unit-testable.
 /// Extracted from ImportViewModel to isolate the hash-based dedup algorithm.
-struct ImportDuplicateDetector {
+struct ImportDuplicateDetector: DuplicateDetectingProtocol {
     /// Returns two index sets over the flattened transaction list across all statements:
     /// - `skipAll`: indices to skip on import (within-batch duplicates + already-in-DB)
     /// - `inDB`: subset of `skipAll` that are already in the database

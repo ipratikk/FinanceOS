@@ -24,6 +24,8 @@ final class ImportViewModel {
     let ledgerRepository: any LedgerRepository
     let transactionRepository: any TransactionRepository
     let categorizationScheduler: CategorizationScheduler?
+    let fileParser: any StatementParsingProtocol
+    let duplicateDetector: any DuplicateDetectingProtocol
 
     var ledgers: [Ledger] = []
     var banks: [Bank] = []
@@ -85,7 +87,9 @@ final class ImportViewModel {
         ledgerRepository: any LedgerRepository,
         transactionRepository: any TransactionRepository,
         initialTarget: TransactionImportTarget? = nil,
-        categorizationScheduler: CategorizationScheduler? = nil
+        categorizationScheduler: CategorizationScheduler? = nil,
+        fileParser: (any StatementParsingProtocol)? = nil,
+        duplicateDetector: (any DuplicateDetectingProtocol)? = nil
     ) {
         importSession = ImportSession()
         self.transactionImportPipeline = transactionImportPipeline
@@ -93,6 +97,8 @@ final class ImportViewModel {
         self.ledgerRepository = ledgerRepository
         self.transactionRepository = transactionRepository
         self.categorizationScheduler = categorizationScheduler
+        self.fileParser = fileParser ?? ImportFileParser()
+        self.duplicateDetector = duplicateDetector ?? ImportDuplicateDetector()
         accountMatcher = AccountMatcher(
             ledgerRepository: ledgerRepository,
             bankRepository: bankRepository
@@ -136,7 +142,7 @@ final class ImportViewModel {
             totalFilesToParse = importSession.fileURLs.count
             currentFileIndex = 0
             var statements: [ParsedStatement] = []
-            let parser = ImportFileParser()
+            let parser = fileParser
 
             for fileURL in importSession.fileURLs {
                 do {

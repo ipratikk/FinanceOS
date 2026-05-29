@@ -229,7 +229,7 @@ private extension TransactionsView {
                     .foregroundStyle(.tertiary)
                 FDSLabel("·").font(AppTypography.captionSm).foregroundStyle(.tertiary)
                 FDSAmount(
-                    FormatterCache.formatCurrency(minorUnits: abs(section.netAmountMinorUnits)),
+                    section.netAmountText,
                     type: section.netAmountMinorUnits < 0 ? .debit : .credit,
                     size: .small
                 )

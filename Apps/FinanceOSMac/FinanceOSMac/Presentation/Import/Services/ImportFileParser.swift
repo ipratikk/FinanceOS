@@ -3,9 +3,13 @@ import FinanceParsers
 import Foundation
 import OSLog
 
+protocol StatementParsingProtocol: Sendable {
+    func parse(fileURL: URL) async throws -> ParsedStatement
+}
+
 /// Stateless file-parsing service. Wraps statement detection, parsing, and filename
 /// metadata enrichment. Extracted from ImportViewModel to allow independent unit testing.
-struct ImportFileParser {
+struct ImportFileParser: StatementParsingProtocol {
     private let logger = FinanceLogger.importPipeline
 
     func parse(fileURL: URL) async throws -> ParsedStatement {

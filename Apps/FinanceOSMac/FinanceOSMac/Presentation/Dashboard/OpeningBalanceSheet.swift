@@ -63,8 +63,8 @@ struct OpeningBalanceSheet: View {
                     .foregroundStyle(AppColors.Text.tertiary)
             }
             Spacer()
-            if let balance = ledger.openingBalance {
-                FDSLabel(FormatterCache.formatCurrency(Decimal(balance) / 100, currencyCode: "INR"))
+            if let balanceText = viewModel.openingBalanceText(for: ledger) {
+                FDSLabel(balanceText)
                     .font(AppTypography.bodySmSemibold)
                     .monospacedDigit()
                     .foregroundStyle(AppColors.Text.secondary)
@@ -74,8 +74,7 @@ struct OpeningBalanceSheet: View {
                     .foregroundStyle(AppColors.Text.quaternary)
             }
             Button("Edit") {
-                let current = ledger.openingBalance.map { Decimal($0) / 100 } ?? 0
-                balanceInput = current == 0 ? "" : "\(current)"
+                balanceInput = viewModel.editingBalanceString(for: ledger)
                 editingLedger = ledger
             }
             .buttonStyle(.plain)

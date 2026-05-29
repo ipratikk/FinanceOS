@@ -131,7 +131,7 @@ extension ImportViewModel {
             }
         }
 
-        let detector = ImportDuplicateDetector()
+        let detector = duplicateDetector
         let (skipAll, inDB) = detector.detect(
             statements: importSession.parsedStatements,
             existingTransactions: existingTransactions

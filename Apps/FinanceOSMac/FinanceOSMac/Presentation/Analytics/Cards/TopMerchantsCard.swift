@@ -77,7 +77,7 @@ struct TopMerchantsCard: View {
                         .foregroundStyle(AppColors.Text.tertiary)
                 }
                 Spacer()
-                FDSLabel(formatAmount(merchant.totalDebit))
+                FDSLabel(merchant.amountText)
                     .font(AppTypography.bodySmSemibold)
                     .foregroundStyle(AppColors.Text.primary)
                     .monospacedDigit()
@@ -119,9 +119,5 @@ struct TopMerchantsCard: View {
             .pink
         ]
         return colors[abs(name.hashValue) % colors.count]
-    }
-
-    private func formatAmount(_ minorUnits: Int64) -> String {
-        MoneyFormatting.formatRounded(minorUnits: minorUnits)
     }
 }

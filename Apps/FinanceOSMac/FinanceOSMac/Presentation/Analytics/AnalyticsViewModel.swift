@@ -1,37 +1,7 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceUI
 import Foundation
-
-struct CategorySpendSummary: Identifiable {
-    let id: String
-    let displayName: String
-    let totalDebit: Int64
-    let percentage: Double
-    let transactionCount: Int
-}
-
-struct MerchantSummary: Identifiable {
-    var id: String {
-        name
-    }
-
-    let name: String
-    let totalDebit: Int64
-    let transactionCount: Int
-    let maxTotal: Int64
-
-    var initials: String {
-        let words = name.split(separator: " ")
-        if words.count >= 2 {
-            return String(words[0].prefix(1) + words[1].prefix(1)).uppercased()
-        }
-        return String(name.prefix(2)).uppercased()
-    }
-
-    var proportion: Double {
-        maxTotal > 0 ? Double(totalDebit) / Double(maxTotal) : 0
-    }
-}
 
 @Observable @MainActor
 class AnalyticsViewModel: AsyncLoadable {
@@ -39,7 +9,7 @@ class AnalyticsViewModel: AsyncLoadable {
     var merchantSummaries: [MerchantSummary] = []
     var categorySpend: [CategorySpendSummary] = []
     var insights: [TransactionInsight] = []
-    var recentFluctuations: [Transaction] = []
+    var recentFluctuations: [FluctuationRow] = []
     var totalOutflow: Int64 = 0
     var outflowChange: Double?
     var isLoading = false
@@ -62,6 +32,27 @@ class AnalyticsViewModel: AsyncLoadable {
         self.aggregator = aggregator
     }
 
+    // MARK: - Display Strings
+
+    var totalOutflowText: String {
+        MoneyFormatting.formatRounded(minorUnits: totalOutflow)
+    }
+
+    var categoryTotalText: String {
+        let total = categorySpend.reduce(Int64(0)) { $0 + $1.totalDebit }
+        return MoneyFormatting.formatRounded(minorUnits: total)
+    }
+
+    var periodLabel: String {
+        guard let first = monthlySummaries.first?.id, let last = monthlySummaries.last?.id else { return "" }
+        let year = Calendar.current.component(.year, from: last)
+        let firstLabel = FormatterCache.shortMonth.string(from: first).uppercased()
+        let lastLabel = FormatterCache.shortMonth.string(from: last).uppercased()
+        return "\(firstLabel)-\(lastLabel) \(year)"
+    }
+
+    // MARK: - Load
+
     func load() async {
         await withLoading(onError: { [self] error in
             self.error = error.localizedDescription
@@ -75,7 +66,21 @@ class AnalyticsViewModel: AsyncLoadable {
             categorySpend = aggregator.aggregateCategorySpend(allTransactions)
             if let service = intelligenceService {
                 insights = await (try? service.generateInsights(for: allTransactions)) ?? []
-                recentFluctuations = aggregator.fluctuationTransactions(from: insights, all: allTransactions)
+                let fluctTxns = aggregator.fluctuationTransactions(from: insights, all: allTransactions)
+                recentFluctuations = fluctTxns.map { txn in
+                    FluctuationRow(
+                        id: txn.id,
+                        merchantName: txn.merchantName ?? txn.description,
+                        dateText: FormatterCache.dayMonthCommaYear.string(from: txn.postedAt),
+                        currencyCode: txn.currencyCode,
+                        amountText: MoneyFormatting.formatWithSign(
+                            minorUnits: txn.amountMinorUnits,
+                            isDebit: txn.transactionType == .debit
+                        ),
+                        isDebit: txn.transactionType == .debit,
+                        sourceTransaction: txn
+                    )
+                }
             }
         })
     }

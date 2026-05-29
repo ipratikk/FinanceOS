@@ -81,14 +81,14 @@ struct AccountTransactionsView: View {
                         .tracking(0.2)
                         .foregroundStyle(.tertiary)
 
-                    if let balance = ledger.closingBalance {
-                        FDSLabel(formattedBalance(balance))
+                    if let balanceText = viewModel.closingBalanceText(for: ledger) {
+                        FDSLabel(balanceText)
                             .font(AppTypography.amountLarge)
                             .foregroundStyle(AppColors.accentIce)
                             .lineLimit(1)
 
-                        if let asOf = ledger.closingBalanceAsOf {
-                            FDSLabel("as of \(formattedDate(asOf))")
+                        if let dateText = viewModel.closingDateText(for: ledger) {
+                            FDSLabel("as of \(dateText)")
                                 .font(AppTypography.captionSm)
                                 .foregroundStyle(.quaternary)
                         }
@@ -104,13 +104,5 @@ struct AccountTransactionsView: View {
 
             Divider().opacity(0.3)
         }
-    }
-
-    private func formattedBalance(_ minorUnits: Int64) -> String {
-        MoneyFormatting.formatRunningBalance(minorUnits: minorUnits)
-    }
-
-    private func formattedDate(_ date: Date) -> String {
-        FormatterCache.dayMonthYear.string(from: date)
     }
 }

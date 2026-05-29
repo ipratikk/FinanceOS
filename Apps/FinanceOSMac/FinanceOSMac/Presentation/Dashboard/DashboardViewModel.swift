@@ -101,6 +101,16 @@ class DashboardViewModel: AsyncLoadable {
         return "\(count) Txns"
     }
 
+    func openingBalanceText(for ledger: Ledger) -> String? {
+        guard let balance = ledger.openingBalance else { return nil }
+        return FormatterCache.formatCurrency(minorUnits: balance)
+    }
+
+    func editingBalanceString(for ledger: Ledger) -> String {
+        guard let balance = ledger.openingBalance, balance != 0 else { return "" }
+        return "\(Decimal(balance) / 100)"
+    }
+
     // MARK: - Dependencies
 
     private let spendingService: any SpendingServiceProtocol

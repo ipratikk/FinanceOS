@@ -6,6 +6,7 @@ import SwiftUI
 struct CategoryBreakdownChart: View {
     let items: [CategorySpendSummary]
     let currencyCode: String
+    let totalText: String
 
     private var topItems: [CategorySpendSummary] {
         let top = Array(items.prefix(8))
@@ -19,10 +20,6 @@ struct CategoryBreakdownChart: View {
             totalDebit: otherTotal, percentage: otherPct, transactionCount: otherCount
         )
         return top + [other]
-    }
-
-    private var grandTotal: Int64 {
-        items.reduce(0) { $0 + $1.totalDebit }
     }
 
     var body: some View {
@@ -51,7 +48,7 @@ struct CategoryBreakdownChart: View {
                 FDSLabel("Total Spend")
                     .font(AppTypography.captionSmMedium)
                     .foregroundStyle(AppColors.Text.secondary)
-                FDSLabel(formatAmount(grandTotal))
+                FDSLabel(totalText)
                     .font(AppTypography.bodyMdSemibold)
                     .foregroundStyle(AppColors.Text.primary)
             }
@@ -93,7 +90,7 @@ struct CategoryBreakdownChart: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 2) {
-                FDSLabel(formatAmount(item.totalDebit))
+                FDSLabel(item.amountText)
                     .font(AppTypography.bodySmSemibold)
                     .foregroundStyle(AppColors.Text.primary)
                     .monospacedDigit()
@@ -104,10 +101,6 @@ struct CategoryBreakdownChart: View {
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.sm)
-    }
-
-    private func formatAmount(_ minorUnits: Int64) -> String {
-        MoneyFormatting.formatRounded(minorUnits: minorUnits)
     }
 
     private func symbol(for categoryId: String) -> String {
