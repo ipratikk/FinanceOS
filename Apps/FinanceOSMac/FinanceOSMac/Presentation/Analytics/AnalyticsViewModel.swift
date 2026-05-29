@@ -34,7 +34,7 @@ struct MerchantSummary: Identifiable {
 }
 
 @Observable @MainActor
-class AnalyticsViewModel {
+class AnalyticsViewModel: AsyncLoadable {
     var monthlySummaries: [MonthlySpendingSummary] = []
     var merchantSummaries: [MerchantSummary] = []
     var categorySpend: [CategorySpendSummary] = []
@@ -46,12 +46,12 @@ class AnalyticsViewModel {
     var error: String?
 
     private let spendingService: any SpendingServiceProtocol
-    private let transactionRepository: any TransactionRepository
+    private let transactionRepository: any TransactionReader
     private let intelligenceService: (any TransactionIntelligenceService)?
 
     init(
         spendingService: any SpendingServiceProtocol,
-        transactionRepository: any TransactionRepository,
+        transactionRepository: any TransactionReader,
         intelligenceService: (any TransactionIntelligenceService)? = nil
     ) {
         self.spendingService = spendingService
@@ -60,9 +60,10 @@ class AnalyticsViewModel {
     }
 
     func load() async {
-        isLoading = true
-        defer { isLoading = false }
-        do {
+        await withLoading(onError: { [self] error in
+            self.error = error.localizedDescription
+            FinanceLogger.userInterface.logError("Analytics load failed", caughtError: error, [:])
+        }, {
             monthlySummaries = try await spendingService.monthlySummary(months: 6)
             let allTransactions = try await transactionRepository.fetchTransactions()
             totalOutflow = monthlySummaries.reduce(0) { $0 + $1.totalDebit }
@@ -73,10 +74,7 @@ class AnalyticsViewModel {
                 insights = await (try? service.generateInsights(for: allTransactions)) ?? []
                 recentFluctuations = fluctuationTransactions(from: insights, all: allTransactions)
             }
-        } catch {
-            self.error = error.localizedDescription
-            FinanceLogger.userInterface.logError("Analytics load failed", caughtError: error, [:])
-        }
+        })
     }
 }
 

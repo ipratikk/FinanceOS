@@ -107,7 +107,7 @@ struct CategoryBreakdownChart: View {
     }
 
     private func formatAmount(_ minorUnits: Int64) -> String {
-        AnalyticsFormatting.rupees(minorUnits)
+        MoneyFormatting.formatRounded(minorUnits: minorUnits)
     }
 
     private func symbol(for categoryId: String) -> String {

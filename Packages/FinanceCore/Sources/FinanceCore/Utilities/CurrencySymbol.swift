@@ -1,7 +1,7 @@
 import Foundation
 
-enum CurrencySymbol {
-    static func symbol(for code: String) -> String {
+public enum CurrencySymbol {
+    public static func symbol(for code: String) -> String {
         switch code.uppercased() {
         case "INR": return "₹"
         case "USD": return "$"

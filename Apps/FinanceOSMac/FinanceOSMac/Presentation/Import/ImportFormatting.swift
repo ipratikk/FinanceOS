@@ -1,21 +1,6 @@
-import FinanceParsers
 import Foundation
 
-enum ImportFormatting {
-    static func formatAmount(_ minorUnits: Int64) -> String {
-        let amount = Double(minorUnits) / 100.0
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "INR"
-        return formatter.string(from: NSNumber(value: amount)) ?? "₹\(amount)"
-    }
-
-    static func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: date)
-    }
-
+enum ImportHelpers {
     static func fuzzyMatch(_ stored: String, _ parsed: String) -> Bool {
         let storedLower = stored.lowercased()
         let parsedLower = parsed.lowercased()

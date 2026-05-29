@@ -3,12 +3,12 @@ import GRDB
 
 public actor GRDBSpendingService: SpendingServiceProtocol {
     private let dbQueue: DatabaseQueue
-    private let transactionRepository: any TransactionRepository
+    private let transactionRepository: any TransactionReader
     private let ledgerRepository: any LedgerRepository
 
     public init(
         dbQueue: DatabaseQueue,
-        transactionRepository: any TransactionRepository,
+        transactionRepository: any TransactionReader,
         ledgerRepository: any LedgerRepository
     ) {
         self.dbQueue = dbQueue

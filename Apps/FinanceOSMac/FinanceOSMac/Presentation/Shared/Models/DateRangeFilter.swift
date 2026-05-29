@@ -1,3 +1,4 @@
+import FinanceUI
 import Foundation
 
 enum DateRangeFilter: Equatable {
@@ -19,8 +20,7 @@ enum DateRangeFilter: Equatable {
             let end = String(year + 1).suffix(2)
             return "FY\(start)-\(end)"
         case let .custom(from, endDate):
-            let fmt = DateFormatter()
-            fmt.dateFormat = "d MMM"
+            let fmt = FormatterCache.shortDayMonth
             if let from, let endDate { return "\(fmt.string(from: from))–\(fmt.string(from: endDate))" }
             if let from { return "From \(fmt.string(from: from))" }
             if let endDate { return "Until \(fmt.string(from: endDate))" }

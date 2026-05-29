@@ -71,6 +71,48 @@ public enum FormatterCache {
         return fmt
     }()
 
+    public static let dayAndTime: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "MMM d · h:mm a"
+        return fmt
+    }()
+
+    public static let fullDayDate: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "EEEE, MMMM d"
+        return fmt
+    }()
+
+    public static let shortDayMonth: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "d MMM"
+        return fmt
+    }()
+
+    public static let dayMonthYear: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "d MMM yyyy"
+        return fmt
+    }()
+
+    public static let slashDate: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "dd/MM/yyyy"
+        return fmt
+    }()
+
+    public static let shortMonth: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "MMM"
+        return fmt
+    }()
+
+    public static let dayMonthCommaYear: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "d MMM, yyyy"
+        return fmt
+    }()
+
     // MARK: - ISO8601 Formatter
 
     public static let iso8601: ISO8601DateFormatter = ISO8601DateFormatter()
@@ -85,6 +127,12 @@ public enum FormatterCache {
         default: currencyINR
         }
         return formatter.string(from: amount as NSNumber) ?? "N/A"
+    }
+
+    /// Format minor units (Int64) as currency string.
+    public static func formatCurrency(minorUnits: Int64, currencyCode: String = "INR") -> String {
+        let amount = Decimal(minorUnits) / 100
+        return formatCurrency(amount, currencyCode: currencyCode)
     }
 
     /// Format date using locale-aware short format.

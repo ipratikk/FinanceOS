@@ -216,9 +216,7 @@ public struct HDFCMetadataExtractor: Sendable {
     // MARK: - Generated-at timestamp
 
     private func extractGeneratedAt(from lines: [String]) -> Date? {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "dd-MMM-yyyy HH:mm:ss"
+        let formatter = DateParser.ddDashMMMYYYYHHmmss
         for line in lines {
             guard line.range(of: "Generated On", options: .caseInsensitive) != nil else { continue }
             guard let colonIdx = line.firstIndex(of: ":") else { continue }

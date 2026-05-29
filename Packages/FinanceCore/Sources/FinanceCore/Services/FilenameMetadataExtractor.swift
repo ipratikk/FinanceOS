@@ -107,9 +107,22 @@ public struct FilenameMetadataExtractor {
         return nil
     }
 
+    private nonisolated(unsafe) static var dateFormatterCache: [String: DateFormatter] = [:]
+    private static let cachelock = NSLock()
+
     private func parseDate(_ dateString: String, format: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
+        Self.cachelock.lock()
+        defer { Self.cachelock.unlock() }
+        let formatter: DateFormatter
+        if let cached = Self.dateFormatterCache[format] {
+            formatter = cached
+        } else {
+            let fmt = DateFormatter()
+            fmt.locale = Locale(identifier: "en_US_POSIX")
+            fmt.dateFormat = format
+            Self.dateFormatterCache[format] = fmt
+            formatter = fmt
+        }
         return formatter.date(from: dateString)
     }
 }

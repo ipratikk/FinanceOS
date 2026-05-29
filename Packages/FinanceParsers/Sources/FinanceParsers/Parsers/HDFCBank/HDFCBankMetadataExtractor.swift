@@ -239,14 +239,6 @@ public struct HDFCBankMetadataExtractor: Sendable {
     }
 
     private func parseDate(_ dateString: String) -> Date? {
-        let formats = ["dd/MM/yyyy", "dd/MM/yy", "dd-MMM-yyyy"]
-        for format in formats {
-            let formatter = DateFormatter()
-            formatter.dateFormat = format
-            if let date = formatter.date(from: dateString) {
-                return date
-            }
-        }
-        return nil
+        DateParser.parse(dateString, formats: ["dd/MM/yyyy", "dd/MM/yy", "dd-MMM-yyyy"])
     }
 }

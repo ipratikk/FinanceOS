@@ -18,19 +18,10 @@ extension CardEditView {
 
     var cardTypeOptions: [FDSPickerOption] {
         CardNetwork.allCases.map { network in
-            let displayName: String = switch network {
-            case .visa: "Visa"
-            case .mastercard: "Mastercard"
-            case .amex: "American Express"
-            case .discover: "Discover"
-            case .diners: "Diners Club"
-            case .rupay: "RuPay"
-            case .other: "Other"
-            }
-            return FDSPickerOption(
+            FDSPickerOption(
                 id: network.rawValue,
                 value: network,
-                title: displayName,
+                title: network.displayName,
                 symbol: network.symbolAssetName == nil ? "creditcard.fill" : nil,
                 imageName: network.symbolAssetName
             )

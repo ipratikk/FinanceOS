@@ -10,8 +10,9 @@ import Foundation
 import Observation
 import OSLog
 
+@MainActor
 @Observable
-final class CardsViewModel {
+final class CardsViewModel: AsyncLoadable, DeletableViewModel {
     struct CardRow: Identifiable {
         let id: UUID
         let card: Ledger
@@ -50,35 +51,16 @@ final class CardsViewModel {
     }
 
     func loadCards() async {
-        isLoading = true
-
-        defer {
-            isLoading = false
-        }
-
-        do {
-            let cards = try await ledgerRepository
-                .fetchLedgers(kind: .creditCard)
-            let accounts = try await ledgerRepository
-                .fetchLedgers(kind: .bankAccount)
-            let banks = try await bankRepository
-                .fetchBanks()
-
+        await withLoading(onError: { [self] error in
+            logger.logError("Failed to load cards: {error}", ["error": error.localizedDescription])
+        }, {
+            let cards = try await ledgerRepository.fetchLedgers(kind: .creditCard)
+            let accounts = try await ledgerRepository.fetchLedgers(kind: .bankAccount)
+            let banks = try await bankRepository.fetchBanks()
             self.accounts = accounts
             self.banks = banks
-
-            cardRows = makeCardRows(
-                cards: cards,
-                accounts: accounts,
-                banks: banks
-            )
-
-        } catch {
-            logger.logError(
-                "Failed to load cards: {error}",
-                ["error": error.localizedDescription]
-            )
-        }
+            cardRows = makeCardRows(cards: cards, accounts: accounts, banks: banks)
+        })
     }
 
     func updateCard(_ card: Ledger) async {
@@ -94,25 +76,16 @@ final class CardsViewModel {
     }
 
     func deleteCard(id: UUID) async {
-        do {
-            deleteError = nil
-            logger.logDebug(
-                "Deleting card",
-                ["cardId": id.uuidString]
-            )
+        await performDelete({
+            logger.logDebug("Deleting card", ["cardId": id.uuidString])
             try await ledgerRepository.delete(id: id)
-            logger.logInfo(
-                "Card deleted successfully",
-                ["cardId": id.uuidString]
-            )
-            await loadCards()
-        } catch {
+            logger.logInfo("Card deleted successfully", ["cardId": id.uuidString])
+        }, onError: { [self] error in
             logger.logError(
                 "Delete card failed: {error}",
                 ["cardId": id.uuidString, "error": error.localizedDescription]
             )
-            deleteError = error.localizedDescription
-        }
+        }, onSuccess: loadCards)
     }
 
     func convertToAccount(_ card: Ledger) async {

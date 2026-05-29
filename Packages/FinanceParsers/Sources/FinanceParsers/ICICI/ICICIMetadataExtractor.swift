@@ -176,26 +176,10 @@ public struct ICICIMetadataExtractor: Sendable {
 
     private func parseStatementDate(_ dateStr: String?) -> Date? {
         guard let dateStr else { return nil }
-
-        let formatters = [
-            "MMMM dd yyyy",
-            "MMMM d yyyy",
-            "MMM dd yyyy",
-            "MMM d yyyy",
-            "dd-MMM-yyyy",
-            "dd/MM/yyyy"
-        ]
-
-        let locale = Locale(identifier: "en_US_POSIX")
-        for format in formatters {
-            let formatter = DateFormatter()
-            formatter.locale = locale
-            formatter.dateFormat = format
-            if let date = formatter.date(from: dateStr) {
-                return date
-            }
-        }
-        return nil
+        return DateParser.parse(dateStr, formats: [
+            "MMMM dd yyyy", "MMMM d yyyy", "MMM dd yyyy", "MMM d yyyy",
+            "dd-MMM-yyyy", "dd/MM/yyyy"
+        ])
     }
 
     // MARK: - Amount parsing

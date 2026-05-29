@@ -56,7 +56,7 @@ struct ImportTransactionListView: View {
                 .customizationID("status")
 
                 TableColumn("Date") { row in
-                    FDSLabel(ImportFormatting.formatDate(row.transaction.postedAt))
+                    FDSLabel(FormatterCache.formatDate(row.transaction.postedAt))
                         .font(AppTypography.labelMedium)
                         .foregroundColor(AppColors.Text.tertiary)
                 }
@@ -126,7 +126,7 @@ struct ImportTransactionListView: View {
         let isDebit = minorUnits < 0
         return HStack(spacing: 2) {
             FDSLabel(isDebit ? "−" : "+")
-            FDSLabel(ImportFormatting.formatAmount(abs(minorUnits)))
+            FDSLabel(FormatterCache.formatCurrency(minorUnits: abs(minorUnits)))
         }
         .font(AppTypography.amountSm)
         .foregroundColor(isDebit ? AppColors.debit : AppColors.credit)
