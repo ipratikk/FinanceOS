@@ -46,12 +46,12 @@ class AnalyticsViewModel: AsyncLoadable {
     var error: String?
 
     private let spendingService: any SpendingServiceProtocol
-    private let transactionRepository: any TransactionRepository
+    private let transactionRepository: any TransactionReader
     private let intelligenceService: (any TransactionIntelligenceService)?
 
     init(
         spendingService: any SpendingServiceProtocol,
-        transactionRepository: any TransactionRepository,
+        transactionRepository: any TransactionReader,
         intelligenceService: (any TransactionIntelligenceService)? = nil
     ) {
         self.spendingService = spendingService

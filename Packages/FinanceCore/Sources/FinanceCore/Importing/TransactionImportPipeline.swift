@@ -3,11 +3,11 @@ import Foundation
 import OSLog
 
 public struct TransactionImportPipeline: Sendable {
-    private let repository: any TransactionRepository
+    private let repository: any TransactionWriter
     private let logger = FinanceLogger.importPipeline
 
     public init(
-        repository: any TransactionRepository
+        repository: any TransactionWriter
     ) {
         self.repository = repository
     }
