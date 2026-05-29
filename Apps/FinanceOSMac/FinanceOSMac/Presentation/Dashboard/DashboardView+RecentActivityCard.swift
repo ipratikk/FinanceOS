@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
@@ -8,7 +9,6 @@ extension DashboardView {
     func recentActivityCard(_ viewModel: DashboardViewModel) -> some View {
         FDSCard(padded: false) {
             VStack(alignment: .leading, spacing: 0) {
-                // Header
                 HStack {
                     FDSLabel("Recent Activity")
                         .font(AppTypography.headingSmall)
@@ -24,7 +24,6 @@ extension DashboardView {
                 .padding(.horizontal, 20)
                 .padding(.vertical, 16)
 
-                // Column headers
                 HStack {
                     FDSLabel("MERCHANT").frame(maxWidth: .infinity, alignment: .leading)
                     FDSLabel("CATEGORY").frame(width: 110, alignment: .leading)
@@ -38,11 +37,9 @@ extension DashboardView {
 
                 Divider().opacity(0.1)
 
-                // Rows
-                let txns = Array(viewModel.recentTransactions.prefix(6))
-                ForEach(Array(txns.enumerated()), id: \.element.id) { idx, txn in
-                    activityRow(txn)
-                    if idx < txns.count - 1 {
+                ForEach(Array(viewModel.recentTransactions.enumerated()), id: \.element.id) { idx, row in
+                    activityRow(row)
+                    if idx < viewModel.recentTransactions.count - 1 {
                         Divider().padding(.horizontal, 20).opacity(0.08)
                     }
                 }
@@ -51,52 +48,39 @@ extension DashboardView {
         }
     }
 
-    private func activityRow(_ txn: FinanceCore.Transaction) -> some View {
+    private func activityRow(_ row: TransactionRow) -> some View {
         HStack(spacing: 0) {
             HStack(spacing: 10) {
                 Circle()
                     .fill(AppColors.Fill.secondary)
                     .frame(width: 30, height: 30)
                     .overlay {
-                        Image(systemName: categorySymbol(for: txn.description))
+                        Image(systemName: CategorySymbol.symbol(for: row.categoryId))
                             .font(AppTypography.captionSmSemibold)
                             .foregroundStyle(AppColors.Text.secondary)
                     }
-                FDSLabel(txn.description)
+                FDSLabel(row.displayTitle)
                     .font(AppTypography.bodySmMedium)
                     .foregroundStyle(AppColors.Text.primary)
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            FDSLabel(categoryName(for: txn.description))
+            let catName = CategoryTaxonomy.current.category(forId: row.categoryId ?? "")?.displayName ?? "Transfer"
+            FDSLabel(catName)
                 .font(AppTypography.captionLg)
                 .foregroundStyle(AppColors.Text.tertiary)
                 .frame(width: 110, alignment: .leading)
                 .lineLimit(1)
 
-            let isDebit = txn.transactionType == .debit
-            FDSLabel((isDebit ? "-" : "+") + amount(txn.amountMinorUnits, code: txn.currencyCode))
+            FDSLabel(row.amountText)
                 .font(AppTypography.bodySmSemibold)
                 .monospacedDigit()
-                .foregroundStyle(isDebit ? AppColors.danger : AppColors.success)
+                .foregroundStyle(row.transactionType == .debit ? AppColors.danger : AppColors.success)
                 .frame(width: 100, alignment: .trailing)
                 .lineLimit(1)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-    }
-
-    private func categorySymbol(for description: String) -> String {
-        let lower = description.lowercased()
-        if lower.contains("salary") || lower.contains("credit") {
-            return "arrow.down.left.circle.fill"
-        }
-        if lower.contains("food") || lower.contains("zomato") { return "fork.knife" }
-        if lower.contains("netflix") || lower.contains("spotify") { return "play.tv.fill" }
-        if lower.contains("amazon") || lower.contains("flipkart") { return "bag.fill" }
-        if lower.contains("apple") { return "laptopcomputer" }
-        if lower.contains("uber") || lower.contains("ola") { return "car.fill" }
-        return "creditcard.fill"
     }
 }

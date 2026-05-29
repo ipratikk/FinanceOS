@@ -96,32 +96,28 @@ extension DashboardView {
     }
 
     private func heroAmount(_ viewModel: DashboardViewModel) -> some View {
-        let netWorth = viewModel.currentNetWorth
-        let isPositive = netWorth >= 0
+        let isPositive = viewModel.currentNetWorth >= 0
         return HStack(alignment: .firstTextBaseline, spacing: 12) {
-            FDSLabel(FormatterCache.formatCurrency(netWorth, currencyCode: "INR"))
+            FDSLabel(viewModel.currentNetWorthText)
                 .font(AppTypography.displayLarge)
                 .monospacedDigit()
                 .foregroundStyle(isPositive ? AppColors.Text.primary : AppColors.danger)
                 .lineLimit(1)
-            if let delta = viewModel.netWorthMoMDelta {
-                heroDeltaBadge(delta)
+            if let deltaText = viewModel.netWorthMoMDeltaText {
+                heroDeltaBadge(text: deltaText, isPositive: viewModel.netWorthDeltaIsPositive)
             }
         }
     }
 
-    private func heroDeltaBadge(_ delta: Double) -> some View {
-        let deltaStr = delta >= 0
-            ? String(format: "+%.1f%%", delta * 100)
-            : String(format: "%.1f%%", delta * 100)
-        return VStack(alignment: .leading, spacing: 2) {
-            FDSLabel(deltaStr)
+    private func heroDeltaBadge(text: String, isPositive: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            FDSLabel(text)
                 .font(AppTypography.captionLgSemibold)
-                .foregroundStyle(delta >= 0 ? AppColors.success : AppColors.danger)
+                .foregroundStyle(isPositive ? AppColors.success : AppColors.danger)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
                 .background(
-                    (delta >= 0 ? AppColors.success : AppColors.danger).opacity(0.15),
+                    (isPositive ? AppColors.success : AppColors.danger).opacity(0.15),
                     in: Capsule()
                 )
             FDSLabel("vs last month")
@@ -147,12 +143,12 @@ extension DashboardView {
 // MARK: - Metric Tiles
 
 extension DashboardView {
-    func metricsRow(_ totals: SpendingTotals) -> some View {
+    func metricsRow(_ viewModel: DashboardViewModel) -> some View {
         HStack(spacing: 20) {
             metricTile(
                 .init(
                     label: "MONTHLY INFLOWS",
-                    value: amount(totals.totalCredit),
+                    value: viewModel.inflowsText,
                     badge: "",
                     badgeColor: AppColors.Text.tertiary,
                     amountColor: AppColors.Text.primary,
@@ -162,19 +158,18 @@ extension DashboardView {
             metricTile(
                 .init(
                     label: "MONTHLY OUTFLOWS",
-                    value: amount(totals.totalDebit),
+                    value: viewModel.outflowsText,
                     badge: "",
                     badgeColor: AppColors.Text.tertiary,
                     amountColor: AppColors.danger,
                     progress: 0.0
                 )
             )
-            let net = totals.totalCredit - totals.totalDebit
             metricTile(
                 .init(
                     label: "NET SAVINGS",
-                    value: amount(max(0, net)),
-                    badge: "\(totals.transactionCount) Txns",
+                    value: viewModel.netSavingsText,
+                    badge: viewModel.transactionCountBadge,
                     badgeColor: AppColors.Text.tertiary,
                     amountColor: AppColors.success,
                     progress: 0.0

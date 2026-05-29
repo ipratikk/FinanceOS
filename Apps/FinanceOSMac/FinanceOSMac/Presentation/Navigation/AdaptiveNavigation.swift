@@ -22,11 +22,15 @@ struct AdaptiveNavigation: View {
             get: { navigator.sidebarSelection },
             set: { navigator.navigate(to: $0) }
         )) {
-            DashboardView()
-                .tabItem {
-                    Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
-                }
-                .tag(NavigationItem.dashboard)
+            DashboardView(viewModel: DashboardViewModel(
+                spendingService: appContainer.spendingService,
+                transactionRepository: appContainer.transactionRepository,
+                ledgerRepository: appContainer.ledgerRepository
+            ))
+            .tabItem {
+                Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
+            }
+            .tag(NavigationItem.dashboard)
 
             TransactionsView(
                 viewModel: TransactionsViewModel(
@@ -112,7 +116,11 @@ struct DetailRouter: View {
     var detailContent: some View {
         switch navigator.sidebarSelection {
         case .dashboard:
-            DashboardView()
+            DashboardView(viewModel: DashboardViewModel(
+                spendingService: appContainer.spendingService,
+                transactionRepository: appContainer.transactionRepository,
+                ledgerRepository: appContainer.ledgerRepository
+            ))
         case .transactions:
             TransactionsView(
                 viewModel: TransactionsViewModel(
