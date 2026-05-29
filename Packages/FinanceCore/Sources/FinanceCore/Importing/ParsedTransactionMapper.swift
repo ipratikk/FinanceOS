@@ -21,7 +21,8 @@ enum ParsedTransactionMapper {
                 amountMinorUnits: absoluteAmount,
                 currencyCode: parsed.currencyCode,
                 transactionType: transactionType,
-                sourceFingerprint: parsed.sourceFingerprint
+                sourceFingerprint: parsed.sourceFingerprint,
+                closingBalanceMinorUnits: parsed.closingBalanceMinorUnits
             )
         }
     }

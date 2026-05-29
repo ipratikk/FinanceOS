@@ -172,7 +172,7 @@ extension ImportPreviewView {
     @ViewBuilder var confirmBar: some View {
         let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
         let newCount = allTransactions.count - viewModel.duplicateTransactionIndices.count
-        let dupCount = viewModel.duplicateTransactionIndices.count
+        let dupCount = viewModel.alreadyInDBIndices.count
 
         if newCount == 0, dupCount > 0 {
             allCaughtUpBar(dupCount: dupCount)

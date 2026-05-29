@@ -26,7 +26,8 @@ final class ImportViewModel {
 
     var ledgers: [Ledger] = []
     var banks: [Bank] = []
-    var duplicateTransactionIndices: Set<Int> = []
+    var duplicateTransactionIndices: Set<Int> = [] // full skip set: within-batch dups + already-in-DB
+    var alreadyInDBIndices: Set<Int> = [] // subset: only transactions already in DB
     var lastImportResult: ImportResult?
     var currentFileIndex: Int = 0
     var totalFilesToParse: Int = 0
@@ -159,6 +160,7 @@ final class ImportViewModel {
 
             importSession.parsedStatements = statements
             await loadTargetsOnAppear()
+            await detectDuplicates(for: nil)
             await autoSelectMatchingTarget()
             // Auto-advance to review step after successful parse
             currentStep = .review

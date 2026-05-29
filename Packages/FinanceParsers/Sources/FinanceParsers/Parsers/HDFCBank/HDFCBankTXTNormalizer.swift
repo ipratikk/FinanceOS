@@ -36,16 +36,22 @@ public struct HDFCBankTXTNormalizer: Sendable, CSVRowNormalizer {
         }
 
         let amount = creditMinorUnits > 0 ? -creditMinorUnits : debitMinorUnits
-        let description = descStr.trimmingCharacters(in: .whitespaces)
+        let description = descStr
+            .components(separatedBy: .whitespaces)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
 
-        let fingerprint = "\(dateStr)|\(description)|\(creditMinorUnits)|\(debitMinorUnits)"
+        let fpDesc = description.components(separatedBy: .whitespaces).filter { !$0.isEmpty }.joined()
+        let fingerprint = "\(dateStr)|\(fpDesc)|\(creditMinorUnits)|\(debitMinorUnits)"
+        let closingBalance = normalizedRow[.balance].flatMap { AmountParser.parseToInt64($0) }
 
         return ParsedTransaction(
             postedAt: date,
             description: description,
             amountMinorUnits: amount,
             currencyCode: "INR",
-            sourceFingerprint: fingerprint
+            sourceFingerprint: fingerprint,
+            closingBalanceMinorUnits: closingBalance
         )
     }
 }

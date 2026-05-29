@@ -120,176 +120,70 @@ extension ImportViewModel {
         }
     }
 
-    func detectDuplicates(for target: TransactionImportTarget) async {
-        do {
-            let allTransactions = try await transactionRepository.fetchTransactions()
-
-            if case let .ledger(ledgerId) = target {
-                let existingTransactions = allTransactions.filter { $0.ledgerId == ledgerId }
-                duplicateTransactionIndices = []
-
-                let duplicates = await detectDuplicatesOptimized(
-                    parsedStatements: importSession.parsedStatements,
-                    existingTransactions: existingTransactions
-                )
-
-                duplicateTransactionIndices = duplicates
-                let dupCount = duplicateTransactionIndices.count
-                logger.logInfo(
-                    "Found {count} duplicate transactions out of {total}",
-                    [
-                        "count": String(dupCount),
-                        "total": String(importSession.parsedStatements.reduce(0) { $0 + $1.transactions.count })
-                    ]
-                )
+    func detectDuplicates(for target: TransactionImportTarget?) async {
+        var existingTransactions: [Transaction] = []
+        if case let .ledger(ledgerId) = target {
+            do {
+                let all = try await transactionRepository.fetchTransactions()
+                existingTransactions = all.filter { $0.ledgerId == ledgerId }
+            } catch {
+                logger.logError("Failed to fetch transactions: {error}", ["error": error.localizedDescription])
             }
-        } catch {
-            logger.logError("Failed to detect duplicates: {error}", ["error": error.localizedDescription])
         }
+
+        let (skipAll, inDB) = await detectDuplicatesOptimized(
+            parsedStatements: importSession.parsedStatements,
+            existingTransactions: existingTransactions
+        )
+        duplicateTransactionIndices = skipAll
+        alreadyInDBIndices = inDB
     }
 
     private func detectDuplicatesOptimized(
         parsedStatements: [ParsedStatement],
         existingTransactions: [Transaction]
-    ) async -> Set<Int> {
-        var duplicates = Set<Int>()
-        var nonMatches: [(Int, String)] = []
-
-        let existingHashes = Set(
-            existingTransactions.map { hashTransaction($0) }
-        )
+    ) async -> (skipAll: Set<Int>, inDB: Set<Int>) {
+        var skipAll = Set<Int>()
+        var inDB = Set<Int>()
+        let existingHashes = Set(existingTransactions.map { hashTransaction($0) })
+        var seen = Set<String>()
 
         var flatIndex = 0
         for statement in parsedStatements {
             for parsedTxn in statement.transactions {
                 let hash = hashParsedTransaction(parsedTxn)
-                if existingHashes.contains(hash) {
-                    duplicates.insert(flatIndex)
-                } else {
-                    nonMatches.append((flatIndex, parsedTxn.description))
+                let isFirstSeen = seen.insert(hash).inserted
+                if !isFirstSeen {
+                    skipAll.insert(flatIndex)
+                } else if existingHashes.contains(hash) {
+                    skipAll.insert(flatIndex)
+                    inDB.insert(flatIndex)
                 }
                 flatIndex += 1
             }
         }
 
-        if !nonMatches.isEmpty {
-            logDuplicateDebugInfo(
-                duplicates: duplicates,
-                nonMatches: nonMatches,
-                flatIndex: flatIndex,
-                parsedStatements: parsedStatements,
-                existingTransactions: existingTransactions
-            )
-        }
-
-        return duplicates
-    }
-
-    private func logDuplicateDebugInfo(
-        duplicates: Set<Int>,
-        nonMatches: [(Int, String)],
-        flatIndex: Int,
-        parsedStatements: [ParsedStatement],
-        existingTransactions: [Transaction]
-    ) {
-        logger.logWarning(
-            "Duplicate detection: {matched}/{total} matched, {unmatched} not found",
+        logger.logInfo(
+            "Dedup: {indb} in DB, {batch} batch-only, {new} new",
             [
-                "matched": String(duplicates.count),
-                "total": String(flatIndex),
-                "unmatched": String(nonMatches.count)
+                "indb": String(inDB.count),
+                "batch": String(skipAll.count - inDB.count),
+                "new": String(flatIndex - skipAll.count)
             ]
         )
-
-        let existingUpiTxns = existingTransactions.filter { $0.description.contains("UPI") }
-        logger.logDebug(
-            "Database has {count} UPI transactions",
-            ["count": String(existingUpiTxns.count)]
-        )
-
-        if let firstUpi = existingUpiTxns.first {
-            logger.logDebug(
-                "Example stored UPI: len={len} desc={desc}",
-                ["len": String(firstUpi.description.count), "desc": firstUpi.description]
-            )
-        }
-
-        let samples = nonMatches.prefix(1)
-        for (idx, parsedDesc) in samples {
-            debugParsedTransactionSample(
-                idx: idx,
-                parsedDesc: parsedDesc,
-                parsedStatements: parsedStatements,
-                existingTransactions: existingTransactions
-            )
-        }
-    }
-
-    private func debugParsedTransactionSample(
-        idx: Int,
-        parsedDesc: String,
-        parsedStatements: [ParsedStatement],
-        existingTransactions: [Transaction]
-    ) {
-        logger.logDebug(
-            "Example parsed UPI: len={len} desc={desc}",
-            ["len": String(parsedDesc.count), "desc": parsedDesc]
-        )
-
-        var flatIdx = 0
-        for statement in parsedStatements {
-            for parsedTxn in statement.transactions {
-                if flatIdx == idx {
-                    logger.logDebug(
-                        "Parsed txn details: date={date} amount={amt}",
-                        [
-                            "date": ISO8601DateFormatter().string(from: parsedTxn.postedAt),
-                            "amt": String(parsedTxn.amountMinorUnits)
-                        ]
-                    )
-                }
-                flatIdx += 1
-            }
-        }
-
-        let keyword = parsedDesc.prefix(20)
-        let storedMatches = existingTransactions.filter {
-            $0.description.prefix(20) == keyword
-        }
-        if let match = storedMatches.first {
-            logger.logDebug(
-                "Found similar stored: len={len} desc={desc}",
-                ["len": String(match.description.count), "desc": match.description]
-            )
-
-            let storedHash = hashTransaction(match)
-            logger.logDebug("Stored hash: {sh}", ["sh": storedHash])
-            logger.logDebug(
-                "Match details: date={date} amount={amt}",
-                [
-                    "date": ISO8601DateFormatter().string(from: match.postedAt),
-                    "amt": String(match.amountMinorUnits)
-                ]
-            )
-        }
+        return (skipAll, inDB)
     }
 
     private func hashParsedTransaction(_ txn: ParsedTransaction) -> String {
-        let dateStr = ISO8601DateFormatter().string(
-            from: Calendar.current.startOfDay(for: txn.postedAt)
-        )
-        let amountStr = String(abs(txn.amountMinorUnits))
-        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-        return "\(dateStr)|\(amountStr)|\(descStr)"
+        txn.sourceFingerprint
     }
 
     private func hashTransaction(_ txn: Transaction) -> String {
-        let dateStr = ISO8601DateFormatter().string(
-            from: Calendar.current.startOfDay(for: txn.postedAt)
-        )
-        let amountStr = String(abs(txn.amountMinorUnits))
-        let descStr = txn.description.trimmingCharacters(in: .whitespaces).lowercased()
-        return "\(dateStr)|\(amountStr)|\(descStr)"
+        if let fp = txn.sourceFingerprint { return fp }
+        let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
+        let descStr = txn.description
+            .components(separatedBy: .whitespaces).filter { !$0.isEmpty }.joined().lowercased()
+        return "\(dateStr)|\(String(abs(txn.amountMinorUnits)))|\(descStr)"
     }
 
     func reset() {
@@ -297,6 +191,7 @@ extension ImportViewModel {
         ledgers = []
         banks = []
         duplicateTransactionIndices = []
+        alreadyInDBIndices = []
     }
 
     // MARK: - Step Navigation
@@ -319,6 +214,7 @@ extension ImportViewModel {
         parsedStatements = []
         selectedTarget = nil
         duplicateTransactionIndices = []
+        alreadyInDBIndices = []
         currentStep = .upload
     }
 }
