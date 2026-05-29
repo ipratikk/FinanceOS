@@ -258,7 +258,7 @@ Phases 1–10 complete (Ledger unification, import pipeline, dedup engine, UI mi
 
 ## Active: MVVM Refactoring (Phases 1–7)
 
-**Current phase: Phase 6 — Pre-format All Display Strings**
+**All 7 phases complete. MVVM refactoring done.**
 
 Full plan: `docs/MVVM_REFACTORING_PLAN.md`
 Architecture standards being enforced: `docs/ARCHITECTURE.md` (Presentation Layer section)
@@ -272,8 +272,8 @@ Architecture standards being enforced: `docs/ARCHITECTURE.md` (Presentation Laye
 | 3 | Dashboard Cleanup | ✅ done |
 | 4 | Remove Repository Access from Views | ✅ done |
 | 5 | Service Layer Extraction | ✅ done |
-| **6** | Pre-format All Display Strings | 🔲 pending |
-| 7 | Protocol Abstractions + Misc Cleanup | 🔲 pending |
+| 6 | Pre-format All Display Strings | ✅ done |
+| 7 | Protocol Abstractions + Misc Cleanup | ✅ done |
 
 ### Session Protocol (ENFORCED)
 

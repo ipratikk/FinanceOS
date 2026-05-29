@@ -16,8 +16,8 @@ See `docs/ARCHITECTURE.md` for enforced standards this plan enforces.
 | 3 | Dashboard Cleanup | ✅ done | #32 |
 | 4 | Remove Repository Access from Views | ✅ done | #33 |
 | 5 | Service Layer Extraction | ✅ done | #34 |
-| 6 | Pre-format All Display Strings | 🔲 pending | — |
-| 7 | Protocol Abstractions + Misc Cleanup | 🔲 pending | — |
+| 6 | Pre-format All Display Strings | ✅ done | #35 |
+| 7 | Protocol Abstractions + Misc Cleanup | ✅ done | #35 |
 
 ---
 
