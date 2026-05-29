@@ -28,15 +28,21 @@ public struct FDSAmount: View {
     }
 }
 
-/// Display size for `FDSAmount`. Normal maps to `amountSm`; small maps to `amountXs`.
+/// Display size for `FDSAmount`.
+/// - `small`: amountXs (13pt monospaced) — for secondary/compact use
+/// - `normal`: amountSm (15pt monospaced) — for list rows
+/// - `hero`: displayLarge (36pt bold) — for detail view hero amounts
 public enum FDSAmountSize {
-    case normal
     case small
+    case normal
+    case hero
 }
 
 private extension View {
     func applyAmountStyle(_ size: FDSAmountSize) -> some View {
         switch size {
+        case .hero:
+            return AnyView(font(AppTypography.displayLarge).lineSpacing(0))
         case .normal:
             return AnyView(font(AppTypography.amountSm.weight(.semibold)).lineSpacing(0))
         case .small:

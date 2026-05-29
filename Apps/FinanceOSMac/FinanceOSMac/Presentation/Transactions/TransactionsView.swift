@@ -7,6 +7,7 @@ struct TransactionsView: View {
     @State private var viewModel: TransactionsViewModel
     @State private var listState = TransactionListState()
     @State private var showDatePopover = false
+    @State private var showCategoryPopover = false
     @State private var selectedTransaction: TransactionRow?
     @State private var transactionPendingDelete: TransactionRow?
 
@@ -81,6 +82,7 @@ private extension TransactionsView {
             }
         }
         if let type = listState.typeFilter { rows = rows.filter { $0.transactionType == type } }
+        if let cat = listState.categoryFilter { rows = rows.filter { $0.categoryId == cat } }
         if let range = listState.dateRangeFilter?.dateRange {
             if let from = range.from { rows = rows.filter { $0.postedAt >= from } }
             if let end = range.endDate {
@@ -112,6 +114,7 @@ private extension TransactionsView {
                     FDSChip("Credits", isActive: listState.typeFilter == .credit, tone: .credit) {
                         listState.typeFilter = listState.typeFilter == .credit ? nil : .credit
                     }
+                    categoryChip
                     dateChip
                     if listState.isFilterActive {
                         Button(action: { listState.reset() }) {
@@ -131,6 +134,41 @@ private extension TransactionsView {
             }
             .animation(.spring(response: 0.25, dampingFraction: 0.8), value: listState.isFilterActive)
             Divider().opacity(0.08)
+        }
+    }
+
+    var categoryChip: some View {
+        let active = listState.categoryFilter != nil
+        let label = listState.categoryFilter.flatMap {
+            CategoryTaxonomy.current.category(forId: $0)?.displayName
+        } ?? "Category"
+        return Button { showCategoryPopover = true } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "tag").font(AppTypography.captionSmSemibold)
+                FDSLabel(label)
+                    .font(active ? AppTypography.captionLgSemibold : AppTypography.captionLg)
+                if !active { Image(systemName: "chevron.down").font(AppTypography.captionSm) }
+            }
+            .foregroundStyle(active ? AppColors.accentPurple : AppColors.textSecondary)
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.vertical, AppSpacing.compact)
+            .background {
+                Capsule()
+                    .fill(active ? AppColors.accentPurple.opacity(0.12) : AppColors.surface2)
+                    .overlay(Capsule().strokeBorder(
+                        active ? AppColors.accentPurple.opacity(0.2) : AppColors.border,
+                        lineWidth: 0.5
+                    ))
+            }
+        }
+        .buttonStyle(.plain)
+        .popover(isPresented: $showCategoryPopover, arrowEdge: .bottom) {
+            CategoryFilterPopover(
+                selectedCategoryId: Binding(
+                    get: { listState.categoryFilter },
+                    set: { listState.categoryFilter = $0; showCategoryPopover = false }
+                )
+            )
         }
     }
 
@@ -184,6 +222,7 @@ private extension TransactionsView {
                     ForEach(rows) { row in
                         Button { selectedTransaction = row } label: {
                             transactionRow(row)
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                         .listRowBackground(AppColors.surface)

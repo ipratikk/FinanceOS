@@ -7,11 +7,12 @@ import Observation
 final class TransactionListState {
     var searchQuery: String = ""
     var typeFilter: TransactionType?
+    var categoryFilter: String?
     var dateRangeFilter: DateRangeFilter?
     var availableFinancialYears: [Int] = []
 
     var isFilterActive: Bool {
-        typeFilter != nil || dateRangeFilter != nil
+        typeFilter != nil || categoryFilter != nil || dateRangeFilter != nil
     }
 
     func updateAvailableYears(from rows: [TransactionRow]) {
@@ -63,6 +64,7 @@ final class TransactionListState {
     func reset() {
         searchQuery = ""
         typeFilter = nil
+        categoryFilter = nil
         dateRangeFilter = nil
     }
 
