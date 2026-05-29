@@ -200,8 +200,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 // MARK: - Static Prediction (no actor needed — called from concurrent tasks)
 
 extension TransactionIntelligenceServiceImpl {
-    /// Stateless prediction helper used from batch processing.
-    /// Actor isolation is not required here because all inputs are value types (snapshots).
+    // Stateless prediction helper for batch processing; no actor isolation needed (all inputs are value types).
     // swiftlint:disable:next function_parameter_count
     static func buildPrediction(
         features: TransactionFeatures,

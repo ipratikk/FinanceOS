@@ -200,7 +200,7 @@ public extension Logger {
         error("\(formatted)")
     }
 
-    /// Emits a critical-level log; reserved for unrecoverable failures (database corruption, missing required resource).
+    /// Emits a critical-level log; reserved for unrecoverable failures (database corruption, missing resource).
     func logCritical(
         _ message: StaticString,
         file: String = #file,

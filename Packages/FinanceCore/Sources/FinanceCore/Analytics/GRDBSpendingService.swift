@@ -190,7 +190,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return total
     }
 
-    /// Resolves the start-of-window date for chart rendering; defaults to the earliest transaction day if `months` is nil.
+    /// Resolves start-of-window date for chart rendering; defaults to earliest transaction day if `months` is nil.
     private func resolveWindowStart(months: Int?, sortedDays: [Date], now: Date, calendar: Calendar) -> Date {
         guard let months,
               let cutoff = calendar.date(byAdding: .month, value: -months, to: now),
