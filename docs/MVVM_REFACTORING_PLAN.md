@@ -11,7 +11,7 @@ See `docs/ARCHITECTURE.md` for enforced standards this plan enforces.
 
 | Phase | Title | Status | PR |
 |-------|-------|--------|----|
-| 1 | Missing ViewModels | 🔲 pending | — |
+| 1 | Missing ViewModels | ✅ done | #30 |
 | 2 | Fix Transactions Split State | 🔲 pending | — |
 | 3 | Dashboard Cleanup | 🔲 pending | — |
 | 4 | Remove Repository Access from Views | 🔲 pending | — |
