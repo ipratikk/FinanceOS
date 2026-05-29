@@ -106,15 +106,18 @@ class DashboardViewModel: AsyncLoadable {
     private let spendingService: any SpendingServiceProtocol
     private let transactionRepository: any TransactionRepository
     private let ledgerRepository: any LedgerRepository
+    private let exportService: any ExportServiceProtocol
 
     init(
         spendingService: any SpendingServiceProtocol,
         transactionRepository: any TransactionRepository,
-        ledgerRepository: any LedgerRepository
+        ledgerRepository: any LedgerRepository,
+        exportService: any ExportServiceProtocol
     ) {
         self.spendingService = spendingService
         self.transactionRepository = transactionRepository
         self.ledgerRepository = ledgerRepository
+        self.exportService = exportService
     }
 
     func load() async {
@@ -152,11 +155,7 @@ class DashboardViewModel: AsyncLoadable {
     }
 
     func exportNetWorthCSV() -> String {
-        let header = "Date,NetWorth"
-        let rows = netWorthTimeSeries.map { point in
-            "\(FormatterCache.iso8601.string(from: point.timestamp)),\(point.netWorth)"
-        }
-        return ([header] + rows).joined(separator: "\n")
+        exportService.netWorthCSV(series: netWorthTimeSeries)
     }
 
     // MARK: - Private Mapping

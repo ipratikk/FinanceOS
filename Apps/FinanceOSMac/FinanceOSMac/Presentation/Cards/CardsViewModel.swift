@@ -33,6 +33,7 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
     private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
+    private let migrationService: any LedgerMigrationProtocol
     private let logger = FinanceLogger.userInterface
 
     var cardRows: [CardRow] = []
@@ -44,11 +45,16 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
     init(
         ledgerRepository: LedgerRepository,
         bankRepository: BankRepository,
-        transactionRepository: TransactionRepository
+        transactionRepository: TransactionRepository,
+        migrationService: (any LedgerMigrationProtocol)? = nil
     ) {
         self.ledgerRepository = ledgerRepository
         self.bankRepository = bankRepository
         self.transactionRepository = transactionRepository
+        self.migrationService = migrationService ?? LedgerMigrationService(
+            ledgerRepository: ledgerRepository,
+            transactionRepository: transactionRepository
+        )
     }
 
     func loadCards() async {
@@ -91,16 +97,7 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
 
     func convertToAccount(_ card: Ledger) async {
         do {
-            let account = Ledger(
-                id: UUID(),
-                bankId: card.bankId,
-                kind: .bankAccount,
-                displayName: card.displayName,
-                last4: card.last4
-            )
-            try await ledgerRepository.insert(account)
-            try await transactionRepository.migrateTransactions(fromCard: card.id, toAccount: account.id)
-            try await ledgerRepository.delete(id: card.id)
+            try await migrationService.convertToAccount(card)
             await loadCards()
         } catch {
             logger.logError(

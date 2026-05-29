@@ -15,6 +15,7 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
     private let transactionRepository: TransactionRepository
     private let ledgerRepository: LedgerRepository
     private let bankRepository: any BankRepository
+    private let balanceService: any AccountBalanceProtocol
 
     var transactionRows: [TransactionRow] = []
     var listState = TransactionListState()
@@ -30,11 +31,13 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
     init(
         transactionRepository: TransactionRepository,
         ledgerRepository: LedgerRepository,
-        bankRepository: any BankRepository
+        bankRepository: any BankRepository,
+        balanceService: (any AccountBalanceProtocol)? = nil
     ) {
         self.transactionRepository = transactionRepository
         self.ledgerRepository = ledgerRepository
         self.bankRepository = bankRepository
+        self.balanceService = balanceService ?? AccountBalanceService()
     }
 
     func loadTransactions(for accountID: UUID, bankId: UUID, closingBalance: Int64?) async {
@@ -73,14 +76,11 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
 
         if let closingBalance {
             let currencyCode = sorted.first?.currencyCode ?? "INR"
-            var balance = closingBalance
-            for txn in sorted {
-                runningBalances[txn.id] = MoneyFormatting.formatRunningBalance(
-                    minorUnits: balance,
-                    currencyCode: currencyCode
-                )
-                balance += txn.transactionType == .debit ? txn.amountMinorUnits : -txn.amountMinorUnits
-            }
+            runningBalances = balanceService.computeRunningBalances(
+                sortedTransactions: sorted,
+                closingBalance: closingBalance,
+                currencyCode: currencyCode
+            )
         }
 
         return sorted.map { transaction in
