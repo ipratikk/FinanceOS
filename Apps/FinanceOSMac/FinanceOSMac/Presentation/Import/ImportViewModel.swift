@@ -133,10 +133,11 @@ final class ImportViewModel {
             totalFilesToParse = importSession.fileURLs.count
             currentFileIndex = 0
             var statements: [ParsedStatement] = []
+            let parser = ImportFileParser()
 
             for fileURL in importSession.fileURLs {
                 do {
-                    let statement = try await parseFile(fileURL)
+                    let statement = try await parser.parse(fileURL: fileURL)
                     statements.append(statement)
                     currentFileIndex += 1
                 } catch let error as FinanceCore.TransactionImportError {
@@ -162,89 +163,11 @@ final class ImportViewModel {
             await loadTargetsOnAppear()
             await detectDuplicates(for: nil)
             await autoSelectMatchingTarget()
-            // Auto-advance to review step after successful parse
             currentStep = .review
             importSession.isLoading = false
             currentFileIndex = 0
             totalFilesToParse = 0
         }
-    }
-
-    private func parseFile(_ fileURL: URL) async throws -> ParsedStatement {
-        let fileName = fileURL.lastPathComponent
-
-        do {
-            let detectedSource = try StatementDetector.detect(fileURL: fileURL)
-            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
-
-            // Enhance metadata by extracting from filename
-            let filenameExtractor = FilenameMetadataExtractor()
-            let filenameMetadata = filenameExtractor.extractMetadata(from: fileName)
-
-            // Merge filename metadata as fallback
-            var statement = result.statement
-            let enhancedMetadata: FinanceParsers.StatementMetadata? = if let existingMetadata = statement.metadata {
-                mergeMetadata(parsed: existingMetadata, filename: filenameMetadata)
-            } else {
-                FinanceParsers.StatementMetadata(
-                    accountNumber: filenameMetadata.accountLast4,
-                    fullAccountNumber: filenameMetadata.accountNumber,
-                    generatedAt: filenameMetadata.statementDate
-                )
-            }
-
-            let finalAccountLast4 = enhancedMetadata?.accountNumber ?? statement.accountLast4
-            let finalCardLast4 = statement.cardLast4
-
-            statement = ParsedStatement(
-                bankName: statement.bankName,
-                accountName: statement.accountName,
-                accountLast4: finalAccountLast4,
-                cardLast4: finalCardLast4,
-                statementPeriodStart: statement.statementPeriodStart,
-                statementPeriodEnd: statement.statementPeriodEnd,
-                currency: statement.currency,
-                totalDebit: statement.totalDebit,
-                totalCredit: statement.totalCredit,
-                transactions: statement.transactions,
-                metadata: enhancedMetadata
-            )
-
-            let txnCount = statement.transactions.count
-            logger.logInfo(
-                "Parsed {file}: {count} txns from {bank}",
-                ["file": fileName, "count": txnCount, "bank": detectedSource.bankName]
-            )
-            return statement
-        } catch let error as DetectionError {
-            throw TransactionImportError.unsupportedFormat(error.description)
-        }
-    }
-
-    private func mergeMetadata(
-        parsed: FinanceParsers.StatementMetadata,
-        filename: FilenameMetadata
-    ) -> FinanceParsers.StatementMetadata {
-        return FinanceParsers.StatementMetadata(
-            customerName: parsed.customerName ?? filename.accountNumber,
-            customerId: parsed.customerId,
-            accountNumber: parsed.accountNumber ?? filename.accountLast4,
-            fullAccountNumber: parsed.fullAccountNumber ?? filename.accountNumber,
-            accountType: parsed.accountType,
-            cardType: parsed.cardType,
-            branch: parsed.branch,
-            branchCode: parsed.branchCode,
-            address: parsed.address,
-            email: parsed.email,
-            phone: parsed.phone,
-            ifsc: parsed.ifsc,
-            micr: parsed.micr,
-            openingBalance: parsed.openingBalance,
-            closingBalance: parsed.closingBalance,
-            debitCount: parsed.debitCount,
-            creditCount: parsed.creditCount,
-            generatedAt: parsed.generatedAt ?? filename.statementDate
-        )
     }
 
     func importTransactions() {

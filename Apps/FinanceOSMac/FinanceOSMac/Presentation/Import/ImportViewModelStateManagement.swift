@@ -1,6 +1,5 @@
 import FinanceCore
 import FinanceParsers
-import FinanceUI
 import Foundation
 import OSLog
 
@@ -132,59 +131,23 @@ extension ImportViewModel {
             }
         }
 
-        let (skipAll, inDB) = await detectDuplicatesOptimized(
-            parsedStatements: importSession.parsedStatements,
+        let detector = ImportDuplicateDetector()
+        let (skipAll, inDB) = detector.detect(
+            statements: importSession.parsedStatements,
             existingTransactions: existingTransactions
         )
-        duplicateTransactionIndices = skipAll
-        alreadyInDBIndices = inDB
-    }
-
-    private func detectDuplicatesOptimized(
-        parsedStatements: [ParsedStatement],
-        existingTransactions: [Transaction]
-    ) async -> (skipAll: Set<Int>, inDB: Set<Int>) {
-        var skipAll = Set<Int>()
-        var inDB = Set<Int>()
-        let existingHashes = Set(existingTransactions.map { hashTransaction($0) })
-        var seen = Set<String>()
-
-        var flatIndex = 0
-        for statement in parsedStatements {
-            for parsedTxn in statement.transactions {
-                let hash = hashParsedTransaction(parsedTxn)
-                let isFirstSeen = seen.insert(hash).inserted
-                if !isFirstSeen {
-                    skipAll.insert(flatIndex)
-                } else if existingHashes.contains(hash) {
-                    skipAll.insert(flatIndex)
-                    inDB.insert(flatIndex)
-                }
-                flatIndex += 1
-            }
-        }
 
         logger.logInfo(
             "Dedup: {indb} in DB, {batch} batch-only, {new} new",
             [
                 "indb": String(inDB.count),
                 "batch": String(skipAll.count - inDB.count),
-                "new": String(flatIndex - skipAll.count)
+                "new": String(importSession.parsedStatements.flatMap(\.transactions).count - skipAll.count)
             ]
         )
-        return (skipAll, inDB)
-    }
 
-    private func hashParsedTransaction(_ txn: ParsedTransaction) -> String {
-        txn.sourceFingerprint
-    }
-
-    private func hashTransaction(_ txn: Transaction) -> String {
-        if let fp = txn.sourceFingerprint { return fp }
-        let dateStr = FormatterCache.iso8601.string(from: Calendar.current.startOfDay(for: txn.postedAt))
-        let descStr = txn.description
-            .components(separatedBy: .whitespaces).filter { !$0.isEmpty }.joined().lowercased()
-        return "\(dateStr)|\(String(abs(txn.amountMinorUnits)))|\(descStr)"
+        duplicateTransactionIndices = skipAll
+        alreadyInDBIndices = inDB
     }
 
     func reset() {
