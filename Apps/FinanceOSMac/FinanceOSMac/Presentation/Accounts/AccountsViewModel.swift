@@ -18,6 +18,8 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
     private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
+    private let balanceService: any AccountBalanceProtocol
+    private let migrationService: any LedgerMigrationProtocol
     private let logger = FinanceLogger.userInterface
 
     struct AccountLedgerBalance {
@@ -43,11 +45,18 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
     init(
         ledgerRepository: LedgerRepository,
         bankRepository: BankRepository,
-        transactionRepository: TransactionRepository
+        transactionRepository: TransactionRepository,
+        balanceService: (any AccountBalanceProtocol)? = nil,
+        migrationService: (any LedgerMigrationProtocol)? = nil
     ) {
         self.ledgerRepository = ledgerRepository
         self.bankRepository = bankRepository
         self.transactionRepository = transactionRepository
+        self.balanceService = balanceService ?? AccountBalanceService()
+        self.migrationService = migrationService ?? LedgerMigrationService(
+            ledgerRepository: ledgerRepository,
+            transactionRepository: transactionRepository
+        )
     }
 
     func loadAccounts() async {
@@ -69,13 +78,7 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
                 let txns = try await transactionRepository.fetchTransactionsForLedger(account.id)
                 guard !txns.isEmpty else { continue }
                 let balanceDate = account.closingBalanceAsOf ?? txns.map(\.postedAt).max()
-                let balanceMinorUnits: Int64 = if let closing = account.closingBalance {
-                    closing
-                } else {
-                    txns.reduce(into: Int64(0)) { acc, txn in
-                        acc += txn.transactionType == .credit ? txn.amountMinorUnits : -txn.amountMinorUnits
-                    }
-                }
+                let balanceMinorUnits = balanceService.computeBalance(account: account, transactions: txns)
                 result[account.id] = AccountLedgerBalance(netMinorUnits: balanceMinorUnits, latestPostedAt: balanceDate)
             } catch {
                 logger.logError(
@@ -135,17 +138,7 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
 
     func convertToCard(_ account: Ledger) async {
         do {
-            let card = Ledger(
-                id: UUID(),
-                bankId: account.bankId,
-                kind: .creditCard,
-                displayName: account.displayName,
-                last4: account.last4,
-                linkedLedgerId: account.id
-            )
-            try await ledgerRepository.insert(card)
-            try await transactionRepository.migrateTransactions(fromAccount: account.id, toCard: card.id)
-            try await ledgerRepository.delete(id: account.id)
+            try await migrationService.convertToCard(account)
             await loadAccounts()
         } catch {
             logger.logError(

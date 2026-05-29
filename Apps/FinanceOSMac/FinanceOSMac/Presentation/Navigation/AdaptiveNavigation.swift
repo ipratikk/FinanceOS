@@ -25,7 +25,8 @@ struct AdaptiveNavigation: View {
             DashboardView(viewModel: DashboardViewModel(
                 spendingService: appContainer.spendingService,
                 transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                ledgerRepository: appContainer.ledgerRepository,
+                exportService: ExportService()
             ))
             .tabItem {
                 Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
@@ -115,7 +116,8 @@ struct DetailRouter: View {
             DashboardView(viewModel: DashboardViewModel(
                 spendingService: appContainer.spendingService,
                 transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                ledgerRepository: appContainer.ledgerRepository,
+                exportService: ExportService()
             ))
         case .transactions:
             TransactionsView(
@@ -152,7 +154,8 @@ struct DetailRouter: View {
             AnalyticsView(viewModel: AnalyticsViewModel(
                 spendingService: appContainer.spendingService,
                 transactionRepository: appContainer.transactionRepository,
-                intelligenceService: intelligence
+                intelligenceService: intelligence,
+                aggregator: AnalyticsAggregatorService()
             ))
         case .importStatement:
             ImportView(
