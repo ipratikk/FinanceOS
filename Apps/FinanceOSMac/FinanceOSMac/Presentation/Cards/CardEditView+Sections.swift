@@ -10,25 +10,25 @@ extension CardEditView {
             Spacer()
 
             VStack(alignment: .leading, spacing: AppSpacing.compact) {
-                FDSLabel(titleText)
+                FDSLabel(viewModel.titleText)
                     .font(AppTypography.headingXL)
                     .foregroundStyle(AppColors.Text.primary)
-                FDSLabel(subtitleText)
+                FDSLabel(viewModel.subtitleText)
                     .font(AppTypography.bodyMd)
                     .foregroundStyle(AppColors.Text.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             CardDisplayPreview(
-                cardName: selectedCatalogCard?.name,
-                cardNickName: form.customName,
-                bankName: form.selectedBank?.displayName,
-                selectedBank: form.selectedBank,
-                cardholderName: form.cardholderName,
-                cardNetwork: form.cardType,
-                first4: form.first4,
-                last4: form.last4,
-                bankLogo: form.selectedBank?.logoAssetName
+                cardName: viewModel.selectedCatalogCard?.name,
+                cardNickName: viewModel.form.customName,
+                bankName: viewModel.form.selectedBank?.displayName,
+                selectedBank: viewModel.form.selectedBank,
+                cardholderName: viewModel.form.cardholderName,
+                cardNetwork: viewModel.form.cardType,
+                first4: viewModel.form.first4,
+                last4: viewModel.form.last4,
+                bankLogo: viewModel.form.selectedBank?.logoAssetName
             )
 
             HStack(spacing: AppSpacing.md) {
@@ -82,16 +82,16 @@ extension CardEditView {
     var scrollContent: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: AppSpacing.md) {
-                if isCard {
+                if viewModel.isCard {
                     catalogModeTabs
-                    if catalogMode { catalogPickerSection }
+                    if viewModel.catalogMode { catalogPickerSection }
                     cardCommonFields
                     bankSurface
                     securityChip
                 } else {
                     accountBasicFields
                     bankSurface
-                    if isEdit { dangerZoneSection }
+                    if viewModel.isEdit { dangerZoneSection }
                 }
             }
             .padding(AppSpacing.md)
@@ -103,8 +103,8 @@ extension CardEditView {
     var catalogModeTabs: some View {
         FDSChoiceGroup(
             selection: Binding(
-                get: { catalogMode ? "CATALOG" : "MANUAL" },
-                set: { catalogMode = $0 == "CATALOG" }
+                get: { viewModel.catalogMode ? "CATALOG" : "MANUAL" },
+                set: { viewModel.catalogMode = $0 == "CATALOG" }
             ),
             options: ["CATALOG", "MANUAL"],
             optionLabel: { $0 }
@@ -120,14 +120,16 @@ extension CardEditView {
                 .tracking(1.0)
                 .foregroundStyle(AppColors.Text.secondary)
 
-            Button(action: { showCardSelection = true }, label: {
+            Button(action: { viewModel.showCardSelection = true }, label: {
                 HStack(spacing: AppSpacing.compact) {
                     Image(systemName: "magnifyingglass")
                         .font(AppTypography.captionSm)
                         .foregroundStyle(AppColors.Text.tertiary)
                     FDSLabel(catalogPickerLabel)
                         .font(AppTypography.bodyMd)
-                        .foregroundStyle(form.cardProductId.isEmpty ? AppColors.Text.tertiary : AppColors.Text.primary)
+                        .foregroundStyle(
+                            viewModel.form.cardProductId.isEmpty ? AppColors.Text.tertiary : AppColors.Text.primary
+                        )
                     Spacer()
                     Image(systemName: "chevron.down")
                         .font(AppTypography.captionSmMedium)
@@ -150,7 +152,7 @@ extension CardEditView {
     }
 
     private var catalogPickerLabel: String {
-        guard let card = selectedCatalogCard else { return "Select a card..." }
+        guard let card = viewModel.selectedCatalogCard else { return "Select a card..." }
         return card.issuer.isEmpty ? card.name : "\(card.issuer) - \(card.name)"
     }
 
@@ -158,15 +160,15 @@ extension CardEditView {
 
     var cardCommonFields: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            inputField("CARD NICKNAME", placeholder: "e.g. Primary Travel Card", text: $form.nickname)
-            inputField("CARDHOLDER NAME", placeholder: "Full name on card", text: $form.cardholderName)
+            inputField("CARD NICKNAME", placeholder: "e.g. Primary Travel Card", text: $viewModel.form.nickname)
+            inputField("CARDHOLDER NAME", placeholder: "Full name on card", text: $viewModel.form.cardholderName)
             HStack(spacing: AppSpacing.md) {
-                inputField("FIRST 4 DIGITS", placeholder: "4242", text: $form.first4)
+                inputField("FIRST 4 DIGITS", placeholder: "4242", text: $viewModel.form.first4)
                     .frame(maxWidth: .infinity)
-                inputField("LAST 4 DIGITS", placeholder: "9012", text: $form.last4)
+                inputField("LAST 4 DIGITS", placeholder: "9012", text: $viewModel.form.last4)
                     .frame(maxWidth: .infinity)
-                    .onChange(of: form.last4) { _, newValue in
-                        if newValue.count > 4 { form.last4 = String(newValue.prefix(4)) }
+                    .onChange(of: viewModel.form.last4) { _, newValue in
+                        if newValue.count > 4 { viewModel.form.last4 = String(newValue.prefix(4)) }
                     }
             }
             networkPickerRow
@@ -181,8 +183,8 @@ extension CardEditView {
                 .foregroundStyle(AppColors.Text.secondary)
             FDSPicker(
                 selection: Binding<CardNetwork?>(
-                    get: { form.cardType },
-                    set: { if let net = $0 { form.cardType = net } }
+                    get: { viewModel.form.cardType },
+                    set: { if let net = $0 { viewModel.form.cardType = net } }
                 ),
                 options: cardTypeOptions,
                 variant: .symbolText,
@@ -195,11 +197,11 @@ extension CardEditView {
 
     var accountBasicFields: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            inputField("ACCOUNT NAME", placeholder: "Optional", text: $form.customName)
-            inputField("ACCOUNT HOLDER", placeholder: "Full name", text: $form.cardholderName)
-            inputField("LAST 4 DIGITS", placeholder: "XXXX", text: $form.last4)
-                .onChange(of: form.last4) { _, newValue in
-                    if newValue.count > 4 { form.last4 = String(newValue.prefix(4)) }
+            inputField("ACCOUNT NAME", placeholder: "Optional", text: $viewModel.form.customName)
+            inputField("ACCOUNT HOLDER", placeholder: "Full name", text: $viewModel.form.cardholderName)
+            inputField("LAST 4 DIGITS", placeholder: "XXXX", text: $viewModel.form.last4)
+                .onChange(of: viewModel.form.last4) { _, newValue in
+                    if newValue.count > 4 { viewModel.form.last4 = String(newValue.prefix(4)) }
                 }
             accountTypeField()
         }
@@ -246,7 +248,7 @@ extension CardEditView {
 
     var dangerZoneSection: some View {
         FDSLiquidButton("Delete Account", leadingIcon: "trash.fill", variant: .danger) {
-            showDeleteConfirm = true
+            viewModel.showDeleteConfirm = true
         }
     }
 
@@ -256,13 +258,13 @@ extension CardEditView {
         VStack(spacing: 0) {
             VStack(spacing: AppSpacing.md) {
                 HStack(spacing: AppSpacing.md) {
-                    if isEdit, isCard {
+                    if viewModel.isEdit, viewModel.isCard {
                         FDSLiquidButton(
                             "Delete Card",
                             leadingIcon: "trash",
                             variant: .danger,
                             fullWidth: true,
-                            action: { showDeleteConfirm = true }
+                            action: { viewModel.showDeleteConfirm = true }
                         )
                     }
                     primaryActionButton
@@ -274,21 +276,16 @@ extension CardEditView {
     }
 
     @ViewBuilder var primaryActionButton: some View {
-        switch mode {
-        case let .edit(card, context):
+        if viewModel.isEdit {
             FDSLiquidButton("Save", trailingIcon: "arrow.right", variant: .primary, fullWidth: true) {
-                Task {
-                    await commitEdit(card: card, context: context)
-                    dismiss()
-                }
+                Task { await viewModel.commitEdit() }
             }
-            .disabled(form.last4.trimmingCharacters(in: .whitespaces).isEmpty)
-        case let .createCard(_, onCommit), let .createAccount(_, onCommit):
+            .disabled(viewModel.form.last4.trimmingCharacters(in: .whitespaces).isEmpty)
+        } else {
             FDSLiquidButton("Create", trailingIcon: "arrow.right", variant: .primary, fullWidth: true) {
-                onCommit(buildCreationState())
-                dismiss()
+                viewModel.triggerCreate()
             }
-            .disabled(form.last4.trimmingCharacters(in: .whitespaces).isEmpty)
+            .disabled(viewModel.form.last4.trimmingCharacters(in: .whitespaces).isEmpty)
         }
     }
 
@@ -297,18 +294,18 @@ extension CardEditView {
     var cardSelectionSheet: some View {
         CardSelectionView(
             onSelect: { card in
-                if form.customName.trimmingCharacters(in: .whitespaces).isEmpty {
-                    form.customName = card.name
+                if viewModel.form.customName.trimmingCharacters(in: .whitespaces).isEmpty {
+                    viewModel.form.customName = card.name
                 }
-                form.cardType = card.cardType
-                form.cardProductId = card.id
-                form.selectedBank = Banks.allCases.first { bank in
+                viewModel.form.cardType = card.cardType
+                viewModel.form.cardProductId = card.id
+                viewModel.form.selectedBank = Banks.allCases.first { bank in
                     card.issuer.localizedCaseInsensitiveContains(bank.displayName) ||
                         bank.displayName.localizedCaseInsensitiveContains(card.issuer)
                 }
-                showCardSelection = false
+                viewModel.showCardSelection = false
             },
-            onDismiss: { showCardSelection = false }
+            onDismiss: { viewModel.showCardSelection = false }
         )
         .frame(minWidth: 700, maxHeight: 500)
     }

@@ -4,18 +4,9 @@ import SwiftUI
 
 struct CardSelectionView: View {
     @State private var selectedCard: CardMetadata?
-    @State private var searchText: String = ""
-    @State private var allCards: [CardMetadata] = []
-    @State private var allIssuers: [String] = []
-    @State private var selectedIssuer: String?
+    @State private var viewModel = CardSelectionViewModel()
     var onSelect: (CardMetadata) -> Void
     var onDismiss: () -> Void
-
-    var filteredCards: [CardMetadata] {
-        let base = selectedIssuer.map { issuer in allCards.filter { $0.issuer == issuer } } ?? allCards
-        guard !searchText.isEmpty else { return base }
-        return base.filter { $0.name.lowercased().contains(searchText.lowercased()) }
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -29,8 +20,7 @@ struct CardSelectionView: View {
         .glassSurface(radius: 20, lifted: true)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .onAppear {
-            allCards = CardDatabase.supportedCards()
-            allIssuers = CardDatabase.issuers()
+            viewModel.load()
         }
     }
 
@@ -54,10 +44,10 @@ struct CardSelectionView: View {
             Image(systemName: "magnifyingglass")
                 .font(AppTypography.captionLgSemibold)
                 .foregroundStyle(.tertiary)
-            FDSTextInput("Search cards", text: $searchText, style: .bodyMedium)
+            FDSTextInput("Search cards", text: $viewModel.searchText, style: .bodyMedium)
                 .textFieldStyle(.plain)
-            if !searchText.isEmpty {
-                Button(action: { searchText = "" }, label: {
+            if !viewModel.searchText.isEmpty {
+                Button(action: { viewModel.searchText = "" }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(AppTypography.captionLg)
                         .foregroundStyle(.tertiary)
@@ -76,9 +66,11 @@ struct CardSelectionView: View {
     private var issuerChipRow: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: AppSpacing.compact) {
-                issuerChip("All", selected: selectedIssuer == nil) { selectedIssuer = nil }
-                ForEach(allIssuers, id: \.self) { issuer in
-                    issuerChip(issuer, selected: selectedIssuer == issuer) { selectedIssuer = issuer }
+                issuerChip("All", selected: viewModel.selectedIssuer == nil) { viewModel.selectedIssuer = nil }
+                ForEach(viewModel.allIssuers, id: \.self) { issuer in
+                    issuerChip(issuer, selected: viewModel.selectedIssuer == issuer) {
+                        viewModel.selectedIssuer = issuer
+                    }
                 }
             }
             .padding(.horizontal, AppSpacing.md)
@@ -112,7 +104,7 @@ struct CardSelectionView: View {
     private var cardList: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: AppSpacing.compact) {
-                ForEach(filteredCards) { card in
+                ForEach(viewModel.filteredCards) { card in
                     cardRow(card)
                 }
             }

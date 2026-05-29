@@ -9,14 +9,12 @@ struct TransactionDetailView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.transactionIntelligence) private var intelligence
     @State private var showCategoryPicker = false
-    @State private var displayCategoryId: String?
-    @State private var displayIsUserCorrected: Bool
+    @State private var viewModel: TransactionDetailViewModel
 
     init(row: TransactionRow, onCorrected: ((UUID, String) -> Void)? = nil) {
         self.row = row
         self.onCorrected = onCorrected
-        _displayCategoryId = State(initialValue: row.categoryId)
-        _displayIsUserCorrected = State(initialValue: row.isUserCorrected)
+        _viewModel = State(initialValue: TransactionDetailViewModel(row: row))
     }
 
     var body: some View {
@@ -55,7 +53,7 @@ private extension TransactionDetailView {
                 HStack(spacing: AppSpacing.md) {
                     FDSMerchantAvatar(
                         name: row.displayTitle,
-                        symbol: CategorySymbol.symbol(for: displayCategoryId),
+                        symbol: viewModel.categorySymbol,
                         imageName: nil,
                         size: FDSAvatarSize.hero.value
                     )
@@ -64,7 +62,7 @@ private extension TransactionDetailView {
                             .font(AppTypography.headingMd)
                             .foregroundStyle(AppColors.textPrimary)
                             .lineLimit(2)
-                        if let catId = displayCategoryId {
+                        if let catId = viewModel.categoryId {
                             categoryBadge(catId)
                         }
                     }
@@ -111,7 +109,7 @@ private extension TransactionDetailView {
             dateTimeSection
             sourceSection
             categorySection
-            if row.title != row.displayTitle {
+            if viewModel.showNarration {
                 narrationSection
             }
         }
@@ -119,9 +117,9 @@ private extension TransactionDetailView {
 
     var dateTimeSection: some View {
         sectionCard(header: "Date & Time") {
-            infoRow(icon: "calendar", label: FormatterCache.fullDayDate.string(from: row.postedAt))
+            infoRow(icon: "calendar", label: viewModel.postedDateText)
             Divider().opacity(0.1)
-            infoRow(icon: "clock", label: FormatterCache.dayAndTime.string(from: row.postedAt))
+            infoRow(icon: "clock", label: viewModel.postedTimeText)
         }
     }
 
@@ -135,17 +133,15 @@ private extension TransactionDetailView {
         sectionCard(header: "Category") {
             HStack(spacing: AppSpacing.md) {
                 FDSCategoryGlyph(
-                    displayCategoryId ?? "other",
-                    icon: CategorySymbol.symbol(for: displayCategoryId),
+                    viewModel.categoryId ?? "other",
+                    icon: viewModel.categorySymbol,
                     size: 36
                 )
                 VStack(alignment: .leading, spacing: 3) {
-                    let catName = CategoryTaxonomy.current.category(forId: displayCategoryId ?? "")?.displayName
-                        ?? (displayCategoryId?.capitalized ?? "Uncategorized")
-                    FDSLabel(catName)
+                    FDSLabel(viewModel.categoryDisplayName)
                         .font(AppTypography.bodySmMedium)
                         .foregroundStyle(AppColors.textPrimary)
-                    if displayIsUserCorrected {
+                    if viewModel.isUserCorrected {
                         HStack(spacing: 4) {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(AppTypography.captionSm)
@@ -197,8 +193,7 @@ private extension TransactionDetailView {
         CategoryPickerDestination(
             row: row,
             onCorrected: { id, catId in
-                displayCategoryId = catId
-                displayIsUserCorrected = true
+                viewModel.applyCorrection(transactionId: id, newCategoryId: catId)
                 onCorrected?(id, catId)
                 showCategoryPicker = false
             }
@@ -236,9 +231,8 @@ private extension TransactionDetailView {
     }
 
     func categoryBadge(_ categoryId: String) -> some View {
-        let label = CategoryTaxonomy.current.category(forId: categoryId)?.displayName
-            ?? categoryId.capitalized
-        let color = CategorySymbol.color(for: categoryId)
+        let label = viewModel.categoryDisplayName
+        let color = viewModel.categoryColor
         return FDSLabel(label.uppercased())
             .font(AppTypography.captionSmSemibold)
             .foregroundStyle(color)

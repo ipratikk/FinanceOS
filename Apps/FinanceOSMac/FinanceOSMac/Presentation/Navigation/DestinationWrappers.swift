@@ -3,17 +3,29 @@ import FinanceUI
 import SwiftUI
 
 struct AccountTransactionsDestinationView: View {
-    let ledgerId: UUID
     let transactionRepository: any TransactionRepository
     let ledgerRepository: any LedgerRepository
     let bankRepository: any BankRepository
+    @State private var viewModel: AccountTransactionsDestinationViewModel
 
-    @State private var ledger: Ledger?
-    @State private var isLoading = true
+    init(
+        ledgerId: UUID,
+        transactionRepository: any TransactionRepository,
+        ledgerRepository: any LedgerRepository,
+        bankRepository: any BankRepository
+    ) {
+        self.transactionRepository = transactionRepository
+        self.ledgerRepository = ledgerRepository
+        self.bankRepository = bankRepository
+        _viewModel = State(initialValue: AccountTransactionsDestinationViewModel(
+            ledgerId: ledgerId,
+            ledgerRepository: ledgerRepository
+        ))
+    }
 
     var body: some View {
         Group {
-            if let ledger {
+            if let ledger = viewModel.ledger {
                 AccountTransactionsView(
                     ledger: ledger,
                     viewModel: AccountTransactionsViewModel(
@@ -23,43 +35,39 @@ struct AccountTransactionsDestinationView: View {
                     )
                 )
                 .navigationTitle(ledger.displayName)
-            } else if !isLoading {
+            } else if !viewModel.isLoading {
                 FDSLabel("Account not found")
             } else {
                 ProgressView()
             }
         }
         .task {
-            await loadLedger()
+            await viewModel.load()
         }
-    }
-
-    private func loadLedger() async {
-        do {
-            let ledgers = try await ledgerRepository.fetchLedgers()
-            ledger = ledgers.first(where: { $0.id == ledgerId })
-        } catch {
-            FinanceLogger.userInterface.logError(
-                "Error loading ledger: {error}",
-                caughtError: error,
-                ["error": error.localizedDescription]
-            )
-        }
-        isLoading = false
     }
 }
 
 struct CardTransactionsDestinationView: View {
-    let ledgerId: UUID
     let transactionRepository: any TransactionRepository
     let ledgerRepository: any LedgerRepository
+    @State private var viewModel: CardTransactionsDestinationViewModel
 
-    @State private var ledger: Ledger?
-    @State private var isLoading = true
+    init(
+        ledgerId: UUID,
+        transactionRepository: any TransactionRepository,
+        ledgerRepository: any LedgerRepository
+    ) {
+        self.transactionRepository = transactionRepository
+        self.ledgerRepository = ledgerRepository
+        _viewModel = State(initialValue: CardTransactionsDestinationViewModel(
+            ledgerId: ledgerId,
+            ledgerRepository: ledgerRepository
+        ))
+    }
 
     var body: some View {
         Group {
-            if let ledger {
+            if let ledger = viewModel.ledger {
                 CardTransactionsView(
                     ledger: ledger,
                     viewModel: CardTransactionsViewModel(
@@ -67,36 +75,31 @@ struct CardTransactionsDestinationView: View {
                     )
                 )
                 .navigationTitle(ledger.displayName)
-            } else if !isLoading {
+            } else if !viewModel.isLoading {
                 FDSLabel("Card not found")
             } else {
                 ProgressView()
             }
         }
         .task {
-            await loadLedger()
+            await viewModel.load()
         }
-    }
-
-    private func loadLedger() async {
-        do {
-            let ledgers = try await ledgerRepository.fetchLedgers()
-            ledger = ledgers.first(where: { $0.id == ledgerId })
-        } catch {
-            FinanceLogger.userInterface.logError(
-                "Error loading ledger: {error}",
-                caughtError: error,
-                ["error": error.localizedDescription]
-            )
-        }
-        isLoading = false
     }
 }
 
 struct LedgerDetailDestinationView: View {
-    let ledgerId: UUID
+    @State private var viewModel: LedgerDetailViewModel
+
+    init(ledgerId: UUID) {
+        let container = AppContainer.shared
+        _viewModel = State(initialValue: LedgerDetailViewModel(
+            ledgerId: ledgerId,
+            ledgerRepository: container.ledgerRepository,
+            bankRepository: container.bankRepository
+        ))
+    }
 
     var body: some View {
-        LedgerDetailView(ledgerId: ledgerId)
+        LedgerDetailView(viewModel: viewModel)
     }
 }
