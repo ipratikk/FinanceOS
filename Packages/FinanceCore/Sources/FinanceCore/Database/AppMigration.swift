@@ -42,5 +42,13 @@ enum AppMigration {
                 if !hasMerchant { table.add(column: "merchantName", .text) }
             }
         }
+
+        migrator.registerMigration("v9_add_transaction_closing_balance") { database in
+            let cols = try database.columns(in: "transactions")
+            guard !cols.contains(where: { $0.name == "closingBalanceMinorUnits" }) else { return }
+            try database.alter(table: "transactions") { table in
+                table.add(column: "closingBalanceMinorUnits", .integer)
+            }
+        }
     }
 }

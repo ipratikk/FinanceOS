@@ -81,6 +81,7 @@ public struct HDFCBankTXTParser: Sendable {
         for line in lines {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             if trimmed.contains("**Continue**") || trimmed.contains("** Continue **") { continue }
+            if line.hasPrefix("****") { break }
             if line.hasPrefix("--------  ---") {
                 seenSeparatorCount += 1
                 if seenSeparatorCount % 2 == 0 { pastData = true }
@@ -90,10 +91,10 @@ public struct HDFCBankTXTParser: Sendable {
             if trimmed.isEmpty { continue }
 
             let dateField = extractField(line, ranges[0])
-            if !dateField.isEmpty {
+            if isDateString(dateField) {
                 flush()
                 pending = ranges.map { extractField(line, $0) }
-            } else {
+            } else if dateField.isEmpty {
                 appendContinuation(line, to: &pending, ranges: ranges)
             }
         }

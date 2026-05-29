@@ -28,13 +28,15 @@ public struct SBIBankCSVNormalizer: Sendable {
         let description = descStr.trimmingCharacters(in: .whitespaces)
 
         let fingerprint = "\(dateStr)|\(description)|\(creditMinorUnits)|\(debitMinorUnits)"
+        let closingBalance = normalizedRow[.balance].flatMap { AmountParser.parseToInt64($0) }
 
         return ParsedTransaction(
             postedAt: date,
             description: description,
             amountMinorUnits: amount,
             currencyCode: "INR",
-            sourceFingerprint: fingerprint
+            sourceFingerprint: fingerprint,
+            closingBalanceMinorUnits: closingBalance
         )
     }
 }

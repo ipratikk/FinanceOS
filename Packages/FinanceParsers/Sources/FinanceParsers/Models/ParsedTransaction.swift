@@ -8,6 +8,7 @@ public struct ParsedTransaction: Codable, Sendable, Equatable {
     public let currencyCode: String
     public let sourceFingerprint: String
     public let rewardPoints: Int64?
+    public let closingBalanceMinorUnits: Int64?
 
     public init(
         postedAt: Date,
@@ -15,7 +16,8 @@ public struct ParsedTransaction: Codable, Sendable, Equatable {
         amountMinorUnits: Int64,
         currencyCode: String,
         sourceFingerprint: String,
-        rewardPoints: Int64? = nil
+        rewardPoints: Int64? = nil,
+        closingBalanceMinorUnits: Int64? = nil
     ) {
         id = UUID()
         self.postedAt = postedAt
@@ -24,10 +26,12 @@ public struct ParsedTransaction: Codable, Sendable, Equatable {
         self.currencyCode = currencyCode
         self.sourceFingerprint = sourceFingerprint
         self.rewardPoints = rewardPoints
+        self.closingBalanceMinorUnits = closingBalanceMinorUnits
     }
 
     enum CodingKeys: String, CodingKey {
         case id, postedAt, description, amountMinorUnits, currencyCode, sourceFingerprint, rewardPoints
+        case closingBalanceMinorUnits
     }
 
     public static func == (lhs: ParsedTransaction, rhs: ParsedTransaction) -> Bool {
@@ -36,6 +40,7 @@ public struct ParsedTransaction: Codable, Sendable, Equatable {
             lhs.amountMinorUnits == rhs.amountMinorUnits &&
             lhs.currencyCode == rhs.currencyCode &&
             lhs.sourceFingerprint == rhs.sourceFingerprint &&
-            lhs.rewardPoints == rhs.rewardPoints
+            lhs.rewardPoints == rhs.rewardPoints &&
+            lhs.closingBalanceMinorUnits == rhs.closingBalanceMinorUnits
     }
 }

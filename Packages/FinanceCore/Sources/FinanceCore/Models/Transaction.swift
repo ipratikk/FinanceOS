@@ -33,6 +33,8 @@ public struct Transaction:
     public let categoryId: String?
     /// Canonical merchant name resolved by MerchantNormalizer.
     public let merchantName: String?
+    /// Account closing balance (in minor units) after this transaction, from bank statements with a running balance.
+    public let closingBalanceMinorUnits: Int64?
 
     public init(
         id: UUID = UUID(),
@@ -46,7 +48,8 @@ public struct Transaction:
         transactionType: TransactionType = .debit,
         sourceFingerprint: String? = nil,
         categoryId: String? = nil,
-        merchantName: String? = nil
+        merchantName: String? = nil,
+        closingBalanceMinorUnits: Int64? = nil
     ) {
         self.id = id
         self.ledgerId = ledgerId
@@ -60,6 +63,7 @@ public struct Transaction:
         self.sourceFingerprint = sourceFingerprint
         self.categoryId = categoryId
         self.merchantName = merchantName
+        self.closingBalanceMinorUnits = closingBalanceMinorUnits
     }
 }
 
@@ -77,6 +81,7 @@ public extension Transaction {
         static let sourceFingerprint = Column(CodingKeys.sourceFingerprint)
         static let categoryId = Column(CodingKeys.categoryId)
         static let merchantName = Column(CodingKeys.merchantName)
+        static let closingBalanceMinorUnits = Column(CodingKeys.closingBalanceMinorUnits)
     }
 }
 
@@ -124,6 +129,8 @@ public extension Transaction {
                 .defaults(to: "debit")
 
             table.column("sourceFingerprint", .text)
+
+            table.column("closingBalanceMinorUnits", .integer)
 
             table.uniqueKey(["ledgerId", "sourceFingerprint"])
         }
