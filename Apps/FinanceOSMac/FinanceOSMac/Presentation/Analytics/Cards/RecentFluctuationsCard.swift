@@ -3,7 +3,7 @@ import FinanceUI
 import SwiftUI
 
 struct RecentFluctuationsCard: View {
-    let transactions: [FinanceCore.Transaction]
+    let transactions: [FluctuationRow]
 
     var body: some View {
         FDSCard(cornerRadius: 16, padded: false) {
@@ -37,8 +37,8 @@ struct RecentFluctuationsCard: View {
 
     private var fluctuationList: some View {
         VStack(spacing: 0) {
-            ForEach(Array(transactions.enumerated()), id: \.element.id) { idx, txn in
-                fluctuationRow(txn)
+            ForEach(Array(transactions.enumerated()), id: \.element.id) { idx, row in
+                fluctuationRow(row)
                 if idx < transactions.count - 1 {
                     Divider().opacity(0.12).padding(.horizontal, AppSpacing.md)
                 }
@@ -47,30 +47,29 @@ struct RecentFluctuationsCard: View {
         .padding(.bottom, AppSpacing.sm)
     }
 
-    private func fluctuationRow(_ txn: FinanceCore.Transaction) -> some View {
+    private func fluctuationRow(_ row: FluctuationRow) -> some View {
         HStack(spacing: AppSpacing.md) {
-            fluctuationIcon(txn)
+            fluctuationIcon(isDebit: row.isDebit)
             VStack(alignment: .leading, spacing: 2) {
-                FDSLabel(txn.merchantName ?? txn.description)
+                FDSLabel(row.merchantName)
                     .font(AppTypography.bodySmMedium)
                     .foregroundStyle(AppColors.Text.primary)
                     .lineLimit(1)
-                FDSLabel("\(formatDate(txn.postedAt)) · \(txn.currencyCode)")
+                FDSLabel("\(row.dateText) · \(row.currencyCode)")
                     .font(AppTypography.captionSm)
                     .foregroundStyle(AppColors.Text.tertiary)
             }
             Spacer()
-            FDSLabel(formatAmount(txn))
+            FDSLabel(row.amountText)
                 .font(AppTypography.bodySmSemibold)
-                .foregroundStyle(txn.transactionType == .debit ? AppColors.Text.primary : AppColors.accentGreen)
+                .foregroundStyle(row.isDebit ? AppColors.Text.primary : AppColors.accentGreen)
                 .monospacedDigit()
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.vertical, AppSpacing.sm)
     }
 
-    private func fluctuationIcon(_ txn: FinanceCore.Transaction) -> some View {
-        let isDebit = txn.transactionType == .debit
+    private func fluctuationIcon(isDebit: Bool) -> some View {
         let color: Color = isDebit ? AppColors.danger : AppColors.accentGreen
         return ZStack {
             Circle()
@@ -88,13 +87,5 @@ struct RecentFluctuationsCard: View {
             .foregroundStyle(AppColors.Text.tertiary)
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(AppSpacing.xl)
-    }
-
-    private func formatDate(_ date: Date) -> String {
-        FormatterCache.dayMonthCommaYear.string(from: date)
-    }
-
-    private func formatAmount(_ txn: FinanceCore.Transaction) -> String {
-        MoneyFormatting.formatWithSign(minorUnits: txn.amountMinorUnits, isDebit: txn.transactionType == .debit)
     }
 }

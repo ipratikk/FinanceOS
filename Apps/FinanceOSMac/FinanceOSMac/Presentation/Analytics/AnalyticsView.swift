@@ -36,7 +36,8 @@ struct AnalyticsView: View {
         HStack(alignment: .top, spacing: AppSpacing.md) {
             SpendingTrendCard(
                 summaries: viewModel.monthlySummaries,
-                totalOutflow: viewModel.totalOutflow,
+                totalOutflowText: viewModel.totalOutflowText,
+                periodLabel: viewModel.periodLabel,
                 outflowChange: viewModel.outflowChange
             )
             CategoriesCard(items: viewModel.categorySpend)

@@ -5,7 +5,8 @@ import SwiftUI
 
 struct SpendingTrendCard: View {
     let summaries: [MonthlySpendingSummary]
-    let totalOutflow: Int64
+    let totalOutflowText: String
+    let periodLabel: String
     let outflowChange: Double?
 
     var body: some View {
@@ -26,7 +27,7 @@ struct SpendingTrendCard: View {
                     .tracking(1.0)
                     .foregroundStyle(AppColors.Text.secondary)
                 HStack(alignment: .firstTextBaseline, spacing: AppSpacing.compact) {
-                    FDSLabel(formattedTotal)
+                    FDSLabel(totalOutflowText)
                         .font(AppTypography.headingLg)
                         .foregroundStyle(AppColors.Text.primary)
                         .monospacedDigit()
@@ -95,17 +96,5 @@ struct SpendingTrendCard: View {
             .padding(.vertical, 4)
             .background(color)
             .cornerRadius(6)
-    }
-
-    private var formattedTotal: String {
-        MoneyFormatting.formatRounded(minorUnits: totalOutflow)
-    }
-
-    private var periodLabel: String {
-        guard let first = summaries.first?.id, let last = summaries.last?.id else { return "" }
-        let year = Calendar.current.component(.year, from: last)
-        let firstLabel = FormatterCache.shortMonth.string(from: first).uppercased()
-        let lastLabel = FormatterCache.shortMonth.string(from: last).uppercased()
-        return "\(firstLabel)-\(lastLabel) \(year)"
     }
 }

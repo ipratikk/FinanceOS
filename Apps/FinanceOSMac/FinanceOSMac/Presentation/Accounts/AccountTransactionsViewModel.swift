@@ -6,6 +6,7 @@
 //
 
 import FinanceCore
+import FinanceUI
 import Foundation
 import Observation
 
@@ -26,6 +27,16 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
 
     var sections: [TransactionSection] {
         listState.sections(from: transactionRows)
+    }
+
+    func closingBalanceText(for ledger: Ledger) -> String? {
+        guard let balance = ledger.closingBalance else { return nil }
+        return MoneyFormatting.formatRunningBalance(minorUnits: balance)
+    }
+
+    func closingDateText(for ledger: Ledger) -> String? {
+        guard let date = ledger.closingBalanceAsOf else { return nil }
+        return FormatterCache.dayMonthYear.string(from: date)
     }
 
     init(
