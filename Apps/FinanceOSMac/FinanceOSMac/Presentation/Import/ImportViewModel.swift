@@ -23,6 +23,7 @@ final class ImportViewModel {
     let bankRepository: any BankRepository
     let ledgerRepository: any LedgerRepository
     let transactionRepository: any TransactionRepository
+    let categorizationScheduler: CategorizationScheduler?
 
     var ledgers: [Ledger] = []
     var banks: [Bank] = []
@@ -83,13 +84,15 @@ final class ImportViewModel {
         bankRepository: any BankRepository,
         ledgerRepository: any LedgerRepository,
         transactionRepository: any TransactionRepository,
-        initialTarget: TransactionImportTarget? = nil
+        initialTarget: TransactionImportTarget? = nil,
+        categorizationScheduler: CategorizationScheduler? = nil
     ) {
         importSession = ImportSession()
         self.transactionImportPipeline = transactionImportPipeline
         self.bankRepository = bankRepository
         self.ledgerRepository = ledgerRepository
         self.transactionRepository = transactionRepository
+        self.categorizationScheduler = categorizationScheduler
         accountMatcher = AccountMatcher(
             ledgerRepository: ledgerRepository,
             bankRepository: bankRepository
@@ -200,6 +203,11 @@ final class ImportViewModel {
                 lastImportResult = result
                 resetToSource()
                 importSession.isLoading = false
+                if let scheduler = categorizationScheduler {
+                    Task.detached(priority: .background) {
+                        await scheduler.run()
+                    }
+                }
                 Task {
                     try? await Task.sleep(for: .seconds(4))
                     lastImportResult = nil

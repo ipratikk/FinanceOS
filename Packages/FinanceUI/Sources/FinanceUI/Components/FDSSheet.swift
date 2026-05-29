@@ -81,10 +81,7 @@ public struct FDSSheet<Content: View>: View {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .strokeBorder(AppColors.border, lineWidth: 0.5)
             }
-            .scaleEffect(0.985)
-            .opacity(0.95)
-            .transition(.scale(scale: 0.985).combined(with: .opacity))
-            .animation(.easeOut(duration: 0.2), value: UUID())
+            .transition(.scale(scale: 0.96).combined(with: .opacity))
         }
     }
 

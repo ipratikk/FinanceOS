@@ -9,126 +9,242 @@ struct TransactionDetailView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.transactionIntelligence) private var intelligence
     @State private var showCategoryPicker = false
+    @State private var displayCategoryId: String?
+    @State private var displayIsUserCorrected: Bool
+
+    init(row: TransactionRow, onCorrected: ((UUID, String) -> Void)? = nil) {
+        self.row = row
+        self.onCorrected = onCorrected
+        _displayCategoryId = State(initialValue: row.categoryId)
+        _displayIsUserCorrected = State(initialValue: row.isUserCorrected)
+    }
 
     var body: some View {
-        FDSSheet(
-            title: "Transaction Details",
-            subtitle: row.displayTitle,
-            onDismiss: { dismiss() },
-            content: {
-                VStack(alignment: .leading, spacing: 20) {
-                    heroAmount
-                    detailCard
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.xl) {
+                    heroCard
+                    detailSections
+                }
+                .padding(AppSpacing.lg)
+                .padding(.bottom, AppSpacing.xl)
+            }
+            .background(AppColors.surface2)
+            .navigationTitle(row.displayTitle)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") { dismiss() }
                 }
             }
-        )
-        .sheet(isPresented: $showCategoryPicker) {
-            if let txn = row.sourceTransaction {
-                CategoryPickerView(
-                    source: txn,
-                    currentCategoryId: row.categoryId,
-                    currentMerchant: row.merchantName,
-                    previousPrediction: nil,
-                    onCorrected: onCorrected
-                )
+            .navigationDestination(isPresented: $showCategoryPicker) {
+                categoryPickerDestination
             }
         }
+        .frame(width: 560)
+        .frame(minHeight: 560, maxHeight: 720)
     }
+}
 
-    private var detailCard: some View {
-        FDSCard(cornerRadius: 12, padded: false) {
+// MARK: - Hero Card
+
+private extension TransactionDetailView {
+    var heroCard: some View {
+        FDSCard(cornerRadius: 16, padded: false) {
             VStack(spacing: 0) {
-                if let merchant = row.merchantName, merchant != row.title {
-                    detailRow(label: "Merchant", value: merchant)
-                    Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
+                // Identity strip
+                HStack(spacing: AppSpacing.md) {
+                    FDSMerchantAvatar(
+                        name: row.displayTitle,
+                        symbol: CategorySymbol.symbol(for: displayCategoryId),
+                        imageName: nil,
+                        size: FDSAvatarSize.hero.value
+                    )
+                    VStack(alignment: .leading, spacing: 4) {
+                        FDSLabel(row.displayTitle)
+                            .font(AppTypography.headingMd)
+                            .foregroundStyle(AppColors.textPrimary)
+                            .lineLimit(2)
+                        if let catId = displayCategoryId {
+                            categoryBadge(catId)
+                        }
+                    }
+                    Spacer()
                 }
-                detailRow(label: "Description", value: row.title)
-                Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
-                detailRow(label: "Source", value: row.subtitle)
-                Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
-                detailRow(label: "Date", value: formatDate(row.postedAt))
-                Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
-                detailRow(label: "Type", value: row.transactionType == .debit ? "Debit" : "Credit")
-                if let categoryId = row.categoryId {
-                    Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
-                    categoryRow(categoryId: categoryId)
+                .padding(AppSpacing.lg)
+
+                Divider().opacity(0.1)
+
+                // Amount block — separate row
+                VStack(spacing: AppSpacing.tight) {
+                    FDSLabel(row.transactionType == .debit ? "DEBITED" : "CREDITED")
+                        .font(AppTypography.captionSmSemibold)
+                        .tracking(0.6)
+                        .foregroundStyle(.tertiary)
+
+                    HStack(alignment: .firstTextBaseline, spacing: AppSpacing.compact) {
+                        FDSAmount(row.amountText, type: row.transactionType == .debit ? .debit : .credit, size: .hero)
+                        Image(systemName: row
+                            .transactionType == .debit ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
+                            .font(AppTypography.headingMd)
+                            .foregroundStyle(row.transactionType == .debit ? AppColors.debit : AppColors.credit)
+                    }
+
+                    if let balance = row.runningBalance {
+                        FDSLabel("Balance after: \(balance)")
+                            .font(AppTypography.captionLg.monospacedDigit())
+                            .foregroundStyle(.tertiary)
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, AppSpacing.lg)
+                .padding(.vertical, AppSpacing.xl)
+            }
+        }
+    }
+}
+
+// MARK: - Detail Sections
+
+private extension TransactionDetailView {
+    var detailSections: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.lg) {
+            dateTimeSection
+            sourceSection
+            categorySection
+            if row.title != row.displayTitle {
+                narrationSection
             }
         }
     }
 
-    private var heroAmount: some View {
-        VStack(alignment: .center, spacing: 8) {
-            FDSLabel(row.transactionType == .debit ? "DEBITED" : "CREDITED")
-                .font(AppTypography.captionSmSemibold)
-                .tracking(0.2)
-                .foregroundColor(AppColors.Text.secondary)
-
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                FDSLabel(row.amountText)
-                    .font(AppTypography.headingXL)
-                    .monospacedDigit()
-                    .foregroundColor(row.transactionType == .debit ? AppColors.System.red : AppColors.System.green)
-
-                Image(systemName: row.transactionType == .debit ? "arrow.up.right" : "arrow.down.left")
-                    .font(AppTypography.headingMd)
-                    .foregroundColor(row.transactionType == .debit ? AppColors.System.red : AppColors.System.green)
-            }
-            .frame(maxWidth: .infinity, alignment: .center)
+    var dateTimeSection: some View {
+        sectionCard(header: "Date & Time") {
+            infoRow(icon: "calendar", label: FormatterCache.fullDayDate.string(from: row.postedAt))
+            Divider().opacity(0.1)
+            infoRow(icon: "clock", label: FormatterCache.dayAndTime.string(from: row.postedAt))
         }
     }
 
-    private func categoryRow(categoryId: String) -> some View {
-        HStack {
-            HStack(spacing: AppSpacing.compact) {
-                Image(systemName: CategorySymbol.symbol(for: categoryId))
-                    .foregroundStyle(CategorySymbol.color(for: categoryId))
-                    .font(AppTypography.captionLg)
+    var sourceSection: some View {
+        sectionCard(header: "Source") {
+            infoRow(icon: "building.columns", label: row.subtitle)
+        }
+    }
 
-                FDSLabel(categoryId.capitalized)
-                    .font(AppTypography.captionSmSemibold)
-                    .tracking(0.2)
-                    .foregroundColor(AppColors.Text.secondary)
-            }
-
-            Spacer()
-
-            HStack(spacing: AppSpacing.compact) {
-                if row.isUserCorrected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                        .font(AppTypography.captionSm)
+    var categorySection: some View {
+        sectionCard(header: "Category") {
+            HStack(spacing: AppSpacing.md) {
+                FDSCategoryGlyph(
+                    displayCategoryId ?? "other",
+                    icon: CategorySymbol.symbol(for: displayCategoryId),
+                    size: 36
+                )
+                VStack(alignment: .leading, spacing: 3) {
+                    let catName = CategoryTaxonomy.current.category(forId: displayCategoryId ?? "")?.displayName
+                        ?? (displayCategoryId?.capitalized ?? "Uncategorized")
+                    FDSLabel(catName)
+                        .font(AppTypography.bodySmMedium)
+                        .foregroundStyle(AppColors.textPrimary)
+                    if displayIsUserCorrected {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(AppTypography.captionSm)
+                                .foregroundStyle(AppColors.accent)
+                            FDSLabel("You corrected this")
+                                .font(AppTypography.captionLg)
+                                .foregroundStyle(AppColors.accent)
+                        }
+                    } else {
+                        FDSLabel("ML categorized")
+                            .font(AppTypography.captionLg)
+                            .foregroundStyle(.tertiary)
+                    }
                 }
-
+                Spacer()
                 if intelligence != nil, row.sourceTransaction != nil {
                     Button(action: { showCategoryPicker = true }, label: {
-                        FDSLabel("Change")
-                            .font(AppTypography.captionSmMedium)
-                            .foregroundStyle(AppColors.accentGold)
+                        HStack(spacing: 4) {
+                            FDSLabel("Change")
+                                .font(AppTypography.captionLgSemibold)
+                                .foregroundStyle(AppColors.accent)
+                            Image(systemName: "chevron.right")
+                                .font(AppTypography.captionSm)
+                                .foregroundStyle(AppColors.accent.opacity(0.7))
+                        }
+                        .padding(.horizontal, AppSpacing.sm)
+                        .padding(.vertical, AppSpacing.tight)
+                        .background(AppColors.accent.opacity(0.1))
+                        .clipShape(Capsule())
                     })
                     .buttonStyle(.plain)
                 }
             }
+            .padding(AppSpacing.md)
         }
-        .padding(AppSpacing.xs)
     }
 
-    private func detailRow(label: String, value: String) -> some View {
-        HStack {
-            FDSLabel(label.uppercased())
+    var narrationSection: some View {
+        sectionCard(header: "Bank Narration") {
+            FDSLabel(row.title)
+                .font(AppTypography.captionLg.monospaced())
+                .foregroundStyle(AppColors.textSecondary)
+                .padding(AppSpacing.md)
+        }
+    }
+
+    /// Category picker as NavigationStack destination — no FDSSheet wrapper
+    var categoryPickerDestination: some View {
+        CategoryPickerDestination(
+            row: row,
+            onCorrected: { id, catId in
+                displayCategoryId = catId
+                displayIsUserCorrected = true
+                onCorrected?(id, catId)
+                showCategoryPicker = false
+            }
+        )
+    }
+}
+
+// MARK: - Helpers
+
+private extension TransactionDetailView {
+    func sectionCard(header: String, @ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.compact) {
+            FDSLabel(header.uppercased())
                 .font(AppTypography.captionSmSemibold)
-                .tracking(0.2)
-                .foregroundColor(AppColors.Text.secondary)
-            Spacer()
-            FDSLabel(value)
-                .font(AppTypography.captionSmMedium)
-                .foregroundColor(AppColors.Text.primary)
-                .multilineTextAlignment(.trailing)
+                .tracking(0.5)
+                .foregroundStyle(.tertiary)
+            FDSCard(cornerRadius: 12, padded: false) {
+                content()
+            }
         }
-        .padding(AppSpacing.xs)
     }
 
-    private func formatDate(_ date: Date) -> String {
-        FormatterCache.formatDateTime(date)
+    func infoRow(icon: String, label: String) -> some View {
+        HStack(spacing: AppSpacing.md) {
+            Image(systemName: icon)
+                .font(AppTypography.captionLgSemibold)
+                .foregroundStyle(.tertiary)
+                .frame(width: 20)
+            FDSLabel(label)
+                .font(AppTypography.bodySmMedium)
+                .foregroundStyle(AppColors.textPrimary)
+            Spacer()
+        }
+        .padding(AppSpacing.md)
+    }
+
+    func categoryBadge(_ categoryId: String) -> some View {
+        let label = CategoryTaxonomy.current.category(forId: categoryId)?.displayName
+            ?? categoryId.capitalized
+        let color = CategorySymbol.color(for: categoryId)
+        return FDSLabel(label.uppercased())
+            .font(AppTypography.captionSmSemibold)
+            .foregroundStyle(color)
+            .padding(.horizontal, 5)
+            .padding(.vertical, 2)
+            .background(color.opacity(0.15))
+            .clipShape(Capsule())
     }
 }

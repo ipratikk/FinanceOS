@@ -6,6 +6,7 @@ struct AdaptiveNavigation: View {
     @Environment(AppNavigator.self) private var navigator
     @Environment(\.horizontalSizeClass) var sizeClass
     @Environment(\.transactionIntelligence) private var intelligence
+    @Environment(\.categorizationScheduler) private var categorizationScheduler
     private let appContainer = AppContainer.shared
 
     var body: some View {
@@ -92,6 +93,7 @@ struct AdaptiveNavigation: View {
 struct DetailRouter: View {
     @Environment(AppNavigator.self) private var navigator
     @Environment(\.transactionIntelligence) private var intelligence
+    @Environment(\.categorizationScheduler) private var categorizationScheduler
     let appContainer: AppContainer
 
     var body: some View {
@@ -155,7 +157,8 @@ struct DetailRouter: View {
                     bankRepository: appContainer.bankRepository,
                     ledgerRepository: appContainer.ledgerRepository,
                     transactionRepository: appContainer.transactionRepository,
-                    initialTarget: navigator.pendingImportTarget
+                    initialTarget: navigator.pendingImportTarget,
+                    categorizationScheduler: categorizationScheduler
                 )
             )
         case .settings:
