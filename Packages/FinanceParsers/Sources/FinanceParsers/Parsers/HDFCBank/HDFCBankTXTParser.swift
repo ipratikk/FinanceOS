@@ -87,8 +87,7 @@ public struct HDFCBankTXTParser: Sendable {
                 if seenSeparatorCount % 2 == 0 { pastData = true }
                 continue
             }
-            if !pastData { continue }
-            if trimmed.isEmpty { continue }
+            guard pastData, !trimmed.isEmpty else { continue }
 
             let dateField = extractField(line, ranges[0])
             if isDateString(dateField) {

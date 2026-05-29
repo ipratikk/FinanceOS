@@ -114,7 +114,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
             running += deltaByDay[day] ?? 0
             let cbTotal = closingBalanceTotal(
                 at: day, ledgerIds: closingBalanceLedgerIds, txnsByLedger: txnsByLedger,
-                ledgerById: ledgerById, assetKinds: assetKinds, calendar: calendar
+                ledgerById: ledgerById, assetKinds: assetKinds
             )
             points.append(NetWorthPoint(timestamp: day, netWorth: running + cbTotal))
             guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
@@ -159,9 +159,9 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         ledgerIds: Set<UUID>,
         txnsByLedger: [UUID?: [Transaction]],
         ledgerById: [UUID: Ledger],
-        assetKinds: Set<LedgerKind>,
-        calendar: Calendar
+        assetKinds: Set<LedgerKind>
     ) -> Decimal {
+        let calendar = Calendar.current
         var total: Decimal = 0
         for ledgerId in ledgerIds {
             guard let ledger = ledgerById[ledgerId] else { continue }
