@@ -91,12 +91,10 @@ struct RecentFluctuationsCard: View {
     }
 
     private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMM, yyyy"
-        return formatter.string(from: date)
+        FormatterCache.dayMonthCommaYear.string(from: date)
     }
 
     private func formatAmount(_ txn: FinanceCore.Transaction) -> String {
-        AnalyticsFormatting.rupeesWithSign(txn.amountMinorUnits, isDebit: txn.transactionType == .debit)
+        MoneyFormatting.formatWithSign(minorUnits: txn.amountMinorUnits, isDebit: txn.transactionType == .debit)
     }
 }

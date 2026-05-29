@@ -81,7 +81,7 @@ extension ImportViewModel {
             return existingBank
         }
         let matchingBankCase = Banks.allCases.first { bankCase in
-            ImportFormatting.fuzzyMatch(bankCase.displayName, detectedBankName)
+            ImportHelpers.fuzzyMatch(bankCase.displayName, detectedBankName)
         }
         if let bankCase = matchingBankCase {
             let newBank = Bank(bank: bankCase)

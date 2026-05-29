@@ -9,8 +9,9 @@ import FinanceCore
 import Foundation
 import Observation
 
+@MainActor
 @Observable
-final class BanksViewModel {
+final class BanksViewModel: AsyncLoadable, DeletableViewModel {
     private let repository: BankRepository
     private let ledgerRepository: LedgerRepository
 
@@ -28,21 +29,15 @@ final class BanksViewModel {
     }
 
     func loadBanks() async {
-        isLoading = true
-
-        defer {
-            isLoading = false
-        }
-
-        do {
+        await withLoading(onError: { error in
+            FinanceLogger.userInterface.logError("Failed to load banks", caughtError: error, [:])
+        }) {
             banks = try await repository.fetchBanks()
             var ledgerMap: [UUID: [Ledger]] = [:]
             for bank in banks {
                 ledgerMap[bank.id] = try await ledgerRepository.fetchLedgers(bankId: bank.id)
             }
             ledgersByBank = ledgerMap
-        } catch {
-            FinanceLogger.userInterface.logError("Failed to load banks", caughtError: error, [:])
         }
     }
 
@@ -56,12 +51,8 @@ final class BanksViewModel {
     }
 
     func deleteBank(id: UUID) async {
-        deleteError = nil
-        do {
+        await performDelete({
             try await repository.delete(id: id)
-            await loadBanks()
-        } catch {
-            deleteError = error.localizedDescription
-        }
+        }, onSuccess: loadBanks)
     }
 }

@@ -98,14 +98,12 @@ struct SpendingTrendCard: View {
     }
 
     private var formattedTotal: String {
-        AnalyticsFormatting.rupees(totalOutflow)
+        MoneyFormatting.formatRounded(minorUnits: totalOutflow)
     }
 
     private var periodLabel: String {
         guard let first = summaries.first?.id, let last = summaries.last?.id else { return "" }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM"
         let year = Calendar.current.component(.year, from: last)
-        return "\(formatter.string(from: first).uppercased())-\(formatter.string(from: last).uppercased()) \(year)"
+        return "\(FormatterCache.shortMonth.string(from: first).uppercased())-\(FormatterCache.shortMonth.string(from: last).uppercased()) \(year)"
     }
 }

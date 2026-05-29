@@ -107,19 +107,10 @@ struct AccountTransactionsView: View {
     }
 
     private func formattedBalance(_ minorUnits: Int64) -> String {
-        let whole = minorUnits / 100
-        let frac = abs(minorUnits % 100)
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.groupingSeparator = ","
-        formatter.groupingSize = 3
-        let formatted = formatter.string(from: NSNumber(value: whole)) ?? "\(whole)"
-        return "₹\(formatted).\(String(format: "%02d", frac))"
+        MoneyFormatting.formatRunningBalance(minorUnits: minorUnits)
     }
 
     private func formattedDate(_ date: Date) -> String {
-        let fmt = DateFormatter()
-        fmt.dateFormat = "d MMM yyyy"
-        return fmt.string(from: date)
+        FormatterCache.dayMonthYear.string(from: date)
     }
 }

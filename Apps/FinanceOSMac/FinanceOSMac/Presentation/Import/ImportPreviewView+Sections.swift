@@ -162,7 +162,7 @@ extension ImportPreviewView {
 
         let detected = statement.bankName.isEmpty ? "Unknown" : statement.bankName
         let matchingBankCase = Banks.allCases.first { bankCase in
-            ImportFormatting.fuzzyMatch(bankCase.displayName, detected)
+            ImportHelpers.fuzzyMatch(bankCase.displayName, detected)
         }
         state.selectedBank = matchingBankCase
 

@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import Foundation
 import Observation
 
@@ -75,8 +76,6 @@ final class TransactionListState {
     }
 
     private func formatMonthTitle(_ date: Date) -> String {
-        let fmt = DateFormatter()
-        fmt.dateFormat = "MMMM yyyy"
-        return fmt.string(from: date)
+        FormatterCache.monthYear.string(from: date)
     }
 }

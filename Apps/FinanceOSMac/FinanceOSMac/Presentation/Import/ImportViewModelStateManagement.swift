@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceParsers
+import FinanceUI
 import Foundation
 import OSLog
 
@@ -180,7 +181,7 @@ extension ImportViewModel {
 
     private func hashTransaction(_ txn: Transaction) -> String {
         if let fp = txn.sourceFingerprint { return fp }
-        let dateStr = ISO8601DateFormatter().string(from: Calendar.current.startOfDay(for: txn.postedAt))
+        let dateStr = FormatterCache.iso8601.string(from: Calendar.current.startOfDay(for: txn.postedAt))
         let descStr = txn.description
             .components(separatedBy: .whitespaces).filter { !$0.isEmpty }.joined().lowercased()
         return "\(dateStr)|\(String(abs(txn.amountMinorUnits)))|\(descStr)"

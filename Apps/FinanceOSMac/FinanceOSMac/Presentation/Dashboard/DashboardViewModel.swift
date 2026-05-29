@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceUI
 import Foundation
 
 enum TimeRange: String, CaseIterable, Identifiable {
@@ -31,7 +32,7 @@ enum TimeRange: String, CaseIterable, Identifiable {
 }
 
 @Observable @MainActor
-class DashboardViewModel {
+class DashboardViewModel: AsyncLoadable {
     var currentTotals: SpendingTotals?
     var monthlySummaries: [MonthlySpendingSummary] = []
     var netWorthTimeSeries: [NetWorthPoint] = []
@@ -82,25 +83,21 @@ class DashboardViewModel {
     }
 
     func load() async {
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
+        await withLoading(onError: { [self] error in
+            self.error = error.localizedDescription
+            FinanceLogger.userInterface.logError("Dashboard load failed", caughtError: error, [:])
+        }) {
             let months = selectedTimeRange.months
             async let totals = spendingService.currentMonthTotals()
             async let summaries = spendingService.monthlySummary(months: months)
             async let recent = spendingService.recentTransactions(limit: 5)
             async let nwSeries = spendingService.netWorthTimeSeries(months: months)
             async let fetchedLedgers = ledgerRepository.fetchLedgers()
-
             currentTotals = try await totals
             monthlySummaries = try await summaries
             recentTransactions = try await recent
             netWorthTimeSeries = try await nwSeries
             ledgers = try await fetchedLedgers
-        } catch {
-            self.error = error.localizedDescription
-            FinanceLogger.userInterface.logError("Dashboard load failed", caughtError: error, [:])
         }
     }
 
@@ -121,9 +118,8 @@ class DashboardViewModel {
 
     func exportNetWorthCSV() -> String {
         let header = "Date,NetWorth"
-        let formatter = ISO8601DateFormatter()
         let rows = netWorthTimeSeries.map { point in
-            "\(formatter.string(from: point.timestamp)),\(point.netWorth)"
+            "\(FormatterCache.iso8601.string(from: point.timestamp)),\(point.netWorth)"
         }
         return ([header] + rows).joined(separator: "\n")
     }

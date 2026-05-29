@@ -189,12 +189,7 @@ struct LedgerDetailView: View {
     }
 
     private func formatBalance(_ minorUnits: Int64) -> String {
-        let amount = Double(minorUnits) / 100.0
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "INR"
-        formatter.currencySymbol = "₹"
-        return formatter.string(from: NSNumber(value: amount)) ?? "₹0.00"
+        FormatterCache.formatCurrency(minorUnits: minorUnits)
     }
 
     private func loadLedger() async {

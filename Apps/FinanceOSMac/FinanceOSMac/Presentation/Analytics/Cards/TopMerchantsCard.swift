@@ -122,6 +122,6 @@ struct TopMerchantsCard: View {
     }
 
     private func formatAmount(_ minorUnits: Int64) -> String {
-        AnalyticsFormatting.rupees(minorUnits)
+        MoneyFormatting.formatRounded(minorUnits: minorUnits)
     }
 }

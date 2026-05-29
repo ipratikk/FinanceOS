@@ -6,12 +6,14 @@
 //
 
 import FinanceCore
+import FinanceUI
 import Foundation
 import Observation
 import OSLog
 
+@MainActor
 @Observable
-final class AccountsViewModel {
+final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
     private let ledgerRepository: LedgerRepository
     private let bankRepository: BankRepository
     private let transactionRepository: TransactionRepository
@@ -22,22 +24,12 @@ final class AccountsViewModel {
         let latestPostedAt: Date?
 
         var formattedBalance: String {
-            let absValue = abs(netMinorUnits)
-            let rupees = absValue / 100
-            let paise = absValue % 100
-            let formatter = NumberFormatter()
-            formatter.numberStyle = .decimal
-            formatter.locale = Locale(identifier: "en_IN")
-            let formatted = formatter.string(from: NSNumber(value: rupees)) ?? "\(rupees)"
-            let sign = netMinorUnits < 0 ? "-" : ""
-            return paise > 0 ? "\(sign)₹\(formatted).\(String(format: "%02d", paise))" : "\(sign)₹\(formatted)"
+            MoneyFormatting.formatBalance(minorUnits: netMinorUnits)
         }
 
         var formattedDate: String? {
             guard let date = latestPostedAt else { return nil }
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd/MM/yyyy"
-            return dateFormatter.string(from: date)
+            return FormatterCache.slashDate.string(from: date)
         }
     }
 
@@ -58,23 +50,14 @@ final class AccountsViewModel {
     }
 
     func loadAccounts() async {
-        isLoading = true
-
-        defer {
-            isLoading = false
-        }
-
-        do {
+        await withLoading(onError: { [self] error in
+            logger.logError("Failed to load accounts: {error}", ["error": error.localizedDescription])
+        }) {
             async let accounts = ledgerRepository.fetchLedgers(kind: .bankAccount)
             async let banks = bankRepository.fetchBanks()
             self.accounts = try await accounts
             self.banks = try await banks
             await loadBalances(for: self.accounts)
-        } catch {
-            logger.logError(
-                "Failed to load accounts: {error}",
-                ["error": error.localizedDescription]
-            )
         }
     }
 
@@ -116,25 +99,16 @@ final class AccountsViewModel {
     }
 
     func deleteAccount(id: UUID) async {
-        do {
-            deleteError = nil
-            logger.logDebug(
-                "Deleting account",
-                ["accountId": id.uuidString]
-            )
+        await performDelete({
+            logger.logDebug("Deleting account", ["accountId": id.uuidString])
             try await ledgerRepository.delete(id: id)
-            logger.logInfo(
-                "Account deleted successfully",
-                ["accountId": id.uuidString]
-            )
-            await loadAccounts()
-        } catch {
+            logger.logInfo("Account deleted successfully", ["accountId": id.uuidString])
+        }, onError: { [self] error in
             logger.logError(
                 "Delete account failed: {error}",
                 ["accountId": id.uuidString, "error": error.localizedDescription]
             )
-            deleteError = error.localizedDescription
-        }
+        }, onSuccess: loadAccounts)
     }
 
     func convertToCard(_ account: Ledger) async {

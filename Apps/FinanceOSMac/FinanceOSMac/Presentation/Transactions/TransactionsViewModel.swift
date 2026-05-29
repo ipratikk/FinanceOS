@@ -5,7 +5,7 @@ import Observation
 
 @MainActor
 @Observable
-final class TransactionsViewModel {
+final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
     private let transactionRepository: TransactionRepository
     private let ledgerRepository: LedgerRepository
     private let intelligenceService: (any TransactionIntelligenceService)?
@@ -34,32 +34,23 @@ final class TransactionsViewModel {
     }
 
     func loadTransactions() async {
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
+        await withLoading(onError: { error in
+            FinanceLogger.userInterface.logError("Failed to load transactions", caughtError: error, [:])
+        }) {
             rawTransactions = try await transactionRepository.fetchTransactions()
             cachedLedgers = try await ledgerRepository.fetchLedgers()
-            // Use DB-cached categoryId/merchantName immediately — no lag on returning launches.
             transactionRows = makeRows(transactions: rawTransactions, results: [:])
             listState.updateAvailableYears(from: transactionRows)
-        } catch {
-            FinanceLogger.userInterface.logError("Failed to load transactions", caughtError: error, [:])
         }
-
         Task.detached(priority: .background) { [weak self] in
             await self?.analyzeUncategorized()
         }
     }
 
     func deleteTransaction(id: UUID) async {
-        do {
-            deleteError = nil
+        await performDelete({
             try await transactionRepository.delete(id: id)
-            await loadTransactions()
-        } catch {
-            deleteError = error.localizedDescription
-        }
+        }, onSuccess: loadTransactions)
     }
 
     /// Called when the user corrects a category. Updates memory, persists to DB, trains kNN,
@@ -187,8 +178,7 @@ private extension TransactionsViewModel {
                 id: transaction.id,
                 title: transaction.description,
                 subtitle: sourceName,
-                amountText: amountText(
-                    minorUnits: transaction.amountMinorUnits,
+                amountText: transaction.amountMinorUnits.formattedAsAmount(
                     currencyCode: transaction.currencyCode,
                     transactionType: transaction.transactionType
                 ),
@@ -200,13 +190,5 @@ private extension TransactionsViewModel {
                 sourceTransaction: transaction
             )
         }
-    }
-
-    func amountText(minorUnits: Int64, currencyCode: String, transactionType: TransactionType) -> String {
-        let whole = minorUnits / 100
-        let frac = minorUnits % 100
-        let sign = transactionType == .debit ? "-" : "+"
-        let symbol = CurrencySymbol.symbol(for: currencyCode)
-        return "\(sign)\(symbol)\(whole).\(String(format: "%02d", frac))"
     }
 }

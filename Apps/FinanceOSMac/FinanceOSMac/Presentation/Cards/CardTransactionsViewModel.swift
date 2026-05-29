@@ -9,8 +9,9 @@ import FinanceCore
 import Foundation
 import Observation
 
+@MainActor
 @Observable
-final class CardTransactionsViewModel {
+final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
     private let transactionRepository: TransactionRepository
 
     var transactionRows: [TransactionRow] = []
@@ -30,27 +31,16 @@ final class CardTransactionsViewModel {
     }
 
     func loadTransactions(for cardID: UUID) async {
-        isLoading = true
-
-        defer {
-            isLoading = false
-        }
-
-        do {
-            let transactions = try await transactionRepository
-                .fetchTransactionsForCard(cardID)
-
-            transactionRows = makeTransactionRows(
-                transactions: transactions
-            )
-            listState.updateAvailableYears(from: transactionRows)
-
-        } catch {
+        await withLoading(onError: { error in
             FinanceLogger.userInterface.logError(
                 "Failed to load transactions for {cardID}",
                 caughtError: error,
                 ["cardID": cardID.uuidString]
             )
+        }) {
+            let transactions = try await transactionRepository.fetchTransactionsForCard(cardID)
+            transactionRows = makeTransactionRows(transactions: transactions)
+            listState.updateAvailableYears(from: transactionRows)
         }
     }
 
@@ -62,8 +52,7 @@ final class CardTransactionsViewModel {
                 id: transaction.id,
                 title: transaction.description,
                 subtitle: "",
-                amountText: amountText(
-                    minorUnits: transaction.amountMinorUnits,
+                amountText: transaction.amountMinorUnits.formattedAsAmount(
                     currencyCode: transaction.currencyCode,
                     transactionType: transaction.transactionType
                 ),
@@ -74,24 +63,10 @@ final class CardTransactionsViewModel {
     }
 
     func deleteTransaction(id: UUID, cardID: UUID) async {
-        do {
-            deleteError = nil
+        await performDelete {
             try await transactionRepository.delete(id: id)
+        } onSuccess: { [self] in
             await loadTransactions(for: cardID)
-        } catch {
-            deleteError = error.localizedDescription
         }
-    }
-
-    private func amountText(
-        minorUnits: Int64,
-        currencyCode: String,
-        transactionType: TransactionType
-    ) -> String {
-        let whole = minorUnits / 100
-        let frac = minorUnits % 100
-        let sign = transactionType == .debit ? "-" : "+"
-        let symbol = CurrencySymbol.symbol(for: currencyCode)
-        return "\(sign)\(symbol)\(whole).\(String(format: "%02d", frac))"
     }
 }
