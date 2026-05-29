@@ -258,7 +258,7 @@ Phases 1–10 complete (Ledger unification, import pipeline, dedup engine, UI mi
 
 ## Active: MVVM Refactoring (Phases 1–7)
 
-**Current phase: Phase 1 — Missing ViewModels**
+**Current phase: Phase 2 — Fix Transactions Split State**
 
 Full plan: `docs/MVVM_REFACTORING_PLAN.md`
 Architecture standards being enforced: `docs/ARCHITECTURE.md` (Presentation Layer section)
@@ -267,8 +267,8 @@ Architecture standards being enforced: `docs/ARCHITECTURE.md` (Presentation Laye
 
 | Phase | Title | Status |
 |-------|-------|--------|
-| **1** | Missing ViewModels | 🔲 pending |
-| 2 | Fix Transactions Split State | 🔲 pending |
+| **1** | Missing ViewModels | ✅ done |
+| **2** | Fix Transactions Split State | 🔲 pending |
 | 3 | Dashboard Cleanup | 🔲 pending |
 | 4 | Remove Repository Access from Views | 🔲 pending |
 | 5 | Service Layer Extraction | 🔲 pending |

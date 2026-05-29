@@ -11,8 +11,18 @@ final class TransactionListState {
     var dateRangeFilter: DateRangeFilter?
     var availableFinancialYears: [Int] = []
 
+    private var debounceTask: Task<Void, Never>?
+
     var isFilterActive: Bool {
         typeFilter != nil || categoryFilter != nil || dateRangeFilter != nil
+    }
+
+    func setSearchQuery(_ query: String) {
+        debounceTask?.cancel()
+        debounceTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
+            self.searchQuery = query
+        }
     }
 
     func updateAvailableYears(from rows: [TransactionRow]) {
@@ -29,11 +39,18 @@ final class TransactionListState {
         var filtered = rows
 
         if !searchQuery.isEmpty {
-            filtered = filtered.filter { $0.title.localizedCaseInsensitiveContains(searchQuery) }
+            filtered = filtered.filter {
+                $0.displayTitle.localizedCaseInsensitiveContains(searchQuery) ||
+                    $0.subtitle.localizedCaseInsensitiveContains(searchQuery)
+            }
         }
 
         if let typeFilter {
             filtered = filtered.filter { $0.transactionType == typeFilter }
+        }
+
+        if let cat = categoryFilter {
+            filtered = filtered.filter { $0.categoryId == cat }
         }
 
         if let range = dateRangeFilter?.dateRange {
@@ -46,19 +63,25 @@ final class TransactionListState {
             }
         }
 
-        let grouped = Dictionary(grouping: filtered) { row -> String in
-            let comps = Calendar.current.dateComponents([.year, .month], from: row.postedAt)
-            return String(format: "%04d-%02d", comps.year ?? 0, comps.month ?? 0)
-        }
+        let cal = Calendar.current
+        let grouped = Dictionary(grouping: filtered) { cal.startOfDay(for: $0.postedAt) }
 
-        let sections = grouped.map { key, rows in
-            TransactionSection(
-                id: key,
-                title: formatMonthTitle(dateFromMonthKey(key)),
-                rows: rows.sorted { $0.postedAt > $1.postedAt }
+        return grouped.map { dayStart, dayRows in
+            let sorted = dayRows.sorted { $0.postedAt > $1.postedAt }
+            let net = sorted.reduce(Int64(0)) { sum, row in
+                sum + (row.transactionType == .debit ? -row.amountMinorUnits : row.amountMinorUnits)
+            }
+            let comps = cal.dateComponents([.year, .month, .day], from: dayStart)
+            let id = String(format: "%04d-%02d-%02d", comps.year ?? 0, comps.month ?? 0, comps.day ?? 0)
+            return TransactionSection(
+                id: id,
+                title: FormatterCache.fullDayDate.string(from: dayStart).uppercased(),
+                date: dayStart,
+                rows: sorted,
+                netAmountMinorUnits: net
             )
         }
-        return sections.sorted { $0.id > $1.id }
+        .sorted { $0.date > $1.date }
     }
 
     func reset() {
@@ -66,18 +89,5 @@ final class TransactionListState {
         typeFilter = nil
         categoryFilter = nil
         dateRangeFilter = nil
-    }
-
-    private func dateFromMonthKey(_ key: String) -> Date {
-        let parts = key.split(separator: "-").map { Int($0) ?? 0 }
-        var comps = DateComponents()
-        comps.year = parts.first ?? Calendar.current.component(.year, from: Date())
-        comps.month = parts.count > 1 ? parts[1] : 1
-        comps.day = 1
-        return Calendar.current.date(from: comps) ?? Date()
-    }
-
-    private func formatMonthTitle(_ date: Date) -> String {
-        FormatterCache.monthYear.string(from: date)
     }
 }

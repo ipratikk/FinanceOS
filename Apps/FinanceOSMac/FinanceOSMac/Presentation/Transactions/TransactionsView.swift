@@ -5,12 +5,10 @@ import SwiftUI
 
 struct TransactionsView: View {
     @State private var viewModel: TransactionsViewModel
-    @State private var listState = TransactionListState()
     @State private var showDatePopover = false
     @State private var showCategoryPopover = false
     @State private var selectedTransaction: TransactionRow?
     @State private var transactionPendingDelete: TransactionRow?
-    @State private var searchDebounceTask: Task<Void, Never>?
 
     init(viewModel: TransactionsViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -36,14 +34,8 @@ struct TransactionsView: View {
         .navigationTitle("Transactions")
         .searchable(
             text: Binding(
-                get: { listState.searchQuery },
-                set: { newValue in
-                    searchDebounceTask?.cancel()
-                    searchDebounceTask = Task { @MainActor in
-                        try? await Task.sleep(for: .milliseconds(150))
-                        listState.searchQuery = newValue
-                    }
-                }
+                get: { viewModel.listState.searchQuery },
+                set: { viewModel.listState.setSearchQuery($0) }
             ),
             placement: .toolbar,
             prompt: "Search merchant, category…"
@@ -81,37 +73,6 @@ struct TransactionsView: View {
     }
 }
 
-// MARK: - Computed data
-
-private extension TransactionsView {
-    var filteredRows: [TransactionRow] {
-        var rows = viewModel.transactionRows
-        if !listState.searchQuery.isEmpty {
-            rows = rows.filter {
-                $0.displayTitle.localizedCaseInsensitiveContains(listState.searchQuery) ||
-                    $0.subtitle.localizedCaseInsensitiveContains(listState.searchQuery)
-            }
-        }
-        if let type = listState.typeFilter { rows = rows.filter { $0.transactionType == type } }
-        if let cat = listState.categoryFilter { rows = rows.filter { $0.categoryId == cat } }
-        if let range = listState.dateRangeFilter?.dateRange {
-            if let from = range.from { rows = rows.filter { $0.postedAt >= from } }
-            if let end = range.endDate {
-                let next = Calendar.current.date(byAdding: .day, value: 1, to: end) ?? end
-                rows = rows.filter { $0.postedAt < next }
-            }
-        }
-        return rows
-    }
-
-    var daySections: [(date: Date, rows: [TransactionRow])] {
-        let cal = Calendar.current
-        let grouped = Dictionary(grouping: filteredRows) { cal.startOfDay(for: $0.postedAt) }
-        return grouped.map { ($0.key, $0.value.sorted { $0.postedAt > $1.postedAt }) }
-            .sorted { $0.date > $1.date }
-    }
-}
-
 // MARK: - Filter bar
 
 private extension TransactionsView {
@@ -119,16 +80,16 @@ private extension TransactionsView {
         VStack(spacing: 0) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppSpacing.compact) {
-                    FDSChip("Debits", isActive: listState.typeFilter == .debit, tone: .debit) {
-                        listState.typeFilter = listState.typeFilter == .debit ? nil : .debit
+                    FDSChip("Debits", isActive: viewModel.listState.typeFilter == .debit, tone: .debit) {
+                        viewModel.listState.typeFilter = viewModel.listState.typeFilter == .debit ? nil : .debit
                     }
-                    FDSChip("Credits", isActive: listState.typeFilter == .credit, tone: .credit) {
-                        listState.typeFilter = listState.typeFilter == .credit ? nil : .credit
+                    FDSChip("Credits", isActive: viewModel.listState.typeFilter == .credit, tone: .credit) {
+                        viewModel.listState.typeFilter = viewModel.listState.typeFilter == .credit ? nil : .credit
                     }
                     categoryChip
                     dateChip
-                    if listState.isFilterActive {
-                        Button(action: { listState.reset() }, label: {
+                    if viewModel.listState.isFilterActive {
+                        Button(action: { viewModel.listState.reset() }, label: {
                             HStack(spacing: 3) {
                                 Image(systemName: "xmark.circle.fill")
                                     .font(AppTypography.captionSm)
@@ -143,14 +104,14 @@ private extension TransactionsView {
                 .padding(.horizontal, AppSpacing.xl)
                 .padding(.vertical, AppSpacing.compact)
             }
-            .animation(.spring(response: 0.25, dampingFraction: 0.8), value: listState.isFilterActive)
+            .animation(.spring(response: 0.25, dampingFraction: 0.8), value: viewModel.listState.isFilterActive)
             Divider().opacity(0.08)
         }
     }
 
     var categoryChip: some View {
-        let active = listState.categoryFilter != nil
-        let label = listState.categoryFilter.flatMap {
+        let active = viewModel.listState.categoryFilter != nil
+        let label = viewModel.listState.categoryFilter.flatMap {
             CategoryTaxonomy.current.category(forId: $0)?.displayName
         } ?? "Category"
         return Button { showCategoryPopover = true } label: {
@@ -176,19 +137,19 @@ private extension TransactionsView {
         .popover(isPresented: $showCategoryPopover, arrowEdge: .bottom) {
             CategoryFilterPopover(
                 selectedCategoryId: Binding(
-                    get: { listState.categoryFilter },
-                    set: { listState.categoryFilter = $0; showCategoryPopover = false }
+                    get: { viewModel.listState.categoryFilter },
+                    set: { viewModel.listState.categoryFilter = $0; showCategoryPopover = false }
                 )
             )
         }
     }
 
     var dateChip: some View {
-        let active = listState.dateRangeFilter != nil
+        let active = viewModel.listState.dateRangeFilter != nil
         return Button { showDatePopover = true } label: {
             HStack(spacing: 4) {
                 Image(systemName: "calendar").font(AppTypography.captionSmSemibold)
-                FDSLabel(listState.dateRangeFilter?.label ?? "Date")
+                FDSLabel(viewModel.listState.dateRangeFilter?.label ?? "Date")
                     .font(active ? AppTypography.captionLgSemibold : AppTypography.captionLg)
                 if !active { Image(systemName: "chevron.down").font(AppTypography.captionSm) }
             }
@@ -206,7 +167,7 @@ private extension TransactionsView {
         }
         .buttonStyle(.plain)
         .popover(isPresented: $showDatePopover, arrowEdge: .bottom) {
-            DateFilterPopover(listState: listState, isPresented: $showDatePopover)
+            DateFilterPopover(listState: viewModel.listState, isPresented: $showDatePopover)
         }
     }
 }
@@ -215,7 +176,7 @@ private extension TransactionsView {
 
 private extension TransactionsView {
     @ViewBuilder var transactionsList: some View {
-        if daySections.isEmpty {
+        if viewModel.sections.isEmpty {
             FDSEmptyState(
                 symbol: "line.3.horizontal.decrease.circle",
                 title: "No results",
@@ -228,9 +189,9 @@ private extension TransactionsView {
 
     private var listContent: some View {
         List {
-            ForEach(daySections, id: \.date) { date, rows in
+            ForEach(viewModel.sections) { section in
                 Section {
-                    ForEach(rows) { row in
+                    ForEach(section.rows) { row in
                         Button { selectedTransaction = row } label: {
                             transactionRow(row)
                                 .contentShape(Rectangle())
@@ -246,7 +207,7 @@ private extension TransactionsView {
                         }
                     }
                 } header: {
-                    dayHeader(date: date, rows: rows)
+                    dayHeader(section: section)
                 }
             }
         }
@@ -255,24 +216,21 @@ private extension TransactionsView {
         .environment(\.defaultMinListRowHeight, 0)
     }
 
-    func dayHeader(date: Date, rows: [TransactionRow]) -> some View {
-        let dayNet = rows.reduce(Int64(0)) { sum, row in
-            sum + (row.transactionType == .debit ? -row.amountMinorUnits : row.amountMinorUnits)
-        }
-        return HStack {
-            FDSLabel(FormatterCache.fullDayDate.string(from: date).uppercased())
+    func dayHeader(section: TransactionSection) -> some View {
+        HStack {
+            FDSLabel(section.title)
                 .font(AppTypography.captionSmSemibold)
                 .tracking(0.4)
                 .foregroundStyle(AppColors.textSecondary)
             Spacer()
             HStack(spacing: 4) {
-                FDSLabel("\(rows.count) txn\(rows.count == 1 ? "" : "s")")
+                FDSLabel("\(section.rows.count) txn\(section.rows.count == 1 ? "" : "s")")
                     .font(AppTypography.captionSm)
                     .foregroundStyle(.tertiary)
                 FDSLabel("·").font(AppTypography.captionSm).foregroundStyle(.tertiary)
                 FDSAmount(
-                    FormatterCache.formatCurrency(minorUnits: abs(dayNet)),
-                    type: dayNet < 0 ? .debit : .credit,
+                    FormatterCache.formatCurrency(minorUnits: abs(section.netAmountMinorUnits)),
+                    type: section.netAmountMinorUnits < 0 ? .debit : .credit,
                     size: .small
                 )
             }
