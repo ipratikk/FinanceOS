@@ -9,11 +9,17 @@ import SwiftUI
 // Use AppTypography.Dynamic for accessibility-critical contexts that must scale
 // with macOS Accessibility → Display → Text Size (Larger Text).
 
+/// Design-token namespace for all font styles in FinanceOS.
+/// Fixed-size tokens give consistent visual hierarchy; use `AppTypography.Dynamic` where the system text size setting
+/// must be respected (e.g. primary content, form labels).
 public enum AppTypography {
     // MARK: - Display (Hero / Marketing)
 
+    /// 36pt bold — hero numbers on the dashboard (net worth, total spend).
     public static let displayLarge = Font.system(size: 36, weight: .bold)
+    /// 36pt light — large decorative headers where weight contrast is desired.
     public static let displayLargeLight = Font.system(size: 36, weight: .light)
+    /// 28pt bold — section hero amounts and prominent metric labels.
     public static let displaySmall = Font.system(size: 28, weight: .bold)
 
     // MARK: - Heading
@@ -60,6 +66,7 @@ public enum AppTypography {
 
     // MARK: - Amount (Monospaced Currency)
 
+    /// Monospaced fonts keep currency digits aligned in list columns regardless of digit width.
     public static let amountLarge = Font.system(size: 22, weight: .semibold, design: .monospaced)
     public static let amountMd = Font.system(size: 18, weight: .semibold, design: .monospaced)
     public static let amountSm = Font.system(size: 15, weight: .regular, design: .monospaced)
@@ -79,6 +86,8 @@ public enum AppTypography {
 
     // MARK: - Dynamic Type (fully adaptive, use in accessibility-critical contexts)
 
+    /// Fonts that scale with macOS Accessibility → Display → Text Size (Larger Text).
+    /// Use for body copy, form labels, and any text that must remain readable at system-enlarged sizes.
     public enum Dynamic {
         public static let display: Font = .largeTitle.bold()
         public static let title: Font = .title.bold()

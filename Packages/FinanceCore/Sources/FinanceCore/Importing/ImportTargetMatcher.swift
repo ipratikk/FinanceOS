@@ -1,8 +1,12 @@
 import FinanceParsers
 import Foundation
 
+/// A candidate import destination paired with a confidence score (0.0–1.0).
+/// Used by `ImportTargetMatcher` and surfaced to the ImportViewModel for user confirmation.
 public struct ImportTargetMatch {
+    /// The ledger the statement should be imported into.
     public let target: TransactionImportTarget
+    /// 1.0 = exact last4 match; 0.7 = sole ledger at bank; 0.5 = sole ledger (no last4).
     public let confidence: Double
 
     public init(_ target: TransactionImportTarget, confidence: Double) {
@@ -11,6 +15,8 @@ public struct ImportTargetMatch {
     }
 }
 
+/// Resolves a `ParsedStatement` to the most likely `TransactionImportTarget` using bank name
+/// fuzzy-matching and card/account last-4 digit disambiguation.
 public enum ImportTargetMatcher {
     /// Fuzzy match for institution names: requires either exact match or substantial word overlap.
     /// Prevents cross-bank false matches ("Bank" matching unrelated banks).

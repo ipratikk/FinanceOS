@@ -8,7 +8,10 @@
 import Foundation
 import GRDB
 
+/// Owns the SQLite connection pool and drives schema migrations at startup.
+/// `@unchecked Sendable` is safe because `dbQueue` is itself thread-safe and `init` is private.
 public final class DatabaseManager: @unchecked Sendable {
+    /// Singleton. A `fatalError` is intentional — an unusable DB is unrecoverable at launch.
     public static let shared: DatabaseManager = {
         do {
             return try DatabaseManager()
@@ -17,6 +20,7 @@ public final class DatabaseManager: @unchecked Sendable {
         }
     }()
 
+    /// The GRDB queue passed to all repository implementations; never used directly by ViewModels.
     public let dbQueue: DatabaseQueue
 
     private init() throws {
@@ -43,6 +47,7 @@ public final class DatabaseManager: @unchecked Sendable {
 }
 
 private extension DatabaseManager {
+    /// Resolves or creates the `FinanceOS/finance.sqlite` file in Application Support.
     static func makeDatabaseURL() throws -> URL {
         let applicationSupport = try FileManager.default.url(
             for: .applicationSupportDirectory,
@@ -68,6 +73,7 @@ private extension DatabaseManager {
 }
 
 private extension DatabaseManager {
+    /// Builds a fresh ``DatabaseMigrator`` with all registered migrations; called once during init.
     var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
 

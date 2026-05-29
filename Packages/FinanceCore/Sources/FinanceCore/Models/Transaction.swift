@@ -8,11 +8,14 @@
 import Foundation
 import GRDB
 
+/// Indicates whether money left (debit) or entered (credit) the ledger.
 public enum TransactionType: String, Sendable, Codable {
     case debit
     case credit
 }
 
+/// Core financial event persisted in SQLite. Belongs to a ``Ledger`` and is immutable after import.
+/// Amounts are always stored as minor units (e.g. paise for INR) to avoid floating-point rounding.
 public struct Transaction:
     Identifiable,
     Codable,
@@ -20,14 +23,19 @@ public struct Transaction:
     FetchableRecord,
     PersistableRecord {
     public let id: UUID
+    /// Foreign key to the parent ``Ledger``; nil only for orphaned/in-flight transactions.
     public let ledgerId: UUID?
+    /// Denormalised account reference for queries that bypass the ledger join.
     public let accountID: UUID?
+    /// Denormalised card reference; populated when the ledger kind is ``LedgerKind/creditCard``.
     public let cardID: UUID?
     public let postedAt: Date
     public let description: String
+    /// Transaction amount in currency minor units (e.g. paise). Always positive; sign conveyed by `transactionType`.
     public let amountMinorUnits: Int64
     public let currencyCode: String
     public let transactionType: TransactionType
+    /// Deterministic hash produced by the parser used to deduplicate reimported statements.
     public let sourceFingerprint: String?
     /// Predicted or user-confirmed category ID from the intelligence layer. Matches CategoryTaxonomy IDs.
     public let categoryId: String?
@@ -68,6 +76,7 @@ public struct Transaction:
 }
 
 public extension Transaction {
+    /// GRDB column references for type-safe query building; mirrors the `transactions` table schema.
     enum Columns {
         static let id = Column(CodingKeys.id)
         static let ledgerId = Column(CodingKeys.ledgerId)
@@ -88,6 +97,8 @@ public extension Transaction {
 public extension Transaction {
     static let databaseTableName = "transactions"
 
+    /// Creates the `transactions` table with all required columns, indexes, and the
+    /// `(ledgerId, sourceFingerprint)` unique constraint that powers deduplication.
     static func createTable(
         in database: Database
     ) throws {

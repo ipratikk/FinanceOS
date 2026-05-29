@@ -1,6 +1,9 @@
 import Foundation
 import GRDB
 
+/// A financial account or card owned by the user within a ``Bank``.
+/// Ledgers are the top-level grouping for ``Transaction`` records and support both savings/current
+/// accounts and credit cards via ``LedgerKind``.
 public struct Ledger:
     Identifiable,
     Codable,
@@ -9,10 +12,12 @@ public struct Ledger:
     PersistableRecord,
     Equatable {
     public let id: UUID
+    /// References the parent ``Bank`` row; cascade-deleted with the bank.
     public let bankId: UUID
     public let kind: LedgerKind
 
     public let displayName: String
+    /// Last 4 digits of the account/card number, used for display and matching against parsed statements.
     public let last4: String
     public let nickname: String
     public let ownerName: String
@@ -20,12 +25,17 @@ public struct Ledger:
 
     public let accountType: String?
     public let cardType: CardNetwork?
+    /// Matches a ``CardMetadata/id`` in ``CardDatabase``; nil for non-card ledgers.
     public let cardProductId: String?
-    public let bin: String? // Bank Identification Number for card network auto-detection
+    /// Bank Identification Number for card network auto-detection
+    public let bin: String?
+    /// Points to a companion ledger (e.g. a savings account linked to a credit card).
     public let linkedLedgerId: UUID?
 
     public let isArchived: Bool
+    /// Opening balance in minor units at the time of ledger creation; nil if unknown.
     public let openingBalance: Int64?
+    /// Most recently known closing balance in minor units, updated from statement imports.
     public let closingBalance: Int64?
     public let closingBalanceAsOf: Date?
 
@@ -90,6 +100,7 @@ public struct Ledger:
 }
 
 public extension Ledger {
+    /// GRDB column references for type-safe query building; mirrors the `ledgers` table schema.
     enum Columns {
         static let id = Column(CodingKeys.id)
         static let bankId = Column(CodingKeys.bankId)
@@ -114,6 +125,8 @@ public extension Ledger {
 public extension Ledger {
     static let databaseTableName = "ledgers"
 
+    /// Creates the `ledgers` table including a composite index on `(bankId, kind)` and a CHECK
+    /// constraint that guards the `kind` column against unknown enum raw values.
     static func createTable(in database: Database) throws {
         try database.create(table: databaseTableName) { table in
             table.column("id", .text)
@@ -181,6 +194,8 @@ public extension Ledger {
 }
 
 public extension Ledger {
+    /// Resolves the card product from ``CardDatabase`` using `cardProductId`; nil for non-card ledgers
+    /// or cards whose product is not yet in the local catalogue.
     var cardProductMetadata: CardMetadata? {
         guard let cardProductId else { return nil }
         return CardDatabase.supportedCards().first { $0.id == cardProductId }

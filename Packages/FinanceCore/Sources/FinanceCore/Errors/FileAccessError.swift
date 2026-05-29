@@ -7,9 +7,12 @@
 
 import Foundation
 
+/// Errors arising when the app cannot access a file on disk, typically during statement import.
 public enum FileAccessError: FinanceError {
     case fileNotFound(path: String)
+    /// The sandbox or user has not granted read permission for this path.
     case permissionDenied(path: String)
+    /// The supplied URL cannot be resolved to a valid filesystem path.
     case invalidPath(String)
     case readFailed(path: String, reason: String)
 

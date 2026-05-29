@@ -1,11 +1,15 @@
 import Foundation
 
+/// Loads card metadata and bank logo assets from the bundled `cards_catalog.json` resource.
+/// Acts as the single read-path for the card catalog; `CardDatabase` wraps it with a cached static layer.
 public enum CardCatalogLoader {
+    /// Controls which resolution of a bank logo is requested.
     public enum LogoSize {
         case small
         case large
     }
 
+    /// Returns a bundle URL for the bank logo matching `issuer` at the requested size, or nil if unknown.
     public static func bankLogoURL(
         for issuer: String,
         size: LogoSize = .large
@@ -41,6 +45,7 @@ public enum CardCatalogLoader {
         return path
     }
 
+    /// Decodes `cards_catalog.json` from the module bundle and flattens issuer→cards into `[CardMetadata]`.
     public static func loadCardMetadata() -> [CardMetadata] {
         guard let url = Bundle.module.url(forResource: "cards_catalog", withExtension: "json") else {
             return []

@@ -1,7 +1,11 @@
 import FinanceParsers
 import Foundation
 
+/// Converts a parser-layer `ParsedTransaction` into a domain `Transaction`, resolving ledger
+/// ownership and sign convention.  Internal to the import pipeline; not exposed publicly.
 enum ParsedTransactionMapper {
+    /// Maps a single parsed transaction to a domain model bound to `target`.
+    /// Sign rule: parser-positive amounts are debits (money leaving the account); negatives are credits.
     static func map(
         _ parsed: ParsedTransaction,
         target: TransactionImportTarget,

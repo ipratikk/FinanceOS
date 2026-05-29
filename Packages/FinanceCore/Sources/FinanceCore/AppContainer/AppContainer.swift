@@ -7,14 +7,20 @@
 
 import Foundation
 
+/// Composition root for the application's object graph.
+/// Owns all repository instances, the import pipeline, and the spending service.
+/// Access via `AppContainer.shared` from ViewModels; never inject individual GRDB types directly.
 @MainActor
 public final class AppContainer {
+    /// Singleton entry point. All ViewModels should depend on this rather than constructing
+    /// repositories independently.
     public static let shared = AppContainer()
 
     public let transactionRepository: any TransactionRepository
     public let bankRepository: any BankRepository
     public let ledgerRepository: any LedgerRepository
 
+    /// Orchestrates file parsing, deduplication, and batch insert for statement imports.
     public let transactionImportPipeline: TransactionImportPipeline
 
     public let spendingService: any SpendingServiceProtocol

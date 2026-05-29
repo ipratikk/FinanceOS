@@ -9,6 +9,9 @@ import Foundation
 import GRDB
 import OSLog
 
+/// GRDB-backed implementation of the full `TransactionRepository` umbrella protocol.
+/// Deduplication during insert uses two layers: an in-batch fingerprint set (catches same-file
+/// duplicates) and a SQLite UNIQUE constraint (catches cross-import duplicates).
 public final class GRDBTransactionRepository:
     @unchecked Sendable,
     TransactionRepository {
@@ -90,6 +93,9 @@ public final class GRDBTransactionRepository:
         }
     }
 
+    /// Inserts transactions in a single write transaction.
+    /// Layer 1: in-batch `batchKeys` set drops same-fingerprint rows before hitting SQLite.
+    /// Layer 2: SQLITE_CONSTRAINT catch handles duplicates from prior import sessions.
     public func insertTransactions(
         _ transactions: [Transaction]
     ) async throws -> ImportResult {
@@ -141,6 +147,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
+    /// Reassigns card transactions to an account ledger; used when user converts a card to an account.
     public func migrateTransactions(fromCard cardID: UUID, toAccount accountID: UUID) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
@@ -156,6 +163,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
+    /// Reassigns account transactions to a card ledger; used when user converts an account to a card.
     public func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """

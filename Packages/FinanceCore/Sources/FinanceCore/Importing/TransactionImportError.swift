@@ -8,4 +8,5 @@
 import FinanceParsers
 import Foundation
 
+/// Re-exports import error cases from FinanceParsers for use in FinanceCore and UI layers.
 public typealias TransactionImportError = FinanceParsers.TransactionImportError

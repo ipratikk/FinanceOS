@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Design-token namespace for all animation curves used in FinanceOS.
+/// Always use `AppAnimation.ifAllowed` (or the `motionAnimation` modifier) to respect the system Reduce Motion setting.
 public enum AppAnimation {
     // MARK: - Spring curves
 
@@ -12,8 +14,11 @@ public enum AppAnimation {
 
     // MARK: - Ease curves
 
+    /// Smooth ease-in-out for content transitions (tab switches, sheet presentations).
     public static let easeSmooth: SwiftUI.Animation = .easeInOut(duration: 0.22)
+    /// Fast ease-out for micro-interactions (chip state changes, button press feedback).
     public static let easeFast: SwiftUI.Animation = .easeOut(duration: 0.14)
+    /// Ultra-fast ease-out for hover highlight changes.
     public static let hover: SwiftUI.Animation = .easeOut(duration: 0.12)
 
     // MARK: - Reduce Motion
@@ -40,7 +45,8 @@ public enum AppAnimation {
 
 // MARK: - Reduce Motion View Modifier
 
-/// Applies `animation` normally, or falls back to `.easeOut(duration: 0.1)` when Reduce Motion is enabled.
+/// `ViewModifier` that automatically substitutes a gentler animation when the system Reduce Motion
+/// accessibility setting is enabled; apply via the `motionAnimation(_:value:)` View extension.
 public struct MotionAwareAnimation<Value: Equatable>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 

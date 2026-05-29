@@ -8,57 +8,70 @@
 import Foundation
 import OSLog
 
+/// Namespace of pre-configured `OSLog.Logger` instances, one per architectural layer.
+/// All logging in FinanceOS must route through one of these loggers so Console.app filters work correctly.
 public enum FinanceLogger {
+    /// UI events, navigation, and user interaction.
     public static let userInterface = Logger(
         subsystem: subsystem,
         category: "UI"
     )
 
+    /// Account and ledger CRUD operations.
     public static let accounts = Logger(
         subsystem: subsystem,
         category: "Accounts"
     )
 
+    /// Transaction fetch, mutation, and deduplication.
     public static let transactions = Logger(
         subsystem: subsystem,
         category: "Transactions"
     )
 
+    /// Statement file → parsed transactions → repository write pipeline.
     public static let importPipeline = Logger(
         subsystem: subsystem,
         category: "ImportPipeline"
     )
 
+    /// Bank-specific parser internals and regex matching.
     public static let parsing = Logger(
         subsystem: subsystem,
         category: "Parsing"
     )
 
+    /// Raw GRDB / SQLite query execution.
     public static let database = Logger(
         subsystem: subsystem,
         category: "Database"
     )
 
+    /// Schema migration steps.
     public static let migration = Logger(
         subsystem: subsystem,
         category: "Migration"
     )
 
+    /// Repository-layer read/write operations above raw SQL.
     public static let repository = Logger(
         subsystem: subsystem,
         category: "Repository"
     )
 
+    /// Timing instrumentation via `PerformanceTimer`.
     public static let performance = Logger(
         subsystem: subsystem,
         category: "Performance"
     )
 
+    /// Reserved for future cloud-sync operations.
     public static let sync = Logger(
         subsystem: subsystem,
         category: "Sync"
     )
 
+    /// Keychain and data-protection events.
     public static let security = Logger(
         subsystem: subsystem,
         category: "Security"
@@ -70,8 +83,7 @@ public enum FinanceLogger {
 public extension Logger {
     // MARK: - Production-Grade Logging with Context
 
-    /// Log trace level with full context (file, function, line, metadata).
-    /// Example: logger.logTrace("Fetching user", file: #file, function: #function, line: #line, ["userID": "123"])
+    /// Emits a trace-level log with source location and key-value attributes interpolated into the message.
     func logTrace(
         _ message: StaticString,
         file: String = #file,
@@ -89,6 +101,7 @@ public extension Logger {
         trace("\(formatted)")
     }
 
+    /// Emits a debug-level log with source location and key-value attributes.
     func logDebug(
         _ message: StaticString,
         file: String = #file,
@@ -106,6 +119,7 @@ public extension Logger {
         debug("\(formatted)")
     }
 
+    /// Emits an info-level log; use for significant lifecycle events (import started, migration complete).
     func logInfo(
         _ message: StaticString,
         file: String = #file,
@@ -123,6 +137,7 @@ public extension Logger {
         info("\(formatted)")
     }
 
+    /// Emits a notice-level log; use for non-critical anomalies worth surfacing in production logs.
     func logNotice(
         _ message: StaticString,
         file: String = #file,
@@ -140,6 +155,7 @@ public extension Logger {
         notice("\(formatted)")
     }
 
+    /// Emits a warning-level log; indicates recoverable problems that may degrade correctness.
     func logWarning(
         _ message: StaticString,
         file: String = #file,
@@ -157,6 +173,8 @@ public extension Logger {
         warning("\(formatted)")
     }
 
+    /// Emits an error-level log; automatically appends `localizedDescription`, `errorCode`, and `errorDomain`
+    /// from `caughtError` when provided.
     func logError(
         _ message: StaticString,
         caughtError: Error? = nil,
@@ -182,6 +200,7 @@ public extension Logger {
         error("\(formatted)")
     }
 
+    /// Emits a critical-level log; reserved for unrecoverable failures (database corruption, missing required resource).
     func logCritical(
         _ message: StaticString,
         file: String = #file,
