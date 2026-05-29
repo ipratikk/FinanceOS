@@ -1,12 +1,15 @@
 import FinanceCore
 import SwiftUI
 
+/// Typography scale applied by `FDSTextInput`.
 public enum FDSTextInputStyle {
     case bodyLarge
     case bodyMedium
     case labelSmall
 }
 
+/// Bare TextField/SecureField with FDS typography. No chrome — rely on a wrapping
+/// `FDSField` or `FDSInputField` for label, border, and error display.
 public struct FDSTextInput: View {
     @Binding var text: String
     let placeholder: String

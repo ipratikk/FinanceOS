@@ -1,26 +1,22 @@
 import Foundation
 
-// Two-layer nearest-neighbor classifier for on-device transaction categorization.
-//
-// Layer 1 — Base (read-only at runtime):
-//   Loaded from BundledSeeds at app launch. Updated when user installs a new app version.
-//   Provides general accuracy for all users on day 1.
-//
-// Layer 2 — Personal (append-only, persists across app updates):
-//   Grows from user corrections. Never overwritten by app updates.
-//   User corrections from v1.0 carry forward into v2.0, v3.0, etc.
-//
-// Inference: both layers are queried and their scores are merged.
-// Personal examples outweigh base examples (1.5×) — user ground truth wins ties.
-//
-// "Merge" happens automatically at init — base layer always contains the latest bundled
-// seeds (updated with each app release), personal layer always contains all user history.
+/// Two-layer Jaccard-similarity kNN classifier for on-device transaction categorization.
+///
+/// Layer 1 (base) — read-only bundled seeds loaded from `BundledSeeds` at app launch.
+/// Layer 2 (personal) — append-only user corrections that persist across app updates.
+/// Inference merges both layers; personal examples are weighted 1.5× to let user ground truth win ties.
 public actor LocalTransactionLearner {
+    /// A single training example used by the kNN classifier.
     public struct LabeledExample: Codable, Sendable {
+        /// Whitespace/punctuation-split tokens from the normalized description (length >= 2).
         public let tokens: [String]
+        /// Taxonomy category ID this example belongs to.
         public let categoryId: String
+        /// When the example was added (`.distantPast` for bundled seeds).
         public let addedAt: Date
+        /// True when this example was created from a user correction rather than the seed bundle.
         public let isUserProvided: Bool
+        /// App version string at the time the example was added.
         public let appVersion: String
 
         public init(
@@ -101,20 +97,24 @@ public actor LocalTransactionLearner {
 
     // MARK: - Inference (single, convenience — acquires actor for each call)
 
+    /// Convenience single-transaction inference. Acquires the actor on each call — use `snapshot()` for batches.
     public func predict(normalizedDescription: String) -> (categoryId: String, confidence: Double)? {
         snapshot().predict(normalizedDescription: normalizedDescription)
     }
 
     // MARK: - Stats
 
+    /// Number of examples in the read-only base layer (bundled seeds).
     public var baseExampleCount: Int {
         baseExamples.count
     }
 
+    /// Number of examples in the personal layer (accumulated from user corrections).
     public var personalExampleCount: Int {
         personalExamples.count
     }
 
+    /// Total number of examples across both layers.
     public var totalExampleCount: Int {
         baseExamples.count + personalExamples.count
     }
@@ -123,8 +123,8 @@ public actor LocalTransactionLearner {
 // MARK: - Snapshot
 
 public extension LocalTransactionLearner {
-    /// Sendable value type holding both layers for lock-free batch inference.
-    /// Obtain via `learner.snapshot()` (one actor hop), then call `predict` concurrently.
+    /// Sendable value-type snapshot of both example layers for lock-free batch inference.
+    /// Obtain with a single `learner.snapshot()` actor hop, then call `predict` from any context.
     struct Snapshot: Sendable {
         let base: [LabeledExample]
         let personal: [LabeledExample]
@@ -132,6 +132,8 @@ public extension LocalTransactionLearner {
         let minimumSimilarity: Double
         let personalWeight: Double
 
+        /// Runs k-NN inference over both layers and returns the winning category and confidence.
+        /// Returns nil when no neighbors meet the `minimumSimilarity` threshold.
         public func predict(normalizedDescription: String) -> (categoryId: String, confidence: Double)? {
             let queryTokens = Set(Self.tokenize(normalizedDescription))
             guard !queryTokens.isEmpty else { return nil }

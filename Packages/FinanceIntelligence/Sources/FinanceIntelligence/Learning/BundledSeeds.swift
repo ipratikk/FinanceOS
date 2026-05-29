@@ -1,9 +1,10 @@
 import Foundation
 
-/// Seed examples bundled with the app for cold-start accuracy.
-/// These are generic labeled descriptions derived from the alias table and common patterns.
-/// User corrections automatically override and supplement these over time.
+/// Static bundle of pre-labeled transaction descriptions for cold-start kNN accuracy.
+/// Derived from the merchant alias table and common Indian/international transaction patterns.
+/// Updated with each app release — user corrections in Layer 2 always take precedence.
 enum BundledSeeds {
+    /// Converts the seed list into `LabeledExample` values ready for the base layer of `LocalTransactionLearner`.
     static func load() -> [LocalTransactionLearner.LabeledExample] {
         seeds.map { desc, category in
             LocalTransactionLearner.LabeledExample(

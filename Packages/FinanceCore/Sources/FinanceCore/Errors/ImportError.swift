@@ -7,12 +7,16 @@
 
 import Foundation
 
+/// Errors arising during the file-to-ledger import pipeline, from file selection through DB commit.
 public enum ImportError: FinanceError {
     case noFilesSelected
     case noTargetSelected
+    /// The ledger UUID chosen by the user no longer exists in the database.
     case targetNotFound(UUID)
+    /// Raised as an informational signal; deduplication already skipped these rows.
     case duplicateDetected(count: Int)
     case importFailed(reason: String)
+    /// The DB transaction could not be rolled back after a failed import; data may be partial.
     case rollbackFailed(reason: String)
 
     public var category: ErrorCategory {

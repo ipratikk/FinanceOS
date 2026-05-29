@@ -5,8 +5,11 @@ import SwiftUI
 /// Replaces ad-hoc error handling throughout the app.
 public struct FDSErrorState: View {
     let title: String
+    /// Detailed error description shown in secondary color below the title.
     let message: String
+    /// Label on the action button (default "Retry").
     let actionTitle: String
+    /// Called when the action button is tapped — typically triggers a retry.
     let action: () -> Void
 
     public init(

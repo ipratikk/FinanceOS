@@ -2,8 +2,11 @@ import Foundation
 
 // MARK: - ICICIMetadataExtractor
 
-/// Extracts statement-level metadata from ICICI CSV bank statement rows.
-/// Handles header parsing for customer info, account details, and balances.
+/// Extracts statement-level metadata from ICICI bank CSV rows.
+///
+/// Customer name comes from the first cell of the first row; address follows in subsequent rows
+/// until a "STATEMENT" keyword is encountered. Account details are parsed from a cell matching
+/// `"XXXXXXXX<4digits>"` with account type keywords (Savings/PPF/Current).
 public struct ICICIMetadataExtractor: Sendable {
     public init() {}
 

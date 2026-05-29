@@ -1,8 +1,12 @@
 import Foundation
 
+/// Maps ICICI bank CSV column headers to typed `ColumnRole` values.
+///
+/// ICICI uses "Particulars" for description, "Deposits" for credits, and "Withdrawals" for debits.
 public struct ICICIBankCSVMapper: Sendable, CSVRowMapper {
     public init() {}
 
+    /// Matches lowercased, trimmed header strings against known ICICI column names.
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

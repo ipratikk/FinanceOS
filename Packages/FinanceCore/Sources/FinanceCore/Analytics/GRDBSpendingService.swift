@@ -1,6 +1,8 @@
 import Foundation
 import GRDB
 
+/// GRDB-backed `SpendingServiceProtocol` implementation that aggregates analytics in-memory from raw transactions.
+/// All methods fetch the full transaction set and group/filter in Swift rather than SQL to keep queries simple.
 public actor GRDBSpendingService: SpendingServiceProtocol {
     private let dbQueue: DatabaseQueue
     private let transactionRepository: any TransactionReader
@@ -123,6 +125,8 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return points
     }
 
+    /// Returns the set of ledger IDs that carry a `closingBalance` on at least one transaction.
+    /// These ledgers are treated as authoritative-balance sources rather than delta accumulators.
     private func closingBalanceLedgerIds(from transactions: [Transaction]) -> Set<UUID> {
         var ids = Set<UUID>()
         for txn in transactions {
@@ -131,6 +135,8 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return ids
     }
 
+    /// Accumulates signed daily net-worth deltas for all delta-style ledgers (those without closing balances).
+    /// Credits add to assets / reduce liabilities; debits do the inverse.
     private func buildDeltaByDay(
         transactions: [Transaction],
         excludeLedgerIds: Set<UUID>,
@@ -154,6 +160,8 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return byDay
     }
 
+    /// Sums the most-recent known closing balance for each closing-balance ledger as of `day`.
+    /// Falls back to the ledger's `openingBalance` if no transaction on or before `day` carries one.
     private func closingBalanceTotal(
         at day: Date,
         ledgerIds: Set<UUID>,
@@ -182,6 +190,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return total
     }
 
+    /// Resolves start-of-window date for chart rendering; defaults to earliest transaction day if `months` is nil.
     private func resolveWindowStart(months: Int?, sortedDays: [Date], now: Date, calendar: Calendar) -> Date {
         guard let months,
               let cutoff = calendar.date(byAdding: .month, value: -months, to: now),
@@ -190,6 +199,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return ws
     }
 
+    /// Computes the net-worth baseline before the chart window by summing opening/derived balances of delta ledgers.
     private func openingNetWorth(
         assetKinds: Set<LedgerKind>,
         liabilityKinds: Set<LedgerKind>,
@@ -207,6 +217,8 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return total
     }
 
+    /// Returns a ledger's effective opening balance: uses stored `openingBalance` when present,
+    /// otherwise back-computes from `closingBalance` minus the sum of all transactions up to `closingBalanceAsOf`.
     private func ledgerOpeningBalance(ledger: Ledger, isAsset: Bool, txnsByLedger: [UUID?: [Transaction]]) -> Decimal {
         if let opening = ledger.openingBalance { return Decimal(opening) / 100 }
         guard let closing = ledger.closingBalance else { return 0 }

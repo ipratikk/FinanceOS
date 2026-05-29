@@ -1,6 +1,11 @@
 import Foundation
 
+/// Compares two `ParseResult` values field-by-field and returns a list of human-readable
+/// diff lines. An empty array means the results are equivalent for fixture purposes.
+/// `id` fields on `ParsedTransaction` are intentionally excluded from comparison.
 public enum ParseResultDiffer {
+    /// Returns diff lines between `actual` and `expected`, or an empty array when they match.
+    /// Returns an empty array when both are `nil`; one "One result is nil" line when only one is `nil`.
     public static func compare(_ actual: ParseResult?, _ expected: ParseResult?) -> [String] {
         var diffs: [String] = []
 
@@ -25,6 +30,7 @@ public enum ParseResultDiffer {
         return diffs
     }
 
+    /// Compares statement-level fields and delegates transaction comparison to `compareTransactions`.
     private static func compareStatements(_ actual: ParsedStatement, _ expected: ParsedStatement) -> [String] {
         var diffs: [String] = []
 
@@ -62,6 +68,8 @@ public enum ParseResultDiffer {
         return diffs
     }
 
+    /// Compares transactions positionally up to `min(actual.count, expected.count)`,
+    /// then reports extra or missing transactions at the end.
     private static func compareTransactions(
         _ actual: [ParsedTransaction],
         _ expected: [ParsedTransaction]

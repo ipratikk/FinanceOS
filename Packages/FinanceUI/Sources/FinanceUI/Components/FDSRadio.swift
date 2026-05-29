@@ -6,7 +6,9 @@ import SwiftUI
 /// Off: subtle border. On: filled green accent + white dot.
 public struct FDSRadio: View {
     @Binding var isSelected: Bool
+    /// VoiceOver label. Falls back to "Radio button" when empty.
     let label: String
+    /// When false, renders at 40% opacity and ignores taps.
     let isEnabled: Bool
 
     public init(isSelected: Binding<Bool>, label: String = "", isEnabled: Bool = true) {

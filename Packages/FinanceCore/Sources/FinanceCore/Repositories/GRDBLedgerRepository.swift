@@ -2,6 +2,9 @@ import Foundation
 import GRDB
 import OSLog
 
+/// GRDB-backed implementation of `LedgerRepository`. All reads use `dbQueue.read` (concurrent);
+/// all writes use `dbQueue.write` (serialised). `@unchecked Sendable` because `DatabaseQueue` is
+/// itself thread-safe and `logger` is a value type.
 public final class GRDBLedgerRepository:
     @unchecked Sendable,
     LedgerRepository {

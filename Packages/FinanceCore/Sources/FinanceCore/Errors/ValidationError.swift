@@ -7,9 +7,12 @@
 
 import Foundation
 
+/// Errors produced when user-supplied or parsed data fails business-rule checks before persistence.
+/// All cases are non-retryable — the input itself must be corrected.
 public enum ValidationError: FinanceError {
     case invalidData(field: String, value: String, reason: String)
     case missingRequiredField(String)
+    /// A numeric or date value falls outside the permitted range (e.g. negative amount).
     case invalidRange(field: String, value: String, range: String)
 
     public var category: ErrorCategory {

@@ -2,16 +2,21 @@ import FinanceParsers
 import Foundation
 import OSLog
 
+/// Orchestrates the final stage of import: maps parsed transactions to domain models and persists them.
+/// Sits between the parser layer and the repository — it owns no parsing and no SQL logic.
 public struct TransactionImportPipeline: Sendable {
     private let repository: any TransactionWriter
     private let logger = FinanceLogger.importPipeline
 
+    /// - Parameter repository: Write-only repository slice; keeps the pipeline decoupled from read concerns.
     public init(
         repository: any TransactionWriter
     ) {
         self.repository = repository
     }
 
+    /// Maps all transactions in `statement` to domain `Transaction` values and persists them in one batch.
+    /// - Returns: Counts of inserted vs. skipped (duplicate) rows for display in the import preview UI.
     public func execute(
         statement: ParsedStatement,
         target: TransactionImportTarget,

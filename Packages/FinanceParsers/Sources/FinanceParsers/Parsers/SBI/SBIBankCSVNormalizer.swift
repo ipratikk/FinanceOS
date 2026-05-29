@@ -1,5 +1,9 @@
 import Foundation
 
+/// Converts a `NormalizedRow` from an SBI bank CSV statement into a `ParsedTransaction`.
+///
+/// Date format parsed via `DateParser.parseSBIBank` (typically `dd MMM yyyy` or `dd/MM/yyyy`).
+/// Credit produces a positive amount; debit produces a negative amount.
 public struct SBIBankCSVNormalizer: Sendable {
     public init() {}
 

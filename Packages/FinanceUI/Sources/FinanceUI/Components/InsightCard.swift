@@ -1,6 +1,10 @@
 import FinanceCore
 import SwiftUI
 
+/// Analytics insight card with a headline metric above a 120pt chart slot.
+///
+/// Shows `title` (caption) and `value` (displayLarge), then renders arbitrary content below.
+/// Styled with `cardStyle()` — use `FDSMetricTile` for a non-chart metric display.
 public struct InsightCard<Content: View>: View {
     let title: String
     let value: String

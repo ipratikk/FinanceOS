@@ -7,7 +7,10 @@
 
 import Foundation
 
+/// Errors produced by repository protocol implementations (GRDB layer) for CRUD operations.
+/// All cases are retryable because transient DB contention is the most common root cause.
 public enum RepositoryError: FinanceError {
+    /// The requested record does not exist; severity `.info` since this is often a benign lookup.
     case notFound(entity: String, id: String)
     case queryFailed(entity: String, reason: String)
     case insertFailed(entity: String, reason: String)

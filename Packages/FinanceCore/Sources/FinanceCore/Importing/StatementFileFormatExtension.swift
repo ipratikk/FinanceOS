@@ -3,6 +3,7 @@ import Foundation
 import UniformTypeIdentifiers
 
 public extension StatementFileFormat {
+    /// Maps each format to its UTType for use in `UIDocumentPickerViewController` / `fileImporter`.
     var utType: UTType {
         switch self {
         case .csv:

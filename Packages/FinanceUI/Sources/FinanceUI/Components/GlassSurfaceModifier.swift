@@ -8,8 +8,14 @@ import SwiftUI
 // The system handles blur, tint, specular highlights, light/dark adaptation,
 // and Reduce Transparency fallback automatically.
 
+/// ViewModifier that applies the native macOS 26 `glassEffect` with optional elevation shadow.
+///
+/// Do not apply both `GlassSurface` and `GlassStyleModifier` to the same view.
+/// Prefer the `.glassSurface()` convenience extension over constructing this directly.
 public struct GlassSurface: ViewModifier {
+    /// Corner radius passed to `RoundedRectangle` inside `glassEffect`.
     let radius: CGFloat
+    /// When true, adds a 12pt black-opacity drop shadow to suggest elevation.
     let liftShadow: Bool
 
     public func body(content: Content) -> some View {

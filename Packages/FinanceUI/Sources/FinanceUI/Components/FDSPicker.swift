@@ -1,10 +1,18 @@
 import FinanceCore
 import SwiftUI
 
+/// Popover-based picker with optional logo, symbol, or text-only row variants.
+///
+/// Trigger appears as a styled input field. Selection drives a popover list of `FDSPickerOption`
+/// rows. Use `FDSSelect` for simpler native-menu use cases.
 public struct FDSPicker<V: Hashable>: View {
+    /// Currently selected value; `nil` shows the placeholder.
     @Binding var selection: V?
+    /// Array of options to display in the popover list.
     let options: [FDSPickerOption]
+    /// Controls how each option row is rendered (logo, symbol+text, or text only).
     let variant: FDSPickerVariant
+    /// Text displayed in the trigger when no option is selected.
     let placeholder: String
     @State private var isOpen = false
 

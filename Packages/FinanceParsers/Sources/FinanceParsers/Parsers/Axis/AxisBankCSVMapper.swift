@@ -1,8 +1,13 @@
 import Foundation
 
+/// Maps Axis Bank CSV column headers to typed `ColumnRole` values.
+///
+/// Accepts both "Tran. Date"/"Transaction Date" for the date column,
+/// and "Deposit"/"Credit" or "Withdrawal"/"Debit" for the amount columns.
 public struct AxisBankCSVMapper: Sendable {
     public init() {}
 
+    /// Matches lowercased, trimmed header strings against known Axis Bank column name variants.
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

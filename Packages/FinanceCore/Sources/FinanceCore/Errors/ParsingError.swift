@@ -7,12 +7,19 @@
 
 import Foundation
 
+/// Errors thrown by FinanceParsers when a statement file cannot be read or normalised.
+/// All cases are non-retryable — the user must supply a corrected file.
 public enum ParsingError: FinanceError {
+    /// File extension or internal structure does not match any registered parser.
     case unsupportedFormat(String)
+    /// A column required by the parser is absent from the statement header.
     case missingColumn(String)
+    /// A date cell value could not be parsed with the expected format pattern.
     case invalidDate(String, pattern: String)
     case invalidAmount(String)
+    /// The file's overall structure (row count, header position, etc.) is unexpected.
     case malformedStructure(String)
+    /// Auto-detection heuristics could not determine the bank or statement variant.
     case detectionFailed(String)
 
     public var category: ErrorCategory {

@@ -7,13 +7,18 @@ import SwiftUI
 /// Use for inline references (transaction source, filter pills, account selectors).
 public struct FDSAccountChip: View {
     let bankName: String
+    /// Last 4 digits of the account/card shown as "•••• XXXX".
     let last4: String
+    /// Asset catalog image name for the bank logo; falls back to initials avatar.
     let bankLogoName: String?
     let style: Style
 
+    /// Rendering density for the chip.
     public enum Style {
-        case compact // dense, inline
-        case prominent // standalone, larger
+        /// 22pt avatar, tight padding — for inline use in transaction rows.
+        case compact
+        /// 32pt avatar, standard padding — for standalone account pickers.
+        case prominent
     }
 
     public init(

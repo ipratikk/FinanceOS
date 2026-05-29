@@ -7,6 +7,7 @@ import SwiftUI
 public struct FDSChoiceGroup<T: Hashable>: View {
     @Binding var selection: T
     let options: [T]
+    /// Closure returning the button label string for each option value.
     let optionLabel: (T) -> String
 
     public init(

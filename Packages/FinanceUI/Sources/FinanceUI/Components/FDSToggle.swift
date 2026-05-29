@@ -7,7 +7,9 @@ import SwiftUI
 /// Knob: 16×16 white circle with subtle inset highlight.
 public struct FDSToggle: View {
     @Binding var isOn: Bool
+    /// VoiceOver label (e.g. "Auto-deduplicate"). Falls back to "Toggle" if empty.
     let label: String
+    /// When false, renders at 40% opacity and ignores taps.
     let isEnabled: Bool
 
     public init(isOn: Binding<Bool>, label: String = "", isEnabled: Bool = true) {

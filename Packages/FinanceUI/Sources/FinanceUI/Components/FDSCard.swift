@@ -19,8 +19,11 @@ public struct FDSCard<Content: View>: View {
     private let glass: Bool
 
     public init(
+        // Corner radius applied to the card shape. Defaults to `AppRadius.lg` (16pt).
         cornerRadius: CGFloat = AppRadius.lg,
+        // When false, no internal padding is applied (content fills edge to edge).
         padded: Bool = true,
+        // When true, applies native Liquid Glass effect; when false, uses flat `AppColors.Glass.surface`.
         glass: Bool = true,
         @ViewBuilder content: () -> Content
     ) {

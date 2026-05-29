@@ -8,7 +8,11 @@
 import Foundation
 import GRDB
 
+/// Registers all schema migrations in version order with GRDB's ``DatabaseMigrator``.
+/// Migrations are idempotent — guard checks prevent re-applying columns that already exist
+/// (needed because v1 created the full schema for fresh installs while older builds only had subsets).
 enum AppMigration {
+    /// Registers every migration; called once by ``DatabaseManager`` during init.
     static func registerMigrations(
         in migrator: inout DatabaseMigrator
     ) {

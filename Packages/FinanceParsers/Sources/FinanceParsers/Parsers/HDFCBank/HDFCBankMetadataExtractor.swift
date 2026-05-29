@@ -1,8 +1,13 @@
 import Foundation
 
+/// Extracts account metadata from an HDFC bank TXT statement (fixed-width or delimited).
+///
+/// Customer name is found in the top 100 lines as a title-prefixed (MR/MRS/MS/DR) text block.
+/// Account number is read from "Account No : <digits>" or the "XXXXXXXX<4digits>" masked format.
 public struct HDFCBankMetadataExtractor: Sendable {
     public init() {}
 
+    /// Dispatches to fixed-width or delimited sub-extractors based on separator line presence.
     public func extract(from content: String) -> StatementMetadata {
         let lines = content.components(separatedBy: .newlines)
 
@@ -25,8 +30,8 @@ public struct HDFCBankMetadataExtractor: Sendable {
         )
     }
 
-    /// Derives opening balance from the first data row:
-    /// opening = closing_balance + debit - credit
+    /// Derives opening balance from the first data row's columns:
+    /// `opening = closing_balance + debit - credit`.
     private func extractOpeningBalance(from content: String) -> Int64? {
         if content.components(separatedBy: .newlines).contains(where: { $0.hasPrefix("--------  ---") }) {
             return extractOpeningBalanceFixedWidth(from: content)
@@ -183,7 +188,7 @@ public struct HDFCBankMetadataExtractor: Sendable {
         return extractAccountDigits(from: lines, minLength: 10)
     }
 
-    /// Finds "Account No" label, then extracts the digit string after the following colon
+    /// Finds "Account No" label, then extracts the digit string after the following colon.
     private func extractAccountDigits(from lines: [String], minLength: Int) -> String? {
         for line in lines.prefix(100) {
             guard line.contains("Account No") else { continue }

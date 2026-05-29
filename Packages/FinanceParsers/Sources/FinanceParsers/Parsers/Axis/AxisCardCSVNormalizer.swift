@@ -1,5 +1,9 @@
 import Foundation
 
+/// Converts a `NormalizedRow` from an Axis card CSV statement into a `ParsedTransaction`.
+///
+/// Date format parsed via `DateParser.parseAxisBank`. Separate debit/credit columns are used;
+/// credit produces positive (money in) and debit produces negative (money out) amounts.
 public struct AxisCardCSVNormalizer: Sendable {
     public init() {}
 

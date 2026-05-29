@@ -1,11 +1,20 @@
 import FinanceCore
 import SwiftUI
 
+/// Full credit card display widget with gradient card art and editable number fields.
+///
+/// Renders a 200pt-height card preview (gradient + masked PAN) above two input fields
+/// for encrypted card number and last 4 digits. Network color drives the gradient.
 public struct FDSCreditCardDisplay: View {
+    /// Optional card nickname shown on the card face.
     let cardName: String?
+    /// Optional issuing bank name shown top-right of card face.
     let bankName: String?
+    /// Card network string (e.g. "visa", "mastercard"). Drives gradient color.
     let cardNetwork: String
+    /// Encrypted full card number; last 4 digits are shown as masked PAN.
     @Binding var encryptedCardNumber: String
+    /// Last 4 digits of the card, capped to 4 characters on input.
     @Binding var last4: String
 
     public init(

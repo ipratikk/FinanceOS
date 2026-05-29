@@ -1,14 +1,14 @@
 import FinanceCore
 import SwiftUI
 
-/// Image rendering with fallback sf symbol
+/// Fixed-size image with SF Symbol fallback. Handles wide-aspect logos (e.g. Amex 15:1).
 ///
-/// Hierarchy:
-/// 1. Logo image if available
-/// 2. SF Symbol if category-known
-///
+/// Wraps the asset image in a fixed-size ZStack so SwiftUI resolves container size first,
+/// then scales the image to fit — prevents wide logos from expanding Menu item width.
 public struct FDSImage: View {
+    /// Asset catalog image name. Takes priority over `fallbackSymbol` when non-nil and non-empty.
     let imageName: String?
+    /// SF Symbol name used when `imageName` is unavailable.
     let fallbackSymbol: String?
     let height: CGFloat
     let width: CGFloat

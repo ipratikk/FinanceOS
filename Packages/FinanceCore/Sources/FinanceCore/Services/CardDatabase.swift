@@ -1,25 +1,32 @@
 import Foundation
 
+/// In-memory card catalog used for BIN lookup and card-art display throughout the app.
+/// Prefers the bundled JSON catalog via `CardCatalogLoader`; falls back to hardcoded entries if the bundle is missing.
 public enum CardDatabase {
     private static let defaultCards: [CardMetadata] = CardCatalogLoader.loadCardMetadata().isEmpty ?
         fallbackCards : CardCatalogLoader.loadCardMetadata()
 
+    /// Returns every card known to the catalog regardless of support status.
     public static func allCards() -> [CardMetadata] {
         defaultCards
     }
 
+    /// Returns all cards from a single issuer (case-insensitive match).
     public static func cardsByIssuer(_ issuer: String) -> [CardMetadata] {
         defaultCards.filter { $0.issuer.lowercased() == issuer.lowercased() }
     }
 
+    /// Finds the first card whose BIN ranges contain `bin`; used during import to identify the card product.
     public static func findCard(by bin: String) -> CardMetadata? {
         defaultCards.first { $0.matches(bin) }
     }
 
+    /// Returns a sorted, deduplicated list of issuer names for pickers and filters.
     public static func issuers() -> [String] {
         Array(Set(defaultCards.map(\.issuer))).sorted()
     }
 
+    /// Returns only cards that are fully supported by the import pipeline.
     public static func supportedCards() -> [CardMetadata] {
         defaultCards.filter(\.isSupported)
     }

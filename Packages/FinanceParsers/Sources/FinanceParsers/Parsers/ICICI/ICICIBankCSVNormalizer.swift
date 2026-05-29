@@ -1,5 +1,9 @@
 import Foundation
 
+/// Converts a `NormalizedRow` from an ICICI bank CSV statement into a `ParsedTransaction`.
+///
+/// Date format parsed via `DateParser.parseICICIBank` (typically `dd/MM/yyyy`).
+/// Credit (deposit) produces a positive amount; debit (withdrawal) produces a negative amount.
 public struct ICICIBankCSVNormalizer: Sendable, CSVRowNormalizer {
     public init() {}
 

@@ -1,17 +1,23 @@
 import Foundation
 
-// Parses Indian bank UPI/NEFT/IMPS description formats.
-//
-// UPI format:  "UPI-MERCHANT NAME-vpa@bank-BANKCODE-TXNREF"
-// NEFT CR:     "NEFT CR-BANKCODE-PARTY NAME-REF"
-// NEFT DR:     "NEFT DR-BANKCODE-PARTY NAME-REF"
-// IMPS:        "IMPS-TXNID-PARTY NAME-BANKCODE"
+/// Parses Indian bank UPI/NEFT/IMPS description formats to extract merchant names and
+/// determine whether a transaction is a P2P transfer or a merchant payment.
+///
+/// Supported formats:
+/// - UPI:  `"UPI-MERCHANT NAME-vpa@bank-BANKCODE-TXNREF"`
+/// - NEFT: `"NEFT CR-BANKCODE-PARTY NAME-REF"` / `"NEFT DR-BANKCODE-PARTY NAME-REF"`
+/// - IMPS: `"IMPS-TXNID-PARTY NAME-BANKCODE"`
 enum UPIDescriptionParser {
+    /// The structured result of parsing a UPI/NEFT/IMPS bank description.
     struct ParsedUPI {
+        /// Extracted merchant or counterparty name (cleaned, not lowercased).
         let merchantName: String
+        /// Virtual payment address (e.g. `"merchant@razorpay"`). Nil for NEFT/IMPS.
         let vpa: String?
-        let isPersonTransfer: Bool // true when VPA/name looks like a person, not a business
-        let isMerchantPayment: Bool // true when VPA is a known merchant/business handle
+        /// True when the VPA or name pattern suggests a person-to-person transfer.
+        let isPersonTransfer: Bool
+        /// True when the VPA or name matches known business/merchant patterns.
+        let isMerchantPayment: Bool
     }
 
     /// Known business VPA suffixes that indicate merchant payments (not P2P transfers)
@@ -31,6 +37,7 @@ enum UPIDescriptionParser {
         "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio"
     ]
 
+    /// Parses `rawDescription` and returns a structured result, or nil if the format is unrecognized.
     static func parse(_ rawDescription: String) -> ParsedUPI? {
         let upper = rawDescription.uppercased()
         if upper.hasPrefix("UPI-") { return parseUPI(rawDescription) }
@@ -45,6 +52,8 @@ enum UPIDescriptionParser {
         return parsed.merchantName
     }
 
+    /// Returns true when the description represents a P2P bank transfer rather than a merchant payment.
+    /// Falls back to keyword matching for non-UPI/NEFT/IMPS descriptions.
     static func isLikelyTransfer(_ rawDescription: String) -> Bool {
         guard let parsed = parse(rawDescription) else {
             // Non-UPI/NEFT: check classic transfer keywords

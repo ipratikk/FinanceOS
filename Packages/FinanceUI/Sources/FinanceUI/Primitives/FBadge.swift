@@ -1,11 +1,17 @@
 import FinanceCore
 import SwiftUI
 
+/// Compact status badge with optional SF Symbol icon and semantic color.
+///
+/// Renders as a capsule-style pill. Use for status labels (e.g. "Active", "Debit"),
+/// card network tags, or any short categorical annotation.
 public struct FBadge: View {
     let text: String
     let color: BadgeColor
+    /// Optional SF Symbol name rendered before the text label.
     let icon: String?
 
+    /// Pre-defined semantic color options with matching background/foreground pairs.
     public enum BadgeColor {
         case blue
         case green

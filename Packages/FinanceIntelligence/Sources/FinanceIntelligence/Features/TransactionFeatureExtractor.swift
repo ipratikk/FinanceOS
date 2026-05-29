@@ -1,10 +1,14 @@
 import FinanceCore
 import Foundation
 
+/// Context supplied by the caller to enrich feature extraction with ledger-level signals.
 public struct FeatureExtractionContext: Sendable {
+    /// Kind of ledger the transaction belongs to (e.g. `.savings`, `.credit`).
     public let ledgerKind: LedgerKind?
+    /// Name of the source financial institution (e.g. `"HDFC"`, `"ICICI"`).
     public let institution: String?
 
+    /// Context with no supplementary ledger information.
     public static let empty = FeatureExtractionContext(ledgerKind: nil, institution: nil)
 
     public init(ledgerKind: LedgerKind?, institution: String?) {
@@ -20,6 +24,8 @@ public struct TransactionFeatureExtractor: Sendable {
 
     public init() {}
 
+    /// Extracts a `TransactionFeatures` vector from `transaction` using the supplied context.
+    /// Deterministic — same inputs always produce the same output.
     public func extract(
         from transaction: Transaction,
         context: FeatureExtractionContext = .empty

@@ -8,6 +8,8 @@
 import Foundation
 import GRDB
 
+/// GRDB-backed implementation of `BankRepository`. Delegates simple insert/update/delete
+/// to the shared `grdbInsert/grdbUpdate/grdbDelete` helpers to avoid boilerplate.
 public final class GRDBBankRepository:
     @unchecked Sendable,
     BankRepository {

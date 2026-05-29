@@ -1,12 +1,18 @@
 import FinanceCore
 import SwiftUI
 
+/// Ephemeral notification model displayed by `ToastContainerView`.
+///
+/// Create via `ToastManager.shared.show(message:type:)`. The manager auto-removes
+/// the toast after `duration` seconds.
 public struct Toast: Identifiable {
     public let id: UUID
     public let message: String
     public let type: ToastType
+    /// Display duration in seconds before auto-dismiss (default 4.0).
     public let duration: TimeInterval
 
+    /// Semantic category that drives icon and background color.
     public enum ToastType {
         case success
         case error
@@ -26,6 +32,7 @@ public struct Toast: Identifiable {
     }
 }
 
+/// Single toast row rendered by `ToastContainerView`. Not intended for direct use.
 public struct ToastView: View {
     let toast: Toast
 

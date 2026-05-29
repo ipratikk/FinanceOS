@@ -14,6 +14,8 @@ public struct MerchantNormalizer: Sendable {
         self.aliasTable = aliasTable
     }
 
+    /// Resolves a `MerchantCandidate` from `rawDescription` by running the full normalization pipeline.
+    /// Alias lookup is attempted on both the raw and cleaned description before falling back to fuzzy matching.
     public func normalize(_ rawDescription: String) -> MerchantCandidate {
         // For UPI/NEFT: extract the embedded merchant segment before generic cleaning
         let effectiveRaw = UPIDescriptionParser.merchantName(from: rawDescription) ?? rawDescription

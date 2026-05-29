@@ -1,7 +1,12 @@
 import FinanceCore
 import SwiftUI
 
+/// Repeated placeholder skeleton rows for transaction list loading states.
+///
+/// Renders `count` animated rows (default 5) with a pulsing opacity animation.
+/// Use `shimmer(isLoading:)` for individual element placeholders.
 public struct LoadingSkeletonView: View {
+    /// Number of skeleton rows to display.
     let count: Int
 
     public init(count: Int = 5) {

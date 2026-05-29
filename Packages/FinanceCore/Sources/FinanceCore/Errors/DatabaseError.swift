@@ -7,8 +7,11 @@
 
 import Foundation
 
+/// Errors produced by the GRDB/SQLite layer; surfaced through ``ErrorMapper`` from raw GRDB errors.
 public enum DatabaseError: FinanceError {
+    /// A schema migration did not complete; the DB version is indeterminate.
     case migrationFailed(version: String, reason: String)
+    /// A UNIQUE or FOREIGN KEY constraint was violated; usually signals a duplicate import attempt.
     case constraintViolation(table: String, constraint: String)
     case queryFailed(sql: String, reason: String)
     case corruptionDetected(String)

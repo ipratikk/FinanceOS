@@ -19,6 +19,8 @@ actor PersonalizedClassifier {
 
     // MARK: - Factory
 
+    /// Loads the classifier, reading the vocabulary from the bundle and the model from `personalizedModelURL`.
+    /// Returns nil when the bundle vocabulary or base model resource is missing.
     static func load(personalizedModelURL: URL) async -> PersonalizedClassifier? {
         guard
             let vocabURL = Bundle.module.url(forResource: "transaction_vocab", withExtension: "json"),
@@ -42,6 +44,8 @@ actor PersonalizedClassifier {
 
     // MARK: - Prediction
 
+    /// Encodes `normalizedDescription` as a binary bag-of-words and runs kNN inference.
+    /// Returns nil when the model is not loaded or the output feature names are unexpected.
     func predict(normalizedDescription: String) -> (categoryId: String, confidence: Double)? {
         guard let model else { return nil }
         let vector = encode(normalizedDescription)
@@ -59,6 +63,8 @@ actor PersonalizedClassifier {
 
     // MARK: - Learning via MLUpdateTask
 
+    /// Adds a labeled training example using `MLUpdateTask`, atomically replacing the persisted model.
+    /// After the update task completes, reloads the in-memory model so the next `predict` call reflects the change.
     func addExample(normalizedDescription: String, categoryId: String) async throws {
         let sourceURL: URL = FileManager.default.fileExists(atPath: personalizedModelURL.path)
             ? personalizedModelURL : bundleModelURL
@@ -109,6 +115,8 @@ actor PersonalizedClassifier {
 
     // MARK: - Feature Encoding
 
+    /// Encodes `text` as a 200-dim binary bag-of-words `MLMultiArray` using the bundled vocabulary.
+    /// Tokens not in the vocabulary are silently ignored.
     private func encode(_ text: String) -> MLMultiArray {
         let tokens = Set(
             text.lowercased()

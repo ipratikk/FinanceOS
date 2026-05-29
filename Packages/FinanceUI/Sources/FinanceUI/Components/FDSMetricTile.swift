@@ -12,12 +12,17 @@ import SwiftUI
 public struct FDSMetricTile: View {
     let label: String
     let value: String
+    /// Optional SF Symbol shown inline with the label at caption size.
     let symbol: String?
     let delta: Delta?
+    /// When true, uses `displayLarge` for the value; when false, uses `displaySmall`.
     let prominent: Bool
 
+    /// Period-over-period change data for the metric. Positive `value` renders green/up-arrow.
     public struct Delta {
+        /// Percentage change (e.g. 12.5 = +12.5%). Negative values show down-arrow in red.
         public let value: Double
+        /// Human-readable period label (e.g. "vs last month").
         public let period: String
 
         public init(value: Double, period: String) {

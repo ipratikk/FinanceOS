@@ -7,6 +7,7 @@ import SwiftUI
 public struct FDSNetworkLogo: View {
     let network: CardNetwork
 
+    /// - Parameter network: Card network enum value. Unknown networks render as a text label.
     public init(_ network: CardNetwork) {
         self.network = network
     }

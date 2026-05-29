@@ -10,6 +10,7 @@ public struct AccessibleIconButton: View {
     let action: () -> Void
     let style: Style
 
+    /// Drives foreground tint: primary = accentGold, secondary = textSecondary, destructive = danger.
     public enum Style {
         case primary
         case secondary

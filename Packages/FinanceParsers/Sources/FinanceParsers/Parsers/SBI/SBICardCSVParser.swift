@@ -1,8 +1,13 @@
 import Foundation
 
+/// Parses SBI credit card statements in comma-delimited CSV format.
+///
+/// Detection signal: a row containing "Transaction Date" plus "Description" and either
+/// "Amount" or "Debit". Rows starting with "Total" are excluded as summary footers.
 public struct SBICardCSVParser: Sendable {
     public init() {}
 
+    /// Locates the column-header row, then collects all non-empty data rows until EOF.
     public func parse(fileURL: URL) throws -> [[String]] {
         let rows = try CSVReader.readRows(from: fileURL, delimiter: ",")
 

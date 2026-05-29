@@ -16,6 +16,10 @@ import SwiftUI
 //
 // Migration: replace .glassStyle() with .glassSurface() when touching legacy views in Phase 3.
 
+/// Legacy glass modifier using `ultraThinMaterial` + `AppColors.surface` tint.
+///
+/// Deprecated — use `.glassSurface()` for all new surfaces. This modifier is kept
+/// for backward compatibility and will be removed in a future phase.
 public struct GlassStyleModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content

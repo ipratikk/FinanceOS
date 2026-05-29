@@ -9,10 +9,19 @@ import Foundation
 import GRDB
 import SwiftUI
 
+/// Broad classification of a financial institution's business model.
+/// Used to group or filter ledgers by provider category.
 public enum BankProviderType: String, Codable, Sendable, CaseIterable {
-    case bank, neobank, credit
+    /// Traditional regulated bank (e.g. HDFC, ICICI).
+    case bank
+    /// Digital-first / app-only bank.
+    case neobank
+    /// Pure credit issuer with no savings product (e.g. Amex, Scapia).
+    case credit
 }
 
+/// Enumeration of institutions whose statements FinanceOS can parse and display.
+/// Adding a new bank requires a corresponding parser in FinanceParsers.
 public enum Banks: String, Codable, Sendable, CaseIterable {
     case hdfc, icici, amex, scapia
 
@@ -38,14 +47,17 @@ public enum Banks: String, Codable, Sendable, CaseIterable {
         }
     }
 
+    /// Asset catalog name for the full bank logo image.
     public var logoAssetName: String {
         rawValue.lowercased() + "-logo"
     }
 
+    /// Asset catalog name for the compact bank symbol/icon.
     public var symbolAssetName: String {
         rawValue.lowercased() + "-symbol"
     }
 
+    /// Abbreviated identifier used in UI labels where space is constrained.
     public var shortCode: String {
         switch self {
         case .hdfc: return "HDFC"
@@ -65,6 +77,8 @@ public enum Banks: String, Codable, Sendable, CaseIterable {
     }
 }
 
+/// Persisted record representing one financial institution. Seeded once at app launch;
+/// each row anchors ``Ledger`` records via a foreign key.
 public struct Bank:
     Identifiable,
     Codable,
@@ -72,6 +86,7 @@ public struct Bank:
     FetchableRecord,
     PersistableRecord {
     public let id: UUID
+    /// References the corresponding ``Banks`` enum case; determines display and parser routing.
     public let bank: Banks
 
     public init(
@@ -84,6 +99,7 @@ public struct Bank:
 }
 
 public extension Bank {
+    /// GRDB column references for type-safe query building.
     enum Columns {
         static let id = Column(CodingKeys.id)
         static let bank = Column(CodingKeys.bank)
@@ -109,6 +125,8 @@ public extension Bank {
 public extension Bank {
     static let databaseTableName = "banks"
 
+    /// Creates the `banks` table. The schema is minimal by design — display attributes are resolved
+    /// at runtime from the ``Banks`` enum rather than stored redundantly.
     static func createTable(
         in database: Database
     ) throws {

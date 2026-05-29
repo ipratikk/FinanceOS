@@ -1,5 +1,9 @@
 import Foundation
 
+/// Converts a `NormalizedRow` from an HDFC card statement into a `ParsedTransaction`.
+///
+/// Date format parsed via `DateParser.parseHDFCCard` (typically `dd/MM/yyyy`).
+/// The `.sign` column carries "CR" for payments/refunds, making those negative amounts.
 public struct HDFCCardCSVNormalizer: Sendable, CSVRowNormalizer {
     public init() {}
 

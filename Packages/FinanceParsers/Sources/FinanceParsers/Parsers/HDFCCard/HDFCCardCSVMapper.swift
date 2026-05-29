@@ -1,8 +1,13 @@
 import Foundation
 
+/// Maps HDFC card statement `~|~`-delimited column headers to `ColumnRole` values.
+///
+/// Key mappings: "Amt" → `.amount`, "Debit /Credit" → `.sign`.
+/// The sign column disambiguates spend (DR) from payment/refund (CR).
 public struct HDFCCardCSVMapper: Sendable, CSVRowMapper {
     public init() {}
 
+    /// Recognises "Date", "Transaction Details"/"Description", "Amt", and "Debit /Credit".
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

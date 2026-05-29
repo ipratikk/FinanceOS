@@ -1,8 +1,13 @@
 import Foundation
 
+/// Maps HDFC bank TXT statement column headers to typed `ColumnRole` values.
+///
+/// Handles both the fixed-width synthetic header and the comma-delimited header.
+/// Recognises "Withdrawal Amt." as `.debit` and "Deposit Amt." as `.credit`.
 public struct HDFCBankTXTMapper: Sendable, CSVRowMapper {
     public init() {}
 
+    /// Matches lowercased, trimmed header strings against known HDFC column name variants.
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

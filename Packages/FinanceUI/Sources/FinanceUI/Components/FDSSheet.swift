@@ -8,8 +8,10 @@ import SwiftUI
 /// Animation: scale 0.985 + opacity fade-in. Escape key + backdrop click dismiss.
 public struct FDSSheet<Content: View>: View {
     let title: String
+    /// Optional secondary line in the sheet header beneath the title.
     let subtitle: String?
     let content: Content
+    /// Called when the sheet is dismissed via the X button or backdrop tap.
     let onDismiss: () -> Void
 
     @Environment(\.dismiss) private var dismiss

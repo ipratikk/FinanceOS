@@ -16,7 +16,9 @@ import SwiftUI
 ///         .frame(maxWidth: .infinity)
 /// }
 /// ```
+/// ViewModifier that pins a footer below scrollable content. Use `.stickyFooter {}` convenience.
 public struct StickyFooterModifier<Footer: View>: ViewModifier {
+    /// The footer view rendered below the separator.
     let footer: Footer
 
     public func body(content: Content) -> some View {

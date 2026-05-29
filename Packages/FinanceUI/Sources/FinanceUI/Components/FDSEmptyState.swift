@@ -5,8 +5,10 @@ import SwiftUI
 ///
 /// Replaces per-screen manual empty state VStacks.
 public struct FDSEmptyState: View {
+    /// SF Symbol name displayed at display-large size with hierarchical rendering.
     let symbol: String
     let title: String
+    /// Secondary explanation text rendered in tertiary color below the title.
     let subtitle: String
 
     public init(symbol: String, title: String, subtitle: String) {

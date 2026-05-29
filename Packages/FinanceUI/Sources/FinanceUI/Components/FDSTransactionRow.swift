@@ -23,9 +23,12 @@ public struct FDSTransactionRow: View {
     let runningBalance: String?
     let onTap: (() -> Void)?
 
+    /// Metadata needed to render the inline account chip in the trailing column.
     public struct AccountChipData {
         public let bankName: String
+        /// Last 4 digits of the card or account shown as "· XXXX".
         public let last4: String
+        /// Asset catalog image name for the bank logo; falls back to initials avatar.
         public let logoName: String?
 
         public init(bankName: String, last4: String, logoName: String? = nil) {

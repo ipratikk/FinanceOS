@@ -1,6 +1,10 @@
 import FinanceCore
 import SwiftUI
 
+/// Applies standard card chrome: `ultraThinMaterial` blur, `surface` tint, accent border,
+/// rounded corners, and an elevation shadow. Use `.cardStyle()` convenience method.
+///
+/// For Liquid Glass cards, use `FDSCard` or `.glassSurface()` instead.
 public struct CardStyleModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content
@@ -17,6 +21,7 @@ public struct CardStyleModifier: ViewModifier {
 }
 
 public extension View {
+    /// Applies standard FDS card chrome (material + border + shadow).
     func cardStyle() -> some View {
         modifier(CardStyleModifier())
     }

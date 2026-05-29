@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Central design-token namespace for all colors used in FinanceOS.
+/// Always consume a named token rather than constructing `Color` values inline in Views.
 public enum AppColors {
     // MARK: - Backgrounds
 
@@ -16,17 +18,25 @@ public enum AppColors {
 
     // MARK: - Borders & Dividers (legacy — prefer Border.* enum)
 
+    /// white 8% — legacy border token; prefer `AppColors.Border.subtle` in new code.
     public static let border = Color.white.opacity(0.08)
+    /// white 12% — legacy accent border; prefer `AppColors.Border.strong` in new code.
     public static let borderAccent = Color.white.opacity(0.12)
+    /// white 2% — glass wash; prefer `AppColors.Glass.thinTint` in new code.
     public static let glass = Color.white.opacity(0.02)
 
     // MARK: - Primary Accents (Apple System Colors)
 
-    public static let accentGreen = Color(red: 0.188, green: 0.827, blue: 0.345) // #30D158 — Emerald (primary)
-    public static let accentOrange = Color(red: 1.0, green: 0.62, blue: 0.04) // #FF9F0A — Gold (secondary)
-    public static let accentBlue = Color(red: 0.039, green: 0.518, blue: 1.0) // #0A84FF — Cobalt
-    public static let accentPurple = Color(red: 0.749, green: 0.345, blue: 0.949) // #BF5AF2 — Plum
-    public static let accentMuted = Color(red: 0.557, green: 0.557, blue: 0.576) // #8E8E93 — muted gray
+    /// #30D158 — Emerald green; the primary brand accent used on CTAs and active states.
+    public static let accentGreen = Color(red: 0.188, green: 0.827, blue: 0.345)
+    /// #FF9F0A — Gold orange; secondary accent used for highlights and warnings.
+    public static let accentOrange = Color(red: 1.0, green: 0.62, blue: 0.04)
+    /// #0A84FF — Cobalt blue; used for info states and links.
+    public static let accentBlue = Color(red: 0.039, green: 0.518, blue: 1.0)
+    /// #BF5AF2 — Plum purple; used for investment/crypto ledger accents.
+    public static let accentPurple = Color(red: 0.749, green: 0.345, blue: 0.949)
+    /// #8E8E93 — System gray; used for muted/disabled non-text elements.
+    public static let accentMuted = Color(red: 0.557, green: 0.557, blue: 0.576)
 
     public static let accentGold = accentOrange // legacy alias — use accentOrange
     public static let accentSlate = accentBlue // legacy alias — use accentBlue
@@ -34,16 +44,24 @@ public enum AppColors {
 
     // MARK: - Semantic Colors
 
+    /// Primary interactive accent — maps to `accentGreen`.
     public static let accent = accentGreen
+    /// Positive outcome states (credit transactions, success banners).
     public static let success = Color(red: 0.188, green: 0.827, blue: 0.345) // #30D158 — Apple Green
+    /// Destructive / negative states (debit transactions, error banners).
     public static let danger = Color(red: 1.0, green: 0.231, blue: 0.188) // #FF3B30 — Apple Red
+    /// Informational states — maps to `accentBlue`.
     public static let info = accentBlue
+    /// Warning states (pending transactions, near-limit alerts).
     public static let warning = Color(red: 1.0, green: 0.584, blue: 0) // #FF9500 — Apple Orange
 
     // MARK: - Finance semantic colors
 
+    /// Transaction credit color — maps to `success` green.
     public static let credit = success
+    /// Transaction debit color — maps to `danger` red.
     public static let debit = danger
+    /// Investment/savings ledger accent — maps to `accentPurple`.
     public static let purple = accentPurple
 
     // MARK: - Legacy flat text tokens (migrate to Text.* enum in new code)
@@ -57,6 +75,8 @@ public enum AppColors {
 
     // MARK: - Semantic Text Hierarchy
 
+    /// Four-level text hierarchy that maps to WCAG contrast requirements on dark surfaces.
+    /// Always pick the lowest-contrast level that still meets AA (4.5:1 for body, 3:1 for large text).
     public enum Text {
         /// #F1F3F6 — near-white, primary content (4.5:1+ on all surfaces)
         public static let primary = Color(red: 0.945, green: 0.953, blue: 0.965)
@@ -74,6 +94,8 @@ public enum AppColors {
 
     // MARK: - macOS System Fills (matches Apple fill hierarchy)
 
+    /// White-opacity fill scale for row backgrounds, hover, and selection states.
+    /// Use in order of visual emphasis: primary → secondary → tertiary → quaternary.
     public enum Fill {
         /// White 5% — primary fill (inset rows, pressed states)
         public static let primary = Color.white.opacity(0.05)
@@ -87,6 +109,8 @@ public enum AppColors {
 
     // MARK: - Glass Surfaces
 
+    /// Frosted-glass tint scale for cards, sidebars, and overlaid panels.
+    /// Combine with `.ultraThinMaterial` or `.regularMaterial` backgrounds for the full glass effect.
     public enum Glass {
         /// white 4% — inset rows, recessed areas
         public static let thinTint = Color.white.opacity(0.04)
@@ -120,6 +144,7 @@ public enum AppColors {
 
     // MARK: - Border Hierarchy
 
+    /// Semantic border scale; `input` and `focus` meet WCAG 1.4.11 Non-text Contrast requirements.
     public enum Border {
         /// white 6% — minimal container outline (decorative)
         public static let subtle = Color.white.opacity(0.06)
@@ -133,6 +158,7 @@ public enum AppColors {
 
     // MARK: - Opacity Scale (for non-text decorative use only)
 
+    /// Named opacity constants for decorative overlays and tints; do not apply to text.
     public enum Opacity {
         public static let low: Double = 0.20
         public static let medium: Double = 0.30
@@ -143,6 +169,7 @@ public enum AppColors {
 
     // MARK: - Apple System Colors (dark mode palette)
 
+    /// Mirrors the iOS/macOS dark-mode system color palette for use when semantic tokens don't apply.
     public enum System {
         public static let red = Color(red: 1.0, green: 0.27, blue: 0.23) // #FF453A
         public static let orange = Color(red: 1.0, green: 0.62, blue: 0.04) // #FF9F0A

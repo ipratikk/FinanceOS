@@ -1,13 +1,24 @@
 import Foundation
 
+/// A single financial transaction produced by the Normalizer stage.
+/// Amounts are stored as minor units (paise): positive = debit, negative = credit.
+/// `sourceFingerprint` is a deterministic hash used for deduplication across imports.
 public struct ParsedTransaction: Codable, Sendable, Equatable {
+    /// Stable identifier; regenerated on each parse run, so equality uses `sourceFingerprint`.
     public let id: UUID
+    /// Settlement date of the transaction in IST.
     public let postedAt: Date
+    /// Raw description string as it appears on the bank statement.
     public let description: String
+    /// Transaction amount in paise; positive = debit (money out), negative = credit (money in).
     public let amountMinorUnits: Int64
+    /// ISO 4217 currency code, typically `"INR"`.
     public let currencyCode: String
+    /// Deterministic hash of (date, description, amount) used to detect duplicate imports.
     public let sourceFingerprint: String
+    /// Reward points earned, if reported by the bank (credit cards only).
     public let rewardPoints: Int64?
+    /// Running account balance after this transaction, in paise, if provided.
     public let closingBalanceMinorUnits: Int64?
 
     public init(
@@ -34,6 +45,7 @@ public struct ParsedTransaction: Codable, Sendable, Equatable {
         case closingBalanceMinorUnits
     }
 
+    /// Equality ignores `id` so that two parses of the same row compare equal.
     public static func == (lhs: ParsedTransaction, rhs: ParsedTransaction) -> Bool {
         lhs.postedAt == rhs.postedAt &&
             lhs.description == rhs.description &&

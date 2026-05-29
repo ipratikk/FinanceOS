@@ -1,12 +1,20 @@
 import FinanceCore
 import SwiftUI
 
+/// Controls how each option row is rendered inside `FDSPicker`.
 public enum FDSPickerVariant {
+    /// Larger logo image with title only — suited for bank/card pickers.
     case logoOnly
+    /// 28pt image/symbol beside title and optional subtitle — default.
     case symbolText
+    /// Title and optional subtitle only, no image.
     case textOnly
 }
 
+/// Internal row cell used by `FDSPicker` to render a single `FDSPickerOption`.
+///
+/// Renders the correct layout based on `FDSPickerVariant`. Applies accent highlight
+/// and checkmark when `isSelected` is true.
 struct FDSPickerRow: View {
     let option: FDSPickerOption
     let variant: FDSPickerVariant

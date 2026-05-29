@@ -1,8 +1,12 @@
 import Foundation
 
+/// Maps SBI bank CSV column headers to typed `ColumnRole` values.
+///
+/// Accepts "Value Date"/"Date" for the date column and "Description"/"Narration" for description.
 public struct SBIBankCSVMapper: Sendable {
     public init() {}
 
+    /// Matches lowercased, trimmed header strings against known SBI bank column name variants.
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

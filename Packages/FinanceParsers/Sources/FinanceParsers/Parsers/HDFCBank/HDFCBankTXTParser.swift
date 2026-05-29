@@ -1,5 +1,9 @@
 import Foundation
 
+/// Parses HDFC bank account statements in TXT format (both fixed-width and comma-delimited).
+///
+/// Detection signal: any line containing both "narration" and "closing balance" (case-insensitive).
+/// Fixed-width variant is identified by a separator line beginning with `"--------  ---"`.
 public struct HDFCBankTXTParser: Sendable {
     public init() {}
 
@@ -23,6 +27,7 @@ public struct HDFCBankTXTParser: Sendable {
 
     // MARK: - Fixed-width column range extraction
 
+    /// Derives character-range tuples from a dash-segment separator line (e.g. `"--------  ---"`).
     func columnRanges(from separator: String) -> [(Int, Int)] {
         var ranges: [(Int, Int)] = []
         var inDash = false
@@ -36,6 +41,7 @@ public struct HDFCBankTXTParser: Sendable {
         return ranges
     }
 
+    /// Slices a Unicode scalar string to the given character-position range and trims whitespace.
     func extractField(_ line: String, _ range: (Int, Int)) -> String {
         let chars = Array(line.unicodeScalars)
         let start = min(range.0, chars.count)
@@ -129,6 +135,7 @@ public struct HDFCBankTXTParser: Sendable {
 
     // MARK: - Public API
 
+    /// Returns all rows as `[headerRow, dataRow, ...]`; first row is always the synthetic header.
     public func parse(fileURL: URL) throws -> [[String]] {
         let content = try String(contentsOf: fileURL, encoding: .utf8)
         if isFixedWidth(content) {

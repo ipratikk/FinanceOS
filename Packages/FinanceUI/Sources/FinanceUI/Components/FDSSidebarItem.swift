@@ -10,6 +10,7 @@ public struct FDSSidebarItem: View {
     let title: String
     let symbol: String
     let isSelected: Bool
+    /// Optional count string shown at the trailing edge (e.g. "12" for 12 pending items).
     let badge: String?
     let action: () -> Void
 
@@ -71,7 +72,9 @@ public struct FDSSidebarItem: View {
     }
 }
 
-/// Sidebar section header — uppercase, tracked, tertiary text.
+/// Uppercase, letter-spaced section label for sidebar navigation groups.
+///
+/// Uses `captionSmSemibold` at 0.08 tracking in tertiary text. No interaction.
 public struct FDSSidebarSectionHeader: View {
     let title: String
 

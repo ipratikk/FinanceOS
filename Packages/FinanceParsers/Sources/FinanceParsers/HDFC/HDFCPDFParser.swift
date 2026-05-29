@@ -3,6 +3,11 @@ import Foundation
 #if canImport(PDFKit)
 import PDFKit
 
+/// Parses HDFC bank statement PDFs into a `ParsedStatement`.
+///
+/// Attempts Vision OCR first for accurate column-aware extraction, then falls back to
+/// PDFKit character-bounds layout. Detection signal: presence of "date" and "narration"
+/// headers in the extracted lines.
 public struct HDFCPDFParser: StatementParser {
     public let supportedFormat: StatementFileFormat = .pdf
     private let password: String?
@@ -17,6 +22,8 @@ public struct HDFCPDFParser: StatementParser {
         #endif
     }
 
+    /// Unlocks the PDF if password-protected, extracts lines, locates the transaction table
+    /// header, and delegates to `HDFCTextBasedParser` for row reconstruction.
     public func parseStatement(from fileURL: URL) async throws -> ParsedStatement {
         guard let doc = PDFDocument(url: fileURL) else {
             throw TransactionImportError.malformedFile("Cannot open PDF")
@@ -49,6 +56,7 @@ public struct HDFCPDFParser: StatementParser {
         )
     }
 
+    /// Tries trimmed then raw password; throws `passwordProtected` if both fail.
     private func unlockIfNeeded(_ doc: PDFDocument, filename: String) throws {
         guard doc.isLocked else { return }
         guard let pwd = password else {
@@ -94,6 +102,7 @@ public struct HDFCPDFParser: StatementParser {
         return out
     }
 
+    /// Prefers Vision OCR with column awareness; falls back to PDFKit character-bounds.
     private func extractLines(from page: PDFPage) -> [String] {
         #if canImport(Vision) && canImport(AppKit)
         if let extractor = visionExtractor as? VisionPDFTextExtractor {
@@ -113,6 +122,8 @@ public struct HDFCPDFParser: StatementParser {
         let y: CGFloat
     }
 
+    /// Groups characters by Y-coordinate bucket (±2 pt tolerance) and sorts each row
+    /// left-to-right, inserting a space when the gap exceeds half an average char width.
     private func extractRowLines(from page: PDFPage) -> [String] {
         let n = page.numberOfCharacters
         guard n > 0, let pageString = page.string else { return [] }

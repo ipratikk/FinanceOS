@@ -1,8 +1,13 @@
 import Foundation
 
+/// Extracts metadata from ICICI credit card CSV rows (first 15 rows are the header block).
+///
+/// Cardholder name comes from the row whose first cell contains "CARDHOLDER NAME".
+/// Masked card number is identified by a standalone cell ≥13 chars with "X" and numeric suffix.
 public struct ICICICardMetadataExtractor: Sendable {
     public init() {}
 
+    /// Extracts cardholder name, masked card number, last-4 digits, and statement date.
     public func extract(from rows: [[String]]) -> StatementMetadata {
         let customerName = extractCustomerName(from: rows)
         let cardLast4 = extractCardLast4(from: rows)

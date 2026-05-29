@@ -1,12 +1,18 @@
 import FinanceCore
 import SwiftUI
 
+/// Monospaced currency amount primitive that formats minor units (Int64) via `FormatterCache`.
+///
+/// Handles INR, USD, EUR. Use `FDSAmount` when you already have a formatted string.
 public struct FAmount: View {
+    /// Amount in minor units (e.g. paise for INR, cents for USD).
     let amountMinorUnits: Int64
     let currencyCode: String
+    /// Determines red (debit) or green (credit) text color.
     let isDebit: Bool
     let size: Size
 
+    /// Typography size for the amount. Large = 16pt semibold, Medium = 14pt, Small = 12pt regular.
     public enum Size {
         case large
         case medium

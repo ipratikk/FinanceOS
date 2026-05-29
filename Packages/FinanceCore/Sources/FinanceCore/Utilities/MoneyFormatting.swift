@@ -106,14 +106,17 @@ public enum MoneyFormatting {
 // MARK: - Int64 convenience extensions
 
 public extension Int64 {
+    /// Formats a minor-unit amount with sign and currency symbol for transaction row display.
     func formattedAsAmount(currencyCode: String, transactionType: TransactionType) -> String {
         MoneyFormatting.format(minorUnits: self, currencyCode: currencyCode, transactionType: transactionType)
     }
 
+    /// Formats a minor-unit balance with Indian grouping (lakhs/crores) for account balance display.
     func formattedAsBalance(currencyCode: String = "INR") -> String {
         MoneyFormatting.formatBalance(minorUnits: self, currencyCode: currencyCode)
     }
 
+    /// Formats a minor-unit amount rounded to whole units for analytics chart labels.
     func formattedAsRounded(currencyCode: String = "INR") -> String {
         MoneyFormatting.formatRounded(minorUnits: self, currencyCode: currencyCode)
     }

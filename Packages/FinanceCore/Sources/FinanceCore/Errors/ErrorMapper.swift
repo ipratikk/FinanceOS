@@ -8,7 +8,10 @@
 import Foundation
 import GRDB
 
+/// Translates raw Swift/GRDB/Foundation errors into strongly-typed ``FinanceError`` values.
+/// Call sites should catch `Error` broadly and pass it through `map(_:)` before propagating.
 public enum ErrorMapper {
+    /// Maps any `Error` to a ``FinanceError``, preserving already-typed errors as-is.
     public static func map(_ error: Error) -> FinanceError {
         if let financeError = error as? FinanceError {
             return financeError
@@ -70,6 +73,7 @@ public enum ErrorMapper {
     }
 }
 
+/// Wraps an unrecognised `Error` that ``ErrorMapper`` could not map to a specific domain type.
 public struct UnknownFinanceError: FinanceError {
     public let underlying: Error
 

@@ -1,8 +1,14 @@
 import Foundation
 
+/// Parses ICICI bank account statements in comma-delimited CSV format.
+///
+/// Detection signal: a row containing "Particulars", "Deposits", and "Withdrawals".
+/// Prefers the "Savings" section when multiple `"Statement of Transactions in ..."` sections exist.
 public struct ICICIBankCSVParser: Sendable {
     public init() {}
 
+    /// Locates the correct section header, then collects data rows until the next section or EOF.
+    /// Rows beginning with "B/F" (brought forward) are excluded as opening-balance placeholders.
     public func parse(fileURL: URL) throws -> [[String]] {
         let rows = try CSVReader.readRows(from: fileURL, delimiter: ",")
 

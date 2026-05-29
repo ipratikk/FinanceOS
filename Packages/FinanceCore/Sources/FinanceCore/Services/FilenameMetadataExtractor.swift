@@ -1,11 +1,14 @@
 import Foundation
 import OSLog
 
+/// Extracts account metadata (last-4, account number, date, bank hint) from a statement filename.
+/// Used during import to pre-populate the account-matching form without parsing the file body.
 public struct FilenameMetadataExtractor {
     private let logger = FinanceLogger.parsing
 
     public init() {}
 
+    /// Runs all extraction patterns against `filename` and returns whatever metadata could be inferred.
     public func extractMetadata(from filename: String) -> FilenameMetadata {
         let basename = URL(fileURLWithPath: filename).deletingPathExtension().lastPathComponent
 
@@ -127,10 +130,12 @@ public struct FilenameMetadataExtractor {
     }
 }
 
+/// Structured metadata inferred from a statement filename; all fields are optional and best-effort.
 public struct FilenameMetadata: Sendable {
     public let accountLast4: String?
     public let accountNumber: String?
     public let statementDate: Date?
+    /// Partial bank name token found in the filename (e.g. "HDFC", "ICICI"); not a validated bank identifier.
     public let bankHint: String?
 
     public init(

@@ -3,6 +3,10 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.pratik.FinanceOS", category: "Parsing")
 
+/// Converts a `NormalizedRow` from an HDFC bank TXT statement into a `ParsedTransaction`.
+///
+/// Dates are parsed via `DateParser.parseHDFCBank` (supports `dd/MM/yy` and `dd/MM/yyyy`).
+/// Credit column maps to positive inflow; debit column maps to a negative amount (money out).
 public struct HDFCBankTXTNormalizer: Sendable, CSVRowNormalizer {
     public init() {}
 

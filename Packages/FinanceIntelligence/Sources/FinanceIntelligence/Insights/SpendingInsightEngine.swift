@@ -10,6 +10,7 @@ public struct SpendingInsightEngine: Sendable {
         self.normalizer = normalizer
     }
 
+    /// Runs all insight detectors over `transactions` and returns the combined results.
     public func generate(for transactions: [Transaction]) -> [TransactionInsight] {
         var insights: [TransactionInsight] = []
         insights += detectRecurring(in: transactions)
@@ -22,6 +23,8 @@ public struct SpendingInsightEngine: Sendable {
 // MARK: - Recurring Detection
 
 extension SpendingInsightEngine {
+    /// Detects recurring and subscription-like charges by grouping debits by merchant
+    /// and checking whether intervals cluster around 7 days (weekly) or 30 days (monthly).
     func detectRecurring(in transactions: [Transaction]) -> [TransactionInsight] {
         let groups = groupByMerchant(transactions)
         var insights: [TransactionInsight] = []
@@ -79,6 +82,8 @@ extension SpendingInsightEngine {
 // MARK: - Spending Spike Detection
 
 extension SpendingInsightEngine {
+    /// Detects months where total debit spending exceeds the historical mean by more than 2 standard deviations.
+    /// Requires at least 3 months of data; returns an empty array when insufficient history is available.
     func detectSpikes(in transactions: [Transaction]) -> [TransactionInsight] {
         let byMonth = groupByMonth(transactions)
         guard byMonth.count >= 3 else { return [] }
@@ -124,6 +129,8 @@ extension SpendingInsightEngine {
 // MARK: - Unusually Large Transaction Detection
 
 extension SpendingInsightEngine {
+    /// Flags individual debit transactions that exceed the mean by more than 3 standard deviations.
+    /// Credits (salary, income) are excluded — only debits are analyzed.
     func detectUnusuallyLarge(in transactions: [Transaction]) -> [TransactionInsight] {
         // Only analyze debits — credits (salary, income) have naturally large amounts and are not anomalies.
         let debits = transactions.filter { $0.transactionType == .debit }

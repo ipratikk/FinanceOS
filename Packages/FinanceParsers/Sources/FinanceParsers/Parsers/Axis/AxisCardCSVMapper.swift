@@ -1,8 +1,13 @@
 import Foundation
 
+/// Maps Axis card CSV column headers to typed `ColumnRole` values.
+///
+/// "Amount"/"Debit"/"Posted Amount" all map to `.debit` (card spend is always outflow).
+/// "Merchant" is accepted as an alias for the description column.
 public struct AxisCardCSVMapper: Sendable {
     public init() {}
 
+    /// Matches lowercased, trimmed header strings against known Axis card column name variants.
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

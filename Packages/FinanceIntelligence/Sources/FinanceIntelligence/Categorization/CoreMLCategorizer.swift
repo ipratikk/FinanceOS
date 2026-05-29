@@ -39,10 +39,13 @@ final class CoreMLCategorizer: @unchecked Sendable {
         }
     }
 
+    /// True when the bundled model loaded successfully and predictions are possible.
     var isAvailable: Bool {
         model != nil
     }
 
+    /// Runs NLModel inference on `features.normalizedDescription` and returns a prediction.
+    /// Returns nil when the model is unavailable or the NLModel returns no label.
     func predict(features: TransactionFeatures) -> CategoryPrediction? {
         guard let model else { return nil }
         let text = features.normalizedDescription

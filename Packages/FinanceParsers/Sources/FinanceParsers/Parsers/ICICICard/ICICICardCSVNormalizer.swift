@@ -1,5 +1,9 @@
 import Foundation
 
+/// Converts a `NormalizedRow` from an ICICI card CSV statement into a `ParsedTransaction`.
+///
+/// Date format parsed via `DateParser.parseICICICard`. The "BillingAmountSign" column carries
+/// "CR" for credits/refunds, making those amounts negative (money in).
 public struct ICICICardCSVNormalizer: Sendable, CSVRowNormalizer {
     public init() {}
 

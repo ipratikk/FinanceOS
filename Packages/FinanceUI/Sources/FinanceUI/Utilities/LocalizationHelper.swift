@@ -1,7 +1,9 @@
 import SwiftUI
 
-/// Helper for localized strings with String Catalogs.
-/// Use: Text("Banks") - Xcode auto-detects and adds to catalog
+/// Namespace for localization guidance. No runtime logic — see inline comments.
+///
+/// Xcode String Catalogs auto-extract `Text()` and `String(localized:)` literals.
+/// Just write natural strings; Xcode manages `Localizable.xcstrings` automatically.
 public struct L10n {
     // Note: String Catalogs (Localizable.xcstrings) automatically
     // extract and track String(localized:) and Text() string literals.
@@ -18,17 +20,17 @@ public struct L10n {
 // MARK: - RTL-Safe Layout Helpers
 
 extension View {
-    /// RTL-safe horizontal alignment.
+    /// Pins content to the leading edge — correct for both LTR and RTL layouts.
     func rtlLeading() -> some View {
         frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// RTL-safe trailing alignment.
+    /// Pins content to the trailing edge — correct for both LTR and RTL layouts.
     func rtlTrailing() -> some View {
         frame(maxWidth: .infinity, alignment: .trailing)
     }
 
-    /// RTL-safe horizontal flip for icons/images if needed.
+    /// Forces right-to-left layout direction on a subtree, e.g. for RTL icon mirroring.
     func rtlMirror() -> some View {
         environment(\.layoutDirection, .rightToLeft)
     }

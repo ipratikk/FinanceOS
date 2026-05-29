@@ -6,7 +6,9 @@ import SwiftUI
 /// Vertical stack: label (11pt uppercase) + optional hint + control + optional error.
 public struct FDSField<Content: View>: View {
     let label: String
+    /// Optional hint text shown at trailing of the label row (e.g. "Required").
     let hint: String?
+    /// When set, renders a red error message below the control.
     let error: String?
     let content: Content
 

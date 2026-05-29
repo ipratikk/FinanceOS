@@ -6,8 +6,10 @@ import SwiftUI
 public struct FDSListRow<Trailing: View>: View {
     let title: String
     let subtitle: String?
+    /// Optional leading icon rendered in accent color at `xxl × xxl` size.
     let icon: Image?
     let trailing: Trailing
+    /// When true, draws a 0.5pt accent ring around the row background.
     let isSelected: Bool
     let onTap: (() -> Void)?
 

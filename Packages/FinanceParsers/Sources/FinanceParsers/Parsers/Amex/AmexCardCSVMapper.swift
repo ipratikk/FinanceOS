@@ -1,8 +1,13 @@
 import Foundation
 
+/// Maps Amex card CSV column headers to typed `ColumnRole` values.
+///
+/// The format has exactly 3 columns: "Date" → `.date`, "Description" → `.description`,
+/// "Amount" → `.amount`. No sign or debit/credit split column is present.
 public struct AmexCardCSVMapper: Sendable, CSVRowMapper {
     public init() {}
 
+    /// Maps the three standard Amex CSV headers; all other columns are ignored.
     public func map(headerRow: [String]) throws -> [ColumnRole] {
         let normalized = headerRow.map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
 

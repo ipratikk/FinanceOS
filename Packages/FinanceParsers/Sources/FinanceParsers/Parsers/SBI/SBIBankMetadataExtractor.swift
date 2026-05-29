@@ -1,8 +1,13 @@
 import Foundation
 
+/// Extracts account metadata from SBI bank CSV rows (header block in first 10 rows).
+///
+/// Only account number (last 4 digits) is reliably available in the SBI CSV format;
+/// all other metadata fields are returned as `nil`.
 public struct SBIBankMetadataExtractor: Sendable {
     public init() {}
 
+    /// Scans the first 10 rows for "ACCOUNT NO", "ACCOUNT NUMBER", or "A/C NO" keywords.
     public func extract(from rows: [[String]]) -> StatementMetadata {
         let accountNumber = extractAccountNumber(from: rows)
         return StatementMetadata(

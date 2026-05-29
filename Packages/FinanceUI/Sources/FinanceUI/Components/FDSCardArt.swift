@@ -7,9 +7,13 @@ import SwiftUI
 /// and masked card number (bottom-left). Includes gleam edge highlight.
 public struct FDSCardArt: View {
     let cardName: String
+    /// Short network label shown top-right (e.g. "VISA", "MC", "AMEX").
     let network: String
+    /// Last 4 digits shown as "•• XXXX" bottom-left.
     let last4: String
+    /// Start color of the card gradient (top-leading corner).
     let gradientStart: Color
+    /// End color of the card gradient (bottom-trailing corner).
     let gradientEnd: Color
 
     public init(

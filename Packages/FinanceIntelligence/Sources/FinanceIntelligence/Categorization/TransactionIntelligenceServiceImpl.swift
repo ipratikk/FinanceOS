@@ -1,12 +1,16 @@
 import FinanceCore
 import Foundation
 
+/// Runtime configuration for `TransactionIntelligenceServiceImpl`.
+/// Use `.default` for production; override URLs in tests or to point at a custom model location.
 public struct IntelligenceServiceConfiguration: Sendable {
+    /// On-disk path where `UserCorrectionStore` writes its JSON corrections file.
     public let correctionStoreURL: URL
     /// Legacy Swift kNN store — kept for migration only. New corrections go to personalizedKNNModelURL.
     public let personalLearnerURL: URL
     /// On-device updatable CoreML kNN model — grows with each user correction via MLUpdateTask.
     public let personalizedKNNModelURL: URL
+    /// Taxonomy version used during categorization. Defaults to `CategoryTaxonomy.current`.
     public let taxonomy: CategoryTaxonomy
 
     public init(
@@ -21,6 +25,7 @@ public struct IntelligenceServiceConfiguration: Sendable {
         self.taxonomy = taxonomy
     }
 
+    /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.
     public static var `default`: IntelligenceServiceConfiguration {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
         let appSupport = base.first ?? FileManager.default.temporaryDirectory
@@ -34,6 +39,14 @@ public struct IntelligenceServiceConfiguration: Sendable {
     }
 }
 
+/// Concrete implementation of `TransactionIntelligenceService`.
+/// Prediction priority (highest to lowest):
+///   1. Stored user correction
+///   2. On-device CoreML kNN (personalized via MLUpdateTask)
+///   3. Legacy Swift kNN (LocalTransactionLearner)
+///   4. Bundled NLModel text classifier
+///   5. Alias table lookup
+///   6. Deterministic keyword rules
 public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService {
     private let normalizer: MerchantNormalizer
     private let ruleCategorizer: RuleBasedCategorizer
@@ -187,6 +200,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 // MARK: - Static Prediction (no actor needed — called from concurrent tasks)
 
 extension TransactionIntelligenceServiceImpl {
+    // Stateless prediction helper for batch processing; no actor isolation needed (all inputs are value types).
     // swiftlint:disable:next function_parameter_count
     static func buildPrediction(
         features: TransactionFeatures,

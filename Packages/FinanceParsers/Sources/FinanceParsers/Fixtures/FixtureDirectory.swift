@@ -1,12 +1,18 @@
 import Foundation
 
+/// Scans a directory tree of parser test fixtures, pairing each input statement file
+/// with its optional `.expected.json` golden result. The tree is structured as
+/// `<root>/<institution>/<inputFile>` with a sibling `<inputFile>.expected.json`.
 public struct FixtureDirectory: Sendable {
+    /// Root directory containing institution sub-directories.
     public let root: URL
 
     public init(root: URL) {
         self.root = root
     }
 
+    /// Enumerates all input files under `root`, pairing each with its expected-result file if present.
+    /// Returns fixtures sorted by institution name for stable test ordering.
     public func fixtureFiles() throws -> [FixtureFile] {
         let fileManager = FileManager.default
         var fixtures: [FixtureFile] = []
@@ -67,10 +73,15 @@ public struct FixtureDirectory: Sendable {
     }
 }
 
+/// A single parser test fixture: the input statement file and its optional golden `ParseResult`.
 public struct FixtureFile: Sendable {
+    /// URL of the raw statement file used as parser input.
     public let inputURL: URL
+    /// URL of the `.expected.json` golden result, or `nil` if no baseline exists yet.
     public let expectedURL: URL?
+    /// Institution sub-directory name, e.g. `"hdfc"` or `"icici"`.
     public let institution: String
+    /// Filename of the input file, used for display and test identification.
     public let name: String
 
     public init(

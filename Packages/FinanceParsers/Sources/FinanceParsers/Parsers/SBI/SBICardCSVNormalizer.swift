@@ -1,5 +1,9 @@
 import Foundation
 
+/// Converts a `NormalizedRow` from an SBI card CSV statement into a `ParsedTransaction`.
+///
+/// Date format parsed via `DateParser.parseSBIBank`. Separate debit/credit columns are used;
+/// credit produces a positive (money in) amount and debit produces a negative (money out) amount.
 public struct SBICardCSVNormalizer: Sendable {
     public init() {}
 
