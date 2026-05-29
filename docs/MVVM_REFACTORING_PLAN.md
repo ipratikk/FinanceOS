@@ -15,7 +15,7 @@ See `docs/ARCHITECTURE.md` for enforced standards this plan enforces.
 | 2 | Fix Transactions Split State | ✅ done | #31 |
 | 3 | Dashboard Cleanup | ✅ done | #32 |
 | 4 | Remove Repository Access from Views | ✅ done | #33 |
-| 5 | Service Layer Extraction | 🔲 pending | — |
+| 5 | Service Layer Extraction | ✅ done | #34 |
 | 6 | Pre-format All Display Strings | 🔲 pending | — |
 | 7 | Protocol Abstractions + Misc Cleanup | 🔲 pending | — |
 
