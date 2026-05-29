@@ -7,8 +7,11 @@ struct SettingsView: View {
     @State private var notifications = true
     @State private var autoRefresh = true
     @State private var showConfirmClear = false
+    @State private var viewModel: SettingsViewModel
 
-    var onClearAll: (() async -> Void)?
+    init(viewModel: SettingsViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
 
     enum SettingsTab: CaseIterable {
         case general, about
@@ -48,7 +51,7 @@ struct SettingsView: View {
         .alert("Clear All Data?", isPresented: $showConfirmClear) {
             Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) {
-                Task { await onClearAll?() }
+                Task { await viewModel.clearAllData() }
             }
         } message: {
             FDSLabel("This will permanently delete all data including banks, accounts, cards, and transactions.")
@@ -216,6 +219,4 @@ struct SettingsView: View {
     }
 }
 
-#Preview {
-    SettingsView()
-}
+// Preview removed — inject SettingsViewModel from call site

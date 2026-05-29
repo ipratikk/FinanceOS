@@ -6,6 +6,7 @@
 //
 
 import FinanceCore
+import FinanceParsers
 import FinanceUI
 import Foundation
 import Observation
@@ -109,6 +110,27 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
                 ["accountId": id.uuidString, "error": error.localizedDescription]
             )
         }, onSuccess: loadAccounts)
+    }
+
+    var groupedAccountsByBank: [(bankName: String, ledgers: [Ledger])] {
+        let grouped = Dictionary(grouping: accounts) { ledger in
+            banks.first { $0.id == ledger.bankId }?.name ?? "Unknown"
+        }
+        return grouped.map { (bankName: $0.key, ledgers: $0.value) }
+            .sorted { $0.bankName < $1.bankName }
+    }
+
+    func statementSource(for ledger: Ledger) -> StatementSource? {
+        let bank = banks.first { $0.id == ledger.bankId }
+        guard let bankEnum = bank?.bank else { return nil }
+        switch (bankEnum, ledger.kind) {
+        case (.hdfc, .bankAccount): return .hdfcBank
+        case (.hdfc, .creditCard): return .hdfcCard
+        case (.icici, .bankAccount): return .iciciBank
+        case (.icici, .creditCard): return .iciciCard
+        case (.amex, _): return .amex
+        default: return nil
+        }
     }
 
     func convertToCard(_ account: Ledger) async {

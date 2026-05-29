@@ -13,7 +13,7 @@ See `docs/ARCHITECTURE.md` for enforced standards this plan enforces.
 |-------|-------|--------|----|
 | 1 | Missing ViewModels | ✅ done | #30 |
 | 2 | Fix Transactions Split State | ✅ done | #31 |
-| 3 | Dashboard Cleanup | 🔲 pending | — |
+| 3 | Dashboard Cleanup | ✅ done | #32 |
 | 4 | Remove Repository Access from Views | 🔲 pending | — |
 | 5 | Service Layer Extraction | 🔲 pending | — |
 | 6 | Pre-format All Display Strings | 🔲 pending | — |

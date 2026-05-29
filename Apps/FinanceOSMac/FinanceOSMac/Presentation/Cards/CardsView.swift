@@ -8,17 +8,9 @@ struct CardsView: View {
     @State private var cardPendingDelete: Ledger?
     @State private var hoveredCardId: UUID?
     @Environment(AppNavigator.self) private var navigator
-    private let transactionRepository: any TransactionRepository
-    private let ledgerRepository: any LedgerRepository
 
-    init(
-        viewModel: CardsViewModel,
-        transactionRepository: any TransactionRepository,
-        ledgerRepository: any LedgerRepository
-    ) {
+    init(viewModel: CardsViewModel) {
         _viewModel = State(initialValue: viewModel)
-        self.transactionRepository = transactionRepository
-        self.ledgerRepository = ledgerRepository
     }
 
     var body: some View {
@@ -149,7 +141,7 @@ extension CardsView {
         HStack(spacing: AppSpacing.compact) {
             actionIconButton("plus", color: AppColors.Text.primary) {
                 navigator.pendingImportTarget = .ledger(ledger.id)
-                navigator.pendingImportSource = importSource(for: ledger, bank: bank)
+                navigator.pendingImportSource = viewModel.statementSource(for: ledger)
                 navigator.navigate(to: .importStatement)
             }
             actionIconButton("pencil", color: AppColors.Text.primary) {
@@ -162,18 +154,6 @@ extension CardsView {
         .padding(.horizontal, AppSpacing.sm)
         .padding(.vertical, AppSpacing.tight)
         .glassPill()
-    }
-
-    private func importSource(for ledger: Ledger, bank: Bank?) -> StatementSource? {
-        guard let bankEnum = bank?.bank else { return nil }
-        switch (bankEnum, ledger.kind) {
-        case (.hdfc, .bankAccount): return .hdfcBank
-        case (.hdfc, .creditCard): return .hdfcCard
-        case (.icici, .bankAccount): return .iciciBank
-        case (.icici, .creditCard): return .iciciCard
-        case (.amex, _): return .amex
-        default: return nil
-        }
     }
 
     private func actionIconButton(

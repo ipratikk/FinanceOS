@@ -7,17 +7,9 @@ struct AccountsView: View {
     @State private var viewModel: AccountsViewModel
     @State private var accountPendingDelete: Ledger?
     @Environment(AppNavigator.self) private var navigator
-    private let transactionRepository: any TransactionRepository
-    private let ledgerRepository: any LedgerRepository
 
-    init(
-        viewModel: AccountsViewModel,
-        transactionRepository: any TransactionRepository,
-        ledgerRepository: any LedgerRepository
-    ) {
+    init(viewModel: AccountsViewModel) {
         _viewModel = State(initialValue: viewModel)
-        self.transactionRepository = transactionRepository
-        self.ledgerRepository = ledgerRepository
     }
 
     var body: some View {
@@ -75,10 +67,7 @@ struct AccountsView: View {
             VStack(alignment: .leading, spacing: 24) {
                 listHeader
 
-                ForEach(
-                    groupedAccountsByBank.sorted(by: { $0.key < $1.key }),
-                    id: \.key
-                ) { bankName, ledgers in
+                ForEach(viewModel.groupedAccountsByBank, id: \.bankName) { bankName, ledgers in
                     bankSection(bankName: bankName, ledgers: ledgers)
                 }
             }
@@ -132,12 +121,6 @@ extension AccountsView {
         }
     }
 
-    private var groupedAccountsByBank: [String: [Ledger]] {
-        Dictionary(grouping: viewModel.accounts) { ledger in
-            viewModel.banks.first { $0.id == ledger.bankId }?.name ?? "Unknown"
-        }
-    }
-
     private func accountRow(_ ledger: Ledger) -> some View {
         FDSCard(cornerRadius: 12, padded: false) {
             VStack(alignment: .leading, spacing: 0) {
@@ -187,14 +170,12 @@ extension AccountsView {
     }
 
     private func accountRowActions(_ ledger: Ledger) -> some View {
-        let bank = viewModel.banks.first { $0.id == ledger.bankId }
-
-        return HStack(spacing: 12) {
+        HStack(spacing: 12) {
             Spacer()
 
             actionIconButton("plus", color: AppColors.Text.tertiary) {
                 navigator.pendingImportTarget = .ledger(ledger.id)
-                navigator.pendingImportSource = importSource(for: ledger, bank: bank)
+                navigator.pendingImportSource = viewModel.statementSource(for: ledger)
                 navigator.navigate(to: .importStatement)
             }
 
@@ -207,18 +188,6 @@ extension AccountsView {
             }
         }
         .padding(8)
-    }
-
-    private func importSource(for ledger: Ledger, bank: Bank?) -> StatementSource? {
-        guard let bankEnum = bank?.bank else { return nil }
-        switch (bankEnum, ledger.kind) {
-        case (.hdfc, .bankAccount): return .hdfcBank
-        case (.hdfc, .creditCard): return .hdfcCard
-        case (.icici, .bankAccount): return .iciciBank
-        case (.icici, .creditCard): return .iciciCard
-        case (.amex, _): return .amex
-        default: return nil
-        }
     }
 
     private func actionIconButton(
