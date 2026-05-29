@@ -9,13 +9,7 @@ class HDFCTextBasedParser {
         }
     }()
 
-    private let dateFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.dateFormat = "dd/MM/yy"
-        df.locale = Locale(identifier: "en_US_POSIX")
-        df.timeZone = TimeZone(identifier: "Asia/Kolkata")
-        return df
-    }()
+    private let dateFormatter: DateFormatter = DateParser.ddMMYY
 
     struct ReconstructedTransaction {
         let date: String

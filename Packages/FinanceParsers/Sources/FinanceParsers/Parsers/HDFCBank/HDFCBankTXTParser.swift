@@ -6,15 +6,7 @@ public struct HDFCBankTXTParser: Sendable {
     // MARK: - Shared helpers
 
     private func parseDate(_ text: String) -> Date? {
-        let formats = ["dd/MM/yy", "dd/MM/yyyy"]
-        for format in formats {
-            let formatter = DateFormatter()
-            formatter.dateFormat = format
-            if let date = formatter.date(from: text.trimmingCharacters(in: .whitespaces)) {
-                return date
-            }
-        }
-        return nil
+        DateParser.parseHDFCBank(text)
     }
 
     private func isDateString(_ text: String) -> Bool {
