@@ -3,17 +3,12 @@ import FinanceUI
 import SwiftUI
 
 struct LedgerDetailView: View {
-    let ledgerId: UUID
+    @Bindable var viewModel: LedgerDetailViewModel
     @Environment(AppNavigator.self) private var navigator
-    @State private var ledger: Ledger?
-    @State private var bank: Bank?
-    @State private var isLoading = true
-
-    private let appContainer = AppContainer.shared
 
     var body: some View {
         Group {
-            if let ledger {
+            if let ledger = viewModel.ledger {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 24) {
                         heroCard(ledger)
@@ -29,7 +24,7 @@ struct LedgerDetailView: View {
                     .frame(maxWidth: 1080)
                 }
                 .background(AppColors.base)
-            } else if isLoading {
+            } else if viewModel.isLoading {
                 VStack(spacing: AppSpacing.sm) {
                     ProgressView()
                         .controlSize(.small)
@@ -48,9 +43,9 @@ struct LedgerDetailView: View {
                 .background(AppColors.base)
             }
         }
-        .navigationTitle(ledger?.displayName ?? "Ledger")
+        .navigationTitle(viewModel.navigationTitle)
         .task {
-            await loadLedger()
+            await viewModel.load()
         }
     }
 
@@ -66,7 +61,7 @@ struct LedgerDetailView: View {
                         )
                         .frame(width: 76, height: 48)
                     } else {
-                        FDSBankMark(bank?.bank ?? .hdfc)
+                        FDSBankMark(viewModel.bank?.bank ?? .hdfc)
                             .frame(width: AppSpacing.hitTarget, height: AppSpacing.hitTarget)
                     }
 
@@ -94,7 +89,7 @@ struct LedgerDetailView: View {
                         FDSLabel("Balance")
                             .font(AppTypography.captionSmMedium)
                             .foregroundColor(AppColors.Text.secondary)
-                        FDSLabel(formatBalance(ledger.closingBalance ?? 0))
+                        FDSLabel(viewModel.balanceText)
                             .font(AppTypography.headingLg)
                             .monospacedDigit()
                             .foregroundColor(AppColors.System.green)
@@ -187,23 +182,6 @@ struct LedgerDetailView: View {
             }
         }
     }
-
-    private func formatBalance(_ minorUnits: Int64) -> String {
-        FormatterCache.formatCurrency(minorUnits: minorUnits)
-    }
-
-    private func loadLedger() async {
-        do {
-            ledger = try await appContainer.ledgerRepository.fetchLedger(id: ledgerId)
-            if let ledger {
-                let banks = try await appContainer.bankRepository.fetchBanks()
-                bank = banks.first { $0.id == ledger.bankId }
-            }
-            isLoading = false
-        } catch {
-            isLoading = false
-        }
-    }
 }
 
 extension LedgerKind {
@@ -219,7 +197,4 @@ extension LedgerKind {
     }
 }
 
-#Preview {
-    LedgerDetailView(ledgerId: UUID())
-        .environment(AppNavigator())
-}
+// Preview removed — inject LedgerDetailViewModel from call site

@@ -5,15 +5,10 @@ import SwiftUI
 
 struct CategoryPickerView: View {
     let source: FinanceCore.Transaction
-    let currentCategoryId: String?
     let currentMerchant: String?
-    let previousPrediction: CategoryPrediction?
-    var onCorrected: ((UUID, String) -> Void)?
     @Environment(\.transactionIntelligence) private var intelligence
     @Environment(\.dismiss) private var dismiss
-
-    @State private var selectedCategoryId: String
-    @State private var isSaving = false
+    @State private var viewModel: CategoryCorrectionViewModel
 
     private let taxonomy = CategoryTaxonomy.current
 
@@ -25,11 +20,13 @@ struct CategoryPickerView: View {
         onCorrected: ((UUID, String) -> Void)? = nil
     ) {
         self.source = source
-        self.currentCategoryId = currentCategoryId
         self.currentMerchant = currentMerchant
-        self.previousPrediction = previousPrediction
-        self.onCorrected = onCorrected
-        _selectedCategoryId = State(initialValue: currentCategoryId ?? "uncategorized")
+        _viewModel = State(initialValue: CategoryCorrectionViewModel(
+            transaction: source,
+            currentCategoryId: currentCategoryId,
+            previousPrediction: previousPrediction,
+            onCorrected: onCorrected
+        ))
     }
 
     var body: some View {
@@ -57,8 +54,8 @@ struct CategoryPickerView: View {
     }
 
     private func categoryRow(_ category: TaxonomyCategory) -> some View {
-        let isSelected = selectedCategoryId == category.id
-        return Button(action: { selectedCategoryId = category.id }, label: {
+        let isSelected = viewModel.selectedCategoryId == category.id
+        return Button(action: { viewModel.selectedCategoryId = category.id }, label: {
             HStack(spacing: AppSpacing.md) {
                 Image(systemName: CategorySymbol.symbol(for: category.id))
                     .foregroundStyle(CategorySymbol.color(for: category.id))
@@ -85,41 +82,25 @@ struct CategoryPickerView: View {
     }
 
     private var saveButton: some View {
-        Button(action: { Task { await save() } }, label: {
-            HStack {
-                if isSaving {
-                    ProgressView().controlSize(.small)
-                } else {
-                    FDSLabel("Save")
-                        .font(AppTypography.bodySmSemibold)
+        Button(
+            action: { Task { await viewModel.save(intelligence: intelligence, onDismiss: { dismiss() }) } },
+            label: {
+                HStack {
+                    if viewModel.isSaving {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        FDSLabel("Save")
+                            .font(AppTypography.bodySmSemibold)
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, AppSpacing.sm)
+                .background(AppColors.accentGold)
+                .foregroundStyle(.black)
+                .cornerRadius(AppRadius.md)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.sm)
-            .background(AppColors.accentGold)
-            .foregroundStyle(.black)
-            .cornerRadius(AppRadius.md)
-        })
+        )
         .buttonStyle(.plain)
-        .disabled(isSaving || selectedCategoryId == currentCategoryId)
-    }
-
-    private func save() async {
-        isSaving = true
-        if let service = intelligence {
-            do {
-                try await service.learn(
-                    transaction: source,
-                    correctedCategoryId: selectedCategoryId,
-                    correctedMerchant: nil,
-                    previousPrediction: previousPrediction
-                )
-            } catch {
-                FinanceLogger.userInterface.logError("Category correction failed", caughtError: error, [:])
-            }
-        }
-        onCorrected?(source.id, selectedCategoryId)
-        isSaving = false
-        dismiss()
+        .disabled(viewModel.isSaveDisabled)
     }
 }

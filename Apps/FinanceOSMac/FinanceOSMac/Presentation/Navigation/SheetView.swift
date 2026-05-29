@@ -5,28 +5,37 @@ struct SheetView: View {
     let route: SheetRoute
     let appContainer: AppContainer
     let navigator: AppNavigator
-    @State private var banks: [Bank] = []
-    @State private var accounts: [Ledger] = []
+    @State private var viewModel: SheetViewModel
+
+    init(route: SheetRoute, appContainer: AppContainer, navigator: AppNavigator) {
+        self.route = route
+        self.appContainer = appContainer
+        self.navigator = navigator
+        _viewModel = State(initialValue: SheetViewModel(
+            bankRepository: appContainer.bankRepository,
+            ledgerRepository: appContainer.ledgerRepository
+        ))
+    }
 
     var body: some View {
         Group {
             switch route {
             case let .accountEdit(ledger):
-                let context = CardEditContext(
-                    repository: appContainer.ledgerRepository,
-                    banks: banks,
+                CardEditView(
+                    mode: .edit(ledger),
+                    ledgerRepository: appContainer.ledgerRepository,
+                    banks: viewModel.banks,
                     accounts: [],
                     onUpdate: navigator.accountReloadCallback
                 )
-                CardEditView(mode: .edit(ledger, context))
             case let .cardEdit(ledger):
-                let context = CardEditContext(
-                    repository: appContainer.ledgerRepository,
-                    banks: banks,
-                    accounts: accounts,
+                CardEditView(
+                    mode: .edit(ledger),
+                    ledgerRepository: appContainer.ledgerRepository,
+                    banks: viewModel.banks,
+                    accounts: viewModel.accounts,
                     onUpdate: navigator.cardReloadCallback
                 )
-                CardEditView(mode: .edit(ledger, context))
             case let .bankEdit(bank):
                 let context = BankEditContext(
                     repository: appContainer.bankRepository,
@@ -40,18 +49,7 @@ struct SheetView: View {
             }
         }
         .task {
-            do {
-                async let banksFetch = appContainer.bankRepository.fetchBanks()
-                async let accountsFetch = appContainer.ledgerRepository.fetchLedgers(kind: .bankAccount)
-                banks = try await banksFetch
-                accounts = try await accountsFetch
-            } catch {
-                FinanceLogger.userInterface.logError(
-                    "Failed to fetch data for sheet: {error}",
-                    caughtError: error,
-                    ["error": error.localizedDescription]
-                )
-            }
+            await viewModel.load()
         }
     }
 }

@@ -3,7 +3,7 @@ import FinanceUI
 import SwiftUI
 
 enum CardEditMode {
-    case edit(Ledger, CardEditContext)
+    case edit(Ledger)
     case createCard(prefill: TargetCreationState?, onCommit: (TargetCreationState) -> Void)
     case createAccount(prefill: TargetCreationState?, onCommit: (TargetCreationState) -> Void)
 }
@@ -23,7 +23,7 @@ struct CardEditFormState: Equatable {
     static func initial(for mode: CardEditMode) -> CardEditFormState {
         var state = CardEditFormState()
         switch mode {
-        case let .edit(card, context):
+        case let .edit(card):
             state.nickname = card.nickname
             state.cardType = card.cardType ?? .other
             state.last4 = card.last4
@@ -32,7 +32,6 @@ struct CardEditFormState: Equatable {
             state.accountType = card.accountType ?? "savings"
             state.cardProductId = card.cardProductId ?? ""
             state.linkedLedgerId = card.linkedLedgerId
-            state.selectedBank = context.banks.first { $0.id == card.bankId }?.bank
         case let .createCard(prefill, _):
             if let prefillState = prefill {
                 state.nickname = prefillState.nickname
@@ -61,56 +60,26 @@ struct CardEditFormState: Equatable {
 }
 
 struct CardEditView: View {
-    let mode: CardEditMode
+    let banks: [Bank]
     @Environment(\.dismiss) var dismiss
-
-    @State var form: CardEditFormState
-    @State var showDeleteConfirm = false
-    @State var showCardSelection = false
-    @State var catalogMode = true
+    @State var viewModel: CardEditViewModel
     @State private var sizing = WindowSizing()
 
-    init(mode: CardEditMode) {
-        self.mode = mode
-        _form = State(initialValue: CardEditFormState.initial(for: mode))
-    }
-
-    var isCard: Bool {
-        switch mode {
-        case let .edit(card, _): return card.kind == .creditCard
-        case .createCard: return true
-        case .createAccount: return false
-        }
-    }
-
-    var isEdit: Bool {
-        if case .edit = mode { return true }
-        return false
-    }
-
-    var titleText: String {
-        switch mode {
-        case .edit: return isCard ? "Edit Card" : "Edit Account"
-        case .createCard: return "Add New Card"
-        case .createAccount: return "Add New Account"
-        }
-    }
-
-    var subtitleText: String {
-        switch mode {
-        case .edit:
-            return "Update your card details and configuration."
-        case .createCard:
-            return "Securely link your physical card to your digital wealth management dashboard. " +
-                "Choose from our catalog or enter details manually."
-        case .createAccount:
-            return "Add a new bank account to track your finances."
-        }
-    }
-
-    var selectedCatalogCard: CardMetadata? {
-        guard !form.cardProductId.isEmpty else { return nil }
-        return CardDatabase.supportedCards().first { $0.id == form.cardProductId }
+    init(
+        mode: CardEditMode,
+        ledgerRepository: (any LedgerRepository)? = nil,
+        banks: [Bank] = [],
+        accounts: [Ledger] = [],
+        onUpdate: (() async -> Void)? = nil
+    ) {
+        self.banks = banks
+        _viewModel = State(initialValue: CardEditViewModel(
+            mode: mode,
+            ledgerRepository: ledgerRepository,
+            banks: banks,
+            accounts: accounts,
+            onUpdate: onUpdate
+        ))
     }
 
     private var cardPanelWidth: CGFloat {
@@ -122,7 +91,7 @@ struct CardEditView: View {
 
     var body: some View {
         HStack(spacing: AppSpacing.xl) {
-            if isCard {
+            if viewModel.isCard {
                 heroPanelSection
                     .frame(width: cardPanelWidth)
             }
@@ -145,50 +114,23 @@ struct CardEditView: View {
             minHeight: 700,
             maxHeight: 900
         )
-        .onAppear { seedBankFromCatalogIfNeeded() }
-        .onChange(of: contextBanksCount) { _, count in
-            guard count > 0 else { return }
-            seedBankFromEditContext()
-        }
+        .onAppear { viewModel.seedBankFromCatalogIfNeeded() }
+        .onChange(of: banks.count) { _, _ in viewModel.updateBanks(banks) }
+        .onChange(of: viewModel.didCommit) { _, committed in if committed { dismiss() } }
         .alert(
-            "Delete \"\(isCard ? "Card" : "Account")\"?",
-            isPresented: $showDeleteConfirm
+            "Delete \"\(viewModel.isCard ? "Card" : "Account")\"?",
+            isPresented: $viewModel.showDeleteConfirm
         ) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                if case let .edit(card, context) = mode {
-                    Task {
-                        await context.deleteCard(id: card.id)
-                        if context.deleteError == nil { dismiss() }
-                    }
-                }
+                Task { await viewModel.deleteCard() }
             }
         } message: {
             FDSLabel("This will permanently delete this item and all associated transactions.")
         }
-        .sheet(isPresented: $showCardSelection) {
+        .sheet(isPresented: $viewModel.showCardSelection) {
             cardSelectionSheet
         }
-    }
-
-    private var contextBanksCount: Int {
-        if case let .edit(_, context) = mode { return context.banks.count }
-        return 0
-    }
-
-    private func seedBankFromCatalogIfNeeded() {
-        guard form.selectedBank == nil, !form.cardProductId.isEmpty,
-              let card = CardDatabase.supportedCards().first(where: { $0.id == form.cardProductId })
-        else { return }
-        form.selectedBank = Banks.allCases.first { bank in
-            card.issuer.localizedCaseInsensitiveContains(bank.displayName) ||
-                bank.displayName.localizedCaseInsensitiveContains(card.issuer)
-        }
-    }
-
-    private func seedBankFromEditContext() {
-        guard form.selectedBank == nil, case let .edit(card, context) = mode else { return }
-        form.selectedBank = context.banks.first { $0.id == card.bankId }?.bank
     }
 }
 
