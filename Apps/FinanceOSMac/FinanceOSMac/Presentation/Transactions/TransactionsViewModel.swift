@@ -36,12 +36,12 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
     func loadTransactions() async {
         await withLoading(onError: { error in
             FinanceLogger.userInterface.logError("Failed to load transactions", caughtError: error, [:])
-        }) {
+        }, {
             rawTransactions = try await transactionRepository.fetchTransactions()
             cachedLedgers = try await ledgerRepository.fetchLedgers()
             transactionRows = makeRows(transactions: rawTransactions, results: [:])
             listState.updateAvailableYears(from: transactionRows)
-        }
+        })
         Task.detached(priority: .background) { [weak self] in
             await self?.analyzeUncategorized()
         }

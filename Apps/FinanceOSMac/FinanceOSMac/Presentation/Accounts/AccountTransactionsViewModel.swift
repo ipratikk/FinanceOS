@@ -44,7 +44,7 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 caughtError: error,
                 ["accountID": accountID.uuidString]
             )
-        }) {
+        }, {
             async let txnsFetch = transactionRepository.fetchTransactionsForAccount(accountID)
             async let ledgersFetch = ledgerRepository.fetchLedgers()
             async let banksFetch = bankRepository.fetchBanks()
@@ -56,7 +56,7 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 closingBalance: closingBalance
             )
             listState.updateAvailableYears(from: transactionRows)
-        }
+        })
     }
 
     private func makeTransactionRows(

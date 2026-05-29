@@ -63,7 +63,7 @@ class AnalyticsViewModel: AsyncLoadable {
         await withLoading(onError: { [self] error in
             self.error = error.localizedDescription
             FinanceLogger.userInterface.logError("Analytics load failed", caughtError: error, [:])
-        }) {
+        }, {
             monthlySummaries = try await spendingService.monthlySummary(months: 6)
             let allTransactions = try await transactionRepository.fetchTransactions()
             totalOutflow = monthlySummaries.reduce(0) { $0 + $1.totalDebit }
@@ -74,7 +74,7 @@ class AnalyticsViewModel: AsyncLoadable {
                 insights = await (try? service.generateInsights(for: allTransactions)) ?? []
                 recentFluctuations = fluctuationTransactions(from: insights, all: allTransactions)
             }
-        }
+        })
     }
 }
 

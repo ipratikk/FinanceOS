@@ -104,6 +104,8 @@ struct SpendingTrendCard: View {
     private var periodLabel: String {
         guard let first = summaries.first?.id, let last = summaries.last?.id else { return "" }
         let year = Calendar.current.component(.year, from: last)
-        return "\(FormatterCache.shortMonth.string(from: first).uppercased())-\(FormatterCache.shortMonth.string(from: last).uppercased()) \(year)"
+        let firstLabel = FormatterCache.shortMonth.string(from: first).uppercased()
+        let lastLabel = FormatterCache.shortMonth.string(from: last).uppercased()
+        return "\(firstLabel)-\(lastLabel) \(year)"
     }
 }

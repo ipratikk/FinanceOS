@@ -86,7 +86,7 @@ class DashboardViewModel: AsyncLoadable {
         await withLoading(onError: { [self] error in
             self.error = error.localizedDescription
             FinanceLogger.userInterface.logError("Dashboard load failed", caughtError: error, [:])
-        }) {
+        }, {
             let months = selectedTimeRange.months
             async let totals = spendingService.currentMonthTotals()
             async let summaries = spendingService.monthlySummary(months: months)
@@ -98,7 +98,7 @@ class DashboardViewModel: AsyncLoadable {
             recentTransactions = try await recent
             netWorthTimeSeries = try await nwSeries
             ledgers = try await fetchedLedgers
-        }
+        })
     }
 
     func setTimeRange(_ range: TimeRange) async {

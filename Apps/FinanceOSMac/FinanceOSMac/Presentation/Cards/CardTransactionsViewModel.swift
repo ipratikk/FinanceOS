@@ -37,11 +37,11 @@ final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 caughtError: error,
                 ["cardID": cardID.uuidString]
             )
-        }) {
+        }, {
             let transactions = try await transactionRepository.fetchTransactionsForCard(cardID)
             transactionRows = makeTransactionRows(transactions: transactions)
             listState.updateAvailableYears(from: transactionRows)
-        }
+        })
     }
 
     private func makeTransactionRows(

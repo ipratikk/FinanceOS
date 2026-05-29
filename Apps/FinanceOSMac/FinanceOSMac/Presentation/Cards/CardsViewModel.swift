@@ -53,14 +53,14 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
     func loadCards() async {
         await withLoading(onError: { [self] error in
             logger.logError("Failed to load cards: {error}", ["error": error.localizedDescription])
-        }) {
+        }, {
             let cards = try await ledgerRepository.fetchLedgers(kind: .creditCard)
             let accounts = try await ledgerRepository.fetchLedgers(kind: .bankAccount)
             let banks = try await bankRepository.fetchBanks()
             self.accounts = accounts
             self.banks = banks
             cardRows = makeCardRows(cards: cards, accounts: accounts, banks: banks)
-        }
+        })
     }
 
     func updateCard(_ card: Ledger) async {

@@ -31,14 +31,14 @@ final class BanksViewModel: AsyncLoadable, DeletableViewModel {
     func loadBanks() async {
         await withLoading(onError: { error in
             FinanceLogger.userInterface.logError("Failed to load banks", caughtError: error, [:])
-        }) {
+        }, {
             banks = try await repository.fetchBanks()
             var ledgerMap: [UUID: [Ledger]] = [:]
             for bank in banks {
                 ledgerMap[bank.id] = try await ledgerRepository.fetchLedgers(bankId: bank.id)
             }
             ledgersByBank = ledgerMap
-        }
+        })
     }
 
     func updateBank(_ bank: Bank) async {

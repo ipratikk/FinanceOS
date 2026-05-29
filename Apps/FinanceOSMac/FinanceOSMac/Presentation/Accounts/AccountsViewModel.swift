@@ -52,13 +52,13 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
     func loadAccounts() async {
         await withLoading(onError: { [self] error in
             logger.logError("Failed to load accounts: {error}", ["error": error.localizedDescription])
-        }) {
+        }, {
             async let accounts = ledgerRepository.fetchLedgers(kind: .bankAccount)
             async let banks = bankRepository.fetchBanks()
             self.accounts = try await accounts
             self.banks = try await banks
             await loadBalances(for: self.accounts)
-        }
+        })
     }
 
     private func loadBalances(for accounts: [Ledger]) async {
