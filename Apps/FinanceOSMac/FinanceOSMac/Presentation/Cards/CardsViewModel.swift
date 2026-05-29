@@ -6,6 +6,7 @@
 //
 
 import FinanceCore
+import FinanceParsers
 import Foundation
 import Observation
 import OSLog
@@ -141,6 +142,19 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
                     accountsByID[accountID]?.displayName
                 }
             )
+        }
+    }
+
+    func statementSource(for ledger: Ledger) -> StatementSource? {
+        let bank = banks.first { $0.id == ledger.bankId }
+        guard let bankEnum = bank?.bank else { return nil }
+        switch (bankEnum, ledger.kind) {
+        case (.hdfc, .bankAccount): return .hdfcBank
+        case (.hdfc, .creditCard): return .hdfcCard
+        case (.icici, .bankAccount): return .iciciBank
+        case (.icici, .creditCard): return .iciciCard
+        case (.amex, _): return .amex
+        default: return nil
         }
     }
 }

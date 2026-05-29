@@ -49,9 +49,7 @@ struct AdaptiveNavigation: View {
                     ledgerRepository: appContainer.ledgerRepository,
                     bankRepository: appContainer.bankRepository,
                     transactionRepository: appContainer.transactionRepository
-                ),
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                )
             )
             .tabItem {
                 Label(NavigationItem.accounts.label, systemImage: NavigationItem.accounts.icon)
@@ -63,9 +61,7 @@ struct AdaptiveNavigation: View {
                     ledgerRepository: appContainer.ledgerRepository,
                     bankRepository: appContainer.bankRepository,
                     transactionRepository: appContainer.transactionRepository
-                ),
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                )
             )
             .tabItem {
                 Label(NavigationItem.cards.label, systemImage: NavigationItem.cards.icon)
@@ -135,9 +131,7 @@ struct DetailRouter: View {
                     ledgerRepository: appContainer.ledgerRepository,
                     bankRepository: appContainer.bankRepository,
                     transactionRepository: appContainer.transactionRepository
-                ),
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                )
             )
         case .cards:
             CardsView(
@@ -145,9 +139,7 @@ struct DetailRouter: View {
                     ledgerRepository: appContainer.ledgerRepository,
                     bankRepository: appContainer.bankRepository,
                     transactionRepository: appContainer.transactionRepository
-                ),
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                )
             )
         case .banks:
             BanksView(
@@ -157,7 +149,11 @@ struct DetailRouter: View {
                 )
             )
         case .analytics:
-            AnalyticsView()
+            AnalyticsView(viewModel: AnalyticsViewModel(
+                spendingService: appContainer.spendingService,
+                transactionRepository: appContainer.transactionRepository,
+                intelligenceService: intelligence
+            ))
         case .importStatement:
             ImportView(
                 viewModel: ImportViewModel(
@@ -170,9 +166,7 @@ struct DetailRouter: View {
                 )
             )
         case .settings:
-            SettingsView(onClearAll: {
-                try? await appContainer.bankRepository.deleteAll()
-            })
+            SettingsView(viewModel: SettingsViewModel(bankRepository: appContainer.bankRepository))
         }
     }
 
