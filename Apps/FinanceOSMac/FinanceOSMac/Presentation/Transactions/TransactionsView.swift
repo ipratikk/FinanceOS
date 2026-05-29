@@ -10,6 +10,7 @@ struct TransactionsView: View {
     @State private var showCategoryPopover = false
     @State private var selectedTransaction: TransactionRow?
     @State private var transactionPendingDelete: TransactionRow?
+    @State private var searchDebounceTask: Task<Void, Never>?
 
     init(viewModel: TransactionsViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -33,7 +34,16 @@ struct TransactionsView: View {
         .background(AppColors.base)
         .navigationTitle("Transactions")
         .searchable(
-            text: Binding(get: { listState.searchQuery }, set: { listState.searchQuery = $0 }),
+            text: Binding(
+                get: { listState.searchQuery },
+                set: { newValue in
+                    searchDebounceTask?.cancel()
+                    searchDebounceTask = Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(150))
+                        listState.searchQuery = newValue
+                    }
+                }
+            ),
             placement: .toolbar,
             prompt: "Search merchant, category…"
         )

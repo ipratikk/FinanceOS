@@ -9,6 +9,15 @@ struct TransactionDetailView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.transactionIntelligence) private var intelligence
     @State private var showCategoryPicker = false
+    @State private var displayCategoryId: String?
+    @State private var displayIsUserCorrected: Bool
+
+    init(row: TransactionRow, onCorrected: ((UUID, String) -> Void)? = nil) {
+        self.row = row
+        self.onCorrected = onCorrected
+        _displayCategoryId = State(initialValue: row.categoryId)
+        _displayIsUserCorrected = State(initialValue: row.isUserCorrected)
+    }
 
     var body: some View {
         NavigationStack {
@@ -46,7 +55,7 @@ private extension TransactionDetailView {
                 HStack(spacing: AppSpacing.md) {
                     FDSMerchantAvatar(
                         name: row.displayTitle,
-                        symbol: CategorySymbol.symbol(for: row.categoryId),
+                        symbol: CategorySymbol.symbol(for: displayCategoryId),
                         imageName: nil,
                         size: FDSAvatarSize.hero.value
                     )
@@ -55,7 +64,7 @@ private extension TransactionDetailView {
                             .font(AppTypography.headingMd)
                             .foregroundStyle(AppColors.textPrimary)
                             .lineLimit(2)
-                        if let catId = row.categoryId {
+                        if let catId = displayCategoryId {
                             categoryBadge(catId)
                         }
                     }
@@ -126,17 +135,17 @@ private extension TransactionDetailView {
         sectionCard(header: "Category") {
             HStack(spacing: AppSpacing.md) {
                 FDSCategoryGlyph(
-                    row.categoryId ?? "other",
-                    icon: CategorySymbol.symbol(for: row.categoryId),
+                    displayCategoryId ?? "other",
+                    icon: CategorySymbol.symbol(for: displayCategoryId),
                     size: 36
                 )
                 VStack(alignment: .leading, spacing: 3) {
-                    let catName = CategoryTaxonomy.current.category(forId: row.categoryId ?? "")?.displayName
-                        ?? (row.categoryId?.capitalized ?? "Uncategorized")
+                    let catName = CategoryTaxonomy.current.category(forId: displayCategoryId ?? "")?.displayName
+                        ?? (displayCategoryId?.capitalized ?? "Uncategorized")
                     FDSLabel(catName)
                         .font(AppTypography.bodySmMedium)
                         .foregroundStyle(AppColors.textPrimary)
-                    if row.isUserCorrected {
+                    if displayIsUserCorrected {
                         HStack(spacing: 4) {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(AppTypography.captionSm)
@@ -188,6 +197,8 @@ private extension TransactionDetailView {
         CategoryPickerDestination(
             row: row,
             onCorrected: { id, catId in
+                displayCategoryId = catId
+                displayIsUserCorrected = true
                 onCorrected?(id, catId)
                 showCategoryPicker = false
             }

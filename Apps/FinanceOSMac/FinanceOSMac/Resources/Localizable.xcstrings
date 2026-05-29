@@ -131,6 +131,9 @@
         }
       }
     },
+    "Change Category" : {
+
+    },
     "Clear" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -443,6 +446,9 @@
     "Outflow" : {
 
     },
+    "Permanently delete \"%@\"?" : {
+
+    },
     "Range" : {
 
     },
@@ -464,6 +470,9 @@
 
     },
     "Save password to Keychain" : {
+
+    },
+    "Search merchant, category…" : {
 
     },
     "Search transactions" : {
