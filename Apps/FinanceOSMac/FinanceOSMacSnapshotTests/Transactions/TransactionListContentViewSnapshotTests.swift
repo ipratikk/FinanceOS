@@ -22,9 +22,11 @@ final class TransactionListContentViewSnapshotTests: SnapshotTestable {
             )
         }
         let section = TransactionSection(
-            id: "May 2025",
-            title: "May 2025",
-            rows: rows
+            id: "2025-05-01",
+            title: "THURSDAY, MAY 1",
+            date: Date(timeIntervalSince1970: 1_746_057_600),
+            rows: rows,
+            netAmountMinorUnits: 0
         )
         let view = TransactionListContentView(sections: [section], listState: TransactionListState())
         verifySnapshots(view)
