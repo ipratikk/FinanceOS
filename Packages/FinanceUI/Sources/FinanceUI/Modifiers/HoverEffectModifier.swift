@@ -1,6 +1,10 @@
 import FinanceCore
 import SwiftUI
 
+/// macOS-only hover effect: 1% scale-up, glass background tint, and accent glow shadow.
+///
+/// No-ops on iOS/watchOS. Use `.hoverEffect()` convenience extension.
+/// Avoid stacking with `PressEffectModifier` — they conflict on scale.
 public struct HoverEffectModifier: ViewModifier {
     @State private var isHovered = false
 
@@ -31,6 +35,7 @@ public struct HoverEffectModifier: ViewModifier {
 }
 
 public extension View {
+    /// Applies macOS hover: scale, glass tint, and accent glow. No-op on iOS.
     func hoverEffect() -> some View {
         modifier(HoverEffectModifier())
     }

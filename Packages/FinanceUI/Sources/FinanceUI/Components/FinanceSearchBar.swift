@@ -1,6 +1,9 @@
 import FinanceCore
 import SwiftUI
 
+/// Inline search bar with magnifying glass leading icon and clear button.
+///
+/// Renders a `surface2` rounded field. The clear button appears only when `text` is non-empty.
 public struct FinanceSearchBar: View {
     @Binding var text: String
     let placeholder: String

@@ -1,6 +1,10 @@
 import FinanceCore
 import SwiftUI
 
+/// Legacy semi-transparent panel. Uses `surface2 + borderAccent` — not Liquid Glass.
+///
+/// Prefer `FDSCard` or `FDSGlassSurface` for new surfaces. `GlassPanel` is retained
+/// for pre-Phase-3 components that have not yet been migrated.
 public struct GlassPanel<Content: View>: View {
     let content: Content
 

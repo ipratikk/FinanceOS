@@ -8,6 +8,7 @@ public struct FDSSelect<T: Hashable>: View {
     let label: String
     @Binding var selection: T
     let options: [T]
+    /// Closure returning the display string for each option value.
     let optionLabel: (T) -> String
 
     public init(

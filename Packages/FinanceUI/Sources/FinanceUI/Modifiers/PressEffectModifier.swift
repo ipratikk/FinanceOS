@@ -1,6 +1,10 @@
 import FinanceCore
 import SwiftUI
 
+/// Press feedback: 3% scale-down, 85% opacity, and a faint gold glow on long-press.
+///
+/// Uses `onLongPressGesture` with a 50ms threshold so it triggers on any tap press.
+/// Apply to cards and interactive containers; do not combine with `HoverEffectModifier`.
 public struct PressEffectModifier: ViewModifier {
     @State private var isPressed = false
 
@@ -22,6 +26,7 @@ public struct PressEffectModifier: ViewModifier {
 }
 
 public extension View {
+    /// Applies scale-down + opacity press feedback to interactive surfaces.
     func pressEffect() -> some View {
         modifier(PressEffectModifier())
     }

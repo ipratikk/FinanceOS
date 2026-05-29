@@ -1,7 +1,7 @@
 import FinanceCore
 import SwiftUI
 
-/// Semantic avatar sizes for the Finance Design System.
+/// Named size tokens for `FDSMerchantAvatar`. Prefer these over raw CGFloat in call sites.
 public enum FDSAvatarSize {
     case xSmall
     case small
@@ -35,6 +35,9 @@ public struct FDSMerchantAvatar: View {
     let size: CGFloat
     let tint: Color
 
+    /// - Parameters:
+    ///   - name: Merchant or institution name; drives initial fallback and deterministic tint.
+    ///   - tint: Override the auto-derived tint; `nil` uses `deterministicTint(for:)`.
     public init(
         name: String,
         symbol: String? = nil,

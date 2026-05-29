@@ -7,7 +7,9 @@ import SwiftUI
 /// lives in the view hierarchy — suitable for import feedback, warnings,
 /// and contextual alerts.
 ///
-/// Styles: `.info`, `.success`, `.warning`, `.error`, `.neutral`
+/// Semantic style driving the banner's icon and tint color.
+///
+/// `.info` = blue, `.success` = green, `.warning` = yellow, `.error` = red, `.neutral` = tertiary.
 public enum FDSBannerStyle {
     case info, success, warning, error, neutral
 }

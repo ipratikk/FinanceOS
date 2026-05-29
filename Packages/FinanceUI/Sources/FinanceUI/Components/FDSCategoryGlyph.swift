@@ -7,8 +7,11 @@ import SwiftUI
 /// Foreground: HSB color with saturation 0.55, brightness 0.78.
 /// Used in transaction rows to identify spending category.
 public struct FDSCategoryGlyph: View {
+    /// Category name used to derive the hue (e.g. "food", "transport"). Case-insensitive substring match.
     let category: String
+    /// SF Symbol name for the glyph icon.
     let icon: String
+    /// Diameter of the rounded-square container (default 32pt).
     let size: CGFloat
 
     public init(_ category: String, icon: String, size: CGFloat = 32) {

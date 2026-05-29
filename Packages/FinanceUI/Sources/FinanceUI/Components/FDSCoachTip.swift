@@ -3,7 +3,9 @@ import SwiftUI
 
 /// A single step in a coach tip sequence.
 public struct FDSCoachTipStep {
+    /// Bold headline shown at top of the tip card.
     public let title: String
+    /// Descriptive body text; wraps across multiple lines (fixed-size vertical).
     public let description: String
 
     public init(_ title: String, _ description: String) {

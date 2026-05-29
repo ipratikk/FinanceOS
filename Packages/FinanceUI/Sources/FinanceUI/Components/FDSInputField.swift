@@ -10,6 +10,7 @@ import SwiftUI
 /// - Border thickens and turns accent on focus
 ///
 /// States: `.normal` / `.error(String)` / `.success`
+/// Validation state for `FDSInputField`. The `.error` case carries the message string.
 public enum FDSInputState: Equatable {
     case normal
     case error(String)
@@ -18,7 +19,9 @@ public enum FDSInputState: Equatable {
 
 public struct FDSInputField: View {
     let label: String
+    /// Shown inside the field when the label is in resting (non-floated) state.
     let placeholder: String
+    /// Helper or error message displayed below the field. Overridden by `.error` state message.
     let helper: String?
     let state: FDSInputState
     let isSecure: Bool

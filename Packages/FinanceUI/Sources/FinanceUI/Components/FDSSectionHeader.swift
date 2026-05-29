@@ -44,6 +44,7 @@ public struct FDSSectionHeader: View {
 
     // MARK: - ViewBuilder trailing init
 
+    /// Use this init for arbitrary trailing content (e.g. filter chips, icon buttons).
     public init(
         _ title: String,
         subtitle: String? = nil,

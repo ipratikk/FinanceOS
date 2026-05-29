@@ -38,6 +38,10 @@ public struct ToastContainer: View {
     }
 }
 
+/// Singleton observable store for active toasts. Thread-safe via main-queue dispatch.
+///
+/// Call `ToastManager.shared.show(message:type:)` from any context; the manager
+/// appends to `toasts` on the main queue and schedules removal after `duration`.
 public class ToastManager: ObservableObject {
     @Published var toasts: [Toast] = []
 
@@ -67,6 +71,9 @@ public class ToastManager: ObservableObject {
     }
 }
 
+/// Root overlay that renders active toasts from `ToastManager.shared`.
+///
+/// Place once at the top of the view hierarchy (e.g. in the app's ZStack root).
 public struct ToastContainerView: View {
     @StateObject private var manager = ToastManager.shared
 

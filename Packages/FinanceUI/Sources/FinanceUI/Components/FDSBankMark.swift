@@ -7,6 +7,7 @@ import SwiftUI
 /// Includes specular gleam edge highlight.
 public struct FDSBankMark: View {
     let bank: Banks
+    /// Width and height of the square container (default 36pt).
     let size: CGFloat
 
     public init(_ bank: Banks, size: CGFloat = 36) {

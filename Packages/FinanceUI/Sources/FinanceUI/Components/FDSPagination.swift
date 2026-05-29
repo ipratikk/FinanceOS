@@ -11,7 +11,9 @@ import SwiftUI
 /// FDSPagination(count: 4, index: $currentPage)
 /// ```
 public struct FDSPagination: View {
+    /// Total number of pages (equals the number of dots rendered).
     let count: Int
+    /// Zero-based index of the currently active page.
     @Binding var index: Int
 
     public init(count: Int, index: Binding<Int>) {

@@ -8,8 +8,11 @@ import SwiftUI
 public struct FDSInput: View {
     let placeholder: String
     @Binding var text: String
+    /// Short string rendered before the text field (e.g. "₹" for currency inputs).
     let prefix: String?
+    /// Short string rendered after the text field (e.g. "%" for percentage inputs).
     let suffix: String?
+    /// When true, uses monospaced digit font for amounts and masked numbers.
     let isMono: Bool
     let isSecure: Bool
 

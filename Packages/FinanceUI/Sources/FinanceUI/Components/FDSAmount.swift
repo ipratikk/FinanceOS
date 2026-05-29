@@ -1,11 +1,15 @@
 import FinanceCore
 import SwiftUI
 
+/// Semantic type for an amount — determines red/green coloring.
 public enum FDSAmountType {
     case debit
     case credit
 }
 
+/// Pre-formatted amount label with semantic debit/credit color.
+///
+/// Accepts a pre-formatted string (e.g. "+₹1,500.00"). Use `FAmount` for raw minor-unit input.
 public struct FDSAmount: View {
     let text: String
     let type: FDSAmountType
@@ -24,6 +28,7 @@ public struct FDSAmount: View {
     }
 }
 
+/// Display size for `FDSAmount`. Normal maps to `amountSm`; small maps to `amountXs`.
 public enum FDSAmountSize {
     case normal
     case small

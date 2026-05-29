@@ -7,7 +7,9 @@ import SwiftUI
 public struct FDSStepper: View {
     @Binding var value: Int
     let label: String
+    /// Minimum allowed value (default 1, i.e. first day of month).
     let min: Int
+    /// Maximum allowed value (default 31, i.e. last day of month).
     let max: Int
 
     public init(

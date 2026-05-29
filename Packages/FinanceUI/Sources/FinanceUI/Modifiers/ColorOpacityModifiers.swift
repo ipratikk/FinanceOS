@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Semantic opacity helpers on `Color`. Use these instead of inline `.opacity()` calls
+/// so that token intent is preserved in code and easy to remap centrally.
 extension Color {
     /// Surface divider: 0.06 opacity for subtle borders
     func divider() -> Color {

@@ -6,6 +6,7 @@ import SwiftUI
 /// Selected swatch: 2.5pt accent ring outside. Used for bank color customization.
 public struct FDSSwatchPicker: View {
     @Binding var selectedColor: Color
+    /// Color options rendered in the grid. Defaults to `FDSSwatchPicker.defaultColors` (12 colors).
     let colors: [Color]
 
     public init(
@@ -16,6 +17,7 @@ public struct FDSSwatchPicker: View {
         self.colors = colors ?? FDSSwatchPicker.defaultColors
     }
 
+    /// 12-color default palette used when `colors` is not provided.
     public static let defaultColors: [Color] = [
         Color(red: 0.04, green: 0.52, blue: 1.00), // blue
         Color(red: 0.00, green: 0.00, blue: 0.40), // navy

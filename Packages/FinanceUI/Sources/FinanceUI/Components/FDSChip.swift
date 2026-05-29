@@ -13,6 +13,7 @@ public struct FDSChip: View {
     let isEnabled: Bool
     let action: () -> Void
 
+    /// Semantic color tone: credit = green, debit = red, accent = app accent (green).
     public enum Tone {
         case credit, debit, accent
     }

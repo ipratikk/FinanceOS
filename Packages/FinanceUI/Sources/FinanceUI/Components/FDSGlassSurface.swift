@@ -12,8 +12,11 @@ public struct FDSGlassSurface<Content: View>: View {
     let padding: CGFloat
 
     public init(
+        /// Semantic elevation tier; maps to a `FDSMaterial` and optional shadow.
         elevation: FDSElevation = .card,
+        /// Corner radius of the glass shape.
         cornerRadius: CGFloat = AppRadius.lg,
+        /// Inner padding applied before the glass clip.
         padding: CGFloat = AppSpacing.md,
         @ViewBuilder content: () -> Content
     ) {

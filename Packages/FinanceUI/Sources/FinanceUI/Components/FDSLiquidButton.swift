@@ -10,11 +10,15 @@ import SwiftUI
 /// - `.link`    — bare AppColors.accent text with hover pill
 public struct FDSLiquidButton: View {
     let title: String
+    /// Optional SF Symbol shown before the title label.
     let leadingIcon: String?
+    /// Optional SF Symbol shown after the title label.
     let trailingIcon: String?
     let variant: Variant
     let isEnabled: Bool
+    /// When true, hides the label and shows a `ProgressView`. Layout remains stable.
     let isLoading: Bool
+    /// When true and variant is not `.link`, expands button to `.infinity` width.
     let fullWidth: Bool
     let action: () -> Void
 
