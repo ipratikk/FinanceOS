@@ -5,6 +5,8 @@ import Foundation
 public struct MerchantTextCleaner: Sendable {
     public init() {}
 
+    /// Strips processor prefixes, transaction IDs, URLs, and city/state noise from `raw`.
+    /// Result is human-readable with original casing preserved; use `normalizedForMatching` for ML.
     public func clean(_ raw: String) -> String {
         var result = raw
         result = stripProcessorPrefixes(result)

@@ -1,9 +1,16 @@
 import Foundation
 
+/// A keyword-based matching rule mapping a set of trigger tokens to a taxonomy category.
+/// Rules are evaluated by counting how many keywords are present in the normalized description;
+/// the rule with the highest hit count wins.
 public struct CategoryRule: Sendable {
+    /// Lowercase keyword substrings to search for in the normalized description.
     public let keywords: [String]
+    /// Top-level taxonomy category ID assigned when this rule fires (e.g. `"dining"`).
     public let categoryId: String
+    /// Optional subcategory ID assigned alongside `categoryId` (e.g. `"dining.delivery"`).
     public let subcategoryId: String?
+    /// Prediction confidence emitted when this rule fires, in [0, 1].
     public let confidence: Double
 
     public init(_ keywords: [String], _ categoryId: String, _ subcategoryId: String? = nil, confidence: Double = 0.8) {
@@ -25,6 +32,8 @@ public struct RuleBasedCategorizer: Sendable {
         rules = Self.buildRules()
     }
 
+    /// Returns the best-matching category for the given feature vector.
+    /// Fast-path checks payroll, refund, and transfer indicators before keyword scanning.
     public func categorize(_ features: TransactionFeatures) -> CategoryPrediction {
         if features.hasPayrollIndicator {
             return makePrediction(
@@ -104,6 +113,7 @@ private extension RuleBasedCategorizer {
 // MARK: - Default Rules
 
 private extension RuleBasedCategorizer {
+    /// Assembles all rule groups into the ordered rule list evaluated at categorization time.
     static func buildRules() -> [CategoryRule] {
         incomeRules + transferRules + housingUtilityRules +
             groceryDiningRules + transportTravelRules +

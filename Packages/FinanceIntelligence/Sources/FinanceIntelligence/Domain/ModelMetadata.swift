@@ -1,12 +1,21 @@
 import Foundation
 
+/// Descriptive metadata for a categorization model, stored alongside predictions for auditability.
+/// Optional fields are nil for deterministic rule sets that have no training metrics.
 public struct ModelMetadata: Codable, Sendable {
+    /// Semantic version of the model or rule set (e.g. `"rules-1.0.0"`, `"text-classifier-v1"`).
     public let modelVersion: String
+    /// Taxonomy version the model was trained or validated against.
     public let taxonomyVersion: String
+    /// When the model was trained. Nil for rule-based categorizers.
     public let trainedAt: Date?
+    /// Number of labeled examples used during training. Nil for rule-based categorizers.
     public let trainingDataRows: Int?
+    /// Overall accuracy on the held-out test set, in [0, 1]. Nil for rule-based categorizers.
     public let accuracy: Double?
+    /// Macro-averaged F1 across all categories, in [0, 1]. Nil for rule-based categorizers.
     public let macroF1: Double?
+    /// Free-text notes (training dataset source, known weaknesses, etc.).
     public let notes: String?
 
     public init(
@@ -27,6 +36,7 @@ public struct ModelMetadata: Codable, Sendable {
         self.notes = notes
     }
 
+    /// Sentinel metadata for the deterministic rule-based categorizer (no ML model loaded).
     public static let rulesBased = ModelMetadata(
         modelVersion: "rules-1.0.0",
         taxonomyVersion: CategoryTaxonomy.current.version,

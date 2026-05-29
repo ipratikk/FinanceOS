@@ -1,10 +1,15 @@
 import FinanceCore
 import Foundation
 
+/// Caller-supplied context that the intelligence pipeline uses to improve predictions.
+/// Providing `ledgerKind` and `institution` lets the feature extractor add stronger signals.
 public struct IntelligenceContext: Sendable {
+    /// The ledger type the transaction belongs to (e.g. `.savings`, `.credit`).
     public let ledgerKind: LedgerKind?
+    /// The financial institution name (e.g. `"HDFC"`, `"ICICI"`).
     public let institution: String?
 
+    /// Context with no supplementary information — safe to use when context is unavailable.
     public static let empty = IntelligenceContext(ledgerKind: nil, institution: nil)
 
     public init(ledgerKind: LedgerKind?, institution: String?) {
@@ -13,12 +18,17 @@ public struct IntelligenceContext: Sendable {
     }
 }
 
+/// Contract for the on-device transaction intelligence system.
+/// Conforming types orchestrate merchant normalization, categorization, and personalized learning.
 public protocol TransactionIntelligenceService: Sendable {
+    /// Analyzes a single transaction and returns a fully resolved `AnalyzedTransaction`.
     func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction
+    /// Analyzes a batch of transactions efficiently, minimizing actor hops over the batch.
     func analyzeBatch(
         _ transactions: [Transaction],
         context: IntelligenceContext
     ) async throws -> [AnalyzedTransaction]
+    /// Generates spending insights (recurring charges, spikes, anomalies) over the given transactions.
     func generateInsights(for transactions: [Transaction]) async throws -> [TransactionInsight]
 
     /// Record a user correction and immediately learn from it for future predictions.

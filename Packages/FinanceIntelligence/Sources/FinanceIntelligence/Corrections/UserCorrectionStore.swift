@@ -1,12 +1,20 @@
 import Foundation
 
+/// Value type used to record a new user correction without exposing `UserCorrection`'s internal init.
 public struct CorrectionInput: Sendable {
+    /// The transaction being corrected.
     public let transactionId: UUID
+    /// Category ID that the model originally predicted. Nil when not previously categorized.
     public let originalCategory: String?
+    /// Category ID explicitly chosen by the user.
     public let correctedCategory: String
+    /// Merchant name before the correction. Nil when not previously resolved.
     public let originalMerchant: String?
+    /// Merchant name explicitly set by the user. Nil when only the category changed.
     public let correctedMerchant: String?
+    /// Model confidence for the prediction being overridden. Nil when not available.
     public let originalConfidence: Double?
+    /// Model version that made the original prediction. Nil when not available.
     public let modelVersion: String?
 
     public init(
@@ -39,6 +47,7 @@ public actor UserCorrectionStore {
         corrections = Self.loadFromDisk(at: storageURL)
     }
 
+    /// Persists a new correction, overwriting any existing correction for the same transaction.
     public func record(_ input: CorrectionInput) throws {
         let correction = UserCorrection(
             transactionId: input.transactionId,
@@ -54,6 +63,7 @@ public actor UserCorrectionStore {
         try saveToDisk()
     }
 
+    /// Returns the stored correction for `transactionId`, or nil when none exists.
     public func correction(for transactionId: UUID) -> UserCorrection? {
         corrections[transactionId]
     }
@@ -63,12 +73,14 @@ public actor UserCorrectionStore {
         corrections
     }
 
+    /// Returns all training-eligible corrections sorted chronologically for model retraining pipelines.
     public func exportTrainingEligible() -> [UserCorrection] {
         corrections.values
             .filter(\.isTrainingEligible)
             .sorted { $0.timestamp < $1.timestamp }
     }
 
+    /// Removes the correction for `transactionId` and persists the change. No-op when none exists.
     public func removeCorrection(for transactionId: UUID) throws {
         corrections.removeValue(forKey: transactionId)
         try saveToDisk()

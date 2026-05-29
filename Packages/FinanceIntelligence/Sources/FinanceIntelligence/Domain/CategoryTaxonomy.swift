@@ -1,7 +1,10 @@
 import Foundation
 
+/// A leaf-level specialization within a `TaxonomyCategory` (e.g. `"dining.delivery"`).
 public struct TaxonomySubcategory: Codable, Sendable, Hashable {
+    /// Dot-namespaced identifier (e.g. `"dining.delivery"`).
     public let id: String
+    /// Human-readable label shown in the UI.
     public let displayName: String
 
     public init(id: String, displayName: String) {
@@ -10,9 +13,13 @@ public struct TaxonomySubcategory: Codable, Sendable, Hashable {
     }
 }
 
+/// A top-level spending category (e.g. `"dining"`) that may contain subcategories.
 public struct TaxonomyCategory: Codable, Sendable, Hashable {
+    /// Short identifier used in predictions and rules (e.g. `"dining"`).
     public let id: String
+    /// Human-readable label shown in the UI.
     public let displayName: String
+    /// Zero or more subcategories; empty for leaf-only categories like `"groceries"`.
     public let subcategories: [TaxonomySubcategory]
 
     public init(id: String, displayName: String, subcategories: [TaxonomySubcategory] = []) {
@@ -22,8 +29,12 @@ public struct TaxonomyCategory: Codable, Sendable, Hashable {
     }
 }
 
+/// The full two-level category hierarchy used across the intelligence pipeline and UI.
+/// Use `CategoryTaxonomy.current` for the active version at runtime.
 public struct CategoryTaxonomy: Codable, Sendable {
+    /// Semantic version string (e.g. `"1.0.0"`). Must be bumped when categories change.
     public let version: String
+    /// All top-level categories in display order.
     public let categories: [TaxonomyCategory]
 
     public init(version: String, categories: [TaxonomyCategory]) {
@@ -31,10 +42,12 @@ public struct CategoryTaxonomy: Codable, Sendable {
         self.categories = categories
     }
 
+    /// Returns the top-level category matching `id`, or nil if not found.
     public func category(forId id: String) -> TaxonomyCategory? {
         categories.first { $0.id == id }
     }
 
+    /// Searches all subcategories across all top-level categories and returns the first match.
     public func subcategory(forId id: String) -> TaxonomySubcategory? {
         for cat in categories {
             if let sub = cat.subcategories.first(where: { $0.id == id }) { return sub }
@@ -42,16 +55,19 @@ public struct CategoryTaxonomy: Codable, Sendable {
         return nil
     }
 
+    /// Flat list of all top-level category IDs in definition order.
     public var allCategoryIds: [String] {
         categories.map(\.id)
     }
 
+    /// The active taxonomy version used at runtime. Update this alias when shipping new taxonomy versions.
     public static let current: CategoryTaxonomy = .v1
 }
 
 // MARK: - Default Taxonomy v1.0.0
 
 public extension CategoryTaxonomy {
+    /// Built-in taxonomy covering Indian and international bank transaction categories.
     static let v1 = CategoryTaxonomy(
         version: "1.0.0",
         categories: [
