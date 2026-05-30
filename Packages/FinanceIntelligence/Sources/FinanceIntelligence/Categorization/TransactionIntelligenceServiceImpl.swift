@@ -52,6 +52,8 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let normalizer: MerchantNormalizer
     private let ruleCategorizer: RuleBasedCategorizer
     private let ruleEngine: RuleEngine
+    private let personResolver: PersonResolver
+    private let personEntityStore: PersonEntityStore
     private let coreMLCategorizer: CoreMLCategorizer?
     /// CoreML kNN classifier updated on-device via MLUpdateTask on each user correction.
     private let personalizedClassifier: PersonalizedClassifier?
@@ -68,6 +70,8 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         normalizer = MerchantNormalizer()
         ruleCategorizer = RuleBasedCategorizer(taxonomy: configuration.taxonomy)
         ruleEngine = RuleEngine(taxonomy: configuration.taxonomy)
+        personResolver = PersonResolver()
+        personEntityStore = PersonEntityStore()
         coreMLCategorizer = await CoreMLCategorizer.load()
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
@@ -187,6 +191,11 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             isUserCorrected = false
         }
 
+        let resolvedEntities = await resolveEntities(
+            description: transaction.description,
+            date: transaction.postedAt
+        )
+
         return EnrichedTransaction(
             transaction: transaction,
             merchantCandidate: merchant,
@@ -194,7 +203,8 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             intentPrediction: ruleResult.intentPrediction,
             features: features,
             isUserCorrected: isUserCorrected,
-            pipelineVersion: "1.0"
+            pipelineVersion: "1.0",
+            resolvedEntities: resolvedEntities
         )
     }
 
@@ -340,6 +350,17 @@ private extension TransactionIntelligenceServiceImpl {
 
         // Priority 5: deterministic rules
         return ruleCategorizer.categorize(features)
+    }
+
+    func resolveEntities(description: String, date: Date) async -> ResolvedEntities? {
+        guard let personResult = personResolver.resolve(description),
+              personResult.confidence >= 0.70 else { return nil }
+        let person = await personEntityStore.findOrCreate(
+            name: personResult.name,
+            upiHandle: personResult.upiHandle,
+            date: date
+        )
+        return ResolvedEntities(merchantId: nil, personId: person.id)
     }
 
     func correctionPrediction(_ correction: UserCorrection, features: TransactionFeatures) -> CategoryPrediction {
