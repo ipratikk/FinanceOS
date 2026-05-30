@@ -163,95 +163,51 @@ struct GraphBuilderTests {
     func fiftyTransactionGraphTopology() async throws {
         let store = try makeStore()
         let builder = GraphBuilder(store: store)
-
         let ledgerId = UUID()
-        var transactions: [EnrichedTransaction] = []
-
-        // 12 Spotify monthly debits
-        for _ in 0 ..< 12 {
-            let txn = makeTxn(
-                description: "UPI-SPOTIFY",
-                amount: 13900,
-                type: .debit,
-                ledgerId: ledgerId,
-                categoryId: "subscriptions"
-            )
-            transactions.append(makeEnriched(
-                txn: txn,
-                merchant: "Spotify",
-                categoryId: "subscriptions"
-            ))
-        }
-        // 12 salary credits
-        for _ in 0 ..< 12 {
-            let txn = makeTxn(
-                description: "NEFT CR-PAYPAL SALARY",
-                amount: 15_000_000,
-                type: .credit,
-                ledgerId: ledgerId,
-                categoryId: "income"
-            )
-            transactions.append(makeEnriched(
-                txn: txn,
-                merchant: "PayPal",
-                categoryId: "income"
-            ))
-        }
-        // 10 Blinkit debits
-        for _ in 0 ..< 10 {
-            let txn = makeTxn(
-                description: "UPI-BLINKIT",
-                amount: 50000,
-                type: .debit,
-                ledgerId: ledgerId,
-                categoryId: "groceries"
-            )
-            transactions.append(makeEnriched(
-                txn: txn,
-                merchant: "Blinkit",
-                categoryId: "groceries"
-            ))
-        }
-        // 16 miscellaneous transfers
-        for i in 0 ..< 16 {
-            let txn = makeTxn(
-                description: "UPI-PERSON-\(i)",
-                amount: 100_000,
-                type: .debit,
-                ledgerId: ledgerId,
-                categoryId: "transfers"
-            )
-            transactions.append(makeEnriched(
-                txn: txn,
-                merchant: "Person \(i)",
-                categoryId: "transfers"
-            ))
-        }
-
+        let transactions = makeDiverseBatch(ledgerId: ledgerId)
         #expect(transactions.count == 50)
-
         try await builder.build(from: transactions)
 
-        // Merchant nodes created
         let spotifyNode = try await store.node(externalId: "spotify", type: .merchant)
         #expect(spotifyNode != nil)
-
         let blinkitNode = try await store.node(externalId: "blinkit", type: .merchant)
         #expect(blinkitNode != nil)
 
-        // Spotify category edge observationCount == 12
         let spotifyEdges = try await store.edges(from: #require(spotifyNode).id)
         let spotifyClassified = spotifyEdges.first { $0.edgeType == .classifiedAs }
         #expect(spotifyClassified?.observationCount == 12)
 
-        // Blinkit category edge observationCount == 10
         let blinkitEdges = try await store.edges(from: #require(blinkitNode).id)
         let blinkitClassified = blinkitEdges.first { $0.edgeType == .classifiedAs }
         #expect(blinkitClassified?.observationCount == 10)
 
-        // Transaction nodes: 50
         let txnNodes = try await store.nodes(ofType: .transaction)
         #expect(txnNodes.count == 50)
+    }
+
+    private func makeDiverseBatch(ledgerId: UUID) -> [EnrichedTransaction] {
+        var out: [EnrichedTransaction] = []
+        for _ in 0..<12 {
+            let txn = makeTxn(description: "UPI-SPOTIFY", amount: 13900,
+                              type: .debit, ledgerId: ledgerId, categoryId: "subscriptions")
+            out.append(makeEnriched(txn: txn, merchant: "Spotify", categoryId: "subscriptions"))
+        }
+        for _ in 0..<12 {
+            let txn = makeTxn(description: "NEFT CR-PAYPAL SALARY", amount: 15_000_000,
+                              type: .credit, ledgerId: ledgerId, categoryId: "income")
+            out.append(makeEnriched(txn: txn, merchant: "PayPal", categoryId: "income"))
+        }
+        for _ in 0..<10 {
+            let txn = makeTxn(description: "UPI-BLINKIT", amount: 50000,
+                              type: .debit, ledgerId: ledgerId, categoryId: "groceries")
+            out.append(makeEnriched(txn: txn, merchant: "Blinkit", categoryId: "groceries"))
+        }
+        for i in 0..<16 {
+            let txn = makeTxn(description: "UPI-PERSON-\(i)", amount: 100_000,
+                              type: .debit, ledgerId: ledgerId, categoryId: "transfers")
+            out.append(makeEnriched(txn: txn, merchant: "Person \(i)", categoryId: "transfers"))
+        }
+        return out
     }
 
     @Test("BFS at depth 2 finds category through merchant")
