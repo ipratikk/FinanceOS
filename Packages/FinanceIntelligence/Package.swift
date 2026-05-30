@@ -22,7 +22,7 @@ let package = Package(
             name: "FinanceIntelligence",
             dependencies: [
                 "FinanceCore",
-                .product(name: "GRDB", package: "GRDB.swift"),
+                .product(name: "GRDB", package: "GRDB.swift")
             ],
             resources: [.process("Resources/")]
         ),
@@ -40,7 +40,7 @@ let package = Package(
             dependencies: [
                 "FinanceIntelligence",
                 "FinanceCore",
-                .product(name: "GRDB", package: "GRDB.swift"),
+                .product(name: "GRDB", package: "GRDB.swift")
             ]
         )
     ]

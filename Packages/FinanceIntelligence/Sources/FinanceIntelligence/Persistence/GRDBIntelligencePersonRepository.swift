@@ -9,7 +9,7 @@ import GRDB
 ///
 /// All write operations run in a single serialized GRDB write transaction.
 public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
-                                                      IntelligencePersonRepository {
+    IntelligencePersonRepository {
     private let dbQueue: DatabaseQueue
     private let logger = FinanceLogger.repository
 
@@ -21,8 +21,8 @@ public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
         let normalized = PersonNameNormalizer.normalize(name)
         return try await dbQueue.write { [self] database in
             // Check by alias index first (covers normalized name variants)
-            if let existingId = try self.personId(forAlias: normalized, in: database) {
-                return try self.updatePerson(
+            if let existingId = try personId(forAlias: normalized, in: database) {
+                return try updatePerson(
                     id: existingId, rawName: name, upiHandle: upiHandle,
                     date: date, in: database
                 )
@@ -30,14 +30,14 @@ public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
             // Check by UPI handle if provided
             if let handle = upiHandle?.lowercased(),
                let row = try GRDBIntelligencePerson
-                   .filter(GRDBIntelligencePerson.Columns.upiHandle == handle)
-                   .fetchOne(database) {
-                return try self.updatePerson(
+               .filter(GRDBIntelligencePerson.Columns.upiHandle == handle)
+               .fetchOne(database) {
+                return try updatePerson(
                     id: row.id, rawName: name, upiHandle: upiHandle,
                     date: date, in: database
                 )
             }
-            return try self.createPerson(
+            return try createPerson(
                 canonicalName: PersonNameNormalizer.titleCase(name),
                 rawName: name, upiHandle: upiHandle, date: date, in: database
             )

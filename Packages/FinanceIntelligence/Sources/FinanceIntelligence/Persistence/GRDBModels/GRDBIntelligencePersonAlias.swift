@@ -3,7 +3,7 @@ import GRDB
 
 /// GRDB row model for the `intelligence_person_aliases` table.
 /// Each row records one name variant (raw alias) observed for a person.
-struct GRDBIntelligencePersonAlias: FetchableRecord, PersistableRecord, Sendable, Codable {
+struct GRDBIntelligencePersonAlias: FetchableRecord, PersistableRecord, Codable {
     static let databaseTableName = "intelligence_person_aliases"
 
     var id: UUID

@@ -3,7 +3,7 @@ import GRDB
 
 /// GRDB row model for the `intelligence_persons` table.
 /// Converts to/from the domain `Person` type for use in repositories.
-struct GRDBIntelligencePerson: FetchableRecord, PersistableRecord, Sendable, Codable {
+struct GRDBIntelligencePerson: FetchableRecord, PersistableRecord, Codable {
     static let databaseTableName = "intelligence_persons"
 
     var id: UUID
