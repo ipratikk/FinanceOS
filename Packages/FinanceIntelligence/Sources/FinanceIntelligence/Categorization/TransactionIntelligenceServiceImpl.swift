@@ -1,5 +1,6 @@
 import FinanceCore
 import Foundation
+import GRDB
 
 /// Runtime configuration for `TransactionIntelligenceServiceImpl`.
 /// Use `.default` for production; override URLs in tests or to point at a custom model location.
@@ -13,16 +14,22 @@ public struct IntelligenceServiceConfiguration: Sendable {
     /// Taxonomy version used during categorization. Defaults to `CategoryTaxonomy.current`.
     public let taxonomy: CategoryTaxonomy
 
+    /// When provided, person entities are persisted to SQLite via `GRDBIntelligencePersonRepository`.
+    /// When nil, an in-memory `PersonEntityStore` is used (session-scoped, no persistence).
+    public let databaseQueue: DatabaseQueue?
+
     public init(
         correctionStoreURL: URL,
         personalLearnerURL: URL,
         personalizedKNNModelURL: URL,
-        taxonomy: CategoryTaxonomy = .current
+        taxonomy: CategoryTaxonomy = .current,
+        databaseQueue: DatabaseQueue? = nil
     ) {
         self.correctionStoreURL = correctionStoreURL
         self.personalLearnerURL = personalLearnerURL
         self.personalizedKNNModelURL = personalizedKNNModelURL
         self.taxonomy = taxonomy
+        self.databaseQueue = databaseQueue
     }
 
     /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.
@@ -53,7 +60,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let ruleCategorizer: RuleBasedCategorizer
     private let ruleEngine: RuleEngine
     private let personResolver: PersonResolver
-    private let personEntityStore: PersonEntityStore
+    private let personRepository: any IntelligencePersonRepository
     private let coreMLCategorizer: CoreMLCategorizer?
     /// CoreML kNN classifier updated on-device via MLUpdateTask on each user correction.
     private let personalizedClassifier: PersonalizedClassifier?
@@ -71,7 +78,11 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         ruleCategorizer = RuleBasedCategorizer(taxonomy: configuration.taxonomy)
         ruleEngine = RuleEngine(taxonomy: configuration.taxonomy)
         personResolver = PersonResolver()
-        personEntityStore = PersonEntityStore()
+        if let queue = configuration.databaseQueue {
+            personRepository = GRDBIntelligencePersonRepository(dbQueue: queue)
+        } else {
+            personRepository = PersonEntityStore()
+        }
         coreMLCategorizer = await CoreMLCategorizer.load()
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
@@ -355,12 +366,16 @@ private extension TransactionIntelligenceServiceImpl {
     func resolveEntities(description: String, date: Date) async -> ResolvedEntities? {
         guard let personResult = personResolver.resolve(description),
               personResult.confidence >= 0.70 else { return nil }
-        let person = await personEntityStore.findOrCreate(
-            name: personResult.name,
-            upiHandle: personResult.upiHandle,
-            date: date
-        )
-        return ResolvedEntities(merchantId: nil, personId: person.id)
+        do {
+            let person = try await personRepository.findOrCreate(
+                name: personResult.name,
+                upiHandle: personResult.upiHandle,
+                date: date
+            )
+            return ResolvedEntities(merchantId: nil, personId: person.id)
+        } catch {
+            return nil
+        }
     }
 
     func correctionPrediction(_ correction: UserCorrection, features: TransactionFeatures) -> CategoryPrediction {
