@@ -20,7 +20,10 @@ let package = Package(
     targets: [
         .target(
             name: "FinanceIntelligence",
-            dependencies: ["FinanceCore"],
+            dependencies: [
+                "FinanceCore",
+                .product(name: "GRDB", package: "GRDB.swift"),
+            ],
             resources: [.process("Resources/")]
         ),
         .executableTarget(
@@ -34,7 +37,11 @@ let package = Package(
         ),
         .testTarget(
             name: "FinanceIntelligenceTests",
-            dependencies: ["FinanceIntelligence", "FinanceCore"]
+            dependencies: [
+                "FinanceIntelligence",
+                "FinanceCore",
+                .product(name: "GRDB", package: "GRDB.swift"),
+            ]
         )
     ]
 )

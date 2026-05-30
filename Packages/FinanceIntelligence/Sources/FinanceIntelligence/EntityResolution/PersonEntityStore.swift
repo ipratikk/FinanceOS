@@ -4,7 +4,7 @@ import Foundation
 ///
 /// Thread-safe via Swift actor isolation. Session-scoped in Phase 2 — not persisted across restarts.
 /// Phase 3 will back this with a GRDB repository.
-public actor PersonEntityStore {
+public actor PersonEntityStore: IntelligencePersonRepository {
     private var persons: [UUID: Person] = [:]
     private var nameIndex: [String: UUID] = [:] // normalized name → person ID
     private var upiIndex: [String: UUID] = [:] // lowercase UPI handle → person ID
