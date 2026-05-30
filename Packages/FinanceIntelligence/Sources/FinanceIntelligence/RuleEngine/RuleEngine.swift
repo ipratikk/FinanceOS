@@ -35,13 +35,13 @@ public struct RuleEngine: Sendable {
 private extension RuleEngine {
     func matches(_ condition: RuleCondition, against features: TransactionFeatures) -> Bool {
         switch condition {
-        case .tokenContainsAny(let keywords):
+        case let .tokenContainsAny(keywords):
             return keywords.contains { features.normalizedDescription.contains($0) }
 
-        case .tokenContainsAll(let keywords):
+        case let .tokenContainsAll(keywords):
             return keywords.allSatisfy { features.normalizedDescription.contains($0) }
 
-        case .hasIndicator(let indicator):
+        case let .hasIndicator(indicator):
             return indicatorValue(indicator, features: features)
 
         case .isCredit:
@@ -50,21 +50,21 @@ private extension RuleEngine {
         case .isDebit:
             return features.isDebit
 
-        case .compound(let conditions):
+        case let .compound(conditions):
             return conditions.allSatisfy { matches($0, against: features) }
 
-        case .anyOf(let conditions):
+        case let .anyOf(conditions):
             return conditions.contains { matches($0, against: features) }
         }
     }
 
     func indicatorValue(_ indicator: TransactionIndicator, features: TransactionFeatures) -> Bool {
         switch indicator {
-        case .payroll:   return features.hasPayrollIndicator
-        case .refund:    return features.hasRefundIndicator
-        case .transfer:  return features.hasTransferIndicator
+        case .payroll: return features.hasPayrollIndicator
+        case .refund: return features.hasRefundIndicator
+        case .transfer: return features.hasTransferIndicator
         case .recurring: return features.hasRecurringIndicator
-        case .online:    return features.hasOnlineIndicator
+        case .online: return features.hasOnlineIndicator
         }
     }
 }
