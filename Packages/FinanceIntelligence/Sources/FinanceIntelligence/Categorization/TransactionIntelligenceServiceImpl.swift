@@ -42,14 +42,16 @@ public struct IntelligenceServiceConfiguration: Sendable {
 /// Concrete implementation of `TransactionIntelligenceService`.
 /// Prediction priority (highest to lowest):
 ///   1. Stored user correction
-///   2. On-device CoreML kNN (personalized via MLUpdateTask)
-///   3. Legacy Swift kNN (LocalTransactionLearner)
-///   4. Bundled NLModel text classifier
-///   5. Alias table lookup
-///   6. Deterministic keyword rules
+///   2. RuleEngine high-confidence hit (≥0.90) — also always provides intent
+///   3. On-device CoreML kNN (personalized via MLUpdateTask)
+///   4. Legacy Swift kNN (LocalTransactionLearner)
+///   5. Bundled NLModel text classifier
+///   6. Alias table lookup
+///   7. RuleEngine fallback (deterministic keyword rules)
 public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService {
     private let normalizer: MerchantNormalizer
     private let ruleCategorizer: RuleBasedCategorizer
+    private let ruleEngine: RuleEngine
     private let coreMLCategorizer: CoreMLCategorizer?
     /// CoreML kNN classifier updated on-device via MLUpdateTask on each user correction.
     private let personalizedClassifier: PersonalizedClassifier?
@@ -65,6 +67,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         learner = LocalTransactionLearner(personalStoreURL: configuration.personalLearnerURL)
         normalizer = MerchantNormalizer()
         ruleCategorizer = RuleBasedCategorizer(taxonomy: configuration.taxonomy)
+        ruleEngine = RuleEngine(taxonomy: configuration.taxonomy)
         coreMLCategorizer = await CoreMLCategorizer.load()
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
@@ -156,6 +159,43 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
     public func generateInsights(for transactions: [Transaction]) async throws -> [TransactionInsight] {
         insightEngine.generate(for: transactions)
+    }
+
+    public func analyzeEnriched(
+        _ transaction: Transaction,
+        context: IntelligenceContext
+    ) async throws -> EnrichedTransaction {
+        let ctx = FeatureExtractionContext(ledgerKind: context.ledgerKind, institution: context.institution)
+        let features = extractor.extract(from: transaction, context: ctx)
+        let merchant = normalizer.normalize(transaction.description)
+        let ruleResult = ruleEngine.evaluate(features)
+
+        let categoryPrediction: CategoryPrediction
+        let isUserCorrected: Bool
+
+        if let correction = await correctionStore.correction(for: transaction.id) {
+            categoryPrediction = correctionPrediction(correction, features: features)
+            isUserCorrected = true
+        } else if let ruleCat = ruleResult.categoryPrediction, ruleCat.confidence >= 0.90 {
+            categoryPrediction = ruleCat
+            isUserCorrected = false
+        } else {
+            categoryPrediction = await predictCategory(
+                features: features,
+                merchantCategoryId: merchant.categoryId
+            )
+            isUserCorrected = false
+        }
+
+        return EnrichedTransaction(
+            transaction: transaction,
+            merchantCandidate: merchant,
+            categoryPrediction: categoryPrediction,
+            intentPrediction: ruleResult.intentPrediction,
+            features: features,
+            isUserCorrected: isUserCorrected,
+            pipelineVersion: "1.0"
+        )
     }
 
     public func learn(
