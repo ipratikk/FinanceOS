@@ -54,5 +54,55 @@ enum AppMigration {
                 table.add(column: "closingBalanceMinorUnits", .integer)
             }
         }
+
+        migrator.registerMigration("v10_add_intelligence_transaction_columns") { database in
+            FinanceLogger.migration.info("Running migration: v10_add_intelligence_transaction_columns")
+            let cols = try database.columns(in: "transactions")
+            try database.alter(table: "transactions") { table in
+                if !cols.contains(where: { $0.name == "intentId" }) {
+                    table.add(column: "intentId", .text)
+                }
+                if !cols.contains(where: { $0.name == "resolvedPersonId" }) {
+                    table.add(column: "resolvedPersonId", .text)
+                }
+                if !cols.contains(where: { $0.name == "intelligenceVersion" }) {
+                    table.add(column: "intelligenceVersion", .text)
+                }
+            }
+        }
+
+        migrator.registerMigration("v11_create_intelligence_persons") { database in
+            FinanceLogger.migration.info("Running migration: v11_create_intelligence_persons")
+            guard try !database.tableExists("intelligence_persons") else { return }
+            try database.create(table: "intelligence_persons") { table in
+                table.column("id", .text).primaryKey()
+                table.column("canonicalName", .text).notNull()
+                table.column("upiHandle", .text)
+                table.column("transactionCount", .integer).notNull().defaults(to: 1)
+                table.column("firstSeenAt", .datetime).notNull()
+                table.column("lastSeenAt", .datetime).notNull()
+            }
+            try database.execute(sql: """
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_intel_persons_upi
+                ON intelligence_persons(upiHandle) WHERE upiHandle IS NOT NULL
+                """)
+        }
+
+        migrator.registerMigration("v12_create_intelligence_person_aliases") { database in
+            FinanceLogger.migration.info("Running migration: v12_create_intelligence_person_aliases")
+            guard try !database.tableExists("intelligence_person_aliases") else { return }
+            try database.create(table: "intelligence_person_aliases") { table in
+                table.column("id", .text).primaryKey()
+                table.column("personId", .text).notNull()
+                    .references("intelligence_persons", column: "id", onDelete: .cascade)
+                table.column("alias", .text).notNull()
+            }
+            try database.create(index: "idx_intel_aliases_alias",
+                                on: "intelligence_person_aliases",
+                                columns: ["alias"], unique: true)
+            try database.create(index: "idx_intel_aliases_personId",
+                                on: "intelligence_person_aliases",
+                                columns: ["personId"])
+        }
     }
 }
