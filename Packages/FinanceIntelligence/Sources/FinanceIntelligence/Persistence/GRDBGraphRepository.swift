@@ -18,9 +18,9 @@ public struct GRDBGraphRepository: GraphRepository {
         try await dbWriter.write { db in
             if let existing = try GRDBGraphNode
                 .filter(Column("externalId") == node.externalId &&
-                        Column("nodeType") == node.nodeType.rawValue)
+                    Column("nodeType") == node.nodeType.rawValue)
                 .fetchOne(db),
-               let domain = existing.toDomain() {
+                let domain = existing.toDomain() {
                 return domain
             }
             let grdb = GRDBGraphNode(from: node)
@@ -63,8 +63,8 @@ public struct GRDBGraphRepository: GraphRepository {
             let existing = try GRDBGraphEdge
                 .filter(
                     Column("fromNodeId") == edge.fromNodeId &&
-                    Column("toNodeId") == edge.toNodeId &&
-                    Column("edgeType") == edge.edgeType.rawValue
+                        Column("toNodeId") == edge.toNodeId &&
+                        Column("edgeType") == edge.edgeType.rawValue
                 )
                 .fetchOne(db)
 

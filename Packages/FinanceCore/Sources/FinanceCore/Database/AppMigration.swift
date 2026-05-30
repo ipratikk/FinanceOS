@@ -123,12 +123,17 @@ private extension AppMigration {
             table.column("properties", .text).notNull().defaults(to: "{}")
             table.column("createdAt", .datetime).notNull()
         }
-        try database.create(index: "idx_graph_nodes_external",
-                            on: "knowledge_graph_nodes",
-                            columns: ["nodeType", "externalId"], unique: true)
-        try database.create(index: "idx_graph_nodes_type",
-                            on: "knowledge_graph_nodes",
-                            columns: ["nodeType"])
+        try database.create(
+            index: "idx_graph_nodes_external",
+            on: "knowledge_graph_nodes",
+            columns: ["nodeType", "externalId"],
+            unique: true
+        )
+        try database.create(
+            index: "idx_graph_nodes_type",
+            on: "knowledge_graph_nodes",
+            columns: ["nodeType"]
+        )
     }
 
     static func createKnowledgeGraphEdgesTable(in database: Database) throws {
@@ -145,13 +150,22 @@ private extension AppMigration {
             table.column("lastObservedAt", .datetime).notNull()
             table.column("createdAt", .datetime).notNull()
         }
-        try database.create(index: "idx_graph_edges_unique",
-                            on: "knowledge_graph_edges",
-                            columns: ["fromNodeId", "toNodeId", "edgeType"], unique: true)
-        try database.create(index: "idx_graph_edges_from",
-                            on: "knowledge_graph_edges", columns: ["fromNodeId"])
-        try database.create(index: "idx_graph_edges_to",
-                            on: "knowledge_graph_edges", columns: ["toNodeId"])
+        try database.create(
+            index: "idx_graph_edges_unique",
+            on: "knowledge_graph_edges",
+            columns: ["fromNodeId", "toNodeId", "edgeType"],
+            unique: true
+        )
+        try database.create(
+            index: "idx_graph_edges_from",
+            on: "knowledge_graph_edges",
+            columns: ["fromNodeId"]
+        )
+        try database.create(
+            index: "idx_graph_edges_to",
+            on: "knowledge_graph_edges",
+            columns: ["toNodeId"]
+        )
     }
 
     static func createIntelligencePersonAliasesTable(in database: Database) throws {

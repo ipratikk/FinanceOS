@@ -23,28 +23,27 @@ public struct GraphBuilder: Sendable {
 
     private func processTransaction(_ enriched: EnrichedTransaction) async throws {
         let txn = enriched.transaction
-        let now = Date()
-
-        // 1. Transaction node
         let txnNode = try await store.upsertNode(GraphNode(
             nodeType: .transaction,
             externalId: txn.id.uuidString,
             label: txn.description
         ))
+        try await addPersonOrMerchantEdge(txnNode: txnNode, enriched: enriched)
+        try await addAccountEdge(txnNode: txnNode, txn: txn)
+    }
 
-        // 2. Merchant or Person node + directional edge
+    private func addPersonOrMerchantEdge(txnNode: GraphNode, enriched: EnrichedTransaction) async throws {
+        let txn = enriched.transaction
+        let edgeType: GraphEdge.EdgeType = txn.transactionType == .debit ? .paidTo : .paidFrom
         if let personId = txn.resolvedPersonId {
             let person = try await store.upsertNode(GraphNode(
                 nodeType: .person,
                 externalId: personId,
                 label: enriched.merchantCandidate.canonicalName
             ))
-            let edgeType: GraphEdge.EdgeType = txn.transactionType == .debit ? .paidTo : .paidFrom
             _ = try await store.upsertEdge(GraphEdge(
-                fromNodeId: txnNode.id,
-                toNodeId: person.id,
-                edgeType: edgeType,
-                lastObservedAt: txn.postedAt
+                fromNodeId: txnNode.id, toNodeId: person.id,
+                edgeType: edgeType, lastObservedAt: txn.postedAt
             ))
         } else {
             let merchantNode = try await store.upsertNode(GraphNode(
@@ -52,46 +51,42 @@ public struct GraphBuilder: Sendable {
                 externalId: enriched.merchantCandidate.canonicalName.lowercased(),
                 label: enriched.merchantCandidate.canonicalName
             ))
-            let edgeType: GraphEdge.EdgeType = txn.transactionType == .debit ? .paidTo : .paidFrom
             _ = try await store.upsertEdge(GraphEdge(
-                fromNodeId: txnNode.id,
-                toNodeId: merchantNode.id,
-                edgeType: edgeType,
-                lastObservedAt: txn.postedAt
+                fromNodeId: txnNode.id, toNodeId: merchantNode.id,
+                edgeType: edgeType, lastObservedAt: txn.postedAt
             ))
-
-            // 3. Category edge (merchant → category)
-            let categoryId = enriched.categoryPrediction.categoryId
-            let catNode = try await store.upsertNode(GraphNode(
-                nodeType: .category,
-                externalId: categoryId,
-                label: enriched.categoryPrediction.displayName
-            ))
-            _ = try await store.upsertEdge(GraphEdge(
-                fromNodeId: merchantNode.id,
-                toNodeId: catNode.id,
-                edgeType: .classifiedAs,
-                lastObservedAt: now
-            ))
+            try await addCategoryEdge(merchantNode: merchantNode, enriched: enriched)
         }
+    }
 
-        // 4. Account node
-        if let ledgerId = txn.ledgerId {
-            let accountNode = try await store.upsertNode(GraphNode(
-                nodeType: .account,
-                externalId: ledgerId.uuidString,
-                label: ledgerId.uuidString
-            ))
-            _ = try await store.upsertEdge(GraphEdge(
-                fromNodeId: txnNode.id,
-                toNodeId: accountNode.id,
-                edgeType: .belongsTo,
-                lastObservedAt: txn.postedAt
-            ))
-        }
+    private func addCategoryEdge(merchantNode: GraphNode, enriched: EnrichedTransaction) async throws {
+        let catNode = try await store.upsertNode(GraphNode(
+            nodeType: .category,
+            externalId: enriched.categoryPrediction.categoryId,
+            label: enriched.categoryPrediction.displayName
+        ))
+        _ = try await store.upsertEdge(GraphEdge(
+            fromNodeId: merchantNode.id, toNodeId: catNode.id,
+            edgeType: .classifiedAs, lastObservedAt: Date()
+        ))
+    }
+
+    private func addAccountEdge(txnNode: GraphNode, txn: Transaction) async throws {
+        guard let ledgerId = txn.ledgerId else { return }
+        let accountNode = try await store.upsertNode(GraphNode(
+            nodeType: .account,
+            externalId: ledgerId.uuidString,
+            label: ledgerId.uuidString
+        ))
+        _ = try await store.upsertEdge(GraphEdge(
+            fromNodeId: txnNode.id, toNodeId: accountNode.id,
+            edgeType: .belongsTo, lastObservedAt: txn.postedAt
+        ))
     }
 }
 
 private extension Transaction {
-    var resolvedPersonId: String? { nil }
+    var resolvedPersonId: String? {
+        nil
+    }
 }

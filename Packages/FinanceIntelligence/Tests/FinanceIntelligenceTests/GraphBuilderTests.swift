@@ -1,9 +1,8 @@
 import FinanceCore
+@testable import FinanceIntelligence
 import Foundation
 import GRDB
 import Testing
-
-@testable import FinanceIntelligence
 
 @Suite("GraphBuilder — knowledge graph topology")
 struct GraphBuilderTests {
@@ -20,9 +19,12 @@ struct GraphBuilderTests {
                 table.column("properties", .text).notNull().defaults(to: "{}")
                 table.column("createdAt", .datetime).notNull()
             }
-            try database.create(index: "idx_kgn_ext",
-                                on: "knowledge_graph_nodes",
-                                columns: ["nodeType", "externalId"], unique: true)
+            try database.create(
+                index: "idx_kgn_ext",
+                on: "knowledge_graph_nodes",
+                columns: ["nodeType", "externalId"],
+                unique: true
+            )
             try database.create(table: "knowledge_graph_edges") { table in
                 table.column("id", .text).primaryKey()
                 table.column("fromNodeId", .text).notNull()
@@ -33,9 +35,12 @@ struct GraphBuilderTests {
                 table.column("lastObservedAt", .datetime).notNull()
                 table.column("createdAt", .datetime).notNull()
             }
-            try database.create(index: "idx_kge_unique",
-                                on: "knowledge_graph_edges",
-                                columns: ["fromNodeId", "toNodeId", "edgeType"], unique: true)
+            try database.create(
+                index: "idx_kge_unique",
+                on: "knowledge_graph_edges",
+                columns: ["fromNodeId", "toNodeId", "edgeType"],
+                unique: true
+            )
         }
         let repo = GRDBGraphRepository(dbWriter: db)
         return GraphStore(repository: repo)
@@ -112,7 +117,7 @@ struct GraphBuilderTests {
         let merchantNode = try await store.node(externalId: "blinkit", type: .merchant)
         #expect(merchantNode != nil)
 
-        let edges = try await store.edges(from: txnNode!.id)
+        let edges = try await store.edges(from: #require(txnNode).id)
         let paidToEdges = edges.filter { $0.edgeType == .paidTo }
         #expect(!paidToEdges.isEmpty)
     }
@@ -122,12 +127,12 @@ struct GraphBuilderTests {
         let store = try makeStore()
         let builder = GraphBuilder(store: store)
 
-        let txn = makeTxn(description: "NEFT CR-PAYPAL SALARY", amount: 15000000, type: .credit)
+        let txn = makeTxn(description: "NEFT CR-PAYPAL SALARY", amount: 15_000_000, type: .credit)
         let enriched = makeEnriched(txn: txn, merchant: "PayPal", categoryId: "income")
         try await builder.build(from: [enriched])
 
         let txnNode = try await store.node(externalId: txn.id.uuidString, type: .transaction)
-        let edges = try await store.edges(from: txnNode!.id)
+        let edges = try await store.edges(from: #require(txnNode).id)
         let paidFromEdges = edges.filter { $0.edgeType == .paidFrom }
         #expect(!paidFromEdges.isEmpty)
     }
@@ -149,7 +154,7 @@ struct GraphBuilderTests {
         #expect(merchantNode != nil)
 
         // Category edge should have observationCount ≥ 2 (both transactions classified it)
-        let catEdges = try await store.edges(from: merchantNode!.id)
+        let catEdges = try await store.edges(from: #require(merchantNode).id)
         let classifiedEdge = catEdges.first { $0.edgeType == .classifiedAs }
         #expect(classifiedEdge?.observationCount ?? 0 >= 2)
     }
@@ -163,32 +168,64 @@ struct GraphBuilderTests {
         var transactions: [EnrichedTransaction] = []
 
         // 12 Spotify monthly debits
-        for _ in 0..<12 {
-            let txn = makeTxn(description: "UPI-SPOTIFY", amount: 13900,
-                              type: .debit, ledgerId: ledgerId, categoryId: "subscriptions")
-            transactions.append(makeEnriched(txn: txn, merchant: "Spotify",
-                                             categoryId: "subscriptions"))
+        for _ in 0 ..< 12 {
+            let txn = makeTxn(
+                description: "UPI-SPOTIFY",
+                amount: 13900,
+                type: .debit,
+                ledgerId: ledgerId,
+                categoryId: "subscriptions"
+            )
+            transactions.append(makeEnriched(
+                txn: txn,
+                merchant: "Spotify",
+                categoryId: "subscriptions"
+            ))
         }
         // 12 salary credits
-        for _ in 0..<12 {
-            let txn = makeTxn(description: "NEFT CR-PAYPAL SALARY", amount: 15000000,
-                              type: .credit, ledgerId: ledgerId, categoryId: "income")
-            transactions.append(makeEnriched(txn: txn, merchant: "PayPal",
-                                             categoryId: "income"))
+        for _ in 0 ..< 12 {
+            let txn = makeTxn(
+                description: "NEFT CR-PAYPAL SALARY",
+                amount: 15_000_000,
+                type: .credit,
+                ledgerId: ledgerId,
+                categoryId: "income"
+            )
+            transactions.append(makeEnriched(
+                txn: txn,
+                merchant: "PayPal",
+                categoryId: "income"
+            ))
         }
         // 10 Blinkit debits
-        for _ in 0..<10 {
-            let txn = makeTxn(description: "UPI-BLINKIT", amount: 50000,
-                              type: .debit, ledgerId: ledgerId, categoryId: "groceries")
-            transactions.append(makeEnriched(txn: txn, merchant: "Blinkit",
-                                             categoryId: "groceries"))
+        for _ in 0 ..< 10 {
+            let txn = makeTxn(
+                description: "UPI-BLINKIT",
+                amount: 50000,
+                type: .debit,
+                ledgerId: ledgerId,
+                categoryId: "groceries"
+            )
+            transactions.append(makeEnriched(
+                txn: txn,
+                merchant: "Blinkit",
+                categoryId: "groceries"
+            ))
         }
         // 16 miscellaneous transfers
-        for i in 0..<16 {
-            let txn = makeTxn(description: "UPI-PERSON-\(i)", amount: 100000,
-                              type: .debit, ledgerId: ledgerId, categoryId: "transfers")
-            transactions.append(makeEnriched(txn: txn, merchant: "Person \(i)",
-                                             categoryId: "transfers"))
+        for i in 0 ..< 16 {
+            let txn = makeTxn(
+                description: "UPI-PERSON-\(i)",
+                amount: 100_000,
+                type: .debit,
+                ledgerId: ledgerId,
+                categoryId: "transfers"
+            )
+            transactions.append(makeEnriched(
+                txn: txn,
+                merchant: "Person \(i)",
+                categoryId: "transfers"
+            ))
         }
 
         #expect(transactions.count == 50)
@@ -203,12 +240,12 @@ struct GraphBuilderTests {
         #expect(blinkitNode != nil)
 
         // Spotify category edge observationCount == 12
-        let spotifyEdges = try await store.edges(from: spotifyNode!.id)
+        let spotifyEdges = try await store.edges(from: #require(spotifyNode).id)
         let spotifyClassified = spotifyEdges.first { $0.edgeType == .classifiedAs }
         #expect(spotifyClassified?.observationCount == 12)
 
         // Blinkit category edge observationCount == 10
-        let blinkitEdges = try await store.edges(from: blinkitNode!.id)
+        let blinkitEdges = try await store.edges(from: #require(blinkitNode).id)
         let blinkitClassified = blinkitEdges.first { $0.edgeType == .classifiedAs }
         #expect(blinkitClassified?.observationCount == 10)
 
@@ -227,7 +264,7 @@ struct GraphBuilderTests {
         try await builder.build(from: [enriched])
 
         let txnNode = try await store.node(externalId: txn.id.uuidString, type: .transaction)
-        let reachable = try await store.bfsNeighbors(of: txnNode!.id, maxDepth: 2)
+        let reachable = try await store.bfsNeighbors(of: #require(txnNode).id, maxDepth: 2)
 
         let types = Set(reachable.map(\.nodeType))
         #expect(types.contains(.merchant))

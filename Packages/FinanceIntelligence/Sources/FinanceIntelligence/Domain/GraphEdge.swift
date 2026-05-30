@@ -15,15 +15,15 @@ public struct GraphEdge: Sendable, Codable, Hashable {
     public let createdAt: Date
 
     public enum EdgeType: String, Codable, Sendable, CaseIterable {
-        case paidTo          = "PAID_TO"
-        case paidFrom        = "PAID_FROM"
-        case belongsTo       = "BELONGS_TO"
-        case classifiedAs    = "CLASSIFIED_AS"
-        case recursWith      = "RECURS_WITH"
-        case paysRentTo      = "PAYS_RENT_TO"
-        case paysCardTo      = "PAYS_CARD_TO"
-        case investsWith     = "INVESTS_WITH"
-        case relatedTo       = "RELATED_TO"
+        case paidTo = "PAID_TO"
+        case paidFrom = "PAID_FROM"
+        case belongsTo = "BELONGS_TO"
+        case classifiedAs = "CLASSIFIED_AS"
+        case recursWith = "RECURS_WITH"
+        case paysRentTo = "PAYS_RENT_TO"
+        case paysCardTo = "PAYS_CARD_TO"
+        case investsWith = "INVESTS_WITH"
+        case relatedTo = "RELATED_TO"
     }
 
     public init(
