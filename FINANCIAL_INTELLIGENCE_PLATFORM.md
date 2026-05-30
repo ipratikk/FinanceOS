@@ -35,6 +35,18 @@ The UI layer must remain completely decoupled from:
 The UI communicates only through ViewModels and domain models.
 
 ====================================================
+DEVELOPMENT BRANCH
+====================================================
+
+Base branch: feat/financial-intelligence-platform
+
+All implementation work for this platform must branch from and merge back into:
+
+  feat/financial-intelligence-platform
+
+Do NOT branch from or merge directly into main.
+
+====================================================
 MISSION
 ====================================================
 

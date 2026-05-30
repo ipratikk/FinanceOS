@@ -5,27 +5,27 @@ import Foundation
 /// Category answers "what kind of spending?"; intent answers "what was the user actually doing?".
 /// Example: AmEx payment → category: `fees`, intent: `creditCardPayment`.
 public enum TransactionIntent: String, Codable, Sendable, CaseIterable {
-    case salary             = "salary"
-    case rent               = "rent"
-    case investment         = "investment"
-    case mutualFundSIP      = "mutual_fund_sip"
-    case insurance          = "insurance"
-    case subscription       = "subscription"
-    case creditCardPayment  = "credit_card_payment"
-    case loanPayment        = "loan_payment"
-    case cashWithdrawal     = "cash_withdrawal"
-    case refund             = "refund"
-    case cashback           = "cashback"
-    case transfer           = "transfer"
-    case interestPayment    = "interest_payment"
-    case utilityBill        = "utility_bill"
-    case shopping           = "shopping"
-    case groceries          = "groceries"
-    case food               = "food"
-    case travel             = "travel"
-    case healthcare         = "healthcare"
-    case income             = "income"
-    case unknown            = "unknown"
+    case salary
+    case rent
+    case investment
+    case mutualFundSIP = "mutual_fund_sip"
+    case insurance
+    case subscription
+    case creditCardPayment = "credit_card_payment"
+    case loanPayment = "loan_payment"
+    case cashWithdrawal = "cash_withdrawal"
+    case refund
+    case cashback
+    case transfer
+    case interestPayment = "interest_payment"
+    case utilityBill = "utility_bill"
+    case shopping
+    case groceries
+    case food
+    case travel
+    case healthcare
+    case income
+    case unknown
 
     public var displayName: String {
         switch self {
@@ -56,9 +56,9 @@ public enum TransactionIntent: String, Codable, Sendable, CaseIterable {
 
 /// How an `IntentPrediction` was determined.
 public enum IntentPredictionSource: String, Codable, Sendable {
-    case ruleEngine     = "rule_engine"
+    case ruleEngine = "rule_engine"
     case userCorrection = "user_correction"
-    case fallback       = "fallback"
+    case fallback
 }
 
 /// The intent classification produced by the intelligence pipeline for a transaction.
