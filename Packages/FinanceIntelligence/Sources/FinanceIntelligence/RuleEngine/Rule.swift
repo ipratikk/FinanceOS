@@ -3,11 +3,11 @@ import Foundation
 /// A boolean feature indicator extracted from a transaction's description.
 /// Maps directly to the boolean fields on `TransactionFeatures`.
 public enum TransactionIndicator: String, Sendable, CaseIterable {
-    case payroll    // features.hasPayrollIndicator
-    case refund     // features.hasRefundIndicator
-    case transfer   // features.hasTransferIndicator
-    case recurring  // features.hasRecurringIndicator
-    case online     // features.hasOnlineIndicator
+    case payroll // features.hasPayrollIndicator
+    case refund // features.hasRefundIndicator
+    case transfer // features.hasTransferIndicator
+    case recurring // features.hasRecurringIndicator
+    case online // features.hasOnlineIndicator
 }
 
 /// A condition that can be evaluated against `TransactionFeatures`.
