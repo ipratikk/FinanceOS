@@ -2,9 +2,9 @@ import Foundation
 
 /// How a `PersonResolverResult` was extracted.
 public enum PersonResolutionSource: String, Sendable, Codable, CaseIterable {
-    case upi    // "UPI-NAME-vpa@bank-..." format
-    case neft   // "NEFT CR/DR-BANK-NAME-REF" format
-    case imps   // "IMPS-TXNID-NAME-BANK" format
+    case upi // "UPI-NAME-vpa@bank-..." format
+    case neft // "NEFT CR/DR-BANK-NAME-REF" format
+    case imps // "IMPS-TXNID-NAME-BANK" format
 }
 
 /// The result of resolving a person entity from a bank description.
@@ -37,15 +37,14 @@ public struct PersonResolver: Sendable {
     /// Returns nil when the description is not a person-to-person transfer.
     public func resolve(_ rawDescription: String) -> PersonResolverResult? {
         guard let parsed = UPIDescriptionParser.parse(rawDescription) else { return nil }
-        guard parsed.isPersonTransfer && !parsed.isMerchantPayment else { return nil }
+        guard parsed.isPersonTransfer, !parsed.isMerchantPayment else { return nil }
         guard !parsed.merchantName.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
 
         let source = detectedSource(rawDescription)
-        let confidence: Double
-        switch source {
-        case .upi:  confidence = 0.90
-        case .neft: confidence = 0.80
-        case .imps: confidence = 0.75
+        let confidence: Double = switch source {
+        case .upi: 0.90
+        case .neft: 0.80
+        case .imps: 0.75
         }
 
         return PersonResolverResult(

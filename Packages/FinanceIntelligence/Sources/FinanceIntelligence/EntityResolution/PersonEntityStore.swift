@@ -6,8 +6,8 @@ import Foundation
 /// Phase 3 will back this with a GRDB repository.
 public actor PersonEntityStore {
     private var persons: [UUID: Person] = [:]
-    private var nameIndex: [String: UUID] = [:]  // normalized name → person ID
-    private var upiIndex: [String: UUID] = [:]   // lowercase UPI handle → person ID
+    private var nameIndex: [String: UUID] = [:] // normalized name → person ID
+    private var upiIndex: [String: UUID] = [:] // lowercase UPI handle → person ID
 
     public init() {}
 
@@ -34,7 +34,9 @@ public actor PersonEntityStore {
     }
 
     /// Total number of known persons.
-    public var count: Int { persons.count }
+    public var count: Int {
+        persons.count
+    }
 }
 
 // MARK: - Private Helpers
@@ -82,8 +84,8 @@ private extension PersonEntityStore {
     func normalize(_ name: String) -> String {
         var result = name.uppercased()
         let titles = ["MR ", "MRS ", "MS ", "DR ", "PROF ", "SHRI ", "SMT ", "KUM "]
-        for title in titles {
-            if result.hasPrefix(title) { result = String(result.dropFirst(title.count)) }
+        for title in titles where result.hasPrefix(title) {
+            result = String(result.dropFirst(title.count))
         }
         return result
             .components(separatedBy: .whitespaces)
