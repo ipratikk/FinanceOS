@@ -66,6 +66,14 @@ enum AppMigration {
         migrator.registerMigration("v12_create_intelligence_person_aliases") { db in
             try AppMigration.createIntelligencePersonAliasesTable(in: db)
         }
+
+        migrator.registerMigration("v13_create_knowledge_graph_nodes") { db in
+            try AppMigration.createKnowledgeGraphNodesTable(in: db)
+        }
+
+        migrator.registerMigration("v14_create_knowledge_graph_edges") { db in
+            try AppMigration.createKnowledgeGraphEdgesTable(in: db)
+        }
     }
 }
 
@@ -103,6 +111,47 @@ private extension AppMigration {
         CREATE UNIQUE INDEX IF NOT EXISTS idx_intel_persons_upi
         ON intelligence_persons(upiHandle) WHERE upiHandle IS NOT NULL
         """)
+    }
+
+    static func createKnowledgeGraphNodesTable(in database: Database) throws {
+        guard try !database.tableExists("knowledge_graph_nodes") else { return }
+        try database.create(table: "knowledge_graph_nodes") { table in
+            table.column("id", .text).primaryKey()
+            table.column("nodeType", .text).notNull()
+            table.column("externalId", .text).notNull()
+            table.column("label", .text).notNull()
+            table.column("properties", .text).notNull().defaults(to: "{}")
+            table.column("createdAt", .datetime).notNull()
+        }
+        try database.create(index: "idx_graph_nodes_external",
+                            on: "knowledge_graph_nodes",
+                            columns: ["nodeType", "externalId"], unique: true)
+        try database.create(index: "idx_graph_nodes_type",
+                            on: "knowledge_graph_nodes",
+                            columns: ["nodeType"])
+    }
+
+    static func createKnowledgeGraphEdgesTable(in database: Database) throws {
+        guard try !database.tableExists("knowledge_graph_edges") else { return }
+        try database.create(table: "knowledge_graph_edges") { table in
+            table.column("id", .text).primaryKey()
+            table.column("fromNodeId", .text).notNull()
+                .references("knowledge_graph_nodes", column: "id", onDelete: .cascade)
+            table.column("toNodeId", .text).notNull()
+                .references("knowledge_graph_nodes", column: "id", onDelete: .cascade)
+            table.column("edgeType", .text).notNull()
+            table.column("weight", .double).notNull().defaults(to: 1.0)
+            table.column("observationCount", .integer).notNull().defaults(to: 1)
+            table.column("lastObservedAt", .datetime).notNull()
+            table.column("createdAt", .datetime).notNull()
+        }
+        try database.create(index: "idx_graph_edges_unique",
+                            on: "knowledge_graph_edges",
+                            columns: ["fromNodeId", "toNodeId", "edgeType"], unique: true)
+        try database.create(index: "idx_graph_edges_from",
+                            on: "knowledge_graph_edges", columns: ["fromNodeId"])
+        try database.create(index: "idx_graph_edges_to",
+                            on: "knowledge_graph_edges", columns: ["toNodeId"])
     }
 
     static func createIntelligencePersonAliasesTable(in database: Database) throws {
