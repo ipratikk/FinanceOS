@@ -1,5 +1,6 @@
 import FinanceCore
 import Foundation
+import GRDB
 
 /// Caller-supplied context that the intelligence pipeline uses to improve predictions.
 /// Providing `ledgerKind` and `institution` lets the feature extractor add stronger signals.
