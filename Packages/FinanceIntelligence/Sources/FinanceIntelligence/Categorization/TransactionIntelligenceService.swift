@@ -39,4 +39,12 @@ public protocol TransactionIntelligenceService: Sendable {
         correctedMerchant: String?,
         previousPrediction: CategoryPrediction?
     ) async throws
+
+    /// Analyzes a transaction and returns an `EnrichedTransaction` that includes intent,
+    /// and placeholders for future phases (relationships, recurring, description).
+    /// Prefer this over `analyze()` for new call sites.
+    func analyzeEnriched(
+        _ transaction: Transaction,
+        context: IntelligenceContext
+    ) async throws -> EnrichedTransaction
 }
