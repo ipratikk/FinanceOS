@@ -4,10 +4,14 @@ on:
   push:
     branches:
       - main
+      - feat/financial-intelligence-platform
 
   pull_request:
     branches:
       - main
+      - feat/financial-intelligence-platform
+
+  workflow_dispatch:
 
 defaults:
   run:
