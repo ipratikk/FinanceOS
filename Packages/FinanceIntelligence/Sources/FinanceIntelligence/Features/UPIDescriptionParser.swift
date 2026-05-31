@@ -24,9 +24,12 @@ enum UPIDescriptionParser {
     private static let businessVPASuffixes = [
         "@rzp", "@razorpay", "@paytm", "@upi", "@ybl", "@okhdfcbank",
         "@okicici", "@okaxis", "@oksbi", "@apl", "@ikwik", "@airtelpaymentsbank",
+        "@hdfcbank", "@icici", "@axisbank", "@ptybl", "@yesb", "@airp",
+        "@sc", "@scbl",  // Standard Chartered (used by AmEx UPI)
         "marketplace", "services", "store", "shop", "retail", "online",
         "blinkit", "zepto", "swiggy", "zomato", "ola", "uber",
-        "amazon", "flipkart", "netflix", "spotify", "hotstar"
+        "amazon", "flipkart", "netflix", "spotify", "hotstar",
+        "bbnow", "bigbasket", "gpay", "googlepay"
     ]
 
     /// Keywords in merchant name segment that indicate business
@@ -34,7 +37,17 @@ enum UPIDescriptionParser {
         "marketplace", "services", "pvt", "ltd", "private limited", "llp",
         "retail", "technologies", "payments", "enterprises", "solutions",
         "swiggy", "zomato", "blinkit", "zepto", "ola", "uber", "amazon",
-        "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio"
+        "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio",
+        // Indian fintech/payments
+        "bbnow", "bigbasket", "gpay", "paytm", "cred", "bhim", "npci",
+        "phonepe", "razorpay", "cashfree",
+        // Financial institutions & credit
+        "american express", "amex", "hdfc", "icici", "lombard",
+        "insurance", "bank", "credit card", "express",
+        // Retail/fashion
+        "hennes", "h and m", "ikea", "family super market",
+        // Utilities/telecom
+        "airtel", "jio", "livpure", "dominos", "domino", "magicpin"
     ]
 
     /// Parses `rawDescription` and returns a structured result, or nil if the format is unrecognized.
