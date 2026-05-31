@@ -28,6 +28,7 @@ struct TransactionDetailView: View {
                 .padding(.bottom, AppSpacing.xl)
             }
             .background(AppColors.surface2)
+            .task { await viewModel.loadIntelligence() }
             .navigationTitle(row.displayTitle)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -109,6 +110,9 @@ private extension TransactionDetailView {
             dateTimeSection
             sourceSection
             categorySection
+            if viewModel.recurringPattern != nil || viewModel.person != nil {
+                intelligenceSection
+            }
             if viewModel.showNarration {
                 narrationSection
             }
@@ -198,6 +202,103 @@ private extension TransactionDetailView {
                 showCategoryPicker = false
             }
         )
+    }
+}
+
+// MARK: - Intelligence Section
+
+private extension TransactionDetailView {
+    var intelligenceSection: some View {
+        sectionCard(header: "Intelligence") {
+            VStack(spacing: 0) {
+                if let pattern = viewModel.recurringPattern {
+                    recurringRow(pattern)
+                }
+                if viewModel.recurringPattern != nil, viewModel.person != nil {
+                    Divider().opacity(0.1)
+                }
+                if let person = viewModel.person {
+                    personRow(person)
+                }
+            }
+        }
+    }
+
+    func recurringRow(_ pattern: RecurringPattern) -> some View {
+        HStack(spacing: AppSpacing.md) {
+            Image(systemName: "arrow.trianglehead.2.clockwise")
+                .font(AppTypography.captionLgSemibold)
+                .foregroundStyle(AppColors.accent)
+                .frame(width: 20)
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: AppSpacing.compact) {
+                    FDSLabel(pattern.cadence.rawValue.replacingOccurrences(of: "_", with: "-").capitalized)
+                        .font(AppTypography.bodySmSemibold)
+                        .foregroundStyle(AppColors.textPrimary)
+                    FDSLabel("·")
+                        .foregroundStyle(.tertiary)
+                    FDSLabel(FormatterCache.formatCurrency(minorUnits: pattern.averageAmountMinorUnits))
+                        .font(AppTypography.bodySmMedium)
+                        .foregroundStyle(AppColors.textSecondary)
+                    FDSLabel("·")
+                        .foregroundStyle(.tertiary)
+                    FDSLabel("\(pattern.occurrenceCount) occurrences")
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(.tertiary)
+                }
+                if let next = viewModel.nextExpectedDate {
+                    FDSLabel("Next expected: \(FormatterCache.fullDayDate.string(from: next))")
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(AppColors.textSecondary)
+                }
+            }
+            Spacer()
+            confidencePill(pattern.confidence)
+        }
+        .padding(AppSpacing.md)
+    }
+
+    func personRow(_ person: Person) -> some View {
+        HStack(spacing: AppSpacing.md) {
+            Image(systemName: viewModel.relationshipIcon)
+                .font(AppTypography.captionLgSemibold)
+                .foregroundStyle(.tertiary)
+                .frame(width: 20)
+            VStack(alignment: .leading, spacing: 3) {
+                FDSLabel(person.canonicalName)
+                    .font(AppTypography.bodySmSemibold)
+                    .foregroundStyle(AppColors.textPrimary)
+                HStack(spacing: AppSpacing.compact) {
+                    if let rel = viewModel.relationship {
+                        FDSLabel(rel.type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized)
+                            .font(AppTypography.captionLgSemibold)
+                            .foregroundStyle(AppColors.accent)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(AppColors.accent.opacity(0.12))
+                            .clipShape(Capsule())
+                    }
+                    FDSLabel("\(person.transactionCount) transactions")
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            Spacer()
+            if let rel = viewModel.relationship {
+                confidencePill(rel.confidence)
+            }
+        }
+        .padding(AppSpacing.md)
+    }
+
+    func confidencePill(_ confidence: Double) -> some View {
+        FDSLabel("\(Int(confidence * 100))%")
+            .font(AppTypography.captionSmSemibold)
+            .foregroundStyle(.tertiary)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(AppColors.surface.opacity(0.6))
+            .clipShape(Capsule())
     }
 }
 
