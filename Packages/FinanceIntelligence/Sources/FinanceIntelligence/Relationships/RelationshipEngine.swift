@@ -5,7 +5,9 @@ public struct RelationshipEngine: Sendable {
     private let classifier: RelationshipClassifier
     private static let rentKeywords = ["rent", "owner", "landlord", "sir", "maam", "aunty", "uncle"]
 
-    public init() { classifier = RelationshipClassifier() }
+    public init() {
+        classifier = RelationshipClassifier()
+    }
 
     public struct TransactionRecord: Sendable {
         public let amount: Int64
@@ -72,7 +74,7 @@ public struct RelationshipEngine: Sendable {
 
     private func isRoundAmount(debits: [TransactionRecord]) -> Bool {
         guard !debits.isEmpty else { return false }
-        return Double(debits.filter { $0.amount % 50000 == 0 }.count) / Double(debits.count) >= 0.7
+        return Double(debits.count(where: { $0.amount % 50000 == 0 })) / Double(debits.count) >= 0.7
     }
 
     private func hasRegularInterval(debits: [TransactionRecord]) -> Bool {
@@ -88,12 +90,12 @@ public struct RelationshipEngine: Sendable {
 
     private func hasPostSalaryTiming(debits: [TransactionRecord], salaryCreditDates: [Date]) -> Bool {
         guard !salaryCreditDates.isEmpty else { return false }
-        let postCount = debits.filter { debit in
+        let postCount = debits.count(where: { debit in
             salaryCreditDates.contains { salary in
                 let diff = debit.postedAt.timeIntervalSince(salary) / 86400
                 return diff >= 0 && diff <= 7
             }
-        }.count
+        })
         return Double(postCount) / Double(debits.count) >= 0.5
     }
 

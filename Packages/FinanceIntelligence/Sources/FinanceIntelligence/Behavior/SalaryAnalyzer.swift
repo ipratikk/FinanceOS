@@ -25,8 +25,8 @@ public struct SalaryAnalyzer: Sendable {
     public func analyzeCycle(from candidates: [SalaryCandidate]) -> SalaryCycle? {
         let eligible = candidates.filter {
             $0.amount >= minimumSalaryMinorUnits &&
-            ($0.categoryId == "income" || $0.intentId == "salary" ||
-             $0.intentId == "income")
+                ($0.categoryId == "income" || $0.intentId == "salary" ||
+                    $0.intentId == "income")
         }
         guard eligible.count >= 2 else { return nil }
 

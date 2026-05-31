@@ -1,24 +1,24 @@
 import Foundation
 
 public enum RelationshipType: String, Codable, Sendable, CaseIterable {
-    case landlord      = "landlord"
-    case tenant        = "tenant"
-    case friend        = "friend"
-    case family        = "family"
-    case employer      = "employer"
-    case employee      = "employee"
-    case loanProvider  = "loan_provider"
+    case landlord
+    case tenant
+    case friend
+    case family
+    case employer
+    case employee
+    case loanProvider = "loan_provider"
     case loanRecipient = "loan_recipient"
-    case reimbursement = "reimbursement"
-    case unknown       = "unknown"
+    case reimbursement
+    case unknown
 }
 
 public enum RelationshipSignal: String, Codable, Sendable, CaseIterable {
-    case recurringAmount   // consistent amount month-to-month
-    case postSalaryTiming  // payment occurs shortly after salary credit
-    case roundNumber       // amount divisible by 500 or 1000
-    case regularInterval   // consistent date pattern
-    case upiLabel          // UPI label contains keywords (rent, owner, sir)
+    case recurringAmount // consistent amount month-to-month
+    case postSalaryTiming // payment occurs shortly after salary credit
+    case roundNumber // amount divisible by 500 or 1000
+    case regularInterval // consistent date pattern
+    case upiLabel // UPI label contains keywords (rent, owner, sir)
     case historicalPattern // corroborated by transaction history
 }
 

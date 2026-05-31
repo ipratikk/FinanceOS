@@ -58,8 +58,8 @@ public struct RecurringDetector: Sendable {
             : 0.0
         let dayHint = cadence == .monthly ? analyzer.dayOfMonthHint(from: dates) : nil
         let mostCommon = group.max { a, b in
-            group.filter { $0.categoryId == a.categoryId }.count <
-            group.filter { $0.categoryId == b.categoryId }.count
+            group.count(where: { $0.categoryId == a.categoryId }) <
+                group.count(where: { $0.categoryId == b.categoryId })
         }
 
         return RecurringPattern(

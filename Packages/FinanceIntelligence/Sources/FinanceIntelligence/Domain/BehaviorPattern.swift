@@ -62,7 +62,7 @@ public struct CashFlowSummary: Sendable, Codable {
     public init(averageMonthlyIncome: Int64, averageMonthlyExpense: Int64) {
         self.averageMonthlyIncome = averageMonthlyIncome
         self.averageMonthlyExpense = averageMonthlyExpense
-        self.savingsRate = averageMonthlyIncome > 0
+        savingsRate = averageMonthlyIncome > 0
             ? Double(averageMonthlyIncome - averageMonthlyExpense) / Double(averageMonthlyIncome)
             : 0
     }

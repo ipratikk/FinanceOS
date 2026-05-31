@@ -23,7 +23,9 @@ public struct CashflowAnalyzer: Sendable {
         public let monthKey: String
         public let totalIncome: Int64
         public let totalExpense: Int64
-        public var net: Int64 { totalIncome - totalExpense }
+        public var net: Int64 {
+            totalIncome - totalExpense
+        }
     }
 
     /// Compute a monthly summary for each calendar month in the dataset.

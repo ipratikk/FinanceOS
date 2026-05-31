@@ -22,7 +22,8 @@ struct GRDBRelationship: Codable, FetchableRecord, PersistableRecord {
         confidence = relationship.confidence
         evidenceCount = relationship.evidenceCount
         inferredSignals = (try? String(data: JSONEncoder().encode(
-            relationship.signals.map(\.rawValue)), encoding: .utf8)) ?? "[]"
+            relationship.signals.map(\.rawValue)
+        ), encoding: .utf8)) ?? "[]"
         createdAt = relationship.createdAt
         updatedAt = relationship.updatedAt
     }

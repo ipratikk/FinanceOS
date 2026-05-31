@@ -36,11 +36,11 @@ public struct RelationshipClassifier: Sendable {
         if input.totalCredits > input.totalDebits * 3, input.transactionCount >= 3 {
             return (.employer, 0.65)
         }
-        if input.signals.contains(.recurringAmount), input.averageDebitAmount > 5_000_00 {
+        if input.signals.contains(.recurringAmount), input.averageDebitAmount > 500_000 {
             return (.family, 0.55)
         }
         if input.totalCredits > 0, input.transactionCount <= 5 { return (.reimbursement, 0.50) }
-        if input.transactionCount >= 2, input.averageDebitAmount < 5_000_00 { return (.friend, 0.45) }
+        if input.transactionCount >= 2, input.averageDebitAmount < 500_000 { return (.friend, 0.45) }
         return (.unknown, 0.30)
     }
 
@@ -48,9 +48,9 @@ public struct RelationshipClassifier: Sendable {
 
     private func isLikelyLandlord(_ input: Input) -> Bool {
         input.pattern?.cadence == .monthly &&
-        (input.signals.contains(.roundNumber) ||
-         input.signals.contains(.postSalaryTiming) ||
-         input.signals.contains(.upiLabel))
+            (input.signals.contains(.roundNumber) ||
+                input.signals.contains(.postSalaryTiming) ||
+                input.signals.contains(.upiLabel))
     }
 
     private func landlordConfidence(_ input: Input) -> Double {

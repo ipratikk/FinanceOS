@@ -49,31 +49,31 @@ public struct RecurringPattern: Identifiable, Sendable, Codable {
 }
 
 public enum RecurringCadence: String, Codable, Sendable, CaseIterable {
-    case weekly     = "weekly"
-    case biWeekly   = "bi_weekly"
-    case monthly    = "monthly"
-    case quarterly  = "quarterly"
-    case yearly     = "yearly"
-    case irregular  = "irregular"
+    case weekly
+    case biWeekly = "bi_weekly"
+    case monthly
+    case quarterly
+    case yearly
+    case irregular
 
     public var targetIntervalDays: Double {
         switch self {
-        case .weekly:    return 7
-        case .biWeekly:  return 14
-        case .monthly:   return 30.44
+        case .weekly: return 7
+        case .biWeekly: return 14
+        case .monthly: return 30.44
         case .quarterly: return 91.31
-        case .yearly:    return 365.25
+        case .yearly: return 365.25
         case .irregular: return 0
         }
     }
 
     public var toleranceDays: Double {
         switch self {
-        case .weekly:    return 2
-        case .biWeekly:  return 3
-        case .monthly:   return 5
+        case .weekly: return 2
+        case .biWeekly: return 3
+        case .monthly: return 5
         case .quarterly: return 10
-        case .yearly:    return 20
+        case .yearly: return 20
         case .irregular: return .infinity
         }
     }
