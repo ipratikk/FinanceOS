@@ -4,6 +4,7 @@ import SwiftUI
 
 struct SidebarView: View {
     @Environment(AppNavigator.self) private var navigator
+    @AppStorage("developerModeEnabled") private var developerModeEnabled = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -32,8 +33,21 @@ struct SidebarView: View {
                 } header: {
                     FDSSidebarSectionHeader("Manage")
                 }
+
+                if developerModeEnabled {
+                    Section {
+                        sidebarItem(.intelligence)
+                    } header: {
+                        FDSSidebarSectionHeader("Developer")
+                    }
+                }
             }
             .listStyle(.sidebar)
+            .onChange(of: developerModeEnabled) { _, enabled in
+                if !enabled, navigator.sidebarSelection == .intelligence {
+                    navigator.navigate(to: .dashboard)
+                }
+            }
             .scrollContentBackground(.hidden)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -143,7 +157,7 @@ struct SidebarView: View {
         }
     }
 
-    private func sidebarItem(_ item: NavigationItem, shortcut: String) -> some View {
+    private func sidebarItem(_ item: NavigationItem, shortcut: String = "") -> some View {
         HStack(spacing: 8) {
             FDSSidebarItem(
                 item.label,

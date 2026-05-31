@@ -22,4 +22,15 @@ public protocol GraphRepository: Sendable {
 
     func neighbors(of nodeId: String) async throws -> [GraphNode]
     func neighbors(of nodeId: String, edgeType: GraphEdge.EdgeType) async throws -> [GraphNode]
+
+    // MARK: Bulk Reads (for dev-mode inspector, limited to 1000 rows)
+
+    func allNodes(limit: Int) async throws -> [GraphNode]
+    func allEdges(limit: Int) async throws -> [GraphEdge]
+
+    // MARK: Mutations
+
+    func updateNode(_ node: GraphNode) async throws
+    func deleteNode(id: String) async throws
+    func deleteEdge(id: String) async throws
 }
