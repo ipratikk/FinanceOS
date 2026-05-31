@@ -71,10 +71,8 @@ public actor PostProcessingPipeline {
             .info("PostProcessing[\(PostProcessingStage.relationships)]: \(relationshipCount) relationships inferred")
 
         onStageChange?(.complete)
-        FinanceLogger.intelligence
-            .info(
-                "PostProcessing[\(PostProcessingStage.complete)]: \(enriched.count) transactions, \(patterns.count) patterns, \(relationshipCount) relationships"
-            )
+        let summary = "\(enriched.count) txns, \(patterns.count) patterns, \(relationshipCount) relationships"
+        FinanceLogger.intelligence.info("PostProcessing[complete]: \(summary)")
     }
 
     // MARK: - Stage 1: Knowledge Graph
@@ -101,10 +99,10 @@ public actor PostProcessingPipeline {
         let patterns = RecurringDetector().detect(from: inputs)
         FinanceLogger.intelligence.info("PostProcessing[patterns]: saving \(patterns.count) patterns to DB")
         for pattern in patterns {
+            let key = pattern.merchantKey ?? pattern.personId ?? "?"
+            let conf = String(format: "%.2f", pattern.confidence)
             FinanceLogger.intelligence
-                .info(
-                    "PostProcessing[patterns]: \(pattern.merchantKey ?? pattern.personId ?? "?") — \(pattern.cadence.rawValue) — confidence \(String(format: "%.2f", pattern.confidence))"
-                )
+                .info("PostProcessing[patterns]: \(key) — \(pattern.cadence.rawValue) — confidence \(conf)")
             try? await recurringRepo?.save(pattern)
         }
         return patterns
@@ -140,10 +138,9 @@ public actor PostProcessingPipeline {
             grouping: enriched.filter { $0.resolvedEntities?.personId != nil },
             by: { $0.resolvedEntities?.personId?.uuidString ?? "" }
         )
-        FinanceLogger.intelligence
-            .info(
-                "PostProcessing[relationships]: \(byPerson.count) persons with ≥1 transaction, \(salaryCreditDates.count) salary dates"
-            )
+        FinanceLogger.intelligence.info(
+            "PostProcessing[relationships]: \(byPerson.count) persons, \(salaryCreditDates.count) salary dates"
+        )
 
         var saved = 0
         for (personId, txns) in byPerson where txns.count >= 2 {
@@ -162,10 +159,9 @@ public actor PostProcessingPipeline {
                 personId: personId, personName: personName,
                 transactions: records, salaryCreditDates: salaryCreditDates
             ) {
+                let conf = String(format: "%.2f", relationship.confidence)
                 FinanceLogger.intelligence
-                    .info(
-                        "PostProcessing[relationships]: \(personName) → \(relationship.type.rawValue) (confidence \(String(format: "%.2f", relationship.confidence)))"
-                    )
+                    .info("PostProcessing[relationships]: \(personName) → \(relationship.type.rawValue) (\(conf))")
                 try? await repo.save(relationship)
                 saved += 1
             }

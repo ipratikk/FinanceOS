@@ -94,14 +94,7 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
 
                 // Stages 2–4: post-process with typed stage reporting
                 await service.postProcessBatch(enriched: enriched) { stage in
-                    Task { @MainActor in
-                        switch stage {
-                        case .graph: self.pipelineStage = .graph
-                        case .patterns: self.pipelineStage = .patterns
-                        case .relationships: self.pipelineStage = .relationships
-                        case .complete: break
-                        }
-                    }
+                    Task { @MainActor [weak self] in self?.applyPipelineStage(stage) }
                 }
 
                 // Reload rows with fresh data
@@ -116,6 +109,15 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
         pipelineTask?.cancel()
         pipelineTask = nil
         isPipelineRunning = false
+    }
+
+    private func applyPipelineStage(_ stage: PostProcessingStage) {
+        switch stage {
+        case .graph: pipelineStage = .graph
+        case .patterns: pipelineStage = .patterns
+        case .relationships: pipelineStage = .relationships
+        case .complete: break
+        }
     }
 
     func deleteTransaction(id: UUID) async {
