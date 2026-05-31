@@ -16,43 +16,22 @@ enum AppMigration {
     static func registerMigrations(
         in migrator: inout DatabaseMigrator
     ) {
-        migrator.registerMigration("v1_create_all_tables") { database in
-            FinanceLogger.migration.info("Running migration: v1_create_all_tables")
-
-            try Bank.createTable(in: database)
-            try Ledger.createTable(in: database)
-            try Transaction.createTable(in: database)
-
-            FinanceLogger.migration.info("v1: All tables created")
+        migrator.registerMigration("v1_create_all_tables") { db in
+            try AppMigration.createAllTables(in: db)
         }
 
-        // v2 migration removed: columns already exist in initial schema (Ledger.createTable)
-        // Fresh database creation includes closingBalance + closingBalanceAsOf
+        // v2 removed: columns exist in initial schema
 
-        migrator.registerMigration("v3_add_ledger_opening_balance") { database in
-            let columns = try database.columns(in: "ledgers")
-            guard !columns.contains(where: { $0.name == "openingBalance" }) else { return }
-            try database.alter(table: "ledgers") { table in
-                table.add(column: "openingBalance", .integer)
-            }
+        migrator.registerMigration("v3_add_ledger_opening_balance") { db in
+            try AppMigration.addLedgerOpeningBalance(in: db)
         }
 
-        migrator.registerMigration("v8_add_intelligence_fields") { database in
-            let txnCols = try database.columns(in: "transactions")
-            let hasCategory = txnCols.contains(where: { $0.name == "categoryId" })
-            let hasMerchant = txnCols.contains(where: { $0.name == "merchantName" })
-            try database.alter(table: "transactions") { table in
-                if !hasCategory { table.add(column: "categoryId", .text) }
-                if !hasMerchant { table.add(column: "merchantName", .text) }
-            }
+        migrator.registerMigration("v8_add_intelligence_fields") { db in
+            try AppMigration.addIntelligenceFields(in: db)
         }
 
-        migrator.registerMigration("v9_add_transaction_closing_balance") { database in
-            let cols = try database.columns(in: "transactions")
-            guard !cols.contains(where: { $0.name == "closingBalanceMinorUnits" }) else { return }
-            try database.alter(table: "transactions") { table in
-                table.add(column: "closingBalanceMinorUnits", .integer)
-            }
+        migrator.registerMigration("v9_add_transaction_closing_balance") { db in
+            try AppMigration.addTransactionClosingBalance(in: db)
         }
 
         migrator.registerMigration("v10_add_intelligence_transaction_columns") { db in
@@ -74,12 +53,54 @@ enum AppMigration {
         migrator.registerMigration("v14_create_knowledge_graph_edges") { db in
             try AppMigration.createKnowledgeGraphEdgesTable(in: db)
         }
+
+        migrator.registerMigration("v15_create_relationships") { db in
+            try AppMigration.createRelationshipsTable(in: db)
+        }
+
+        migrator.registerMigration("v16_create_recurring_patterns") { db in
+            try AppMigration.createRecurringPatternsTable(in: db)
+        }
     }
 }
 
 // MARK: - Migration Helpers
 
 private extension AppMigration {
+    static func createAllTables(in database: Database) throws {
+        FinanceLogger.migration.info("Running migration: v1_create_all_tables")
+        try Bank.createTable(in: database)
+        try Ledger.createTable(in: database)
+        try Transaction.createTable(in: database)
+        FinanceLogger.migration.info("v1: All tables created")
+    }
+
+    static func addLedgerOpeningBalance(in database: Database) throws {
+        let columns = try database.columns(in: "ledgers")
+        guard !columns.contains(where: { $0.name == "openingBalance" }) else { return }
+        try database.alter(table: "ledgers") { table in
+            table.add(column: "openingBalance", .integer)
+        }
+    }
+
+    static func addIntelligenceFields(in database: Database) throws {
+        let txnCols = try database.columns(in: "transactions")
+        let hasCategory = txnCols.contains(where: { $0.name == "categoryId" })
+        let hasMerchant = txnCols.contains(where: { $0.name == "merchantName" })
+        try database.alter(table: "transactions") { table in
+            if !hasCategory { table.add(column: "categoryId", .text) }
+            if !hasMerchant { table.add(column: "merchantName", .text) }
+        }
+    }
+
+    static func addTransactionClosingBalance(in database: Database) throws {
+        let cols = try database.columns(in: "transactions")
+        guard !cols.contains(where: { $0.name == "closingBalanceMinorUnits" }) else { return }
+        try database.alter(table: "transactions") { table in
+            table.add(column: "closingBalanceMinorUnits", .integer)
+        }
+    }
+
     static func addIntelligenceTransactionColumns(in database: Database) throws {
         FinanceLogger.migration.info("Running migration: v10_add_intelligence_transaction_columns")
         let cols = try database.columns(in: "transactions")
@@ -186,6 +207,60 @@ private extension AppMigration {
         try database.create(
             index: "idx_intel_aliases_personId",
             on: "intelligence_person_aliases",
+            columns: ["personId"]
+        )
+    }
+
+    static func createRelationshipsTable(in database: Database) throws {
+        guard try !database.tableExists("relationships") else { return }
+        try database.create(table: "relationships") { table in
+            table.column("id", .text).primaryKey()
+            table.column("fromPersonId", .text)
+            table.column("toPersonId", .text)
+            table.column("relationshipType", .text).notNull()
+            table.column("confidence", .double).notNull().defaults(to: 0.0)
+            table.column("evidenceCount", .integer).notNull().defaults(to: 0)
+            table.column("inferredSignals", .text).notNull().defaults(to: "[]")
+            table.column("createdAt", .datetime).notNull()
+            table.column("updatedAt", .datetime).notNull()
+        }
+        try database.create(
+            index: "idx_relationships_fromPersonId",
+            on: "relationships",
+            columns: ["fromPersonId"]
+        )
+        try database.create(
+            index: "idx_relationships_toPersonId",
+            on: "relationships",
+            columns: ["toPersonId"]
+        )
+    }
+
+    static func createRecurringPatternsTable(in database: Database) throws {
+        guard try !database.tableExists("recurring_patterns") else { return }
+        try database.create(table: "recurring_patterns") { table in
+            table.column("id", .text).primaryKey()
+            table.column("merchantKey", .text)
+            table.column("personId", .text)
+            table.column("categoryId", .text).notNull()
+            table.column("intentId", .text).notNull()
+            table.column("cadence", .text).notNull()
+            table.column("averageAmountMinorUnits", .integer).notNull()
+            table.column("amountVariancePercent", .double).notNull().defaults(to: 0.0)
+            table.column("dayOfMonthHint", .integer)
+            table.column("confidence", .double).notNull().defaults(to: 0.0)
+            table.column("occurrenceCount", .integer).notNull().defaults(to: 0)
+            table.column("lastSeenAt", .datetime).notNull()
+            table.column("createdAt", .datetime).notNull()
+        }
+        try database.create(
+            index: "idx_recurring_merchantKey",
+            on: "recurring_patterns",
+            columns: ["merchantKey"]
+        )
+        try database.create(
+            index: "idx_recurring_personId",
+            on: "recurring_patterns",
             columns: ["personId"]
         )
     }
