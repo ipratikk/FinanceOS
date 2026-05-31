@@ -42,11 +42,13 @@ public struct RelationshipEngine: Sendable {
         let pattern = transactions.compactMap(\.pattern).first
         let signals = buildSignals(debits: debits, salaryCreditDates: salaryCreditDates, pattern: pattern)
 
+        let dominantIntentId = pattern?.intentId
         let input = RelationshipClassifier.Input(
             personId: personId, personName: personName,
             totalDebits: totalDebits, totalCredits: totalCredits,
             transactionCount: transactions.count, averageDebitAmount: avgDebit,
-            signals: signals, pattern: pattern
+            signals: signals, pattern: pattern,
+            dominantIntentId: dominantIntentId
         )
         let (type, confidence) = classifier.classify(input)
         guard confidence >= 0.40 else { return nil }

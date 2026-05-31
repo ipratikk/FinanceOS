@@ -74,28 +74,27 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 enriched.reserveCapacity(all.count)
                 for txn in all {
                     guard !Task.isCancelled else { return }
-                    let result = try await service.analyzeEnriched(txn, context: .empty)
-                    try? await transactionRepository.updateIntelligence(
-                        id: txn.id,
-                        categoryId: result.categoryPrediction.categoryId,
-                        merchantName: result.merchantCandidate.canonicalName
-                    )
-                    enriched.append(result)
+                    do {
+                        let result = try await service.analyzeEnriched(txn, context: .empty)
+                        try? await transactionRepository.updateIntelligence(
+                            id: txn.id,
+                            categoryId: result.categoryPrediction.categoryId,
+                            merchantName: result.merchantCandidate.canonicalName
+                        )
+                        enriched.append(result)
+                    } catch {
+                        FinanceLogger.userInterface.logError(
+                            "Pipeline: skipped transaction", caughtError: error, [:]
+                        )
+                    }
                     pipelineProcessed += 1
                 }
 
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, !enriched.isEmpty else { return }
 
                 // Stages 2–4: post-process with typed stage reporting
                 await service.postProcessBatch(enriched: enriched) { stage in
-                    Task { @MainActor in
-                        switch stage {
-                        case .graph: self.pipelineStage = .graph
-                        case .patterns: self.pipelineStage = .patterns
-                        case .relationships: self.pipelineStage = .relationships
-                        case .complete: break
-                        }
-                    }
+                    Task { @MainActor [weak self] in self?.applyPipelineStage(stage) }
                 }
 
                 // Reload rows with fresh data
@@ -110,6 +109,15 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
         pipelineTask?.cancel()
         pipelineTask = nil
         isPipelineRunning = false
+    }
+
+    private func applyPipelineStage(_ stage: PostProcessingStage) {
+        switch stage {
+        case .graph: pipelineStage = .graph
+        case .patterns: pipelineStage = .patterns
+        case .relationships: pipelineStage = .relationships
+        case .complete: break
+        }
     }
 
     func deleteTransaction(id: UUID) async {
