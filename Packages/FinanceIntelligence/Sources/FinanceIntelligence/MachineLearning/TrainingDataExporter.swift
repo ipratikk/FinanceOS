@@ -47,7 +47,7 @@ public struct TrainingDataExporter: Sendable {
     /// Whether a new export should be triggered based on count and interval.
     public func shouldExport(correctionCount: Int, daysSinceLastExport: Int) -> Bool {
         correctionCount >= Self.minimumSampleCount &&
-        daysSinceLastExport >= Self.minimumIntervalDays
+            daysSinceLastExport >= Self.minimumIntervalDays
     }
 
     // MARK: - Private

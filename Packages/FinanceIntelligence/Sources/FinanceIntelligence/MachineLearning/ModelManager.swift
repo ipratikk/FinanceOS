@@ -9,7 +9,7 @@ import NaturalLanguage
 public actor ModelManager {
     public enum ModelName: String, Sendable {
         case transactionCategoryClassifier = "TransactionCategoryClassifier"
-        case transactionKNN               = "TransactionKNNClassifier"
+        case transactionKNN = "TransactionKNNClassifier"
     }
 
     private var nlModels: [ModelName: NLModel] = [:]
