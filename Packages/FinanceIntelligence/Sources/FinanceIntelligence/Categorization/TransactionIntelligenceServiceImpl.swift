@@ -1,55 +1,23 @@
 import FinanceCore
 import Foundation
-
-/// Runtime configuration for `TransactionIntelligenceServiceImpl`.
-/// Use `.default` for production; override URLs in tests or to point at a custom model location.
-public struct IntelligenceServiceConfiguration: Sendable {
-    /// On-disk path where `UserCorrectionStore` writes its JSON corrections file.
-    public let correctionStoreURL: URL
-    /// Legacy Swift kNN store — kept for migration only. New corrections go to personalizedKNNModelURL.
-    public let personalLearnerURL: URL
-    /// On-device updatable CoreML kNN model — grows with each user correction via MLUpdateTask.
-    public let personalizedKNNModelURL: URL
-    /// Taxonomy version used during categorization. Defaults to `CategoryTaxonomy.current`.
-    public let taxonomy: CategoryTaxonomy
-
-    public init(
-        correctionStoreURL: URL,
-        personalLearnerURL: URL,
-        personalizedKNNModelURL: URL,
-        taxonomy: CategoryTaxonomy = .current
-    ) {
-        self.correctionStoreURL = correctionStoreURL
-        self.personalLearnerURL = personalLearnerURL
-        self.personalizedKNNModelURL = personalizedKNNModelURL
-        self.taxonomy = taxonomy
-    }
-
-    /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.
-    public static var `default`: IntelligenceServiceConfiguration {
-        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-        let appSupport = base.first ?? FileManager.default.temporaryDirectory
-        let dir = appSupport.appendingPathComponent("FinanceIntelligence", isDirectory: true)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return IntelligenceServiceConfiguration(
-            correctionStoreURL: dir.appendingPathComponent("corrections.json"),
-            personalLearnerURL: dir.appendingPathComponent("personal_examples.json"),
-            personalizedKNNModelURL: dir.appendingPathComponent("PersonalizedKNN.mlmodelc")
-        )
-    }
-}
+import GRDB
+import NaturalLanguage
 
 /// Concrete implementation of `TransactionIntelligenceService`.
 /// Prediction priority (highest to lowest):
 ///   1. Stored user correction
-///   2. On-device CoreML kNN (personalized via MLUpdateTask)
-///   3. Legacy Swift kNN (LocalTransactionLearner)
-///   4. Bundled NLModel text classifier
-///   5. Alias table lookup
-///   6. Deterministic keyword rules
+///   2. RuleEngine high-confidence hit (≥0.90) — also always provides intent
+///   3. On-device CoreML kNN (personalized via MLUpdateTask)
+///   4. Legacy Swift kNN (LocalTransactionLearner)
+///   5. Bundled NLModel text classifier
+///   6. Alias table lookup
+///   7. RuleEngine fallback (deterministic keyword rules)
 public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService {
     private let normalizer: MerchantNormalizer
     private let ruleCategorizer: RuleBasedCategorizer
+    private let ruleEngine: RuleEngine
+    private let personResolver: PersonResolver
+    private let personRepository: any IntelligencePersonRepository
     private let coreMLCategorizer: CoreMLCategorizer?
     /// CoreML kNN classifier updated on-device via MLUpdateTask on each user correction.
     private let personalizedClassifier: PersonalizedClassifier?
@@ -58,6 +26,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let insightEngine: SpendingInsightEngine
     private let extractor: TransactionFeatureExtractor
     private let taxonomy: CategoryTaxonomy
+    private let descriptionGenerator: DescriptionGenerator
+    /// Background pipeline: graph, recurring, relationships. Nil when no databaseQueue provided.
+    private let postProcessingPipeline: PostProcessingPipeline?
 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
@@ -65,12 +36,34 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         learner = LocalTransactionLearner(personalStoreURL: configuration.personalLearnerURL)
         normalizer = MerchantNormalizer()
         ruleCategorizer = RuleBasedCategorizer(taxonomy: configuration.taxonomy)
+        ruleEngine = RuleEngine(taxonomy: configuration.taxonomy)
+        personResolver = PersonResolver()
+        if let queue = configuration.databaseQueue {
+            personRepository = GRDBIntelligencePersonRepository(dbQueue: queue)
+        } else {
+            personRepository = PersonEntityStore()
+        }
         coreMLCategorizer = await CoreMLCategorizer.load()
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
         )
         insightEngine = SpendingInsightEngine()
         extractor = TransactionFeatureExtractor()
+        descriptionGenerator = DescriptionGenerator()
+
+        if let queue = configuration.databaseQueue {
+            let graphRepo = GRDBGraphRepository(dbWriter: queue)
+            let graphStore = await GraphStore(repository: graphRepo)
+            let recurringRepo = GRDBRecurringPatternRepository(dbWriter: queue)
+            let relationshipRepo = GRDBRelationshipRepository(dbWriter: queue)
+            postProcessingPipeline = PostProcessingPipeline(
+                graphStore: graphStore,
+                recurringRepo: recurringRepo,
+                relationshipRepo: relationshipRepo
+            )
+        } else {
+            postProcessingPipeline = nil
+        }
     }
 
     public func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction {
@@ -156,6 +149,68 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
     public func generateInsights(for transactions: [Transaction]) async throws -> [TransactionInsight] {
         insightEngine.generate(for: transactions)
+    }
+
+    public func analyzeEnriched(
+        _ transaction: Transaction,
+        context: IntelligenceContext
+    ) async throws -> EnrichedTransaction {
+        let ctx = FeatureExtractionContext(ledgerKind: context.ledgerKind, institution: context.institution)
+        let features = extractor.extract(from: transaction, context: ctx)
+        let merchant = normalizer.normalize(transaction.description)
+        let ruleResult = ruleEngine.evaluate(features)
+
+        let categoryPrediction: CategoryPrediction
+        let isUserCorrected: Bool
+
+        if let correction = await correctionStore.correction(for: transaction.id) {
+            categoryPrediction = correctionPrediction(correction, features: features)
+            isUserCorrected = true
+        } else if let ruleCat = ruleResult.categoryPrediction, ruleCat.confidence >= 0.90 {
+            categoryPrediction = ruleCat
+            isUserCorrected = false
+        } else {
+            categoryPrediction = await predictCategory(
+                features: features,
+                merchantCategoryId: merchant.categoryId
+            )
+            isUserCorrected = false
+        }
+
+        let resolvedEntities = await resolveEntities(
+            description: transaction.description,
+            date: transaction.postedAt
+        )
+
+        let descContext = DescriptionContext(
+            merchantName: merchant.canonicalName,
+            intent: ruleResult.intentPrediction.intent,
+            isDebit: transaction.transactionType == .debit
+        )
+        let humanDescription = await descriptionGenerator.generate(from: descContext)
+
+        return EnrichedTransaction(
+            transaction: transaction,
+            merchantCandidate: merchant,
+            categoryPrediction: categoryPrediction,
+            intentPrediction: ruleResult.intentPrediction,
+            features: features,
+            isUserCorrected: isUserCorrected,
+            pipelineVersion: "1.0",
+            resolvedEntities: resolvedEntities,
+            humanDescription: humanDescription
+        )
+    }
+
+    /// Run background post-processing on the full enriched corpus.
+    /// Call after each import batch with ALL enriched transactions (not just the batch)
+    /// so recurring detection sees the full history across all cadences (daily→yearly).
+    public func postProcessBatch(
+        enriched: [EnrichedTransaction],
+        onStageChange: (@Sendable (PostProcessingStage) -> Void)? = nil
+    ) async {
+        guard let pipeline = postProcessingPipeline else { return }
+        await pipeline.run(enriched: enriched, onStageChange: onStageChange)
     }
 
     public func learn(
@@ -300,6 +355,21 @@ private extension TransactionIntelligenceServiceImpl {
 
         // Priority 5: deterministic rules
         return ruleCategorizer.categorize(features)
+    }
+
+    func resolveEntities(description: String, date: Date) async -> ResolvedEntities? {
+        guard let personResult = personResolver.resolve(description),
+              personResult.confidence >= 0.70 else { return nil }
+        do {
+            let person = try await personRepository.findOrCreate(
+                name: personResult.name,
+                upiHandle: personResult.upiHandle,
+                date: date
+            )
+            return ResolvedEntities(merchantId: nil, personId: person.id)
+        } catch {
+            return nil
+        }
     }
 
     func correctionPrediction(_ correction: UserCorrection, features: TransactionFeatures) -> CategoryPrediction {

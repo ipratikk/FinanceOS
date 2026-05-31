@@ -1,5 +1,6 @@
 import FinanceCore
 import Foundation
+import GRDB
 
 /// Caller-supplied context that the intelligence pipeline uses to improve predictions.
 /// Providing `ledgerKind` and `institution` lets the feature extractor add stronger signals.
@@ -39,4 +40,20 @@ public protocol TransactionIntelligenceService: Sendable {
         correctedMerchant: String?,
         previousPrediction: CategoryPrediction?
     ) async throws
+
+    /// Analyzes a transaction and returns an `EnrichedTransaction` including intent,
+    /// resolved entities, and a human-readable description from FallbackGenerator.
+    /// Prefer this over `analyze()` for new call sites.
+    func analyzeEnriched(
+        _ transaction: Transaction,
+        context: IntelligenceContext
+    ) async throws -> EnrichedTransaction
+
+    /// Run background post-processing on the FULL enriched corpus.
+    /// Stages: .graph → .patterns → .relationships → .complete.
+    /// onStageChange is called at each transition for progress UI and audit logging.
+    func postProcessBatch(
+        enriched: [EnrichedTransaction],
+        onStageChange: (@Sendable (PostProcessingStage) -> Void)?
+    ) async
 }
