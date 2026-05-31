@@ -187,24 +187,44 @@ struct GraphBuilderTests {
 
     private func makeDiverseBatch(ledgerId: UUID) -> [EnrichedTransaction] {
         var out: [EnrichedTransaction] = []
-        for _ in 0..<12 {
-            let txn = makeTxn(description: "UPI-SPOTIFY", amount: 13900,
-                              type: .debit, ledgerId: ledgerId, categoryId: "subscriptions")
+        for _ in 0 ..< 12 {
+            let txn = makeTxn(
+                description: "UPI-SPOTIFY",
+                amount: 13900,
+                type: .debit,
+                ledgerId: ledgerId,
+                categoryId: "subscriptions"
+            )
             out.append(makeEnriched(txn: txn, merchant: "Spotify", categoryId: "subscriptions"))
         }
-        for _ in 0..<12 {
-            let txn = makeTxn(description: "NEFT CR-PAYPAL SALARY", amount: 15_000_000,
-                              type: .credit, ledgerId: ledgerId, categoryId: "income")
+        for _ in 0 ..< 12 {
+            let txn = makeTxn(
+                description: "NEFT CR-PAYPAL SALARY",
+                amount: 15_000_000,
+                type: .credit,
+                ledgerId: ledgerId,
+                categoryId: "income"
+            )
             out.append(makeEnriched(txn: txn, merchant: "PayPal", categoryId: "income"))
         }
-        for _ in 0..<10 {
-            let txn = makeTxn(description: "UPI-BLINKIT", amount: 50000,
-                              type: .debit, ledgerId: ledgerId, categoryId: "groceries")
+        for _ in 0 ..< 10 {
+            let txn = makeTxn(
+                description: "UPI-BLINKIT",
+                amount: 50000,
+                type: .debit,
+                ledgerId: ledgerId,
+                categoryId: "groceries"
+            )
             out.append(makeEnriched(txn: txn, merchant: "Blinkit", categoryId: "groceries"))
         }
-        for i in 0..<16 {
-            let txn = makeTxn(description: "UPI-PERSON-\(i)", amount: 100_000,
-                              type: .debit, ledgerId: ledgerId, categoryId: "transfers")
+        for i in 0 ..< 16 {
+            let txn = makeTxn(
+                description: "UPI-PERSON-\(i)",
+                amount: 100_000,
+                type: .debit,
+                ledgerId: ledgerId,
+                categoryId: "transfers"
+            )
             out.append(makeEnriched(txn: txn, merchant: "Person \(i)", categoryId: "transfers"))
         }
         return out
