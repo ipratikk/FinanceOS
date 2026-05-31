@@ -35,10 +35,10 @@ public struct GraphBuilder: Sendable {
     private func addPersonOrMerchantEdge(txnNode: GraphNode, enriched: EnrichedTransaction) async throws {
         let txn = enriched.transaction
         let edgeType: GraphEdge.EdgeType = txn.transactionType == .debit ? .paidTo : .paidFrom
-        if let personId = txn.resolvedPersonId {
+        if let personId = enriched.resolvedEntities?.personId {
             let person = try await store.upsertNode(GraphNode(
                 nodeType: .person,
-                externalId: personId,
+                externalId: personId.uuidString,
                 label: enriched.merchantCandidate.canonicalName
             ))
             _ = try await store.upsertEdge(GraphEdge(
@@ -82,11 +82,5 @@ public struct GraphBuilder: Sendable {
             fromNodeId: txnNode.id, toNodeId: accountNode.id,
             edgeType: .belongsTo, lastObservedAt: txn.postedAt
         ))
-    }
-}
-
-private extension Transaction {
-    var resolvedPersonId: String? {
-        nil
     }
 }

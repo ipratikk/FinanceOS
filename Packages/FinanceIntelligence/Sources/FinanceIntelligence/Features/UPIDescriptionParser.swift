@@ -29,13 +29,16 @@ enum UPIDescriptionParser {
         ".rzp", // Razorpay infix (e.g. blinkit104020.rzp@rxairtel)
         "bdsi@", // BillDesk — Apple, Spotify, Hotstar use this
         ".payu@", // PayU gateway (merchants only)
-        "@ptybl" // Paytm merchant gateway (distinct from personal @paytm)
+        "@ptybl", // Paytm merchant gateway (distinct from personal @paytm)
+        "@ptys", // Paytm Bharat QR / SoundBox merchant gateway
+        "@okbizaxis" // Axis Bank business UPI (distinct from personal @okaxis)
     ]
 
     /// Keywords in merchant name segment that indicate business
     private static let businessNameKeywords = [
         "marketplace", "services", "pvt", "ltd", "private limited", "llp",
         "retail", "technologies", "payments", "enterprises", "solutions",
+        "traders", "trading", "agency", "distributors", "supplier",
         "swiggy", "zomato", "blinkit", "zepto", "ola", "uber", "amazon",
         "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio",
         // Indian fintech/payments
@@ -44,8 +47,9 @@ enum UPIDescriptionParser {
         // Financial institutions & credit
         "american express", "amex", "hdfc", "icici", "lombard",
         "insurance", "bank", "credit card", "express",
-        // Retail/fashion
+        // Retail/fashion/food
         "hennes", "h and m", "ikea", "family super market",
+        "bawarchi", "mcdonald", "kfc", "subway", "pizza hut", "haldiram",
         // Utilities/telecom
         "airtel", "jio", "livpure", "dominos", "domino", "magicpin"
     ]
@@ -117,11 +121,12 @@ private extension UPIDescriptionParser {
         // Format: IMPS-TXNID-PARTY NAME-BANKCODE
         let parts = raw.components(separatedBy: "-")
         let partyName = parts.count > 2 ? parts[2] : raw
+        let isBusiness = isMerchantPayment(name: partyName, vpa: nil)
         return ParsedUPI(
             merchantName: cleanMerchantSegment(partyName),
             vpa: nil,
-            isPersonTransfer: true,
-            isMerchantPayment: false
+            isPersonTransfer: !isBusiness,
+            isMerchantPayment: isBusiness
         )
     }
 
@@ -129,10 +134,11 @@ private extension UPIDescriptionParser {
         let lower = name.lowercased()
         let vpaLower = vpa?.lowercased() ?? ""
 
-        // Phone-number VPA prefix → always a person (e.g. 9051481667@okhdfcbank)
-        if let vpaPrefix = vpa?.components(separatedBy: "@").first,
-           vpaPrefix.count == 10, vpaPrefix.allSatisfy(\.isNumber) {
-            return false
+        // Phone-number VPA prefix → always a person.
+        // Handles 10-digit (9051481667@upi) and 12-digit with 91 country code (918129588782@federal).
+        if let vpaPrefix = vpa?.components(separatedBy: "@").first, vpaPrefix.allSatisfy(\.isNumber) {
+            if vpaPrefix.count == 10 { return false }
+            if vpaPrefix.count == 12, vpaPrefix.hasPrefix("91") { return false }
         }
 
         // Merchant gateway VPA tokens — only true payment gateways, not personal banks

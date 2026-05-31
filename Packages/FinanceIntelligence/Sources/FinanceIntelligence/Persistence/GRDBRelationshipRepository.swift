@@ -20,8 +20,21 @@ public struct GRDBRelationshipRepository: RelationshipRepository {
     }
 
     public func save(_ relationship: Relationship) async throws {
-        let grdb = GRDBRelationship(from: relationship)
-        try await dbWriter.write { db in try grdb.upsert(db) }
+        try await dbWriter.write { db in
+            // Stable key: (toPersonId, type). RelationshipEngine assigns a fresh UUID each run.
+            let existing = try GRDBRelationship
+                .filter(Column("toPersonId") == relationship.toPersonId && Column("relationshipType") == relationship
+                    .type.rawValue)
+                .fetchOne(db)
+            if let prior = existing {
+                var updated = GRDBRelationship(from: relationship)
+                updated.id = prior.id
+                updated.createdAt = prior.createdAt
+                try updated.update(db)
+            } else {
+                try GRDBRelationship(from: relationship).insert(db)
+            }
+        }
     }
 
     public func delete(id: UUID) async throws {
