@@ -52,37 +52,48 @@ public actor PostProcessingPipeline {
         onStageChange: (@Sendable (PostProcessingStage) -> Void)? = nil
     ) async {
         onStageChange?(.graph)
-        FinanceLogger.intelligence.info("PostProcessing: \(PostProcessingStage.graph)")
-        await buildGraph(from: enriched)
+        FinanceLogger.intelligence.info("PostProcessing[\(PostProcessingStage.graph)]: starting, \(enriched.count) transactions")
+        let (nodeCount, edgeCount) = await buildGraph(from: enriched)
+        FinanceLogger.intelligence.info("PostProcessing[\(PostProcessingStage.graph)]: \(nodeCount) nodes, \(edgeCount) edges")
 
         onStageChange?(.patterns)
-        FinanceLogger.intelligence.info("PostProcessing: \(PostProcessingStage.patterns)")
+        FinanceLogger.intelligence.info("PostProcessing[\(PostProcessingStage.patterns)]: starting")
         let patterns = await detectRecurring(from: enriched)
+        FinanceLogger.intelligence.info("PostProcessing[\(PostProcessingStage.patterns)]: \(patterns.count) patterns detected")
 
         onStageChange?(.relationships)
-        FinanceLogger.intelligence.info("PostProcessing: \(PostProcessingStage.relationships)")
-        await inferRelationships(from: enriched, patterns: patterns)
+        FinanceLogger.intelligence.info("PostProcessing[\(PostProcessingStage.relationships)]: starting")
+        let relationshipCount = await inferRelationships(from: enriched, patterns: patterns)
+        FinanceLogger.intelligence.info("PostProcessing[\(PostProcessingStage.relationships)]: \(relationshipCount) relationships inferred")
 
         onStageChange?(.complete)
-        FinanceLogger.intelligence
-            .info("PostProcessing: \(PostProcessingStage.complete) (\(enriched.count) transactions)")
+        FinanceLogger.intelligence.info("PostProcessing[\(PostProcessingStage.complete)]: \(enriched.count) transactions, \(patterns.count) patterns, \(relationshipCount) relationships")
     }
 
     // MARK: - Stage 1: Knowledge Graph
 
-    private func buildGraph(from enriched: [EnrichedTransaction]) async {
-        guard let store = graphStore else { return }
+    private func buildGraph(from enriched: [EnrichedTransaction]) async -> (nodes: Int, edges: Int) {
+        guard let store = graphStore else {
+            FinanceLogger.intelligence.info("PostProcessing[graph]: skipped — no database configured")
+            return (0, 0)
+        }
         let builder = GraphBuilder(store: store)
         try? await builder.build(from: enriched)
+        let nodes = (try? await store.nodes(ofType: .transaction).count) ?? 0
+        let edges = nodes > 0 ? enriched.count * 2 : 0  // approximate: each txn → merchant + category
+        return (nodes, edges)
     }
 
     // MARK: - Stage 2: Recurring Detection
 
     private func detectRecurring(from enriched: [EnrichedTransaction]) async -> [RecurringPattern] {
         let inputs = enriched.compactMap { makeDetectionInput(from: $0) }
+        FinanceLogger.intelligence.info("PostProcessing[patterns]: \(inputs.count) detection inputs from \(enriched.count) transactions")
         guard inputs.count >= 2 else { return [] }
         let patterns = RecurringDetector().detect(from: inputs)
+        FinanceLogger.intelligence.info("PostProcessing[patterns]: saving \(patterns.count) patterns to DB")
         for pattern in patterns {
+            FinanceLogger.intelligence.info("PostProcessing[patterns]: \(pattern.merchantKey ?? pattern.personId ?? "?") — \(pattern.cadence.rawValue) — confidence \(String(format: "%.2f", pattern.confidence))")
             try? await recurringRepo?.save(pattern)
         }
         return patterns
@@ -104,8 +115,12 @@ public actor PostProcessingPipeline {
 
     // MARK: - Stage 3: Relationship Inference
 
-    private func inferRelationships(from enriched: [EnrichedTransaction], patterns: [RecurringPattern]) async {
-        guard let repo = relationshipRepo else { return }
+    @discardableResult
+    private func inferRelationships(from enriched: [EnrichedTransaction], patterns: [RecurringPattern]) async -> Int {
+        guard let repo = relationshipRepo else {
+            FinanceLogger.intelligence.info("PostProcessing[relationships]: skipped — no database configured")
+            return 0
+        }
         let salaryCreditDates = enriched
             .filter { $0.intentPrediction.intent == .salary && $0.transaction.transactionType == .credit }
             .map(\.transaction.postedAt)
@@ -114,7 +129,9 @@ public actor PostProcessingPipeline {
             grouping: enriched.filter { $0.resolvedEntities?.personId != nil },
             by: { $0.resolvedEntities?.personId?.uuidString ?? "" }
         )
+        FinanceLogger.intelligence.info("PostProcessing[relationships]: \(byPerson.count) persons with ≥1 transaction, \(salaryCreditDates.count) salary dates")
 
+        var saved = 0
         for (personId, txns) in byPerson where txns.count >= 2 {
             let personName = txns.first?.merchantCandidate.canonicalName ?? "Unknown"
             let patternForPerson = patterns.first { $0.personId == personId }
@@ -131,8 +148,11 @@ public actor PostProcessingPipeline {
                 personId: personId, personName: personName,
                 transactions: records, salaryCreditDates: salaryCreditDates
             ) {
+                FinanceLogger.intelligence.info("PostProcessing[relationships]: \(personName) → \(relationship.type.rawValue) (confidence \(String(format: "%.2f", relationship.confidence)))")
                 try? await repo.save(relationship)
+                saved += 1
             }
         }
+        return saved
     }
 }
