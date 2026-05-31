@@ -1,7 +1,6 @@
+@testable import FinanceIntelligence
 import Foundation
 import Testing
-
-@testable import FinanceIntelligence
 
 @Suite("DescriptionGenerator — fallback templates and description generation")
 struct DescriptionGeneratorTests {

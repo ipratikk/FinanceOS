@@ -4,7 +4,14 @@ import Foundation
 /// Uses brute-force cosine similarity (dot product on L2-normalized vectors).
 /// Viable for up to ~10,000 merchants at 64 dimensions (~2.5 MB).
 public struct EmbeddingIndex: Sendable {
-    private struct Entry: Sendable {
+    /// A nearest-neighbor result with entity identity and cosine similarity score.
+    public struct NearestResult: Sendable {
+        public let entityId: String
+        public let label: String
+        public let similarity: Float
+    }
+
+    private struct Entry {
         let entityId: String
         let label: String
         let vector: [Float]
@@ -14,7 +21,9 @@ public struct EmbeddingIndex: Sendable {
 
     public init() {}
 
-    public var count: Int { entries.count }
+    public var count: Int {
+        entries.count
+    }
 
     /// Add or replace a vector for the given entity.
     public mutating func upsert(entityId: String, label: String, vector: [Float]) {
@@ -29,16 +38,13 @@ public struct EmbeddingIndex: Sendable {
 
     /// Find the top-k nearest neighbors by cosine similarity (dot product of L2-normalized vectors).
     /// Returns results sorted by similarity descending.
-    public func nearest(to query: [Float], topK: Int = 5) -> [(entityId: String, label: String, similarity: Float)] {
+    public func nearest(to query: [Float], topK: Int = 5) -> [NearestResult] {
         guard !entries.isEmpty, query.count == entries.first?.vector.count else { return [] }
-        let scored = entries.map { entry -> (String, String, Float) in
-            let sim = dotProduct(query, entry.vector)
-            return (entry.entityId, entry.label, sim)
-        }
-        return scored
-            .sorted { $0.2 > $1.2 }
+        return entries
+            .map { NearestResult(entityId: $0.entityId, label: $0.label, similarity: dotProduct(query, $0.vector)) }
+            .sorted { $0.similarity > $1.similarity }
             .prefix(topK)
-            .map { (entityId: $0.0, label: $0.1, similarity: $0.2) }
+            .map(\.self)
     }
 
     /// Cosine similarity between two L2-normalized vectors = dot product.

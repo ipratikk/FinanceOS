@@ -9,50 +9,43 @@ public struct FallbackGenerator: Sendable {
     /// Generate a human-readable description from structured context.
     /// Always returns a non-empty string.
     public func generate(from context: DescriptionContext) -> String {
-        let cadencePrefix = cadenceString(context.recurringCadence, isRecurring: context.isRecurring)
+        recurringIntentDescription(context) ?? simpleIntentDescription(context)
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity
+    private func recurringIntentDescription(_ context: DescriptionContext) -> String? {
+        let p = cadenceString(context.recurringCadence, isRecurring: context.isRecurring)
+        let m = context.merchantName
         switch context.intent {
-        case .salary:
-            return "\(cadencePrefix)salary credit from \(context.merchantName)"
-        case .rent:
-            return "\(cadencePrefix)rent payment to \(context.merchantName)"
-        case .investment:
-            return "\(cadencePrefix)investment via \(context.merchantName)"
-        case .mutualFundSIP:
-            return "\(cadencePrefix)mutual fund SIP — \(context.merchantName)"
-        case .insurance:
-            return "\(cadencePrefix)\(context.merchantName) insurance premium"
-        case .subscription:
-            return "\(cadencePrefix)\(context.merchantName) subscription"
-        case .creditCardPayment:
-            return "\(cadencePrefix)\(context.merchantName) credit card payment"
-        case .loanPayment:
-            return "\(cadencePrefix)loan payment — \(context.merchantName)"
-        case .cashWithdrawal:
-            return "ATM cash withdrawal"
-        case .refund:
-            return "Refund from \(context.merchantName)"
-        case .cashback:
-            return "Cashback from \(context.merchantName)"
-        case .transfer:
-            return transferDescription(context)
-        case .interestPayment:
-            return "\(cadencePrefix)interest payment — \(context.merchantName)"
-        case .utilityBill:
-            return "\(cadencePrefix)\(context.merchantName) utility bill"
-        case .shopping:
-            return "Purchase at \(context.merchantName)"
-        case .groceries:
-            return "Groceries — \(context.merchantName)"
-        case .food:
-            return "Food order — \(context.merchantName)"
-        case .travel:
-            return "Travel — \(context.merchantName)"
-        case .healthcare:
-            return "Healthcare — \(context.merchantName)"
-        case .income:
-            return "Credit from \(context.merchantName)"
-        case .unknown:
-            return unknownDescription(context)
+        case .salary: return "\(p)salary credit from \(m)"
+        case .rent: return "\(p)rent payment to \(m)"
+        case .investment: return "\(p)investment via \(m)"
+        case .mutualFundSIP: return "\(p)mutual fund SIP — \(m)"
+        case .insurance: return "\(p)\(m) insurance premium"
+        case .subscription: return "\(p)\(m) subscription"
+        case .creditCardPayment: return "\(p)\(m) credit card payment"
+        case .loanPayment: return "\(p)loan payment — \(m)"
+        case .interestPayment: return "\(p)interest payment — \(m)"
+        case .utilityBill: return "\(p)\(m) utility bill"
+        default: return nil
+        }
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity
+    private func simpleIntentDescription(_ context: DescriptionContext) -> String {
+        let m = context.merchantName
+        switch context.intent {
+        case .cashWithdrawal: return "ATM cash withdrawal"
+        case .refund: return "Refund from \(m)"
+        case .cashback: return "Cashback from \(m)"
+        case .transfer: return transferDescription(context)
+        case .shopping: return "Purchase at \(m)"
+        case .groceries: return "Groceries — \(m)"
+        case .food: return "Food order — \(m)"
+        case .travel: return "Travel — \(m)"
+        case .healthcare: return "Healthcare — \(m)"
+        case .income: return "Credit from \(m)"
+        default: return unknownDescription(context)
         }
     }
 
@@ -61,11 +54,11 @@ public struct FallbackGenerator: Sendable {
     private func cadenceString(_ cadence: RecurringCadence?, isRecurring: Bool) -> String {
         guard isRecurring, let cadence else { return "" }
         switch cadence {
-        case .weekly:    return "Weekly "
-        case .biWeekly:  return "Bi-weekly "
-        case .monthly:   return "Monthly "
+        case .weekly: return "Weekly "
+        case .biWeekly: return "Bi-weekly "
+        case .monthly: return "Monthly "
         case .quarterly: return "Quarterly "
-        case .yearly:    return "Annual "
+        case .yearly: return "Annual "
         case .irregular: return ""
         }
     }
@@ -77,12 +70,12 @@ public struct FallbackGenerator: Sendable {
                 : "Transfer from \(context.merchantName)"
         }
         switch rel {
-        case .landlord:     return "Rent payment to \(context.merchantName)"
-        case .employer:     return "Salary from \(context.merchantName)"
-        case .family:       return "Family transfer — \(context.merchantName)"
-        case .friend:       return "Transfer to \(context.merchantName)"
+        case .landlord: return "Rent payment to \(context.merchantName)"
+        case .employer: return "Salary from \(context.merchantName)"
+        case .family: return "Family transfer — \(context.merchantName)"
+        case .friend: return "Transfer to \(context.merchantName)"
         case .reimbursement: return "Reimbursement from \(context.merchantName)"
-        default:            return "Transfer — \(context.merchantName)"
+        default: return "Transfer — \(context.merchantName)"
         }
     }
 

@@ -28,7 +28,9 @@ public struct EmbeddingGenerator: @unchecked Sendable {
         var count = 0
         for token in tokens {
             if let vector = embedding.vector(for: token), vector.count == Self.dimension {
-                for (idx, val) in vector.enumerated() { sum[idx] += val }
+                for (idx, val) in vector.enumerated() {
+                    sum[idx] += val
+                }
                 count += 1
             }
         }
@@ -43,7 +45,7 @@ public struct EmbeddingGenerator: @unchecked Sendable {
         var tokens: [String] = []
         let tagger = NLTagger(tagSchemes: [.tokenType])
         tagger.string = text.lowercased()
-        tagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .tokenType) { _, range in
+        tagger.enumerateTags(in: text.startIndex ..< text.endIndex, unit: .word, scheme: .tokenType) { _, range in
             let token = String(text[range]).lowercased()
             if token.count >= 2 { tokens.append(token) }
             return true

@@ -1,7 +1,6 @@
+@testable import FinanceIntelligence
 import Foundation
 import Testing
-
-@testable import FinanceIntelligence
 
 @Suite("MachineLearning — embeddings, index, training export")
 struct MachineLearningTests {
@@ -12,7 +11,7 @@ struct MachineLearningTests {
         var index = EmbeddingIndex()
         let v1: [Float] = [1, 0, 0, 0]
         let v2: [Float] = [0, 1, 0, 0]
-        let v3: [Float] = [0.9, 0.1, 0, 0]  // closest to v1
+        let v3: [Float] = [0.9, 0.1, 0, 0] // closest to v1
 
         index.upsert(entityId: "e1", label: "Blinkit", vector: v1)
         index.upsert(entityId: "e2", label: "Spotify", vector: v2)
@@ -20,7 +19,7 @@ struct MachineLearningTests {
 
         let results = index.nearest(to: v1, topK: 2)
         #expect(results.first?.entityId == "e1")
-        #expect(results.first?.similarity ?? 0 > 0.9)
+        #expect((results.first?.similarity ?? 0) > 0.9)
     }
 
     @Test("Remove entry removes it from nearest neighbor results")
@@ -103,16 +102,21 @@ struct MachineLearningTests {
         let csv = exporter.exportCSVUnrestricted(from: corrections)
         let lines = csv.split(separator: "\n", omittingEmptySubsequences: false)
         #expect(lines.first == "text,label")
-        #expect(lines.count == 4)  // header + 3 rows
+        #expect(lines.count == 4) // header + 3 rows
     }
 
     @Test("CSV escapes commas in merchant names")
     func csvEscapesCommas() {
         let exporter = TrainingDataExporter()
-        let correction = UserCorrection(transactionId: UUID(),
-            originalCategory: nil, correctedCategory: "dining",
-            originalMerchant: nil, correctedMerchant: "Café, Corner",
-            originalConfidence: nil, modelVersion: nil, isTrainingEligible: true
+        let correction = UserCorrection(
+            transactionId: UUID(),
+            originalCategory: nil,
+            correctedCategory: "dining",
+            originalMerchant: nil,
+            correctedMerchant: "Café, Corner",
+            originalConfidence: nil,
+            modelVersion: nil,
+            isTrainingEligible: true
         )
         let csv = exporter.exportCSVUnrestricted(from: [correction])
         #expect(csv.contains("\"café, corner\""))
@@ -137,7 +141,7 @@ struct MachineLearningTests {
     // MARK: - ModelManager
 
     @Test("ModelManager availability check does not crash")
-    func modelManagerAvailability() async {
+    func modelManagerAvailability() {
         let available = ModelManager.shared.isAvailable(.transactionCategoryClassifier)
         // May be true or false depending on bundle — just must not crash
         _ = available
@@ -146,7 +150,7 @@ struct MachineLearningTests {
     // MARK: - Helpers
 
     private func makeSampleCorrections(count: Int) -> [UserCorrection] {
-        (0..<count).map { i in
+        (0 ..< count).map { i in
             UserCorrection(
                 transactionId: UUID(),
                 originalCategory: "transfers", correctedCategory: "groceries",
