@@ -49,8 +49,11 @@ public protocol TransactionIntelligenceService: Sendable {
         context: IntelligenceContext
     ) async throws -> EnrichedTransaction
 
-    /// Run background post-processing on the FULL enriched corpus after each import batch.
-    /// Stages: knowledge graph → recurring patterns (≥2 occurrences, all cadences) → relationships.
-    /// Pass all enriched transactions (not just new ones) so recurring detection sees full history.
-    func postProcessBatch(enriched: [EnrichedTransaction]) async
+    /// Run background post-processing on the FULL enriched corpus.
+    /// Stages: .graph → .patterns → .relationships → .complete.
+    /// onStageChange is called at each transition for progress UI and audit logging.
+    func postProcessBatch(
+        enriched: [EnrichedTransaction],
+        onStageChange: (@Sendable (PostProcessingStage) -> Void)?
+    ) async
 }

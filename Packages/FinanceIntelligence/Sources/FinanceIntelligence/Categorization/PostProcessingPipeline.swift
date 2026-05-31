@@ -1,5 +1,24 @@
+import FinanceCore
 import Foundation
 import GRDB
+
+/// Stage identifier for the post-processing pipeline.
+/// Used in progress callbacks and audit logs.
+public enum PostProcessingStage: String, Sendable, CustomStringConvertible {
+    case graph = "knowledge_graph"
+    case patterns = "recurring_patterns"
+    case relationships = "relationship_inference"
+    case complete
+
+    public var description: String {
+        switch self {
+        case .graph: return "Building Knowledge Graph"
+        case .patterns: return "Detecting Recurring Patterns"
+        case .relationships: return "Inferring Relationships"
+        case .complete: return "Complete"
+        }
+    }
+}
 
 /// Runs background intelligence enrichment after a transaction import batch:
 ///   1. Knowledge Graph update (PAID_TO/CLASSIFIED_AS edges)
@@ -26,10 +45,27 @@ public actor PostProcessingPipeline {
     /// Run all post-processing stages on a corpus of enriched transactions.
     /// - Parameter enriched: The FULL enriched transaction history (not just the latest batch)
     ///   so recurring detection can see patterns across time.
-    public func run(enriched: [EnrichedTransaction]) async {
+    /// Run all post-processing stages with typed stage reporting.
+    /// - Parameter onStageChange: Called at the start of each stage for progress UI and logging.
+    public func run(
+        enriched: [EnrichedTransaction],
+        onStageChange: (@Sendable (PostProcessingStage) -> Void)? = nil
+    ) async {
+        onStageChange?(.graph)
+        FinanceLogger.intelligence.info("PostProcessing: \(PostProcessingStage.graph)")
         await buildGraph(from: enriched)
+
+        onStageChange?(.patterns)
+        FinanceLogger.intelligence.info("PostProcessing: \(PostProcessingStage.patterns)")
         let patterns = await detectRecurring(from: enriched)
+
+        onStageChange?(.relationships)
+        FinanceLogger.intelligence.info("PostProcessing: \(PostProcessingStage.relationships)")
         await inferRelationships(from: enriched, patterns: patterns)
+
+        onStageChange?(.complete)
+        FinanceLogger.intelligence
+            .info("PostProcessing: \(PostProcessingStage.complete) (\(enriched.count) transactions)")
     }
 
     // MARK: - Stage 1: Knowledge Graph

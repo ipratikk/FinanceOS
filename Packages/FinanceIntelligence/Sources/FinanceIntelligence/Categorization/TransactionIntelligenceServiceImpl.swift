@@ -249,9 +249,12 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     /// Run background post-processing on the full enriched corpus.
     /// Call after each import batch with ALL enriched transactions (not just the batch)
     /// so recurring detection sees the full history across all cadences (daily→yearly).
-    public func postProcessBatch(enriched: [EnrichedTransaction]) async {
+    public func postProcessBatch(
+        enriched: [EnrichedTransaction],
+        onStageChange: (@Sendable (PostProcessingStage) -> Void)? = nil
+    ) async {
         guard let pipeline = postProcessingPipeline else { return }
-        await pipeline.run(enriched: enriched)
+        await pipeline.run(enriched: enriched, onStageChange: onStageChange)
     }
 
     public func learn(

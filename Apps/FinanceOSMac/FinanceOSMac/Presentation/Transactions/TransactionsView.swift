@@ -70,6 +70,26 @@ struct TransactionsView: View {
         } message: {
             if let error = viewModel.deleteError { Text(error) }
         }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: { viewModel.runIntelligencePipeline() }) {
+                    Label("Run Intelligence", systemImage: "sparkles")
+                }
+                .disabled(viewModel.isPipelineRunning || viewModel.transactionRows.isEmpty)
+                .help("Analyze all transactions: categorize, build knowledge graph, detect patterns")
+            }
+        }
+        .overlay {
+            if viewModel.isPipelineRunning {
+                IntelligencePipelineOverlay(
+                    processed: viewModel.pipelineProcessed,
+                    total: viewModel.pipelineTotal,
+                    currentStage: viewModel.pipelineStage,
+                    onCancel: { viewModel.cancelPipeline() }
+                )
+                .zIndex(100)
+            }
+        }
     }
 }
 

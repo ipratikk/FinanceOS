@@ -43,7 +43,7 @@ actor CategorizationScheduler {
             }
 
             // Post-process: graph + recurring (any cadence, ≥2 occurrences) + relationships
-            await intelligenceService.postProcessBatch(enriched: enriched)
+            await intelligenceService.postProcessBatch(enriched: enriched, onStageChange: nil)
         } catch {
             FinanceLogger.transactions.logError("Background categorization failed", caughtError: error, [:])
         }
