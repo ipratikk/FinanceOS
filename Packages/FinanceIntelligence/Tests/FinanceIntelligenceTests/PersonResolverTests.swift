@@ -44,9 +44,11 @@ func personResolver_upi_multiWordName() {
 
 @Test
 func personResolver_upi_lowercaseHandle() {
+    // @paytm is used by persons for personal Paytm wallets (johndoe@paytm)
+    // as well as merchants — we cannot exclude by VPA bank suffix alone.
+    // Name-based detection ("john doe") does not match any businessNameKeywords.
     let result = resolver.resolve("UPI-JOHN DOE-johndoe@paytm-PAYTM-TXN333")
-    // paytm VPA → business suffix → merchant, not person
-    #expect(result == nil)
+    #expect(result?.name == "John Doe")
 }
 
 @Test
