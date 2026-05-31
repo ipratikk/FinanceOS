@@ -1,7 +1,6 @@
+@testable import FinanceIntelligence
 import Foundation
 import Testing
-
-@testable import FinanceIntelligence
 
 @Suite("RecurringDetector — cadence and pattern detection")
 struct RecurringDetectorTests {
@@ -10,24 +9,30 @@ struct RecurringDetectorTests {
     private let schedule = ScheduleInference()
 
     @Test("Monthly Spotify: 12 occurrences → monthly cadence ≥ 0.85 confidence")
-    func spotifyMonthlyRecurring() {
-        let dates = (0..<12).map { Calendar.current.date(byAdding: .month, value: -$0, to: Date())! }
+    func spotifyMonthlyRecurring() throws {
+        let cal = Calendar.current
+        let dates = try (0 ..< 12).map { i -> Date in
+            try #require(cal.date(byAdding: .month, value: -i, to: Date()))
+        }
         let result = analyzer.analyzeCadence(dates: dates)
         #expect(result?.cadence == .monthly)
         #expect((result?.confidence ?? 0) >= 0.85)
     }
 
     @Test("Weekly transfers: 8 occurrences → weekly cadence")
-    func weeklyDetected() {
-        let dates = (0..<8).map { Calendar.current.date(byAdding: .weekOfYear, value: -$0, to: Date())! }
+    func weeklyDetected() throws {
+        let cal = Calendar.current
+        let dates = try (0 ..< 8).map { i -> Date in
+            try #require(cal.date(byAdding: .weekOfYear, value: -i, to: Date()))
+        }
         #expect(analyzer.analyzeCadence(dates: dates)?.cadence == .weekly)
     }
 
     @Test("Yearly insurance: 2 occurrences → yearly cadence")
-    func yearlyDetected() {
-        let now = Date()
-        let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: now)!
-        #expect(analyzer.analyzeCadence(dates: [lastYear, now])?.cadence == .yearly)
+    func yearlyDetected() throws {
+        let cal = Calendar.current
+        let lastYear = try #require(cal.date(byAdding: .year, value: -1, to: Date()))
+        #expect(analyzer.analyzeCadence(dates: [lastYear, Date()])?.cadence == .yearly)
     }
 
     @Test("Single date returns nil")
@@ -36,9 +41,10 @@ struct RecurringDetectorTests {
     }
 
     @Test("Detector: Spotify 12× monthly → pattern with confidence ≥ 0.85")
-    func detectorSpotifyMonthly() {
-        let inputs = (0..<12).map { i -> RecurringDetector.DetectionInput in
-            let date = Calendar.current.date(byAdding: .month, value: -i, to: Date())!
+    func detectorSpotifyMonthly() throws {
+        let cal = Calendar.current
+        let inputs = try (0 ..< 12).map { i -> RecurringDetector.DetectionInput in
+            let date = try #require(cal.date(byAdding: .month, value: -i, to: Date()))
             return RecurringDetector.DetectionInput(
                 transactionId: UUID(), merchantKey: "spotify",
                 amountMinorUnits: 13900, postedAt: date,
@@ -53,12 +59,13 @@ struct RecurringDetectorTests {
     }
 
     @Test("Amount variance low for stable amounts")
-    func lowVarianceStableAmounts() {
-        let inputs = (0..<6).map { i -> RecurringDetector.DetectionInput in
-            let date = Calendar.current.date(byAdding: .month, value: -i, to: Date())!
+    func lowVarianceStableAmounts() throws {
+        let cal = Calendar.current
+        let inputs = try (0 ..< 6).map { i -> RecurringDetector.DetectionInput in
+            let date = try #require(cal.date(byAdding: .month, value: -i, to: Date()))
             return RecurringDetector.DetectionInput(
                 transactionId: UUID(), merchantKey: "rent",
-                amountMinorUnits: 2200000 + Int64(i * 5000),
+                amountMinorUnits: 2_200_000 + Int64(i * 5000),
                 postedAt: date, categoryId: "housing", intentId: "rent"
             )
         }
@@ -67,19 +74,20 @@ struct RecurringDetectorTests {
     }
 
     @Test("Monthly schedule predicts correct next date")
-    func monthlySchedule() {
-        let last = Calendar.current.date(from: DateComponents(year: 2025, month: 3, day: 25))!
-        let next = schedule.nextDate(after: last, cadence: .monthly, dayOfMonthHint: 25)
-        let comps = Calendar.current.dateComponents([.month, .day], from: next!)
-        #expect(comps.month == 4)
-        #expect(comps.day == 25)
+    func monthlySchedule() throws {
+        let comps = DateComponents(year: 2025, month: 3, day: 25)
+        let last = try #require(Calendar.current.date(from: comps))
+        let next = try #require(schedule.nextDate(after: last, cadence: .monthly, dayOfMonthHint: 25))
+        let result = Calendar.current.dateComponents([.month, .day], from: next)
+        #expect(result.month == 4)
+        #expect(result.day == 25)
     }
 
     @Test("Weekly schedule predicts 7 days ahead")
-    func weeklySchedule() {
+    func weeklySchedule() throws {
         let last = Date()
-        let next = schedule.nextDate(after: last, cadence: .weekly)
-        #expect(abs((next!.timeIntervalSince(last) / 86400) - 7) < 1)
+        let next = try #require(schedule.nextDate(after: last, cadence: .weekly))
+        #expect(abs((next.timeIntervalSince(last) / 86400) - 7) < 1)
     }
 
     @Test("Irregular returns nil next date")

@@ -1,7 +1,6 @@
+@testable import FinanceIntelligence
 import Foundation
 import Testing
-
-@testable import FinanceIntelligence
 
 @Suite("BehaviorAnalyzer — salary cycle, cashflow, routine detection")
 struct BehaviorAnalyzerTests {
@@ -9,20 +8,15 @@ struct BehaviorAnalyzerTests {
     private let cashflowAnalyzer = CashflowAnalyzer()
     private let routineDetector = FinancialRoutineDetector()
 
-    // MARK: - SalaryAnalyzer
-
     @Test("6-month salary fixture → cycle detected with confidence ≥ 0.80")
-    func salaryCycleDetected() {
-        let candidates = (0..<6).map { monthOffset -> SalaryAnalyzer.SalaryCandidate in
-            let date = Calendar.current.date(from: DateComponents(
-                year: 2025, month: 12 - monthOffset, day: 25
-            ))!
+    func salaryCycleDetected() throws {
+        let cal = Calendar.current
+        let candidates = try (0 ..< 6).map { i -> SalaryAnalyzer.SalaryCandidate in
+            let comps = DateComponents(year: 2025, month: 12 - i, day: 25)
+            let date = try #require(cal.date(from: comps))
             return SalaryAnalyzer.SalaryCandidate(
-                transactionId: UUID(),
-                amount: 15_000_000,
-                postedAt: date,
-                categoryId: "income",
-                intentId: "salary"
+                transactionId: UUID(), amount: 15_000_000,
+                postedAt: date, categoryId: "income", intentId: "salary"
             )
         }
         let cycle = salaryAnalyzer.analyzeCycle(from: candidates)
@@ -43,23 +37,21 @@ struct BehaviorAnalyzerTests {
 
     @Test("Below minimum amount not counted as salary")
     func belowMinimumExcluded() {
-        let smallCredits = (0..<6).map { _ in
+        let smallCredits = (0 ..< 6).map { _ in
             SalaryAnalyzer.SalaryCandidate(
-                transactionId: UUID(), amount: 100_000,  // ₹1,000 — below ₹50k threshold
+                transactionId: UUID(), amount: 100_000,
                 postedAt: Date(), categoryId: "income", intentId: "salary"
             )
         }
         #expect(salaryAnalyzer.analyzeCycle(from: smallCredits) == nil)
     }
 
-    // MARK: - CashflowAnalyzer
-
     @Test("3 months of transactions → correct average income and expense")
-    func cashflowAverages() {
+    func cashflowAverages() throws {
         let cal = Calendar.current
         var records: [CashflowAnalyzer.TransactionRecord] = []
-        for month in 1...3 {
-            let date = cal.date(from: DateComponents(year: 2025, month: month, day: 15))!
+        for month in 1 ... 3 {
+            let date = try #require(cal.date(from: DateComponents(year: 2025, month: month, day: 15)))
             records.append(.init(amount: 15_000_000, isDebit: false, postedAt: date))
             records.append(.init(amount: 8_000_000, isDebit: true, postedAt: date))
         }
@@ -72,20 +64,20 @@ struct BehaviorAnalyzerTests {
 
     @Test("Positive savings rate when income > expense")
     func positiveSavingsRate() {
-        let record: [CashflowAnalyzer.TransactionRecord] = [
+        let records: [CashflowAnalyzer.TransactionRecord] = [
             .init(amount: 10_000_000, isDebit: false, postedAt: Date()),
             .init(amount: 4_000_000, isDebit: true, postedAt: Date())
         ]
-        let summary = cashflowAnalyzer.analyze(transactions: record)
+        let summary = cashflowAnalyzer.analyze(transactions: records)
         #expect(summary.savingsRate > 0)
         #expect(summary.savingsRate < 1)
     }
 
     @Test("Monthly snapshots grouped correctly by month")
-    func monthlySnapshotsGrouped() {
+    func monthlySnapshotsGrouped() throws {
         let cal = Calendar.current
-        let jan = cal.date(from: DateComponents(year: 2025, month: 1, day: 25))!
-        let feb = cal.date(from: DateComponents(year: 2025, month: 2, day: 25))!
+        let jan = try #require(cal.date(from: DateComponents(year: 2025, month: 1, day: 25)))
+        let feb = try #require(cal.date(from: DateComponents(year: 2025, month: 2, day: 25)))
         let records: [CashflowAnalyzer.TransactionRecord] = [
             .init(amount: 15_000_000, isDebit: false, postedAt: jan),
             .init(amount: 15_000_000, isDebit: false, postedAt: feb)
@@ -95,24 +87,20 @@ struct BehaviorAnalyzerTests {
         #expect(snapshots.allSatisfy { $0.totalIncome == 15_000_000 })
     }
 
-    // MARK: - FinancialRoutineDetector
-
     @Test("Salary→rent within 7 days → routine detected with consistency ≥ 0.5")
-    func salaryRentRoutineDetected() {
+    func salaryRentRoutineDetected() throws {
         let cal = Calendar.current
         var salaryCreditDates: [Date] = []
         var transactions: [FinancialRoutineDetector.TransactionRecord] = []
-
-        for month in 1...6 {
-            let salaryDate = cal.date(from: DateComponents(year: 2025, month: month, day: 25))!
+        for month in 1 ... 6 {
+            let salaryDate = try #require(cal.date(from: DateComponents(year: 2025, month: month, day: 25)))
             salaryCreditDates.append(salaryDate)
-            let rentDate = cal.date(byAdding: .day, value: 3, to: salaryDate)!
+            let rentDate = try #require(cal.date(byAdding: .day, value: 3, to: salaryDate))
             transactions.append(.init(
-                amount: 22_000_00, isDebit: true,
+                amount: 2_200_000, isDebit: true,
                 postedAt: rentDate, categoryId: "housing", intentId: "rent"
             ))
         }
-
         let routines = routineDetector.detect(
             salaryCreditDates: salaryCreditDates, transactions: transactions
         )
@@ -124,17 +112,13 @@ struct BehaviorAnalyzerTests {
 
     @Test("No salary dates → no routines detected")
     func emptySalaryDatesNoRoutines() {
-        let routines = routineDetector.detect(salaryCreditDates: [], transactions: [])
-        #expect(routines.isEmpty)
+        #expect(routineDetector.detect(salaryCreditDates: [], transactions: []).isEmpty)
     }
-
-    // MARK: - BehaviorPattern composition
 
     @Test("BehaviorPattern savings rate computed correctly")
     func behaviorPatternSavingsRate() {
         let cashFlow = CashFlowSummary(
-            averageMonthlyIncome: 15_000_000,
-            averageMonthlyExpense: 10_000_000
+            averageMonthlyIncome: 15_000_000, averageMonthlyExpense: 10_000_000
         )
         let expected = Double(15_000_000 - 10_000_000) / Double(15_000_000)
         #expect(abs(cashFlow.savingsRate - expected) < 0.001)

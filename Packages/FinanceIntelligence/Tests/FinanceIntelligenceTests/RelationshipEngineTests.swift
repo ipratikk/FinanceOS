@@ -1,7 +1,6 @@
+@testable import FinanceIntelligence
 import Foundation
 import Testing
-
-@testable import FinanceIntelligence
 
 @Suite("RelationshipEngine — behavioral signal inference")
 struct RelationshipEngineTests {
@@ -9,18 +8,19 @@ struct RelationshipEngineTests {
     private let classifier = RelationshipClassifier()
 
     @Test("Monthly ₹22,000 round debit post-salary → landlord ≥ 0.70")
-    func monthlyRentLandlord() {
-        let salaryDate = Calendar.current.date(from: DateComponents(year: 2025, month: 3, day: 25))!
-        let rentDate = Calendar.current.date(from: DateComponents(year: 2025, month: 3, day: 28))!
+    func monthlyRentLandlord() throws {
+        let cal = Calendar.current
+        let salaryDate = try #require(cal.date(from: DateComponents(year: 2025, month: 3, day: 25)))
+        let rentDate = try #require(cal.date(from: DateComponents(year: 2025, month: 3, day: 28)))
         let pattern = RecurringPattern(
             personId: "ritik", categoryId: "housing", intentId: "rent",
-            cadence: .monthly, averageAmountMinorUnits: 2200000,
+            cadence: .monthly, averageAmountMinorUnits: 2_200_000,
             confidence: 0.90, occurrenceCount: 6, lastSeenAt: rentDate
         )
-        let transactions = (0..<6).map { i -> RelationshipEngine.TransactionRecord in
-            let date = Calendar.current.date(byAdding: .month, value: -i, to: rentDate)!
+        let transactions = try (0 ..< 6).map { i -> RelationshipEngine.TransactionRecord in
+            let date = try #require(cal.date(byAdding: .month, value: -i, to: rentDate))
             return RelationshipEngine.TransactionRecord(
-                amount: 2200000, isDebit: true, postedAt: date,
+                amount: 2_200_000, isDebit: true, postedAt: date,
                 rawDescription: "UPI-RITIK GUPTA-rent", pattern: pattern
             )
         }
@@ -52,7 +52,7 @@ struct RelationshipEngineTests {
 
     @Test("Large recurring credits → employer")
     func recurringCreditsEmployer() {
-        let transactions = (0..<12).map { _ in
+        let transactions = (0 ..< 12).map { _ in
             RelationshipEngine.TransactionRecord(
                 amount: 15_000_000, isDebit: false,
                 postedAt: Date(), rawDescription: "NEFT CR-PAYPAL SALARY"
@@ -66,7 +66,7 @@ struct RelationshipEngineTests {
 
     @Test("Small irregular transfers → friend or reimbursement")
     func smallIrregularFriend() {
-        let transactions = (0..<3).map { _ in
+        let transactions = (0 ..< 3).map { _ in
             RelationshipEngine.TransactionRecord(
                 amount: 50000, isDebit: true,
                 postedAt: Date(), rawDescription: "UPI-AMAN PANDEY"
