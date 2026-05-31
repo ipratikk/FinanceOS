@@ -1,4 +1,3 @@
-// swiftlint:disable identifier_name
 import FinanceCore
 import FinanceIntelligence
 import Foundation
@@ -78,72 +77,15 @@ final class GraphViewModel {
         isLayoutRunning = true
         let nodes = visibleNodes
         let edges = visibleEdges
-        var initialPositions = nodePositions
-        nodes.forEach { if initialPositions[$0.id] == nil { initialPositions[$0.id] = randomPosition(in: canvasSize) } }
-        let snapshotPositions = initialPositions
-
+        var initial = nodePositions
+        nodes.forEach { if initial[$0.id] == nil { initial[$0.id] = randomPosition(in: canvasSize) } }
+        let snapshot = initial
         layoutTask = Task.detached(priority: .userInitiated) { [weak self] in
-            var pos = snapshotPositions
-            var velocities: [String: CGPoint] = [:]
-            let repK: Double = 6000
-            let attK: Double = 0.05
-            let ideal: Double = 110
-            let damp: Double = 0.80
-
-            for _ in 0 ..< 80 {
-                var forces: [String: CGPoint] = Dictionary(uniqueKeysWithValues: nodes.map { ($0.id, .zero) })
-                for i in nodes.indices {
-                    for j in nodes.indices where j > i {
-                        guard let pi = pos[nodes[i].id], let pj = pos[nodes[j].id] else { continue }
-                        let dx = pi.x - pj.x, dy = pi.y - pj.y
-                        let dist = max(sqrt(dx * dx + dy * dy), 1.0)
-                        let force = repK / (dist * dist)
-                        let fx = force * dx / dist, fy = force * dy / dist
-                        forces[nodes[i].id]! = CGPoint(x: forces[nodes[i].id]!.x + fx, y: forces[nodes[i].id]!.y + fy)
-                        forces[nodes[j].id]! = CGPoint(x: forces[nodes[j].id]!.x - fx, y: forces[nodes[j].id]!.y - fy)
-                    }
-                }
-                for edge in edges {
-                    guard let pf = pos[edge.fromNodeId], let pt = pos[edge.toNodeId] else { continue }
-                    let dx = pt.x - pf.x, dy = pt.y - pf.y
-                    let dist = max(sqrt(dx * dx + dy * dy), 1.0)
-                    let force = attK * (dist - ideal)
-                    let fx = force * dx / dist, fy = force * dy / dist
-                    forces[edge.fromNodeId]! = CGPoint(
-                        x: (forces[edge.fromNodeId]?.x ?? 0) + fx,
-                        y: (forces[edge.fromNodeId]?.y ?? 0) + fy
-                    )
-                    forces[edge.toNodeId]! = CGPoint(
-                        x: (forces[edge.toNodeId]?.x ?? 0) - fx,
-                        y: (forces[edge.toNodeId]?.y ?? 0) - fy
-                    )
-                }
-                for node in nodes {
-                    var v = velocities[node.id] ?? .zero
-                    let f = forces[node.id] ?? .zero
-                    v = CGPoint(x: (v.x + f.x) * damp, y: (v.y + f.y) * damp)
-                    velocities[node.id] = v
-                    if let cur = pos[node.id] { pos[node.id] = CGPoint(x: cur.x + v.x, y: cur.y + v.y) }
-                }
-            }
-            // Center and scale
-            let xs = pos.values.map(\.x), ys = pos.values.map(\.y)
-            if let minX = xs.min(), let maxX = xs.max(), let minY = ys.min(), let maxY = ys.max() {
-                let cx = (minX + maxX) / 2, cy = (minY + maxY) / 2
-                let targetCX = canvasSize.width / 2, targetCY = canvasSize.height / 2
-                let scaleX = (canvasSize.width * 0.85) / max(maxX - minX, 1)
-                let scaleY = (canvasSize.height * 0.85) / max(maxY - minY, 1)
-                let scale = min(min(scaleX, scaleY), 1.5)
-                for k in pos.keys {
-                    pos[k] = CGPoint(
-                        x: (pos[k]!.x - cx) * scale + targetCX,
-                        y: (pos[k]!.y - cy) * scale + targetCY
-                    )
-                }
-            }
-            let finalPositions = pos
+            let result = GraphViewModel.computeLayout(
+                nodes: nodes, edges: edges, positions: snapshot, canvasSize: canvasSize
+            )
             await MainActor.run { [weak self] in
-                self?.nodePositions = finalPositions
+                self?.nodePositions = result
                 self?.isLayoutRunning = false
             }
         }
@@ -195,3 +137,88 @@ final class GraphViewModel {
         )
     }
 }
+
+// MARK: - Force-directed layout (nonisolated static — value types only)
+
+extension GraphViewModel {
+    private nonisolated static func computeLayout(
+        nodes: [GraphNode],
+        edges: [GraphEdge],
+        positions: [String: CGPoint],
+        canvasSize: CGSize
+    ) -> [String: CGPoint] {
+        var pos = positions
+        var velocities: [String: CGPoint] = [:]
+        let repK: Double = 6000, attK: Double = 0.05, ideal: Double = 110, damp: Double = 0.80
+        for _ in 0 ..< 80 {
+            var forces: [String: CGPoint] = Dictionary(uniqueKeysWithValues: nodes.map { ($0.id, .zero) })
+            applyRepulsion(nodes: nodes, pos: pos, forces: &forces, repK: repK)
+            applyAttraction(edges: edges, pos: pos, forces: &forces, attK: attK, ideal: ideal)
+            for node in nodes {
+                var vel = velocities[node.id] ?? .zero
+                let force = forces[node.id] ?? .zero
+                vel = CGPoint(x: (vel.x + force.x) * damp, y: (vel.y + force.y) * damp)
+                velocities[node.id] = vel
+                if let cur = pos[node.id] { pos[node.id] = CGPoint(x: cur.x + vel.x, y: cur.y + vel.y) }
+            }
+        }
+        return centerAndScale(positions: pos, canvasSize: canvasSize)
+    }
+
+    private nonisolated static func applyRepulsion(
+        nodes: [GraphNode], pos: [String: CGPoint], forces: inout [String: CGPoint], repK: Double
+    ) {
+        for i in nodes.indices {
+            for j in nodes.indices where j > i {
+                guard let pi = pos[nodes[i].id], let pj = pos[nodes[j].id] else { continue }
+                let dx = pi.x - pj.x, dy = pi.y - pj.y
+                let dist = max(sqrt(dx * dx + dy * dy), 1.0)
+                let mag = repK / (dist * dist)
+                let fx = mag * dx / dist, fy = mag * dy / dist
+                let iCur = forces[nodes[i].id] ?? .zero
+                let jCur = forces[nodes[j].id] ?? .zero
+                forces[nodes[i].id] = CGPoint(x: iCur.x + fx, y: iCur.y + fy)
+                forces[nodes[j].id] = CGPoint(x: jCur.x - fx, y: jCur.y - fy)
+            }
+        }
+    }
+
+    private nonisolated static func applyAttraction(
+        edges: [GraphEdge], pos: [String: CGPoint],
+        forces: inout [String: CGPoint], attK: Double, ideal: Double
+    ) {
+        for edge in edges {
+            guard let pf = pos[edge.fromNodeId], let pt = pos[edge.toNodeId] else { continue }
+            let dx = pt.x - pf.x, dy = pt.y - pf.y
+            let dist = max(sqrt(dx * dx + dy * dy), 1.0)
+            let mag = attK * (dist - ideal)
+            let fx = mag * dx / dist, fy = mag * dy / dist
+            let fromCur = forces[edge.fromNodeId] ?? .zero
+            let toCur = forces[edge.toNodeId] ?? .zero
+            forces[edge.fromNodeId] = CGPoint(x: fromCur.x + fx, y: fromCur.y + fy)
+            forces[edge.toNodeId] = CGPoint(x: toCur.x - fx, y: toCur.y - fy)
+        }
+    }
+
+    private nonisolated static func centerAndScale(
+        positions: [String: CGPoint], canvasSize: CGSize
+    ) -> [String: CGPoint] {
+        var pos = positions
+        let xs = pos.values.map(\.x), ys = pos.values.map(\.y)
+        guard let minX = xs.min(), let maxX = xs.max(),
+              let minY = ys.min(), let maxY = ys.max() else { return pos }
+        let cx = (minX + maxX) / 2, cy = (minY + maxY) / 2
+        let targetCX = canvasSize.width / 2, targetCY = canvasSize.height / 2
+        let scaleX = (canvasSize.width * 0.85) / max(maxX - minX, 1)
+        let scaleY = (canvasSize.height * 0.85) / max(maxY - minY, 1)
+        let scale = min(min(scaleX, scaleY), 1.5)
+        for key in pos.keys {
+            if let cur = pos[key] {
+                pos[key] = CGPoint(x: (cur.x - cx) * scale + targetCX, y: (cur.y - cy) * scale + targetCY)
+            }
+        }
+        return pos
+    }
+}
+
+extension GraphEdge: @retroactive Identifiable {}

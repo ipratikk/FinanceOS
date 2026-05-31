@@ -72,7 +72,7 @@ struct IntelligenceHubView: View {
             Button("OK") { exportResult = nil }
         } message: {
             if let result = exportResult {
-                Text(
+                FDSLabel(
                     "Exported \(result.personCount) persons, \(result.relationshipCount) relationships, " +
                         "\(result.patternCount) patterns, \(result.nodeCount) nodes, \(result.edgeCount) edges."
                 )
@@ -84,7 +84,7 @@ struct IntelligenceHubView: View {
         )) {
             Button("OK") { exportError = nil }
         } message: {
-            if let err = exportError { Text(err) }
+            if let err = exportError { FDSLabel(err) }
         }
     }
 

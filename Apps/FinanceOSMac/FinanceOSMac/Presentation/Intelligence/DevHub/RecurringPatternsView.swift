@@ -87,7 +87,7 @@ struct RecurringPatternsView: View {
                     Task { await viewModel.delete(pattern) }
                 }
             }
-        } message: { Text("Permanently delete this recurring pattern?") }
+        } message: { FDSLabel("Permanently delete this recurring pattern?") }
     }
 
     private var patternList: some View {
@@ -138,6 +138,7 @@ struct RecurringPatternsView: View {
 
     private func cadenceBadge(_ cadence: RecurringCadence) -> some View {
         FDSLabel(cadence.rawValue.replacingOccurrences(of: "_", with: " "))
+            // swiftlint:disable:next hardcoded_font_system
             .font(.system(size: 9, weight: .semibold, design: .rounded))
             .foregroundStyle(AppColors.accent)
             .padding(.horizontal, 5).padding(.vertical, 2)
@@ -172,57 +173,65 @@ struct RecurringPatternEditSheet: View {
     }
 
     var body: some View {
-        FDSSheet(title: "Edit Pattern", subtitle: pattern.merchantKey ?? "Pattern", onDismiss: { dismiss() }) {
-            VStack(spacing: AppSpacing.xl) {
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(spacing: 0) {
-                        HStack(spacing: AppSpacing.md) {
-                            FDSLabel("Merchant Key").font(AppTypography.captionLgSemibold)
-                                .foregroundStyle(.tertiary).frame(width: 100, alignment: .leading)
-                            FDSTextInput("merchant key", text: $merchantKey, style: .bodyMedium)
-                                .textFieldStyle(.plain)
-                        }
-                        .padding(AppSpacing.md)
-                        Divider().opacity(0.1)
-                        Picker("Cadence", selection: $cadence) {
-                            ForEach(RecurringCadence.allCases, id: \.self) { cad in
-                                Text(cad.rawValue.replacingOccurrences(of: "_", with: " ")).tag(cad)
+        FDSSheet(
+            title: "Edit Pattern",
+            subtitle: pattern.merchantKey ?? "Pattern",
+            onDismiss: { dismiss() },
+            content: {
+                VStack(spacing: AppSpacing.xl) {
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(spacing: 0) {
+                            HStack(spacing: AppSpacing.md) {
+                                FDSLabel("Merchant Key").font(AppTypography.captionLgSemibold)
+                                    .foregroundStyle(.tertiary).frame(width: 100, alignment: .leading)
+                                FDSTextInput("merchant key", text: $merchantKey, style: .bodyMedium)
+                                    .textFieldStyle(.plain)
                             }
+                            .padding(AppSpacing.md)
+                            Divider().opacity(0.1)
+                            Picker("Cadence", selection: $cadence) {
+                                ForEach(RecurringCadence.allCases, id: \.self) { cad in
+                                    FDSLabel(cad.rawValue.replacingOccurrences(of: "_", with: " ")).tag(cad)
+                                }
+                            }
+                            .pickerStyle(.menu).padding(AppSpacing.md)
+                            Divider().opacity(0.1)
+                            HStack {
+                                FDSLabel("Confidence").font(AppTypography.captionLgSemibold).foregroundStyle(.tertiary)
+                                Slider(value: $confidence, in: 0 ... 1)
+                                FDSLabel(String(format: "%.0f%%", confidence * 100))
+                                    .font(AppTypography.captionLg.monospacedDigit()).foregroundStyle(.tertiary)
+                            }
+                            .padding(AppSpacing.md)
                         }
-                        .pickerStyle(.menu).padding(AppSpacing.md)
-                        Divider().opacity(0.1)
-                        HStack {
-                            FDSLabel("Confidence").font(AppTypography.captionLgSemibold).foregroundStyle(.tertiary)
-                            Slider(value: $confidence, in: 0 ... 1)
-                            FDSLabel(String(format: "%.0f%%", confidence * 100))
-                                .font(AppTypography.captionLg.monospacedDigit()).foregroundStyle(.tertiary)
-                        }
-                        .padding(AppSpacing.md)
                     }
-                }
-                Button(action: {
-                    let updated = RecurringPattern(
-                        id: pattern.id,
-                        merchantKey: merchantKey.isEmpty ? nil : merchantKey,
-                        personId: pattern.personId,
-                        categoryId: pattern.categoryId, intentId: pattern.intentId,
-                        cadence: cadence,
-                        averageAmountMinorUnits: pattern.averageAmountMinorUnits,
-                        amountVariancePercent: pattern.amountVariancePercent,
-                        dayOfMonthHint: pattern.dayOfMonthHint,
-                        confidence: confidence,
-                        occurrenceCount: pattern.occurrenceCount,
-                        lastSeenAt: pattern.lastSeenAt, createdAt: pattern.createdAt
+                    Button(
+                        action: {
+                            let updated = RecurringPattern(
+                                id: pattern.id,
+                                merchantKey: merchantKey.isEmpty ? nil : merchantKey,
+                                personId: pattern.personId,
+                                categoryId: pattern.categoryId, intentId: pattern.intentId,
+                                cadence: cadence,
+                                averageAmountMinorUnits: pattern.averageAmountMinorUnits,
+                                amountVariancePercent: pattern.amountVariancePercent,
+                                dayOfMonthHint: pattern.dayOfMonthHint,
+                                confidence: confidence,
+                                occurrenceCount: pattern.occurrenceCount,
+                                lastSeenAt: pattern.lastSeenAt, createdAt: pattern.createdAt
+                            )
+                            onSave(updated); dismiss()
+                        },
+                        label: {
+                            FDSLabel("Save").font(AppTypography.bodySmSemibold)
+                                .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
+                                .background(AppColors.accent).foregroundStyle(.black)
+                                .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
+                        }
                     )
-                    onSave(updated); dismiss()
-                }) {
-                    FDSLabel("Save").font(AppTypography.bodySmSemibold)
-                        .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
-                        .background(AppColors.accent).foregroundStyle(.black)
-                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
-        }
+        )
     }
 }

@@ -100,7 +100,7 @@ struct RelationshipsView: View {
                 }
             }
         } message: {
-            Text("Permanently delete this relationship?")
+            FDSLabel("Permanently delete this relationship?")
         }
     }
 
@@ -156,6 +156,7 @@ struct RelationshipsView: View {
         ]
         let color = colors[type] ?? AppColors.textSecondary
         return FDSLabel(type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized)
+            // swiftlint:disable:next hardcoded_font_system
             .font(.system(size: 9, weight: .semibold, design: .rounded))
             .foregroundStyle(color)
             .padding(.horizontal, 5).padding(.vertical, 2)
@@ -203,14 +204,14 @@ struct RelationshipEditSheet: View {
         FDSSheet(
             title: "Edit Relationship",
             subtitle: viewModel.personName(for: relationship.toPersonId),
-            onDismiss: { dismiss() }
-        ) {
+            onDismiss: { dismiss() },
+            content: {
             VStack(spacing: AppSpacing.xl) {
                 FDSCard(cornerRadius: 12, padded: false) {
                     VStack(spacing: 0) {
                         Picker("Type", selection: $selectedType) {
                             ForEach(RelationshipType.allCases, id: \.self) { type in
-                                Text(type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized).tag(type)
+                                FDSLabel(type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized).tag(type)
                             }
                         }
                         .pickerStyle(.menu).padding(AppSpacing.md)
@@ -224,22 +225,25 @@ struct RelationshipEditSheet: View {
                         .padding(AppSpacing.md)
                     }
                 }
-                Button(action: {
-                    let updated = Relationship(
-                        id: relationship.id, fromPersonId: relationship.fromPersonId,
-                        toPersonId: relationship.toPersonId, type: selectedType,
-                        confidence: confidence, evidenceCount: relationship.evidenceCount,
-                        signals: relationship.signals, createdAt: relationship.createdAt
-                    )
-                    onSave(updated); dismiss()
-                }) {
-                    FDSLabel("Save").font(AppTypography.bodySmSemibold)
-                        .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
-                        .background(AppColors.accent).foregroundStyle(.black)
-                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
-                }
+                Button(
+                    action: {
+                        let updated = Relationship(
+                            id: relationship.id, fromPersonId: relationship.fromPersonId,
+                            toPersonId: relationship.toPersonId, type: selectedType,
+                            confidence: confidence, evidenceCount: relationship.evidenceCount,
+                            signals: relationship.signals, createdAt: relationship.createdAt
+                        )
+                        onSave(updated); dismiss()
+                    },
+                    label: {
+                        FDSLabel("Save").font(AppTypography.bodySmSemibold)
+                            .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
+                            .background(AppColors.accent).foregroundStyle(.black)
+                            .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
+                    }
+                )
                 .buttonStyle(.plain)
             }
-        }
+        })
     }
 }

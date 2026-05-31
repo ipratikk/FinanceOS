@@ -203,6 +203,7 @@ struct IntelligenceExporter {
         try write(rows, filename: "transactions-audit.csv", to: dir)
     }
 
+    // swiftlint:disable:next function_parameter_count
     private static func writeSummary(
         persons: [Person], relationships: [Relationship],
         patterns: [RecurringPattern], nodes: [GraphNode], edges: [GraphEdge],

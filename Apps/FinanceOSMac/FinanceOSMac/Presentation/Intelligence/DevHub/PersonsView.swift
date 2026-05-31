@@ -89,7 +89,7 @@ struct PersonsView: View {
             }
         } message: {
             if let person = viewModel.personToDelete {
-                Text("Permanently delete \"\(person.canonicalName)\" and all their aliases?")
+                FDSLabel("Permanently delete \"\(person.canonicalName)\" and all their aliases?")
             }
         }
     }
@@ -182,7 +182,7 @@ struct PersonEditSheet: View {
     }
 
     var body: some View {
-        FDSSheet(title: "Edit Person", subtitle: person.canonicalName, onDismiss: { dismiss() }) {
+        FDSSheet(title: "Edit Person", subtitle: person.canonicalName, onDismiss: { dismiss() }, content: {
             VStack(spacing: AppSpacing.xl) {
                 FDSCard(cornerRadius: 12, padded: false) {
                     VStack(spacing: 0) {
@@ -191,26 +191,29 @@ struct PersonEditSheet: View {
                         fieldRow("UPI Handle", text: $upiHandle)
                     }
                 }
-                Button(action: {
-                    let updated = Person(
-                        id: person.id, canonicalName: name,
-                        aliases: person.aliases,
-                        upiHandle: upiHandle.isEmpty ? nil : upiHandle,
-                        transactionCount: person.transactionCount,
-                        firstSeenAt: person.firstSeenAt, lastSeenAt: person.lastSeenAt
-                    )
-                    onSave(updated)
-                    dismiss()
-                }) {
-                    FDSLabel("Save").font(AppTypography.bodySmSemibold)
-                        .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
-                        .background(AppColors.accent).foregroundStyle(.black)
-                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
-                }
+                Button(
+                    action: {
+                        let updated = Person(
+                            id: person.id, canonicalName: name,
+                            aliases: person.aliases,
+                            upiHandle: upiHandle.isEmpty ? nil : upiHandle,
+                            transactionCount: person.transactionCount,
+                            firstSeenAt: person.firstSeenAt, lastSeenAt: person.lastSeenAt
+                        )
+                        onSave(updated)
+                        dismiss()
+                    },
+                    label: {
+                        FDSLabel("Save").font(AppTypography.bodySmSemibold)
+                            .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
+                            .background(AppColors.accent).foregroundStyle(.black)
+                            .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
+                    }
+                )
                 .buttonStyle(.plain)
                 .disabled(name.isEmpty)
             }
-        }
+        })
     }
 
     private func fieldRow(_ label: String, text: Binding<String>) -> some View {
