@@ -189,20 +189,27 @@ struct GraphHubView: View {
                 }
 
                 // Delete button
-                Button(action: { viewModel.nodeToDelete = node }) {
-                    Label("Delete Node", systemImage: "trash")
-                        .font(AppTypography.captionLgSemibold)
-                        .foregroundStyle(AppColors.debit)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, AppSpacing.compact)
-                        .background(AppColors.debit.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
-                }
-                .buttonStyle(.plain)
-                .padding(.horizontal, AppSpacing.md)
-                .padding(.bottom, AppSpacing.md)
+                nodeDeleteButton(node)
             }
         }
+    }
+
+    private func nodeDeleteButton(_ node: GraphNode) -> some View {
+        Button(
+            action: { viewModel.nodeToDelete = node },
+            label: {
+                Label("Delete Node", systemImage: "trash")
+                    .font(AppTypography.captionLgSemibold)
+                    .foregroundStyle(AppColors.debit)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, AppSpacing.compact)
+                    .background(AppColors.debit.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: AppRadius.sm))
+            }
+        )
+        .buttonStyle(.plain)
+        .padding(.horizontal, AppSpacing.md)
+        .padding(.bottom, AppSpacing.md)
     }
 
     private func detailRow(_ label: String, value: String) -> some View {
@@ -233,10 +240,13 @@ struct GraphHubView: View {
                     .lineLimit(1)
             }
             Spacer()
-            Button(action: { viewModel.edgeToDelete = edge }) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(AppTypography.captionSm).foregroundStyle(AppColors.debit.opacity(0.6))
-            }
+            Button(
+                action: { viewModel.edgeToDelete = edge },
+                label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(AppTypography.captionSm).foregroundStyle(AppColors.debit.opacity(0.6))
+                }
+            )
             .buttonStyle(.plain)
         }
         .padding(.horizontal, AppSpacing.md)
