@@ -31,7 +31,7 @@ struct GraphCanvasView: View {
             path.addLine(to: to)
             let width = CGFloat(edge.weight).clamped(to: 0.4 ... 2.5)
             let alpha = CGFloat(edge.observationCount).clamped(to: 0.15 ... 0.6) / 0.6 * 0.4 + 0.15
-            context.stroke(path, with: .color(Color.white.opacity(alpha)), lineWidth: width)
+            context.stroke(path, with: .color(AppColors.textPrimary.opacity(alpha)), lineWidth: width)
         }
     }
 
@@ -54,7 +54,7 @@ struct GraphCanvasView: View {
             if viewModel.selectedNodeId == node.id {
                 context.stroke(
                     Ellipse().path(in: rect.insetBy(dx: -3, dy: -3)),
-                    with: .color(Color.white.opacity(0.9)),
+                    with: .color(AppColors.textPrimary.opacity(0.9)),
                     lineWidth: 1.5
                 )
             }
@@ -63,8 +63,9 @@ struct GraphCanvasView: View {
                 let label = String(node.label.prefix(18))
                 context.draw(
                     Text(label)
+                        // swiftlint:disable:next hardcoded_font_system
                         .font(.system(size: 9, weight: .medium, design: .rounded))
-                        .foregroundStyle(Color.white.opacity(0.85)),
+                        .foregroundStyle(AppColors.textPrimary.opacity(0.85)),
                     at: CGPoint(x: pos.x, y: pos.y + radius + 9)
                 )
             }
@@ -127,7 +128,7 @@ struct GraphCanvasView: View {
         case .person: return Color(red: 0.25, green: 0.55, blue: 1.0)
         case .merchant: return Color(red: 1.0, green: 0.55, blue: 0.15)
         case .category: return Color(red: 0.18, green: 0.78, blue: 0.45)
-        case .transaction: return Color.white.opacity(0.25)
+        case .transaction: return AppColors.textPrimary.opacity(0.25)
         case .account: return Color(red: 1.0, green: 0.80, blue: 0.10)
         case .institution: return Color(red: 0.75, green: 0.35, blue: 0.95)
         case .recurringPattern: return Color(red: 0.0, green: 0.85, blue: 0.85)
