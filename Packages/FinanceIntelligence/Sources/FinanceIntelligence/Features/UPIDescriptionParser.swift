@@ -20,16 +20,13 @@ enum UPIDescriptionParser {
         let isMerchantPayment: Bool
     }
 
-    /// VPA infixes/suffixes that are exclusively merchant payment gateways.
-    /// IMPORTANT: personal bank VPAs like @okhdfcbank, @okicici, @ybl are NOT here
-    /// because both persons (9051481667@okhdfcbank) AND merchants use them.
-    /// Only true merchant-only gateways belong here.
-    private static let merchantGatewayVPATokens = [
-        "@rzp", "@razorpay", // Razorpay — never a personal VPA
-        ".rzp", // Razorpay infix (e.g. blinkit104020.rzp@rxairtel)
-        "bdsi@", // BillDesk — Apple, Spotify, Hotstar use this
-        ".payu@", // PayU gateway (merchants only)
-        "@ptybl" // Paytm merchant gateway (distinct from personal @paytm)
+    /// Known business VPA suffixes that indicate merchant payments (not P2P transfers)
+    private static let businessVPASuffixes = [
+        "@rzp", "@razorpay", "@paytm", "@upi", "@ybl", "@okhdfcbank",
+        "@okicici", "@okaxis", "@oksbi", "@apl", "@ikwik", "@airtelpaymentsbank",
+        "marketplace", "services", "store", "shop", "retail", "online",
+        "blinkit", "zepto", "swiggy", "zomato", "ola", "uber",
+        "amazon", "flipkart", "netflix", "spotify", "hotstar"
     ]
 
     /// Keywords in merchant name segment that indicate business
@@ -37,17 +34,7 @@ enum UPIDescriptionParser {
         "marketplace", "services", "pvt", "ltd", "private limited", "llp",
         "retail", "technologies", "payments", "enterprises", "solutions",
         "swiggy", "zomato", "blinkit", "zepto", "ola", "uber", "amazon",
-        "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio",
-        // Indian fintech/payments
-        "bbnow", "bigbasket", "gpay", "paytm", "cred", "bhim", "npci",
-        "phonepe", "razorpay", "cashfree",
-        // Financial institutions & credit
-        "american express", "amex", "hdfc", "icici", "lombard",
-        "insurance", "bank", "credit card", "express",
-        // Retail/fashion
-        "hennes", "h and m", "ikea", "family super market",
-        // Utilities/telecom
-        "airtel", "jio", "livpure", "dominos", "domino", "magicpin"
+        "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio"
     ]
 
     /// Parses `rawDescription` and returns a structured result, or nil if the format is unrecognized.
@@ -128,20 +115,9 @@ private extension UPIDescriptionParser {
     static func isMerchantPayment(name: String, vpa: String?) -> Bool {
         let lower = name.lowercased()
         let vpaLower = vpa?.lowercased() ?? ""
-
-        // Phone-number VPA prefix → always a person (e.g. 9051481667@okhdfcbank)
-        if let vpaPrefix = vpa?.components(separatedBy: "@").first,
-           vpaPrefix.count == 10, vpaPrefix.allSatisfy(\.isNumber) {
-            return false
-        }
-
-        // Merchant gateway VPA tokens — only true payment gateways, not personal banks
-        if merchantGatewayVPATokens.contains(where: { vpaLower.contains($0) }) {
-            return true
-        }
-
-        // Business name keywords in the merchant name segment
-        return businessNameKeywords.contains(where: { lower.contains($0) })
+        let combined = lower + " " + vpaLower
+        return businessNameKeywords.contains(where: { combined.contains($0) })
+            || businessVPASuffixes.contains(where: { combined.contains($0) })
     }
 
     static func cleanMerchantSegment(_ segment: String) -> String {
