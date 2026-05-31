@@ -101,6 +101,9 @@
         }
       }
     },
+    "Cadence" : {
+
+    },
     "Cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -262,10 +265,31 @@
     "Delete Failed" : {
 
     },
+    "Delete Node" : {
+
+    },
+    "Delete node \"%@\"?" : {
+
+    },
+    "Delete Node?" : {
+
+    },
+    "Delete Pattern?" : {
+
+    },
+    "Delete Person?" : {
+
+    },
+    "Delete Relationship?" : {
+
+    },
     "Delete Transaction?" : {
 
     },
     "Description" : {
+
+    },
+    "Developer" : {
 
     },
     "Done" : {
@@ -302,6 +326,15 @@
     "Export Chart Data" : {
 
     },
+    "Export Complete" : {
+
+    },
+    "Export Data" : {
+
+    },
+    "Export Failed" : {
+
+    },
     "Filters" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -313,6 +346,9 @@
         }
       }
     },
+    "Financial Intelligence" : {
+
+    },
     "From" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -323,6 +359,9 @@
           }
         }
       }
+    },
+    "Graph" : {
+
     },
     "IMPORT" : {
       "extractionState" : "manual",
@@ -449,13 +488,34 @@
     "Outflow" : {
 
     },
+    "Patterns" : {
+
+    },
+    "Permanently delete \"%@\" and all their aliases?" : {
+
+    },
     "Permanently delete \"%@\"?" : {
+
+    },
+    "Permanently delete this recurring pattern?" : {
+
+    },
+    "Permanently delete this relationship?" : {
+
+    },
+    "Persons" : {
 
     },
     "Range" : {
 
     },
+    "Re-layout" : {
+
+    },
     "Reference" : {
+
+    },
+    "Relationships" : {
 
     },
     "Reset" : {
@@ -468,6 +528,12 @@
           }
         }
       }
+    },
+    "Reset View" : {
+
+    },
+    "Reveal in Finder" : {
+
     },
     "Run Intelligence" : {
 

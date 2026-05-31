@@ -19,7 +19,8 @@ enum CategorySymbol {
         "fees": "exclamationmark.circle.fill",
         "taxes": "building.columns.fill",
         "business": "briefcase.fill",
-        "atm": "banknote.fill"
+        "atm": "banknote.fill",
+        "investments": "chart.line.uptrend.xyaxis"
     ]
 
     private static let colors: [String: Color] = [
@@ -40,7 +41,8 @@ enum CategorySymbol {
         "fees": .red,
         "taxes": .gray,
         "business": .brown,
-        "atm": .green
+        "atm": .green,
+        "investments": .teal
     ]
 
     static func symbol(for categoryId: String?) -> String {
