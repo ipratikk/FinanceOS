@@ -74,17 +74,23 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 enriched.reserveCapacity(all.count)
                 for txn in all {
                     guard !Task.isCancelled else { return }
-                    let result = try await service.analyzeEnriched(txn, context: .empty)
-                    try? await transactionRepository.updateIntelligence(
-                        id: txn.id,
-                        categoryId: result.categoryPrediction.categoryId,
-                        merchantName: result.merchantCandidate.canonicalName
-                    )
-                    enriched.append(result)
+                    do {
+                        let result = try await service.analyzeEnriched(txn, context: .empty)
+                        try? await transactionRepository.updateIntelligence(
+                            id: txn.id,
+                            categoryId: result.categoryPrediction.categoryId,
+                            merchantName: result.merchantCandidate.canonicalName
+                        )
+                        enriched.append(result)
+                    } catch {
+                        FinanceLogger.userInterface.logError(
+                            "Pipeline: skipped transaction", caughtError: error, [:]
+                        )
+                    }
                     pipelineProcessed += 1
                 }
 
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, !enriched.isEmpty else { return }
 
                 // Stages 2–4: post-process with typed stage reporting
                 await service.postProcessBatch(enriched: enriched) { stage in
