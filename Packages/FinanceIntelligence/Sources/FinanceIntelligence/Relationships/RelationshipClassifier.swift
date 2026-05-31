@@ -13,12 +13,15 @@ public struct RelationshipClassifier: Sendable {
         public let averageDebitAmount: Int64
         public let signals: [RelationshipSignal]
         public let pattern: RecurringPattern?
+        /// Dominant intent across transactions — used to exclude credit card payments from landlord heuristic.
+        public let dominantIntentId: String?
 
         public init(
             personId: String, personName: String,
             totalDebits: Int64, totalCredits: Int64,
             transactionCount: Int, averageDebitAmount: Int64,
-            signals: [RelationshipSignal], pattern: RecurringPattern? = nil
+            signals: [RelationshipSignal], pattern: RecurringPattern? = nil,
+            dominantIntentId: String? = nil
         ) {
             self.personId = personId
             self.personName = personName
@@ -28,11 +31,16 @@ public struct RelationshipClassifier: Sendable {
             self.averageDebitAmount = averageDebitAmount
             self.signals = signals
             self.pattern = pattern
+            self.dominantIntentId = dominantIntentId
         }
     }
 
     public func classify(_ input: Input) -> (type: RelationshipType, confidence: Double) {
-        if isLikelyLandlord(input) { return (.landlord, landlordConfidence(input)) }
+        // Credit card payments and generic transfers are never landlord
+        let excludeFromLandlord = ["credit_card_payment", "transfer", "unknown"]
+        let dominantIntent = input.dominantIntentId ?? input.pattern?.intentId ?? ""
+        let isExcluded = excludeFromLandlord.contains(dominantIntent)
+        if !isExcluded, isLikelyLandlord(input) { return (.landlord, landlordConfidence(input)) }
         if input.totalCredits > input.totalDebits * 3, input.transactionCount >= 3 {
             return (.employer, 0.65)
         }
