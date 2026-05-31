@@ -16,6 +16,13 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
     var isAnalyzing = false
     var deleteError: String?
 
+    // Pipeline state
+    var isPipelineRunning = false
+    var pipelineProcessed = 0
+    var pipelineTotal = 0
+    var pipelineStage: PipelineStage = .analyzing
+    private var pipelineTask: Task<Void, Never>?
+
     private var rawTransactions: [Transaction] = []
     private var cachedLedgers: [Ledger] = []
 
@@ -45,6 +52,64 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
         Task.detached(priority: .background) { [weak self] in
             await self?.analyzeUncategorized()
         }
+    }
+
+    /// Run the full intelligence pipeline on ALL transactions (categorization + graph + recurring + relationships).
+    func runIntelligencePipeline() {
+        guard !isPipelineRunning, let service = intelligenceService else { return }
+        pipelineTask?.cancel()
+        pipelineTask = Task { @MainActor in
+            isPipelineRunning = true
+            pipelineProcessed = 0
+            pipelineStage = .analyzing
+            defer { isPipelineRunning = false }
+
+            do {
+                let all = try await transactionRepository.fetchTransactions()
+                pipelineTotal = all.count
+                guard !Task.isCancelled else { return }
+
+                // Stage 1: Analyze all transactions
+                var enriched: [EnrichedTransaction] = []
+                enriched.reserveCapacity(all.count)
+                for txn in all {
+                    guard !Task.isCancelled else { return }
+                    let result = try await service.analyzeEnriched(txn, context: .empty)
+                    try? await transactionRepository.updateIntelligence(
+                        id: txn.id,
+                        categoryId: result.categoryPrediction.categoryId,
+                        merchantName: result.merchantCandidate.canonicalName
+                    )
+                    enriched.append(result)
+                    pipelineProcessed += 1
+                }
+
+                guard !Task.isCancelled else { return }
+
+                // Stages 2–4: post-process with typed stage reporting
+                await service.postProcessBatch(enriched: enriched) { stage in
+                    Task { @MainActor in
+                        switch stage {
+                        case .graph: self.pipelineStage = .graph
+                        case .patterns: self.pipelineStage = .patterns
+                        case .relationships: self.pipelineStage = .relationships
+                        case .complete: break
+                        }
+                    }
+                }
+
+                // Reload rows with fresh data
+                await loadTransactions()
+            } catch {
+                FinanceLogger.userInterface.logError("Intelligence pipeline failed", caughtError: error, [:])
+            }
+        }
+    }
+
+    func cancelPipeline() {
+        pipelineTask?.cancel()
+        pipelineTask = nil
+        isPipelineRunning = false
     }
 
     func deleteTransaction(id: UUID) async {

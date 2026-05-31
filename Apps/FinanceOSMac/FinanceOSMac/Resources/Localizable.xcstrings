@@ -54,6 +54,9 @@
         }
       }
     },
+    "Analyze all transactions: categorize, build knowledge graph, detect patterns" : {
+
+    },
     "Bank" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -465,6 +468,9 @@
           }
         }
       }
+    },
+    "Run Intelligence" : {
+
     },
     "Save" : {
 

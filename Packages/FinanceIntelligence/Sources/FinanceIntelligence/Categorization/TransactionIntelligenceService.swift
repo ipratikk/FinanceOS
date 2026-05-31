@@ -41,11 +41,19 @@ public protocol TransactionIntelligenceService: Sendable {
         previousPrediction: CategoryPrediction?
     ) async throws
 
-    /// Analyzes a transaction and returns an `EnrichedTransaction` that includes intent,
-    /// and placeholders for future phases (relationships, recurring, description).
+    /// Analyzes a transaction and returns an `EnrichedTransaction` including intent,
+    /// resolved entities, and a human-readable description from FallbackGenerator.
     /// Prefer this over `analyze()` for new call sites.
     func analyzeEnriched(
         _ transaction: Transaction,
         context: IntelligenceContext
     ) async throws -> EnrichedTransaction
+
+    /// Run background post-processing on the FULL enriched corpus.
+    /// Stages: .graph → .patterns → .relationships → .complete.
+    /// onStageChange is called at each transition for progress UI and audit logging.
+    func postProcessBatch(
+        enriched: [EnrichedTransaction],
+        onStageChange: (@Sendable (PostProcessingStage) -> Void)?
+    ) async
 }
