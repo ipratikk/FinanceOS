@@ -1,6 +1,7 @@
 import FinanceCore
 import Foundation
 import GRDB
+import NaturalLanguage
 
 /// Runtime configuration for `TransactionIntelligenceServiceImpl`.
 /// Use `.default` for production; override URLs in tests or to point at a custom model location.
@@ -69,6 +70,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let insightEngine: SpendingInsightEngine
     private let extractor: TransactionFeatureExtractor
     private let taxonomy: CategoryTaxonomy
+    private let descriptionGenerator: DescriptionGenerator
+    /// Background pipeline: graph, recurring, relationships. Nil when no databaseQueue provided.
+    private let postProcessingPipeline: PostProcessingPipeline?
 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
@@ -89,6 +93,21 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         )
         insightEngine = SpendingInsightEngine()
         extractor = TransactionFeatureExtractor()
+        descriptionGenerator = DescriptionGenerator()
+
+        if let queue = configuration.databaseQueue {
+            let graphRepo = GRDBGraphRepository(dbWriter: queue)
+            let graphStore = await GraphStore(repository: graphRepo)
+            let recurringRepo = GRDBRecurringPatternRepository(dbWriter: queue)
+            let relationshipRepo = GRDBRelationshipRepository(dbWriter: queue)
+            postProcessingPipeline = PostProcessingPipeline(
+                graphStore: graphStore,
+                recurringRepo: recurringRepo,
+                relationshipRepo: relationshipRepo
+            )
+        } else {
+            postProcessingPipeline = nil
+        }
     }
 
     public func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction {
@@ -207,6 +226,13 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             date: transaction.postedAt
         )
 
+        let descContext = DescriptionContext(
+            merchantName: merchant.canonicalName,
+            intent: ruleResult.intentPrediction.intent,
+            isDebit: transaction.transactionType == .debit
+        )
+        let humanDescription = await descriptionGenerator.generate(from: descContext)
+
         return EnrichedTransaction(
             transaction: transaction,
             merchantCandidate: merchant,
@@ -215,8 +241,17 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             features: features,
             isUserCorrected: isUserCorrected,
             pipelineVersion: "1.0",
-            resolvedEntities: resolvedEntities
+            resolvedEntities: resolvedEntities,
+            humanDescription: humanDescription
         )
+    }
+
+    /// Run background post-processing on the full enriched corpus.
+    /// Call after each import batch with ALL enriched transactions (not just the batch)
+    /// so recurring detection sees the full history across all cadences (daily→yearly).
+    public func postProcessBatch(enriched: [EnrichedTransaction]) async {
+        guard let pipeline = postProcessingPipeline else { return }
+        await pipeline.run(enriched: enriched)
     }
 
     public func learn(
