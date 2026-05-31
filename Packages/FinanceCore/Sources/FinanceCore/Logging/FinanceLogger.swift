@@ -71,12 +71,6 @@ public enum FinanceLogger {
         category: "Sync"
     )
 
-    /// Transaction intelligence pipeline events (categorization, graph, recurring, relationships).
-    public static let intelligence = Logger(
-        subsystem: subsystem,
-        category: "Intelligence"
-    )
-
     /// Keychain and data-protection events.
     public static let security = Logger(
         subsystem: subsystem,
