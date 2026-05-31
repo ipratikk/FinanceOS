@@ -74,6 +74,14 @@ enum AppMigration {
         migrator.registerMigration("v14_create_knowledge_graph_edges") { db in
             try AppMigration.createKnowledgeGraphEdgesTable(in: db)
         }
+
+        migrator.registerMigration("v15_create_relationships") { db in
+            try AppMigration.createRelationshipsTable(in: db)
+        }
+
+        migrator.registerMigration("v16_create_recurring_patterns") { db in
+            try AppMigration.createRecurringPatternsTable(in: db)
+        }
     }
 }
 
@@ -188,5 +196,47 @@ private extension AppMigration {
             on: "intelligence_person_aliases",
             columns: ["personId"]
         )
+    }
+
+    static func createRelationshipsTable(in database: Database) throws {
+        guard try !database.tableExists("relationships") else { return }
+        try database.create(table: "relationships") { table in
+            table.column("id", .text).primaryKey()
+            table.column("fromPersonId", .text)
+            table.column("toPersonId", .text)
+            table.column("relationshipType", .text).notNull()
+            table.column("confidence", .double).notNull().defaults(to: 0.0)
+            table.column("evidenceCount", .integer).notNull().defaults(to: 0)
+            table.column("inferredSignals", .text).notNull().defaults(to: "[]")
+            table.column("createdAt", .datetime).notNull()
+            table.column("updatedAt", .datetime).notNull()
+        }
+        try database.create(index: "idx_relationships_fromPersonId",
+                            on: "relationships", columns: ["fromPersonId"])
+        try database.create(index: "idx_relationships_toPersonId",
+                            on: "relationships", columns: ["toPersonId"])
+    }
+
+    static func createRecurringPatternsTable(in database: Database) throws {
+        guard try !database.tableExists("recurring_patterns") else { return }
+        try database.create(table: "recurring_patterns") { table in
+            table.column("id", .text).primaryKey()
+            table.column("merchantKey", .text)
+            table.column("personId", .text)
+            table.column("categoryId", .text).notNull()
+            table.column("intentId", .text).notNull()
+            table.column("cadence", .text).notNull()
+            table.column("averageAmountMinorUnits", .integer).notNull()
+            table.column("amountVariancePercent", .double).notNull().defaults(to: 0.0)
+            table.column("dayOfMonthHint", .integer)
+            table.column("confidence", .double).notNull().defaults(to: 0.0)
+            table.column("occurrenceCount", .integer).notNull().defaults(to: 0)
+            table.column("lastSeenAt", .datetime).notNull()
+            table.column("createdAt", .datetime).notNull()
+        }
+        try database.create(index: "idx_recurring_merchantKey",
+                            on: "recurring_patterns", columns: ["merchantKey"])
+        try database.create(index: "idx_recurring_personId",
+                            on: "recurring_patterns", columns: ["personId"])
     }
 }
