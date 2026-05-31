@@ -61,6 +61,10 @@ enum AppMigration {
         migrator.registerMigration("v16_create_recurring_patterns") { db in
             try AppMigration.createRecurringPatternsTable(in: db)
         }
+
+        migrator.registerMigration("v17_create_intelligence_model_metadata") { db in
+            try AppMigration.createIntelligenceModelMetadataTable(in: db)
+        }
     }
 }
 
@@ -263,5 +267,19 @@ private extension AppMigration {
             on: "recurring_patterns",
             columns: ["personId"]
         )
+    }
+
+    static func createIntelligenceModelMetadataTable(in database: Database) throws {
+        guard try !database.tableExists("intelligence_model_metadata") else { return }
+        try database.create(table: "intelligence_model_metadata") { table in
+            table.column("id", .text).primaryKey()
+            table.column("modelName", .text).notNull().unique()
+            table.column("modelVersion", .text).notNull()
+            table.column("accuracy", .double)
+            table.column("trainedAt", .datetime)
+            table.column("sampleCount", .integer)
+            table.column("isActive", .integer).notNull().defaults(to: 1)
+            table.column("notes", .text)
+        }
     }
 }
