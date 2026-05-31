@@ -112,7 +112,7 @@ public actor PostProcessingPipeline {
 
         let byPerson = Dictionary(
             grouping: enriched.filter { $0.resolvedEntities?.personId != nil },
-            by: { $0.resolvedEntities!.personId!.uuidString }
+            by: { $0.resolvedEntities?.personId?.uuidString ?? "" }
         )
 
         for (personId, txns) in byPerson where txns.count >= 2 {

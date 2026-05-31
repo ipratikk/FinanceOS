@@ -72,9 +72,9 @@ struct TransactionsView: View {
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button(action: { viewModel.runIntelligencePipeline() }) {
+                Button(action: { viewModel.runIntelligencePipeline() }, label: {
                     Label("Run Intelligence", systemImage: "sparkles")
-                }
+                })
                 .disabled(viewModel.isPipelineRunning || viewModel.transactionRows.isEmpty)
                 .help("Analyze all transactions: categorize, build knowledge graph, detect patterns")
             }

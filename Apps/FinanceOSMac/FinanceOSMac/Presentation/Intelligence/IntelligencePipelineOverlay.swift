@@ -84,7 +84,7 @@ struct IntelligencePipelineOverlay: View {
     private var headerSection: some View {
         VStack(spacing: AppSpacing.compact) {
             Image(systemName: "sparkles")
-                .font(.system(size: 28, weight: .semibold))
+                .font(AppTypography.headingXL)
                 .foregroundStyle(AppColors.accent)
                 .symbolEffect(.variableColor.iterative, isActive: true)
 
