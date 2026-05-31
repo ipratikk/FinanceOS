@@ -9,6 +9,11 @@ struct IntelligenceHubView: View {
     @State private var isExporting = false
     @State private var exportResult: IntelligenceExporter.ExportResult?
     @State private var exportError: String?
+    @State private var isTraining = false
+    @State private var trainExampleCount = 0
+    @State private var trainError: String?
+    @State private var trainResult: ClassifierEvalResult?
+    @Environment(\.transactionIntelligence) private var intelligence
 
     enum IntelligenceTab: Int {
         case persons = 0, relationships, patterns, graph
@@ -44,9 +49,15 @@ struct IntelligenceHubView: View {
             .tag(IntelligenceTab.graph)
         }
         .background(AppColors.base)
+        .overlay { if isTraining { trainingOverlay } }
         .navigationTitle("Financial Intelligence")
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
+                Button(action: startTraining) {
+                    Label("Train Model", systemImage: "brain.head.profile")
+                }
+                .disabled(isTraining)
+                .help("Bulk-trains the on-device classifier from all categorized transactions via MLUpdateTask")
                 if isExporting {
                     ProgressView().controlSize(.small)
                 } else {
@@ -58,6 +69,22 @@ struct IntelligenceHubView: View {
                     .font(AppTypography.captionLg)
                     .foregroundStyle(AppColors.textSecondary)
             }
+        }
+        .alert("Model Trained", isPresented: Binding(
+            get: { trainResult != nil },
+            set: { if !$0 { trainResult = nil } }
+        )) {
+            Button("OK") { trainResult = nil }
+        } message: {
+            if let res = trainResult { trainResultMessage(res) }
+        }
+        .alert("Training Failed", isPresented: Binding(
+            get: { trainError != nil },
+            set: { if !$0 { trainError = nil } }
+        )) {
+            Button("OK") { trainError = nil }
+        } message: {
+            if let err = trainError { FDSLabel(err) }
         }
         .alert("Export Complete", isPresented: Binding(
             get: { exportResult != nil },
@@ -85,6 +112,63 @@ struct IntelligenceHubView: View {
             Button("OK") { exportError = nil }
         } message: {
             if let err = exportError { FDSLabel(err) }
+        }
+    }
+
+    private var trainingOverlay: some View {
+        ZStack {
+            AppColors.base.opacity(0.85).ignoresSafeArea()
+            VStack(spacing: AppSpacing.xl) {
+                ProgressView()
+                    .controlSize(.large)
+                    .tint(AppColors.accent)
+                VStack(spacing: AppSpacing.compact) {
+                    FDSLabel("Training On-Device Classifier")
+                        .font(AppTypography.bodyMdSemibold)
+                        .foregroundStyle(AppColors.textPrimary)
+                    FDSLabel("\(trainExampleCount) transactions · CoreML MLUpdateTask")
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(AppColors.textSecondary)
+                    FDSLabel("This may take a moment…")
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .padding(AppSpacing.xl)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.lg))
+        }
+    }
+
+    private func trainResultMessage(_ res: ClassifierEvalResult) -> some View {
+        let accPct = Int(res.accuracy * 100)
+        let covPct = Int(res.coverage * 100)
+        let confPct = Int(res.avgConfidence * 100)
+        let ready = accPct >= 90 && covPct >= 85
+        let statusLine = ready
+            ? "Model is ready — keyword rules can be pruned."
+            : "Import more statements and re-train."
+        let msg = "Trained on \(res.total) examples.\n" +
+            "Coverage: \(covPct)% · Accuracy: \(accPct)% · Confidence: \(confPct)%\n\(statusLine)"
+        return FDSLabel(msg)
+    }
+
+    private func startTraining() {
+        guard let service = intelligence else { return }
+        isTraining = true
+        Task {
+            do {
+                let transactions = try await AppContainer.shared.transactionRepository.fetchTransactions()
+                let examples = transactions.compactMap { txn -> (text: String, categoryId: String)? in
+                    guard let cat = txn.categoryId, !cat.isEmpty, cat != "uncategorized" else { return nil }
+                    return (text: txn.description, categoryId: cat)
+                }
+                trainExampleCount = examples.count
+                try await service.trainClassifier(examples: examples)
+                trainResult = await service.evaluateClassifier(examples: examples)
+            } catch {
+                trainError = error.localizedDescription
+            }
+            isTraining = false
         }
     }
 
