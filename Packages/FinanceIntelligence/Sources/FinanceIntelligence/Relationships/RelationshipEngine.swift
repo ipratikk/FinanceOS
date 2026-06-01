@@ -3,9 +3,11 @@ import Foundation
 /// Infers person-level relationships from transaction behavioral patterns.
 public struct RelationshipEngine: Sendable {
     private let classifier: RelationshipClassifier
+    private let config: RelationshipConfig
     private static let rentKeywords = ["rent", "owner", "landlord", "sir", "maam", "aunty", "uncle"]
 
-    public init() {
+    public init(config: RelationshipConfig = IntelligenceConfig.defaultV1.relationship) {
+        self.config = config
         classifier = RelationshipClassifier()
     }
 
@@ -51,7 +53,7 @@ public struct RelationshipEngine: Sendable {
             dominantIntentId: dominantIntentId
         )
         let (type, confidence) = classifier.classify(input)
-        guard confidence >= 0.40 else { return nil }
+        guard confidence >= config.minConfidence else { return nil }
         return Relationship(
             toPersonId: personId, type: type, confidence: confidence,
             evidenceCount: transactions.count, signals: signals
@@ -76,7 +78,9 @@ public struct RelationshipEngine: Sendable {
 
     private func isRoundAmount(debits: [TransactionRecord]) -> Bool {
         guard !debits.isEmpty else { return false }
-        return Double(debits.count(where: { $0.amount % 50000 == 0 })) / Double(debits.count) >= 0.7
+        return Double(debits.count(where: {
+            $0.amount % config.roundAmountGranularityMinorUnits == 0
+        })) / Double(debits.count) >= 0.7
     }
 
     private func hasRegularInterval(debits: [TransactionRecord]) -> Bool {
@@ -95,7 +99,7 @@ public struct RelationshipEngine: Sendable {
         let postCount = debits.count(where: { debit in
             salaryCreditDates.contains { salary in
                 let diff = debit.postedAt.timeIntervalSince(salary) / 86400
-                return diff >= 0 && diff <= 7
+                return diff >= 0 && diff <= Double(config.postSalaryWindowDays)
             }
         })
         return Double(postCount) / Double(debits.count) >= 0.5

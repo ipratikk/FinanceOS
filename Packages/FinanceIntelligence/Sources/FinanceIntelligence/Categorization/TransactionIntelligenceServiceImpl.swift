@@ -4,6 +4,7 @@ import Foundation
 import GRDB
 import NaturalLanguage
 
+// swiftlint:disable type_body_length
 /// Concrete implementation of `TransactionIntelligenceService`.
 /// Prediction priority (highest to lowest):
 ///   1. Stored user correction
@@ -32,6 +33,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let postProcessingPipeline: PostProcessingPipeline?
     private let intelligenceLogger: any IntelligenceLogger
     private let modelRegistry: ModelRegistry
+    private let intelligenceConfig: IntelligenceConfig
 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
@@ -50,19 +52,21 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
         )
-        insightEngine = SpendingInsightEngine()
+        intelligenceConfig = configuration.intelligenceConfig
+        insightEngine = SpendingInsightEngine(config: intelligenceConfig.insight)
         extractor = TransactionFeatureExtractor()
         descriptionGenerator = DescriptionGenerator()
 
         if let queue = configuration.databaseQueue {
-            let graphRepo = GRDBGraphRepository(dbWriter: queue)
+            let graphRepo = GRDBGraphRepository(dbWriter: queue, graphConfig: intelligenceConfig.graph)
             let graphStore = await GraphStore(repository: graphRepo)
             let recurringRepo = GRDBRecurringPatternRepository(dbWriter: queue)
             let relationshipRepo = GRDBRelationshipRepository(dbWriter: queue)
             postProcessingPipeline = PostProcessingPipeline(
                 graphStore: graphStore,
                 recurringRepo: recurringRepo,
-                relationshipRepo: relationshipRepo
+                relationshipRepo: relationshipRepo,
+                intelligenceConfig: intelligenceConfig
             )
         } else {
             postProcessingPipeline = nil
@@ -154,7 +158,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             let prediction = await Self.buildPrediction(
                 features: features, merchant: merchant,
                 personalized: personalized, learnerSnap: learnerSnap,
-                coreML: coreML, rules: rules, taxonomy: tax
+                coreML: coreML, rules: rules, taxonomy: tax,
+                knnThreshold: intelligenceConfig.classification.knnConfidenceThreshold,
+                configVersion: intelligenceConfig.version
             )
             results.append(AnalyzedTransaction(
                 transaction: txn, merchantCandidate: merchant,
@@ -183,7 +189,8 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         if let correction = await correctionStore.correction(for: transaction.id) {
             categoryPrediction = correctionPrediction(correction, features: features)
             isUserCorrected = true
-        } else if let ruleCat = ruleResult.categoryPrediction, ruleCat.confidence >= 0.92 {
+        } else if let ruleCat = ruleResult.categoryPrediction,
+                  ruleCat.confidence >= intelligenceConfig.classification.ruleConfidenceThreshold {
             // Only let high-confidence structural rules (salary, ATM, SGST, SIP, billpay)
             // override ML. Keyword-category rules are pruned; trained kNN handles those.
             categoryPrediction = ruleCat
@@ -304,6 +311,8 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     }
 }
 
+// swiftlint:enable type_body_length
+
 // MARK: - Static Prediction (no actor needed — called from concurrent tasks)
 
 extension TransactionIntelligenceServiceImpl {
@@ -316,18 +325,20 @@ extension TransactionIntelligenceServiceImpl {
         learnerSnap: LocalTransactionLearner.Snapshot,
         coreML: CoreMLCategorizer?,
         rules: RuleBasedCategorizer,
-        taxonomy: CategoryTaxonomy
+        taxonomy: CategoryTaxonomy,
+        knnThreshold: Double = IntelligenceConfig.defaultV1.classification.knnConfidenceThreshold,
+        configVersion: String? = nil
     ) async -> CategoryPrediction {
         // Priority 1: on-device CoreML kNN (user corrections via MLUpdateTask)
         if let personalized,
            let knn = await personalized.predict(normalizedDescription: features.normalizedDescription),
-           knn.confidence >= PersonalizedClassifier.confidenceThreshold {
+           knn.confidence >= knnThreshold {
             let name = taxonomy.category(forId: knn.categoryId)?.displayName ?? knn.categoryId
             return CategoryPrediction(
                 categoryId: knn.categoryId, subcategoryId: nil, displayName: name,
                 confidence: knn.confidence, alternatives: [], source: .personalizedKNN,
                 modelVersion: "personalized-knn", taxonomyVersion: taxonomy.version,
-                confidenceKind: .uncalibratedScore
+                confidenceKind: .uncalibratedScore, configVersion: configVersion
             )
         }
         // Priority 2: legacy Swift kNN (fallback)
@@ -339,7 +350,7 @@ extension TransactionIntelligenceServiceImpl {
                 categoryId: topLevel, subcategoryId: nil, displayName: name,
                 confidence: local.confidence, alternatives: [], source: .personalizedKNN,
                 modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version,
-                confidenceKind: .uncalibratedScore
+                confidenceKind: .uncalibratedScore, configVersion: configVersion
             )
         }
         // Priority 3: bundled NLModel text classifier
@@ -352,7 +363,7 @@ extension TransactionIntelligenceServiceImpl {
                 categoryId: topLevel, subcategoryId: categoryId, displayName: name,
                 confidence: 0.88, alternatives: [], source: .personalizedKNN,
                 modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version,
-                confidenceKind: .heuristicOrdinal
+                confidenceKind: .heuristicOrdinal, configVersion: configVersion
             )
         }
         // Priority 5: deterministic rules
@@ -370,7 +381,7 @@ private extension TransactionIntelligenceServiceImpl {
         // Priority 1: on-device CoreML kNN (user corrections via MLUpdateTask)
         if let personalized = personalizedClassifier,
            let knn = await personalized.predict(normalizedDescription: features.normalizedDescription),
-           knn.confidence >= PersonalizedClassifier.confidenceThreshold {
+           knn.confidence >= intelligenceConfig.classification.knnConfidenceThreshold {
             let name = taxonomy.category(forId: knn.categoryId)?.displayName ?? knn.categoryId
             return CategoryPrediction(
                 categoryId: knn.categoryId, subcategoryId: nil, displayName: name,

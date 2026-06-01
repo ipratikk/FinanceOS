@@ -5,9 +5,11 @@ import GRDB
 /// Uses upsert with conflict resolution for nodes; increments edge weight on conflict.
 public struct GRDBGraphRepository: GraphRepository {
     private let dbWriter: any DatabaseWriter
+    private let graphConfig: GraphConfig
 
-    public init(dbWriter: any DatabaseWriter) {
+    public init(dbWriter: any DatabaseWriter, graphConfig: GraphConfig = IntelligenceConfig.defaultV1.graph) {
         self.dbWriter = dbWriter
+        self.graphConfig = graphConfig
     }
 
     // MARK: - Nodes
@@ -70,7 +72,7 @@ public struct GRDBGraphRepository: GraphRepository {
 
             if var found = existing {
                 found.observationCount += 1
-                found.weight = min(found.weight + 0.1, 10.0)
+                found.weight = min(found.weight + graphConfig.edgeWeightIncrement, graphConfig.edgeWeightMax)
                 found.lastObservedAt = edge.lastObservedAt
                 try found.update(db)
                 return found.toDomain() ?? edge

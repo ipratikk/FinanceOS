@@ -31,15 +31,18 @@ public actor PostProcessingPipeline {
     private let graphStore: GraphStore?
     private let recurringRepo: (any RecurringPatternRepository)?
     private let relationshipRepo: (any RelationshipRepository)?
+    private let intelligenceConfig: IntelligenceConfig
 
     public init(
         graphStore: GraphStore?,
         recurringRepo: (any RecurringPatternRepository)?,
-        relationshipRepo: (any RelationshipRepository)?
+        relationshipRepo: (any RelationshipRepository)?,
+        intelligenceConfig: IntelligenceConfig = .defaultV1
     ) {
         self.graphStore = graphStore
         self.recurringRepo = recurringRepo
         self.relationshipRepo = relationshipRepo
+        self.intelligenceConfig = intelligenceConfig
     }
 
     /// Run all post-processing stages on a corpus of enriched transactions.
@@ -96,7 +99,7 @@ public actor PostProcessingPipeline {
         FinanceLogger.intelligence
             .info("PostProcessing[patterns]: \(inputs.count) detection inputs from \(enriched.count) transactions")
         guard inputs.count >= 2 else { return [] }
-        let patterns = RecurringDetector().detect(from: inputs)
+        let patterns = RecurringDetector(config: intelligenceConfig.recurring).detect(from: inputs)
         FinanceLogger.intelligence.info("PostProcessing[patterns]: saving \(patterns.count) patterns to DB")
         for pattern in patterns {
             let key = pattern.merchantKey ?? pattern.personId ?? "?"
@@ -163,7 +166,7 @@ public actor PostProcessingPipeline {
                     pattern: patternForPerson
                 )
             }
-            if let relationship = RelationshipEngine().inferRelationship(
+            if let relationship = RelationshipEngine(config: intelligenceConfig.relationship).inferRelationship(
                 personId: personId, personName: personName,
                 transactions: records, salaryCreditDates: salaryCreditDates
             ) {
