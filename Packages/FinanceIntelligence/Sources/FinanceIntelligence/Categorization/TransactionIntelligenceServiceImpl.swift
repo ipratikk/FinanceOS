@@ -3,16 +3,14 @@ import Foundation
 import GRDB
 import NaturalLanguage
 
-// swiftlint:disable type_body_length
 /// Concrete implementation of `TransactionIntelligenceService`.
 /// Prediction priority (highest to lowest):
 ///   1. Stored user correction
 ///   2. RuleEngine high-confidence hit (≥0.90) — also always provides intent
 ///   3. On-device CoreML kNN (personalized via MLUpdateTask)
-///   4. Legacy Swift kNN (LocalTransactionLearner)
-///   5. Bundled NLModel text classifier
-///   6. Alias table lookup
-///   7. RuleEngine fallback (deterministic keyword rules)
+///   4. Bundled NLModel text classifier
+///   5. Alias table lookup
+///   6. RuleEngine fallback (deterministic keyword rules)
 public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService {
     private let normalizer: MerchantNormalizer
     private let ruleCategorizer: RuleBasedCategorizer
@@ -23,7 +21,6 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     /// CoreML kNN classifier updated on-device via MLUpdateTask on each user correction.
     private let personalizedClassifier: PersonalizedClassifier?
     private let correctionStore: UserCorrectionStore
-    private let learner: LocalTransactionLearner
     private let insightEngine: SpendingInsightEngine
     private let extractor: TransactionFeatureExtractor
     private let taxonomy: CategoryTaxonomy
@@ -38,7 +35,6 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
         correctionStore = UserCorrectionStore(storageURL: configuration.correctionStoreURL)
-        learner = LocalTransactionLearner(personalStoreURL: configuration.personalLearnerURL)
         normalizer = MerchantNormalizer()
         ruleCategorizer = RuleBasedCategorizer(taxonomy: configuration.taxonomy)
         ruleEngine = RuleEngine(taxonomy: configuration.taxonomy)
@@ -116,9 +112,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     ) async throws -> [AnalyzedTransaction] {
         guard !transactions.isEmpty else { return [] }
 
-        // Pre-fetch shared state — 2 actor hops total regardless of batch size.
-        // Tasks then run fully in parallel with no further actor contention.
-        let learnerSnap = await learner.snapshot()
+        // Pre-fetch shared state — single actor hop regardless of batch size.
         let allCorrections = await correctionStore.allCorrections()
         // Capture PersonalizedClassifier for batch use — predict() is actor-isolated
         // but safe to call from a serial loop (no concurrent actor contention here).
@@ -158,7 +152,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
             let prediction = await Self.buildPrediction(
                 features: features, merchant: merchant,
-                personalized: personalized, learnerSnap: learnerSnap,
+                personalized: personalized,
                 coreML: coreML, rules: rules, taxonomy: tax,
                 knnThreshold: intelligenceConfig.classification.knnConfidenceThreshold,
                 configVersion: intelligenceConfig.version
@@ -321,33 +315,17 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             normalizedDescription: normalized,
             categoryId: correctedCategoryId
         )
-
-        // 3. Also update legacy Swift kNN (fallback when PersonalizedClassifier unavailable)
-        try await learner.addExample(
-            normalizedDescription: normalized,
-            categoryId: correctedCategoryId
-        )
-        if let merchant = correctedMerchant, !merchant.isEmpty {
-            try await learner.addExample(
-                normalizedDescription: merchant.lowercased(),
-                categoryId: correctedCategoryId
-            )
-        }
     }
 }
-
-// swiftlint:enable type_body_length
 
 // MARK: - Static Prediction (no actor needed — called from concurrent tasks)
 
 extension TransactionIntelligenceServiceImpl {
-    // Stateless prediction helper for batch processing; no actor isolation needed (all inputs are value types).
     // swiftlint:disable:next function_parameter_count
     static func buildPrediction(
         features: TransactionFeatures,
         merchant: MerchantCandidate,
         personalized: PersonalizedClassifier?,
-        learnerSnap: LocalTransactionLearner.Snapshot,
         coreML: CoreMLCategorizer?,
         rules: RuleBasedCategorizer,
         taxonomy: CategoryTaxonomy,
@@ -366,21 +344,9 @@ extension TransactionIntelligenceServiceImpl {
                 confidenceKind: .uncalibratedScore, configVersion: configVersion
             )
         }
-        // Priority 2: legacy Swift kNN (fallback)
-        if let local = learnerSnap.predict(normalizedDescription: features.normalizedDescription),
-           local.confidence >= 0.6 {
-            let topLevel = local.categoryId.components(separatedBy: ".").first ?? local.categoryId
-            let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
-            return CategoryPrediction(
-                categoryId: topLevel, subcategoryId: nil, displayName: name,
-                confidence: local.confidence, alternatives: [], source: .personalizedKNN,
-                modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version,
-                confidenceKind: .uncalibratedScore, configVersion: configVersion
-            )
-        }
-        // Priority 3: bundled NLModel text classifier
+        // Priority 2: bundled NLModel text classifier
         if let coreML, coreML.isAvailable, let pred = coreML.predict(features: features) { return pred }
-        // Priority 4: alias table
+        // Priority 3: alias table
         if let categoryId = merchant.categoryId {
             let topLevel = categoryId.components(separatedBy: ".").first ?? categoryId
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
@@ -391,7 +357,7 @@ extension TransactionIntelligenceServiceImpl {
                 confidenceKind: .heuristicOrdinal, configVersion: configVersion
             )
         }
-        // Priority 5: deterministic rules
+        // Priority 4: deterministic rules
         return rules.categorize(features)
     }
 }
@@ -416,26 +382,13 @@ private extension TransactionIntelligenceServiceImpl {
             )
         }
 
-        // Priority 2: legacy Swift kNN
-        if let local = await learner.predict(normalizedDescription: features.normalizedDescription),
-           local.confidence >= 0.6 {
-            let topLevel = local.categoryId.components(separatedBy: ".").first ?? local.categoryId
-            let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
-            return CategoryPrediction(
-                categoryId: topLevel, subcategoryId: nil, displayName: name,
-                confidence: local.confidence, alternatives: [], source: .personalizedKNN,
-                modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version,
-                confidenceKind: .uncalibratedScore
-            )
-        }
-
-        // Priority 3: bundled NLModel text classifier
+        // Priority 2: bundled NLModel text classifier
         if let coreML = coreMLCategorizer, coreML.isAvailable,
            let prediction = coreML.predict(features: features) {
             return prediction
         }
 
-        // Priority 4: alias table
+        // Priority 3: alias table
         if let categoryId = merchantCategoryId {
             let topLevel = categoryId.components(separatedBy: ".").first ?? categoryId
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
@@ -447,7 +400,7 @@ private extension TransactionIntelligenceServiceImpl {
             )
         }
 
-        // Priority 5: deterministic rules
+        // Priority 4: deterministic rules
         return ruleCategorizer.categorize(features)
     }
 

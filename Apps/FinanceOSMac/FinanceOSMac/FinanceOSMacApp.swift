@@ -15,7 +15,6 @@ struct FinanceOSMacApp: App {
                     // (graph, recurring, relationships) has persistence backing.
                     let config = IntelligenceServiceConfiguration(
                         correctionStoreURL: IntelligenceServiceConfiguration.default.correctionStoreURL,
-                        personalLearnerURL: IntelligenceServiceConfiguration.default.personalLearnerURL,
                         personalizedKNNModelURL: IntelligenceServiceConfiguration.default.personalizedKNNModelURL,
                         databaseQueue: DatabaseManager.shared.dbQueue
                     )

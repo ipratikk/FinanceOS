@@ -221,7 +221,7 @@ private func fetchTransactions(from dbQueue: DatabaseQueue, limit: Int) async th
 struct TrainCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "train",
-        abstract: "Train LocalTransactionLearner from CSV transactions (for reference only)."
+        abstract: "Train kNN classifier from CSV transactions (deprecated — use PersonalizedClassifier)."
     )
 
     @Argument(help: "Path to training CSV")
