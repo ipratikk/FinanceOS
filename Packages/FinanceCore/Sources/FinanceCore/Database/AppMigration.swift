@@ -97,6 +97,10 @@ enum AppMigration {
             try AppMigration.addEnrichmentProvenanceColumns(in: db)
         }
 
+        migrator.registerMigration("v24_create_intelligence_feedback_events") { db in
+            try AppMigration.createIntelligenceFeedbackEventsTable(in: db)
+        }
+
         migrator.registerMigration("v19_dedup_relationships_and_patterns") { db in
             // Relationships: same upsert-by-pk bug. Keep earliest per (toPersonId, relationshipType).
             try db.execute(sql: """
@@ -386,6 +390,39 @@ private extension AppMigration {
                 table.add(column: "isUserCorrectedMerchant", .integer).notNull().defaults(to: 0)
             }
         }
+    }
+
+    static func createIntelligenceFeedbackEventsTable(in database: Database) throws {
+        guard try !database.tableExists("intelligence_feedback_events") else { return }
+        try database.create(table: "intelligence_feedback_events") { table in
+            table.column("id", .text).primaryKey()
+            table.column("eventType", .text).notNull()
+            table.column("entityType", .text).notNull()
+            table.column("entityId", .text).notNull()
+            table.column("transactionId", .text)
+            table.column("oldValue", .text)
+            table.column("newValue", .text)
+            table.column("source", .text)
+            table.column("modelVersion", .text)
+            table.column("configVersion", .text)
+            table.column("metadataJson", .text)
+            table.column("createdAt", .datetime).notNull()
+        }
+        try database.create(
+            index: "idx_feedback_events_txn",
+            on: "intelligence_feedback_events",
+            columns: ["transactionId"]
+        )
+        try database.create(
+            index: "idx_feedback_events_type",
+            on: "intelligence_feedback_events",
+            columns: ["eventType"]
+        )
+        try database.create(
+            index: "idx_feedback_events_created",
+            on: "intelligence_feedback_events",
+            columns: ["createdAt"]
+        )
     }
 
     static func createIntelligenceInferenceEventsTable(in database: Database) throws {

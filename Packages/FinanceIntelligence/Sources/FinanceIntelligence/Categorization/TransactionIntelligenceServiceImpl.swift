@@ -33,6 +33,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let intelligenceLogger: any IntelligenceLogger
     private let modelRegistry: ModelRegistry
     private let intelligenceConfig: IntelligenceConfig
+    private let feedbackStore: any FeedbackStore
 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
@@ -72,6 +73,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         }
         intelligenceLogger = configuration.intelligenceLogger
         modelRegistry = configuration.modelRegistry
+        feedbackStore = configuration.feedbackStore
     }
 
     public func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction {
@@ -288,6 +290,30 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             modelVersion: previousPrediction?.modelVersion
         )
         try await correctionStore.record(input)
+
+        // 2. Emit feedback events for traceability
+        try await feedbackStore.record(FeedbackEvent(
+            eventType: .categoryCorrected,
+            entityType: "transaction",
+            entityId: transaction.id.uuidString,
+            transactionId: transaction.id.uuidString,
+            oldValue: previousPrediction?.categoryId,
+            newValue: correctedCategoryId,
+            modelVersion: previousPrediction?.modelVersion,
+            configVersion: previousPrediction?.configVersion
+        ))
+        if let newMerchant = correctedMerchant, newMerchant != transaction.merchantName {
+            try await feedbackStore.record(FeedbackEvent(
+                eventType: .merchantCorrected,
+                entityType: "transaction",
+                entityId: transaction.id.uuidString,
+                transactionId: transaction.id.uuidString,
+                oldValue: transaction.merchantName,
+                newValue: newMerchant,
+                modelVersion: previousPrediction?.modelVersion,
+                configVersion: previousPrediction?.configVersion
+            ))
+        }
 
         // 2. Add to on-device CoreML kNN via MLUpdateTask (primary personalization layer)
         let normalized = MerchantTextCleaner().normalizedForMatching(transaction.description)
