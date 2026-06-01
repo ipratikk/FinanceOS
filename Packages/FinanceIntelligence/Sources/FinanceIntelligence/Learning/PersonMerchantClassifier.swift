@@ -111,10 +111,7 @@ struct NarrationFeatureExtractor {
         let hasNumbers: Bool
     }
 
-    private static let merchantGatewayTokens = [
-        "razorpay", "cashfree", "paypal", "paytm", "phonepe",
-        "googlepay", "bhim", "amazonpay", "swiggypay"
-    ]
+    private let gatewayTokens: [String]
 
     private static let businessKeywords = [
         "marketplace", "pvt", "ltd", "private limited", "llp",
@@ -123,12 +120,16 @@ struct NarrationFeatureExtractor {
         "retail", "services", "enterprises", "solutions", "trading"
     ]
 
+    init() {
+        gatewayTokens = MerchantGatewayConfig.load().tokens
+    }
+
     func extract(_ narration: String) -> Features {
         let lower = narration.lowercased()
 
         // Check VPA patterns
         let hasPhoneVPA = checkPhoneVPA(narration)
-        let hasMerchantGateway = Self.merchantGatewayTokens.contains { lower.contains($0) }
+        let hasMerchantGateway = gatewayTokens.contains { lower.contains($0) }
 
         // Check business keywords
         let matched = Self.businessKeywords.filter { lower.contains($0) }
