@@ -1,6 +1,6 @@
+@testable import FinanceIntelligence
 import Foundation
 import Testing
-@testable import FinanceIntelligence
 
 @Suite("IntelligenceConfig — defaultV1 matches hardcoded baselines")
 struct IntelligenceConfigTests {
@@ -17,7 +17,7 @@ struct IntelligenceConfigTests {
     func relationshipThresholdsMatchBaseline() {
         #expect(cfg.relationship.minConfidence == 0.40)
         #expect(cfg.relationship.postSalaryWindowDays == 7)
-        #expect(cfg.relationship.roundAmountGranularityMinorUnits == 50_000)
+        #expect(cfg.relationship.roundAmountGranularityMinorUnits == 50000)
         #expect(cfg.relationship.minTransactionsForInference == 2)
     }
 
