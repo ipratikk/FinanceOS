@@ -41,6 +41,10 @@ public protocol TransactionIntelligenceWriter: Sendable {
     /// Uses COALESCE semantics: nil fields in `provenance` leave existing column values unchanged.
     func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws
 
+    /// Batch version of `updateEnrichmentProvenance` — writes all updates in a single SQLite transaction.
+    /// Use this after a full pipeline pass to avoid N individual write transactions.
+    func updateEnrichmentProvenanceBatch(_ updates: [(id: UUID, provenance: EnrichmentProvenance)]) async throws
+
     /// Marks a transaction's merchant name as user-corrected, preventing future intelligence overwrites.
     func markUserCorrectedMerchant(id: UUID) async throws
 
