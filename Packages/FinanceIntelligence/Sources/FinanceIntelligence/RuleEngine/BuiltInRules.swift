@@ -169,7 +169,7 @@ extension BuiltInRules {
                 priority: 8,
                 condition: .tokenContainsAny([
                     "insurance premium", "policy premium", "nach insurance",
-                    "insurance", "policy renewal", "premium payment"
+                    "policy renewal", "premium payment", "insurance"
                 ]),
                 outcome: RuleOutcome(categoryId: "insurance", intent: .insurance, confidence: 0.92)
             )

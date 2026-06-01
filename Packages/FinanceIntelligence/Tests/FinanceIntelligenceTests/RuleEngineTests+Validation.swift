@@ -87,13 +87,12 @@ func ruleEngine_sip_takesOverTransfer() {
 func ruleEngine_structuralIntentsCovered_inBuiltInRules() {
     // Intents handled by kNN/ML (intentionally excluded from BuiltInRules.all):
     // food, groceries, shopping, subscription, travel, healthcare, utilityBill, investment
-    let structuralIntents: Set<TransactionIntent> = [
-        .salary, .income, .refund, .cashback,
-        .creditCardPayment, .mutualFundSIP, .insurance,
-        .cashWithdrawal, .interestPayment, .rent, .loanPayment, .transfer
+    let builtInIntents = Set(BuiltInRules.all.map(\.outcome.intent)).filter { $0 != .unknown }
+    let allIntents = Set(TransactionIntent.allCases.filter { $0 != .unknown })
+    let knnDelegatedIntents: Set<TransactionIntent> = [
+        .food, .groceries, .shopping, .subscription, .travel, .healthcare, .utilityBill, .investment
     ]
-    let ruleOutcomeIntents = Set(BuiltInRules.all.map(\.outcome.intent))
-    for intent in structuralIntents {
-        #expect(ruleOutcomeIntents.contains(intent), "Structural rule missing for intent: \(intent.rawValue)")
-    }
+    let expectedStructuralIntents = allIntents.subtracting(knnDelegatedIntents)
+    #expect(builtInIntents == expectedStructuralIntents,
+            "BuiltInRules coverage mismatch. Expected: \(expectedStructuralIntents.map(\.rawValue).sorted()), Got: \(builtInIntents.map(\.rawValue).sorted())")
 }
