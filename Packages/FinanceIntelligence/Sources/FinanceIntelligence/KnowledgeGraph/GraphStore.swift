@@ -23,6 +23,16 @@ public actor GraphStore {
         try await repository.nodes(ofType: type)
     }
 
+    // MARK: - Batch Writes (pipeline optimization)
+
+    public func upsertNodesBatch(_ nodes: [GraphNode]) async throws -> [GraphNode] {
+        try await repository.upsertNodesBatch(nodes)
+    }
+
+    public func upsertEdgesBatch(_ edges: [GraphEdge]) async throws {
+        try await repository.upsertEdgesBatch(edges)
+    }
+
     // MARK: - Edge Access
 
     public func upsertEdge(_ edge: GraphEdge) async throws -> GraphEdge {
