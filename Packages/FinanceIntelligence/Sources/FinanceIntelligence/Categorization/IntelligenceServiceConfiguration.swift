@@ -23,6 +23,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
     public let modelRegistry: ModelRegistry
     /// Behavioral thresholds for the intelligence pipeline. Defaults to `IntelligenceConfig.defaultV1`.
     public let intelligenceConfig: IntelligenceConfig
+    /// Persists user feedback signals for future model improvement. Nil when no database is configured.
+    public let feedbackStore: any FeedbackStore
 
     public init(
         correctionStoreURL: URL,
@@ -41,6 +43,7 @@ public struct IntelligenceServiceConfiguration: Sendable {
         self.intelligenceLogger = intelligenceLogger ?? NullIntelligenceLogger()
         modelRegistry = ModelRegistry(dbQueue: databaseQueue)
         self.intelligenceConfig = intelligenceConfig
+        feedbackStore = databaseQueue.map { GRDBFeedbackStore(dbQueue: $0) } ?? NullFeedbackStore()
     }
 
     /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.
