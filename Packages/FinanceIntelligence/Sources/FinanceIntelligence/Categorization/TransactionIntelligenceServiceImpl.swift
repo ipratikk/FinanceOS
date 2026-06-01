@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import FinanceCore
 import Foundation
 import GRDB
@@ -166,10 +167,14 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         if let correction = await correctionStore.correction(for: transaction.id) {
             categoryPrediction = correctionPrediction(correction, features: features)
             isUserCorrected = true
-        } else if let ruleCat = ruleResult.categoryPrediction, ruleCat.confidence >= 0.80 {
+        } else if let ruleCat = ruleResult.categoryPrediction, ruleCat.confidence >= 0.92 {
+            // Only let high-confidence structural rules (salary, ATM, SGST, SIP, billpay)
+            // override ML. Keyword-category rules are pruned; trained kNN handles those.
             categoryPrediction = ruleCat
             isUserCorrected = false
         } else {
+            // kNN (PersonalizedClassifier) fires here at 0.7+ threshold — now trained on
+            // full transaction corpus, so it handles merchant categories ML was missing.
             categoryPrediction = await predictCategory(
                 features: features,
                 merchantCategoryId: merchant.categoryId
@@ -211,6 +216,27 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     ) async {
         guard let pipeline = postProcessingPipeline else { return }
         await pipeline.run(enriched: enriched, onStageChange: onStageChange)
+    }
+
+    public func trainClassifier(examples: [(text: String, categoryId: String)]) async throws {
+        guard let classifier = personalizedClassifier else {
+            throw NSError(
+                domain: "FinanceIntelligence",
+                code: 1,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "PersonalizedClassifier unavailable — bundle resources may be missing " +
+                        "(TransactionKNNClassifier.mlmodel, transaction_vocab.json)."
+                ]
+            )
+        }
+        FinanceLogger.intelligence.info("trainClassifier: \(examples.count) examples via MLUpdateTask")
+        try await classifier.trainBatch(examples)
+        FinanceLogger.intelligence.info("trainClassifier: complete")
+    }
+
+    public func evaluateClassifier(examples: [(text: String, categoryId: String)]) async -> ClassifierEvalResult? {
+        guard let classifier = personalizedClassifier else { return nil }
+        return await classifier.evaluate(examples: examples)
     }
 
     public func learn(

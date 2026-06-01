@@ -56,4 +56,13 @@ public protocol TransactionIntelligenceService: Sendable {
         enriched: [EnrichedTransaction],
         onStageChange: (@Sendable (PostProcessingStage) -> Void)?
     ) async
+
+    /// Bulk-trains the on-device PersonalizedClassifier from (rawDescription, categoryId) pairs.
+    /// Call after import+categorization to encode all transaction knowledge into the ML model
+    /// so keyword rules can eventually be removed. Uses CoreML MLUpdateTask on-device.
+    func trainClassifier(examples: [(text: String, categoryId: String)]) async throws
+
+    /// Evaluates the PersonalizedClassifier against labeled examples.
+    /// Returns nil when PersonalizedClassifier is unavailable.
+    func evaluateClassifier(examples: [(text: String, categoryId: String)]) async -> ClassifierEvalResult?
 }

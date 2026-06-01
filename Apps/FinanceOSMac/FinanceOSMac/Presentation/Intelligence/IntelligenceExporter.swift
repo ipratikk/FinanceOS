@@ -44,6 +44,7 @@ struct IntelligenceExporter {
         try writeNodes(nodes, to: dir)
         try writeEdges(edges, to: dir)
         try writeTransactionAudit(transactions, persons: persons, patterns: patterns, to: dir)
+        try writeMLTrainingData(transactions, to: dir)
         try writeSummary(
             persons: persons,
             relationships: relationships,
@@ -201,6 +202,32 @@ struct IntelligenceExporter {
             ].joined(separator: ","))
         }
         try write(rows, filename: "transactions-audit.csv", to: dir)
+    }
+
+    // MARK: - ML Training Data
+
+    private static func writeMLTrainingData(_ transactions: [Transaction], to dir: URL) throws {
+        struct TrainingSample: Encodable {
+            let text: String
+            let label: String
+        }
+
+        let taxonomy = CategoryTaxonomy.current
+        var samples: [TrainingSample] = []
+
+        for txn in transactions {
+            guard let categoryId = txn.categoryId,
+                  !categoryId.isEmpty,
+                  categoryId != "uncategorized",
+                  !txn.description.isEmpty,
+                  taxonomy.category(forId: categoryId) != nil else { continue }
+            samples.append(TrainingSample(text: txn.description, label: categoryId))
+        }
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let data = try encoder.encode(samples)
+        try data.write(to: dir.appending(path: "training-category.json"))
     }
 
     // swiftlint:disable:next function_parameter_count
