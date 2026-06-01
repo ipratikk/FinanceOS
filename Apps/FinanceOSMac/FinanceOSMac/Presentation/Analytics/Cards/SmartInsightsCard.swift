@@ -73,7 +73,7 @@ struct SmartInsightsCard: View {
                             .font(AppTypography.bodySmMedium)
                             .foregroundStyle(AppColors.Text.primary)
                             .lineLimit(1)
-                        FDSLabel(String(format: "%.0f%% confidence", sub.confidence * 100))
+                        FDSLabel(sub.kind == .subscriptionDetected ? "Auto-categorized" : "Detected pattern")
                             .font(AppTypography.captionSm)
                             .foregroundStyle(AppColors.Text.tertiary)
                     }

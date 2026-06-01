@@ -291,14 +291,18 @@ private extension TransactionDetailView {
         .padding(AppSpacing.md)
     }
 
+    @ViewBuilder
     func confidencePill(_ confidence: Double) -> some View {
-        FDSLabel("\(Int(confidence * 100))%")
-            .font(AppTypography.captionSmSemibold)
-            .foregroundStyle(.tertiary)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(AppColors.surface.opacity(0.6))
-            .clipShape(Capsule())
+        let policy = ConfidenceDisplayPolicy()
+        if case let .label(text) = policy.displayLabel(rawScore: confidence) {
+            FDSLabel(text)
+                .font(AppTypography.captionSmSemibold)
+                .foregroundStyle(.tertiary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(AppColors.surface.opacity(0.6))
+                .clipShape(Capsule())
+        }
     }
 }
 
