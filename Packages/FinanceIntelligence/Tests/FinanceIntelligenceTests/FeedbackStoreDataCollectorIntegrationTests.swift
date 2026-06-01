@@ -8,13 +8,13 @@ import Testing
 /// from user corrections (merchant_corrected, category_corrected events).
 
 @Test
-func feedbackStoreDataCollector_merchantCorrectionMapping() async {
+func feedbackStoreDataCollector_merchantCorrectionMapping() async throws {
     // Simulate user correction event
     let event = FeedbackEvent(
         eventType: .merchantCorrected,
         entityType: "transaction",
         entityId: "txn-123",
-        transactionId: UUID(),
+        transactionId: "txn-123",
         oldValue: "UPI/Unknown",
         newValue: "Swiggy Food Pvt Ltd",
         source: "user_correction",
@@ -24,6 +24,8 @@ func feedbackStoreDataCollector_merchantCorrectionMapping() async {
 
     // Mock store returns the event
     struct MockStore: FeedbackStore {
+        let storedEvent: FeedbackEvent
+
         func record(_ event: FeedbackEvent) async throws {}
 
         func events(for transactionId: UUID) async throws -> [FeedbackEvent] {
@@ -31,15 +33,15 @@ func feedbackStoreDataCollector_merchantCorrectionMapping() async {
         }
 
         func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] {
-            [event]
+            [storedEvent]
         }
 
         func allEvents() async throws -> [FeedbackEvent] {
-            [event]
+            [storedEvent]
         }
     }
 
-    let mockStore = MockStore()
+    let mockStore = MockStore(storedEvent: event)
     let collector = FeedbackStoreDataCollector(feedbackStore: mockStore)
 
     // Collect from merchant corrections
@@ -52,13 +54,13 @@ func feedbackStoreDataCollector_merchantCorrectionMapping() async {
 }
 
 @Test
-func feedbackStoreDataCollector_categoryToLabelMapping() async {
+func feedbackStoreDataCollector_categoryToLabelMapping() async throws {
     // Simulate category correction (e.g., salary deposit)
     let salaryEvent = FeedbackEvent(
         eventType: .categoryCorrected,
         entityType: "transaction",
         entityId: "txn-456",
-        transactionId: UUID(),
+        transactionId: "txn-456",
         oldValue: "shopping",
         newValue: "salary",
         source: "user_correction",
@@ -68,15 +70,17 @@ func feedbackStoreDataCollector_categoryToLabelMapping() async {
     )
 
     struct MockStore: FeedbackStore {
+        let storedEvent: FeedbackEvent
+
         func record(_ event: FeedbackEvent) async throws {}
         func events(for transactionId: UUID) async throws -> [FeedbackEvent] { [] }
         func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] {
-            [salaryEvent]
+            [storedEvent]
         }
         func allEvents() async throws -> [FeedbackEvent] { [] }
     }
 
-    let mockStore = MockStore()
+    let mockStore = MockStore(storedEvent: salaryEvent)
     let collector = FeedbackStoreDataCollector(feedbackStore: mockStore)
 
     let examples = try await collector.collectFromCategoryCorrections()
@@ -105,7 +109,7 @@ func datasetOrchestrator_integrateFeedbackStore() async throws {
                         eventType: .merchantCorrected,
                         entityType: "transaction",
                         entityId: "txn-1",
-                        transactionId: UUID(),
+                        transactionId: "txn-1",
                         oldValue: nil,
                         newValue: "Netflix India",
                         source: "user_correction"
@@ -148,7 +152,7 @@ func datasetValidator_acceptsIntegratedDataset() async {
     // Should have valid data (though may warn about small size)
     #expect(report.issues.isEmpty) // no critical issues
     #expect(!report.metrics.summary.isEmpty)
-    #expect(report.metrics.totalCount > 10)
+    #expect(report.metrics.totalExamples > 10)
 }
 
 @Test

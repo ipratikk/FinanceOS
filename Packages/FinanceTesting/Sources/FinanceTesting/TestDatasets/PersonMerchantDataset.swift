@@ -1,7 +1,7 @@
 import Foundation
 
 /// Example for dataset seeding.
-public struct PersonMerchantExample {
+public struct PersonMerchantExample: Sendable {
     public let narration: String
     public let label: String
     public let bank: String
