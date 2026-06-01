@@ -169,14 +169,19 @@ public struct DatasetStatistics: Sendable {
         self.sourceCoverage = metadata.sourceCoverage
     }
 
+    private func formatPercentage(_ count: Int, _ total: Int) -> String {
+        guard total > 0 else { return "0.0" }
+        return String(format: "%.1f", Double(count) / Double(total) * 100)
+    }
+
     public var summary: String {
         """
         Dataset Statistics
         ==================
         Total examples:     \(totalCount)
-        Person:             \(personCount) (\(String(format: "%.1f", Double(personCount) / Double(totalCount) * 100))%)
-        Merchant:           \(merchantCount) (\(String(format: "%.1f", Double(merchantCount) / Double(totalCount) * 100))%)
-        Unknown:            \(unknownCount) (\(String(format: "%.1f", Double(unknownCount) / Double(totalCount) * 100))%)
+        Person:             \(personCount) (\(formatPercentage(personCount, totalCount))%)
+        Merchant:           \(merchantCount) (\(formatPercentage(merchantCount, totalCount))%)
+        Unknown:            \(unknownCount) (\(formatPercentage(unknownCount, totalCount))%)
 
         Bank Coverage:
         \(bankCoverage.map { "  \($0.key): \($0.value)" }.joined(separator: "\n"))

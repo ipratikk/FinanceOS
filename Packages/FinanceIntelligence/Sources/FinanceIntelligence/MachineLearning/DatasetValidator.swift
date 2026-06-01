@@ -82,16 +82,7 @@ public struct DatasetValidator {
         }
 
         // Check balance
-        let balance = dataset.metadata.balance
-        let minRatio = 0.05 // don't allow < 5% of any class
-        for (label, ratio) in balance {
-            if ratio > 0 && ratio < minRatio && dataset.examples.count > 100 {
-                warnings.append(ValidationWarning(
-                    code: "IMBALANCED_CLASS",
-                    message: "Class '\(label)' has only \(String(format: "%.1f", ratio * 100))% of examples"
-                ))
-            }
-        }
+        warnings.append(contentsOf: checkBalance(dataset))
 
         // Check coverage
         if dataset.metadata.bankCoverage.count < 2 {
@@ -101,18 +92,8 @@ public struct DatasetValidator {
             ))
         }
 
-        // Check for PII (raw phone/names)
-        for example in dataset.examples {
-            if example.narration.contains(where: { $0.isNumber }) && example.narration.count < 20 {
-                // Suspicious: all-numeric or mostly-numeric narration might be unmasked phone
-                if example.narration.filter(\.isNumber).count >= 10 {
-                    issues.append(ValidationIssue(
-                        code: "POSSIBLE_PII_LEAK",
-                        message: "Example '\(example.narration.prefix(50))' looks like unmasked phone number"
-                    ))
-                }
-            }
-        }
+        // Check for PII
+        issues.append(contentsOf: checkForPII(dataset))
 
         // Check duplicates
         let narrations = Set(dataset.examples.map { $0.narration })
@@ -129,7 +110,7 @@ public struct DatasetValidator {
             totalExamples: dataset.examples.count,
             uniqueExamples: narrations.count,
             duplicateCount: duplicateCount,
-            balance: balance,
+            balance: dataset.metadata.balance,
             bankCoverage: dataset.metadata.bankCoverage,
             sourceCoverage: dataset.metadata.sourceCoverage
         )
@@ -140,6 +121,38 @@ public struct DatasetValidator {
             warnings: warnings,
             metrics: metrics
         )
+    }
+
+    // MARK: - Private
+
+    private func checkBalance(_ dataset: LabeledNarrationCollection) -> [ValidationWarning] {
+        var warnings: [ValidationWarning] = []
+        let balance = dataset.metadata.balance
+        let minRatio = 0.05
+        for (label, ratio) in balance {
+            if ratio > 0 && ratio < minRatio && dataset.examples.count > 100 {
+                warnings.append(ValidationWarning(
+                    code: "IMBALANCED_CLASS",
+                    message: "Class '\(label)' has only \(String(format: "%.1f", ratio * 100))% of examples"
+                ))
+            }
+        }
+        return warnings
+    }
+
+    private func checkForPII(_ dataset: LabeledNarrationCollection) -> [ValidationIssue] {
+        var issues: [ValidationIssue] = []
+        for example in dataset.examples {
+            if example.narration.contains(where: { $0.isNumber }) && example.narration.count < 20 {
+                if example.narration.filter(\.isNumber).count >= 10 {
+                    issues.append(ValidationIssue(
+                        code: "POSSIBLE_PII_LEAK",
+                        message: "Example '\(example.narration.prefix(50))' looks like unmasked phone number"
+                    ))
+                }
+            }
+        }
+        return issues
     }
 
     /// Quick quality check for dataset before export.

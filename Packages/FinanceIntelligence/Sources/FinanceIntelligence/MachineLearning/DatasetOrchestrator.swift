@@ -1,5 +1,12 @@
 import Foundation
 
+/// Fixture example for seeding dataset.
+struct FixtureExample {
+    let narration: String
+    let label: String
+    let bank: String
+}
+
 /// Orchestrates full ML-001 dataset collection from multiple sources.
 ///
 /// Workflow:
@@ -18,14 +25,14 @@ public actor DatasetOrchestrator {
 
     /// Seed from parser fixtures.
     public func seedFromFixtures() async {
-        for (narration, label, bank) in Self.seedFixtureExamples {
-            guard let labelEnum = LabeledNarration.NarrationLabel(rawValue: label) else {
+        for example in Self.seedFixtureExamples {
+            guard let labelEnum = LabeledNarration.NarrationLabel(rawValue: example.label) else {
                 continue
             }
             await collector.addFromFixture(
-                narration: narration,
+                narration: example.narration,
                 label: labelEnum,
-                bank: bank,
+                bank: example.bank,
                 direction: .debit
             )
         }
@@ -82,21 +89,18 @@ public actor DatasetOrchestrator {
 
     // MARK: - Private
 
-    private static let seedFixtureExamples: [(String, String, String)] = [
-        // Person examples
-        ("UPI-JOHN DOE-9876543210@upi-HDFC0-REF1", "person", "HDFC"),
-        ("UPI-RAJESH SHARMA-9123456789@ybl-ICIC0-REF2", "person", "ICICI"),
-        ("NEFT CR-HDFC0-PRIYA PATEL-REF3", "person", "HDFC"),
-        ("IMPS-1234-AMIT KUMAR-REF4", "person", "AXIS"),
-        ("UPI-NEHA GUPTA-9988776655@upi-IDBI0-REF5", "person", "IDBI"),
-
-        // Merchant examples
-        ("UPI-SWIGGY-swiggy@swiggypay-HDFC0-REF6", "merchant", "HDFC"),
-        ("UPI-AMAZON-amazonpay@razorpay-ICIC0-REF7", "merchant", "ICICI"),
-        ("NEFT DR-ICIC0-NETFLIX INDIA PVT LTD-REF8", "merchant", "ICICI"),
-        ("UPI-ZOMATO INDIA-zomato@sbi-REF9", "merchant", "SBI"),
-        ("NEFT CR-HDFC0-UBER INDIA PRIVATE LIMITED-REF10", "merchant", "HDFC"),
-        ("UPI-FLIPKART-flipkart@okaxis-REF11", "merchant", "AXIS"),
+    private static let seedFixtureExamples: [FixtureExample] = [
+        FixtureExample(narration: "UPI-JOHN DOE-9876543210@upi-HDFC0-REF1", label: "person", bank: "HDFC"),
+        FixtureExample(narration: "UPI-RAJESH SHARMA-9123456789@ybl-ICIC0-REF2", label: "person", bank: "ICICI"),
+        FixtureExample(narration: "NEFT CR-HDFC0-PRIYA PATEL-REF3", label: "person", bank: "HDFC"),
+        FixtureExample(narration: "IMPS-1234-AMIT KUMAR-REF4", label: "person", bank: "AXIS"),
+        FixtureExample(narration: "UPI-NEHA GUPTA-9988776655@upi-IDBI0-REF5", label: "person", bank: "IDBI"),
+        FixtureExample(narration: "UPI-SWIGGY-swiggy@swiggypay-HDFC0-REF6", label: "merchant", bank: "HDFC"),
+        FixtureExample(narration: "UPI-AMAZON-amazonpay@razorpay-ICIC0-REF7", label: "merchant", bank: "ICICI"),
+        FixtureExample(narration: "NEFT DR-ICIC0-NETFLIX INDIA PVT LTD-REF8", label: "merchant", bank: "ICICI"),
+        FixtureExample(narration: "UPI-ZOMATO INDIA-zomato@sbi-REF9", label: "merchant", bank: "SBI"),
+        FixtureExample(narration: "NEFT CR-HDFC0-UBER INDIA PRIVATE LIMITED-REF10", label: "merchant", bank: "HDFC"),
+        FixtureExample(narration: "UPI-FLIPKART-flipkart@okaxis-REF11", label: "merchant", bank: "AXIS")
     ]
 
     private static func generateSyntheticNarrations() -> [(String, String)] {
@@ -131,7 +135,7 @@ public actor DatasetOrchestrator {
             ("UNACADEMY", "merchant"),
             ("BYJU'S", "merchant"),
             ("CURE.FIT", "merchant"),
-            ("DUNZO", "merchant"),
+            ("DUNZO", "merchant")
         ]
 
         for (name, label) in merchants {
@@ -145,7 +149,7 @@ public actor DatasetOrchestrator {
             "TRANSFER REFERENCE XYZ",
             "INT PAID ON DEPOSIT",
             "NEFT-UNKNOWN-12345",
-            "UPI/AAABBBCCC/",
+            "UPI/AAABBBCCC/"
         ]
 
         for narration in unknown {
