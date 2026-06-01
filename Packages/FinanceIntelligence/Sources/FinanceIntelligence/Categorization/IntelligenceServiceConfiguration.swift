@@ -19,6 +19,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
 
     /// Structured logger for intelligence inference events. Defaults to `NullIntelligenceLogger`.
     public let intelligenceLogger: any IntelligenceLogger
+    /// Registry for model training metadata. Nil when no database is configured.
+    public let modelRegistry: ModelRegistry
 
     public init(
         correctionStoreURL: URL,
@@ -34,6 +36,7 @@ public struct IntelligenceServiceConfiguration: Sendable {
         self.taxonomy = taxonomy
         self.databaseQueue = databaseQueue
         self.intelligenceLogger = intelligenceLogger ?? NullIntelligenceLogger()
+        modelRegistry = ModelRegistry(dbQueue: databaseQueue)
     }
 
     /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.

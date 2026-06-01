@@ -81,6 +81,10 @@ enum AppMigration {
             try AppMigration.createIntelligenceInferenceEventsTable(in: db)
         }
 
+        migrator.registerMigration("v21_expand_intelligence_model_metadata") { db in
+            try AppMigration.expandIntelligenceModelMetadataTable(in: db)
+        }
+
         migrator.registerMigration("v19_dedup_relationships_and_patterns") { db in
             // Relationships: same upsert-by-pk bug. Keep earliest per (toPersonId, relationshipType).
             try db.execute(sql: """
@@ -318,6 +322,37 @@ private extension AppMigration {
             table.column("isActive", .integer).notNull().defaults(to: 1)
             table.column("notes", .text)
         }
+    }
+
+    static func expandIntelligenceModelMetadataTable(in database: Database) throws {
+        // v17 had UNIQUE on modelName (wrong) and was missing many columns — drop and recreate.
+        if try database.tableExists("intelligence_model_metadata") {
+            try database.drop(table: "intelligence_model_metadata")
+        }
+        try database.create(table: "intelligence_model_metadata") { table in
+            table.column("id", .text).primaryKey()
+            table.column("modelName", .text).notNull()
+            table.column("modelType", .text).notNull()
+            table.column("modelVersion", .text).notNull()
+            table.column("trainedAt", .datetime).notNull()
+            table.column("trainingExampleCount", .integer).notNull()
+            table.column("validationExampleCount", .integer)
+            table.column("featureVersion", .text)
+            table.column("configVersion", .text)
+            table.column("accuracy", .double)
+            table.column("precisionMacro", .double)
+            table.column("recallMacro", .double)
+            table.column("f1Macro", .double)
+            table.column("brierScore", .double)
+            table.column("expectedCalibrationError", .double)
+            table.column("confusionMatrixJson", .text)
+            table.column("trainingDataHash", .text)
+            table.column("notes", .text)
+        }
+        try database.create(index: "idx_model_metadata_name", on: "intelligence_model_metadata", columns: ["modelName"])
+        try database.create(
+            index: "idx_model_metadata_trained_at", on: "intelligence_model_metadata", columns: ["trainedAt"]
+        )
     }
 
     static func createIntelligenceInferenceEventsTable(in database: Database) throws {

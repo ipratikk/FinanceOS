@@ -31,6 +31,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     /// Background pipeline: graph, recurring, relationships. Nil when no databaseQueue provided.
     private let postProcessingPipeline: PostProcessingPipeline?
     private let intelligenceLogger: any IntelligenceLogger
+    private let modelRegistry: ModelRegistry
 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
@@ -67,6 +68,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             postProcessingPipeline = nil
         }
         intelligenceLogger = configuration.intelligenceLogger
+        modelRegistry = configuration.modelRegistry
     }
 
     public func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction {
@@ -253,6 +255,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         FinanceLogger.intelligence.info("trainClassifier: \(examples.count) examples via MLUpdateTask")
         try await classifier.trainBatch(examples)
         FinanceLogger.intelligence.info("trainClassifier: complete")
+        await registerKNNMetadata(classifier: classifier, examples: examples)
     }
 
     public func evaluateClassifier(
@@ -441,5 +444,43 @@ private extension TransactionIntelligenceServiceImpl {
             taxonomyVersion: taxonomy.version,
             confidenceKind: .deterministic
         )
+    }
+
+    func registerKNNMetadata(
+        classifier: PersonalizedClassifier,
+        examples: [(text: String, categoryId: String)]
+    ) async {
+        let evalResult = await classifier.validateOnHeldOut(examples: examples)
+        let hash = trainingDataHash(examples)
+        let version = ModelMetadataEntry.knnVersion(trainedAt: Date(), trainingDataHash: hash)
+        let confMatrixJson = (try? JSONEncoder().encode(evalResult.confusionMatrix))
+            .flatMap { String(data: $0, encoding: .utf8) }
+        let entry = ModelMetadataEntry(
+            modelName: "personalized-knn",
+            modelType: "knn",
+            modelVersion: version,
+            trainingExampleCount: examples.count,
+            validationExampleCount: evalResult.validationCount,
+            accuracy: evalResult.hasReliableMetrics ? evalResult.accuracy : nil,
+            precisionMacro: evalResult.hasReliableMetrics ? evalResult.precisionMacro : nil,
+            recallMacro: evalResult.hasReliableMetrics ? evalResult.recallMacro : nil,
+            f1Macro: evalResult.hasReliableMetrics ? evalResult.f1Macro : nil,
+            confusionMatrixJson: confMatrixJson,
+            trainingDataHash: hash
+        )
+        await modelRegistry.register(entry)
+    }
+
+    func trainingDataHash(_ examples: [(text: String, categoryId: String)]) -> String {
+        let payload = examples
+            .sorted { $0.text < $1.text }
+            .map { "\($0.text)|\($0.categoryId)" }
+            .joined(separator: "\n")
+        var hash: UInt64 = 14_695_981_039_346_656_037
+        for byte in payload.utf8 {
+            hash ^= UInt64(byte)
+            hash &*= 1_099_511_628_211
+        }
+        return String(format: "%016llx", hash)
     }
 }
