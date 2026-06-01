@@ -58,9 +58,10 @@ final class CoreMLCategorizer: @unchecked Sendable {
             displayName: label,
             confidence: confidence,
             alternatives: [],
-            source: .mlModel,
+            source: .coreMLNLModel,
             modelVersion: modelVersion,
-            taxonomyVersion: CategoryTaxonomy.current.version
+            taxonomyVersion: CategoryTaxonomy.current.version,
+            confidenceKind: .uncalibratedScore
         )
     }
 }

@@ -94,9 +94,11 @@ private extension RuleEngine {
             displayName: displayName,
             confidence: rule.outcome.confidence,
             alternatives: [],
-            source: .rules,
+            source: .structuralRule,
             modelVersion: ModelMetadata.rulesBased.modelVersion,
-            taxonomyVersion: taxonomy.version
+            taxonomyVersion: taxonomy.version,
+            confidenceKind: .deterministic,
+            ruleId: rule.id
         )
 
         return RuleEngineResult(
