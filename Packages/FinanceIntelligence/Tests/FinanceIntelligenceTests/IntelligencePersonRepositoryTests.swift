@@ -213,7 +213,63 @@ func personRepo_aliases_recordedForNewPerson() async throws {
 func personRepo_aliases_includeVariantsAcrossCallsBySamePerson() async throws {
     let repo = try makeRepo()
     _ = try await repo.findOrCreate(name: "RAVI PATEL", upiHandle: nil, date: Date())
-    let p = try await repo.findOrCreate(name: "RAVI PATEL", upiHandle: nil, date: Date())
+    let p = try await repo.findOrCreate(name: "Ravi Patel", upiHandle: nil, date: Date())
     // Both calls use same normalized alias → at least one alias entry
     #expect(!p.aliases.isEmpty)
+}
+
+// MARK: - INTEL-019: Fuzzy dedup wired into findOrCreate
+
+@Test
+func personRepo_fuzzyDedup_exactCaseVariantAutoMerges() async throws {
+    let repo = try makeRepo()
+    // Create person with uppercase name
+    let original = try await repo.findOrCreate(name: "RITIK GUPTA", upiHandle: nil, date: Date())
+    // Find-or-create with title case — should route to same person (exact after normalization)
+    let found = try await repo.findOrCreate(name: "Ritik Gupta", upiHandle: nil, date: Date())
+    #expect(found.id == original.id)
+    let all = try await repo.fetchAll()
+    #expect(all.count == 1)
+}
+
+@Test
+func personRepo_fuzzyDedup_strongMatchAutoMerges() async throws {
+    let repo = try makeRepo()
+    // Create person
+    let original = try await repo.findOrCreate(name: "ANKIT SHARMA", upiHandle: nil, date: Date())
+    // Name with 1-char difference — should fuzzy-merge (edit distance 1)
+    let found = try await repo.findOrCreate(name: "ANKIT SHARM", upiHandle: nil, date: Date())
+    #expect(found.id == original.id)
+    let all = try await repo.fetchAll()
+    #expect(all.count == 1)
+}
+
+@Test
+func personRepo_fuzzyDedup_emitsMergeEvent() async throws {
+    final class SpyFeedbackStore: FeedbackStore, @unchecked Sendable {
+        var recorded: [FeedbackEvent] = []
+        func record(_ event: FeedbackEvent) async throws { recorded.append(event) }
+        func events(for transactionId: UUID) async throws -> [FeedbackEvent] { recorded }
+        func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] {
+            recorded.filter { $0.eventType == type }
+        }
+        func allEvents() async throws -> [FeedbackEvent] { recorded }
+    }
+    let spy = SpyFeedbackStore()
+    let repo = try GRDBIntelligencePersonRepository(dbQueue: makeTestDatabase(), feedbackStore: spy)
+    _ = try await repo.findOrCreate(name: "ANKIT SHARMA", upiHandle: nil, date: Date())
+    _ = try await repo.findOrCreate(name: "ANKIT SHARM", upiHandle: nil, date: Date())
+    let mergeEvents = try await spy.events(ofType: .personMerged)
+    #expect(mergeEvents.count == 1)
+    #expect(mergeEvents[0].oldValue == "ANKIT SHARM")
+}
+
+@Test
+func personRepo_fuzzyDedup_differentPeopleNotMerged() async throws {
+    let repo = try makeRepo()
+    let p1 = try await repo.findOrCreate(name: "PRIYA SINGH", upiHandle: nil, date: Date())
+    let p2 = try await repo.findOrCreate(name: "RAHUL GUPTA", upiHandle: nil, date: Date())
+    #expect(p1.id != p2.id)
+    let all = try await repo.fetchAll()
+    #expect(all.count == 2)
 }

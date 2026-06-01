@@ -41,7 +41,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         ruleEngine = RuleEngine(taxonomy: configuration.taxonomy)
         personResolver = PersonResolver()
         if let queue = configuration.databaseQueue {
-            personRepository = GRDBIntelligencePersonRepository(dbQueue: queue)
+            personRepository = GRDBIntelligencePersonRepository(dbQueue: queue, feedbackStore: configuration.feedbackStore)
         } else {
             personRepository = PersonEntityStore()
         }
