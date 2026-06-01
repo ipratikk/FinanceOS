@@ -138,4 +138,56 @@ public struct GRDBGraphRepository: GraphRepository {
                 .compactMap { $0.toDomain() }
         }
     }
+
+    // MARK: - Bulk Reads
+
+    public func allNodes(limit: Int = 1000) async throws -> [GraphNode] {
+        try await dbWriter.read { db in
+            try GRDBGraphNode
+                .limit(limit)
+                .fetchAll(db)
+                .compactMap { $0.toDomain() }
+        }
+    }
+
+    public func allEdges(limit: Int = 1000) async throws -> [GraphEdge] {
+        try await dbWriter.read { db in
+            try GRDBGraphEdge
+                .limit(limit)
+                .fetchAll(db)
+                .compactMap { $0.toDomain() }
+        }
+    }
+
+    // MARK: - Mutations
+
+    public func updateNode(_ node: GraphNode) async throws {
+        try await dbWriter.write { db in
+            guard var existing = try GRDBGraphNode
+                .filter(Column("id") == node.id)
+                .fetchOne(db) else { return }
+            existing.label = node.label
+            existing.properties = (try? String(
+                data: JSONEncoder().encode(node.properties), encoding: .utf8
+            )) ?? "{}"
+            try existing.update(db)
+        }
+    }
+
+    public func deleteNode(id: String) async throws {
+        try await dbWriter.write { db in
+            // Edges cascade-delete via FK ON DELETE CASCADE
+            try GRDBGraphNode
+                .filter(Column("id") == id)
+                .deleteAll(db)
+        }
+    }
+
+    public func deleteEdge(id: String) async throws {
+        try await dbWriter.write { db in
+            try GRDBGraphEdge
+                .filter(Column("id") == id)
+                .deleteAll(db)
+        }
+    }
 }

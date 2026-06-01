@@ -14,4 +14,10 @@ public protocol IntelligencePersonRepository: Sendable {
 
     /// Returns the person with the given ID, or nil if not found.
     func person(forId id: UUID) async throws -> Person?
+
+    /// Updates canonical name and UPI handle for an existing person.
+    func update(_ person: Person) async throws
+
+    /// Permanently deletes a person and all their aliases.
+    func delete(id: UUID) async throws
 }
