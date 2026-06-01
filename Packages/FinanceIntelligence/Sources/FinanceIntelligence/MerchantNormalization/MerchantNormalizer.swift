@@ -14,9 +14,21 @@ public struct MerchantNormalizer: Sendable {
         self.aliasTable = aliasTable
     }
 
-    /// Resolves a `MerchantCandidate` from `rawDescription` by running the full normalization pipeline.
-    /// Alias lookup is attempted on both the raw and cleaned description before falling back to fuzzy matching.
+    // swiftlint:disable:next function_body_length
     public func normalize(_ rawDescription: String) -> MerchantCandidate {
+        // HDFC internet banking bill payments: "IB BILLPAY DR-HDFCWI-{bin}XXXXXX{last4}"
+        // Produce a clean name and flag as credit card payment.
+        if let billpay = Self.parseBillPay(rawDescription) {
+            return MerchantCandidate(MerchantCandidateInput(
+                rawDescription: rawDescription,
+                cleanedDescription: billpay,
+                canonicalName: billpay,
+                confidence: 0.92,
+                source: .rule,
+                categoryId: "fees"
+            ))
+        }
+
         // For UPI/NEFT: extract the embedded merchant segment before generic cleaning
         let effectiveRaw = UPIDescriptionParser.merchantName(from: rawDescription) ?? rawDescription
         let cleaned = cleaner.clean(effectiveRaw)
@@ -66,6 +78,25 @@ public struct MerchantNormalizer: Sendable {
             confidence: 0.5,
             source: .rule
         ))
+    }
+}
+
+// MARK: - Bill Pay Detection
+
+private extension MerchantNormalizer {
+    /// Detects HDFC internet banking bill payment format and extracts card last 4.
+    /// Format: "IB BILLPAY DR-HDFCWI-{anything}XXXXXX{last4}" or "IB BILLPAY DR-HDFCWI-{anything}xxxxxx{last4}"
+    static func parseBillPay(_ raw: String) -> String? {
+        let upper = raw.uppercased()
+        guard upper.contains("BILLPAY") || upper.contains("BILL PAY") else { return nil }
+        // Extract XXXXXX followed by 4 digits
+        if let range = raw.range(of: "(?i)X{4,}(\\d{4})", options: .regularExpression) {
+            let segment = String(raw[range])
+            if let last4 = segment.range(of: "\\d{4}$", options: .regularExpression) {
+                return "Card Payment ••••\(String(segment[last4]))"
+            }
+        }
+        return "Credit Card Payment"
     }
 }
 

@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import Foundation
 
 /// Default rule set shipped with the app.
@@ -46,11 +47,56 @@ extension BuiltInRules {
             Rule(
                 id: "income.refund",
                 priority: 3,
-                condition: .tokenContainsAny(["refund", "reversal", "chargeback"]),
+                condition: .tokenContainsAny(["refund", "reversal", "chargeback", "upiret", "upi ret"]),
                 outcome: RuleOutcome(
                     categoryId: "income",
                     subcategoryId: "income.refund",
                     intent: .refund,
+                    confidence: 0.90
+                )
+            ),
+            Rule(
+                id: "income.dividend",
+                priority: 3,
+                condition: .compound([
+                    .tokenContainsAny([
+                        "dividend", "intdiv", "div2", "div1", "divid",
+                        "motorsdiv", "palmolivind", "fnldiv", "tatadiv",
+                        "interimdiv", "finaldiv", "bonusdiv"
+                    ]),
+                    .isCredit
+                ]),
+                outcome: RuleOutcome(
+                    categoryId: "income",
+                    subcategoryId: "income.dividend",
+                    intent: .income,
+                    confidence: 0.90
+                )
+            ),
+            Rule(
+                id: "income.interest",
+                priority: 3,
+                condition: .compound([
+                    .tokenContainsAny(["interest paid", "int.pd", "interest credited", "savings interest"]),
+                    .isCredit
+                ]),
+                outcome: RuleOutcome(
+                    categoryId: "income",
+                    subcategoryId: "income.interest",
+                    intent: .income,
+                    confidence: 0.90
+                )
+            ),
+            Rule(
+                id: "income.wire",
+                priority: 3,
+                condition: .compound([
+                    .tokenContainsAny(["inw ", "inward remittance"]),
+                    .isCredit
+                ]),
+                outcome: RuleOutcome(
+                    categoryId: "income",
+                    intent: .income,
                     confidence: 0.90
                 )
             ),
@@ -80,7 +126,9 @@ extension BuiltInRules {
                 condition: .tokenContainsAny([
                     "american express", "amex", "hdfc cc", "icici cc", "sbi card",
                     "axis cc", "kotak cc", "indusind cc", "credit card payment",
-                    "card payment", "billdesk cc"
+                    "card payment", "billdesk cc",
+                    "payment on cred", "cred ccbp", "pay via cred",
+                    "ib billpay", "billpay dr", "bill pay dr"
                 ]),
                 outcome: RuleOutcome(categoryId: "fees", intent: .creditCardPayment, confidence: 0.92)
             )
@@ -98,6 +146,7 @@ extension BuiltInRules {
                 priority: 6,
                 condition: .tokenContainsAny([
                     "sip", "systematic investment", "nach debit", "mutual fund",
+                    "indian clearing", "ach d", "nsdl clearing", "bse clearing",
                     "groww", "kuvera", "coin by zerodha", "paytm money", "zerodha mf",
                     "mirae asset", "nippon india", "axis mf", "franklin templeton",
                     "hdfc mf", "icici pru mf", "sbi mf", "aditya birla"
@@ -166,6 +215,54 @@ extension BuiltInRules {
                 priority: 10,
                 condition: .tokenContainsAny(["atm withdrawal", "cash withdrawal", "atm cash", "atw"]),
                 outcome: RuleOutcome(categoryId: "atm", intent: .cashWithdrawal, confidence: 0.92)
+            ),
+            Rule(
+                id: "fees.bank",
+                priority: 10,
+                condition: .tokenContainsAny([
+                    "dcardfee", "acfee", "bank charges", "annual fee",
+                    "processing fee", "convenience fee", "maintenance charge",
+                    "ecsrtn", "ecs rtn", "mandate bounce", "return charge",
+                    "ib billpay", "billpay dr"
+                ]),
+                outcome: RuleOutcome(
+                    categoryId: "fees",
+                    subcategoryId: "fees.bank",
+                    intent: .interestPayment,
+                    confidence: 0.88
+                )
+            ),
+            Rule(
+                id: "taxes.gst",
+                priority: 10,
+                condition: .tokenContainsAny(["sgst", "cgst", "igst", "tds deducted", "tds on"]),
+                outcome: RuleOutcome(categoryId: "taxes", intent: .unknown, confidence: 0.92)
+            ),
+            Rule(
+                id: "transfer.upi_lite",
+                priority: 11,
+                condition: .tokenContainsAny(["upilite", "upi lite"]),
+                outcome: RuleOutcome(categoryId: "transfers", intent: .transfer, confidence: 0.88)
+            ),
+            Rule(
+                id: "transfer.internal_fund",
+                priority: 11,
+                condition: .tokenContainsAny(["bil/inft", "bilinft", "inft/", "internal fund"]),
+                outcome: RuleOutcome(categoryId: "transfers", intent: .transfer, confidence: 0.88)
+            ),
+            Rule(
+                id: "income.ach_credit",
+                priority: 4,
+                condition: .compound([
+                    .tokenContainsAny(["ach/", "ach cr"]),
+                    .isCredit
+                ]),
+                outcome: RuleOutcome(
+                    categoryId: "income",
+                    subcategoryId: "income.dividend",
+                    intent: .income,
+                    confidence: 0.82
+                )
             )
         ]
     }
@@ -232,7 +329,7 @@ extension BuiltInRules {
                 id: "transfer.generic",
                 priority: 15,
                 condition: .hasIndicator(.transfer),
-                outcome: RuleOutcome(categoryId: "transfers", intent: .transfer, confidence: 0.85)
+                outcome: RuleOutcome(categoryId: "transfers", intent: .transfer, confidence: 0.92)
             )
         ]
     }
@@ -286,7 +383,7 @@ extension BuiltInRules {
                 id: "groceries.supermarket",
                 priority: 24,
                 condition: .tokenContainsAny([
-                    "bigbasket", "zepto", "blinkit", "grofers", "dunzo",
+                    "bigbasket", "bbnow", "zepto", "blinkit", "grofers", "dunzo",
                     "dmart", "reliance fresh", "more supermarket",
                     "nature basket", "spencers", "supermarket", "grocery"
                 ]),
@@ -306,7 +403,10 @@ extension BuiltInRules {
                 priority: 26,
                 condition: .tokenContainsAny([
                     "amazon", "amzn", "flipkart", "meesho", "myntra", "ajio",
-                    "nykaa", "tata cliq", "snapdeal", "shopclues", "indiamart"
+                    "nykaa", "tata cliq", "snapdeal", "shopclues", "indiamart",
+                    "h and m", "hennes", "ikea", "zara", "uniqlo",
+                    "razorpay", "pay via razorpay", "razorpay.2",
+                    "pinelabs", "pineaxis", "pine labs", "innovativeretail"
                 ]),
                 outcome: RuleOutcome(
                     categoryId: "shopping",
