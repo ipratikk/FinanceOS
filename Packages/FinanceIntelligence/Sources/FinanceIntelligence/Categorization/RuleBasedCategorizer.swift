@@ -40,7 +40,7 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: "income",
                 subcategoryId: "income.salary",
                 confidence: 0.9,
-                source: .rules
+                source: .structuralRule
             )
         }
         if features.hasRefundIndicator {
@@ -48,7 +48,7 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: "income",
                 subcategoryId: "income.refund",
                 confidence: 0.85,
-                source: .rules
+                source: .structuralRule
             )
         }
         if features.hasTransferIndicator {
@@ -56,7 +56,7 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: "transfers",
                 subcategoryId: nil,
                 confidence: 0.88,
-                source: .rules
+                source: .structuralRule
             )
         }
 
@@ -76,7 +76,7 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: match.rule.categoryId,
                 subcategoryId: match.rule.subcategoryId,
                 confidence: match.rule.confidence,
-                source: .rules
+                source: .structuralRule
             )
         }
 
@@ -94,7 +94,8 @@ private extension RuleBasedCategorizer {
         categoryId: String,
         subcategoryId: String?,
         confidence: Double,
-        source: PredictionSource
+        source: IntelligenceSource = .structuralRule,
+        ruleId: String? = nil
     ) -> CategoryPrediction {
         let displayName = taxonomy.category(forId: categoryId)?.displayName ?? categoryId
         return CategoryPrediction(
@@ -105,7 +106,9 @@ private extension RuleBasedCategorizer {
             alternatives: [],
             source: source,
             modelVersion: ModelMetadata.rulesBased.modelVersion,
-            taxonomyVersion: taxonomy.version
+            taxonomyVersion: taxonomy.version,
+            confidenceKind: .deterministic,
+            ruleId: ruleId
         )
     }
 }
