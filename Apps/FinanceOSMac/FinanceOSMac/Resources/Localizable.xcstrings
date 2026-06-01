@@ -101,6 +101,9 @@
         }
       }
     },
+    "Bulk-trains the on-device classifier from all categorized transactions via MLUpdateTask" : {
+
+    },
     "Cadence" : {
 
     },
@@ -399,6 +402,9 @@
     "Merchant" : {
 
     },
+    "Model Trained" : {
+
+    },
     "Month" : {
 
     },
@@ -624,6 +630,22 @@
           }
         }
       }
+    },
+    "Train Model" : {
+
+    },
+    "Trained on %lld examples.\nCoverage: %lld%% · Accuracy: %lld%% · Confidence: %lld%%\n%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Trained on %1$lld examples.\nCoverage: %2$lld%% · Accuracy: %3$lld%% · Confidence: %4$lld%%\n%5$@"
+          }
+        }
+      }
+    },
+    "Training Failed" : {
+
     },
     "TRANSACTION TYPE" : {
       "extractionState" : "manual",
