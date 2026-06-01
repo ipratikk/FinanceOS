@@ -166,7 +166,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         if let correction = await correctionStore.correction(for: transaction.id) {
             categoryPrediction = correctionPrediction(correction, features: features)
             isUserCorrected = true
-        } else if let ruleCat = ruleResult.categoryPrediction, ruleCat.confidence >= 0.90 {
+        } else if let ruleCat = ruleResult.categoryPrediction, ruleCat.confidence >= 0.80 {
             categoryPrediction = ruleCat
             isUserCorrected = false
         } else {

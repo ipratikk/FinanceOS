@@ -58,6 +58,9 @@ enum UPIDescriptionParser {
     static func parse(_ rawDescription: String) -> ParsedUPI? {
         let upper = rawDescription.uppercased()
         if upper.hasPrefix("UPI-") { return parseUPI(rawDescription) }
+        // "UPI/fromVPA/remarks/bank/..." — incoming UPI credit format used by HDFC
+        if upper.hasPrefix("UPI/") { return parseUPISlash(rawDescription) }
+        if upper.hasPrefix("UPL/") { return parseUPISlash(rawDescription) } // UPI Lite
         if upper.hasPrefix("NEFT CR-") || upper.hasPrefix("NEFT DR-") { return parseNEFT(rawDescription) }
         if upper.hasPrefix("IMPS-") { return parseIMPS(rawDescription) }
         return nil
@@ -97,6 +100,29 @@ private extension UPIDescriptionParser {
 
         return ParsedUPI(
             merchantName: cleanMerchantSegment(merchantSegment),
+            vpa: vpa,
+            isPersonTransfer: !isBusiness,
+            isMerchantPayment: isBusiness
+        )
+    }
+
+    /// Format: "UPI/{fromVPA}/{remarks}/{bank}/{txnId}/{ref}" — HDFC incoming credit format
+    static func parseUPISlash(_ raw: String) -> ParsedUPI {
+        let parts = raw.components(separatedBy: "/")
+        // parts[0] = "UPI", parts[1] = fromVPA (e.g. "9007649019@upi"), parts[2] = remarks
+        let vpa = parts.count > 1 ? parts[1].lowercased() : nil
+        let remarks = parts.count > 2 ? parts[2] : ""
+        // Derive name: use remarks if meaningful, else derive from VPA prefix
+        let name: String = if !remarks.isEmpty, remarks.uppercased() != "NO REMARKS", remarks.uppercased() != "UPI" {
+            remarks
+        } else if let vpaPrefix = vpa?.components(separatedBy: "@").first, !vpaPrefix.isEmpty {
+            vpaPrefix
+        } else {
+            raw
+        }
+        let isBusiness = isMerchantPayment(name: name, vpa: vpa)
+        return ParsedUPI(
+            merchantName: cleanMerchantSegment(name),
             vpa: vpa,
             isPersonTransfer: !isBusiness,
             isMerchantPayment: isBusiness
