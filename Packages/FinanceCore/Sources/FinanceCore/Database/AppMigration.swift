@@ -93,6 +93,10 @@ enum AppMigration {
             }
         }
 
+        migrator.registerMigration("v23_add_enrichment_provenance") { db in
+            try AppMigration.addEnrichmentProvenanceColumns(in: db)
+        }
+
         migrator.registerMigration("v19_dedup_relationships_and_patterns") { db in
             // Relationships: same upsert-by-pk bug. Keep earliest per (toPersonId, relationshipType).
             try db.execute(sql: """
@@ -361,6 +365,27 @@ private extension AppMigration {
         try database.create(
             index: "idx_model_metadata_trained_at", on: "intelligence_model_metadata", columns: ["trainedAt"]
         )
+    }
+
+    static func addEnrichmentProvenanceColumns(in database: Database) throws {
+        let cols = try database.columns(in: "transactions")
+        try database.alter(table: "transactions") { table in
+            if !cols.contains(where: { $0.name == "lastEnrichedAt" }) {
+                table.add(column: "lastEnrichedAt", .datetime)
+            }
+            if !cols.contains(where: { $0.name == "intelligenceSource" }) {
+                table.add(column: "intelligenceSource", .text)
+            }
+            if !cols.contains(where: { $0.name == "intelligenceModelVersion" }) {
+                table.add(column: "intelligenceModelVersion", .text)
+            }
+            if !cols.contains(where: { $0.name == "intelligenceConfigVersion" }) {
+                table.add(column: "intelligenceConfigVersion", .text)
+            }
+            if !cols.contains(where: { $0.name == "isUserCorrectedMerchant" }) {
+                table.add(column: "isUserCorrectedMerchant", .integer).notNull().defaults(to: 0)
+            }
+        }
     }
 
     static func createIntelligenceInferenceEventsTable(in database: Database) throws {

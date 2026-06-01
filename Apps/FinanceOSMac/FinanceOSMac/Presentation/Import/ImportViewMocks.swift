@@ -30,6 +30,10 @@ struct MockTransactionRepository: TransactionRepository {
     func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {}
 
     func updateIntelligence(id: UUID, categoryId: String?, merchantName: String?) async throws {}
+
+    func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws {}
+
+    func markUserCorrectedMerchant(id: UUID) async throws {}
 }
 
 struct MockBankRepository: BankRepository {

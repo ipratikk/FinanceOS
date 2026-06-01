@@ -76,10 +76,17 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
                     guard !Task.isCancelled else { return }
                     do {
                         let result = try await service.analyzeEnriched(txn, context: .empty)
-                        try? await transactionRepository.updateIntelligence(
+                        try? await transactionRepository.updateEnrichmentProvenance(
                             id: txn.id,
-                            categoryId: result.categoryPrediction.categoryId,
-                            merchantName: result.merchantCandidate.canonicalName
+                            EnrichmentProvenance(
+                                categoryId: result.categoryPrediction.categoryId,
+                                merchantName: result.merchantCandidate.canonicalName,
+                                intentId: result.intentPrediction.intent.rawValue,
+                                resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
+                                intelligenceSource: result.categoryPrediction.source.rawValue,
+                                intelligenceModelVersion: result.categoryPrediction.modelVersion,
+                                intelligenceConfigVersion: result.categoryPrediction.configVersion
+                            )
                         )
                         enriched.append(result)
                     } catch {
@@ -199,14 +206,19 @@ private extension TransactionsViewModel {
             let results = try await service.analyzeBatch(transactions, context: .empty)
             let byId = Dictionary(uniqueKeysWithValues: results.map { ($0.transaction.id, $0) })
 
-            // Persist results — only overwrite merchantName if intelligence produced one.
-            // User-corrected merchantNames are preserved via applyCorrection.
+            // Persist results with full provenance. isUserCorrectedMerchant protection
+            // is enforced inside updateEnrichmentProvenance.
             let repo = await MainActor.run { transactionRepository }
             for result in results {
-                try? await repo.updateIntelligence(
+                try? await repo.updateEnrichmentProvenance(
                     id: result.transaction.id,
-                    categoryId: result.categoryPrediction.categoryId,
-                    merchantName: result.merchantCandidate.canonicalName
+                    EnrichmentProvenance(
+                        categoryId: result.categoryPrediction.categoryId,
+                        merchantName: result.merchantCandidate.canonicalName,
+                        intelligenceSource: result.categoryPrediction.source.rawValue,
+                        intelligenceModelVersion: result.categoryPrediction.modelVersion,
+                        intelligenceConfigVersion: result.categoryPrediction.configVersion
+                    )
                 )
             }
 

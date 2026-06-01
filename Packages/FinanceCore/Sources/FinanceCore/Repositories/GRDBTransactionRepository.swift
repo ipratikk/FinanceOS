@@ -188,4 +188,38 @@ public final class GRDBTransactionRepository:
             """, arguments: [categoryId, merchantName, id])
         }
     }
+
+    public func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: """
+                UPDATE transactions
+                SET
+                    "categoryId"               = COALESCE(?, "categoryId"),
+                    "merchantName"             = CASE WHEN "isUserCorrectedMerchant" = 1
+                                                     THEN "merchantName"
+                                                     ELSE COALESCE(?, "merchantName") END,
+                    "intentId"                 = COALESCE(?, "intentId"),
+                    "resolvedPersonId"         = COALESCE(?, "resolvedPersonId"),
+                    "lastEnrichedAt"           = ?,
+                    "intelligenceSource"       = ?,
+                    "intelligenceModelVersion" = ?,
+                    "intelligenceConfigVersion" = ?
+                WHERE "id" = ?
+            """, arguments: [
+                provenance.categoryId, provenance.merchantName,
+                provenance.intentId, provenance.resolvedPersonId,
+                provenance.lastEnrichedAt, provenance.intelligenceSource,
+                provenance.intelligenceModelVersion, provenance.intelligenceConfigVersion,
+                id
+            ])
+        }
+    }
+
+    public func markUserCorrectedMerchant(id: UUID) async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: """
+                UPDATE transactions SET "isUserCorrectedMerchant" = 1 WHERE "id" = ?
+            """, arguments: [id])
+        }
+    }
 }
