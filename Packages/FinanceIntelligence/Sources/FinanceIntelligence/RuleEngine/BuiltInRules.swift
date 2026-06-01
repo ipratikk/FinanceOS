@@ -5,12 +5,14 @@ import Foundation
 /// Rules are evaluated in ascending priority order — lower integer = higher priority.
 /// Add new rules by extending the appropriate section or adding a new section to `all`.
 public enum BuiltInRules {
-    /// Complete ordered rule set. Use this in `RuleEngine(rules:)`.
+    /// Structural rule set — high-confidence deterministic rules only.
+    /// Keyword-category rules (merchants, subscriptions, food, grocery, shopping, travel,
+    /// healthcare, utilities) are intentionally absent: the trained PersonalizedClassifier
+    /// handles those. Only keep rules for patterns that are format-determined, not name-determined.
     public static var all: [Rule] {
         incomeRules + creditCardRules + investmentRules + insuranceRules
-            + subscriptionRules + withdrawalRules + housingRules + loanRules
-            + transferRules + utilityRules + foodRules + groceryRules
-            + shoppingRules + travelRules + healthcareRules + catchAllRules
+            + withdrawalRules + housingRules + loanRules
+            + transferRules + catchAllRules
     }
 }
 
@@ -124,11 +126,9 @@ extension BuiltInRules {
                 id: "payment.credit_card",
                 priority: 5,
                 condition: .tokenContainsAny([
-                    "american express", "amex", "hdfc cc", "icici cc", "sbi card",
-                    "axis cc", "kotak cc", "indusind cc", "credit card payment",
-                    "card payment", "billdesk cc",
-                    "payment on cred", "cred ccbp", "pay via cred",
-                    "ib billpay", "billpay dr", "bill pay dr"
+                    "payment on cred", "cred ccbp",
+                    "ib billpay", "billpay dr", "bill pay dr",
+                    "credit card payment", "card payment"
                 ]),
                 outcome: RuleOutcome(categoryId: "fees", intent: .creditCardPayment, confidence: 0.92)
             )
@@ -146,30 +146,13 @@ extension BuiltInRules {
                 priority: 6,
                 condition: .tokenContainsAny([
                     "sip", "systematic investment", "nach debit", "mutual fund",
-                    "indian clearing", "ach d", "nsdl clearing", "bse clearing",
-                    "groww", "kuvera", "coin by zerodha", "paytm money", "zerodha mf",
-                    "mirae asset", "nippon india", "axis mf", "franklin templeton",
-                    "hdfc mf", "icici pru mf", "sbi mf", "aditya birla"
+                    "indian clearing", "ach d", "nsdl clearing", "bse clearing"
                 ]),
                 outcome: RuleOutcome(
                     categoryId: "investments",
                     subcategoryId: "investments.sip",
                     intent: .mutualFundSIP,
                     confidence: 0.92
-                )
-            ),
-            Rule(
-                id: "investment.stocks",
-                priority: 7,
-                condition: .tokenContainsAny([
-                    "zerodha", "upstox", "angel broking", "demat", "nse", "bse",
-                    "ipo application", "stock purchase", "equity"
-                ]),
-                outcome: RuleOutcome(
-                    categoryId: "investments",
-                    subcategoryId: "investments.stocks",
-                    intent: .investment,
-                    confidence: 0.88
                 )
             )
         ]
@@ -184,11 +167,7 @@ extension BuiltInRules {
             Rule(
                 id: "insurance.premium",
                 priority: 8,
-                condition: .tokenContainsAny([
-                    "lic", "max life", "hdfc life", "icici pru", "sbi life",
-                    "bajaj allianz", "star health", "care health", "niva bupa",
-                    "tata aia", "kotak life", "insurance premium", "policy premium"
-                ]),
+                condition: .tokenContainsAny(["insurance premium", "policy premium", "nach insurance"]),
                 outcome: RuleOutcome(categoryId: "insurance", intent: .insurance, confidence: 0.92)
             )
         ]
@@ -230,16 +209,13 @@ extension BuiltInRules {
                 id: "fees.bank",
                 priority: 10,
                 condition: .tokenContainsAny([
-                    "dcardfee", "acfee", "bank charges", "annual fee",
-                    "processing fee", "convenience fee", "maintenance charge",
-                    "ecsrtn", "ecs rtn", "mandate bounce", "return charge",
-                    "ib billpay", "billpay dr"
+                    "dcardfee", "ecsrtn", "ecs rtn", "mandate bounce", "return charge"
                 ]),
                 outcome: RuleOutcome(
                     categoryId: "fees",
                     subcategoryId: "fees.bank",
                     intent: .interestPayment,
-                    confidence: 0.88
+                    confidence: 0.92
                 )
             ),
             Rule(
