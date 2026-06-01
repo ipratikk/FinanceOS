@@ -255,7 +255,11 @@ private extension RuleBasedCategorizer {
             CategoryRule(["interest charged", "finance charge", "late fee"], "fees", "fees.interest"),
             CategoryRule(["atm withdrawal", "cash withdrawal", "atm cash"], "atm"),
             CategoryRule(["income tax", "gst payment", "tds"], "taxes"),
-            CategoryRule(["ach d-", "sip debit", "mutual fund", "zerodha", "groww", "kuvera"], "business")
+            CategoryRule(
+                ["ach d-", "sip debit", "mutual fund", "zerodha", "groww", "kuvera"],
+                "investments",
+                "investments.sip"
+            )
         ]
     }
 }

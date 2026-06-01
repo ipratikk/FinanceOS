@@ -216,13 +216,11 @@ actor PersonalizedClassifier {
     // MARK: - Model Loading
 
     static func loadModel(personalizedURL: URL, bundleURL: URL) async -> MLModel? {
-        if FileManager.default.fileExists(atPath: personalizedURL.path) {
-            return try? await MLModel.load(contentsOf: personalizedURL)
-        }
-        if bundleURL.pathExtension == "mlmodelc" {
-            return try? await MLModel.load(contentsOf: bundleURL)
-        }
-        guard let compiled = try? await MLModel.compileModel(at: bundleURL) else { return nil }
-        return try? await MLModel.load(contentsOf: compiled)
+        // Only load when a user-specific model exists on disk.
+        // The bundled kNN is not trained on this user's data and produces unreliable predictions
+        // that override the NLModel classifier. It activates only after the user accumulates
+        // corrections via MLUpdateTask (addExample / trainBatch).
+        guard FileManager.default.fileExists(atPath: personalizedURL.path) else { return nil }
+        return try? await MLModel.load(contentsOf: personalizedURL)
     }
 }

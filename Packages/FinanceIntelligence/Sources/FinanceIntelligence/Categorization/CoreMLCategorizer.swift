@@ -38,19 +38,25 @@ final class CoreMLCategorizer: @unchecked Sendable {
     }
 
     static func load() async -> CoreMLCategorizer {
-        guard let url = Bundle.module.url(
-            forResource: "TransactionCategoryClassifier",
-            withExtension: "mlmodel"
-        ) else {
-            FinanceLogger.intelligence.warning(
-                "CoreMLCategorizer: TransactionCategoryClassifier.mlmodel not found in bundle"
-            )
-            return CoreMLCategorizer(backend: nil, modelVersion: "none", loadError: "bundle-missing")
-        }
-
+        // Xcode compiles .mlmodel → .mlmodelc at build time; try precompiled first.
+        // swift build leaves .mlmodel uncompiled and requires runtime compilation.
         do {
-            let compiledUrl = try await MLModel.compileModel(at: url)
-            let mlModel = try await MLModel.load(contentsOf: compiledUrl)
+            let mlModel: MLModel
+            if let precompiled = Bundle.module.url(
+                forResource: "TransactionCategoryClassifier", withExtension: "mlmodelc"
+            ) {
+                mlModel = try await MLModel.load(contentsOf: precompiled)
+            } else if let source = Bundle.module.url(
+                forResource: "TransactionCategoryClassifier", withExtension: "mlmodel"
+            ) {
+                let compiled = try await MLModel.compileModel(at: source)
+                mlModel = try await MLModel.load(contentsOf: compiled)
+            } else {
+                FinanceLogger.intelligence.warning(
+                    "CoreMLCategorizer: TransactionCategoryClassifier not found in bundle"
+                )
+                return CoreMLCategorizer(backend: nil, modelVersion: "none", loadError: "bundle-missing")
+            }
             let version = mlModel.modelDescription.metadata[MLModelMetadataKey.versionString] as? String
 
             // Try NLModel first (CreateML Text Classifier output)
@@ -64,14 +70,17 @@ final class CoreMLCategorizer: @unchecked Sendable {
 
             // Fall back to MLModel dict-input path (sklearn/coremltools output)
             // Verify it has the expected input/output features before accepting it.
-            let inputs  = mlModel.modelDescription.inputDescriptionsByName
+            let inputs = mlModel.modelDescription.inputDescriptionsByName
             let outputs = mlModel.modelDescription.outputDescriptionsByName
             guard inputs["token_counts"] != nil, outputs["category"] != nil else {
                 FinanceLogger.intelligence.error(
                     "CoreMLCategorizer: model is neither NLModel-compatible nor a token_counts→category sklearn pipeline"
                 )
-                return CoreMLCategorizer(backend: nil, modelVersion: "load-failed",
-                                         loadError: "unsupported-model-type")
+                return CoreMLCategorizer(
+                    backend: nil,
+                    modelVersion: "load-failed",
+                    loadError: "unsupported-model-type"
+                )
             }
 
             FinanceLogger.intelligence.info("CoreMLCategorizer: loaded as MLModel (sklearn BoW pipeline)")
@@ -80,19 +89,25 @@ final class CoreMLCategorizer: @unchecked Sendable {
                 modelVersion: version ?? "sklearn-bow-v1"
             )
         } catch {
-            FinanceLogger.intelligence.error("CoreMLCategorizer: model load failed. Inference falls back to kNN → rules.")
-            return CoreMLCategorizer(backend: nil, modelVersion: "load-failed",
-                                     loadError: error.localizedDescription)
+            FinanceLogger.intelligence
+                .error("CoreMLCategorizer: model load failed. Inference falls back to kNN → rules.")
+            return CoreMLCategorizer(
+                backend: nil,
+                modelVersion: "load-failed",
+                loadError: error.localizedDescription
+            )
         }
     }
 
-    var isAvailable: Bool { backend != nil }
+    var isAvailable: Bool {
+        backend != nil
+    }
 
     func predict(features: TransactionFeatures) -> CategoryPrediction? {
         switch backend {
-        case .nlModel(let nlModel):
+        case let .nlModel(nlModel):
             return predictNL(nlModel, features: features)
-        case .mlModel(let mlModel):
+        case let .mlModel(mlModel):
             return predictBoW(mlModel, features: features)
         case nil:
             return nil
@@ -102,11 +117,21 @@ final class CoreMLCategorizer: @unchecked Sendable {
     // MARK: - NLModel inference
 
     private func predictNL(_ model: NLModel, features: TransactionFeatures) -> CategoryPrediction? {
-        let text = features.normalizedDescription
+        let text = mlText(from: features)
         guard let label = model.predictedLabel(for: text) else { return nil }
         let hypotheses = model.predictedLabelHypotheses(for: text, maximumCount: 5)
         let confidence = hypotheses[label] ?? 0.7
         return makePrediction(categoryId: label, confidence: confidence)
+    }
+
+    /// Extracts clean text for NLModel inference, matching Python training's clean_text().
+    /// UPIDescriptionParser extracts the merchant name segment from raw Indian bank strings.
+    /// Falls back to normalizedDescription for non-UPI/NEFT/IMPS formats.
+    private func mlText(from features: TransactionFeatures) -> String {
+        if let name = UPIDescriptionParser.merchantName(from: features.rawDescription) {
+            return name.lowercased()
+        }
+        return features.normalizedDescription
     }
 
     // MARK: - MLModel bag-of-words inference
@@ -120,11 +145,11 @@ final class CoreMLCategorizer: @unchecked Sendable {
             let provider = try MLDictionaryFeatureProvider(dictionary: ["token_counts": featureValue])
             let output = try model.prediction(from: provider)
             guard let label = output.featureValue(for: "category")?.stringValue else { return nil }
-            let confidence: Double
-            if let probs = output.featureValue(for: "categoryProbability")?.dictionaryValue as? [String: Double] {
-                confidence = probs[label] ?? 0.7
+            let confidence: Double = if let probs = output.featureValue(for: "categoryProbability")?
+                .dictionaryValue as? [String: Double] {
+                probs[label] ?? 0.7
             } else {
-                confidence = 0.7
+                0.7
             }
             return makePrediction(categoryId: label, confidence: confidence)
         } catch {
@@ -136,9 +161,11 @@ final class CoreMLCategorizer: @unchecked Sendable {
     private func tokenize(_ text: String) -> [String: NSNumber] {
         let lower = text.lowercased()
         let tokens = lower.components(separatedBy: .init(charactersIn: " \t\n\r-_/.,;:!?()[]{}\"'"))
-                          .filter { $0.count >= 3 }
+            .filter { $0.count >= 3 }
         var bow: [String: Int] = [:]
-        for tok in tokens { bow[tok, default: 0] += 1 }
+        for tok in tokens {
+            bow[tok, default: 0] += 1
+        }
         for (a, b) in zip(tokens, tokens.dropFirst()) {
             let bg = "\(a)_\(b)"
             bow[bg, default: 0] += 1
