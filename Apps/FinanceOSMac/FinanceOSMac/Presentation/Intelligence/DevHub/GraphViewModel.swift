@@ -121,8 +121,8 @@ final class GraphViewModel {
         let padding = 80.0
         let cellW = (canvasSize.width - padding * 2) / Double(cols)
         let cellH = (canvasSize.height - padding * 2) / Double(max(allNodes.count / cols + 1, 1))
-        for (i, node) in allNodes.enumerated() {
-            let col = i % cols, row = i / cols
+        for (idx, node) in allNodes.enumerated() {
+            let col = idx % cols, row = idx / cols
             nodePositions[node.id] = CGPoint(
                 x: padding + Double(col) * cellW + cellW / 2,
                 y: padding + Double(row) * cellH + cellH / 2
@@ -168,17 +168,17 @@ extension GraphViewModel {
     private nonisolated static func applyRepulsion(
         nodes: [GraphNode], pos: [String: CGPoint], forces: inout [String: CGPoint], repK: Double
     ) {
-        for i in nodes.indices {
-            for j in nodes.indices where j > i {
-                guard let pi = pos[nodes[i].id], let pj = pos[nodes[j].id] else { continue }
+        for iIdx in nodes.indices {
+            for jIdx in nodes.indices where jIdx > iIdx {
+                guard let pi = pos[nodes[iIdx].id], let pj = pos[nodes[jIdx].id] else { continue }
                 let dx = pi.x - pj.x, dy = pi.y - pj.y
                 let dist = max(sqrt(dx * dx + dy * dy), 1.0)
                 let mag = repK / (dist * dist)
                 let fx = mag * dx / dist, fy = mag * dy / dist
-                let iCur = forces[nodes[i].id] ?? .zero
-                let jCur = forces[nodes[j].id] ?? .zero
-                forces[nodes[i].id] = CGPoint(x: iCur.x + fx, y: iCur.y + fy)
-                forces[nodes[j].id] = CGPoint(x: jCur.x - fx, y: jCur.y - fy)
+                let iCur = forces[nodes[iIdx].id] ?? .zero
+                let jCur = forces[nodes[jIdx].id] ?? .zero
+                forces[nodes[iIdx].id] = CGPoint(x: iCur.x + fx, y: iCur.y + fy)
+                forces[nodes[jIdx].id] = CGPoint(x: jCur.x - fx, y: jCur.y - fy)
             }
         }
     }
