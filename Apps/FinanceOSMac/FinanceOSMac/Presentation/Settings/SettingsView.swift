@@ -8,17 +8,19 @@ struct SettingsView: View {
     @State private var autoRefresh = true
     @State private var showConfirmClear = false
     @State private var viewModel: SettingsViewModel
+    @AppStorage("developerModeEnabled") private var developerModeEnabled = false
 
     init(viewModel: SettingsViewModel) {
         _viewModel = State(initialValue: viewModel)
     }
 
     enum SettingsTab: CaseIterable {
-        case general, about
+        case general, developer, about
 
         var label: String {
             switch self {
             case .general: "General"
+            case .developer: "Developer"
             case .about: "About"
             }
         }
@@ -26,6 +28,7 @@ struct SettingsView: View {
         var symbol: String {
             switch self {
             case .general: "gearshape"
+            case .developer: "hammer.fill"
             case .about: "info.circle"
             }
         }
@@ -37,10 +40,10 @@ struct SettingsView: View {
             Divider().opacity(AppColors.Opacity.low)
             ScrollView(showsIndicators: false) {
                 Group {
-                    if selectedTab == .general {
-                        generalSettings
-                    } else {
-                        aboutSettings
+                    switch selectedTab {
+                    case .general: generalSettings
+                    case .developer: developerSettings
+                    case .about: aboutSettings
                     }
                 }
                 .padding(AppSpacing.md)
@@ -121,6 +124,31 @@ struct SettingsView: View {
             .foregroundColor(AppColors.System.red)
             .cornerRadius(8)
             .buttonStyle(.plain)
+        }
+    }
+
+    private var developerSettings: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            sectionTitle("Developer")
+
+            FDSCard(cornerRadius: 12, padded: false) {
+                toggleRow("Developer Mode", symbol: "hammer.fill", binding: $developerModeEnabled)
+                    .padding(AppSpacing.sm)
+            }
+
+            FDSCard(cornerRadius: 12, padded: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.compact) {
+                    FDSLabel("Enables the Financial Intelligence section in the sidebar.")
+                        .font(AppTypography.captionLg)
+                        .foregroundStyle(AppColors.Text.secondary)
+                    FDSLabel(
+                        "Provides CRUD access to persons, relationships, recurring patterns, and the knowledge graph."
+                    )
+                    .font(AppTypography.captionLg)
+                    .foregroundStyle(AppColors.Text.secondary)
+                }
+                .padding(AppSpacing.sm)
+            }
         }
     }
 

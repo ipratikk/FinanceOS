@@ -70,6 +70,25 @@ public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
             return row.toPerson(aliases: aliases)
         }
     }
+
+    public func update(_ person: Person) async throws {
+        try await dbQueue.write { database in
+            guard var row = try GRDBIntelligencePerson
+                .filter(GRDBIntelligencePerson.Columns.id == person.id.uuidString)
+                .fetchOne(database) else { return }
+            row.canonicalName = person.canonicalName
+            row.upiHandle = person.upiHandle
+            try row.update(database)
+        }
+    }
+
+    public func delete(id: UUID) async throws {
+        try await dbQueue.write { database in
+            try GRDBIntelligencePerson
+                .filter(GRDBIntelligencePerson.Columns.id == id.uuidString)
+                .deleteAll(database)
+        }
+    }
 }
 
 // MARK: - Private Write Helpers

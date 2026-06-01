@@ -37,6 +37,14 @@ public actor PersonEntityStore: IntelligencePersonRepository {
     public var count: Int {
         persons.count
     }
+
+    public func update(_ person: Person) {
+        persons[person.id] = person
+    }
+
+    public func delete(id: UUID) {
+        persons.removeValue(forKey: id)
+    }
 }
 
 // MARK: - Private Helpers
