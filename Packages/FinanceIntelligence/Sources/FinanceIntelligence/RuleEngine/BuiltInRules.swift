@@ -127,7 +127,8 @@ extension BuiltInRules {
                 condition: .tokenContainsAny([
                     "payment on cred", "cred ccbp",
                     "ib billpay", "billpay dr", "bill pay dr",
-                    "credit card payment", "card payment"
+                    "credit card payment", "card payment", "cc payment",
+                    "amex payment", "amex bill"
                 ]),
                 outcome: RuleOutcome(categoryId: "fees", intent: .creditCardPayment, confidence: 0.92)
             )
@@ -166,7 +167,10 @@ extension BuiltInRules {
             Rule(
                 id: "insurance.premium",
                 priority: 8,
-                condition: .tokenContainsAny(["insurance premium", "policy premium", "nach insurance"]),
+                condition: .tokenContainsAny([
+                    "insurance premium", "policy premium", "nach insurance",
+                    "insurance", "policy renewal", "premium payment"
+                ]),
                 outcome: RuleOutcome(categoryId: "insurance", intent: .insurance, confidence: 0.92)
             )
         ]

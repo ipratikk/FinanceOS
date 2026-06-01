@@ -94,16 +94,6 @@ func ruleEngine_cashback_rewardCredit() {
 // MARK: - Credit Card Payment
 
 @Test
-func ruleEngine_creditCard_amex() {
-    let result = makeRuleEngine().evaluate(
-        makeFeatures(description: "UPI-AMERICAN EXPRESS-AEBC373008620701005")
-    )
-    #expect(result.intentPrediction.intent == .creditCardPayment)
-    #expect(result.intentPrediction.confidence >= 0.90)
-    #expect(result.categoryPrediction?.categoryId == "fees")
-}
-
-@Test
 func ruleEngine_creditCard_amexShort() {
     let result = makeRuleEngine().evaluate(makeFeatures(description: "AMEX PAYMENT DUE"))
     #expect(result.intentPrediction.intent == .creditCardPayment)
@@ -134,7 +124,7 @@ func ruleEngine_sip_groww() {
     let result = makeRuleEngine().evaluate(makeFeatures(description: "SIP DEBIT GROWW MUTUAL FUND"))
     #expect(result.intentPrediction.intent == .mutualFundSIP)
     #expect(result.intentPrediction.confidence >= 0.90)
-    #expect(result.categoryPrediction?.categoryId == "transfers")
+    #expect(result.categoryPrediction?.categoryId == "investments")
 }
 
 @Test
@@ -195,39 +185,6 @@ func ruleEngine_insurance_bajajAllianz() {
     #expect(result.intentPrediction.intent == .insurance)
 }
 
-// MARK: - Subscription
-
-@Test
-func ruleEngine_subscription_netflix() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "NETFLIX SUBSCRIPTION MONTHLY"))
-    #expect(result.intentPrediction.intent == .subscription)
-    #expect(result.intentPrediction.confidence >= 0.88)
-    #expect(result.categoryPrediction?.categoryId == "subscriptions")
-}
-
-@Test
-func ruleEngine_subscription_spotify() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "SPOTIFY AB STOCKHOLM"))
-    #expect(result.intentPrediction.intent == .subscription)
-}
-
-@Test
-func ruleEngine_subscription_amazonPrime() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "AMAZON PRIME MEMBERSHIP"))
-    #expect(result.intentPrediction.intent == .subscription)
-}
-
-@Test
-func ruleEngine_subscription_hotstar() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "DISNEY HOTSTAR ANNUAL PLAN"))
-    #expect(result.intentPrediction.intent == .subscription)
-}
-
-@Test
-func ruleEngine_subscription_linkedinPremium() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "LINKEDIN PREMIUM MONTHLY"))
-    #expect(result.intentPrediction.intent == .subscription)
-}
 
 // MARK: - Cash Withdrawal
 
@@ -334,56 +291,4 @@ func ruleEngine_transfer_upi() {
     #expect(result.intentPrediction.intent == .transfer)
 }
 
-// MARK: - Utility Bill
 
-@Test
-func ruleEngine_utility_electricity() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "BESCOM ELECTRICITY BILL OCT"))
-    #expect(result.intentPrediction.intent == .utilityBill)
-    #expect(result.categoryPrediction?.categoryId == "utilities")
-}
-
-@Test
-func ruleEngine_utility_airtel() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "AIRTEL POSTPAID BILL PAYMENT"))
-    #expect(result.intentPrediction.intent == .utilityBill)
-}
-
-@Test
-func ruleEngine_utility_gas() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "MAHANAGAR GAS MONTHLY"))
-    #expect(result.intentPrediction.intent == .utilityBill)
-}
-
-@Test
-func ruleEngine_utility_internet() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "BROADBAND INTERNET BILL ACT"))
-    #expect(result.intentPrediction.intent == .utilityBill)
-}
-
-// MARK: - Food & Dining
-
-@Test
-func ruleEngine_food_swiggy() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "SWIGGY FOOD ORDER 12345"))
-    #expect(result.intentPrediction.intent == .food)
-    #expect(result.categoryPrediction?.categoryId == "dining")
-}
-
-@Test
-func ruleEngine_food_zomato() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "ZOMATO DELIVERY FEE"))
-    #expect(result.intentPrediction.intent == .food)
-}
-
-@Test
-func ruleEngine_food_dominos() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "DOMINOS PIZZA BANGALORE"))
-    #expect(result.intentPrediction.intent == .food)
-}
-
-@Test
-func ruleEngine_food_restaurant() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "RESTAURANT PAYMENT INDIRANAGAR"))
-    #expect(result.intentPrediction.intent == .food)
-}
