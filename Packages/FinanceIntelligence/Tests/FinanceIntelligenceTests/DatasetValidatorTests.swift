@@ -35,7 +35,7 @@ func datasetValidator_emptyDataset() {
     let report = validator.validate(collection)
 
     #expect(!report.isValid)
-    #expect(report.issues.count > 0)
+    #expect(!report.issues.isEmpty)
     #expect(report.issues[0].code == "EMPTY_DATASET")
 }
 
@@ -57,7 +57,7 @@ func datasetValidator_smallDataset_warning() async {
     let report = validator.validate(dataset)
 
     #expect(report.isValid) // no issues, just warnings
-    #expect(report.warnings.count > 0)
+    #expect(!report.warnings.isEmpty)
     let hasSmallDatasetWarning = report.warnings.contains { $0.code == "SMALL_DATASET" }
     #expect(hasSmallDatasetWarning)
 }

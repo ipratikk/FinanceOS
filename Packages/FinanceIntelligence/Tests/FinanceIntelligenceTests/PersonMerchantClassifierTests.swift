@@ -99,7 +99,7 @@ func personMerchantClassifier_baselineAccuracy() {
         ("UPI-AMAZON-amazonpay@razorpay-ICIC0-REF7", .merchant),
         ("NEFT DR-ICIC0-NETFLIX INDIA PVT LTD-REF8", .merchant),
         ("NEFT-UNKNOWN-ABC123", .unknown),
-        ("TRANSFER REFERENCE XYZ", .unknown),
+        ("TRANSFER REFERENCE XYZ", .unknown)
     ]
 
     let predictions = testCases.map { classifier.classify($0.0) }
