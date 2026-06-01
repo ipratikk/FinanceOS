@@ -77,6 +77,10 @@ enum AppMigration {
             """)
         }
 
+        migrator.registerMigration("v20_create_intelligence_inference_events") { db in
+            try AppMigration.createIntelligenceInferenceEventsTable(in: db)
+        }
+
         migrator.registerMigration("v19_dedup_relationships_and_patterns") { db in
             // Relationships: same upsert-by-pk bug. Keep earliest per (toPersonId, relationshipType).
             try db.execute(sql: """
@@ -314,5 +318,43 @@ private extension AppMigration {
             table.column("isActive", .integer).notNull().defaults(to: 1)
             table.column("notes", .text)
         }
+    }
+
+    static func createIntelligenceInferenceEventsTable(in database: Database) throws {
+        guard try !database.tableExists("intelligence_inference_events") else { return }
+        try database.create(table: "intelligence_inference_events") { table in
+            table.column("id", .text).primaryKey()
+            table.column("transactionId", .text)
+            table.column("stage", .text).notNull()
+            table.column("source", .text).notNull()
+            table.column("ruleId", .text)
+            table.column("modelId", .text)
+            table.column("modelVersion", .text)
+            table.column("configVersion", .text)
+            table.column("inputHash", .text)
+            table.column("outputLabel", .text)
+            table.column("outputIntent", .text)
+            table.column("confidence", .double)
+            table.column("confidenceKind", .text).notNull()
+                .check(sql: "confidenceKind IN ('deterministic','calibrated_probability'," +
+                    "'uncalibrated_score','heuristic_ordinal','not_applicable')")
+            table.column("debugJSON", .text)
+            table.column("createdAt", .datetime).notNull()
+        }
+        try database.create(
+            index: "idx_inference_events_txn",
+            on: "intelligence_inference_events",
+            columns: ["transactionId"]
+        )
+        try database.create(
+            index: "idx_inference_events_stage",
+            on: "intelligence_inference_events",
+            columns: ["stage"]
+        )
+        try database.create(
+            index: "idx_inference_events_created",
+            on: "intelligence_inference_events",
+            columns: ["createdAt"]
+        )
     }
 }

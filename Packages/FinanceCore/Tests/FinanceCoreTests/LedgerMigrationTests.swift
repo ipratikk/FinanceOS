@@ -4,6 +4,48 @@ import GRDB
 import Testing
 
 @Test
+func intelligenceInferenceEventsTableIsCreatedByMigration() throws {
+    var migrator = DatabaseMigrator()
+    AppMigration.registerMigrations(in: &migrator)
+
+    let dbQueue = try DatabaseQueue()
+    try migrator.migrate(dbQueue)
+
+    try dbQueue.write { db in
+        try db.execute(sql: """
+            INSERT INTO intelligence_inference_events
+                (id, stage, source, confidenceKind, createdAt)
+            VALUES ('evt-1', 'ruleCategorization', 'structuralRule', 'deterministic',
+                    '2026-06-01T00:00:00Z')
+        """)
+    }
+    let count = try dbQueue.read { db in
+        try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM intelligence_inference_events") ?? 0
+    }
+    #expect(count == 1)
+}
+
+@Test
+func inferenceEventsConfidenceKindCheckConstraintRejects() throws {
+    var migrator = DatabaseMigrator()
+    AppMigration.registerMigrations(in: &migrator)
+
+    let dbQueue = try DatabaseQueue()
+    try migrator.migrate(dbQueue)
+
+    #expect(throws: (any Error).self) {
+        try dbQueue.write { db in
+            try db.execute(sql: """
+                INSERT INTO intelligence_inference_events
+                    (id, stage, source, confidenceKind, createdAt)
+                VALUES ('evt-bad', 'ruleCategorization', 'structuralRule', 'invalid_kind',
+                        '2026-06-01T00:00:00Z')
+            """)
+        }
+    }
+}
+
+@Test
 func ledgerTableIsCreatedByMigration() throws {
     var migrator = DatabaseMigrator()
     AppMigration.registerMigrations(in: &migrator)
