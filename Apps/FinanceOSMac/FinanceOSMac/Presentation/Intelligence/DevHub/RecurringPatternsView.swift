@@ -118,7 +118,7 @@ struct RecurringPatternsView: View {
                         )
                         FDSLabel("·  \(pattern.occurrenceCount)×")
                             .font(AppTypography.captionSm).foregroundStyle(.tertiary)
-                        FDSLabel(String(format: "%.0f%% conf.", pattern.confidence * 100))
+                        FDSLabel("Auto-detected")
                             .font(AppTypography.captionSm).foregroundStyle(.tertiary)
                     }
                 }
