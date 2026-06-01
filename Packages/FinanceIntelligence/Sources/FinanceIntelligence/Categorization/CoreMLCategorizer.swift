@@ -1,4 +1,5 @@
 import CoreML
+import FinanceCore
 import Foundation
 import NaturalLanguage
 
@@ -10,14 +11,21 @@ import NaturalLanguage
 /// Load flow: .mlmodel (bundle) → MLModel.compileModel → NLModel(mlModel:)
 /// Returns nil on any failure — service falls back to kNN → rules.
 ///
+/// KNOWN ISSUE: The bundled TransactionCategoryClassifier.mlmodel is a tabular
+/// classifier (not a text classifier), which is incompatible with NLModel.
+/// It will fail to load and isAvailable will be false until replaced with a
+/// proper CreateML Text Classifier.
+///
 /// @unchecked Sendable: NLModel is internally thread-safe for concurrent reads.
 final class CoreMLCategorizer: @unchecked Sendable {
     private let model: NLModel?
     let modelVersion: String
+    let loadError: String?
 
-    private init(model: NLModel?, modelVersion: String) {
+    private init(model: NLModel?, modelVersion: String, loadError: String? = nil) {
         self.model = model
         self.modelVersion = modelVersion
+        self.loadError = loadError
     }
 
     static func load() async -> CoreMLCategorizer {
@@ -25,7 +33,8 @@ final class CoreMLCategorizer: @unchecked Sendable {
             forResource: "TransactionCategoryClassifier",
             withExtension: "mlmodel"
         ) else {
-            return CoreMLCategorizer(model: nil, modelVersion: "none")
+            FinanceLogger.intelligence.warning("CoreMLCategorizer: TransactionCategoryClassifier.mlmodel not found in bundle")
+            return CoreMLCategorizer(model: nil, modelVersion: "none", loadError: "bundle-missing")
         }
         do {
             let compiledUrl = try await MLModel.compileModel(at: url)
@@ -35,7 +44,8 @@ final class CoreMLCategorizer: @unchecked Sendable {
                 ?? "text-classifier-v1"
             return CoreMLCategorizer(model: nlModel, modelVersion: version)
         } catch {
-            return CoreMLCategorizer(model: nil, modelVersion: "load-failed")
+            FinanceLogger.intelligence.error("CoreMLCategorizer: model load failed — \(error). Inference falls back to kNN → rules.")
+            return CoreMLCategorizer(model: nil, modelVersion: "load-failed", loadError: error.localizedDescription)
         }
     }
 

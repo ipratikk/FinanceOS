@@ -48,11 +48,31 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         } else {
             personRepository = PersonEntityStore()
         }
-        coreMLCategorizer = await CoreMLCategorizer.load()
+        let loadedCoreML = await CoreMLCategorizer.load()
+        coreMLCategorizer = loadedCoreML
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
         )
         intelligenceConfig = configuration.intelligenceConfig
+
+        // Register bundled model provenance on first startup.
+        // Inserts once; subsequent runs find an existing entry and skip.
+        let registry = configuration.modelRegistry
+        if await registry.currentVersion(for: "TransactionCategoryClassifier") == nil {
+            let trainedAt = ISO8601DateFormatter().date(from: "2026-05-28T13:32:40Z") ?? Date()
+            let notes = loadedCoreML.isAvailable
+                ? "Bundled text classifier. Loaded successfully."
+                // swiftlint:disable:next line_length
+                : "Tabular classifier incompatible with NLModel API — load failed (\(loadedCoreML.loadError ?? "unknown")). Labels: fees, groceries, income, insurance, subscriptions, transfers (6 only). Replace with CreateML Text Classifier. Contains PII in model weights."
+            await registry.register(ModelMetadataEntry(
+                modelName: "TransactionCategoryClassifier",
+                modelType: loadedCoreML.isAvailable ? "nlModelTextClassifier" : "tabularClassifier",
+                modelVersion: loadedCoreML.modelVersion,
+                trainedAt: trainedAt,
+                trainingExampleCount: 0,
+                notes: notes
+            ))
+        }
         insightEngine = SpendingInsightEngine(config: intelligenceConfig.insight)
         extractor = TransactionFeatureExtractor()
         descriptionGenerator = DescriptionGenerator()
