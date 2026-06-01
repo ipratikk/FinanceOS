@@ -133,6 +133,43 @@ func markUserCorrectedMerchantSetsFlag() async throws {
     #expect(after?.isUserCorrectedMerchant == true)
 }
 
+// MARK: - clearUserCorrectedMerchant resets the flag (INTEL-017)
+
+@Test
+func clearUserCorrectedMerchantResetsFlag() async throws {
+    let db = try makeDB()
+    let (_, txnId) = try await insertLedgerAndTransaction(in: db)
+    let repo = GRDBTransactionRepository(dbQueue: db)
+
+    try await repo.markUserCorrectedMerchant(id: txnId)
+    let flagged = try await db.read { try Transaction.filter(Transaction.Columns.id == txnId).fetchOne($0) }
+    #expect(flagged?.isUserCorrectedMerchant == true)
+
+    try await repo.clearUserCorrectedMerchant(id: txnId)
+    let cleared = try await db.read { try Transaction.filter(Transaction.Columns.id == txnId).fetchOne($0) }
+    #expect(cleared?.isUserCorrectedMerchant == false)
+}
+
+@Test
+func clearUserCorrectedMerchantAllowsIntelligenceOverwrite() async throws {
+    let db = try makeDB()
+    let (_, txnId) = try await insertLedgerAndTransaction(in: db)
+    let repo = GRDBTransactionRepository(dbQueue: db)
+
+    try await repo.updateIntelligence(id: txnId, categoryId: nil, merchantName: "User Name")
+    try await repo.markUserCorrectedMerchant(id: txnId)
+    try await repo.clearUserCorrectedMerchant(id: txnId)
+
+    try await repo.updateEnrichmentProvenance(
+        id: txnId,
+        EnrichmentProvenance(merchantName: "Intelligence Name", intelligenceSource: "knn")
+    )
+
+    let fetched = try await db.read { try Transaction.filter(Transaction.Columns.id == txnId).fetchOne($0) }
+    #expect(fetched?.merchantName == "Intelligence Name")
+    #expect(fetched?.isUserCorrectedMerchant == false)
+}
+
 // MARK: - resolvedPersonId is written during enrichment (INTEL-016)
 
 @Test

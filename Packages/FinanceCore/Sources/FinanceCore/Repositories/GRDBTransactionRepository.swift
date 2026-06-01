@@ -222,4 +222,12 @@ public final class GRDBTransactionRepository:
             """, arguments: [id])
         }
     }
+
+    public func clearUserCorrectedMerchant(id: UUID) async throws {
+        try await dbQueue.write { database in
+            try database.execute(sql: """
+                UPDATE transactions SET "isUserCorrectedMerchant" = 0 WHERE "id" = ?
+            """, arguments: [id])
+        }
+    }
 }
