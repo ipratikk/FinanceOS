@@ -26,8 +26,31 @@ public struct GRDBRecurringPatternRepository: RecurringPatternRepository {
     }
 
     public func save(_ pattern: RecurringPattern) async throws {
-        let grdb = GRDBRecurringPattern(from: pattern)
-        try await dbWriter.write { db in try grdb.upsert(db) }
+        try await dbWriter.write { db in
+            // Stable key: (merchantKey, cadence) OR (personId, cadence).
+            // merchantKey branch ignores personId so merchant+person dual entries collapse
+            // when the same merchant's transactions are only partially person-resolved.
+            // RecurringDetector assigns a fresh UUID on every run so never key on id.
+            let existing: GRDBRecurringPattern? = if let key = pattern.merchantKey {
+                try GRDBRecurringPattern
+                    .filter(Column("merchantKey") == key && Column("cadence") == pattern.cadence.rawValue)
+                    .fetchOne(db)
+            } else if let pid = pattern.personId {
+                try GRDBRecurringPattern
+                    .filter(Column("personId") == pid && Column("cadence") == pattern.cadence.rawValue)
+                    .fetchOne(db)
+            } else {
+                nil
+            }
+            if let prior = existing {
+                var updated = GRDBRecurringPattern(from: pattern)
+                updated.id = prior.id
+                updated.createdAt = prior.createdAt
+                try updated.update(db)
+            } else {
+                try GRDBRecurringPattern(from: pattern).insert(db)
+            }
+        }
     }
 
     public func delete(id: UUID) async throws {

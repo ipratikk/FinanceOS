@@ -104,6 +104,14 @@ public actor PostProcessingPipeline {
             FinanceLogger.intelligence
                 .info("PostProcessing[patterns]: \(key) — \(pattern.cadence.rawValue) — confidence \(conf)")
             try? await recurringRepo?.save(pattern)
+            // externalId uses stable key so re-runs find-or-update rather than accumulate nodes
+            let stableKey = pattern.merchantKey ?? pattern.personId ?? pattern.id.uuidString
+            let stableId = "\(stableKey):\(pattern.cadence.rawValue)"
+            _ = try? await graphStore?.upsertNode(GraphNode(
+                nodeType: .recurringPattern,
+                externalId: stableId,
+                label: "\(pattern.merchantKey ?? pattern.personId ?? "pattern") (\(pattern.cadence.rawValue))"
+            ))
         }
         return patterns
     }
