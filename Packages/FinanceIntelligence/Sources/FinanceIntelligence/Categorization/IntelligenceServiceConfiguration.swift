@@ -6,8 +6,6 @@ import GRDB
 public struct IntelligenceServiceConfiguration: Sendable {
     /// On-disk path where `UserCorrectionStore` writes its JSON corrections file.
     public let correctionStoreURL: URL
-    /// Legacy Swift kNN store — kept for migration only. New corrections go to personalizedKNNModelURL.
-    public let personalLearnerURL: URL
     /// On-device updatable CoreML kNN model — grows with each user correction via MLUpdateTask.
     public let personalizedKNNModelURL: URL
     /// Taxonomy version used during categorization. Defaults to `CategoryTaxonomy.current`.
@@ -28,7 +26,6 @@ public struct IntelligenceServiceConfiguration: Sendable {
 
     public init(
         correctionStoreURL: URL,
-        personalLearnerURL: URL,
         personalizedKNNModelURL: URL,
         taxonomy: CategoryTaxonomy = .current,
         databaseQueue: DatabaseQueue? = nil,
@@ -36,7 +33,6 @@ public struct IntelligenceServiceConfiguration: Sendable {
         intelligenceConfig: IntelligenceConfig = .defaultV1
     ) {
         self.correctionStoreURL = correctionStoreURL
-        self.personalLearnerURL = personalLearnerURL
         self.personalizedKNNModelURL = personalizedKNNModelURL
         self.taxonomy = taxonomy
         self.databaseQueue = databaseQueue
@@ -54,7 +50,6 @@ public struct IntelligenceServiceConfiguration: Sendable {
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return IntelligenceServiceConfiguration(
             correctionStoreURL: dir.appendingPathComponent("corrections.json"),
-            personalLearnerURL: dir.appendingPathComponent("personal_examples.json"),
             personalizedKNNModelURL: dir.appendingPathComponent("PersonalizedKNN.mlmodelc")
         )
     }
