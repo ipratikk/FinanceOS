@@ -12,7 +12,7 @@ struct IntelligenceHubView: View {
     @State private var isTraining = false
     @State private var trainExampleCount = 0
     @State private var trainError: String?
-    @State private var trainResult: ClassifierEvalResult?
+    @State private var trainResult: ClassificationEvaluationResult?
     @Environment(\.transactionIntelligence) private var intelligence
 
     enum IntelligenceTab: Int {
@@ -139,16 +139,17 @@ struct IntelligenceHubView: View {
         }
     }
 
-    private func trainResultMessage(_ res: ClassifierEvalResult) -> some View {
-        let accPct = Int(res.accuracy * 100)
+    private func trainResultMessage(_ res: ClassificationEvaluationResult) -> some View {
         let covPct = Int(res.coverage * 100)
-        let confPct = Int(res.avgConfidence * 100)
-        let ready = accPct >= 90 && covPct >= 85
+        let accuracyLine: String = res.hasReliableMetrics
+            ? "Validation accuracy: \(Int(res.accuracy * 100))% · F1: \(String(format: "%.2f", res.f1Macro))"
+            : "Insufficient validation data — import more labeled statements."
+        let ready = res.hasReliableMetrics && res.accuracy >= 0.90 && res.coverage >= 0.85
         let statusLine = ready
             ? "Model is ready — keyword rules can be pruned."
             : "Import more statements and re-train."
-        let msg = "Trained on \(res.total) examples.\n" +
-            "Coverage: \(covPct)% · Accuracy: \(accPct)% · Confidence: \(confPct)%\n\(statusLine)"
+        let msg = "Validated on \(res.validationCount) of \(res.exampleCount) examples.\n" +
+            "Coverage: \(covPct)%  \(accuracyLine)\n\(statusLine)"
         return FDSLabel(msg)
     }
 
