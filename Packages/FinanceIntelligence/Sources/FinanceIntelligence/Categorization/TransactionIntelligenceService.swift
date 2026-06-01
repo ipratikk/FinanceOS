@@ -62,7 +62,7 @@ public protocol TransactionIntelligenceService: Sendable {
     /// so keyword rules can eventually be removed. Uses CoreML MLUpdateTask on-device.
     func trainClassifier(examples: [(text: String, categoryId: String)]) async throws
 
-    /// Evaluates the PersonalizedClassifier against labeled examples.
-    /// Returns nil when PersonalizedClassifier is unavailable.
-    func evaluateClassifier(examples: [(text: String, categoryId: String)]) async -> ClassifierEvalResult?
+    /// Evaluates the PersonalizedClassifier on a held-out validation split derived from `examples`.
+    /// Training-set accuracy is never reported. Returns nil when PersonalizedClassifier is unavailable.
+    func evaluateClassifier(examples: [(text: String, categoryId: String)]) async -> ClassificationEvaluationResult?
 }
