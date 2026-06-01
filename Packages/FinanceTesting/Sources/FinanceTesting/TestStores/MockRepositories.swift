@@ -208,6 +208,15 @@ public final class MockTransactionRepository: TransactionRepository, @unchecked 
         }
     }
 
+    public func updateEnrichmentProvenanceBatch(_ updates: [(
+        id: UUID,
+        provenance: EnrichmentProvenance
+    )]) async throws {
+        for (id, provenance) in updates {
+            try await updateEnrichmentProvenance(id: id, provenance)
+        }
+    }
+
     public func markUserCorrectedMerchant(id: UUID) async throws {
         if let idx = transactions.firstIndex(where: { $0.id == id }) {
             let t = transactions[idx]

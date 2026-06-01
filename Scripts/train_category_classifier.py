@@ -53,29 +53,74 @@ class Transaction(NamedTuple):
     source: str
     label: str | None = None
 
-# ─── Text cleaning ────────────────────────────────────────────────────────────
+# ─── Text extraction ──────────────────────────────────────────────────────────
+# Produces clean lowercase merchant/person name matching Swift's mlText() logic.
+# Training and inference must see identical text — otherwise the model can't generalize.
 
-_REF    = re.compile(r'\b\d{6,}\b')
-_ACCT   = re.compile(r'\b[X]{4,}[0-9A-Z]*\b', re.I)
-_UPI    = re.compile(r'[A-Z0-9._+%-]+@[A-Z0-9]+', re.I)
-_TIME   = re.compile(r'\b\d{2}:\d{2}:\d{2}\b')
-_MULTI  = re.compile(r'\s{2,}')
-
-_STRIP_PREFIXES = (
-    'NEFT ', 'IMPS-', 'IMPS/', 'UPI-', 'UPI/', 'ACH ', 'NACH ',
-    'BBPS ', 'BIL/', 'INW ', 'ECSRTN', 'INFT/', 'TPT-', 'REF# ',
-    'ICICN', 'HDFCH', 'BOFAN', 'BOFAH', 'CITIN', 'SCBL',
+_REF   = re.compile(r'\d{4,}')
+_MULTI = re.compile(r'\s{2,}')
+_BASIC_STRIP_PREFIXES = (
+    'ACH D- ', 'ACH ', 'NACH ', 'NEFT CR-', 'NEFT DR-', 'NEFT-',
+    'BBPS ', 'BIL/', 'INW ', 'ECSRTN', 'INFT/', 'TPT-', 'TP-',
 )
 
+def _basic_clean(narration: str) -> str:
+    """Fallback for non-UPI/NEFT/IMPS formats — strips refs and prefixes."""
+    t = narration
+    for pfx in _BASIC_STRIP_PREFIXES:
+        if t.upper().startswith(pfx):
+            t = t[len(pfx):]
+            break
+    t = re.sub(r'[A-Z0-9._+%-]+@[A-Z0-9.-]+', '', t, flags=re.I)  # strip VPA handles
+    t = _REF.sub(' ', t)                                              # strip digit runs 4+
+    return _MULTI.sub(' ', t).strip().lower()
+
 def clean_text(narration: str) -> str:
-    t = narration.upper()
-    t = _TIME.sub(' ', t)
-    t = _ACCT.sub(' ', t)
-    t = _UPI.sub(' ', t)
-    t = _REF.sub(' ', t)
-    for pfx in _STRIP_PREFIXES:
-        t = t.replace(pfx, ' ')
-    return _MULTI.sub(' ', t).strip()
+    """
+    Extract merchant/person name matching Swift CoreMLCategorizer.mlText().
+
+    Priority:
+      1. UPI-NAME-vpa@bank-ref  → NAME segment (first token after 'UPI-')
+      2. UPI/vpa/remarks/bank   → remarks or VPA prefix
+      3. NEFT CR/DR-bank-name-ref → name segment
+      4. IMPS-ref-name-bank     → name segment
+      5. fallback               → basic prefix/ref stripping
+    """
+    n = narration.strip()
+    u = n.upper()
+
+    if u.startswith('UPI-'):
+        after = n[4:]
+        parts = after.split('-')
+        name = parts[0].strip()
+        # Skip pure-numeric first segments (phone-based VPA like UPI-509350289845-MERCHANT IN)
+        digits_only = re.sub(r'\D', '', name)
+        if len(digits_only) >= 10:
+            # Second segment may be the real name
+            name = parts[1].strip() if len(parts) > 1 else name
+        if name:
+            return name.lower()
+
+    if u.startswith('UPI/') or u.startswith('UPL/'):
+        parts = n.split('/')
+        vpa = parts[1] if len(parts) > 1 else ''
+        remarks = parts[2].strip() if len(parts) > 2 else ''
+        if remarks and remarks.upper() not in ('NO REMARKS', 'UPI', ''):
+            return remarks.lower()
+        vpa_prefix = vpa.split('@')[0] if '@' in vpa else vpa
+        return _REF.sub('', vpa_prefix).strip().lower()
+
+    if u.startswith('NEFT CR-') or u.startswith('NEFT DR-'):
+        parts = n.split('-')
+        if len(parts) > 2:
+            return parts[2].strip().lower()
+
+    if u.startswith('IMPS-'):
+        parts = n.split('-')
+        if len(parts) > 2:
+            return parts[2].strip().lower()
+
+    return _basic_clean(n)
 
 # ─── Labeling rules ───────────────────────────────────────────────────────────
 # First match wins — keep specific patterns before broad ones.
@@ -150,7 +195,7 @@ _RULES: list[tuple[str, str]] = [
     (r'amazon prime|prime video',                                       'subscriptions.streaming'),
     (r'spotify',                                                         'subscriptions.music'),
     (r'apple music|amazon music|wynk|gaana|jio saavn',                 'subscriptions.music'),
-    (r'apple.*india|appleindiapvt|app.*store',                         'subscriptions.software'),
+    (r'apple.*india|appleindiapvt|app.*store|apple.*media|apple.*service|apple\.com', 'subscriptions.software'),
     (r'youtube.*premium|youtube.*subscri|google.*one\b',               'subscriptions.software'),
     (r'microsoft.*365|adobe.*subscri|notion\.so|slack\b|zoom\b',      'subscriptions.software'),
     (r'instacart.*subscri',                                             'subscriptions.software'),
