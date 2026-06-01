@@ -1,6 +1,11 @@
 @testable import FinanceIntelligence
 import Testing
 
+// RuleEngine coverage: tests below validate only the 12 "structural" intents in BuiltInRules.
+// 8 intents are delegated to PersonalizedClassifier (kNN/ML): food, groceries, shopping,
+// subscription, travel, healthcare, utilityBill, investment. These have no rule-engine
+// fallback. If kNN training or inference breaks, these categories will fail silently.
+
 // MARK: - Confidence Bounds
 
 @Test
