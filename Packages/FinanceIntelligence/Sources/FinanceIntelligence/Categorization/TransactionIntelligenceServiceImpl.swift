@@ -30,6 +30,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let descriptionGenerator: DescriptionGenerator
     /// Background pipeline: graph, recurring, relationships. Nil when no databaseQueue provided.
     private let postProcessingPipeline: PostProcessingPipeline?
+    private let intelligenceLogger: any IntelligenceLogger
 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
@@ -65,6 +66,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         } else {
             postProcessingPipeline = nil
         }
+        intelligenceLogger = configuration.intelligenceLogger
     }
 
     public func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction {
@@ -76,6 +78,12 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
         if let correction = await correctionStore.correction(for: transaction.id) {
             let prediction = correctionPrediction(correction, features: features)
+            await intelligenceLogger.record(IntelligenceEvent(
+                transactionId: transaction.id.uuidString,
+                stage: .finalCategorization, source: .userCorrection,
+                modelVersion: prediction.modelVersion, outputLabel: prediction.categoryId,
+                confidence: prediction.confidence, confidenceKind: .deterministic
+            ))
             return AnalyzedTransaction(
                 transaction: transaction, merchantCandidate: merchant,
                 categoryPrediction: prediction, features: features, isUserCorrected: true
@@ -83,6 +91,12 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         }
 
         let prediction = await predictCategory(features: features, merchantCategoryId: merchant.categoryId)
+        await intelligenceLogger.record(IntelligenceEvent(
+            transactionId: transaction.id.uuidString,
+            stage: .finalCategorization, source: confidenceSource(prediction.source),
+            modelVersion: prediction.modelVersion, outputLabel: prediction.categoryId,
+            confidence: prediction.confidence, confidenceKind: confidenceKind(prediction.source)
+        ))
         return AnalyzedTransaction(
             transaction: transaction, merchantCandidate: merchant,
             categoryPrediction: prediction, features: features, isUserCorrected: false
@@ -182,6 +196,13 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             isUserCorrected = false
         }
 
+        await intelligenceLogger.record(IntelligenceEvent(
+            transactionId: transaction.id.uuidString,
+            stage: .finalCategorization, source: confidenceSource(categoryPrediction.source),
+            modelVersion: categoryPrediction.modelVersion, outputLabel: categoryPrediction.categoryId,
+            outputIntent: ruleResult.intentPrediction.intent.rawValue,
+            confidence: categoryPrediction.confidence, confidenceKind: confidenceKind(categoryPrediction.source)
+        ))
         let resolvedEntities = await resolveEntities(
             description: transaction.description,
             date: transaction.postedAt
@@ -411,5 +432,25 @@ private extension TransactionIntelligenceServiceImpl {
             modelVersion: "user-correction",
             taxonomyVersion: taxonomy.version
         )
+    }
+
+    func confidenceSource(_ source: PredictionSource) -> IntelligenceSource {
+        switch source {
+        case .userCorrection: return .userCorrection
+        case .rules: return .structuralRule
+        case .mlModel: return .personalizedKNN
+        case .alias: return .personalizedKNN
+        case .fallback: return .fallbackRule
+        }
+    }
+
+    func confidenceKind(_ source: PredictionSource) -> ConfidenceKind {
+        switch source {
+        case .userCorrection: return .deterministic
+        case .rules: return .deterministic
+        case .mlModel: return .uncalibratedScore
+        case .alias: return .heuristicOrdinal
+        case .fallback: return .notApplicable
+        }
     }
 }
