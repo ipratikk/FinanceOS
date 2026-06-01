@@ -497,16 +497,7 @@
     "Patterns" : {
 
     },
-    "Permanently delete \"%@\" and all their aliases?" : {
-
-    },
     "Permanently delete \"%@\"?" : {
-
-    },
-    "Permanently delete this recurring pattern?" : {
-
-    },
-    "Permanently delete this relationship?" : {
 
     },
     "Persons" : {
@@ -633,16 +624,6 @@
     },
     "Train Model" : {
 
-    },
-    "Trained on %lld examples.\nCoverage: %lld%% · Accuracy: %lld%% · Confidence: %lld%%\n%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Trained on %1$lld examples.\nCoverage: %2$lld%% · Accuracy: %3$lld%% · Confidence: %4$lld%%\n%5$@"
-          }
-        }
-      }
     },
     "Training Failed" : {
 

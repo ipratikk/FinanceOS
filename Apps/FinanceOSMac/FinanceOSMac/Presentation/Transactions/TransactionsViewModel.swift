@@ -69,25 +69,25 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 pipelineTotal = all.count
                 guard !Task.isCancelled else { return }
 
-                // Stage 1: Analyze all transactions
+                // Stage 1: Analyze all transactions — collect results, then batch-write provenance.
+                // Batching 614 individual writes into 1 transaction reduces stage 1 DB overhead ~600×.
                 var enriched: [EnrichedTransaction] = []
                 enriched.reserveCapacity(all.count)
+                var provenanceBatch: [(id: UUID, provenance: EnrichmentProvenance)] = []
+                provenanceBatch.reserveCapacity(all.count)
                 for txn in all {
                     guard !Task.isCancelled else { return }
                     do {
                         let result = try await service.analyzeEnriched(txn, context: .empty)
-                        try? await transactionRepository.updateEnrichmentProvenance(
-                            id: txn.id,
-                            EnrichmentProvenance(
-                                categoryId: result.categoryPrediction.categoryId,
-                                merchantName: result.merchantCandidate.canonicalName,
-                                intentId: result.intentPrediction.intent.rawValue,
-                                resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
-                                intelligenceSource: result.categoryPrediction.source.rawValue,
-                                intelligenceModelVersion: result.categoryPrediction.modelVersion,
-                                intelligenceConfigVersion: result.categoryPrediction.configVersion
-                            )
-                        )
+                        provenanceBatch.append((id: txn.id, provenance: EnrichmentProvenance(
+                            categoryId: result.categoryPrediction.categoryId,
+                            merchantName: result.merchantCandidate.canonicalName,
+                            intentId: result.intentPrediction.intent.rawValue,
+                            resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
+                            intelligenceSource: result.categoryPrediction.source.rawValue,
+                            intelligenceModelVersion: result.categoryPrediction.modelVersion,
+                            intelligenceConfigVersion: result.categoryPrediction.configVersion
+                        )))
                         enriched.append(result)
                     } catch {
                         FinanceLogger.userInterface.logError(
@@ -96,6 +96,7 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
                     }
                     pipelineProcessed += 1
                 }
+                try? await transactionRepository.updateEnrichmentProvenanceBatch(provenanceBatch)
 
                 guard !Task.isCancelled, !enriched.isEmpty else { return }
 
