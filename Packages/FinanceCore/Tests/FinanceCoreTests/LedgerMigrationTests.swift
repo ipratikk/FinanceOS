@@ -194,3 +194,26 @@ func cardLedgerPropertiesArePersistedCorrectly() throws {
     #expect(fetched?.linkedLedgerId == accountLedger.id)
     #expect(fetched?.kind == .creditCard)
 }
+
+@Test
+func v21ModelMetadataTableExpandedWithFullSchema() throws {
+    var migrator = DatabaseMigrator()
+    AppMigration.registerMigrations(in: &migrator)
+    let dbQueue = try DatabaseQueue()
+    try migrator.migrate(dbQueue)
+
+    try dbQueue.write { db in
+        // Two rows with the same modelName must succeed (no UNIQUE constraint).
+        try db.execute(sql: """
+            INSERT INTO intelligence_model_metadata
+                (id, modelName, modelType, modelVersion, trainedAt, trainingExampleCount)
+            VALUES
+                ('m1', 'personalized-knn', 'knn', 'v1', '2026-06-01T10:00:00Z', 100),
+                ('m2', 'personalized-knn', 'knn', 'v2', '2026-06-01T11:00:00Z', 150)
+        """)
+    }
+    let count = try dbQueue.read { db in
+        try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM intelligence_model_metadata") ?? 0
+    }
+    #expect(count == 2)
+}
