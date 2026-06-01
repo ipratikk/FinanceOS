@@ -46,6 +46,21 @@ public final class DatabaseManager: @unchecked Sendable {
     }
 }
 
+public extension DatabaseManager {
+    /// Deletes all financial intelligence data (persons, graph, relationships, patterns).
+    /// Call alongside `bankRepository.deleteAll()` when user clears app data.
+    func clearIntelligenceData() throws {
+        try dbQueue.write { db in
+            try db.execute(sql: "DELETE FROM recurring_patterns")
+            try db.execute(sql: "DELETE FROM relationships")
+            try db.execute(sql: "DELETE FROM knowledge_graph_edges")
+            try db.execute(sql: "DELETE FROM knowledge_graph_nodes")
+            try db.execute(sql: "DELETE FROM intelligence_person_aliases")
+            try db.execute(sql: "DELETE FROM intelligence_persons")
+        }
+    }
+}
+
 private extension DatabaseManager {
     /// Resolves or creates the `FinanceOS/finance.sqlite` file in Application Support.
     static func makeDatabaseURL() throws -> URL {

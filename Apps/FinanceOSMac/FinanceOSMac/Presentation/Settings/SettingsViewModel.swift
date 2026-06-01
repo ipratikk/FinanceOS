@@ -16,6 +16,7 @@ final class SettingsViewModel {
     func clearAllData() async {
         do {
             try await bankRepository.deleteAll()
+            try DatabaseManager.shared.clearIntelligenceData()
         } catch {
             errorMessage = error.localizedDescription
         }
