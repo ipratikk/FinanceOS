@@ -17,18 +17,23 @@ public struct IntelligenceServiceConfiguration: Sendable {
     /// When nil, an in-memory `PersonEntityStore` is used (session-scoped, no persistence).
     public let databaseQueue: DatabaseQueue?
 
+    /// Structured logger for intelligence inference events. Defaults to `NullIntelligenceLogger`.
+    public let intelligenceLogger: any IntelligenceLogger
+
     public init(
         correctionStoreURL: URL,
         personalLearnerURL: URL,
         personalizedKNNModelURL: URL,
         taxonomy: CategoryTaxonomy = .current,
-        databaseQueue: DatabaseQueue? = nil
+        databaseQueue: DatabaseQueue? = nil,
+        intelligenceLogger: (any IntelligenceLogger)? = nil
     ) {
         self.correctionStoreURL = correctionStoreURL
         self.personalLearnerURL = personalLearnerURL
         self.personalizedKNNModelURL = personalizedKNNModelURL
         self.taxonomy = taxonomy
         self.databaseQueue = databaseQueue
+        self.intelligenceLogger = intelligenceLogger ?? NullIntelligenceLogger()
     }
 
     /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.
