@@ -93,9 +93,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         let prediction = await predictCategory(features: features, merchantCategoryId: merchant.categoryId)
         await intelligenceLogger.record(IntelligenceEvent(
             transactionId: transaction.id.uuidString,
-            stage: .finalCategorization, source: confidenceSource(prediction.source),
+            stage: .finalCategorization, source: prediction.source,
             modelVersion: prediction.modelVersion, outputLabel: prediction.categoryId,
-            confidence: prediction.confidence, confidenceKind: confidenceKind(prediction.source)
+            confidence: prediction.confidence, confidenceKind: prediction.confidenceKind
         ))
         return AnalyzedTransaction(
             transaction: transaction, merchantCandidate: merchant,
@@ -140,7 +140,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
                     categoryId: correction.correctedCategory, subcategoryId: nil,
                     displayName: name, confidence: 1.0, alternatives: [],
                     source: .userCorrection, modelVersion: "user-correction",
-                    taxonomyVersion: tax.version
+                    taxonomyVersion: tax.version, confidenceKind: .deterministic
                 )
                 results.append(AnalyzedTransaction(
                     transaction: txn, merchantCandidate: merchant,
@@ -198,10 +198,10 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
         await intelligenceLogger.record(IntelligenceEvent(
             transactionId: transaction.id.uuidString,
-            stage: .finalCategorization, source: confidenceSource(categoryPrediction.source),
+            stage: .finalCategorization, source: categoryPrediction.source,
             modelVersion: categoryPrediction.modelVersion, outputLabel: categoryPrediction.categoryId,
             outputIntent: ruleResult.intentPrediction.intent.rawValue,
-            confidence: categoryPrediction.confidence, confidenceKind: confidenceKind(categoryPrediction.source)
+            confidence: categoryPrediction.confidence, confidenceKind: categoryPrediction.confidenceKind
         ))
         let resolvedEntities = await resolveEntities(
             description: transaction.description,
@@ -320,8 +320,9 @@ extension TransactionIntelligenceServiceImpl {
             let name = taxonomy.category(forId: knn.categoryId)?.displayName ?? knn.categoryId
             return CategoryPrediction(
                 categoryId: knn.categoryId, subcategoryId: nil, displayName: name,
-                confidence: knn.confidence, alternatives: [], source: .mlModel,
-                modelVersion: "personalized-knn", taxonomyVersion: taxonomy.version
+                confidence: knn.confidence, alternatives: [], source: .personalizedKNN,
+                modelVersion: "personalized-knn", taxonomyVersion: taxonomy.version,
+                confidenceKind: .uncalibratedScore
             )
         }
         // Priority 2: legacy Swift kNN (fallback)
@@ -331,8 +332,9 @@ extension TransactionIntelligenceServiceImpl {
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
             return CategoryPrediction(
                 categoryId: topLevel, subcategoryId: nil, displayName: name,
-                confidence: local.confidence, alternatives: [], source: .mlModel,
-                modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version
+                confidence: local.confidence, alternatives: [], source: .personalizedKNN,
+                modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version,
+                confidenceKind: .uncalibratedScore
             )
         }
         // Priority 3: bundled NLModel text classifier
@@ -343,8 +345,9 @@ extension TransactionIntelligenceServiceImpl {
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
             return CategoryPrediction(
                 categoryId: topLevel, subcategoryId: categoryId, displayName: name,
-                confidence: 0.88, alternatives: [], source: .alias,
-                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version
+                confidence: 0.88, alternatives: [], source: .personalizedKNN,
+                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version,
+                confidenceKind: .heuristicOrdinal
             )
         }
         // Priority 5: deterministic rules
@@ -366,8 +369,9 @@ private extension TransactionIntelligenceServiceImpl {
             let name = taxonomy.category(forId: knn.categoryId)?.displayName ?? knn.categoryId
             return CategoryPrediction(
                 categoryId: knn.categoryId, subcategoryId: nil, displayName: name,
-                confidence: knn.confidence, alternatives: [], source: .mlModel,
-                modelVersion: "personalized-knn", taxonomyVersion: taxonomy.version
+                confidence: knn.confidence, alternatives: [], source: .personalizedKNN,
+                modelVersion: "personalized-knn", taxonomyVersion: taxonomy.version,
+                confidenceKind: .uncalibratedScore
             )
         }
 
@@ -378,8 +382,9 @@ private extension TransactionIntelligenceServiceImpl {
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
             return CategoryPrediction(
                 categoryId: topLevel, subcategoryId: nil, displayName: name,
-                confidence: local.confidence, alternatives: [], source: .mlModel,
-                modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version
+                confidence: local.confidence, alternatives: [], source: .personalizedKNN,
+                modelVersion: "on-device-knn", taxonomyVersion: taxonomy.version,
+                confidenceKind: .uncalibratedScore
             )
         }
 
@@ -395,8 +400,9 @@ private extension TransactionIntelligenceServiceImpl {
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
             return CategoryPrediction(
                 categoryId: topLevel, subcategoryId: categoryId, displayName: name,
-                confidence: 0.88, alternatives: [], source: .alias,
-                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version
+                confidence: 0.88, alternatives: [], source: .personalizedKNN,
+                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version,
+                confidenceKind: .heuristicOrdinal
             )
         }
 
@@ -430,27 +436,8 @@ private extension TransactionIntelligenceServiceImpl {
             alternatives: [],
             source: .userCorrection,
             modelVersion: "user-correction",
-            taxonomyVersion: taxonomy.version
+            taxonomyVersion: taxonomy.version,
+            confidenceKind: .deterministic
         )
-    }
-
-    func confidenceSource(_ source: PredictionSource) -> IntelligenceSource {
-        switch source {
-        case .userCorrection: return .userCorrection
-        case .rules: return .structuralRule
-        case .mlModel: return .personalizedKNN
-        case .alias: return .personalizedKNN
-        case .fallback: return .fallbackRule
-        }
-    }
-
-    func confidenceKind(_ source: PredictionSource) -> ConfidenceKind {
-        switch source {
-        case .userCorrection: return .deterministic
-        case .rules: return .deterministic
-        case .mlModel: return .uncalibratedScore
-        case .alias: return .heuristicOrdinal
-        case .fallback: return .notApplicable
-        }
     }
 }
