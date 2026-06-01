@@ -230,6 +230,64 @@ struct GraphBuilderTests {
         return out
     }
 
+    // MARK: - INTEL-016: resolvedPersonId consistency
+
+    @Test("Person-resolved transaction creates person node + PAID_TO edge, no merchant node")
+    func personResolvedCreatesPersonEdgeNotMerchant() async throws {
+        let store = try makeStore()
+        let builder = GraphBuilder(store: store)
+        let personId = UUID()
+        let txn = makeTxn(description: "UPI-RAHUL@HDFC", amount: 50000, type: .debit)
+        let features = TransactionFeatureExtractor().extract(from: txn)
+        let enriched = EnrichedTransaction(
+            transaction: txn,
+            merchantCandidate: MerchantCandidate(MerchantCandidateInput(
+                rawDescription: txn.description, cleanedDescription: "Rahul",
+                canonicalName: "Rahul", confidence: 0.9, source: .alias
+            )),
+            categoryPrediction: CategoryPrediction(
+                categoryId: "transfers", subcategoryId: nil, displayName: "Transfers",
+                confidence: 0.9, alternatives: [], source: .coreMLNLModel,
+                modelVersion: "test", taxonomyVersion: "1.0.0"
+            ),
+            intentPrediction: IntentPrediction(intent: .transfer, confidence: 0.8, source: .ruleEngine),
+            features: features,
+            isUserCorrected: false,
+            resolvedEntities: ResolvedEntities(personId: personId)
+        )
+        try await builder.build(from: [enriched])
+
+        // Person node must exist
+        let personNode = try await store.node(externalId: personId.uuidString, type: .person)
+        #expect(personNode != nil)
+
+        // Transaction must have a PAID_TO edge (to the person node)
+        let txnNode = try await store.node(externalId: txn.id.uuidString, type: .transaction)
+        let edges = try await store.edges(from: #require(txnNode).id)
+        let paidToEdges = edges.filter { $0.edgeType == .paidTo }
+        #expect(!paidToEdges.isEmpty)
+
+        // No merchant node — person branch skips merchant+category path
+        let merchantNode = try await store.node(externalId: "rahul", type: .merchant)
+        #expect(merchantNode == nil)
+    }
+
+    @Test("Non-person transaction creates merchant node, no person node")
+    func nonPersonTransactionCreatesOnlyMerchant() async throws {
+        let store = try makeStore()
+        let builder = GraphBuilder(store: store)
+        let txn = makeTxn(description: "UPI-ZEPTO", amount: 30000, type: .debit)
+        let enriched = makeEnriched(txn: txn, merchant: "Zepto", categoryId: "groceries")
+        try await builder.build(from: [enriched])
+
+        let merchantNode = try await store.node(externalId: "zepto", type: .merchant)
+        #expect(merchantNode != nil)
+
+        // No person node for a non-person transaction
+        let personNode = try await store.node(externalId: txn.id.uuidString, type: .person)
+        #expect(personNode == nil)
+    }
+
     @Test("BFS at depth 2 finds category through merchant")
     func bfsDepth2FindsCategory() async throws {
         let store = try makeStore()
