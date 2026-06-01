@@ -53,32 +53,46 @@
 | Source | Count | Status | Method |
 |--------|-------|--------|--------|
 | Parser fixtures (HDFC, ICICI) | ~20 | ✓ Extracted | CSV export |
-| User corrections (FeedbackStore) | 0/TBD | Pending | Query GRDBFeedbackStore |
-| Synthetic generation | 0/TBD | Pending | Template-based |
+| User corrections (FeedbackStore) | TBD | ✓ Collection module | Query GRDBFeedbackStore |
+| Synthetic generation | ~30 | ✓ Implemented | Template-based |
 | Manual annotation | TBD | Pending | Spreadsheet + validation |
+
+### Components Added (Phase 2)
+
+1. **FeedbackStoreDataCollector** (`MachineLearning/FeedbackStoreDataCollector.swift`)
+   - Collects labeled examples from FeedbackStore events
+   - Maps merchant corrections → person/merchant labels
+   - Maps category corrections → inferred labels
+   - Confidence scoring for each example
+
+2. **DatasetOrchestrator** (`MachineLearning/DatasetOrchestrator.swift`)
+   - Coordinates collection from all sources
+   - Methods: `seedFromFixtures()`, `collectFromFeedbackStore()`, `generateSynthetic()`
+   - Exports to JSON/CSV
+   - Generates ~30 synthetic narrations for gaps
+   - Actor-based for thread safety
 
 ### Immediate Next Steps
 
-1. **Extract from All Parsers** (target: +100 examples)
-   - [ ] Fix `Scripts/collect_dataset.swift` for all fixture formats
-   - [ ] Extract from SBI, Axis test fixtures (if available)
-   - [ ] Verify no PII leaks
+1. **Integrate FeedbackStore in AppContainer** 
+   - [ ] Pass FeedbackStore instance to DatasetOrchestrator
+   - [ ] Document usage pattern for data collection
 
-2. **Wire FeedbackStore Collection** (target: +500 examples)
-   - [ ] Query `GRDBFeedbackStore` for `merchant_corrected` events
-   - [ ] Infer label from correction context
-   - [ ] Add `source: .userCorrection` to collected examples
+2. **Validate Collected Data**
+   - [ ] Run on dev instance with sample FeedbackStore data
+   - [ ] Measure balance (person/merchant/unknown %)
+   - [ ] Identify gaps in bank coverage
 
-3. **Synthetic Generation** (target: +200-500 examples)
-   - [ ] Generate underrepresented narration patterns
-   - [ ] Phone number VPA variants
-   - [ ] Business name variants
-   - [ ] Ambiguous/borderline cases
+3. **Manual Review & Deduplication**
+   - [ ] Export current dataset (fixtures + synthetic)
+   - [ ] Review ~50 examples for quality
+   - [ ] Remove duplicates
+   - [ ] Document review process
 
-4. **Manual Annotation Workflow**
-   - [ ] Set up spreadsheet template (CSV format)
-   - [ ] Create validation checklist
-   - [ ] Review & deduplicate before merging
+4. **Reach 500+ Examples Milestone**
+   - [ ] Combine all sources
+   - [ ] Document each source contribution
+   - [ ] Publish seed dataset
 
 ---
 
