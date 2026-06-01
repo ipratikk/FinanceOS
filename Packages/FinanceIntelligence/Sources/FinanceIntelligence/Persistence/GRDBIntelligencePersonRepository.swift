@@ -11,49 +11,111 @@ import GRDB
 public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
     IntelligencePersonRepository {
     private let dbQueue: DatabaseQueue
+    private let feedbackStore: any FeedbackStore
+    private let deduplicator = PersonDeduplicator()
     private let logger = FinanceLogger.repository
 
-    public init(dbQueue: DatabaseQueue) {
+    private struct WriteResult {
+        let person: Person
+        let mergedIntoId: UUID?
+        let fromName: String?
+        let canonicalName: String?
+    }
+
+    private struct FindOrCreateInput {
+        let name: String
+        let sanitizedName: String
+        let effectiveName: String
+        let normalized: String
+        let upiHandle: String?
+        let date: Date
+    }
+
+    public init(dbQueue: DatabaseQueue, feedbackStore: (any FeedbackStore)? = nil) {
         self.dbQueue = dbQueue
+        self.feedbackStore = feedbackStore ?? NullFeedbackStore()
     }
 
     public func findOrCreate(name: String, upiHandle: String?, date: Date) async throws -> Person {
-        // Sanitize narration artifacts before any lookup or creation
         let sanitizedName = NameSanitizer.sanitize(name)
         let effectiveName = sanitizedName.isEmpty ? name : sanitizedName
         let normalized = PersonNameNormalizer.normalize(effectiveName)
-        return try await dbQueue.write { [self] database in
-            // Check by alias index first (covers normalized name variants)
-            if let existingId = try personId(forAlias: normalized, in: database) {
-                return try updatePerson(
-                    id: existingId, rawName: effectiveName, upiHandle: upiHandle,
-                    date: date, in: database
+
+        let input = FindOrCreateInput(
+            name: name,
+            sanitizedName: sanitizedName,
+            effectiveName: effectiveName,
+            normalized: normalized,
+            upiHandle: upiHandle,
+            date: date
+        )
+        let result = try await writeFindOrCreateResult(input: input)
+        if let intoId = result.mergedIntoId, let fromName = result.fromName, let canonical = result.canonicalName {
+            logger.logInfo(
+                "Person auto-merged via fuzzy dedup",
+                ["intoId": intoId.uuidString, "fromName": fromName, "canonicalName": canonical]
+            )
+            try? await feedbackStore.record(FeedbackEvent(
+                eventType: .personMerged,
+                entityType: "person",
+                entityId: intoId.uuidString,
+                oldValue: fromName,
+                newValue: canonical
+            ))
+        }
+        return result.person
+    }
+
+    private func writeFindOrCreateResult(input: FindOrCreateInput) async throws -> WriteResult {
+        try await dbQueue.write { [self] database in
+            func ok(_ p: Person) -> WriteResult {
+                WriteResult(person: p, mergedIntoId: nil, fromName: nil, canonicalName: nil)
+            }
+
+            func update(id: UUID) throws -> Person {
+                try updatePerson(
+                    id: id,
+                    rawName: input.effectiveName,
+                    upiHandle: input.upiHandle,
+                    date: input.date,
+                    in: database
                 )
             }
-            // Also try the original unsanitized normalized form as alias fallback
-            if sanitizedName != name {
-                let originalNormalized = PersonNameNormalizer.normalize(name)
+
+            if let existingId = try personId(forAlias: input.normalized, in: database) {
+                return ok(try update(id: existingId))
+            }
+            if input.sanitizedName != input.name {
+                let originalNormalized = PersonNameNormalizer.normalize(input.name)
                 if let existingId = try personId(forAlias: originalNormalized, in: database) {
-                    return try updatePerson(
-                        id: existingId, rawName: effectiveName, upiHandle: upiHandle,
-                        date: date, in: database
-                    )
+                    return ok(try update(id: existingId))
                 }
             }
-            // Check by UPI handle if provided
-            if let handle = upiHandle?.lowercased(),
+            if let handle = input.upiHandle?.lowercased(),
                let row = try GRDBIntelligencePerson
                .filter(GRDBIntelligencePerson.Columns.upiHandle == handle)
                .fetchOne(database) {
-                return try updatePerson(
-                    id: row.id, rawName: effectiveName, upiHandle: upiHandle,
-                    date: date, in: database
+                return ok(try update(id: row.id))
+            }
+            // Fuzzy dedup: check for near-duplicate person before creating a new record
+            if let candidate = try findFuzzyCandidate(for: input.effectiveName, in: database),
+               candidate.matchType.isAutoMergeCandidate {
+                let p = try update(id: candidate.existingId)
+                return WriteResult(
+                    person: p,
+                    mergedIntoId: candidate.existingId,
+                    fromName: input.effectiveName,
+                    canonicalName: candidate.existingName
                 )
             }
-            return try createPerson(
-                canonicalName: PersonNameNormalizer.titleCase(effectiveName),
-                rawName: effectiveName, upiHandle: upiHandle, date: date, in: database
+            let p = try createPerson(
+                canonicalName: PersonNameNormalizer.titleCase(input.effectiveName),
+                rawName: input.effectiveName,
+                upiHandle: input.upiHandle,
+                date: input.date,
+                in: database
             )
+            return ok(p)
         }
     }
 
@@ -101,6 +163,28 @@ public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
                 .filter(GRDBIntelligencePerson.Columns.id == id.uuidString)
                 .deleteAll(database)
         }
+    }
+}
+
+// MARK: - Fuzzy Dedup
+
+private extension GRDBIntelligencePersonRepository {
+    /// Returns the best auto-merge candidate for `name` among all existing persons, or nil.
+    /// Only returns candidates with `isAutoMergeCandidate == true` (exact or strong match).
+    /// Possible-match candidates are logged for debug only and not returned.
+    func findFuzzyCandidate(for name: String, in database: Database) throws -> PersonDeduplicator.Candidate? {
+        let allRows = try GRDBIntelligencePerson.fetchAll(database)
+        let allPersons = allRows.map { $0.toPerson(aliases: []) }
+        let candidates = deduplicator.findCandidates(for: name, in: allPersons)
+        for candidate in candidates where candidate.matchType == .possibleMatch {
+            logger.logDebug("Person dedup possible match (review required)", [
+                "input": name,
+                "existingId": candidate.existingId.uuidString,
+                "existingName": candidate.existingName,
+                "jaccard": String(format: "%.2f", candidate.jaccardSimilarity ?? 0)
+            ])
+        }
+        return candidates.first(where: { $0.matchType.isAutoMergeCandidate })
     }
 }
 
