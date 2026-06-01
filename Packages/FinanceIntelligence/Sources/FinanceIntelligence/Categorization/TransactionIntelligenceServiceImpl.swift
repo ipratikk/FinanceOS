@@ -255,9 +255,11 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         FinanceLogger.intelligence.info("trainClassifier: complete")
     }
 
-    public func evaluateClassifier(examples: [(text: String, categoryId: String)]) async -> ClassifierEvalResult? {
+    public func evaluateClassifier(
+        examples: [(text: String, categoryId: String)]
+    ) async -> ClassificationEvaluationResult? {
         guard let classifier = personalizedClassifier else { return nil }
-        return await classifier.evaluate(examples: examples)
+        return await classifier.validateOnHeldOut(examples: examples)
     }
 
     public func learn(
