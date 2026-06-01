@@ -161,12 +161,12 @@ public struct DatasetStatistics: Sendable {
     public let sourceCoverage: [String: Int]
 
     init(metadata: LabeledNarrationCollection.CollectionMetadata) {
-        self.totalCount = metadata.totalCount
-        self.personCount = metadata.personCount
-        self.merchantCount = metadata.merchantCount
-        self.unknownCount = metadata.unknownCount
-        self.bankCoverage = metadata.bankCoverage
-        self.sourceCoverage = metadata.sourceCoverage
+        totalCount = metadata.totalCount
+        personCount = metadata.personCount
+        merchantCount = metadata.merchantCount
+        unknownCount = metadata.unknownCount
+        bankCoverage = metadata.bankCoverage
+        sourceCoverage = metadata.sourceCoverage
     }
 
     private func formatPercentage(_ count: Int, _ total: Int) -> String {

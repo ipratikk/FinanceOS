@@ -92,6 +92,8 @@ func ruleEngine_structuralIntentsCovered_inBuiltInRules() {
     let expectedStructuralIntents = allIntents.subtracting(knnDelegatedIntents)
     let expectedStr = expectedStructuralIntents.map(\.rawValue).sorted()
     let builtInStr = builtInIntents.map(\.rawValue).sorted()
-    #expect(builtInIntents == expectedStructuralIntents,
-            "BuiltInRules coverage mismatch. Expected: \(expectedStr), Got: \(builtInStr)")
+    #expect(
+        builtInIntents == expectedStructuralIntents,
+        "BuiltInRules coverage mismatch. Expected: \(expectedStr), Got: \(builtInStr)"
+    )
 }

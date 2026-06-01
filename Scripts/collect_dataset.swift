@@ -114,7 +114,7 @@ if let amex = try? String(contentsOfFile: "\(fixtureBase)/amex_card.csv", encodi
     }
 }
 
-// Output as CSV for manual annotation
+/// Output as CSV for manual annotation
 var csv = ["narration,bank,source,suggested_label"]
 for ex in examples {
     let escaped = ex.narration.contains(",") ? "\"\(ex.narration)\"" : ex.narration

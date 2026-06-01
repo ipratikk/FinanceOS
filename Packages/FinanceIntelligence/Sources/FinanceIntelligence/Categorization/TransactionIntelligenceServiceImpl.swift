@@ -321,6 +321,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         )
     }
 }
+
 // swiftlint:enable type_body_length
 
 // MARK: - Static Prediction (no actor needed — called from concurrent tasks)

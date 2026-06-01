@@ -2,10 +2,10 @@
 import Foundation
 import Testing
 
-/// Integration tests showing how FeedbackStore data flows into dataset collection.
-///
-/// These tests demonstrate the complete workflow for collecting real labeled data
-/// from user corrections (merchant_corrected, category_corrected events).
+// Integration tests showing how FeedbackStore data flows into dataset collection.
+//
+// These tests demonstrate the complete workflow for collecting real labeled data
+// from user corrections (merchant_corrected, category_corrected events).
 
 @Test
 func feedbackStoreDataCollector_merchantCorrectionMapping() async throws {
@@ -73,11 +73,17 @@ func feedbackStoreDataCollector_categoryToLabelMapping() async throws {
         let storedEvent: FeedbackEvent
 
         func record(_ event: FeedbackEvent) async throws {}
-        func events(for transactionId: UUID) async throws -> [FeedbackEvent] { [] }
+        func events(for transactionId: UUID) async throws -> [FeedbackEvent] {
+            []
+        }
+
         func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] {
             [storedEvent]
         }
-        func allEvents() async throws -> [FeedbackEvent] { [] }
+
+        func allEvents() async throws -> [FeedbackEvent] {
+            []
+        }
     }
 
     let mockStore = MockStore(storedEvent: salaryEvent)
@@ -100,7 +106,9 @@ func datasetOrchestrator_integrateFeedbackStore() async throws {
     // Mock FeedbackStore with sample events
     struct MockStore: FeedbackStore {
         func record(_ event: FeedbackEvent) async throws {}
-        func events(for transactionId: UUID) async throws -> [FeedbackEvent] { [] }
+        func events(for transactionId: UUID) async throws -> [FeedbackEvent] {
+            []
+        }
 
         func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] {
             if type == .merchantCorrected {
@@ -119,7 +127,9 @@ func datasetOrchestrator_integrateFeedbackStore() async throws {
             return []
         }
 
-        func allEvents() async throws -> [FeedbackEvent] { [] }
+        func allEvents() async throws -> [FeedbackEvent] {
+            []
+        }
     }
 
     // Collect from feedback
@@ -156,7 +166,7 @@ func datasetValidator_acceptsIntegratedDataset() async {
 }
 
 @Test
-func classifierEvaluator_onIntegratedDataset() async throws {
+func classifierEvaluator_onIntegratedDataset() async {
     let orchestrator = DatasetOrchestrator()
 
     // Build dataset

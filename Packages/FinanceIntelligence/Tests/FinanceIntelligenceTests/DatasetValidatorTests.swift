@@ -43,7 +43,7 @@ func datasetValidator_emptyDataset() {
 func datasetValidator_smallDataset_warning() async {
     let collector = DatasetCollector()
 
-    for i in 0..<100 {
+    for i in 0 ..< 100 {
         await collector.addFromFixture(
             narration: "Narration \(i)",
             label: .unknown,

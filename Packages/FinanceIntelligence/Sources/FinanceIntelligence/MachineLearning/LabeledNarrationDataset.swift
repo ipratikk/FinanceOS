@@ -26,7 +26,7 @@ public struct LabeledNarration: Codable, Identifiable, Sendable {
     public enum DataSource: String, Codable, Sendable {
         case userCorrection = "user_correction"
         case parserFixture = "parser_fixture"
-        case synthetic = "synthetic"
+        case synthetic
         case manual = "manual_annotation"
     }
 
@@ -40,7 +40,7 @@ public struct LabeledNarration: Codable, Identifiable, Sendable {
         source: DataSource,
         annotatedBy: String? = nil
     ) {
-        self.id = UUID()
+        id = UUID()
         self.narration = narration
         self.vpa = vpa
         self.amountMinorUnits = amountMinorUnits
@@ -49,7 +49,7 @@ public struct LabeledNarration: Codable, Identifiable, Sendable {
         self.bank = bank
         self.source = source
         self.annotatedBy = annotatedBy
-        self.createdAt = Date()
+        createdAt = Date()
     }
 }
 
@@ -81,13 +81,13 @@ public struct LabeledNarrationCollection: Codable, Sendable {
     }
 
     public init(examples: [LabeledNarration], annotationGuidelines: String = "") {
-        self.version = "1.0"
-        self.createdAt = Date()
+        version = "1.0"
+        createdAt = Date()
         self.examples = examples
 
-        let personCount = examples.filter { $0.label == .person }.count
-        let merchantCount = examples.filter { $0.label == .merchant }.count
-        let unknownCount = examples.filter { $0.label == .unknown }.count
+        let personCount = examples.count(where: { $0.label == .person })
+        let merchantCount = examples.count(where: { $0.label == .merchant })
+        let unknownCount = examples.count(where: { $0.label == .unknown })
 
         var bankCov: [String: Int] = [:]
         var sourceCov: [String: Int] = [:]
@@ -96,7 +96,7 @@ public struct LabeledNarrationCollection: Codable, Sendable {
             sourceCov[example.source.rawValue, default: 0] += 1
         }
 
-        self.metadata = CollectionMetadata(
+        metadata = CollectionMetadata(
             totalCount: examples.count,
             personCount: personCount,
             merchantCount: merchantCount,
@@ -106,7 +106,7 @@ public struct LabeledNarrationCollection: Codable, Sendable {
             annotationGuidelines: annotationGuidelines
         )
 
-        self.datasetHash = Self.computeHash(examples)
+        datasetHash = Self.computeHash(examples)
     }
 
     private static func computeHash(_ examples: [LabeledNarration]) -> String {

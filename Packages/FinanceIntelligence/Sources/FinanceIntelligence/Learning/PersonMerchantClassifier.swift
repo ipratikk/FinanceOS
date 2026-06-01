@@ -36,7 +36,7 @@ public struct PersonMerchantClassifier: Sendable {
     private let features: NarrationFeatureExtractor
 
     public init() {
-        self.features = NarrationFeatureExtractor()
+        features = NarrationFeatureExtractor()
     }
 
     /// Classify narration (baseline keyword heuristic).
@@ -72,7 +72,7 @@ public struct PersonMerchantClassifier: Sendable {
         }
 
         // Person name pattern (2+ words, no numbers) → person
-        if feat.looksLikeName && !feat.hasNumbers {
+        if feat.looksLikeName, !feat.hasNumbers {
             return Prediction(
                 label: .person,
                 confidence: .moderate,
@@ -163,7 +163,7 @@ struct NarrationFeatureExtractor {
         let segments = vpaPrefix.components(separatedBy: CharacterSet(charactersIn: "-/"))
         guard let lastSegment = segments.last else { return false }
 
-        let cleaned = lastSegment.filter { $0.isNumber }
+        let cleaned = lastSegment.filter(\.isNumber)
         // 10 digits = Indian phone, 12 digits = with country code
         return cleaned.count == 10 || cleaned.count == 12
     }

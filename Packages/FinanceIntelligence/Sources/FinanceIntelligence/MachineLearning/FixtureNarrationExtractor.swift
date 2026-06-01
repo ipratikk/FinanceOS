@@ -6,7 +6,7 @@ import Foundation
 /// 1. Bootstrap labeled dataset from real bank statements
 /// 2. Verify parser output for manual annotation
 /// 3. Create fixture-based benchmark data
-public struct FixtureNarrationExtractor {
+public enum FixtureNarrationExtractor {
     /// Parse CSV fixture and extract narrations with basic labels.
     /// Format: assumes column 2 (index 1) contains narration.
     public static func extractFromCSV(
@@ -86,7 +86,7 @@ public struct FixtureNarrationExtractor {
                let beforeAt = narration[..<atIndex].split(separator: "-").last {
                 let vpaId = String(beforeAt).trimmingCharacters(in: .whitespaces)
                 // Check if it's a 10 or 12 digit number (phone)
-                if vpaId.allSatisfy(\.isNumber) && (vpaId.count == 10 || vpaId.count == 12) {
+                if vpaId.allSatisfy(\.isNumber), vpaId.count == 10 || vpaId.count == 12 {
                     return "person"
                 }
             }
@@ -105,7 +105,7 @@ public struct FixtureNarration: Identifiable {
     public let suggestedLabel: String
 
     public init(narration: String, bank: String, suggestedLabel: String) {
-        self.id = UUID()
+        id = UUID()
         self.narration = narration
         self.bank = bank
         self.suggestedLabel = suggestedLabel

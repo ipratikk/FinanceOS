@@ -248,12 +248,21 @@ func personRepo_fuzzyDedup_strongMatchAutoMerges() async throws {
 func personRepo_fuzzyDedup_emitsMergeEvent() async throws {
     final class SpyFeedbackStore: FeedbackStore, @unchecked Sendable {
         var recorded: [FeedbackEvent] = []
-        func record(_ event: FeedbackEvent) async throws { recorded.append(event) }
-        func events(for transactionId: UUID) async throws -> [FeedbackEvent] { recorded }
+        func record(_ event: FeedbackEvent) async throws {
+            recorded.append(event)
+        }
+
+        func events(for transactionId: UUID) async throws -> [FeedbackEvent] {
+            recorded
+        }
+
         func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] {
             recorded.filter { $0.eventType == type }
         }
-        func allEvents() async throws -> [FeedbackEvent] { recorded }
+
+        func allEvents() async throws -> [FeedbackEvent] {
+            recorded
+        }
     }
     let spy = SpyFeedbackStore()
     let repo = try GRDBIntelligencePersonRepository(dbQueue: makeTestDatabase(), feedbackStore: spy)

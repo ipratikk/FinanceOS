@@ -18,7 +18,7 @@ public actor DatasetOrchestrator {
     private var collector: DatasetCollector
 
     public init() {
-        self.collector = DatasetCollector(
+        collector = DatasetCollector(
             annotationGuidelines: Self.annotationGuidelinesText
         )
     }
