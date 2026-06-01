@@ -41,7 +41,8 @@ let package = Package(
                 "FinanceIntelligence",
                 "FinanceCore",
                 .product(name: "GRDB", package: "GRDB.swift")
-            ]
+            ],
+            resources: [.process("Resources")]
         )
     ]
 )

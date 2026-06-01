@@ -86,7 +86,7 @@ struct GraphBuilderTests {
                 displayName: categoryId.capitalized,
                 confidence: 0.9,
                 alternatives: [],
-                source: .mlModel,
+                source: .coreMLNLModel,
                 modelVersion: "test",
                 taxonomyVersion: "1.0.0"
             ),
