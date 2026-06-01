@@ -14,6 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../FinanceCore"),
+        .package(path: "../FinanceTesting"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
         .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0")
     ],
@@ -40,6 +41,7 @@ let package = Package(
             dependencies: [
                 "FinanceIntelligence",
                 "FinanceCore",
+                "FinanceTesting",
                 .product(name: "GRDB", package: "GRDB.swift")
             ],
             resources: [.process("Resources")]
