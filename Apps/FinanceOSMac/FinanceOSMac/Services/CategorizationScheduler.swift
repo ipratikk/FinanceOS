@@ -17,32 +17,40 @@ actor CategorizationScheduler {
         self.intelligenceService = intelligenceService
     }
 
-    /// Categorizes all uncategorized transactions, persists results, then runs post-processing
-    /// (knowledge graph, recurring detection, relationship inference) on the full enriched batch.
-    /// No-ops if already running or if nothing needs categorizing.
+    /// Categorizes uncategorized transactions, then post-processes the FULL enriched history.
+    /// No-ops if already running or if there are no transactions.
     func run() async {
         guard !isRunning else { return }
         isRunning = true
         defer { isRunning = false }
         do {
             let all = try await transactionRepository.fetchTransactions()
-            let uncategorized = all.filter { $0.categoryId == nil }
-            guard !uncategorized.isEmpty else { return }
+            guard !all.isEmpty else { return }
 
-            // analyzeEnriched gives categorization + intent + description in one pass
+            // Enrich ALL in one pass: uncategorized get categoryId persisted;
+            // all are collected for postProcessBatch (needs full history for recurring detection).
+            // Per-transaction error isolation — one failure does not abort the batch.
             var enriched: [EnrichedTransaction] = []
-            enriched.reserveCapacity(uncategorized.count)
-            for txn in uncategorized {
-                let result = try await intelligenceService.analyzeEnriched(txn, context: .empty)
-                try? await transactionRepository.updateIntelligence(
-                    id: txn.id,
-                    categoryId: result.categoryPrediction.categoryId,
-                    merchantName: result.merchantCandidate.canonicalName
-                )
-                enriched.append(result)
+            enriched.reserveCapacity(all.count)
+            for txn in all {
+                do {
+                    let result = try await intelligenceService.analyzeEnriched(txn, context: .empty)
+                    if txn.categoryId == nil {
+                        try? await transactionRepository.updateIntelligence(
+                            id: txn.id,
+                            categoryId: result.categoryPrediction.categoryId,
+                            merchantName: result.merchantCandidate.canonicalName
+                        )
+                    }
+                    enriched.append(result)
+                } catch {
+                    FinanceLogger.transactions.logError(
+                        "Categorization skipped for transaction", caughtError: error, [:]
+                    )
+                }
             }
 
-            // Post-process: graph + recurring (any cadence, ≥2 occurrences) + relationships
+            guard !enriched.isEmpty else { return }
             await intelligenceService.postProcessBatch(enriched: enriched, onStageChange: nil)
         } catch {
             FinanceLogger.transactions.logError("Background categorization failed", caughtError: error, [:])
