@@ -43,6 +43,9 @@ public protocol TransactionIntelligenceWriter: Sendable {
 
     /// Marks a transaction's merchant name as user-corrected, preventing future intelligence overwrites.
     func markUserCorrectedMerchant(id: UUID) async throws
+
+    /// Clears the user-corrected merchant flag, allowing intelligence to overwrite merchant name again.
+    func clearUserCorrectedMerchant(id: UUID) async throws
 }
 
 // MARK: - Umbrella (backward-compatible composition)

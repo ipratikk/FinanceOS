@@ -34,6 +34,8 @@ struct MockTransactionRepository: TransactionRepository {
     func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws {}
 
     func markUserCorrectedMerchant(id: UUID) async throws {}
+
+    func clearUserCorrectedMerchant(id: UUID) async throws {}
 }
 
 struct MockBankRepository: BankRepository {
