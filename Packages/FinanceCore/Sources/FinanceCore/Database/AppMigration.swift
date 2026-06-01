@@ -12,7 +12,7 @@ import GRDB
 /// Migrations are idempotent — guard checks prevent re-applying columns that already exist
 /// (needed because v1 created the full schema for fresh installs while older builds only had subsets).
 enum AppMigration {
-    /// Registers every migration; called once by ``DatabaseManager`` during init.
+    // swiftlint:disable:next function_body_length
     static func registerMigrations(
         in migrator: inout DatabaseMigrator
     ) {
@@ -64,6 +64,39 @@ enum AppMigration {
 
         migrator.registerMigration("v17_create_intelligence_model_metadata") { db in
             try AppMigration.createIntelligenceModelMetadataTable(in: db)
+        }
+
+        migrator.registerMigration("v18_dedup_recurring_patterns") { db in
+            // RecurringDetector created fresh UUIDs each run; save() used upsert-by-pk
+            // which always inserted. Keep the earliest row per (merchantKey, personId, cadence).
+            try db.execute(sql: """
+                DELETE FROM recurring_patterns WHERE rowid NOT IN (
+                    SELECT MIN(rowid) FROM recurring_patterns
+                    GROUP BY COALESCE(merchantKey, ''), COALESCE(personId, ''), cadence
+                )
+            """)
+        }
+
+        migrator.registerMigration("v19_dedup_relationships_and_patterns") { db in
+            // Relationships: same upsert-by-pk bug. Keep earliest per (toPersonId, relationshipType).
+            try db.execute(sql: """
+                DELETE FROM relationships WHERE rowid NOT IN (
+                    SELECT MIN(rowid) FROM relationships
+                    GROUP BY COALESCE(toPersonId, ''), relationshipType
+                )
+            """)
+            // Recurring patterns: re-dedup by (merchantKey, cadence) ignoring personId
+            // so merchant+person dual entries collapse into one row.
+            try db.execute(sql: """
+                DELETE FROM recurring_patterns WHERE rowid NOT IN (
+                    SELECT MIN(rowid) FROM recurring_patterns
+                    GROUP BY COALESCE(merchantKey, COALESCE(personId, '')), cadence
+                )
+            """)
+            // Purge stale recurringPattern graph nodes accumulated from old UUID-keyed runs.
+            try db.execute(sql: """
+                DELETE FROM knowledge_graph_nodes WHERE nodeType = 'recurringPattern'
+            """)
         }
     }
 }
