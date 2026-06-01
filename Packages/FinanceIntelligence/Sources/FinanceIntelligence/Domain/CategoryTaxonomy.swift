@@ -82,6 +82,11 @@ public extension CategoryTaxonomy {
                 TaxonomySubcategory(id: "transfers.internal", displayName: "Internal Transfer"),
                 TaxonomySubcategory(id: "transfers.external", displayName: "External Transfer")
             ]),
+            TaxonomyCategory(id: "investments", displayName: "Investments", subcategories: [
+                TaxonomySubcategory(id: "investments.sip", displayName: "Mutual Fund SIP"),
+                TaxonomySubcategory(id: "investments.stocks", displayName: "Stocks & Equity"),
+                TaxonomySubcategory(id: "investments.fd", displayName: "Fixed Deposit")
+            ]),
             TaxonomyCategory(id: "housing", displayName: "Housing", subcategories: [
                 TaxonomySubcategory(id: "housing.rent", displayName: "Rent"),
                 TaxonomySubcategory(id: "housing.mortgage", displayName: "Mortgage"),

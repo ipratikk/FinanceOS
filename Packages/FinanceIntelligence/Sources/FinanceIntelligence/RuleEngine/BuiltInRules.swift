@@ -151,7 +151,12 @@ extension BuiltInRules {
                     "mirae asset", "nippon india", "axis mf", "franklin templeton",
                     "hdfc mf", "icici pru mf", "sbi mf", "aditya birla"
                 ]),
-                outcome: RuleOutcome(categoryId: "transfers", intent: .mutualFundSIP, confidence: 0.92)
+                outcome: RuleOutcome(
+                    categoryId: "investments",
+                    subcategoryId: "investments.sip",
+                    intent: .mutualFundSIP,
+                    confidence: 0.92
+                )
             ),
             Rule(
                 id: "investment.stocks",
@@ -160,7 +165,12 @@ extension BuiltInRules {
                     "zerodha", "upstox", "angel broking", "demat", "nse", "bse",
                     "ipo application", "stock purchase", "equity"
                 ]),
-                outcome: RuleOutcome(categoryId: "transfers", intent: .investment, confidence: 0.88)
+                outcome: RuleOutcome(
+                    categoryId: "investments",
+                    subcategoryId: "investments.stocks",
+                    intent: .investment,
+                    confidence: 0.88
+                )
             )
         ]
     }
