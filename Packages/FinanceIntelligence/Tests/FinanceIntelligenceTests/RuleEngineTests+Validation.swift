@@ -1,81 +1,6 @@
 @testable import FinanceIntelligence
 import Testing
 
-// MARK: - Travel
-
-@Test
-func ruleEngine_travel_uber() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "UBER TRIP HELP.UBER.COM"))
-    #expect(result.intentPrediction.intent == .travel)
-    #expect(result.categoryPrediction?.categoryId == "transportation")
-}
-
-@Test
-func ruleEngine_travel_ola() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "OLA CABS PAYMENT 9876"))
-    #expect(result.intentPrediction.intent == .travel)
-}
-
-@Test
-func ruleEngine_travel_irctc() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "IRCTC TICKET BOOKING"))
-    #expect(result.intentPrediction.intent == .travel)
-}
-
-@Test
-func ruleEngine_travel_makemytrip() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "MAKEMYTRIP FLIGHT BOOKING"))
-    #expect(result.intentPrediction.intent == .travel)
-}
-
-@Test
-func ruleEngine_travel_indigo() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "INDIGO AIRLINES TICKET"))
-    #expect(result.intentPrediction.intent == .travel)
-}
-
-// MARK: - Healthcare
-
-@Test
-func ruleEngine_healthcare_apollo() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "APOLLO HOSPITAL CONSULTATION"))
-    #expect(result.intentPrediction.intent == .healthcare)
-    #expect(result.categoryPrediction?.categoryId == "healthcare")
-}
-
-@Test
-func ruleEngine_healthcare_medplus() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "MEDPLUS PHARMACY ORDER"))
-    #expect(result.intentPrediction.intent == .healthcare)
-}
-
-@Test
-func ruleEngine_healthcare_netmeds() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "NETMEDS ONLINE PHARMACY"))
-    #expect(result.intentPrediction.intent == .healthcare)
-}
-
-@Test
-func ruleEngine_healthcare_medical() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "MEDICAL BILL CLINIC PAYMENT"))
-    #expect(result.intentPrediction.intent == .healthcare)
-}
-
-// MARK: - Investment (Stocks)
-
-@Test
-func ruleEngine_investment_zerodha() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "ZERODHA STOCK PURCHASE NSE"))
-    #expect(result.intentPrediction.intent == .investment)
-    #expect(result.categoryPrediction?.categoryId == "transfers")
-}
-
-@Test
-func ruleEngine_investment_demat() {
-    let result = makeRuleEngine().evaluate(makeFeatures(description: "DEMAT ACCOUNT SHARES PURCHASE"))
-    #expect(result.intentPrediction.intent == .investment)
-}
-
 // MARK: - Confidence Bounds
 
 @Test
@@ -153,13 +78,20 @@ func ruleEngine_sip_takesOverTransfer() {
     #expect(result.intentPrediction.intent == .mutualFundSIP)
 }
 
-// MARK: - Intent Count (all intents covered)
+// MARK: - Structural intent coverage (kNN-delegated intents excluded)
 
 @Test
-func ruleEngine_allIntentsCovered_inBuiltInRules() {
-    let allIntents = TransactionIntent.allCases.filter { $0 != .unknown }
-    let ruleOutcomeIntents = Set(BuiltInRules.all.map(\.outcome.intent))
-    for intent in allIntents {
-        #expect(ruleOutcomeIntents.contains(intent), "No rule covers intent: \(intent.rawValue)")
-    }
+func ruleEngine_structuralIntentsCovered_inBuiltInRules() {
+    // Intents handled by kNN/ML (intentionally excluded from BuiltInRules.all):
+    // food, groceries, shopping, subscription, travel, healthcare, utilityBill, investment
+    let builtInIntents = Set(BuiltInRules.all.map(\.outcome.intent)).filter { $0 != .unknown }
+    let allIntents = Set(TransactionIntent.allCases.filter { $0 != .unknown })
+    let knnDelegatedIntents: Set<TransactionIntent> = [
+        .food, .groceries, .shopping, .subscription, .travel, .healthcare, .utilityBill, .investment
+    ]
+    let expectedStructuralIntents = allIntents.subtracting(knnDelegatedIntents)
+    let expectedStr = expectedStructuralIntents.map(\.rawValue).sorted()
+    let builtInStr = builtInIntents.map(\.rawValue).sorted()
+    #expect(builtInIntents == expectedStructuralIntents,
+            "BuiltInRules coverage mismatch. Expected: \(expectedStr), Got: \(builtInStr)")
 }
