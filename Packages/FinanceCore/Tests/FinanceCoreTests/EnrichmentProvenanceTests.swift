@@ -25,7 +25,7 @@ private func makeTransaction(ledgerId: UUID) -> Transaction {
 }
 
 private func insertLedgerAndTransaction(in db: DatabaseQueue) async throws -> (ledgerId: UUID, txnId: UUID) {
-    let bank = try await db.read { try Bank.fetchAll($0).first! }
+    let bank = try await db.read { db in try #require(Bank.fetchAll(db).first) }
     let ledger = Ledger(bankId: bank.id, kind: .bankAccount, displayName: "Test")
     let repo = GRDBLedgerRepository(dbQueue: db)
     try await repo.insert(ledger)
