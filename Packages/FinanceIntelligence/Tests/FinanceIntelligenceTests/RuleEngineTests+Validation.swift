@@ -1,9 +1,6 @@
 @testable import FinanceIntelligence
 import Testing
 
-
-
-
 // MARK: - Confidence Bounds
 
 @Test
@@ -93,6 +90,8 @@ func ruleEngine_structuralIntentsCovered_inBuiltInRules() {
         .food, .groceries, .shopping, .subscription, .travel, .healthcare, .utilityBill, .investment
     ]
     let expectedStructuralIntents = allIntents.subtracting(knnDelegatedIntents)
+    let expectedStr = expectedStructuralIntents.map(\.rawValue).sorted()
+    let builtInStr = builtInIntents.map(\.rawValue).sorted()
     #expect(builtInIntents == expectedStructuralIntents,
-            "BuiltInRules coverage mismatch. Expected: \(expectedStructuralIntents.map(\.rawValue).sorted()), Got: \(builtInIntents.map(\.rawValue).sorted())")
+            "BuiltInRules coverage mismatch. Expected: \(expectedStr), Got: \(builtInStr)")
 }
