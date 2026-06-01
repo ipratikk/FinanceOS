@@ -3,6 +3,7 @@ import Foundation
 import GRDB
 import NaturalLanguage
 
+// swiftlint:disable type_body_length
 /// Concrete implementation of `TransactionIntelligenceService`.
 /// Prediction priority (highest to lowest):
 ///   1. Stored user correction
@@ -317,6 +318,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         )
     }
 }
+// swiftlint:enable type_body_length
 
 // MARK: - Static Prediction (no actor needed — called from concurrent tasks)
 
