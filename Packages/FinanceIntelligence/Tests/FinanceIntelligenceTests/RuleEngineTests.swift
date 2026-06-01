@@ -185,7 +185,6 @@ func ruleEngine_insurance_bajajAllianz() {
     #expect(result.intentPrediction.intent == .insurance)
 }
 
-
 // MARK: - Cash Withdrawal
 
 @Test
@@ -290,5 +289,3 @@ func ruleEngine_transfer_upi() {
     let result = makeRuleEngine().evaluate(makeFeatures(description: "UPI-AMAN PANDEY-AMAN@UPI-REF123"))
     #expect(result.intentPrediction.intent == .transfer)
 }
-
-
