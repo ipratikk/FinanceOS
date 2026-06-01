@@ -47,16 +47,34 @@ public struct RelationshipConfig: Codable, Equatable, Sendable {
 }
 
 /// Thresholds for recurring pattern detection.
-/// Cadence-specific tolerances are in `toleranceDaysByCadence` (INTEL-012).
 public struct RecurringConfig: Codable, Equatable, Sendable {
     /// Minimum occurrences required before a merchant is considered recurring.
     public let minOccurrencesDefault: Int
     /// Coefficient of variation threshold for amount stability.
     public let amountCVThreshold: Double
+    /// Per-cadence minimum occurrences; falls back to `minOccurrencesDefault` when key absent.
+    public let minOccurrencesByCadence: [String: Int]
+    /// Per-cadence tolerance in days; falls back to `RecurringCadence.toleranceDays` when key absent.
+    public let toleranceDaysByCadence: [String: Int]
 
-    public init(minOccurrencesDefault: Int, amountCVThreshold: Double) {
+    public init(
+        minOccurrencesDefault: Int,
+        amountCVThreshold: Double,
+        minOccurrencesByCadence: [String: Int] = [:],
+        toleranceDaysByCadence: [String: Int] = [:]
+    ) {
         self.minOccurrencesDefault = minOccurrencesDefault
         self.amountCVThreshold = amountCVThreshold
+        self.minOccurrencesByCadence = minOccurrencesByCadence
+        self.toleranceDaysByCadence = toleranceDaysByCadence
+    }
+
+    public func minOccurrences(for cadence: RecurringCadence) -> Int {
+        minOccurrencesByCadence[cadence.rawValue] ?? minOccurrencesDefault
+    }
+
+    public func toleranceDays(for cadence: RecurringCadence) -> Double {
+        toleranceDaysByCadence[cadence.rawValue].map { Double($0) } ?? cadence.toleranceDays
     }
 }
 
@@ -68,15 +86,19 @@ public struct InsightConfig: Codable, Equatable, Sendable {
     public let anomalyStdDevMultiplier: Double
     /// Whether numeric confidence values may be shown in user-facing UI.
     public let exposeConfidenceToUser: Bool
+    /// Absolute spend delta (minor units) below which spikes are suppressed regardless of stddev.
+    public let absoluteSpikeThresholdMinorUnits: Int64
 
     public init(
         spikeStdDevMultiplier: Double,
         anomalyStdDevMultiplier: Double,
-        exposeConfidenceToUser: Bool
+        exposeConfidenceToUser: Bool,
+        absoluteSpikeThresholdMinorUnits: Int64 = 500_000
     ) {
         self.spikeStdDevMultiplier = spikeStdDevMultiplier
         self.anomalyStdDevMultiplier = anomalyStdDevMultiplier
         self.exposeConfidenceToUser = exposeConfidenceToUser
+        self.absoluteSpikeThresholdMinorUnits = absoluteSpikeThresholdMinorUnits
     }
 }
 
@@ -141,12 +163,15 @@ public extension IntelligenceConfig {
         ),
         recurring: RecurringConfig(
             minOccurrencesDefault: 2,
-            amountCVThreshold: 0.15
+            amountCVThreshold: 0.15,
+            minOccurrencesByCadence: ["weekly": 5, "monthly": 3, "quarterly": 3, "bi_weekly": 3, "yearly": 2],
+            toleranceDaysByCadence: ["weekly": 2, "monthly": 5, "quarterly": 10, "bi_weekly": 3, "yearly": 20]
         ),
         insight: InsightConfig(
             spikeStdDevMultiplier: 2.0,
             anomalyStdDevMultiplier: 3.0,
-            exposeConfidenceToUser: false
+            exposeConfidenceToUser: false,
+            absoluteSpikeThresholdMinorUnits: 500_000
         ),
         graph: GraphConfig(
             edgeWeightIncrement: 0.1,

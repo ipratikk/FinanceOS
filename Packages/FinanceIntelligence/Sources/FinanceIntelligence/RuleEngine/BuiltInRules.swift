@@ -1,4 +1,3 @@
-// swiftlint:disable file_length
 import Foundation
 
 /// Default rule set shipped with the app.

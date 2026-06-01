@@ -60,7 +60,65 @@ public struct RelationshipEngine: Sendable {
         )
     }
 
+    public func inferRelationshipWithDebug(
+        personId: String, personName: String,
+        transactions: [TransactionRecord],
+        salaryCreditDates: [Date] = []
+    ) -> (Relationship, RelationshipDebugInfo)? {
+        guard let relationship = inferRelationship(
+            personId: personId, personName: personName,
+            transactions: transactions, salaryCreditDates: salaryCreditDates
+        ) else { return nil }
+
+        let debits = transactions.filter(\.isDebit)
+        let pattern = transactions.compactMap(\.pattern).first
+        let signals = relationship.signals
+        let evidence = buildEvidence(
+            signals: signals, debits: debits,
+            salaryCreditDates: salaryCreditDates, pattern: pattern
+        )
+        let debugInfo = RelationshipDebugInfo(
+            personId: personId, candidateType: relationship.type,
+            confidence: relationship.confidence, confidenceKind: .heuristicOrdinal,
+            evidence: evidence, excludedByRules: [], configVersion: "defaultV1"
+        )
+        return (relationship, debugInfo)
+    }
+
     // MARK: - Private
+
+    private func buildEvidence(
+        signals: [RelationshipSignal],
+        debits: [TransactionRecord],
+        salaryCreditDates: [Date],
+        pattern: RecurringPattern?
+    ) -> [RelationshipEvidence] {
+        var evidence: [RelationshipEvidence] = []
+        if signals.contains(.recurringAmount) {
+            evidence.append(RelationshipEvidence(code: "monthly_cadence_detected", value: "true"))
+        }
+        if signals.contains(.postSalaryTiming) {
+            evidence.append(RelationshipEvidence(code: "post_salary_payment_detected", value: "true"))
+        }
+        if signals.contains(.roundNumber) {
+            evidence.append(RelationshipEvidence(code: "round_amount_detected", value: "true"))
+        }
+        if signals.contains(.upiLabel) {
+            evidence.append(RelationshipEvidence(code: "rent_keyword_detected", value: "true"))
+        }
+        if signals.contains(.regularInterval) {
+            evidence.append(RelationshipEvidence(code: "regular_interval_detected", value: "true"))
+        }
+        let debitRatio = debits.isEmpty ? 0.0 : Double(debits.count) / Double(debits.count + (debits.isEmpty ? 1 : 0))
+        evidence.append(RelationshipEvidence(
+            code: "debit_transaction_ratio",
+            value: String(format: "%.2f", debitRatio)
+        ))
+        if let occCount = pattern?.occurrenceCount {
+            evidence.append(RelationshipEvidence(code: "occurrence_count", value: "\(occCount)"))
+        }
+        return evidence
+    }
 
     private func buildSignals(
         debits: [TransactionRecord], salaryCreditDates: [Date], pattern: RecurringPattern?

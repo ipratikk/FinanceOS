@@ -43,17 +43,34 @@ public struct RecurringDetector: Sendable {
     public func detect(from transactions: [DetectionInput]) -> [RecurringPattern] {
         Dictionary(grouping: transactions) { $0.merchantKey }
             .compactMap { key, group in
-                group.count >= config.minOccurrencesDefault ? detectPattern(merchantKey: key, group: group) : nil
+                guard group.count >= config.minOccurrencesDefault else { return nil }
+                return detectPattern(merchantKey: key, group: group)
+            }
+            .filter { pattern in
+                pattern.occurrenceCount >= config.minOccurrences(for: pattern.cadence)
             }
             .sorted { $0.confidence > $1.confidence }
+    }
+
+    public func detectWithDebugInfo(
+        from transactions: [DetectionInput]
+    ) -> [(pattern: RecurringPattern, debug: RecurringPatternDebugInfo)] {
+        Dictionary(grouping: transactions) { $0.merchantKey }
+            .compactMap { key, group -> (RecurringPattern, RecurringPatternDebugInfo)? in
+                guard group.count >= config.minOccurrencesDefault else { return nil }
+                return detectPatternWithDebug(merchantKey: key, group: group)
+            }
+            .sorted { $0.0.confidence > $1.0.confidence }
     }
 
     // MARK: - Private
 
     private func detectPattern(merchantKey: String, group: [DetectionInput]) -> RecurringPattern? {
         let dates = group.map(\.postedAt).sorted()
-        guard let (cadence, confidence) = analyzer.analyzeCadence(dates: dates),
-              cadence != .irregular || confidence >= 0.5 else { return nil }
+        guard let (cadence, confidence) = analyzer.analyzeCadence(
+            dates: dates,
+            toleranceDays: { config.toleranceDays(for: $0) }
+        ), cadence != .irregular || confidence >= 0.5 else { return nil }
 
         let amounts = group.map(\.amountMinorUnits)
         let avg = amounts.reduce(0, +) / Int64(amounts.count)
@@ -79,5 +96,42 @@ public struct RecurringDetector: Sendable {
             occurrenceCount: group.count,
             lastSeenAt: dates.last ?? Date()
         )
+    }
+
+    private func detectPatternWithDebug(
+        merchantKey: String,
+        group: [DetectionInput]
+    ) -> (RecurringPattern, RecurringPatternDebugInfo)? {
+        let dates = group.map(\.postedAt).sorted()
+        let intervalInts = analyzer.intervals(from: dates)
+        guard let (cadence, confidence) = analyzer.analyzeCadence(
+            dates: dates,
+            toleranceDays: { config.toleranceDays(for: $0) }
+        ), cadence != .irregular || confidence >= 0.5 else { return nil }
+
+        let toleranceDaysInt = Int(config.toleranceDays(for: cadence))
+        let minOcc = config.minOccurrences(for: cadence)
+        let isLowEvidence = group.count < minOcc
+        let amounts = group.map(\.amountMinorUnits)
+        let avg = amounts.reduce(0, +) / Int64(amounts.count)
+        let cv: Double? = avg > 0
+            ? amounts.map { Double(abs($0 - avg)) / Double(avg) }.reduce(0, +) / Double(amounts.count)
+            : nil
+
+        let debugInfo = RecurringPatternDebugInfo(
+            merchantKey: merchantKey,
+            observedIntervals: intervalInts,
+            candidateCadence: cadence,
+            toleranceDays: toleranceDaysInt,
+            occurrenceCount: group.count,
+            amountCoefficientOfVariation: cv,
+            confidence: confidence,
+            confidenceKind: .heuristicOrdinal,
+            isLowEvidence: isLowEvidence,
+            configVersion: "defaultV1"
+        )
+
+        guard let pattern = detectPattern(merchantKey: merchantKey, group: group) else { return nil }
+        return (pattern, debugInfo)
     }
 }

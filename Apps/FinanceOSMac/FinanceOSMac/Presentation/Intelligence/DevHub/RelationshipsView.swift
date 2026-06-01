@@ -123,7 +123,7 @@ struct RelationshipsView: View {
                         FDSLabel(viewModel.personName(for: rel.toPersonId))
                             .font(AppTypography.bodySmSemibold)
                             .foregroundStyle(AppColors.textPrimary)
-                        typeBadge(rel.type)
+                        typeBadge(rel.type, verificationState: rel.verificationState)
                     }
                     HStack(spacing: AppSpacing.compact) {
                         confidenceBar(rel.confidence)
@@ -149,13 +149,13 @@ struct RelationshipsView: View {
         }
     }
 
-    private func typeBadge(_ type: RelationshipType) -> some View {
+    private func typeBadge(_ type: RelationshipType, verificationState: RelationshipVerificationState) -> some View {
         let colors: [RelationshipType: Color] = [
             .landlord: .orange, .employer: .green, .family: .purple,
             .friend: .blue, .reimbursement: .cyan, .loanProvider: .red
         ]
         let color = colors[type] ?? AppColors.textSecondary
-        return FDSLabel(type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized)
+        return FDSLabel(type.displayLabel(verificationState: verificationState))
             // swiftlint:disable:next hardcoded_font_system
             .font(.system(size: 9, weight: .semibold, design: .rounded))
             .foregroundStyle(color)
@@ -206,44 +206,47 @@ struct RelationshipEditSheet: View {
             subtitle: viewModel.personName(for: relationship.toPersonId),
             onDismiss: { dismiss() },
             content: {
-            VStack(spacing: AppSpacing.xl) {
-                FDSCard(cornerRadius: 12, padded: false) {
-                    VStack(spacing: 0) {
-                        Picker("Type", selection: $selectedType) {
-                            ForEach(RelationshipType.allCases, id: \.self) { type in
-                                FDSLabel(type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized).tag(type)
+                VStack(spacing: AppSpacing.xl) {
+                    FDSCard(cornerRadius: 12, padded: false) {
+                        VStack(spacing: 0) {
+                            Picker("Type", selection: $selectedType) {
+                                ForEach(RelationshipType.allCases, id: \.self) { type in
+                                    FDSLabel(type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized)
+                                        .tag(type)
+                                }
                             }
+                            .pickerStyle(.menu).padding(AppSpacing.md)
+                            Divider().opacity(0.1)
+                            HStack {
+                                FDSLabel("Confidence").font(AppTypography.captionLgSemibold).foregroundStyle(.tertiary)
+                                Slider(value: $confidence, in: 0 ... 1)
+                                FDSLabel(String(format: "%.0f%%", confidence * 100))
+                                    .font(AppTypography.captionLg.monospacedDigit()).foregroundStyle(.tertiary)
+                            }
+                            .padding(AppSpacing.md)
                         }
-                        .pickerStyle(.menu).padding(AppSpacing.md)
-                        Divider().opacity(0.1)
-                        HStack {
-                            FDSLabel("Confidence").font(AppTypography.captionLgSemibold).foregroundStyle(.tertiary)
-                            Slider(value: $confidence, in: 0 ... 1)
-                            FDSLabel(String(format: "%.0f%%", confidence * 100))
-                                .font(AppTypography.captionLg.monospacedDigit()).foregroundStyle(.tertiary)
-                        }
-                        .padding(AppSpacing.md)
                     }
+                    Button(
+                        action: {
+                            let updated = Relationship(
+                                id: relationship.id, fromPersonId: relationship.fromPersonId,
+                                toPersonId: relationship.toPersonId, type: selectedType,
+                                confidence: confidence, evidenceCount: relationship.evidenceCount,
+                                signals: relationship.signals, createdAt: relationship.createdAt,
+                                verificationState: .userCorrected
+                            )
+                            onSave(updated); dismiss()
+                        },
+                        label: {
+                            FDSLabel("Save").font(AppTypography.bodySmSemibold)
+                                .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
+                                .background(AppColors.accent).foregroundStyle(.black)
+                                .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
+                        }
+                    )
+                    .buttonStyle(.plain)
                 }
-                Button(
-                    action: {
-                        let updated = Relationship(
-                            id: relationship.id, fromPersonId: relationship.fromPersonId,
-                            toPersonId: relationship.toPersonId, type: selectedType,
-                            confidence: confidence, evidenceCount: relationship.evidenceCount,
-                            signals: relationship.signals, createdAt: relationship.createdAt
-                        )
-                        onSave(updated); dismiss()
-                    },
-                    label: {
-                        FDSLabel("Save").font(AppTypography.bodySmSemibold)
-                            .frame(maxWidth: .infinity).padding(.vertical, AppSpacing.sm)
-                            .background(AppColors.accent).foregroundStyle(.black)
-                            .clipShape(RoundedRectangle(cornerRadius: AppRadius.md))
-                    }
-                )
-                .buttonStyle(.plain)
             }
-        })
+        )
     }
 }

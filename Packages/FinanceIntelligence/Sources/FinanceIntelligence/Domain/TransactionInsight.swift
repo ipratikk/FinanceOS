@@ -26,6 +26,32 @@ public enum InsightSeverity: String, Codable, Sendable {
     case alert
 }
 
+/// Statistical backing for a spike or anomaly insight.
+public struct InsightEvidence: Codable, Equatable, Sendable {
+    public let baselineMean: Double
+    public let baselineStdDev: Double
+    public let observedValue: Double
+    public let absoluteDelta: Double
+    public let relativeDelta: Double
+    public let thresholdUsed: Double
+
+    public init(
+        baselineMean: Double,
+        baselineStdDev: Double,
+        observedValue: Double,
+        absoluteDelta: Double,
+        relativeDelta: Double,
+        thresholdUsed: Double
+    ) {
+        self.baselineMean = baselineMean
+        self.baselineStdDev = baselineStdDev
+        self.observedValue = observedValue
+        self.absoluteDelta = absoluteDelta
+        self.relativeDelta = relativeDelta
+        self.thresholdUsed = thresholdUsed
+    }
+}
+
 /// A single insight surfaced by `SpendingInsightEngine` over a set of analyzed transactions.
 /// `confidence` is in [0, 1] and reflects the statistical strength of the detected pattern.
 public struct TransactionInsight: Identifiable, Sendable, Codable {
@@ -45,6 +71,8 @@ public struct TransactionInsight: Identifiable, Sendable, Codable {
     public let severity: InsightSeverity
     /// Timestamp when the insight was computed.
     public let generatedAt: Date
+    /// Statistical backing for spike/anomaly insights; nil for non-quantitative insights.
+    public let evidence: InsightEvidence?
 
     public init(
         kind: InsightKind,
@@ -52,7 +80,8 @@ public struct TransactionInsight: Identifiable, Sendable, Codable {
         explanation: String,
         affectedTransactionIDs: [String],
         confidence: Double,
-        severity: InsightSeverity
+        severity: InsightSeverity,
+        evidence: InsightEvidence? = nil
     ) {
         id = UUID()
         self.kind = kind
@@ -62,5 +91,6 @@ public struct TransactionInsight: Identifiable, Sendable, Codable {
         self.confidence = confidence
         self.severity = severity
         generatedAt = Date()
+        self.evidence = evidence
     }
 }

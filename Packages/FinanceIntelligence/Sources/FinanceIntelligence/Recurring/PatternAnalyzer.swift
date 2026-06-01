@@ -4,12 +4,24 @@ import Foundation
 public struct PatternAnalyzer: Sendable {
     public init() {}
 
-    public func analyzeCadence(dates: [Date]) -> (cadence: RecurringCadence, confidence: Double)? {
+    public func analyzeCadence(
+        dates: [Date],
+        toleranceDays: ((RecurringCadence) -> Double)? = nil
+    ) -> (cadence: RecurringCadence, confidence: Double)? {
         guard dates.count >= 2 else { return nil }
         let sorted = dates.sorted()
-        let intervals = zip(sorted.dropFirst(), sorted).map { $0.timeIntervalSince($1) / 86400 }
-        let median = medianValue(intervals)
-        return matchCadence(medianIntervalDays: median, sampleCount: intervals.count)
+        let intervalsDoubles = zip(sorted.dropFirst(), sorted).map { $0.timeIntervalSince($1) / 86400 }
+        let median = medianValue(intervalsDoubles)
+        return matchCadence(
+            medianIntervalDays: median,
+            sampleCount: intervalsDoubles.count,
+            toleranceDays: toleranceDays
+        )
+    }
+
+    public func intervals(from dates: [Date]) -> [Int] {
+        let sorted = dates.sorted()
+        return zip(sorted.dropFirst(), sorted).map { Int($0.timeIntervalSince($1) / 86400) }
     }
 
     public func dayOfMonthHint(from dates: [Date]) -> Int? {
@@ -29,14 +41,16 @@ public struct PatternAnalyzer: Sendable {
 
     private func matchCadence(
         medianIntervalDays: Double,
-        sampleCount: Int
+        sampleCount: Int,
+        toleranceDays: ((RecurringCadence) -> Double)? = nil
     ) -> (cadence: RecurringCadence, confidence: Double) {
         let candidates: [RecurringCadence] = [.weekly, .biWeekly, .monthly, .quarterly, .yearly]
         for cadence in candidates {
+            let tolerance = toleranceDays?(cadence) ?? cadence.toleranceDays
             let deviation = abs(medianIntervalDays - cadence.targetIntervalDays)
-            if deviation <= cadence.toleranceDays {
+            if deviation <= tolerance {
                 let sampleBonus = min(Double(sampleCount) / 12.0, 1.0) * 0.2
-                let deviationPenalty = deviation / cadence.toleranceDays * 0.15
+                let deviationPenalty = deviation / tolerance * 0.15
                 return (cadence, min(0.75 + sampleBonus - deviationPenalty, 0.95))
             }
         }

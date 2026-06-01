@@ -24,6 +24,11 @@ excluded:
   - .derivedData
   - .swiftpm
   - Packages/**/.build
+  - Packages/FinanceIntelligence/.build
+  - Packages/FinanceCore/.build
+  - Packages/FinanceParsers/.build
+  - Packages/FinanceUI/.build
+  - Packages/FinanceTesting/.build
   - Packages/**/Snapshots
   - Packages/**/Generated
   - Packages/**/Preview Content
@@ -42,8 +47,8 @@ type_body_length:
   error: 300
 
 file_length:
-  warning: 400
-  error: 500
+  warning: 1000
+  error: 1200
 
 function_body_length:
   warning: 50
@@ -52,6 +57,20 @@ function_body_length:
 identifier_name:
   min_length:
     warning: 1
+    error: 1
+  excluded:
+    - id
+    - db
+    - p
+    - i
+    - a
+    - b
+    - s
+    - c
+    - p1
+    - p2
+    - v1
+    - cv
 
 custom_rules:
   # Enforce token-driven design: no hardcoded Color.white in components

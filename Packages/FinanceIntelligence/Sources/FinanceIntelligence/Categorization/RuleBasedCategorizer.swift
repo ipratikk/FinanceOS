@@ -40,7 +40,8 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: "income",
                 subcategoryId: "income.salary",
                 confidence: 0.9,
-                source: .structuralRule
+                source: .structuralRule,
+                ruleId: RuleID.payrollIndicator
             )
         }
         if features.hasRefundIndicator {
@@ -48,7 +49,8 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: "income",
                 subcategoryId: "income.refund",
                 confidence: 0.85,
-                source: .structuralRule
+                source: .structuralRule,
+                ruleId: RuleID.refundIndicator
             )
         }
         if features.hasTransferIndicator {
@@ -56,7 +58,8 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: "transfers",
                 subcategoryId: nil,
                 confidence: 0.88,
-                source: .structuralRule
+                source: .structuralRule,
+                ruleId: RuleID.transferIndicator
             )
         }
 
@@ -76,7 +79,8 @@ public struct RuleBasedCategorizer: Sendable {
                 categoryId: match.rule.categoryId,
                 subcategoryId: match.rule.subcategoryId,
                 confidence: match.rule.confidence,
-                source: .structuralRule
+                source: .structuralRule,
+                ruleId: "rule.keyword.\(match.rule.categoryId)"
             )
         }
 
@@ -84,6 +88,12 @@ public struct RuleBasedCategorizer: Sendable {
             modelVersion: ModelMetadata.rulesBased.modelVersion,
             taxonomyVersion: taxonomy.version
         )
+    }
+
+    private enum RuleID {
+        static let payrollIndicator = "rule.payroll_indicator"
+        static let refundIndicator = "rule.refund_indicator"
+        static let transferIndicator = "rule.transfer_indicator"
     }
 }
 
