@@ -24,15 +24,7 @@ enum UPIDescriptionParser {
     /// IMPORTANT: personal bank VPAs like @okhdfcbank, @okicici, @ybl are NOT here
     /// because both persons (9051481667@okhdfcbank) AND merchants use them.
     /// Only true merchant-only gateways belong here.
-    private static let merchantGatewayVPATokens = [
-        "@rzp", "@razorpay", // Razorpay — never a personal VPA
-        ".rzp", // Razorpay infix (e.g. blinkit104020.rzp@rxairtel)
-        "bdsi@", // BillDesk — Apple, Spotify, Hotstar use this
-        ".payu@", // PayU gateway (merchants only)
-        "@ptybl", // Paytm merchant gateway (distinct from personal @paytm)
-        "@ptys", // Paytm Bharat QR / SoundBox merchant gateway
-        "@okbizaxis" // Axis Bank business UPI (distinct from personal @okaxis)
-    ]
+    private static let merchantGatewayVPATokens: [String] = MerchantGatewayConfig.load().tokens
 
     /// Keywords in merchant name segment that indicate business
     private static let businessNameKeywords = [

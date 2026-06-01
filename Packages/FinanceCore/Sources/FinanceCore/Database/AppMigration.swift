@@ -85,6 +85,14 @@ enum AppMigration {
             try AppMigration.expandIntelligenceModelMetadataTable(in: db)
         }
 
+        migrator.registerMigration("v22_add_relationship_verification_state") { db in
+            let cols = try db.columns(in: "relationships")
+            guard !cols.contains(where: { $0.name == "verificationState" }) else { return }
+            try db.alter(table: "relationships") { table in
+                table.add(column: "verificationState", .text).notNull().defaults(to: "inferred")
+            }
+        }
+
         migrator.registerMigration("v19_dedup_relationships_and_patterns") { db in
             // Relationships: same upsert-by-pk bug. Keep earliest per (toPersonId, relationshipType).
             try db.execute(sql: """

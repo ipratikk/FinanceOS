@@ -118,15 +118,26 @@ extension SpendingInsightEngine {
         let mean = historicalSpend.reduce(0, +) / Double(historicalSpend.count)
         let variance = historicalSpend.map { pow($0 - mean, 2) }.reduce(0, +) / Double(historicalSpend.count)
         let stdDev = sqrt(variance)
-        guard stdDev > 0, latestSpend > mean + config.spikeStdDevMultiplier * stdDev else { return nil }
+        let threshold = mean + config.spikeStdDevMultiplier * stdDev
+        guard stdDev > 0, latestSpend > threshold else { return nil }
+        guard latestSpend > mean * 1.20 else { return nil }
+        guard latestSpend - mean > Double(config.absoluteSpikeThresholdMinorUnits) else { return nil }
 
         let pctOver = ((latestSpend - mean) / mean * 100).rounded()
         let ids = latestTxns.map(\.id.uuidString)
+        let evidence = InsightEvidence(
+            baselineMean: mean, baselineStdDev: stdDev,
+            observedValue: latestSpend,
+            absoluteDelta: latestSpend - mean,
+            relativeDelta: (latestSpend - mean) / mean,
+            thresholdUsed: threshold
+        )
         return TransactionInsight(
             kind: .spendingSpike,
             title: "Spending spike this month",
             explanation: "Spending is \(Int(pctOver))% above your recent average.",
-            affectedTransactionIDs: ids, confidence: 0.8, severity: .warning
+            affectedTransactionIDs: ids, confidence: 0.8, severity: .warning,
+            evidence: evidence
         )
     }
 }

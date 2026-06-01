@@ -75,19 +75,19 @@ func insightEngine_recurringInsightIncludesAffectedIDs() {
 func insightEngine_detectsSpendingSpike() {
     let engine = SpendingInsightEngine()
     var transactions: [Transaction] = []
-    // 5 months of ~normal spending (~10k per month)
+    // 5 months of normal spending (~₹5,000/month = 500,000 minor units)
     for month in 1 ... 5 {
         transactions.append(makeTransaction(
-            description: "GROCERY STORE", amountMinorUnits: 10000 + Int64(month * 100),
+            description: "GROCERY STORE", amountMinorUnits: 500_000 + Int64(month * 1000),
             daysAgo: (6 - month) * 30
         ))
     }
-    // Latest month: massive spike
+    // Latest month: massive spike — satisfies statistical, 20% relative, and ₹5,000 absolute guards
     transactions.append(makeTransaction(
-        description: "LUXURY SHOPPING", amountMinorUnits: 200_000, daysAgo: 5
+        description: "LUXURY SHOPPING", amountMinorUnits: 4_000_000, daysAgo: 5
     ))
     transactions.append(makeTransaction(
-        description: "BIG PURCHASE", amountMinorUnits: 150_000, daysAgo: 3
+        description: "BIG PURCHASE", amountMinorUnits: 3_000_000, daysAgo: 3
     ))
 
     let insights = engine.detectSpikes(in: transactions)

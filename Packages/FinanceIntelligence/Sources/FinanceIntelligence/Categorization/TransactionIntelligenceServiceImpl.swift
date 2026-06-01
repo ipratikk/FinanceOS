@@ -1,4 +1,3 @@
-// swiftlint:disable file_length
 import FinanceCore
 import Foundation
 import GRDB

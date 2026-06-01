@@ -13,6 +13,7 @@ struct GRDBRelationship: Codable, FetchableRecord, PersistableRecord {
     var inferredSignals: String
     var createdAt: Date
     var updatedAt: Date
+    var verificationState: String
 
     init(from relationship: Relationship) {
         id = relationship.id.uuidString
@@ -26,6 +27,7 @@ struct GRDBRelationship: Codable, FetchableRecord, PersistableRecord {
         ), encoding: .utf8)) ?? "[]"
         createdAt = relationship.createdAt
         updatedAt = relationship.updatedAt
+        verificationState = relationship.verificationState.rawValue
     }
 
     func toDomain() -> Relationship? {
@@ -34,10 +36,12 @@ struct GRDBRelationship: Codable, FetchableRecord, PersistableRecord {
         let signals = (inferredSignals.data(using: .utf8))
             .flatMap { try? JSONDecoder().decode([String].self, from: $0) }?
             .compactMap { RelationshipSignal(rawValue: $0) } ?? []
+        let state = RelationshipVerificationState(rawValue: verificationState) ?? .inferred
         return Relationship(
             id: uuid, fromPersonId: fromPersonId, toPersonId: toPersonId,
             type: type, confidence: confidence, evidenceCount: evidenceCount,
-            signals: signals, createdAt: createdAt, updatedAt: updatedAt
+            signals: signals, createdAt: createdAt, updatedAt: updatedAt,
+            verificationState: state
         )
     }
 }

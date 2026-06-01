@@ -1,5 +1,12 @@
 import Foundation
 
+public enum RelationshipVerificationState: String, Codable, Sendable, CaseIterable {
+    case inferred
+    case userConfirmed
+    case userRejected
+    case userCorrected
+}
+
 public enum RelationshipType: String, Codable, Sendable, CaseIterable {
     case landlord
     case tenant
@@ -32,6 +39,7 @@ public struct Relationship: Identifiable, Sendable, Codable {
     public var signals: [RelationshipSignal]
     public let createdAt: Date
     public var updatedAt: Date
+    public var verificationState: RelationshipVerificationState
 
     public init(
         id: UUID = UUID(),
@@ -42,7 +50,8 @@ public struct Relationship: Identifiable, Sendable, Codable {
         evidenceCount: Int = 1,
         signals: [RelationshipSignal] = [],
         createdAt: Date = Date(),
-        updatedAt: Date = Date()
+        updatedAt: Date = Date(),
+        verificationState: RelationshipVerificationState = .inferred
     ) {
         self.id = id
         self.fromPersonId = fromPersonId
@@ -53,5 +62,21 @@ public struct Relationship: Identifiable, Sendable, Codable {
         self.signals = signals
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.verificationState = verificationState
+    }
+}
+
+public extension RelationshipType {
+    func displayLabel(verificationState: RelationshipVerificationState) -> String {
+        if verificationState == .userConfirmed {
+            return rawValue.replacingOccurrences(of: "_", with: " ").capitalized
+        }
+        switch self {
+        case .landlord: return "Likely landlord"
+        case .employer: return "Likely salary source"
+        case .friend: return "Frequent transfer contact"
+        case .family: return "Possible family"
+        default: return rawValue.replacingOccurrences(of: "_", with: " ").capitalized
+        }
     }
 }
