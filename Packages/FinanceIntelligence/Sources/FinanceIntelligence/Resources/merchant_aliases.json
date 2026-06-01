@@ -5,9 +5,12 @@
       "canonical": "CRED",
       "patterns": [
         "cred club",
-        "cred.club"
+        "cred.club",
+        "cred ccbp",
+        "bppy cc payment",
+        "payment on cred"
       ],
-      "categoryId": "transfers"
+      "categoryId": "fees"
     },
     {
       "canonical": "Apple Subscriptions",
@@ -82,7 +85,7 @@
         "national clearing",
         "nsc debit"
       ],
-      "categoryId": "business"
+      "categoryId": "investments"
     },
     {
       "canonical": "PhonePe",
@@ -1033,9 +1036,11 @@
       "canonical": "American Express",
       "patterns": [
         "american express annual",
-        "amex annual"
+        "amex annual",
+        "american express",
+        "aebc"
       ],
-      "categoryId": "fees.bank"
+      "categoryId": "fees"
     },
     {
       "canonical": "HDFC Credit Card",
@@ -1146,7 +1151,7 @@
         "groww invest",
         "nextbillion technology"
       ],
-      "categoryId": "transfers"
+      "categoryId": "investments"
     },
     {
       "canonical": "Kuvera",
@@ -2391,7 +2396,7 @@
         "roc filing",
         "ministry of corporate"
       ],
-      "categoryId": "business"
+      "categoryId": "fees"
     },
     {
       "canonical": "Parking / Toll",
@@ -2408,7 +2413,8 @@
       "patterns": [
         "bigbasket bb now",
         "bb now",
-        "bigbasket now"
+        "bigbasket now",
+        "bbnow"
       ],
       "categoryId": "groceries"
     },
@@ -2581,6 +2587,34 @@
         "vested etf"
       ],
       "categoryId": "transfers"
+    },
+    {
+      "canonical": "Loan Installment",
+      "patterns": [
+        "installment principal",
+        "principal amount",
+        "loan principal",
+        "emi principal"
+      ],
+      "categoryId": "fees"
+    },
+    {
+      "canonical": "H&M",
+      "patterns": [
+        "h and m hennes",
+        "h&m",
+        "hennes and m"
+      ],
+      "categoryId": "shopping"
+    },
+    {
+      "canonical": "PayPal India",
+      "patterns": [
+        "paypal india",
+        "paypal india pvt",
+        "paypal india private"
+      ],
+      "categoryId": "income.salary"
     }
   ]
 }
