@@ -43,6 +43,25 @@ public struct Transaction:
     public let merchantName: String?
     /// Account closing balance (in minor units) after this transaction, from bank statements with a running balance.
     public let closingBalanceMinorUnits: Int64?
+    /// Intent ID assigned by the RuleEngine (e.g. "salary", "rent"). Added in v10 migration.
+    public let intentId: String?
+    /// ID of the resolved person entity for UPI/NEFT/IMPS person transfers. Added in v10 migration.
+    public let resolvedPersonId: String?
+    /// Pipeline version string that last enriched this transaction. Added in v10 migration.
+    public let intelligenceVersion: String?
+
+    // MARK: Enrichment provenance (v23)
+
+    /// Timestamp of the last intelligence enrichment pass.
+    public let lastEnrichedAt: Date?
+    /// Source of the category prediction: "rule", "knn", "coreml", "fallback", "userCorrection".
+    public let intelligenceSource: String?
+    /// Model version string from the classifier that produced the category prediction.
+    public let intelligenceModelVersion: String?
+    /// Config version string active at the time of enrichment.
+    public let intelligenceConfigVersion: String?
+    /// True when the user has explicitly set the merchant name; prevents intelligence overwrite.
+    public let isUserCorrectedMerchant: Bool
 
     public init(
         id: UUID = UUID(),
@@ -57,7 +76,15 @@ public struct Transaction:
         sourceFingerprint: String? = nil,
         categoryId: String? = nil,
         merchantName: String? = nil,
-        closingBalanceMinorUnits: Int64? = nil
+        closingBalanceMinorUnits: Int64? = nil,
+        intentId: String? = nil,
+        resolvedPersonId: String? = nil,
+        intelligenceVersion: String? = nil,
+        lastEnrichedAt: Date? = nil,
+        intelligenceSource: String? = nil,
+        intelligenceModelVersion: String? = nil,
+        intelligenceConfigVersion: String? = nil,
+        isUserCorrectedMerchant: Bool = false
     ) {
         self.id = id
         self.ledgerId = ledgerId
@@ -72,6 +99,14 @@ public struct Transaction:
         self.categoryId = categoryId
         self.merchantName = merchantName
         self.closingBalanceMinorUnits = closingBalanceMinorUnits
+        self.intentId = intentId
+        self.resolvedPersonId = resolvedPersonId
+        self.intelligenceVersion = intelligenceVersion
+        self.lastEnrichedAt = lastEnrichedAt
+        self.intelligenceSource = intelligenceSource
+        self.intelligenceModelVersion = intelligenceModelVersion
+        self.intelligenceConfigVersion = intelligenceConfigVersion
+        self.isUserCorrectedMerchant = isUserCorrectedMerchant
     }
 }
 
@@ -91,6 +126,14 @@ public extension Transaction {
         static let categoryId = Column(CodingKeys.categoryId)
         static let merchantName = Column(CodingKeys.merchantName)
         static let closingBalanceMinorUnits = Column(CodingKeys.closingBalanceMinorUnits)
+        static let intentId = Column(CodingKeys.intentId)
+        static let resolvedPersonId = Column(CodingKeys.resolvedPersonId)
+        static let intelligenceVersion = Column(CodingKeys.intelligenceVersion)
+        static let lastEnrichedAt = Column(CodingKeys.lastEnrichedAt)
+        static let intelligenceSource = Column(CodingKeys.intelligenceSource)
+        static let intelligenceModelVersion = Column(CodingKeys.intelligenceModelVersion)
+        static let intelligenceConfigVersion = Column(CodingKeys.intelligenceConfigVersion)
+        static let isUserCorrectedMerchant = Column(CodingKeys.isUserCorrectedMerchant)
     }
 }
 

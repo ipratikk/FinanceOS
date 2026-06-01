@@ -35,6 +35,14 @@ public protocol TransactionMigrator: Sendable {
 public protocol TransactionIntelligenceWriter: Sendable {
     /// Persists a category and/or merchant correction produced by the on-device categoriser.
     func updateIntelligence(id: UUID, categoryId: String?, merchantName: String?) async throws
+
+    /// Writes full enrichment provenance after a pipeline pass.
+    /// Respects `isUserCorrectedMerchant` — merchant name is never overwritten when that flag is set.
+    /// Uses COALESCE semantics: nil fields in `provenance` leave existing column values unchanged.
+    func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws
+
+    /// Marks a transaction's merchant name as user-corrected, preventing future intelligence overwrites.
+    func markUserCorrectedMerchant(id: UUID) async throws
 }
 
 // MARK: - Umbrella (backward-compatible composition)

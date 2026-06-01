@@ -35,13 +35,18 @@ actor CategorizationScheduler {
             for txn in all {
                 do {
                     let result = try await intelligenceService.analyzeEnriched(txn, context: .empty)
-                    if txn.categoryId == nil {
-                        try? await transactionRepository.updateIntelligence(
-                            id: txn.id,
+                    try? await transactionRepository.updateEnrichmentProvenance(
+                        id: txn.id,
+                        EnrichmentProvenance(
                             categoryId: result.categoryPrediction.categoryId,
-                            merchantName: result.merchantCandidate.canonicalName
+                            merchantName: result.merchantCandidate.canonicalName,
+                            intentId: result.intentPrediction.intent.rawValue,
+                            resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
+                            intelligenceSource: result.categoryPrediction.source.rawValue,
+                            intelligenceModelVersion: result.categoryPrediction.modelVersion,
+                            intelligenceConfigVersion: result.categoryPrediction.configVersion
                         )
-                    }
+                    )
                     enriched.append(result)
                 } catch {
                     FinanceLogger.transactions.logError(

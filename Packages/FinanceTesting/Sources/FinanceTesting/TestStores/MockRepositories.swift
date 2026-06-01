@@ -182,6 +182,52 @@ public final class MockTransactionRepository: TransactionRepository, @unchecked 
             )
         }
     }
+
+    public func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws {
+        if let idx = transactions.firstIndex(where: { $0.id == id }) {
+            let t = transactions[idx]
+            transactions[idx] = Transaction(
+                id: t.id, ledgerId: t.ledgerId, accountID: t.accountID, cardID: t.cardID,
+                postedAt: t.postedAt, description: t.description,
+                amountMinorUnits: t.amountMinorUnits, currencyCode: t.currencyCode,
+                transactionType: t.transactionType, sourceFingerprint: t.sourceFingerprint,
+                categoryId: provenance.categoryId ?? t.categoryId,
+                merchantName: t.isUserCorrectedMerchant
+                    ? t.merchantName
+                    : (provenance.merchantName ?? t.merchantName),
+                closingBalanceMinorUnits: t.closingBalanceMinorUnits,
+                intentId: provenance.intentId ?? t.intentId,
+                resolvedPersonId: provenance.resolvedPersonId ?? t.resolvedPersonId,
+                intelligenceVersion: t.intelligenceVersion,
+                lastEnrichedAt: provenance.lastEnrichedAt,
+                intelligenceSource: provenance.intelligenceSource,
+                intelligenceModelVersion: provenance.intelligenceModelVersion,
+                intelligenceConfigVersion: provenance.intelligenceConfigVersion,
+                isUserCorrectedMerchant: t.isUserCorrectedMerchant
+            )
+        }
+    }
+
+    public func markUserCorrectedMerchant(id: UUID) async throws {
+        if let idx = transactions.firstIndex(where: { $0.id == id }) {
+            let t = transactions[idx]
+            transactions[idx] = Transaction(
+                id: t.id, ledgerId: t.ledgerId, accountID: t.accountID, cardID: t.cardID,
+                postedAt: t.postedAt, description: t.description,
+                amountMinorUnits: t.amountMinorUnits, currencyCode: t.currencyCode,
+                transactionType: t.transactionType, sourceFingerprint: t.sourceFingerprint,
+                categoryId: t.categoryId, merchantName: t.merchantName,
+                closingBalanceMinorUnits: t.closingBalanceMinorUnits,
+                intentId: t.intentId, resolvedPersonId: t.resolvedPersonId,
+                intelligenceVersion: t.intelligenceVersion,
+                lastEnrichedAt: t.lastEnrichedAt,
+                intelligenceSource: t.intelligenceSource,
+                intelligenceModelVersion: t.intelligenceModelVersion,
+                intelligenceConfigVersion: t.intelligenceConfigVersion,
+                isUserCorrectedMerchant: true
+            )
+        }
+    }
 }
 
 /// Mock SpendingService for snapshot tests.
