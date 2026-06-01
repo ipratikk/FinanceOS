@@ -18,14 +18,27 @@ public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
     }
 
     public func findOrCreate(name: String, upiHandle: String?, date: Date) async throws -> Person {
-        let normalized = PersonNameNormalizer.normalize(name)
+        // Sanitize narration artifacts before any lookup or creation
+        let sanitizedName = NameSanitizer.sanitize(name)
+        let effectiveName = sanitizedName.isEmpty ? name : sanitizedName
+        let normalized = PersonNameNormalizer.normalize(effectiveName)
         return try await dbQueue.write { [self] database in
             // Check by alias index first (covers normalized name variants)
             if let existingId = try personId(forAlias: normalized, in: database) {
                 return try updatePerson(
-                    id: existingId, rawName: name, upiHandle: upiHandle,
+                    id: existingId, rawName: effectiveName, upiHandle: upiHandle,
                     date: date, in: database
                 )
+            }
+            // Also try the original unsanitized normalized form as alias fallback
+            if sanitizedName != name {
+                let originalNormalized = PersonNameNormalizer.normalize(name)
+                if let existingId = try personId(forAlias: originalNormalized, in: database) {
+                    return try updatePerson(
+                        id: existingId, rawName: effectiveName, upiHandle: upiHandle,
+                        date: date, in: database
+                    )
+                }
             }
             // Check by UPI handle if provided
             if let handle = upiHandle?.lowercased(),
@@ -33,13 +46,13 @@ public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
                .filter(GRDBIntelligencePerson.Columns.upiHandle == handle)
                .fetchOne(database) {
                 return try updatePerson(
-                    id: row.id, rawName: name, upiHandle: upiHandle,
+                    id: row.id, rawName: effectiveName, upiHandle: upiHandle,
                     date: date, in: database
                 )
             }
             return try createPerson(
-                canonicalName: PersonNameNormalizer.titleCase(name),
-                rawName: name, upiHandle: upiHandle, date: date, in: database
+                canonicalName: PersonNameNormalizer.titleCase(effectiveName),
+                rawName: effectiveName, upiHandle: upiHandle, date: date, in: database
             )
         }
     }
