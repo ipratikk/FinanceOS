@@ -253,5 +253,3 @@ struct GraphHubView: View {
         .padding(.vertical, AppSpacing.compact)
     }
 }
-
-extension GraphEdge: @retroactive Identifiable {}

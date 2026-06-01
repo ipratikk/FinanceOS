@@ -220,5 +220,3 @@ extension GraphViewModel {
         return pos
     }
 }
-
-extension GraphEdge: @retroactive Identifiable {}
