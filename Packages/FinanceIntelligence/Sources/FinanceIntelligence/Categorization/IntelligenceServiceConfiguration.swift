@@ -21,6 +21,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
     public let intelligenceLogger: any IntelligenceLogger
     /// Registry for model training metadata. Nil when no database is configured.
     public let modelRegistry: ModelRegistry
+    /// Behavioral thresholds for the intelligence pipeline. Defaults to `IntelligenceConfig.defaultV1`.
+    public let intelligenceConfig: IntelligenceConfig
 
     public init(
         correctionStoreURL: URL,
@@ -28,7 +30,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
         personalizedKNNModelURL: URL,
         taxonomy: CategoryTaxonomy = .current,
         databaseQueue: DatabaseQueue? = nil,
-        intelligenceLogger: (any IntelligenceLogger)? = nil
+        intelligenceLogger: (any IntelligenceLogger)? = nil,
+        intelligenceConfig: IntelligenceConfig = .defaultV1
     ) {
         self.correctionStoreURL = correctionStoreURL
         self.personalLearnerURL = personalLearnerURL
@@ -37,6 +40,7 @@ public struct IntelligenceServiceConfiguration: Sendable {
         self.databaseQueue = databaseQueue
         self.intelligenceLogger = intelligenceLogger ?? NullIntelligenceLogger()
         modelRegistry = ModelRegistry(dbQueue: databaseQueue)
+        self.intelligenceConfig = intelligenceConfig
     }
 
     /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.
