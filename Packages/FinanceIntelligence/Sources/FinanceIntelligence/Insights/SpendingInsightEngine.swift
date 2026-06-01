@@ -5,9 +5,14 @@ import Foundation
 public struct SpendingInsightEngine: Sendable {
     private static let calendar = Calendar(identifier: .gregorian)
     private let normalizer: MerchantNormalizer
+    private let config: InsightConfig
 
-    public init(normalizer: MerchantNormalizer = MerchantNormalizer()) {
+    public init(
+        normalizer: MerchantNormalizer = MerchantNormalizer(),
+        config: InsightConfig = IntelligenceConfig.defaultV1.insight
+    ) {
         self.normalizer = normalizer
+        self.config = config
     }
 
     /// Runs all insight detectors over `transactions` and returns the combined results.
@@ -113,7 +118,7 @@ extension SpendingInsightEngine {
         let mean = historicalSpend.reduce(0, +) / Double(historicalSpend.count)
         let variance = historicalSpend.map { pow($0 - mean, 2) }.reduce(0, +) / Double(historicalSpend.count)
         let stdDev = sqrt(variance)
-        guard stdDev > 0, latestSpend > mean + 2 * stdDev else { return nil }
+        guard stdDev > 0, latestSpend > mean + config.spikeStdDevMultiplier * stdDev else { return nil }
 
         let pctOver = ((latestSpend - mean) / mean * 100).rounded()
         let ids = latestTxns.map(\.id.uuidString)
@@ -139,7 +144,7 @@ extension SpendingInsightEngine {
         let mean = amounts.reduce(0, +) / Double(amounts.count)
         let variance = amounts.map { pow($0 - mean, 2) }.reduce(0, +) / Double(amounts.count)
         let stdDev = sqrt(variance)
-        let threshold = mean + 3 * stdDev
+        let threshold = mean + config.anomalyStdDevMultiplier * stdDev
 
         return debits.compactMap { txn in
             guard Double(txn.amountMinorUnits) > threshold else { return nil }

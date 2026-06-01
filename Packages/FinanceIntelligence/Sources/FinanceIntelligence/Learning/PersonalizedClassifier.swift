@@ -56,8 +56,6 @@ public struct ClassificationEvaluationResult: Codable, Sendable {
 /// Feature encoding: 200-dim binary bag-of-words over a bundled vocabulary.
 /// Same tokenization as Python training pipeline.
 actor PersonalizedClassifier {
-    static let confidenceThreshold: Double = 0.7
-
     private var model: MLModel?
     private let vocabulary: [String]
     private let bundleModelURL: URL

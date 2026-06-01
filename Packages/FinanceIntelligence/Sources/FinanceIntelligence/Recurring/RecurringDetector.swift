@@ -4,8 +4,10 @@ import Foundation
 public struct RecurringDetector: Sendable {
     private let analyzer: PatternAnalyzer
     private let schedule: ScheduleInference
+    private let config: RecurringConfig
 
-    public init() {
+    public init(config: RecurringConfig = IntelligenceConfig.defaultV1.recurring) {
+        self.config = config
         analyzer = PatternAnalyzer()
         schedule = ScheduleInference()
     }
@@ -40,7 +42,9 @@ public struct RecurringDetector: Sendable {
 
     public func detect(from transactions: [DetectionInput]) -> [RecurringPattern] {
         Dictionary(grouping: transactions) { $0.merchantKey }
-            .compactMap { key, group in group.count >= 2 ? detectPattern(merchantKey: key, group: group) : nil }
+            .compactMap { key, group in
+                group.count >= config.minOccurrencesDefault ? detectPattern(merchantKey: key, group: group) : nil
+            }
             .sorted { $0.confidence > $1.confidence }
     }
 
