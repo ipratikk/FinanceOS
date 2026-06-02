@@ -227,4 +227,4 @@ public final class LocalModelRegistry: ModelRegistry {
     }
 }
 
-private let CC_SHA256_DIGEST_LENGTH: Int32 = 32
+private let kCCSHA256DigestLength: Int32 = 32
