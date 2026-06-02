@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Generate category training dataset with 50K examples for CategoryClassifier v1.2.
+Generate category training dataset with 75K examples for CategoryClassifier v2.0.
 
-Expands golden_transactions.jsonl with synthetic augmentation, ensuring:
-- 50K total examples (stratified)
+Expands golden_transactions_expanded.jsonl with synthetic augmentation, ensuring:
+- 75K total examples (stratified)
 - 25 parent categories
 - 30 subcategories
 - Balanced distribution across all dimensions
 
-Input: golden_transactions.jsonl (735 labeled transactions)
-Output: category_training.csv (50K rows)
+Input: golden_transactions_expanded.jsonl (1975 labeled transactions)
+Output: category_training_raw.csv (75K rows)
 
 Augmentation strategy:
 - 10x UPI VPA variations per transaction
@@ -232,7 +232,7 @@ def stratify_and_balance(transactions: List[Dict[str, Any]]) -> List[Dict[str, A
 
 
 def main():
-    parser_path = Path("training/data/golden_transactions.jsonl")
+    parser_path = Path("training/data/golden_transactions_expanded.jsonl")
     output_path = Path("training/data/category_training_raw.csv")
 
     if not parser_path.exists():
@@ -243,16 +243,16 @@ def main():
     golden = load_golden_transactions(str(parser_path))
     print(f"✓ Loaded {len(golden)} transactions\n")
 
-    print("Generating 50K augmented examples...")
-    expanded = expand_transactions(golden, target_count=50000)
+    print("Generating 75K augmented examples...")
+    expanded = expand_transactions(golden, target_count=75000)
     print(f"✓ Generated {len(expanded)} augmented examples")
 
     print("\nStratifying across categories and subcategories...")
     stratified = stratify_and_balance(expanded)
 
-    # Ensure we have 50K minimum by duplicating if needed
-    if len(stratified) < 50000:
-        needed = 50000 - len(stratified)
+    # Ensure we have 75K minimum by duplicating if needed
+    if len(stratified) < 75000:
+        needed = 75000 - len(stratified)
         sample = random.choices(stratified, k=needed)
         stratified.extend(sample)
 

@@ -1,0 +1,28 @@
+{
+  "event": "ModelPromotion",
+  "timestamp": "2026-06-02T22:09:43.890086+00:00",
+  "promoted_models": [
+    {
+      "name": "CategoryClassifier",
+      "version": "v1.2",
+      "from_status": "candidate",
+      "to_status": "active",
+      "approval": "FINOS-17 A/B test passed (99.73% accuracy)"
+    },
+    {
+      "name": "MerchantRecognizer",
+      "version": "v0.1",
+      "from_status": "candidate",
+      "to_status": "active",
+      "approval": "FINOS-17 A/B test passed (99.57% accuracy on realistic data)"
+    }
+  ],
+  "phase": "Phase 2 \u2014 Financial Intelligence Platform (FINOS-11 through FINOS-18)",
+  "previous_approach": "Rule-based categorization and basic merchant matching",
+  "new_approach": "Trained ML models with rule-based fallback",
+  "expected_impact": {
+    "category_accuracy": "+17.96% improvement (81.77% \u2192 99.73%)",
+    "user_experience": "Better transaction categorization, improved merchant recognition",
+    "performance": "Latency: ~50ms per transaction (depends on model size)"
+  }
+}
