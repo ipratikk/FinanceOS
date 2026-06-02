@@ -1,0 +1,282 @@
+name: JIRA Sync — PR Merged
+
+# When a PR is merged:
+#   1. Transition the JIRA issue to "Done" (or "Closed")
+#   2. Close the linked GitHub Issue with a comment referencing the merged PR
+#
+# Required GitHub Secrets:
+#   JIRA_HOST        — e.g. "yourorg.atlassian.net"  (no https://)
+#   JIRA_USER        — Atlassian account email
+#   JIRA_API_TOKEN   — Atlassian API token
+#
+# Required GitHub token permission:
+#   issues: write  (already available via GITHUB_TOKEN in the default permissions)
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  sync-on-merge:
+    name: JIRA Done + Close GitHub Issue
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # Only run when actually merged, not just closed/abandoned
+    if: github.event.pull_request.merged == true
+
+    steps:
+      # -------------------------------------------------------
+      # Step 1: Extract JIRA key
+      # -------------------------------------------------------
+      - name: Extract JIRA key
+        id: extract-jira
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+
+          echo "Extracting JIRA key from merged PR..."
+
+          JIRA_KEY=""
+
+          # Strategy 1: body field "**JIRA Issue:** KAN-42"
+          JIRA_KEY=$(
+            echo "$PR_BODY" \
+              | grep -oP '(?<=\*\*JIRA Issue:\*\*\s{0,10})[A-Z]+-[0-9]+' \
+              || true
+          )
+
+          # Strategy 2: PR title prefix "KAN-42: Description"
+          if [[ -z "$JIRA_KEY" ]]; then
+            JIRA_KEY=$(
+              echo "$PR_TITLE" \
+                | grep -oP '^[A-Z]+-[0-9]+(?=\s*[:\-\s])' \
+                || true
+            )
+          fi
+
+          # Strategy 3: branch name "feat/description(KAN-42)"
+          if [[ -z "$JIRA_KEY" ]]; then
+            JIRA_KEY=$(
+              echo "$PR_HEAD_REF" \
+                | grep -oP '\(([A-Z]+-[0-9]+)\)' \
+                | grep -oP '[A-Z]+-[0-9]+' \
+                | head -1 \
+                || true
+            )
+          fi
+
+          # Strategy 4: branch name "feat/KAN-42-description"
+          if [[ -z "$JIRA_KEY" ]]; then
+            JIRA_KEY=$(
+              echo "$PR_HEAD_REF" \
+                | grep -oP '[A-Z]+-[0-9]+' \
+                | head -1 \
+                || true
+            )
+          fi
+
+          if [[ -n "$JIRA_KEY" ]]; then
+            echo "JIRA key: ${JIRA_KEY}"
+            echo "jira_key=${JIRA_KEY}" >> "$GITHUB_OUTPUT"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "WARNING: No JIRA key found. Skipping JIRA transition."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -------------------------------------------------------
+      # Step 2: Extract GitHub Issue number
+      # -------------------------------------------------------
+      - name: Extract GitHub Issue number
+        id: extract-issue
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          echo "Extracting GitHub Issue # from merged PR body..."
+
+          GH_ISSUE=""
+
+          # Strategy 1: body field "**GitHub Issue:** #123"
+          GH_ISSUE=$(
+            echo "$PR_BODY" \
+              | grep -oP '(?<=\*\*GitHub Issue:\*\*\s{0,10})#[0-9]+' \
+              | grep -oP '[0-9]+' \
+              | head -1 \
+              || true
+          )
+
+          # Strategy 2: "Closes #NNN", "Fixes #NNN", "Resolves #NNN"
+          if [[ -z "$GH_ISSUE" ]]; then
+            GH_ISSUE=$(
+              echo "$PR_BODY" \
+                | grep -oiP '(?:Closes|Fixes|Resolves)\s+#[0-9]+' \
+                | grep -oP '[0-9]+' \
+                | head -1 \
+                || true
+            )
+          fi
+
+          if [[ -n "$GH_ISSUE" ]]; then
+            echo "GitHub Issue: #${GH_ISSUE}"
+            echo "issue_number=${GH_ISSUE}" >> "$GITHUB_OUTPUT"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "WARNING: No GitHub Issue # found in PR body."
+            echo "  Close the issue manually or add a 'Closes #NNN' line to the PR body."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -------------------------------------------------------
+      # Step 3: Find 'Done' / 'Closed' transition in JIRA
+      # -------------------------------------------------------
+      - name: Find 'Done' transition ID
+        id: find-transition
+        if: steps.extract-jira.outputs.found == 'true'
+        env:
+          JIRA_HOST: ${{ secrets.JIRA_HOST }}
+          JIRA_USER: ${{ secrets.JIRA_USER }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_KEY: ${{ steps.extract-jira.outputs.jira_key }}
+          # Comma-separated transition names to try (case-insensitive). First match wins.
+          TRANSITION_NAMES: "Done,Closed,Close,Resolved,Complete,Completed"
+        run: |
+          set -euo pipefail
+
+          echo "Fetching available transitions for ${JIRA_KEY}..."
+
+          RESPONSE=$(
+            curl --silent --fail-with-body \
+              --user "${JIRA_USER}:${JIRA_API_TOKEN}" \
+              --header "Accept: application/json" \
+              "https://${JIRA_HOST}/rest/api/3/issue/${JIRA_KEY}/transitions"
+          )
+
+          echo "Available transitions (dry-run log):"
+          echo "$RESPONSE" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          for t in data.get('transitions', []):
+              print(f\"  id={t['id']}  name={t['name']}\")
+          "
+
+          TRANSITION_ID=$(
+            echo "$RESPONSE" | python3 -c "
+          import json, sys, os
+          data = json.load(sys.stdin)
+          names = [n.strip().lower() for n in os.environ['TRANSITION_NAMES'].split(',')]
+          for t in data.get('transitions', []):
+              if t['name'].lower() in names:
+                  print(t['id'])
+                  sys.exit(0)
+          sys.exit(1)
+          " || true
+          )
+
+          if [[ -n "$TRANSITION_ID" ]]; then
+            echo "Matched transition ID: ${TRANSITION_ID}"
+            echo "transition_id=${TRANSITION_ID}" >> "$GITHUB_OUTPUT"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "WARNING: No Done/Closed transition found."
+            echo "  Update TRANSITION_NAMES to match your JIRA workflow."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -------------------------------------------------------
+      # Step 4: Transition JIRA to Done
+      # -------------------------------------------------------
+      - name: Transition JIRA issue to Done
+        if: steps.extract-jira.outputs.found == 'true' && steps.find-transition.outputs.found == 'true'
+        env:
+          JIRA_HOST: ${{ secrets.JIRA_HOST }}
+          JIRA_USER: ${{ secrets.JIRA_USER }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_KEY: ${{ steps.extract-jira.outputs.jira_key }}
+          TRANSITION_ID: ${{ steps.find-transition.outputs.transition_id }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          echo "Transitioning ${JIRA_KEY} to Done (transition ${TRANSITION_ID})..."
+
+          HTTP_STATUS=$(
+            curl --silent --output /dev/null --write-out "%{http_code}" \
+              --request POST \
+              --url "https://${JIRA_HOST}/rest/api/3/issue/${JIRA_KEY}/transitions" \
+              --user "${JIRA_USER}:${JIRA_API_TOKEN}" \
+              --header "Accept: application/json" \
+              --header "Content-Type: application/json" \
+              --data "{\"transition\":{\"id\":\"${TRANSITION_ID}\"}}"
+          )
+
+          if [[ "$HTTP_STATUS" == "204" ]]; then
+            echo "OK: ${JIRA_KEY} transitioned to Done (PR #${PR_NUMBER}: ${PR_URL})"
+          else
+            echo "ERROR: Transition failed with HTTP ${HTTP_STATUS}"
+            exit 1
+          fi
+
+      # -------------------------------------------------------
+      # Step 5: Close GitHub Issue with a comment
+      # -------------------------------------------------------
+      - name: Close GitHub Issue
+        if: steps.extract-issue.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ steps.extract-issue.outputs.issue_number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          JIRA_KEY: ${{ steps.extract-jira.outputs.jira_key }}
+          JIRA_FOUND: ${{ steps.extract-jira.outputs.found }}
+        run: |
+          set -euo pipefail
+
+          echo "Closing GitHub Issue #${ISSUE_NUMBER}..."
+
+          # Build comment body
+          if [[ "$JIRA_FOUND" == "true" ]]; then
+            COMMENT="Closed by merged PR #${PR_NUMBER}: ${PR_URL}\n\nLinked JIRA issue: **${JIRA_KEY}** — transitioned to Done."
+          else
+            COMMENT="Closed by merged PR #${PR_NUMBER}: ${PR_URL}"
+          fi
+
+          # Post a comment first
+          gh issue comment "${ISSUE_NUMBER}" \
+            --repo "${REPO}" \
+            --body "$(printf "${COMMENT}")"
+
+          # Then close the issue
+          gh issue close "${ISSUE_NUMBER}" \
+            --repo "${REPO}" \
+            --comment "" \
+            2>/dev/null || \
+          gh issue close "${ISSUE_NUMBER}" \
+            --repo "${REPO}"
+
+          echo "OK: GitHub Issue #${ISSUE_NUMBER} closed."
+
+      # -------------------------------------------------------
+      # Summary
+      # -------------------------------------------------------
+      - name: Sync summary
+        if: always()
+        env:
+          JIRA_FOUND: ${{ steps.extract-jira.outputs.found }}
+          JIRA_KEY: ${{ steps.extract-jira.outputs.jira_key }}
+          TRANSITION_FOUND: ${{ steps.find-transition.outputs.found }}
+          ISSUE_FOUND: ${{ steps.extract-issue.outputs.found }}
+          ISSUE_NUMBER: ${{ steps.extract-issue.outputs.issue_number }}
+        run: |
+          echo "=== Sync Summary ==="
+          echo "  JIRA key extracted : ${JIRA_FOUND:-false} (${JIRA_KEY:-n/a})"
+          echo "  JIRA transition    : ${TRANSITION_FOUND:-false}"
+          echo "  GitHub Issue found : ${ISSUE_FOUND:-false} (#${ISSUE_NUMBER:-n/a})"
+          echo "===================="

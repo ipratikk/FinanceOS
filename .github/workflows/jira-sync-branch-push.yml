@@ -1,0 +1,214 @@
+name: JIRA Sync — Branch Push
+
+# When a branch is pushed, extract the JIRA key from the branch name and
+# transition the issue to "In Progress" — but ONLY if it is currently in a
+# "to do" / "open" state (not already in progress or done).
+#
+# This workflow only fires on feature/fix/chore branches, never on main.
+#
+# Required GitHub Secrets:
+#   JIRA_HOST        — e.g. "yourorg.atlassian.net"  (no https://)
+#   JIRA_USER        — Atlassian account email
+#   JIRA_API_TOKEN   — Atlassian API token
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+
+concurrency:
+  group: jira-sync-branch-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  transition-to-in-progress:
+    name: Transition JIRA to In Progress
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      # -------------------------------------------------------
+      # Step 1: Extract JIRA key from branch name
+      # -------------------------------------------------------
+      - name: Extract JIRA key from branch
+        id: extract
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          echo "Branch: ${BRANCH}"
+          JIRA_KEY=""
+
+          # Pattern 1: feat/description(KAN-42)  →  KAN-42
+          JIRA_KEY=$(
+            echo "$BRANCH" \
+              | grep -oP '\(([A-Z]+-[0-9]+)\)' \
+              | grep -oP '[A-Z]+-[0-9]+' \
+              | head -1 \
+              || true
+          )
+
+          # Pattern 2: feat/KAN-42-some-description  →  KAN-42
+          if [[ -z "$JIRA_KEY" ]]; then
+            JIRA_KEY=$(
+              echo "$BRANCH" \
+                | grep -oP '(?<![A-Z])[A-Z]+-[0-9]+' \
+                | head -1 \
+                || true
+            )
+          fi
+
+          if [[ -n "$JIRA_KEY" ]]; then
+            echo "JIRA key: ${JIRA_KEY}"
+            echo "jira_key=${JIRA_KEY}" >> "$GITHUB_OUTPUT"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "INFO: No JIRA key found in branch name '${BRANCH}'. Skipping."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -------------------------------------------------------
+      # Step 2: Check current JIRA status — skip if already active
+      # -------------------------------------------------------
+      - name: Check current JIRA status
+        id: check-status
+        if: steps.extract.outputs.found == 'true'
+        env:
+          JIRA_HOST: ${{ secrets.JIRA_HOST }}
+          JIRA_USER: ${{ secrets.JIRA_USER }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_KEY: ${{ steps.extract.outputs.jira_key }}
+          # Statuses that mean "already active" — don't re-transition
+          SKIP_STATUSES: "In Progress,In Review,Code Review,Review,Done,Closed,Resolved,Complete,Completed"
+        run: |
+          set -euo pipefail
+
+          echo "Checking current status of ${JIRA_KEY}..."
+
+          RESPONSE=$(
+            curl --silent --fail-with-body \
+              --user "${JIRA_USER}:${JIRA_API_TOKEN}" \
+              --header "Accept: application/json" \
+              "https://${JIRA_HOST}/rest/api/3/issue/${JIRA_KEY}?fields=status"
+          )
+
+          CURRENT_STATUS=$(
+            echo "$RESPONSE" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          print(data['fields']['status']['name'])
+          " || echo "UNKNOWN"
+          )
+
+          echo "Current status: ${CURRENT_STATUS}"
+          echo "current_status=${CURRENT_STATUS}" >> "$GITHUB_OUTPUT"
+
+          # Check if we should skip
+          SHOULD_SKIP=$(python3 -c "
+          import os
+          skip = [s.strip().lower() for s in os.environ['SKIP_STATUSES'].split(',')]
+          current = os.environ['CURRENT_STATUS'].lower()
+          print('true' if current in skip else 'false')
+          " CURRENT_STATUS="$CURRENT_STATUS" || echo "false")
+
+          if [[ "$SHOULD_SKIP" == "true" ]]; then
+            echo "INFO: Issue is already in '${CURRENT_STATUS}'. Skipping transition."
+            echo "should_skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "INFO: Issue is in '${CURRENT_STATUS}'. Will transition to In Progress."
+            echo "should_skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -------------------------------------------------------
+      # Step 3: Find 'In Progress' transition ID
+      # -------------------------------------------------------
+      - name: Find 'In Progress' transition ID
+        id: find-transition
+        if: >
+          steps.extract.outputs.found == 'true' &&
+          steps.check-status.outputs.should_skip == 'false'
+        env:
+          JIRA_HOST: ${{ secrets.JIRA_HOST }}
+          JIRA_USER: ${{ secrets.JIRA_USER }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_KEY: ${{ steps.extract.outputs.jira_key }}
+          TRANSITION_NAMES: "In Progress,Start Progress,Start,In progress"
+        run: |
+          set -euo pipefail
+
+          RESPONSE=$(
+            curl --silent --fail-with-body \
+              --user "${JIRA_USER}:${JIRA_API_TOKEN}" \
+              --header "Accept: application/json" \
+              "https://${JIRA_HOST}/rest/api/3/issue/${JIRA_KEY}/transitions"
+          )
+
+          echo "Available transitions (dry-run log):"
+          echo "$RESPONSE" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          for t in data.get('transitions', []):
+              print(f\"  id={t['id']}  name={t['name']}\")
+          "
+
+          TRANSITION_ID=$(
+            echo "$RESPONSE" | python3 -c "
+          import json, sys, os
+          data = json.load(sys.stdin)
+          names = [n.strip().lower() for n in os.environ['TRANSITION_NAMES'].split(',')]
+          for t in data.get('transitions', []):
+              if t['name'].lower() in names:
+                  print(t['id'])
+                  sys.exit(0)
+          sys.exit(1)
+          " || true
+          )
+
+          if [[ -n "$TRANSITION_ID" ]]; then
+            echo "Matched transition ID: ${TRANSITION_ID}"
+            echo "transition_id=${TRANSITION_ID}" >> "$GITHUB_OUTPUT"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "WARNING: No In Progress transition found for names: ${TRANSITION_NAMES}"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -------------------------------------------------------
+      # Step 4: Transition JIRA to In Progress
+      # -------------------------------------------------------
+      - name: Transition JIRA issue to In Progress
+        if: >
+          steps.extract.outputs.found == 'true' &&
+          steps.check-status.outputs.should_skip == 'false' &&
+          steps.find-transition.outputs.found == 'true'
+        env:
+          JIRA_HOST: ${{ secrets.JIRA_HOST }}
+          JIRA_USER: ${{ secrets.JIRA_USER }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_KEY: ${{ steps.extract.outputs.jira_key }}
+          TRANSITION_ID: ${{ steps.find-transition.outputs.transition_id }}
+          BRANCH: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+
+          echo "Transitioning ${JIRA_KEY} to In Progress (transition ${TRANSITION_ID})..."
+
+          HTTP_STATUS=$(
+            curl --silent --output /dev/null --write-out "%{http_code}" \
+              --request POST \
+              --url "https://${JIRA_HOST}/rest/api/3/issue/${JIRA_KEY}/transitions" \
+              --user "${JIRA_USER}:${JIRA_API_TOKEN}" \
+              --header "Accept: application/json" \
+              --header "Content-Type: application/json" \
+              --data "{\"transition\":{\"id\":\"${TRANSITION_ID}\"}}"
+          )
+
+          if [[ "$HTTP_STATUS" == "204" ]]; then
+            echo "OK: ${JIRA_KEY} transitioned to In Progress (branch: ${BRANCH}, actor: ${ACTOR})"
+          else
+            echo "ERROR: Transition failed with HTTP ${HTTP_STATUS}"
+            exit 1
+          fi
