@@ -20,7 +20,8 @@ Run:
 git branch --show-current
 ```
 
-Warn (do not block) if branch does not follow `<type>/<description>` convention.
+Create a new branch from latest origin/main
+Block if branch does not follow `<type>/<description>` convention.
 
 ---
 
