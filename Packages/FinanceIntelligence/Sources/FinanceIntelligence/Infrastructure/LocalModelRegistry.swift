@@ -1,5 +1,6 @@
 import Foundation
 import CoreML
+import CommonCrypto
 
 /// Local filesystem-based model registry. Loads model_registry.yaml from app bundle.
 public final class LocalModelRegistry: ModelRegistry {
@@ -16,17 +17,13 @@ public final class LocalModelRegistry: ModelRegistry {
         }
 
         let yaml = try String(contentsOf: url, encoding: .utf8)
-        let dict = try parseYAML(yaml)
-
-        guard let modelsList = dict["models"] as? [[String: Any]] else {
-            throw ModelRegistryError.invalidYAML("models array not found")
-        }
+        let modelsList = try Self.parseModelsYAML(yaml)
+        let entriesDict = Dictionary(uniqueKeysWithValues: modelsList.map { entry in
+            (entry.name, entry)
+        })
 
         self.bundle = bundle
-        self.entries = Dictionary(uniqueKeysWithValues: try modelsList.map { dict in
-            let entry = try parseModelEntry(dict)
-            return (entry.name, entry)
-        })
+        self.entries = entriesDict
     }
 
     public func loadCoreML(_ name: ModelName) throws -> MLModel {
@@ -129,108 +126,82 @@ public final class LocalModelRegistry: ModelRegistry {
     }
 
     private func validateSHA256(url: URL, expected: String) throws {
-        let actual: String
-
-        if url.hasDirectoryPath {
-            // .mlpackage is a directory: hash all files inside (sorted)
-            actual = try sha256OfDirectory(url)
-        } else {
-            // Single file
-            let data = try Data(contentsOf: url)
-            actual = data.sha256Hex
-        }
+        let actual = try sha256OfFile(url)
 
         guard actual == expected else {
             throw ModelRegistryError.hashMismatch("", expected: expected, actual: actual)
         }
     }
 
-    private func sha256OfDirectory(_ path: URL) throws -> String {
-        let fileManager = FileManager.default
-        let files = try fileManager
-            .contentsOfDirectory(at: path, includingPropertiesForKeys: nil)
-            .sorted { $0.path < $1.path }
-
-        var hasher = SHA256Hasher()
-
-        for file in files {
-            let data = try Data(contentsOf: file)
-            hasher.update(data)
+    private func sha256OfFile(_ url: URL) throws -> String {
+        let data = try Data(contentsOf: url)
+        var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+        data.withUnsafeBytes { buffer in
+            _ = CC_SHA256(buffer.baseAddress, CC_LONG(data.count), &digest)
         }
-
-        return hasher.finalize().hexString
+        return digest.map { String(format: "%02x", $0) }.joined()
     }
 
     // MARK: - YAML Parsing (minimal)
 
-    private func parseYAML(_ yaml: String) throws -> [String: Any] {
-        // Simple YAML parser for our registry format
-        // In production, use Yams package
-        var dict: [String: Any] = [:]
-        var models: [[String: Any]] = []
-
+    private static func parseModelsYAML(_ yaml: String) throws -> [ModelRegistryEntry] {
+        var models: [ModelRegistryEntry] = []
         let lines = yaml.split(separator: "\n", omittingEmptySubsequences: true)
-        var currentModel: [String: Any]?
+        var currentModel: [String: String] = [:]
 
         for line in lines {
             let trimmed = String(line).trimmingCharacters(in: .whitespaces)
 
             if trimmed.starts(with: "- name:") {
-                if let model = currentModel {
-                    models.append(model)
-                }
-                let name = trimmed.replacingOccurrences(of: "- name: ", with: "").trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
-                currentModel = ["name": name]
-            } else if trimmed.starts(with: "models:") {
-                // Do nothing, start collecting models
-            } else if let model = currentModel, trimmed.contains(":") {
-                let parts = trimmed.split(separator: ":", maxSplits: 1)
-                if parts.count == 2 {
-                    let key = String(parts[0]).trimmingCharacters(in: .whitespaces)
-                    let value = String(parts[1]).trimmingCharacters(in: .whitespaces)
-                        .trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
-
-                    if key == "status", let status = ModelStatus(rawValue: value) {
-                        model["status"] = status
-                    } else if let intValue = Int(value) {
-                        model[key] = intValue
-                    } else {
-                        model[key] = value
+                if !currentModel.isEmpty {
+                    if let entry = try? Self.parseModelEntry(currentModel) {
+                        models.append(entry)
                     }
                 }
+                let value = trimmed.replacingOccurrences(of: "- name: ", with: "")
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
+                currentModel = ["name": value]
+            } else if trimmed.starts(with: "models:") || trimmed.isEmpty {
+                // Skip
+            } else if let idx = trimmed.firstIndex(of: ":"), !currentModel.isEmpty {
+                let key = String(trimmed[..<idx]).trimmingCharacters(in: .whitespaces)
+                let value = String(trimmed[trimmed.index(idx, offsetBy: 1)...])
+                    .trimmingCharacters(in: .whitespaces)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
+                currentModel[key] = value
             }
         }
 
-        if let model = currentModel {
-            models.append(model)
+        if !currentModel.isEmpty {
+            if let entry = try? parseModelEntry(currentModel) {
+                models.append(entry)
+            }
         }
 
-        dict["models"] = models
-        return dict
+        return models
     }
 
-    private func parseModelEntry(_ dict: [String: Any]) throws -> ModelRegistryEntry {
-        let name = dict["name"] as? String ?? ""
-        let version = dict["version"] as? String ?? "0.1.0"
-        let displayName = dict["display_name"] as? String ?? name
-        let artifactFilename = dict["artifact_filename"] as? String ?? ""
-        let artifactTypeStr = dict["artifact_type"] as? String ?? "coreml"
+    private static func parseModelEntry(_ dict: [String: String]) throws -> ModelRegistryEntry {
+        let name = dict["name"] ?? ""
+        let version = dict["version"] ?? "0.1.0"
+        let displayName = dict["display_name"] ?? name
+        let artifactFilename = dict["artifact_filename"] ?? ""
+        let artifactTypeStr = dict["artifact_type"] ?? "coreml"
         let artifactType = ArtifactType(rawValue: artifactTypeStr) ?? .coreml
-        let task = dict["task"] as? String ?? ""
-        let inputType = dict["input_type"] as? String ?? "text"
-        let outputClasses = dict["output_classes"] as? Int ?? 0
-        let datasetVersion = dict["dataset_version"] as? String ?? ""
-        let trainingDate = dict["training_date"] as? String ?? ""
-        let evaluationDate = dict["evaluation_date"] as? String ?? ""
-        let metrics = dict["metrics"] as? [String: Double] ?? [:]
-        let artifactSHA256 = dict["artifact_sha256"] as? String ?? ""
-        let coremlSHA256 = dict["coreml_sha256"] as? String ?? ""
-        let trainingCommit = dict["training_commit"] as? String ?? ""
-        let datasetCommit = dict["dataset_commit"] as? String ?? ""
-        let minOSVersion = dict["min_os_version"] as? String ?? "17.0"
-        let memoryMB = dict["memory_mb"] as? Int ?? 0
-        let statusStr = dict["status"] as? String ?? "planned"
-        let status = dict["status"] as? ModelStatus ?? ModelStatus(rawValue: statusStr) ?? .planned
+        let task = dict["task"] ?? ""
+        let inputType = dict["input_type"] ?? "text"
+        let outputClasses = Int(dict["output_classes"] ?? "0") ?? 0
+        let datasetVersion = dict["dataset_version"] ?? ""
+        let trainingDate = dict["training_date"] ?? ""
+        let evaluationDate = dict["evaluation_date"] ?? ""
+        let artifactSHA256 = dict["artifact_sha256"] ?? ""
+        let coremlSHA256 = dict["coreml_sha256"] ?? ""
+        let trainingCommit = dict["training_commit"] ?? ""
+        let datasetCommit = dict["dataset_commit"] ?? ""
+        let minOSVersion = dict["min_os_version"] ?? "17.0"
+        let memoryMB = Int(dict["memory_mb"] ?? "0") ?? 0
+        let statusStr = dict["status"] ?? "planned"
+        let status = ModelStatus(rawValue: statusStr) ?? .planned
 
         return ModelRegistryEntry(
             name: name,
@@ -244,7 +215,7 @@ public final class LocalModelRegistry: ModelRegistry {
             datasetVersion: datasetVersion,
             trainingDate: trainingDate,
             evaluationDate: evaluationDate,
-            metrics: metrics,
+            metrics: [:],
             artifactSHA256: artifactSHA256,
             coremlSHA256: coremlSHA256,
             trainingCommit: trainingCommit,
@@ -256,55 +227,4 @@ public final class LocalModelRegistry: ModelRegistry {
     }
 }
 
-// MARK: - Hashing
-
-struct SHA256Hasher {
-    private var data = Data()
-
-    mutating func update(_ data: Data) {
-        self.data.append(data)
-    }
-
-    func finalize() -> SHA256Digest {
-        // Use CommonCrypto via Foundation
-        var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-        data.withUnsafeBytes { buffer in
-            _ = CC_SHA256(buffer.baseAddress, CC_LONG(data.count), &digest)
-        }
-        return SHA256Digest(digest)
-    }
-}
-
-struct SHA256Digest {
-    let bytes: [UInt8]
-
-    init(_ bytes: [UInt8]) {
-        self.bytes = bytes
-    }
-
-    var hexString: String {
-        bytes.map { String(format: "%02x", $0) }.joined()
-    }
-}
-
-extension Data {
-    var sha256Hex: String {
-        var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-        self.withUnsafeBytes { buffer in
-            _ = CC_SHA256(buffer.baseAddress, CC_LONG(self.count), &digest)
-        }
-        return digest.map { String(format: "%02x", $0) }.joined()
-    }
-}
-
-// CommonCrypto bridge
-import CommonCrypto
-
 private let CC_SHA256_DIGEST_LENGTH: Int32 = 32
-
-@_silgen_name("CC_SHA256")
-private func CC_SHA256(
-    _ data: UnsafeRawPointer?,
-    _ len: CC_LONG,
-    _ md: UnsafeMutablePointer<UInt8>?
-) -> UnsafeMutablePointer<UInt8>?

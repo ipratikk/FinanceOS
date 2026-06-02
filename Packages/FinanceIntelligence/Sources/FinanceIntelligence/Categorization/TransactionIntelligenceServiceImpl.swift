@@ -27,7 +27,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     /// Background pipeline: graph, recurring, relationships. Nil when no databaseQueue provided.
     private let postProcessingPipeline: PostProcessingPipeline?
     private let intelligenceLogger: any IntelligenceLogger
-    private let modelRegistry: ModelRegistry
+    private let modelMetadataRegistry: ModelMetadataRegistry
     private let intelligenceConfig: IntelligenceConfig
     private let feedbackStore: any FeedbackStore
 
@@ -51,7 +51,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         )
         intelligenceConfig = configuration.intelligenceConfig
 
-        await Self.registerBundledModel(registry: configuration.modelRegistry, categorizer: loadedCoreML)
+        await Self.registerBundledModel(registry: configuration.modelMetadataRegistry, categorizer: loadedCoreML)
         insightEngine = SpendingInsightEngine(config: intelligenceConfig.insight)
         extractor = TransactionFeatureExtractor()
         descriptionGenerator = DescriptionGenerator()
@@ -71,11 +71,11 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             postProcessingPipeline = nil
         }
         intelligenceLogger = configuration.intelligenceLogger
-        modelRegistry = configuration.modelRegistry
+        modelMetadataRegistry = configuration.modelMetadataRegistry
         feedbackStore = configuration.feedbackStore
     }
 
-    private static func registerBundledModel(registry: ModelRegistry, categorizer: CoreMLCategorizer) async {
+    private static func registerBundledModel(registry: ModelMetadataRegistry, categorizer: CoreMLCategorizer) async {
         guard await registry.currentVersion(for: "TransactionCategoryClassifier") == nil else { return }
         let trainedAt = ISO8601DateFormatter().date(from: "2026-05-28T13:32:40Z") ?? Date()
         let notes = categorizer.isAvailable
@@ -533,7 +533,7 @@ private extension TransactionIntelligenceServiceImpl {
             confusionMatrixJson: confMatrixJson,
             trainingDataHash: hash
         )
-        await modelRegistry.register(entry)
+        await modelMetadataRegistry.register(entry)
     }
 
     func trainingDataHash(_ examples: [(text: String, categoryId: String)]) -> String {

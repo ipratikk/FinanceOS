@@ -2,31 +2,31 @@ import FinanceCore
 import Foundation
 import GRDB
 
-/// Persists model training metadata to `intelligence_model_metadata`.
+/// Persists model training metadata to `intelligence_model_metadata` table.
+/// Tracks training runs, metrics, and versions.
 ///
 /// - One row per training run — never overwrites existing rows.
 /// - In debug builds, training without registering triggers `assertionFailure`.
 /// - When no `DatabaseQueue` is available, registry operations are no-ops.
-public final class ModelRegistry: Sendable {
+public final class ModelMetadataRegistry: Sendable {
     private let dbQueue: DatabaseQueue?
 
     public init(dbQueue: DatabaseQueue?) {
         self.dbQueue = dbQueue
     }
 
-    /// Inserts a new metadata row for a completed training run.
-    /// Invariant: always inserts; never updates an existing row.
+    /// Inserts metadata for a completed training run.
     public func register(_ entry: ModelMetadataEntry) async {
         guard let dbQueue else { return }
         do {
             let grdbEntry = GRDBModelMetadataEntry(entry: entry)
             try await dbQueue.write { db in try grdbEntry.insert(db) }
         } catch {
-            FinanceLogger.intelligence.error("ModelRegistry register failed: \(error)")
+            FinanceLogger.intelligence.error("ModelMetadataRegistry register failed: \(error)")
         }
     }
 
-    /// Returns the most recently registered entry for `modelName`, or nil if none exists.
+    /// Returns most recent entry for `modelName`, or nil if none exists.
     public func currentVersion(for modelName: String) async -> ModelMetadataEntry? {
         guard let dbQueue else { return nil }
         do {
@@ -37,7 +37,7 @@ public final class ModelRegistry: Sendable {
                     .fetchOne(db)
             }?.asEntry
         } catch {
-            FinanceLogger.intelligence.error("ModelRegistry currentVersion failed: \(error)")
+            FinanceLogger.intelligence.error("ModelMetadataRegistry currentVersion failed: \(error)")
             return nil
         }
     }
@@ -54,7 +54,7 @@ public final class ModelRegistry: Sendable {
                     .fetchAll(db)
             }.map(\.asEntry)
         } catch {
-            FinanceLogger.intelligence.error("ModelRegistry history failed: \(error)")
+            FinanceLogger.intelligence.error("ModelMetadataRegistry history failed: \(error)")
             return []
         }
     }
