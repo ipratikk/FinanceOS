@@ -2,8 +2,8 @@
 
 <!-- REQUIRED: Fill in both fields below. PRs missing these will be blocked. -->
 
-- **JIRA Issue:** <!-- e.g. KAN-42 — must match pattern [A-Z]+-[0-9]+ -->
-- **GitHub Issue:** <!-- e.g. #123 — must match pattern #[0-9]+ -->
+- **JIRA Issue:** [REPLACE-WITH-KEY](https://ipratikgoel.atlassian.net/browse/REPLACE-WITH-KEY) <!-- e.g. [FINOS-5](https://ipratikgoel.atlassian.net/browse/FINOS-5) — must match pattern [A-Z]+-[0-9]+ -->
+- **GitHub Issue:** #REPLACE-WITH-NUMBER <!-- e.g. #123 — must match pattern #[0-9]+ -->
 
 ## Summary
 
@@ -28,7 +28,7 @@ Please select the type of change:
 ## Related Issues
 
 <!-- Keep in sync with the GitHub Issue field above -->
-Closes #(issue number)
+Closes #REPLACE-WITH-NUMBER
 
 ## Changes Made
 
