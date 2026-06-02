@@ -51,24 +51,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         )
         intelligenceConfig = configuration.intelligenceConfig
 
-        // Register bundled model provenance on first startup.
-        // Inserts once; subsequent runs find an existing entry and skip.
-        let registry = configuration.modelRegistry
-        if await registry.currentVersion(for: "TransactionCategoryClassifier") == nil {
-            let trainedAt = ISO8601DateFormatter().date(from: "2026-05-28T13:32:40Z") ?? Date()
-            let notes = loadedCoreML.isAvailable
-                ? "Bundled text classifier. Loaded successfully."
-                // swiftlint:disable:next line_length
-                : "Tabular classifier incompatible with NLModel API — load failed (\(loadedCoreML.loadError ?? "unknown")). Labels: fees, groceries, income, insurance, subscriptions, transfers (6 only). Replace with CreateML Text Classifier. Contains PII in model weights."
-            await registry.register(ModelMetadataEntry(
-                modelName: "TransactionCategoryClassifier",
-                modelType: loadedCoreML.isAvailable ? "nlModelTextClassifier" : "tabularClassifier",
-                modelVersion: loadedCoreML.modelVersion,
-                trainedAt: trainedAt,
-                trainingExampleCount: 0,
-                notes: notes
-            ))
-        }
+        await Self.registerBundledModel(registry: configuration.modelRegistry, categorizer: loadedCoreML)
         insightEngine = SpendingInsightEngine(config: intelligenceConfig.insight)
         extractor = TransactionFeatureExtractor()
         descriptionGenerator = DescriptionGenerator()
@@ -90,6 +73,23 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         intelligenceLogger = configuration.intelligenceLogger
         modelRegistry = configuration.modelRegistry
         feedbackStore = configuration.feedbackStore
+    }
+
+    private static func registerBundledModel(registry: ModelRegistry, categorizer: CoreMLCategorizer) async {
+        guard await registry.currentVersion(for: "TransactionCategoryClassifier") == nil else { return }
+        let trainedAt = ISO8601DateFormatter().date(from: "2026-05-28T13:32:40Z") ?? Date()
+        let notes = categorizer.isAvailable
+            ? "Bundled text classifier. Loaded successfully."
+            // swiftlint:disable:next line_length
+            : "Tabular classifier incompatible with NLModel API — load failed (\(categorizer.loadError ?? "unknown")). Labels: fees, groceries, income, insurance, subscriptions, transfers (6 only). Replace with CreateML Text Classifier. Contains PII in model weights."
+        await registry.register(ModelMetadataEntry(
+            modelName: "TransactionCategoryClassifier",
+            modelType: categorizer.isAvailable ? "nlModelTextClassifier" : "tabularClassifier",
+            modelVersion: categorizer.modelVersion,
+            trainedAt: trainedAt,
+            trainingExampleCount: 0,
+            notes: notes
+        ))
     }
 
     public func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction {
@@ -455,25 +455,29 @@ private extension TransactionIntelligenceServiceImpl {
         return .uncategorized(modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version)
     }
 
+    private static let categoryIntentMap: [String: TransactionIntent] = [
+        "transfers": .transfer, "insurance": .insurance, "housing": .rent,
+        "subscriptions": .subscription, "dining": .food, "groceries": .groceries,
+        "shopping": .shopping, "transportation": .travel, "travel": .travel,
+        "healthcare": .healthcare, "utilities": .utilityBill
+    ]
+
     func intentFromCategory(_ categoryId: String, features: TransactionFeatures) -> IntentPrediction {
         let top = categoryId.components(separatedBy: ".").first ?? categoryId
-        let intent: TransactionIntent = switch top {
-        case "income": features.hasPayrollIndicator ? .salary : .income
-        case "transfers": .transfer
-        case "investments": categoryId.contains("sip") ? .mutualFundSIP : .investment
-        case "insurance": .insurance
-        case "housing": .rent
-        case "fees": categoryId.contains("interest") ? .interestPayment : .unknown
-        case "subscriptions": .subscription
-        case "dining": .food
-        case "groceries": .groceries
-        case "shopping": .shopping
-        case "transportation", "travel": .travel
-        case "healthcare": .healthcare
-        case "utilities": .utilityBill
-        default: .unknown
-        }
+        let intent = Self.categoryIntentMap[top]
+            ?? derivedIntent(top: top, categoryId: categoryId, features: features)
         return IntentPrediction(intent: intent, confidence: 0.75, source: .fallback)
+    }
+
+    private func derivedIntent(
+        top: String, categoryId: String, features: TransactionFeatures
+    ) -> TransactionIntent {
+        switch top {
+        case "income": return features.hasPayrollIndicator ? .salary : .income
+        case "investments": return categoryId.contains("sip") ? .mutualFundSIP : .investment
+        case "fees": return categoryId.contains("interest") ? .interestPayment : .unknown
+        default: return .unknown
+        }
     }
 
     func resolveEntities(description: String, date: Date) async -> ResolvedEntities? {

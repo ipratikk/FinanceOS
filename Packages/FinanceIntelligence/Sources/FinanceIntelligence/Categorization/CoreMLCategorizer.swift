@@ -58,36 +58,8 @@ final class CoreMLCategorizer: @unchecked Sendable {
                 return CoreMLCategorizer(backend: nil, modelVersion: "none", loadError: "bundle-missing")
             }
             let version = mlModel.modelDescription.metadata[MLModelMetadataKey.versionString] as? String
-
-            // Try NLModel first (CreateML Text Classifier output)
-            if let nlModel = try? NLModel(mlModel: mlModel) {
-                FinanceLogger.intelligence.info("CoreMLCategorizer: loaded as NLModel")
-                return CoreMLCategorizer(
-                    backend: .nlModel(nlModel),
-                    modelVersion: version ?? "nlmodel-v1"
-                )
-            }
-
-            // Fall back to MLModel dict-input path (sklearn/coremltools output)
-            // Verify it has the expected input/output features before accepting it.
-            let inputs = mlModel.modelDescription.inputDescriptionsByName
-            let outputs = mlModel.modelDescription.outputDescriptionsByName
-            guard inputs["token_counts"] != nil, outputs["category"] != nil else {
-                FinanceLogger.intelligence.error(
-                    "CoreMLCategorizer: model is neither NLModel-compatible nor a token_counts→category sklearn pipeline"
-                )
-                return CoreMLCategorizer(
-                    backend: nil,
-                    modelVersion: "load-failed",
-                    loadError: "unsupported-model-type"
-                )
-            }
-
-            FinanceLogger.intelligence.info("CoreMLCategorizer: loaded as MLModel (sklearn BoW pipeline)")
-            return CoreMLCategorizer(
-                backend: .mlModel(mlModel),
-                modelVersion: version ?? "sklearn-bow-v1"
-            )
+            return detectBackend(mlModel: mlModel, version: version)
+                ?? CoreMLCategorizer(backend: nil, modelVersion: "load-failed", loadError: "unsupported-model-type")
         } catch {
             FinanceLogger.intelligence
                 .error("CoreMLCategorizer: model load failed. Inference falls back to kNN → rules.")
@@ -97,6 +69,23 @@ final class CoreMLCategorizer: @unchecked Sendable {
                 loadError: error.localizedDescription
             )
         }
+    }
+
+    private static func detectBackend(mlModel: MLModel, version: String?) -> CoreMLCategorizer? {
+        if let nlModel = try? NLModel(mlModel: mlModel) {
+            FinanceLogger.intelligence.info("CoreMLCategorizer: loaded as NLModel")
+            return CoreMLCategorizer(backend: .nlModel(nlModel), modelVersion: version ?? "nlmodel-v1")
+        }
+        let inputs = mlModel.modelDescription.inputDescriptionsByName
+        let outputs = mlModel.modelDescription.outputDescriptionsByName
+        guard inputs["token_counts"] != nil, outputs["category"] != nil else {
+            FinanceLogger.intelligence.error(
+                "CoreMLCategorizer: unsupported model type (not NLModel, not token_counts→category sklearn pipeline)"
+            )
+            return nil
+        }
+        FinanceLogger.intelligence.info("CoreMLCategorizer: loaded as MLModel (sklearn BoW pipeline)")
+        return CoreMLCategorizer(backend: .mlModel(mlModel), modelVersion: version ?? "sklearn-bow-v1")
     }
 
     var isAvailable: Bool {
