@@ -72,7 +72,7 @@ Architectural graphs at `graphify-out/`. Use selectively:
 
 **Skip for:** localized edits, compile fixes, routine work, simple SwiftUI changes.
 
-When needed, read `graphify-out/wiki/index.md` first — prefer it over repo scanning. After major architecture changes, run `graphify update .`.
+After major architecture changes, run `graphify update .`.
 
 ---
 
@@ -118,6 +118,7 @@ SwiftUI View → ViewModel → Repository Protocol → GRDB Repository → SQLit
 | FinanceParsers | Parser protocols, bank-specific parsers, import pipeline, deduplicator |
 | FinanceUI | SwiftUI components, design system (FDS) |
 | FinanceTesting | Shared test helpers, fixtures, golden JSON |
+| FinanceIntelligence | Transaction intelligence, behavior analysis (salary/routines/cashflow), categorization pipeline |
 
 ---
 
@@ -150,15 +151,25 @@ Large refactors require reasoning first.
 
 Phases 1–10 complete (Ledger unification, import pipeline, dedup engine, UI migration, MVVM refactor).
 
-## Active: Parser / Ingestion Hardening
+## Active: Financial Intelligence Platform
 
-1. CSV/XLSX parser hardening (ICICI, HDFC, Axis, and other Indian banks)
-2. Statement format auto-detection
-3. Bank-specific parsing rules
-4. Duplicate detection at scale
-5. Analytics and spending insights
+Primary goal: Build intelligent transaction analysis, behavior detection, and spending insights.
 
-Avoid implementing: sync, ML systems, cloud architecture, AI chat features.
+### Core Work (FinanceIntelligence)
+
+1. Transaction categorization & intelligence service
+2. Behavior analysis: salary detection, financial routine detection, cashflow analysis
+3. Post-processing pipeline (merchant deduplication, narration enrichment)
+4. Spending insights, patterns, and analytics
+5. CLI tools for batch intelligence processing
+
+### Enabler: Parser / Ingestion
+
+Parser hardening (CSV/XLSX, Indian banks, dedup, format detection) supports intelligence ingestion.
+
+---
+
+Avoid implementing: sync, pure ML training, cloud architecture, AI chat features.
 
 ---
 
