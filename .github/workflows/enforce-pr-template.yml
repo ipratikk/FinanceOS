@@ -38,9 +38,10 @@ jobs:
           # -------------------------------------------------------
 
           # Try extracting from the JIRA Issue field in the body
+          # Matches both plaintext (FINOS-5) and markdown links ([FINOS-5](url))
           JIRA_FROM_BODY=$(
             echo "$PR_BODY" \
-              | grep -oP '(?<=\*\*JIRA Issue:\*\*\s{0,10})[A-Z]+-[0-9]+' \
+              | grep -oP '(?<=\*\*JIRA Issue:\*\*\s{0,10})\[?[A-Z]+-[0-9]+' \
               || true
           )
 
@@ -76,14 +77,14 @@ jobs:
 
           # -------------------------------------------------------
           # 2. GitHub Issue field
-          #    Accepts: "#123"
+          #    Accepts: "#123" (plaintext or markdown link format)
           #    Looks for the template line: "**GitHub Issue:**" followed by #NNN
           #    or the "Closes #NNN" pattern in the body
           # -------------------------------------------------------
 
           GH_ISSUE_FROM_FIELD=$(
             echo "$PR_BODY" \
-              | grep -oP '(?<=\*\*GitHub Issue:\*\*\s{0,10})#[0-9]+' \
+              | grep -oP '(?<=\*\*GitHub Issue:\*\*\s{0,10})\[?#[0-9]+' \
               || true
           )
 
