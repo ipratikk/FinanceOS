@@ -1,100 +1,94 @@
 #!/usr/bin/env python3
 """
-Run all 11 model benchmarks and produce consolidated report.
+Master benchmark runner for FinanceOS Intelligence models.
 
-Usage:
-  python scripts/run_all_benchmarks.py \\
-    --dataset data/golden_transactions.jsonl \\
-    --output reports/phase1_baseline.json
+Runs all model benchmarks and aggregates results into single JSON report.
 """
 
-import argparse
-import json
+import sys
 import subprocess
+import json
 from pathlib import Path
 from datetime import datetime
-import sys
 
-
-BENCHMARK_SCRIPTS = [
-    "category/benchmark.py",
-    "merchant/benchmark.py",
-    "intent/benchmark.py",
-    "recurring/benchmark.py",
-    "income/benchmark.py",
-    # Phase 3+:
-    # "embedding/benchmark.py",
-    # "anomaly/benchmark.py",
-    # Phase 5+:
-    # "link_prediction/benchmark.py",
+BENCHMARKS = [
+    ("Category", "training/category/benchmark.py"),
+    ("Merchant", "training/merchant/benchmark.py"),
+    ("Intent", "training/intent/benchmark.py"),
+    ("Recurring", "training/recurring/benchmark.py"),
 ]
 
+def run_benchmark(name: str, script_path: str) -> tuple[bool, dict]:
+    """Run a single benchmark script."""
+    print(f"\n{'='*60}")
+    print(f"Running {name} Benchmark")
+    print(f"{'='*60}")
 
-def run_benchmarks(dataset_path: str, output_dir: str) -> dict:
-    """Run all benchmarks and collect results."""
-    results = {
-        "benchmark_date": datetime.utcnow().isoformat() + "Z",
-        "dataset": dataset_path,
-        "dataset_size": 0,
-        "models": {}
-    }
+    try:
+        result = subprocess.run([sys.executable, script_path], cwd="/Users/pragoel/Documents/GitHub/FinanceOS", 
+                                capture_output=True, text=True, timeout=60)
+        print(result.stdout)
+        if result.stderr:
+            print(f"STDERR: {result.stderr}")
 
-    # Count dataset size
-    if Path(dataset_path).exists():
-        with open(dataset_path) as f:
-            results["dataset_size"] = sum(1 for _ in f)
+        success = result.returncode == 0
 
-    # Run each benchmark
-    for script in BENCHMARK_SCRIPTS:
-        script_path = Path(script)
-        if not script_path.exists():
-            print(f"⊘ {script}: not found (stub - Phase 2+)")
-            continue
+        # Try to load the generated report
+        report_name = script_path.split("/")[-2]
+        report_path = Path(f"/Users/pragoel/Documents/GitHub/FinanceOS/training/reports/{report_name}_benchmark.json")
+        
+        report_data = {}
+        if report_path.exists():
+            with open(report_path) as f:
+                report_data = json.load(f)
 
-        print(f"→ Running {script}...", file=sys.stderr)
-        try:
-            # TODO: Invoke benchmark.py
-            # For now, stub
-            results["models"][script_path.parent.name] = {
-                "version": "0.1.0",
-                "status": "planned",
-                "note": "Implementation deferred to Phase 2"
-            }
-        except Exception as e:
-            print(f"✗ {script}: {e}", file=sys.stderr)
+        return success, report_data
 
-    return results
-
+    except subprocess.TimeoutExpired:
+        print(f"✗ {name} benchmark timed out")
+        return False, {}
+    except Exception as e:
+        print(f"✗ {name} benchmark failed: {e}")
+        return False, {}
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Run all model benchmarks"
-    )
-    parser.add_argument(
-        "--dataset",
-        required=True,
-        help="Golden dataset path (JSONL)"
-    )
-    parser.add_argument(
-        "--output",
-        default="reports/benchmark.json",
-        help="Output JSON report"
-    )
+    """Run all benchmarks and generate aggregated report."""
+    results = {}
+    all_passed = True
 
-    args = parser.parse_args()
+    for name, script in BENCHMARKS:
+        passed, report = run_benchmark(name, script)
+        results[name] = {"passed": passed, "report": report}
+        if not passed:
+            all_passed = False
 
-    results = run_benchmarks(args.dataset, Path(args.output).parent)
+    # Generate summary report
+    summary = {
+        "benchmark_date": datetime.utcnow().isoformat() + "Z",
+        "dataset": "golden_v1",
+        "total_benchmarks": len(BENCHMARKS),
+        "passed": sum(1 for r in results.values() if r["passed"]),
+        "failed": sum(1 for r in results.values() if not r["passed"]),
+        "results": results,
+        "overall_passed": all_passed,
+    }
 
-    # Write report
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    # Write summary
+    report_dir = Path("/Users/pragoel/Documents/GitHub/FinanceOS/training/reports")
+    report_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(output_path, "w") as f:
-        json.dump(results, f, indent=2)
+    summary_path = report_dir / "benchmark_summary.json"
+    with open(summary_path, "w") as f:
+        json.dump(summary, f, indent=2)
 
-    print(f"✓ Report written to {output_path}", file=sys.stderr)
-    print(json.dumps(results, indent=2))
+    print(f"\n{'='*60}")
+    print(f"Benchmark Summary")
+    print(f"{'='*60}")
+    print(f"Total: {summary['total_benchmarks']} | Passed: {summary['passed']} | Failed: {summary['failed']}")
+    print(f"Overall: {'✓ PASSED' if all_passed else '✗ FAILED'}")
+    print(f"\nReport: {summary_path}")
 
+    return 0 if all_passed else 1
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
