@@ -44,14 +44,17 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         } else {
             personRepository = PersonEntityStore()
         }
-        let loadedCoreML = await CoreMLCategorizer.load()
-        coreMLCategorizer = loadedCoreML
+        let loadedCoreML = await CoreMLCategorizer.load(registry: configuration.modelRegistry)
+        coreMLCategorizer = loadedCoreML.isAvailable ? loadedCoreML : nil
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
         )
         intelligenceConfig = configuration.intelligenceConfig
 
-        await Self.registerBundledModel(registry: configuration.modelMetadataRegistry, categorizer: loadedCoreML)
+        await Self.registerBundledModel(
+            metadataRegistry: configuration.modelMetadataRegistry,
+            categorizer: loadedCoreML
+        )
         insightEngine = SpendingInsightEngine(config: intelligenceConfig.insight)
         extractor = TransactionFeatureExtractor()
         descriptionGenerator = DescriptionGenerator()
@@ -75,16 +78,18 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         feedbackStore = configuration.feedbackStore
     }
 
-    private static func registerBundledModel(registry: ModelMetadataRegistry, categorizer: CoreMLCategorizer) async {
-        guard await registry.currentVersion(for: "TransactionCategoryClassifier") == nil else { return }
+    private static func registerBundledModel(
+        metadataRegistry: ModelMetadataRegistry,
+        categorizer: CoreMLCategorizer
+    ) async {
+        guard await metadataRegistry.currentVersion(for: "category_classifier") == nil else { return }
         let trainedAt = ISO8601DateFormatter().date(from: "2026-05-28T13:32:40Z") ?? Date()
         let notes = categorizer.isAvailable
-            ? "Bundled text classifier. Loaded successfully."
-            // swiftlint:disable:next line_length
-            : "Tabular classifier incompatible with NLModel API — load failed (\(categorizer.loadError ?? "unknown")). Labels: fees, groceries, income, insurance, subscriptions, transfers (6 only). Replace with CreateML Text Classifier. Contains PII in model weights."
-        await registry.register(ModelMetadataEntry(
-            modelName: "TransactionCategoryClassifier",
-            modelType: categorizer.isAvailable ? "nlModelTextClassifier" : "tabularClassifier",
+            ? "Bundled text classifier. Loaded successfully via ModelRegistry."
+            : "Registry load failed (\(categorizer.loadError ?? "unknown")). Falling back to RuleBasedCategorizer."
+        await metadataRegistry.register(ModelMetadataEntry(
+            modelName: "category_classifier",
+            modelType: categorizer.isAvailable ? "nlModelTextClassifier" : "rulesBased",
             modelVersion: categorizer.modelVersion,
             trainedAt: trainedAt,
             trainingExampleCount: 0,
@@ -386,10 +391,10 @@ extension TransactionIntelligenceServiceImpl {
             )
         }
         // Priority 4: bundled NLModel text classifier
-        if let coreML, coreML.isAvailable, let pred = coreML.predict(features: features) { return pred }
-        return .uncategorized(
-            modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version
-        )
+        if let coreML, let pred = coreML.predict(features: features) { return pred }
+
+        // Priority 5: rule-based fallback when CoreML unavailable
+        return RuleBasedCategorizer(taxonomy: taxonomy).categorize(features)
     }
 }
 
@@ -447,12 +452,12 @@ private extension TransactionIntelligenceServiceImpl {
         }
 
         // Priority 4: bundled NLModel text classifier
-        if let coreML = coreMLCategorizer, coreML.isAvailable,
-           let prediction = coreML.predict(features: features) {
+        if let coreML = coreMLCategorizer, let prediction = coreML.predict(features: features) {
             return prediction
         }
 
-        return .uncategorized(modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version)
+        // Priority 5: rule-based fallback when CoreML unavailable
+        return RuleBasedCategorizer(taxonomy: taxonomy).categorize(features)
     }
 
     private static let categoryIntentMap: [String: TransactionIntent] = [
