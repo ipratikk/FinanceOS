@@ -220,7 +220,8 @@ struct IntelligenceExporter {
                   !categoryId.isEmpty,
                   categoryId != "uncategorized",
                   !txn.description.isEmpty,
-                  taxonomy.category(forId: categoryId) != nil else { continue }
+                  taxonomy.category(forId: categoryId) != nil ||
+                  taxonomy.subcategory(forId: categoryId) != nil else { continue }
             samples.append(TrainingSample(text: txn.description, label: categoryId))
         }
 

@@ -146,7 +146,8 @@ extension BuiltInRules {
                 priority: 6,
                 condition: .tokenContainsAny([
                     "sip", "systematic investment", "nach debit", "mutual fund",
-                    "indian clearing", "ach d", "nsdl clearing", "bse clearing"
+                    "indian clearing", "ach d", "nsdl clearing", "bse clearing",
+                    "groww", "zerodha", "kuvera", "coin by zerodha", "smallcase"
                 ]),
                 outcome: RuleOutcome(
                     categoryId: "investments",

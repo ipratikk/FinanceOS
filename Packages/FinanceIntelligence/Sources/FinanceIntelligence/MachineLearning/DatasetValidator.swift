@@ -96,7 +96,7 @@ public struct DatasetValidator {
         issues.append(contentsOf: checkForPII(dataset))
 
         // Check duplicates
-        let narrations = Set(dataset.examples.map { $0.narration })
+        let narrations = Set(dataset.examples.map(\.narration))
         let duplicateCount = dataset.examples.count - narrations.count
         if duplicateCount > 0 {
             warnings.append(ValidationWarning(
@@ -130,7 +130,7 @@ public struct DatasetValidator {
         let balance = dataset.metadata.balance
         let minRatio = 0.05
         for (label, ratio) in balance {
-            if ratio > 0 && ratio < minRatio && dataset.examples.count > 100 {
+            if ratio > 0, ratio < minRatio, dataset.examples.count > 100 {
                 warnings.append(ValidationWarning(
                     code: "IMBALANCED_CLASS",
                     message: "Class '\(label)' has only \(String(format: "%.1f", ratio * 100))% of examples"
@@ -143,7 +143,7 @@ public struct DatasetValidator {
     private func checkForPII(_ dataset: LabeledNarrationCollection) -> [ValidationIssue] {
         var issues: [ValidationIssue] = []
         for example in dataset.examples {
-            if example.narration.contains(where: { $0.isNumber }) && example.narration.count < 20 {
+            if example.narration.contains(where: \.isNumber), example.narration.count < 20 {
                 if example.narration.filter(\.isNumber).count >= 10 {
                     issues.append(ValidationIssue(
                         code: "POSSIBLE_PII_LEAK",
@@ -196,7 +196,7 @@ public struct ClassifierEvaluator {
             )
         }
 
-        let correct = predictions.filter { $0.expected == $0.predicted }.count
+        let correct = predictions.count(where: { $0.expected == $0.predicted })
         let accuracy = Double(correct) / Double(predictions.count)
 
         var tp: [String: Int] = [:]

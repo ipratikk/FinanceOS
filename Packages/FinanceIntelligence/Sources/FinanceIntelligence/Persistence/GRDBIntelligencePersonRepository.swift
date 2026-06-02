@@ -83,19 +83,19 @@ public final class GRDBIntelligencePersonRepository: @unchecked Sendable,
             }
 
             if let existingId = try personId(forAlias: input.normalized, in: database) {
-                return ok(try update(id: existingId))
+                return try ok(update(id: existingId))
             }
             if input.sanitizedName != input.name {
                 let originalNormalized = PersonNameNormalizer.normalize(input.name)
                 if let existingId = try personId(forAlias: originalNormalized, in: database) {
-                    return ok(try update(id: existingId))
+                    return try ok(update(id: existingId))
                 }
             }
             if let handle = input.upiHandle?.lowercased(),
                let row = try GRDBIntelligencePerson
                .filter(GRDBIntelligencePerson.Columns.upiHandle == handle)
                .fetchOne(database) {
-                return ok(try update(id: row.id))
+                return try ok(update(id: row.id))
             }
             // Fuzzy dedup: check for near-duplicate person before creating a new record
             if let candidate = try findFuzzyCandidate(for: input.effectiveName, in: database),

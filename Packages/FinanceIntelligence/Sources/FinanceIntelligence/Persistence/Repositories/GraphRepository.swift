@@ -23,6 +23,11 @@ public protocol GraphRepository: Sendable {
     func neighbors(of nodeId: String) async throws -> [GraphNode]
     func neighbors(of nodeId: String, edgeType: GraphEdge.EdgeType) async throws -> [GraphNode]
 
+    // MARK: Bulk Writes (pipeline optimization — single SQLite transaction)
+
+    func upsertNodesBatch(_ nodes: [GraphNode]) async throws -> [GraphNode]
+    func upsertEdgesBatch(_ edges: [GraphEdge]) async throws
+
     // MARK: Bulk Reads (for dev-mode inspector, limited to 1000 rows)
 
     func allNodes(limit: Int) async throws -> [GraphNode]

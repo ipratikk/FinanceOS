@@ -32,6 +32,7 @@ struct MockTransactionRepository: TransactionRepository {
     func updateIntelligence(id: UUID, categoryId: String?, merchantName: String?) async throws {}
 
     func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws {}
+    func updateEnrichmentProvenanceBatch(_ updates: [(id: UUID, provenance: EnrichmentProvenance)]) async throws {}
 
     func markUserCorrectedMerchant(id: UUID) async throws {}
 

@@ -6,7 +6,7 @@
 
 import Foundation
 
-// Seed data from PersonMerchantDataset
+/// Seed data from PersonMerchantDataset
 let seedExamples: [(String, String, String)] = [
     ("UPI-JOHN DOE-9876543210@upi-HDFC0-REF1", "person", "HDFC"),
     ("UPI-RAJESH SHARMA-9123456789@ybl-ICIC0-REF2", "person", "ICICI"),
@@ -16,10 +16,10 @@ let seedExamples: [(String, String, String)] = [
     ("NEFT DR-ICIC0-NETFLIX INDIA PVT LTD-REF8", "merchant", "ICICI"),
     ("UPI-ZOMATO-zomato@sbi-REF9", "merchant", "SBI"),
     ("NEFT CR-HDFC0-UBER INDIA-REF10", "merchant", "HDFC"),
-    ("NEFT-UNKNOWN-ABC123", "unknown", "HDFC"),
+    ("NEFT-UNKNOWN-ABC123", "unknown", "HDFC")
 ]
 
-// Synthetic examples for underrepresented patterns
+/// Synthetic examples for underrepresented patterns
 let syntheticExamples: [(String, String)] = [
     ("UPI-ASHOK KUMAR-9876543210@upi-HDFC0-REF", "person"),
     ("UPI-DEEPA SINGH-9123456789@ybl-ICIC0-REF", "person"),
@@ -27,10 +27,10 @@ let syntheticExamples: [(String, String)] = [
     ("UPI-AJIO-ajio@swiggypay-REF", "merchant"),
     ("NEFT CR-HDFC0-NYKAA INDIA PVT LTD-REF", "merchant"),
     ("UPI-ABC123-REF456", "unknown"),
-    ("TRANSFER REFERENCE XYZ", "unknown"),
+    ("TRANSFER REFERENCE XYZ", "unknown")
 ]
 
-// Format selection
+/// Format selection
 let format = CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "csv"
 
 // Export CSV format

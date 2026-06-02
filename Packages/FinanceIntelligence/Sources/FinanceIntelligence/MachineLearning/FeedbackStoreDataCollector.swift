@@ -111,7 +111,7 @@ public struct FeedbackStoreDataCollector {
         }
 
         // Person name pattern (first + last name, no numbers or business words)
-        if !merchant.contains(where: \.isNumber) && merchant.split(separator: " ").count >= 2 {
+        if !merchant.contains(where: \.isNumber), merchant.split(separator: " ").count >= 2 {
             return "person"
         }
 
@@ -123,7 +123,7 @@ public struct FeedbackStoreDataCollector {
         if let range = json.range(of: "\"\(field)\":\"") {
             let startIndex = range.upperBound
             if let endRange = json[startIndex...].range(of: "\"") {
-                return String(json[startIndex..<endRange.lowerBound])
+                return String(json[startIndex ..< endRange.lowerBound])
             }
         }
         return nil
@@ -145,11 +145,11 @@ public struct FeedbackExample: Identifiable {
         source: String,
         confidence: Double = 0.8
     ) {
-        self.id = UUID()
+        id = UUID()
         self.narration = narration
         self.label = label
         self.source = source
         self.confidence = confidence
-        self.createdAt = Date()
+        createdAt = Date()
     }
 }

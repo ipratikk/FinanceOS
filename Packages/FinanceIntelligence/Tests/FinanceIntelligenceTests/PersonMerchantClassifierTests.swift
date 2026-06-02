@@ -103,7 +103,7 @@ func personMerchantClassifier_baselineAccuracy() {
     ]
 
     let predictions = testCases.map { classifier.classify($0.0) }
-    let correct = zip(predictions, testCases).filter { $0.0.label == $0.1.1 }.count
+    let correct = zip(predictions, testCases).count(where: { $0.0.label == $0.1.1 })
     let accuracy = Double(correct) / Double(testCases.count)
 
     #expect(accuracy >= 0.75) // baseline should hit 75%+

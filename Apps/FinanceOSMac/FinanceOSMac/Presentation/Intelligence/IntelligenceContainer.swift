@@ -14,6 +14,8 @@ final class IntelligenceContainer {
     let relationshipRepository: any RelationshipRepository
     let recurringPatternRepository: any RecurringPatternRepository
     let graphRepository: any GraphRepository
+    let feedbackStore: any FeedbackStore
+    let datasetOrchestrator: DatasetOrchestrator
 
     private init() {
         let queue = DatabaseManager.shared.dbQueue
@@ -21,5 +23,7 @@ final class IntelligenceContainer {
         relationshipRepository = GRDBRelationshipRepository(dbWriter: queue)
         recurringPatternRepository = GRDBRecurringPatternRepository(dbWriter: queue)
         graphRepository = GRDBGraphRepository(dbWriter: queue)
+        feedbackStore = GRDBFeedbackStore(dbQueue: queue)
+        datasetOrchestrator = DatasetOrchestrator()
     }
 }

@@ -101,7 +101,7 @@ func datasetCollection_jsonExport() async throws {
 func datasetCollection_statistics() async {
     let collector = DatasetCollector()
 
-    for i in 0..<10 {
+    for i in 0 ..< 10 {
         let label: LabeledNarration.NarrationLabel = i % 2 == 0 ? .person : .merchant
         await collector.addFromFixture(
             narration: "Example \(i)",

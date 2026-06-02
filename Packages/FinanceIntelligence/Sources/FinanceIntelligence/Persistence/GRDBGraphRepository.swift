@@ -141,6 +141,45 @@ public struct GRDBGraphRepository: GraphRepository {
         }
     }
 
+    // MARK: - Batch Writes
+
+    public func upsertNodesBatch(_ nodes: [GraphNode]) async throws -> [GraphNode] {
+        guard !nodes.isEmpty else { return [] }
+        return try await dbWriter.write { db in
+            try nodes.map { node in
+                if let existing = try GRDBGraphNode
+                    .filter(Column("externalId") == node.externalId && Column("nodeType") == node.nodeType.rawValue)
+                    .fetchOne(db), let domain = existing.toDomain() {
+                    return domain
+                }
+                let grdb = GRDBGraphNode(from: node)
+                try grdb.insert(db)
+                return node
+            }
+        }
+    }
+
+    public func upsertEdgesBatch(_ edges: [GraphEdge]) async throws {
+        guard !edges.isEmpty else { return }
+        try await dbWriter.write { db in
+            for edge in edges {
+                if var found = try GRDBGraphEdge
+                    .filter(Column("fromNodeId") == edge.fromNodeId &&
+                        Column("toNodeId") == edge.toNodeId &&
+                        Column("edgeType") == edge.edgeType.rawValue)
+                    .fetchOne(db) {
+                    found.observationCount += 1
+                    found.weight = min(found.weight + graphConfig.edgeWeightIncrement, graphConfig.edgeWeightMax)
+                    found.lastObservedAt = edge.lastObservedAt
+                    try found.update(db)
+                } else {
+                    let grdb = GRDBGraphEdge(from: edge)
+                    try grdb.insert(db)
+                }
+            }
+        }
+    }
+
     // MARK: - Bulk Reads
 
     public func allNodes(limit: Int = 1000) async throws -> [GraphNode] {

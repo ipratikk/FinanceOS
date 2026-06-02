@@ -4,6 +4,11 @@ import Foundation
 /// Builds and updates the knowledge graph from enriched transactions.
 /// Called after each import batch as a background task.
 /// All writes are idempotent — safe to re-run on the same transaction set.
+///
+/// Uses a two-pass batch strategy:
+///   Pass 1: Collect all node descriptors (pure computation, no I/O)
+///   Pass 2: Upsert all nodes in one SQLite transaction, then all edges in one transaction
+/// This replaces O(N×6) individual writes with 2 writes regardless of batch size.
 public struct GraphBuilder: Sendable {
     private let store: GraphStore
 
@@ -11,76 +16,85 @@ public struct GraphBuilder: Sendable {
         self.store = store
     }
 
-    /// Updates the graph for a batch of enriched transactions.
-    /// Creates/updates nodes and edges; increments observation counts on repeated patterns.
     public func build(from transactions: [EnrichedTransaction]) async throws {
-        for txn in transactions {
-            try await processTransaction(txn)
+        guard !transactions.isEmpty else { return }
+
+        // Pass 1: collect all node/edge descriptors without any I/O.
+        var nodeSpecs: [String: NodeSpec] = [:]
+        var edgeSpecs: [EdgeSpec] = []
+
+        for enriched in transactions {
+            let txn = enriched.transaction
+            let txnKey = NodeSpec.key(.transaction, txn.id.uuidString)
+            nodeSpecs[txnKey] = NodeSpec(type: .transaction, externalId: txn.id.uuidString, label: txn.description)
+
+            let edgeType: GraphEdge.EdgeType = txn.transactionType == .debit ? .paidTo : .paidFrom
+
+            if let personId = enriched.resolvedEntities?.personId {
+                let personKey = NodeSpec.key(.person, personId.uuidString)
+                nodeSpecs[personKey] = NodeSpec(
+                    type: .person, externalId: personId.uuidString,
+                    label: enriched.merchantCandidate.canonicalName
+                )
+                edgeSpecs.append(EdgeSpec(fromKey: txnKey, toKey: personKey, type: edgeType, date: txn.postedAt))
+            } else {
+                let merchantExtId = enriched.merchantCandidate.canonicalName.lowercased()
+                let merchantKey = NodeSpec.key(.merchant, merchantExtId)
+                nodeSpecs[merchantKey] = NodeSpec(
+                    type: .merchant, externalId: merchantExtId,
+                    label: enriched.merchantCandidate.canonicalName
+                )
+                edgeSpecs.append(EdgeSpec(fromKey: txnKey, toKey: merchantKey, type: edgeType, date: txn.postedAt))
+
+                let catId = enriched.categoryPrediction.categoryId
+                let catKey = NodeSpec.key(.category, catId)
+                nodeSpecs[catKey] = NodeSpec(
+                    type: .category, externalId: catId,
+                    label: enriched.categoryPrediction.displayName
+                )
+                edgeSpecs.append(EdgeSpec(fromKey: merchantKey, toKey: catKey, type: .classifiedAs, date: txn.postedAt))
+            }
+
+            if let ledgerId = txn.ledgerId {
+                let accountKey = NodeSpec.key(.account, ledgerId.uuidString)
+                nodeSpecs[accountKey] = NodeSpec(
+                    type: .account, externalId: ledgerId.uuidString,
+                    label: ledgerId.uuidString
+                )
+                edgeSpecs.append(EdgeSpec(fromKey: txnKey, toKey: accountKey, type: .belongsTo, date: txn.postedAt))
+            }
+        }
+
+        // Pass 2a: batch upsert all nodes — 1 SQLite transaction.
+        let nodes = nodeSpecs.values.map { s in GraphNode(nodeType: s.type, externalId: s.externalId, label: s.label) }
+        let upserted = try await store.upsertNodesBatch(nodes)
+        let idMap = Dictionary(uniqueKeysWithValues: upserted.map { n in
+            (NodeSpec.key(n.nodeType, n.externalId), n.id)
+        })
+
+        // Pass 2b: batch upsert all edges — 1 SQLite transaction.
+        let edges = edgeSpecs.compactMap { spec -> GraphEdge? in
+            guard let fromId = idMap[spec.fromKey], let toId = idMap[spec.toKey] else { return nil }
+            return GraphEdge(fromNodeId: fromId, toNodeId: toId, edgeType: spec.type, lastObservedAt: spec.date)
+        }
+        try await store.upsertEdgesBatch(edges)
+    }
+
+    // MARK: - Private helpers
+
+    private struct NodeSpec {
+        let type: GraphNode.NodeType
+        let externalId: String
+        let label: String
+        static func key(_ type: GraphNode.NodeType, _ externalId: String) -> String {
+            "\(type.rawValue):\(externalId)"
         }
     }
 
-    // MARK: - Private
-
-    private func processTransaction(_ enriched: EnrichedTransaction) async throws {
-        let txn = enriched.transaction
-        let txnNode = try await store.upsertNode(GraphNode(
-            nodeType: .transaction,
-            externalId: txn.id.uuidString,
-            label: txn.description
-        ))
-        try await addPersonOrMerchantEdge(txnNode: txnNode, enriched: enriched)
-        try await addAccountEdge(txnNode: txnNode, txn: txn)
-    }
-
-    private func addPersonOrMerchantEdge(txnNode: GraphNode, enriched: EnrichedTransaction) async throws {
-        let txn = enriched.transaction
-        let edgeType: GraphEdge.EdgeType = txn.transactionType == .debit ? .paidTo : .paidFrom
-        if let personId = enriched.resolvedEntities?.personId {
-            let person = try await store.upsertNode(GraphNode(
-                nodeType: .person,
-                externalId: personId.uuidString,
-                label: enriched.merchantCandidate.canonicalName
-            ))
-            _ = try await store.upsertEdge(GraphEdge(
-                fromNodeId: txnNode.id, toNodeId: person.id,
-                edgeType: edgeType, lastObservedAt: txn.postedAt
-            ))
-        } else {
-            let merchantNode = try await store.upsertNode(GraphNode(
-                nodeType: .merchant,
-                externalId: enriched.merchantCandidate.canonicalName.lowercased(),
-                label: enriched.merchantCandidate.canonicalName
-            ))
-            _ = try await store.upsertEdge(GraphEdge(
-                fromNodeId: txnNode.id, toNodeId: merchantNode.id,
-                edgeType: edgeType, lastObservedAt: txn.postedAt
-            ))
-            try await addCategoryEdge(merchantNode: merchantNode, enriched: enriched)
-        }
-    }
-
-    private func addCategoryEdge(merchantNode: GraphNode, enriched: EnrichedTransaction) async throws {
-        let catNode = try await store.upsertNode(GraphNode(
-            nodeType: .category,
-            externalId: enriched.categoryPrediction.categoryId,
-            label: enriched.categoryPrediction.displayName
-        ))
-        _ = try await store.upsertEdge(GraphEdge(
-            fromNodeId: merchantNode.id, toNodeId: catNode.id,
-            edgeType: .classifiedAs, lastObservedAt: Date()
-        ))
-    }
-
-    private func addAccountEdge(txnNode: GraphNode, txn: Transaction) async throws {
-        guard let ledgerId = txn.ledgerId else { return }
-        let accountNode = try await store.upsertNode(GraphNode(
-            nodeType: .account,
-            externalId: ledgerId.uuidString,
-            label: ledgerId.uuidString
-        ))
-        _ = try await store.upsertEdge(GraphEdge(
-            fromNodeId: txnNode.id, toNodeId: accountNode.id,
-            edgeType: .belongsTo, lastObservedAt: txn.postedAt
-        ))
+    private struct EdgeSpec {
+        let fromKey: String
+        let toKey: String
+        let type: GraphEdge.EdgeType
+        let date: Date
     }
 }

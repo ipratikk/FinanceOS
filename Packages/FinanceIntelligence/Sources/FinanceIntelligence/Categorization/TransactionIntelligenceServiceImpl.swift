@@ -7,15 +7,13 @@ import NaturalLanguage
 /// Concrete implementation of `TransactionIntelligenceService`.
 /// Prediction priority (highest to lowest):
 ///   1. Stored user correction
-///   2. RuleEngine high-confidence hit (≥0.90) — also always provides intent
-///   3. On-device CoreML kNN (personalized via MLUpdateTask)
-///   4. Bundled NLModel text classifier
-///   5. Alias table lookup
-///   6. RuleEngine fallback (deterministic keyword rules)
+///   2. On-device CoreML kNN (personalized via MLUpdateTask)
+///   3. Bundled NLModel text classifier
+///   4. Alias table lookup
+///   5. Uncategorized (improve training data)
+/// Intent is derived from predicted category — no separate rule engine.
 public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService {
     private let normalizer: MerchantNormalizer
-    private let ruleCategorizer: RuleBasedCategorizer
-    private let ruleEngine: RuleEngine
     private let personResolver: PersonResolver
     private let personRepository: any IntelligencePersonRepository
     private let coreMLCategorizer: CoreMLCategorizer?
@@ -37,8 +35,6 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         taxonomy = configuration.taxonomy
         correctionStore = UserCorrectionStore(storageURL: configuration.correctionStoreURL)
         normalizer = MerchantNormalizer()
-        ruleCategorizer = RuleBasedCategorizer(taxonomy: configuration.taxonomy)
-        ruleEngine = RuleEngine(taxonomy: configuration.taxonomy)
         personResolver = PersonResolver()
         if let queue = configuration.databaseQueue {
             personRepository = GRDBIntelligencePersonRepository(
@@ -48,11 +44,14 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         } else {
             personRepository = PersonEntityStore()
         }
-        coreMLCategorizer = await CoreMLCategorizer.load()
+        let loadedCoreML = await CoreMLCategorizer.load()
+        coreMLCategorizer = loadedCoreML
         personalizedClassifier = await PersonalizedClassifier.load(
             personalizedModelURL: configuration.personalizedKNNModelURL
         )
         intelligenceConfig = configuration.intelligenceConfig
+
+        await Self.registerBundledModel(registry: configuration.modelRegistry, categorizer: loadedCoreML)
         insightEngine = SpendingInsightEngine(config: intelligenceConfig.insight)
         extractor = TransactionFeatureExtractor()
         descriptionGenerator = DescriptionGenerator()
@@ -74,6 +73,23 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         intelligenceLogger = configuration.intelligenceLogger
         modelRegistry = configuration.modelRegistry
         feedbackStore = configuration.feedbackStore
+    }
+
+    private static func registerBundledModel(registry: ModelRegistry, categorizer: CoreMLCategorizer) async {
+        guard await registry.currentVersion(for: "TransactionCategoryClassifier") == nil else { return }
+        let trainedAt = ISO8601DateFormatter().date(from: "2026-05-28T13:32:40Z") ?? Date()
+        let notes = categorizer.isAvailable
+            ? "Bundled text classifier. Loaded successfully."
+            // swiftlint:disable:next line_length
+            : "Tabular classifier incompatible with NLModel API — load failed (\(categorizer.loadError ?? "unknown")). Labels: fees, groceries, income, insurance, subscriptions, transfers (6 only). Replace with CreateML Text Classifier. Contains PII in model weights."
+        await registry.register(ModelMetadataEntry(
+            modelName: "TransactionCategoryClassifier",
+            modelType: categorizer.isAvailable ? "nlModelTextClassifier" : "tabularClassifier",
+            modelVersion: categorizer.modelVersion,
+            trainedAt: trainedAt,
+            trainingExampleCount: 0,
+            notes: notes
+        ))
     }
 
     public func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction {
@@ -124,7 +140,6 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
         let norm = normalizer
         let ext = extractor
-        let rules = ruleCategorizer
         let coreML = coreMLCategorizer
         let tax = taxonomy
 
@@ -157,7 +172,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             let prediction = await Self.buildPrediction(
                 features: features, merchant: merchant,
                 personalized: personalized,
-                coreML: coreML, rules: rules, taxonomy: tax,
+                coreML: coreML, taxonomy: tax,
                 knnThreshold: intelligenceConfig.classification.knnConfidenceThreshold,
                 configVersion: intelligenceConfig.version
             )
@@ -180,7 +195,6 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         let ctx = FeatureExtractionContext(ledgerKind: context.ledgerKind, institution: context.institution)
         let features = extractor.extract(from: transaction, context: ctx)
         let merchant = normalizer.normalize(transaction.description)
-        let ruleResult = ruleEngine.evaluate(features)
 
         let categoryPrediction: CategoryPrediction
         let isUserCorrected: Bool
@@ -188,15 +202,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         if let correction = await correctionStore.correction(for: transaction.id) {
             categoryPrediction = correctionPrediction(correction, features: features)
             isUserCorrected = true
-        } else if let ruleCat = ruleResult.categoryPrediction,
-                  ruleCat.confidence >= intelligenceConfig.classification.ruleConfidenceThreshold {
-            // Only let high-confidence structural rules (salary, ATM, SGST, SIP, billpay)
-            // override ML. Keyword-category rules are pruned; trained kNN handles those.
-            categoryPrediction = ruleCat
-            isUserCorrected = false
         } else {
-            // kNN (PersonalizedClassifier) fires here at 0.7+ threshold — now trained on
-            // full transaction corpus, so it handles merchant categories ML was missing.
             categoryPrediction = await predictCategory(
                 features: features,
                 merchantCategoryId: merchant.categoryId
@@ -204,11 +210,13 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             isUserCorrected = false
         }
 
+        let intentPrediction = intentFromCategory(categoryPrediction.categoryId, features: features)
+
         await intelligenceLogger.record(IntelligenceEvent(
             transactionId: transaction.id.uuidString,
             stage: .finalCategorization, source: categoryPrediction.source,
             modelVersion: categoryPrediction.modelVersion, outputLabel: categoryPrediction.categoryId,
-            outputIntent: ruleResult.intentPrediction.intent.rawValue,
+            outputIntent: intentPrediction.intent.rawValue,
             confidence: categoryPrediction.confidence, confidenceKind: categoryPrediction.confidenceKind
         ))
         let resolvedEntities = await resolveEntities(
@@ -218,7 +226,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
         let descContext = DescriptionContext(
             merchantName: merchant.canonicalName,
-            intent: ruleResult.intentPrediction.intent,
+            intent: intentPrediction.intent,
             isDebit: transaction.transactionType == .debit
         )
         let humanDescription = await descriptionGenerator.generate(from: descContext)
@@ -227,7 +235,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             transaction: transaction,
             merchantCandidate: merchant,
             categoryPrediction: categoryPrediction,
-            intentPrediction: ruleResult.intentPrediction,
+            intentPrediction: intentPrediction,
             features: features,
             isUserCorrected: isUserCorrected,
             pipelineVersion: "1.0",
@@ -321,23 +329,22 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         )
     }
 }
+
 // swiftlint:enable type_body_length
 
 // MARK: - Static Prediction (no actor needed — called from concurrent tasks)
 
 extension TransactionIntelligenceServiceImpl {
-    // swiftlint:disable:next function_parameter_count
     static func buildPrediction(
         features: TransactionFeatures,
         merchant: MerchantCandidate,
         personalized: PersonalizedClassifier?,
         coreML: CoreMLCategorizer?,
-        rules: RuleBasedCategorizer,
         taxonomy: CategoryTaxonomy,
         knnThreshold: Double = IntelligenceConfig.defaultV1.classification.knnConfidenceThreshold,
         configVersion: String? = nil
     ) async -> CategoryPrediction {
-        // Priority 1: on-device CoreML kNN (user corrections via MLUpdateTask)
+        // Priority 1: on-device CoreML kNN (personalized corrections via MLUpdateTask)
         if let personalized,
            let knn = await personalized.predict(normalizedDescription: features.normalizedDescription),
            knn.confidence >= knnThreshold {
@@ -349,9 +356,25 @@ extension TransactionIntelligenceServiceImpl {
                 confidenceKind: .uncalibratedScore, configVersion: configVersion
             )
         }
-        // Priority 2: bundled NLModel text classifier
-        if let coreML, coreML.isAvailable, let pred = coreML.predict(features: features) { return pred }
-        // Priority 3: alias table
+        // Priority 2a: payroll signal overrides NEFT transfer detection for incoming salary credits.
+        if features.hasPayrollIndicator, !features.isDebit {
+            return CategoryPrediction(
+                categoryId: "income", subcategoryId: "income.salary", displayName: "Salary",
+                confidence: 0.93, alternatives: [], source: .structuralRule,
+                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version,
+                confidenceKind: .deterministic, configVersion: configVersion
+            )
+        }
+        // Priority 2b: structural transfer signal (format-based, not keyword-based)
+        if features.hasTransferIndicator {
+            return CategoryPrediction(
+                categoryId: "transfers", subcategoryId: nil, displayName: "Transfers",
+                confidence: 0.92, alternatives: [], source: .structuralRule,
+                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version,
+                confidenceKind: .deterministic, configVersion: configVersion
+            )
+        }
+        // Priority 3: alias table — curated merchant→category mappings, higher precision than NLModel.
         if let categoryId = merchant.categoryId {
             let topLevel = categoryId.components(separatedBy: ".").first ?? categoryId
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
@@ -362,8 +385,11 @@ extension TransactionIntelligenceServiceImpl {
                 confidenceKind: .heuristicOrdinal, configVersion: configVersion
             )
         }
-        // Priority 4: deterministic rules
-        return rules.categorize(features)
+        // Priority 4: bundled NLModel text classifier
+        if let coreML, coreML.isAvailable, let pred = coreML.predict(features: features) { return pred }
+        return .uncategorized(
+            modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version
+        )
     }
 }
 
@@ -387,13 +413,28 @@ private extension TransactionIntelligenceServiceImpl {
             )
         }
 
-        // Priority 2: bundled NLModel text classifier
-        if let coreML = coreMLCategorizer, coreML.isAvailable,
-           let prediction = coreML.predict(features: features) {
-            return prediction
+        // Priority 2a: payroll signal — "salary" keyword on an incoming credit.
+        // Overrides NEFT/IMPS transfer detection: NEFT CR salary credits are income, not transfers.
+        if features.hasPayrollIndicator, !features.isDebit {
+            return CategoryPrediction(
+                categoryId: "income", subcategoryId: "income.salary", displayName: "Salary",
+                confidence: 0.93, alternatives: [], source: .structuralRule,
+                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version,
+                confidenceKind: .deterministic
+            )
         }
 
-        // Priority 3: alias table
+        // Priority 2b: structural transfer signal — phone-based UPI VPA or NEFT/IMPS format.
+        if features.hasTransferIndicator {
+            return CategoryPrediction(
+                categoryId: "transfers", subcategoryId: nil, displayName: "Transfers",
+                confidence: 0.92, alternatives: [], source: .structuralRule,
+                modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version,
+                confidenceKind: .deterministic
+            )
+        }
+
+        // Priority 3: alias table — curated merchant→category mappings, higher precision than NLModel.
         if let categoryId = merchantCategoryId {
             let topLevel = categoryId.components(separatedBy: ".").first ?? categoryId
             let name = taxonomy.category(forId: topLevel)?.displayName ?? topLevel
@@ -405,8 +446,38 @@ private extension TransactionIntelligenceServiceImpl {
             )
         }
 
-        // Priority 4: deterministic rules
-        return ruleCategorizer.categorize(features)
+        // Priority 4: bundled NLModel text classifier
+        if let coreML = coreMLCategorizer, coreML.isAvailable,
+           let prediction = coreML.predict(features: features) {
+            return prediction
+        }
+
+        return .uncategorized(modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version)
+    }
+
+    private static let categoryIntentMap: [String: TransactionIntent] = [
+        "transfers": .transfer, "insurance": .insurance, "housing": .rent,
+        "subscriptions": .subscription, "dining": .food, "groceries": .groceries,
+        "shopping": .shopping, "transportation": .travel, "travel": .travel,
+        "healthcare": .healthcare, "utilities": .utilityBill
+    ]
+
+    func intentFromCategory(_ categoryId: String, features: TransactionFeatures) -> IntentPrediction {
+        let top = categoryId.components(separatedBy: ".").first ?? categoryId
+        let intent = Self.categoryIntentMap[top]
+            ?? derivedIntent(top: top, categoryId: categoryId, features: features)
+        return IntentPrediction(intent: intent, confidence: 0.75, source: .fallback)
+    }
+
+    private func derivedIntent(
+        top: String, categoryId: String, features: TransactionFeatures
+    ) -> TransactionIntent {
+        switch top {
+        case "income": return features.hasPayrollIndicator ? .salary : .income
+        case "investments": return categoryId.contains("sip") ? .mutualFundSIP : .investment
+        case "fees": return categoryId.contains("interest") ? .interestPayment : .unknown
+        default: return .unknown
+        }
     }
 
     func resolveEntities(description: String, date: Date) async -> ResolvedEntities? {
