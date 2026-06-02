@@ -80,23 +80,27 @@ final class CoreMLCategoryClassifier: @unchecked Sendable {
         let upper = text.uppercased()
 
         // Keyword → category mappings
-        let rules: [(keywords: [String], category: String, confidence: Double)] = [
-            (["ZEPTO", "BLINKIT", "BIGBASKET"], "groceries", 0.90),
-            (["SWIGGY", "ZOMATO", "UBEREATS", "DUNZO"], "food", 0.90),
-            (["STARBUCKS", "KFC", "BURGER"], "dining", 0.85),
-            (["AMAZON", "FLIPKART", "MYNTRA"], "shopping", 0.85),
-            (["NETFLIX", "SPOTIFY", "PRIME"], "entertainment", 0.85),
-            (["ZERODHA", "GROWW", "UPSTOX"], "investments", 0.88),
-            (["AIRTEL", "JIO", "VODAFONE"], "utilities", 0.85),
-            (["SHELL", "INDIGO"], "fuel", 0.85),
-            (["APOLLO", "FORTIS"], "healthcare", 0.80),
-            (["UDEMY", "COURSERA"], "education", 0.80),
+        struct Rule {
+            let keywords: [String]
+            let categoryId: String
+            let confidence: Double
+        }
+
+        let rules: [Rule] = [
+            Rule(keywords: ["ZEPTO", "BLINKIT", "BIGBASKET"], categoryId: "groceries", confidence: 0.90),
+            Rule(keywords: ["SWIGGY", "ZOMATO", "UBEREATS", "DUNZO"], categoryId: "food", confidence: 0.90),
+            Rule(keywords: ["STARBUCKS", "KFC", "BURGER"], categoryId: "dining", confidence: 0.85),
+            Rule(keywords: ["AMAZON", "FLIPKART", "MYNTRA"], categoryId: "shopping", confidence: 0.85),
+            Rule(keywords: ["NETFLIX", "SPOTIFY", "PRIME"], categoryId: "entertainment", confidence: 0.85),
+            Rule(keywords: ["ZERODHA", "GROWW", "UPSTOX"], categoryId: "investments", confidence: 0.88),
+            Rule(keywords: ["AIRTEL", "JIO", "VODAFONE"], categoryId: "utilities", confidence: 0.85),
+            Rule(keywords: ["SHELL", "INDIGO"], categoryId: "fuel", confidence: 0.85),
+            Rule(keywords: ["APOLLO", "FORTIS"], categoryId: "healthcare", confidence: 0.80),
+            Rule(keywords: ["UDEMY", "COURSERA"], categoryId: "education", confidence: 0.80)
         ]
 
-        for (keywords, category, conf) in rules {
-            if keywords.contains(where: { upper.contains($0) }) {
-                return (category, conf)
-            }
+        for rule in rules where rule.keywords.contains(where: { upper.contains($0) }) {
+            return (rule.categoryId, rule.confidence)
         }
 
         // Default fallback
