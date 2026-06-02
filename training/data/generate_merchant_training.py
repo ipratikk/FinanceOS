@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Generate merchant training dataset with 100K examples for MerchantRecognizer v0.1.
+Generate merchant training dataset with 150K examples for MerchantRecognizer v0.2.
 
-Expands golden_transactions.jsonl with synthetic augmentation, ensuring:
-- 100K total examples (stratified)
-- Balanced across top merchants (50+ unique merchants)
+Expands golden_transactions_expanded.jsonl with synthetic augmentation, ensuring:
+- 150K total examples (stratified)
+- Balanced across 63 unique merchants
 - High quality narration patterns per merchant
 - Deterministic generation with seed
 
-Input: golden_transactions.jsonl (735 labeled transactions)
-Output: merchant_training.csv (100K rows)
+Input: golden_transactions_expanded.jsonl (1975 labeled transactions)
+Output: merchant_training_raw.csv (150K rows)
 
 Augmentation strategy:
 - 135x expansion per transaction (100K / 735 ≈ 136)
@@ -198,7 +198,7 @@ def stratify_by_merchant(transactions: List[Dict[str, Any]]) -> List[Dict[str, A
 
 
 def main():
-    input_path = Path("training/data/golden_transactions.jsonl")
+    input_path = Path("training/data/golden_transactions_expanded.jsonl")
     output_path = Path("training/data/merchant_training_raw.csv")
 
     if not input_path.exists():
@@ -209,21 +209,21 @@ def main():
     golden = load_golden_transactions(str(input_path))
     print(f"✓ Loaded {len(golden)} transactions\n")
 
-    print("Generating 100K augmented examples...")
-    expanded = expand_transactions(golden, target_count=100000)
+    print("Generating 150K augmented examples...")
+    expanded = expand_transactions(golden, target_count=150000)
     print(f"✓ Generated {len(expanded)} augmented examples")
 
     print("\nStratifying across merchants...")
     stratified = stratify_by_merchant(expanded)
 
-    # Ensure we have 100K minimum
-    if len(stratified) < 100000:
-        needed = 100000 - len(stratified)
+    # Ensure we have 150K minimum
+    if len(stratified) < 150000:
+        needed = 150000 - len(stratified)
         sample = random.choices(stratified, k=needed)
         stratified.extend(sample)
 
     random.shuffle(stratified)
-    stratified = stratified[:100000]
+    stratified = stratified[:150000]
     print(f"✓ Stratified: {len(stratified)} examples")
 
     # Write CSV
