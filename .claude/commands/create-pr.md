@@ -118,75 +118,24 @@ Inspect commits on this branch vs `origin/main`:
 git log origin/main..HEAD --oneline
 ```
 
-Extract JIRA key and GitHub issue # from commits/branch. Then create the PR with full template:
+Extract JIRA key and GitHub issue # from commits/branch.
+
+Create PR with title format `<type>(<scope>): <description> (<jira>)`:
 ```bash
 gh pr create \
   --title "<type>(<scope>): <description> (<jira>)" \
-  --body "$(cat <<'EOF'
-## Tracking
-
-- **JIRA Issue:** <JIRA-KEY>
-- **GitHub Issue:** #<ISSUE-NUMBER>
-
-## Summary
-
-- What changed?
-- Why did it change?
-- What problem does it solve?
-
-## Type of Change
-
-- [ ] **Feature** — New functionality added
-- [ ] **Bug Fix** — Issue fixed
-- [ ] **Refactoring** — Code reorganized without changing behavior
-- [ ] **Performance** — Speed or efficiency improvement
-- [ ] **Documentation** — Docs added or updated
-- [ ] **Dependencies** — Package updates or dependency changes
-- [ ] **Test** — Test coverage added or improved
-
-## Related Issues
-
-Closes #<ISSUE-NUMBER>
-
-## Changes Made
-
-- [ ] <File/component> — <reason>
-- [ ] <File/component> — <reason>
-
-## Test Plan
-
-- [ ] Local CI passed (`/create-pr`)
-- [ ] Unit tests added/updated
-- [ ] Manual smoke test completed
-- [ ] Parser tests passed (if applicable)
-- [ ] No regressions observed
-
-## Architecture & Design
-
-- [ ] No architecture impact
-- [ ] Extension of existing pattern
-- [ ] New pattern introduced (explain why)
-- [ ] Breaking change (explain migration)
-
-## Checklist
-
-- [ ] Code follows CODING_STANDARDS.md
-- [ ] SwiftLint passes with zero violations
-- [ ] All tests pass
-- [ ] macOS build succeeds
-- [ ] Commit message follows Conventional Commits
-- [ ] PR title is descriptive
-- [ ] Documentation updated (if needed)
-- [ ] No unnecessary refactoring mixed with feature
-- [ ] No credentials or sensitive data in code
-
-## Notes
-
-- <migration steps, breaking changes, follow-up work, design decisions>
-EOF
-)" \
+  --body "$(cat .github/PULL_REQUEST_TEMPLATE.md)" \
   --base <base-branch>
 ```
+
+**Body must follow** [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md):
+- Fill all Tracking fields (JIRA Issue, GitHub Issue)
+- Select Type of Change
+- List Changes Made with reasons
+- Complete Test Plan checklist
+- Document Architecture & Design impact
+- Verify Checklist items
+- Add Notes for reviewers
 
 Return the PR URL.
 
