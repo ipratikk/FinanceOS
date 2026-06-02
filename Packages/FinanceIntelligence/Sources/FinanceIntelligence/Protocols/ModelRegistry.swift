@@ -1,5 +1,5 @@
-import Foundation
 import CoreML
+import Foundation
 
 /// Registry for ML model artifacts. Single source of truth for model → artifact resolution.
 /// No hardcoded model paths anywhere in production code.
@@ -48,10 +48,10 @@ public struct ModelName: RawRepresentable, Hashable, Sendable {
 /// Semantic version + training metadata for a model.
 public struct ModelVersion: Sendable, Equatable {
     public let name: String
-    public let version: String  // semver: "1.2.0"
-    public let datasetVersion: String  // "2026-05-01" or empty if planned
-    public let trainingDate: String  // ISO 8601 or empty if planned
-    public let artifactHash: String  // SHA256 of artifact
+    public let version: String // semver: "1.2.0"
+    public let datasetVersion: String // "2026-05-01" or empty if planned
+    public let trainingDate: String // ISO 8601 or empty if planned
+    public let artifactHash: String // SHA256 of artifact
 
     public init(
         name: String,
@@ -70,11 +70,11 @@ public struct ModelVersion: Sendable, Equatable {
 
 /// Model lifecycle status.
 public enum ModelStatus: String, Codable, Sendable {
-    case active  // production model, loaded by default
-    case shadow  // under evaluation, not served to users
-    case deprecated  // old version, kept for reference
-    case rollback  // previous active version, kept for fast revert
-    case planned  // not yet trained
+    case active // production model, loaded by default
+    case shadow // under evaluation, not served to users
+    case deprecated // old version, kept for reference
+    case rollback // previous active version, kept for fast revert
+    case planned // not yet trained
 }
 
 /// Single entry in model_registry.yaml.

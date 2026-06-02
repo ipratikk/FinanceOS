@@ -21,8 +21,8 @@ git branch --show-current
 ```
 
 Create a new branch from latest origin/main
-Block if branch does not follow `<type>/<description> (<jira>)` convention.
-Get the associated Jira ticket for this.
+Block if branch does not follow `<type>/<description>(<jira>)` convention.
+Find jira for the current task and add it to the branchname
 
 ---
 
@@ -121,7 +121,7 @@ git log origin/main..HEAD --oneline
 Then create the PR:
 ```bash
 gh pr create \
-  --title "<type>(<scope>): <description>" \
+  --title "<type>(<scope>): <description>(<jira>)" \
   --body "$(cat <<'EOF'
 ## Summary
 - <bullet points from commit messages>
