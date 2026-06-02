@@ -221,6 +221,20 @@ Branch naming: `feat/description(FINOS-5)`, `fix/bug-title(KAN-42)`, `docs/updat
 - Phase 5: Branch sync and push
 - Phase 6: PR creation with proper template
 
+### PR Template Format
+
+Fill tracking section with **markdown links** (not plaintext):
+
+```markdown
+- **JIRA Issue:** [FINOS-5](https://ipratikgoel.atlassian.net/browse/FINOS-5)
+- **GitHub Issue:** #99
+```
+
+Why markdown links:
+- One-click navigation from PR → JIRA ticket
+- Enables automatic JIRA ↔ GitHub sync workflows
+- Proper audit trail in both systems
+
 Only override with `--skipValidation` when:
 - Pre-existing test failures confirmed on `origin/main`
 - Changes are Python-only (no Swift code impact)
