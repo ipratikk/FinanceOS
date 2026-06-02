@@ -21,7 +21,8 @@ git branch --show-current
 ```
 
 Create a new branch from latest origin/main
-Block if branch does not follow `<type>/<description>` convention.
+Block if branch does not follow `<type>/<description> (<jira>)` convention.
+Get the associated Jira ticket for this.
 
 ---
 
