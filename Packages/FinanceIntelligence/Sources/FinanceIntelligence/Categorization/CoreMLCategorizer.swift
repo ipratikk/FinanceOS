@@ -37,32 +37,15 @@ final class CoreMLCategorizer: @unchecked Sendable {
         self.loadError = loadError
     }
 
-    static func load() async -> CoreMLCategorizer {
-        // Xcode compiles .mlmodel → .mlmodelc at build time; try precompiled first.
-        // swift build leaves .mlmodel uncompiled and requires runtime compilation.
+    static func load(registry: any ModelRegistry) async -> CoreMLCategorizer {
         do {
-            let mlModel: MLModel
-            if let precompiled = Bundle.module.url(
-                forResource: "TransactionCategoryClassifier", withExtension: "mlmodelc"
-            ) {
-                mlModel = try await MLModel.load(contentsOf: precompiled)
-            } else if let source = Bundle.module.url(
-                forResource: "TransactionCategoryClassifier", withExtension: "mlmodel"
-            ) {
-                let compiled = try await MLModel.compileModel(at: source)
-                mlModel = try await MLModel.load(contentsOf: compiled)
-            } else {
-                FinanceLogger.intelligence.warning(
-                    "CoreMLCategorizer: TransactionCategoryClassifier not found in bundle"
-                )
-                return CoreMLCategorizer(backend: nil, modelVersion: "none", loadError: "bundle-missing")
-            }
+            let mlModel = try registry.loadCoreML(.category)
             let version = mlModel.modelDescription.metadata[MLModelMetadataKey.versionString] as? String
             return detectBackend(mlModel: mlModel, version: version)
                 ?? CoreMLCategorizer(backend: nil, modelVersion: "load-failed", loadError: "unsupported-model-type")
         } catch {
             FinanceLogger.intelligence
-                .error("CoreMLCategorizer: model load failed. Inference falls back to kNN → rules.")
+                .error("CoreMLCategorizer: registry load failed (\(error)). Inference falls back to rules.")
             return CoreMLCategorizer(
                 backend: nil,
                 modelVersion: "load-failed",

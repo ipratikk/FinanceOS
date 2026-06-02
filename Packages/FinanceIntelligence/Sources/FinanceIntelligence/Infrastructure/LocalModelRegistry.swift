@@ -1,6 +1,6 @@
-import Foundation
-import CoreML
 import CommonCrypto
+import CoreML
+import Foundation
 
 /// Local filesystem-based model registry. Loads model_registry.yaml from app bundle.
 public final class LocalModelRegistry: ModelRegistry {
@@ -23,7 +23,7 @@ public final class LocalModelRegistry: ModelRegistry {
         })
 
         self.bundle = bundle
-        self.entries = entriesDict
+        entries = entriesDict
     }
 
     public func loadCoreML(_ name: ModelName) throws -> MLModel {

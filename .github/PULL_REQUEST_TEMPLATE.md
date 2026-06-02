@@ -1,3 +1,10 @@
+## Tracking
+
+<!-- REQUIRED: Fill in both fields below. PRs missing these will be blocked. -->
+
+- **JIRA Issue:** <!-- e.g. KAN-42 — must match pattern [A-Z]+-[0-9]+ -->
+- **GitHub Issue:** <!-- e.g. #123 — must match pattern #[0-9]+ -->
+
 ## Summary
 
 Please provide a brief summary of the changes in this PR.
@@ -20,6 +27,7 @@ Please select the type of change:
 
 ## Related Issues
 
+<!-- Keep in sync with the GitHub Issue field above -->
 Closes #(issue number)
 
 ## Changes Made

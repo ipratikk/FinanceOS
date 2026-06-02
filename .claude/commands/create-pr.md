@@ -21,7 +21,8 @@ git branch --show-current
 ```
 
 Create a new branch from latest origin/main
-Block if branch does not follow `<type>/<description>` convention.
+Block if branch does not follow `<type>/<description>(<jira>)` convention.
+Find jira for the current task and add it to the branchname
 
 ---
 
@@ -117,25 +118,24 @@ Inspect commits on this branch vs `origin/main`:
 git log origin/main..HEAD --oneline
 ```
 
-Then create the PR:
+Extract JIRA key and GitHub issue # from commits/branch.
+
+Create PR with title format `<type>(<scope>): <description> (<jira>)`:
 ```bash
 gh pr create \
-  --title "<type>(<scope>): <description>" \
-  --body "$(cat <<'EOF'
-## Summary
-- <bullet points from commit messages>
-
-## Test plan
-- [ ] SwiftLint clean on all changed files
-- [ ] Package tests pass (affected packages only)
-- [ ] macOS build succeeded
-
-## Notes
-<migration notes, breaking changes, follow-ups if any>
-EOF
-)" \
+  --title "<type>(<scope>): <description> (<jira>)" \
+  --body "$(cat .github/PULL_REQUEST_TEMPLATE.md)" \
   --base <base-branch>
 ```
+
+**Body must follow** [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md):
+- Fill all Tracking fields (JIRA Issue, GitHub Issue)
+- Select Type of Change
+- List Changes Made with reasons
+- Complete Test Plan checklist
+- Document Architecture & Design impact
+- Verify Checklist items
+- Add Notes for reviewers
 
 Return the PR URL.
 
