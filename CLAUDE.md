@@ -189,6 +189,51 @@ Post-edit hooks automatically lint and incrementally build affected packages aft
 
 ---
 
+# Git & PR Workflow
+
+## Branch Strategy
+
+**ALWAYS** create a fresh branch from latest `origin/main` before starting work on a new ticket, feature, or issue:
+
+```bash
+git fetch origin main
+git checkout -b <type>/<description>(<jira-key>) origin/main
+```
+
+Branch naming: `feat/description(FINOS-5)`, `fix/bug-title(KAN-42)`, `docs/update(PORTAL-8)`
+
+**Why:** Ensures:
+- Clean, isolated commits for each JIRA ticket
+- No merge conflicts from prior work on same branch
+- Each PR focuses on one ticket/feature
+- Easier code review and git history
+
+## PR Creation
+
+**ALWAYS** use `/create-pr` skill to create pull requests. Do NOT use `gh pr create` directly.
+
+`/create-pr` runs the full validation pipeline:
+- Phase 0: Branch naming validation
+- Phase 1: Changed file detection
+- Phase 2: SwiftLint (no violations allowed)
+- Phase 3: Package tests (all affected packages must pass)
+- Phase 4: macOS build (must succeed)
+- Phase 5: Branch sync and push
+- Phase 6: PR creation with proper template
+
+Only override with `--skipValidation` when:
+- Pre-existing test failures confirmed on `origin/main`
+- Changes are Python-only (no Swift code impact)
+- Explicitly documented in commit message
+
+Proper PR workflow ensures:
+- No broken builds are pushed
+- Test failures are caught before review
+- Consistent PR template with JIRA/GitHub issue linking
+- Automatic JIRA workflow transitions
+
+---
+
 # Agent Routing (ENFORCED)
 
 **HAIKU** — mechanical execution only: build/test/lint, file ops, git ops, search/grep, snapshot regen, parser invocation.
