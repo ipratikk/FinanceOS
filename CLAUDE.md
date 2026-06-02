@@ -72,7 +72,7 @@ Architectural graphs at `graphify-out/`. Use selectively:
 
 **Skip for:** localized edits, compile fixes, routine work, simple SwiftUI changes.
 
-When needed, read `graphify-out/wiki/index.md` first — prefer it over repo scanning. After major architecture changes, run `graphify update .`.
+After major architecture changes, run `graphify update .`.
 
 ---
 
@@ -118,6 +118,7 @@ SwiftUI View → ViewModel → Repository Protocol → GRDB Repository → SQLit
 | FinanceParsers | Parser protocols, bank-specific parsers, import pipeline, deduplicator |
 | FinanceUI | SwiftUI components, design system (FDS) |
 | FinanceTesting | Shared test helpers, fixtures, golden JSON |
+| FinanceIntelligence | Transaction intelligence, behavior analysis (salary/routines/cashflow), categorization pipeline |
 
 ---
 
