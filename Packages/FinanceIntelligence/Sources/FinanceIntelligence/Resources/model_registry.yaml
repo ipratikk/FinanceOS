@@ -1,0 +1,206 @@
+schema_version: "1.0"
+updated_at: "2026-06-02"
+
+models:
+  - name: category_classifier
+    version: "1.1.0"
+    display_name: "Transaction Category Classifier"
+    artifact_filename: "TransactionCategoryClassifier_v1.1.mlpackage"
+    artifact_type: coreml
+    task: text_classification
+    input_type: text
+    output_classes: 28
+    dataset_version: "2026-05-01"
+    training_date: "2026-05-20"
+    evaluation_date: "2026-05-22"
+    metrics:
+      macro_f1: 0.88
+      weighted_f1: 0.92
+      accuracy: 0.91
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 18
+    status: active
+
+  - name: merchant_recognizer
+    version: "0.1.0"
+    display_name: "Merchant Recognition Model"
+    artifact_filename: "MerchantRecognizer_v0.1.mlpackage"
+    artifact_type: coreml
+    task: text_classification
+    input_type: text
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: intent_classifier
+    version: "0.1.0"
+    display_name: "Intent Classification Model"
+    artifact_filename: "IntentClassifier_v0.1.mlpackage"
+    artifact_type: coreml
+    task: text_classification
+    input_type: text
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: income_classifier
+    version: "0.1.0"
+    display_name: "Income Classification Model"
+    artifact_filename: "IncomeClassifier_v0.1.mlpackage"
+    artifact_type: coreml
+    task: text_classification
+    input_type: text
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: embedding_encoder
+    version: "0.1.0"
+    display_name: "Embedding Encoder Model"
+    artifact_filename: "NarrationEmbedder_v0.1.mlpackage"
+    artifact_type: coreml
+    task: embedding
+    input_type: text
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: recurring_detector
+    version: "0.1.0"
+    display_name: "Recurring Detection Model"
+    artifact_filename: "RecurringDetector_v0.1.mlpackage"
+    artifact_type: coreml
+    task: tabular_regression
+    input_type: tabular
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: anomaly_detector
+    version: "0.1.0"
+    display_name: "Anomaly Detection Model"
+    artifact_filename: "AnomalyDetector_v0.1.mlpackage"
+    artifact_type: coreml
+    task: tabular_classification
+    input_type: tabular
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: link_predictor
+    version: "0.1.0"
+    display_name: "Link Prediction Model"
+    artifact_filename: "link_predictor_v0.1"
+    artifact_type: mlx
+    task: link_prediction
+    input_type: graph
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: description_generator
+    version: "0.1.0"
+    display_name: "Description Generation Model"
+    artifact_filename: "description_llm_v0.1"
+    artifact_type: mlx
+    task: text_generation
+    input_type: text
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
+
+  - name: insight_generator
+    version: "0.1.0"
+    display_name: "Insight Generation Model"
+    artifact_filename: "insight_llm_v0.1"
+    artifact_type: mlx
+    task: text_generation
+    input_type: text
+    output_classes: 0
+    dataset_version: ""
+    training_date: ""
+    evaluation_date: ""
+    metrics: {}
+    artifact_sha256: ""
+    coreml_sha256: ""
+    training_commit: ""
+    dataset_commit: ""
+    min_os_version: "17.0"
+    memory_mb: 0
+    status: planned
