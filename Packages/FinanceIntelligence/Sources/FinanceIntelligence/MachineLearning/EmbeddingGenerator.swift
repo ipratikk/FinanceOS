@@ -13,9 +13,8 @@ public actor EmbeddingGenerator {
     public static let dimension: Int = 128
     static let sequenceLength: Int = 64
 
-    static let modelDownloadURL = URL(
-        string: "https://github.com/ipratikk/FinanceOS/releases/download/models-v0.1/NarrationEmbedder_v0.1.mlmodelc.zip"
-    )!
+    static let modelReleasePath = "https://github.com/ipratikk/FinanceOS/releases/download/" +
+        "models-v0.1/NarrationEmbedder_v0.1.mlmodelc.zip"
 
     static var modelCacheDir: URL {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -91,7 +90,10 @@ public actor EmbeddingGenerator {
             return compiledModelURL
         }
         try FileManager.default.createDirectory(at: modelCacheDir, withIntermediateDirectories: true)
-        let (zipURL, _) = try await URLSession.shared.download(from: modelDownloadURL)
+        guard let downloadURL = URL(string: modelReleasePath) else {
+            throw EmbeddingError.modelNotFoundAfterUnzip
+        }
+        let (zipURL, _) = try await URLSession.shared.download(from: downloadURL)
         try unzipModel(from: zipURL, to: modelCacheDir)
         guard FileManager.default.fileExists(atPath: compiledModelURL.path) else {
             throw EmbeddingError.modelNotFoundAfterUnzip
