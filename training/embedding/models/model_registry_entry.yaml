@@ -1,10 +1,40 @@
 model_name: NarrationEmbedder
 model_version: v0.1
-artifact: NarrationEmbedder_v0.1.mlmodel
-export_date: '2026-06-03T20:10:34.023782+00:00'
+export_date: '2026-06-03T21:28:19.416931+00:00'
 base_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-input: Float32[1, 384] (sentence embedding from encoder)
-output: Float32[1, 128] (L2-normalized embedding)
-sha256: 0d1ba1218c2862f9425dccf4c6156f60ef781101c124babd08ff240e5dee05b2
-notes: 'Full model inference: encode text with SentenceTransformer, pass to this CoreML
-  model for 128-dim output.'
+format: CoreML NeuralNetwork
+distribution: on-demand (GitHub Release)
+download_url: https://github.com/ipratikk/FinanceOS/releases/download/models-v0.1/NarrationEmbedder_v0.1.mlmodelc.zip
+artifacts:
+  mlmodel:
+    file: NarrationEmbedder_v0.1.mlmodel
+    sha256: 819a94b95af871c9cd8241ac4282826e44b797896624947fa72b7fc76ed6cb40
+    size_mb: 447.89
+  mlmodelc_zip:
+    file: NarrationEmbedder_v0.1.mlmodelc.zip
+    sha256: 59ca793401b9d3a3bd36de20fccfa7085f609de03b21727bbaece7dfb52527cb
+    size_mb: 411.4
+    download_url: https://github.com/ipratikk/FinanceOS/releases/download/models-v0.1/NarrationEmbedder_v0.1.mlmodelc.zip
+pipeline:
+  inputs:
+  - name: input_ids
+    shape:
+    - 1
+    - 64
+    dtype: Int32
+  - name: attention_mask
+    shape:
+    - 1
+    - 64
+    dtype: Int32
+  output:
+    name: embedding
+    shape:
+    - 1
+    - 128
+    dtype: Float32
+  stages:
+  - BERT
+  - attention-masked-mean-pool
+  - "linear-384\u2192128"
+  - L2-normalize

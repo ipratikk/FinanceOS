@@ -4,7 +4,7 @@ __pycache__/
 *.so
 .Python
 env/
-venv/
+.venv*/
 ENV/
 *.egg-info/
 dist/
@@ -16,6 +16,10 @@ data/*.jsonl
 artifacts/
 reports/
 *.mlpackage
+*.mlmodel
+*.mlmodelc/
+*.mlmodelc.zip
+models/*.pt
 
 # IDE
 .vscode/
