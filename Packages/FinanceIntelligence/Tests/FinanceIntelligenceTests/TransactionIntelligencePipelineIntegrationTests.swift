@@ -7,7 +7,7 @@ import XCTest
 
 /// Integration tests for the full transaction enrichment pipeline (FINOS-24).
 /// Validates all stages 3-7 (income detection, intent classification, subscription detection, recurring patterns).
-final class TransactionIntelligencePipelineIntegrationTests: XCTestCase {
+final class IntelligencePipelineIntegrationTests: XCTestCase {
     private var service: TransactionIntelligenceService!
 
     override func setUp() async throws {
@@ -15,10 +15,6 @@ final class TransactionIntelligencePipelineIntegrationTests: XCTestCase {
         service = await TransactionIntelligenceServiceImpl(
             configuration: .default
         )
-    }
-
-    override func tearDown() async throws {
-        try await super.tearDown()
     }
 
     // MARK: - Single Transaction Tests
