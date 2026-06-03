@@ -32,6 +32,13 @@ public struct EnrichedTransaction: Sendable {
     /// Human-readable description. Populated in Phase 7.
     public let humanDescription: String?
 
+    // MARK: FINOS-23 Model Predictions (stages 3-7)
+
+    /// Income detection result. Populated in Stage 3 (FINOS-20).
+    public let incomePrediction: IncomePrediction?
+    /// Subscription detection result. Populated in Stage 6 (FINOS-22).
+    public let subscriptionPrediction: SubscriptionPrediction?
+
     public init(
         transaction: Transaction,
         merchantCandidate: MerchantCandidate,
@@ -43,7 +50,9 @@ public struct EnrichedTransaction: Sendable {
         resolvedEntities: ResolvedEntities? = nil,
         recurringContext: RecurringContext? = nil,
         relationshipContext: RelationshipContext? = nil,
-        humanDescription: String? = nil
+        humanDescription: String? = nil,
+        incomePrediction: IncomePrediction? = nil,
+        subscriptionPrediction: SubscriptionPrediction? = nil
     ) {
         self.transaction = transaction
         self.merchantCandidate = merchantCandidate
@@ -56,6 +65,32 @@ public struct EnrichedTransaction: Sendable {
         self.recurringContext = recurringContext
         self.relationshipContext = relationshipContext
         self.humanDescription = humanDescription
+        self.incomePrediction = incomePrediction
+        self.subscriptionPrediction = subscriptionPrediction
+    }
+}
+
+// MARK: - FINOS-23 Model Prediction Types
+
+/// Income detection result (Stage 3, IncomeClassifier v0.1).
+public struct IncomePrediction: Sendable, Codable {
+    public let isIncome: Bool
+    public let confidence: Double
+
+    public init(isIncome: Bool, confidence: Double) {
+        self.isIncome = isIncome
+        self.confidence = confidence
+    }
+}
+
+/// Subscription detection result (Stage 6, HybridSubscriptionDetector).
+public struct SubscriptionPrediction: Sendable, Codable {
+    public let name: String
+    public let confidence: Double
+
+    public init(name: String, confidence: Double) {
+        self.name = name
+        self.confidence = confidence
     }
 }
 

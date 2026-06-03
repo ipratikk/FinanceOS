@@ -1,0 +1,4 @@
+Classes: 0,1
+Vectorizer type: TfidfVectorizer
+Max features: 5000
+Ngram range: (1, 2)
