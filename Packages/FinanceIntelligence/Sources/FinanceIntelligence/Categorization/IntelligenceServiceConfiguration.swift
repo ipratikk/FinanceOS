@@ -39,7 +39,7 @@ public struct IntelligenceServiceConfiguration: Sendable {
         self.taxonomy = taxonomy
         self.databaseQueue = databaseQueue
         self.intelligenceLogger = intelligenceLogger ?? NullIntelligenceLogger()
-        modelRegistry = try LocalModelRegistry()
+        modelRegistry = try LocalModelRegistry(bundle: .module)
         modelMetadataRegistry = ModelMetadataRegistry(dbQueue: databaseQueue)
         self.intelligenceConfig = intelligenceConfig
         feedbackStore = databaseQueue.map { GRDBFeedbackStore(dbQueue: $0) } ?? NullFeedbackStore()

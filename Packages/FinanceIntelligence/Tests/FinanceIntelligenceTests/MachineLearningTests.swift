@@ -57,24 +57,21 @@ struct MachineLearningTests {
 
     // MARK: - EmbeddingGenerator
 
-    @Test("EmbeddingGenerator returns nil-or-valid (availability depends on OS)")
-    func embeddingGeneratorNilOrValid() {
-        let gen = EmbeddingGenerator()
-        let result = gen.embed("blinkit grocery delivery")
-        // Either nil (NLEmbedding unavailable in test env) or valid 64-dim vector
-        if let vector = result {
-            #expect(vector.count == EmbeddingGenerator.dimension)
-            // L2-normalized → magnitude ≈ 1.0
-            let magnitude = sqrt(vector.map { $0 * $0 }.reduce(0, +))
-            #expect(abs(magnitude - 1.0) < 0.01)
-        }
-        // nil is acceptable — NLEmbedding may not load in test sandbox
+    // EmbeddingGenerator requires model download on first use — not testable in CI.
+    // Integration tests live in TransactionIntelligencePipelineIntegrationTests.
+    // Unit coverage: EmbeddingError cases and dimension constant.
+
+    @Test("EmbeddingGenerator dimension is 128")
+    func embeddingGeneratorDimension() {
+        #expect(EmbeddingGenerator.dimension == 128)
     }
 
-    @Test("Empty string returns nil embedding")
-    func emptyStringNilEmbedding() {
-        let gen = EmbeddingGenerator()
-        #expect(gen.embed("") == nil)
+    @Test("EmbeddingError.emptyInput has description")
+    func embeddingErrorDescriptions() {
+        #expect(EmbeddingError.emptyInput.errorDescription != nil)
+        #expect(EmbeddingError.tokenizerNotFound.errorDescription != nil)
+        #expect(EmbeddingError.missingOutput.errorDescription != nil)
+        #expect(EmbeddingError.modelNotFoundAfterUnzip.errorDescription != nil)
     }
 
     // MARK: - TrainingDataExporter

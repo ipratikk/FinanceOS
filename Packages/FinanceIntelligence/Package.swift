@@ -6,7 +6,7 @@ let package = Package(
     name: "FinanceIntelligence",
     platforms: [
         .macOS("26.0"),
-        .iOS(.v17)
+        .iOS("26.0")
     ],
     products: [
         .library(name: "FinanceIntelligence", targets: ["FinanceIntelligence"]),
@@ -16,14 +16,18 @@ let package = Package(
         .package(path: "../FinanceCore"),
         .package(path: "../FinanceTesting"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
-        .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0")
+        .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
+        .package(url: "https://github.com/huggingface/swift-transformers", from: "0.1.14"),
+        .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0")
     ],
     targets: [
         .target(
             name: "FinanceIntelligence",
             dependencies: [
                 "FinanceCore",
-                .product(name: "GRDB", package: "GRDB.swift")
+                .product(name: "GRDB", package: "GRDB.swift"),
+                .product(name: "Transformers", package: "swift-transformers"),
+                .product(name: "ZIPFoundation", package: "ZIPFoundation")
             ],
             resources: [.process("Resources/")]
         ),
