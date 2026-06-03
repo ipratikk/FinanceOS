@@ -101,6 +101,21 @@ enum AppMigration {
             try AppMigration.createIntelligenceFeedbackEventsTable(in: db)
         }
 
+        migrator.registerMigration("v25_create_transaction_embeddings") { db in
+            guard try !db.tableExists("transaction_embeddings") else { return }
+            try db.create(table: "transaction_embeddings") { table in
+                table.column("transactionId", .text).primaryKey()
+                table.column("label", .text).notNull()
+                table.column("embeddingBlob", .blob).notNull()
+                table.column("modelVersion", .text).notNull()
+                table.column("updatedAt", .datetime).notNull()
+            }
+            try db.create(index: "idx_txn_embeddings_label", on: "transaction_embeddings", columns: ["label"])
+            try db.create(
+                index: "idx_txn_embeddings_updated", on: "transaction_embeddings", columns: ["updatedAt"]
+            )
+        }
+
         migrator.registerMigration("v19_dedup_relationships_and_patterns") { db in
             // Relationships: same upsert-by-pk bug. Keep earliest per (toPersonId, relationshipType).
             try db.execute(sql: """
