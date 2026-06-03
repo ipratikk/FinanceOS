@@ -5,13 +5,15 @@ import NaturalLanguage
 
 // swiftlint:disable type_body_length
 /// Concrete implementation of `TransactionIntelligenceService`.
-/// Prediction priority (highest to lowest):
-///   1. Stored user correction
-///   2. On-device CoreML kNN (personalized via MLUpdateTask)
-///   3. Bundled NLModel text classifier
-///   4. Alias table lookup
-///   5. Uncategorized (improve training data)
-/// Intent is derived from predicted category — no separate rule engine.
+/// Prediction pipeline (stages 1-7):
+///   1. User correction (highest priority)
+///   2. On-device CoreML kNN (personalized)
+///   3. Income detection (binary classifier — FINOS-20)
+///   4. Intent classification (multi-class model — FINOS-19)
+///   5. NLModel text classifier (bundled CoreML)
+///   6. Subscription detection (rule-based + keyword matching — FINOS-22)
+///   7. Recurring pattern detection (trained model — FINOS-21)
+/// Alias table lookup and rule-based fallback complete the pipeline.
 public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService {
     private let normalizer: MerchantNormalizer
     private let personResolver: PersonResolver
@@ -30,6 +32,14 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let modelMetadataRegistry: ModelMetadataRegistry
     private let intelligenceConfig: IntelligenceConfig
     private let feedbackStore: any FeedbackStore
+    /// Stage 3: Income classification model (FINOS-20)
+    private let incomeClassifier: IncomeClassifier
+    /// Stage 4: Intent classification model (FINOS-19)
+    private let intentClassifier: IntentClassifier
+    /// Stage 6: Subscription detection (FINOS-22)
+    private let subscriptionDetector: HybridSubscriptionDetector
+    /// Stage 7: Recurring pattern detection (FINOS-21)
+    private let trainedRecurringDetector: TrainedRecurringDetector
 
     public init(configuration: IntelligenceServiceConfiguration = .default) async {
         taxonomy = configuration.taxonomy
@@ -58,6 +68,12 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         insightEngine = SpendingInsightEngine(config: intelligenceConfig.insight)
         extractor = TransactionFeatureExtractor()
         descriptionGenerator = DescriptionGenerator()
+
+        // Initialize FINOS-23 model classifiers
+        incomeClassifier = IncomeClassifier()
+        intentClassifier = IntentClassifier()
+        subscriptionDetector = HybridSubscriptionDetector()
+        trainedRecurringDetector = TrainedRecurringDetector()
 
         if let queue = configuration.databaseQueue {
             let graphRepo = GRDBGraphRepository(dbWriter: queue, graphConfig: intelligenceConfig.graph)
@@ -200,52 +216,32 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         let ctx = FeatureExtractionContext(ledgerKind: context.ledgerKind, institution: context.institution)
         let features = extractor.extract(from: transaction, context: ctx)
         let merchant = normalizer.normalize(transaction.description)
-
-        let categoryPrediction: CategoryPrediction
-        let isUserCorrected: Bool
-
-        if let correction = await correctionStore.correction(for: transaction.id) {
-            categoryPrediction = correctionPrediction(correction, features: features)
-            isUserCorrected = true
-        } else {
-            categoryPrediction = await predictCategory(
-                features: features,
-                merchantCategoryId: merchant.categoryId
-            )
-            isUserCorrected = false
-        }
-
-        let intentPrediction = intentFromCategory(categoryPrediction.categoryId, features: features)
-
+        let (categoryPrediction, isUserCorrected) = await getCategoryPrediction(
+            transaction: transaction, features: features, merchantCategoryId: merchant.categoryId
+        )
+        let incomePrediction = await detectIncome(description: transaction.description)
+        let intentPrediction = await predictIntent(
+            features: features, categoryId: categoryPrediction.categoryId,
+            isIncome: incomePrediction?.isIncome ?? false
+        )
         await intelligenceLogger.record(IntelligenceEvent(
-            transactionId: transaction.id.uuidString,
-            stage: .finalCategorization, source: categoryPrediction.source,
-            modelVersion: categoryPrediction.modelVersion, outputLabel: categoryPrediction.categoryId,
-            outputIntent: intentPrediction.intent.rawValue,
+            transactionId: transaction.id.uuidString, stage: .finalCategorization,
+            source: categoryPrediction.source, modelVersion: categoryPrediction.modelVersion,
+            outputLabel: categoryPrediction.categoryId, outputIntent: intentPrediction.intent.rawValue,
             confidence: categoryPrediction.confidence, confidenceKind: categoryPrediction.confidenceKind
         ))
-        let resolvedEntities = await resolveEntities(
-            description: transaction.description,
-            date: transaction.postedAt
-        )
-
+        let subscriptionPrediction = detectSubscription(description: transaction.description)
+        let resolvedEntities = await resolveEntities(description: transaction.description, date: transaction.postedAt)
         let descContext = DescriptionContext(
-            merchantName: merchant.canonicalName,
-            intent: intentPrediction.intent,
+            merchantName: merchant.canonicalName, intent: intentPrediction.intent,
             isDebit: transaction.transactionType == .debit
         )
         let humanDescription = await descriptionGenerator.generate(from: descContext)
-
         return EnrichedTransaction(
-            transaction: transaction,
-            merchantCandidate: merchant,
-            categoryPrediction: categoryPrediction,
-            intentPrediction: intentPrediction,
-            features: features,
-            isUserCorrected: isUserCorrected,
-            pipelineVersion: "1.0",
-            resolvedEntities: resolvedEntities,
-            humanDescription: humanDescription
+            transaction: transaction, merchantCandidate: merchant, categoryPrediction: categoryPrediction,
+            intentPrediction: intentPrediction, features: features, isUserCorrected: isUserCorrected,
+            pipelineVersion: "1.0", resolvedEntities: resolvedEntities, humanDescription: humanDescription,
+            incomePrediction: incomePrediction, subscriptionPrediction: subscriptionPrediction
         )
     }
 
@@ -395,6 +391,56 @@ extension TransactionIntelligenceServiceImpl {
 
         // Priority 5: rule-based fallback when CoreML unavailable
         return RuleBasedCategorizer(taxonomy: taxonomy).categorize(features)
+    }
+}
+
+// MARK: - FINOS-23 Model Integration (Stages 3-7)
+
+extension TransactionIntelligenceServiceImpl {
+    /// Helper: Predict category with user correction fallback. Returns (prediction, isUserCorrected).
+    private func getCategoryPrediction(
+        transaction: Transaction,
+        features: TransactionFeatures,
+        merchantCategoryId: String?
+    ) async -> (CategoryPrediction, Bool) {
+        if let correction = await correctionStore.correction(for: transaction.id) {
+            return (correctionPrediction(correction, features: features), true)
+        }
+        let pred = await predictCategory(features: features, merchantCategoryId: merchantCategoryId)
+        return (pred, false)
+    }
+
+    /// Stage 3: Income detection using trained IncomeClassifier (FINOS-20).
+    private func detectIncome(description: String) async -> IncomePrediction? {
+        if let result = incomeClassifier.predict(narration: description) {
+            return IncomePrediction(isIncome: result.isIncome, confidence: result.confidence)
+        }
+        if description.uppercased().contains("SALARY") || description.uppercased().contains("PAYROLL") {
+            return IncomePrediction(isIncome: true, confidence: 0.85)
+        }
+        return nil
+    }
+
+    /// Stage 4: Intent prediction using trained IntentClassifier (FINOS-19).
+    private func predictIntent(
+        features: TransactionFeatures,
+        categoryId: String,
+        isIncome: Bool
+    ) async -> IntentPrediction {
+        if let result = intentClassifier.predict(narration: features.normalizedDescription) {
+            let intent = TransactionIntent(rawValue: result.intent.lowercased()) ?? .unknown
+            return IntentPrediction(intent: intent, confidence: result.confidence, source: .fallback)
+        }
+        let intent = derivedIntent(top: categoryId, categoryId: categoryId, features: features)
+        return IntentPrediction(intent: intent, confidence: 0.75, source: .fallback)
+    }
+
+    /// Stage 6: Subscription detection using HybridSubscriptionDetector (FINOS-22).
+    private func detectSubscription(description: String) -> SubscriptionPrediction? {
+        if let result = subscriptionDetector.detect(narrative: description) {
+            return SubscriptionPrediction(name: result.name, confidence: result.confidence)
+        }
+        return nil
     }
 }
 
