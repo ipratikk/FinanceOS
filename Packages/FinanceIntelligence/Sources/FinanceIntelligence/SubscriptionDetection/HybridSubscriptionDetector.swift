@@ -37,12 +37,10 @@ public struct HybridSubscriptionDetector: Sendable {
 
         // Try to find a matching subscription merchant
         for (merchantName, data) in Self.knownSubscriptionMerchants {
-            for keyword in data.keywords {
-                if searchText.contains(keyword) {
-                    // Return only if confidence meets precision threshold
-                    if data.confidence >= 0.93 {
-                        return (merchantName, data.confidence)
-                    }
+            for keyword in data.keywords where searchText.contains(keyword) {
+                // Return only if confidence meets precision threshold
+                if data.confidence >= 0.93 {
+                    return (merchantName, data.confidence)
                 }
             }
         }
