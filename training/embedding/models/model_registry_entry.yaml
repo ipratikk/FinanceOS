@@ -1,13 +1,20 @@
 model_name: NarrationEmbedder
 model_version: v0.1
-export_date: '2026-06-03T21:16:02.242531+00:00'
+export_date: '2026-06-03T21:28:19.416931+00:00'
 base_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 format: CoreML NeuralNetwork
+distribution: on-demand (GitHub Release)
+download_url: https://github.com/ipratikk/FinanceOS/releases/download/models-v0.1/NarrationEmbedder_v0.1.mlmodelc.zip
 artifacts:
   mlmodel:
     file: NarrationEmbedder_v0.1.mlmodel
-    sha256: b2152c60e7b8e73bf8a2ce27548e02790f8387ec7ccc98bdf479c671773214d4
+    sha256: 819a94b95af871c9cd8241ac4282826e44b797896624947fa72b7fc76ed6cb40
     size_mb: 447.89
+  mlmodelc_zip:
+    file: NarrationEmbedder_v0.1.mlmodelc.zip
+    sha256: 59ca793401b9d3a3bd36de20fccfa7085f609de03b21727bbaece7dfb52527cb
+    size_mb: 411.4
+    download_url: https://github.com/ipratikk/FinanceOS/releases/download/models-v0.1/NarrationEmbedder_v0.1.mlmodelc.zip
 pipeline:
   inputs:
   - name: input_ids

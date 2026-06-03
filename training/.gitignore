@@ -17,6 +17,8 @@ artifacts/
 reports/
 *.mlpackage
 *.mlmodel
+*.mlmodelc/
+*.mlmodelc.zip
 models/*.pt
 
 # IDE

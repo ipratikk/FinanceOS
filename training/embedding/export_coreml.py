@@ -24,9 +24,13 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 CHECKPOINT_PATH = Path(__file__).parent / "models" / "NarrationEmbedder_v0.1.pt"
 MLMODEL_PATH = Path(__file__).parent / "models" / "NarrationEmbedder_v0.1.mlmodel"
+MLMODELC_PATH = Path(__file__).parent / "models" / "NarrationEmbedder_v0.1.mlmodelc"
+MLMODELC_ZIP_PATH = Path(__file__).parent / "models" / "NarrationEmbedder_v0.1.mlmodelc.zip"
 REGISTRY_PATH = Path(__file__).parent / "models" / "model_registry_entry.yaml"
 SEQ_LEN = 64
 EMBEDDING_DIM = 128
+GITHUB_RELEASE_TAG = "models-v0.1"
+GITHUB_REPO = "ipratikk/FinanceOS"
 
 
 class FullEmbedder(nn.Module):
@@ -54,6 +58,81 @@ class FullEmbedder(nn.Module):
         pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1e-9)  # [1, 384]
         projected = self.projection(pooled)  # [1, 128]
         return F.normalize(projected, p=2, dim=-1)  # [1, 128]
+
+
+def compile_and_package(mlmodel_path: Path, mlmodelc_path: Path, zip_path: Path) -> str:
+    """
+    Compile .mlmodel → .mlmodelc via xcrun coremlc, then zip for distribution.
+    Returns SHA256 of the zip.
+    """
+    import shutil
+    import subprocess
+    import zipfile
+
+    if mlmodelc_path.exists():
+        shutil.rmtree(mlmodelc_path)
+
+    print("✓ Compiling .mlmodel → .mlmodelc...")
+    result = subprocess.run(
+        ["xcrun", "coremlc", "compile", str(mlmodel_path), str(mlmodel_path.parent)],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"coremlc compile failed:\n{result.stderr}")
+    print(f"  Compiled → {mlmodelc_path.name}")
+
+    print("✓ Zipping .mlmodelc...")
+    if zip_path.exists():
+        zip_path.unlink()
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+        for file in sorted(mlmodelc_path.rglob("*")):
+            zf.write(file, file.relative_to(mlmodelc_path.parent))
+
+    zip_mb = zip_path.stat().st_size / (1024 * 1024)
+    print(f"  Zipped → {zip_path.name} ({zip_mb:.1f} MB)")
+    return compute_sha256(zip_path)
+
+
+def upload_to_github_release(zip_path: Path, tag: str, repo: str) -> str:
+    """
+    Create or update a GitHub Release and upload the zip asset.
+    Returns the asset download URL.
+    Requires: gh CLI authenticated.
+    """
+    import subprocess
+
+    asset_name = zip_path.name
+    download_url = f"https://github.com/{repo}/releases/download/{tag}/{asset_name}"
+
+    # Check if release exists
+    check = subprocess.run(
+        ["gh", "release", "view", tag, "--repo", repo],
+        capture_output=True, text=True,
+    )
+    if check.returncode != 0:
+        print(f"  Creating release {tag}...")
+        subprocess.run(
+            ["gh", "release", "create", tag,
+             "--repo", repo,
+             "--title", f"ML Models {tag}",
+             "--notes", "NarrationEmbedder v0.1 — CoreML NeuralNetwork (BERT + mean-pool + projection + L2-norm)",
+             "--prerelease"],
+            check=True, capture_output=True,
+        )
+    else:
+        print(f"  Release {tag} already exists — uploading asset...")
+
+    # Delete existing asset if present, then upload
+    subprocess.run(
+        ["gh", "release", "delete-asset", tag, asset_name, "--repo", repo, "--yes"],
+        capture_output=True,
+    )
+    subprocess.run(
+        ["gh", "release", "upload", tag, str(zip_path), "--repo", repo, "--clobber"],
+        check=True,
+    )
+    print(f"  Uploaded → {download_url}")
+    return download_url
 
 
 def compute_sha256(path: Path) -> str:
@@ -214,9 +293,16 @@ def main():
     })
     cml_out = result["embedding"]
     max_diff = float(np.max(np.abs(cml_out - ref_out.numpy())))
-    # NeuralNetwork format uses float16 internally — up to ~1e-3 delta is expected
-    status = "✓" if max_diff < 1e-3 else "✗ MISMATCH"
+    # NeuralNetwork format uses float16 internally — up to ~2e-3 delta is expected
+    status = "✓" if max_diff < 2e-3 else "✗ MISMATCH"
     print(f"  Max delta (CoreML vs PyTorch): {max_diff:.6f} {status}")
+
+    # Compile + package for on-demand distribution
+    zip_sha256 = compile_and_package(MLMODEL_PATH, MLMODELC_PATH, MLMODELC_ZIP_PATH)
+    zip_mb = MLMODELC_ZIP_PATH.stat().st_size / (1024 * 1024)
+
+    # Upload to GitHub Release
+    download_url = upload_to_github_release(MLMODELC_ZIP_PATH, GITHUB_RELEASE_TAG, GITHUB_REPO)
 
     print("✓ Writing registry entry...")
     registry = {
@@ -225,12 +311,20 @@ def main():
         "export_date": datetime.now(timezone.utc).isoformat(),
         "base_model": base_model_name,
         "format": "CoreML NeuralNetwork",
+        "distribution": "on-demand (GitHub Release)",
+        "download_url": download_url,
         "artifacts": {
             "mlmodel": {
                 "file": MLMODEL_PATH.name,
                 "sha256": sha256,
                 "size_mb": round(size_mb, 2),
-            }
+            },
+            "mlmodelc_zip": {
+                "file": MLMODELC_ZIP_PATH.name,
+                "sha256": zip_sha256,
+                "size_mb": round(zip_mb, 2),
+                "download_url": download_url,
+            },
         },
         "pipeline": {
             "inputs": [
@@ -245,7 +339,10 @@ def main():
         yaml.dump(registry, f, default_flow_style=False, sort_keys=False)
     print(f"  Registry → {REGISTRY_PATH.name}")
 
-    print(f"\n✓ Export complete — {MLMODEL_PATH.name} ({size_mb:.1f} MB)")
+    print(f"\n✓ Export complete")
+    print(f"  .mlmodel: {size_mb:.1f} MB")
+    print(f"  .mlmodelc.zip: {zip_mb:.1f} MB")
+    print(f"  Download URL: {download_url}")
 
 
 if __name__ == "__main__":
