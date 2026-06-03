@@ -1,0 +1,15 @@
+# CoreML export environment — pinned to coremltools 9 tested versions
+# coremltools 9 constraints: torch<=2.7.0, scikit-learn<=1.5.1
+# HF exporters 0.0.1 constraint: transformers<5.0 (is_tf_available removed in 5.x)
+
+torch==2.7.0
+torchvision==0.22.0
+transformers>=4.36.0,<5.0.0
+sentence-transformers>=3.0.0,<4.0.0
+coremltools==9.0
+scikit-learn==1.5.1
+numpy>=1.24.0,<2.0.0
+pyyaml>=6.0
+tqdm>=4.65.0
+faiss-cpu>=1.7.0
+exporters @ git+https://github.com/huggingface/exporters.git
