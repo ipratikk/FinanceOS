@@ -56,9 +56,15 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         }
         let loadedCoreML = await CoreMLCategorizer.load(registry: configuration.modelRegistry)
         coreMLCategorizer = loadedCoreML.isAvailable ? loadedCoreML : nil
-        personalizedClassifier = await PersonalizedClassifier.load(
-            personalizedModelURL: configuration.personalizedKNNModelURL
-        )
+        // Embedding-based personalization: requires persisted db + on-device NarrationEmbedder model.
+        // Falls back to nil (no personalization) when model not yet downloaded or db unavailable.
+        if let queue = configuration.databaseQueue, let embGen = try? await EmbeddingGenerator() {
+            let embStore = GRDBEmbeddingStore(dbQueue: queue)
+            let annIdx = ANNIndex(store: embStore)
+            personalizedClassifier = PersonalizedClassifier.load(annIndex: annIdx, embeddingGenerator: embGen)
+        } else {
+            personalizedClassifier = nil
+        }
         intelligenceConfig = configuration.intelligenceConfig
 
         await Self.registerBundledModel(

@@ -49,10 +49,10 @@ extension PersonalizedClassifier {
     func validateOnHeldOut(
         examples: [(text: String, categoryId: String)],
         validationFraction: Double = 0.20
-    ) -> ClassificationEvaluationResult {
+    ) async -> ClassificationEvaluationResult {
         let split = Self.stratifiedSplit(examples: examples, validationFraction: validationFraction)
         let distribution = Dictionary(grouping: examples, by: \.categoryId).mapValues(\.count)
-        return computeMetrics(
+        return await computeMetrics(
             validationSet: split.validation, totalExamples: examples.count, distribution: distribution
         )
     }
@@ -69,11 +69,11 @@ extension PersonalizedClassifier {
         var falseNegatives: [String: Int] = [:]
     }
 
-    private func runPredictions(on validationSet: [(text: String, categoryId: String)]) -> ValidationStats {
+    private func runPredictions(on validationSet: [(text: String, categoryId: String)]) async -> ValidationStats {
         var stats = ValidationStats()
         for example in validationSet {
             let key = example.text.lowercased()
-            guard let (predicted, confidence) = predict(normalizedDescription: key) else { continue }
+            guard let (predicted, confidence) = await predict(normalizedDescription: key) else { continue }
             stats.matrix[example.categoryId, default: [:]][predicted, default: 0] += 1
             stats.confidentCount += 1
             stats.totalConf += confidence
@@ -113,7 +113,7 @@ extension PersonalizedClassifier {
         validationSet: [(text: String, categoryId: String)],
         totalExamples: Int,
         distribution: [String: Int]
-    ) -> ClassificationEvaluationResult {
+    ) async -> ClassificationEvaluationResult {
         guard !validationSet.isEmpty else {
             return ClassificationEvaluationResult(
                 exampleCount: totalExamples, validationCount: 0, accuracy: 0,
@@ -122,7 +122,7 @@ extension PersonalizedClassifier {
                 categoryDistribution: distribution
             )
         }
-        let stats = runPredictions(on: validationSet)
+        let stats = await runPredictions(on: validationSet)
         let allLabels = Set(validationSet.map(\.categoryId))
         let averages = macroAverages(stats: stats, labels: allLabels)
         let accuracy = stats.confidentCount > 0 ? Double(stats.correct) / Double(stats.confidentCount) : 0
