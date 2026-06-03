@@ -8,8 +8,8 @@ import NaturalLanguage
 /// Output dimension: determined by the NLEmbedding model (typically 64 or 128).
 /// @unchecked Sendable: NLEmbedding is thread-safe for concurrent reads.
 public struct EmbeddingGenerator: @unchecked Sendable {
-    /// Target vector dimension. NLEmbedding.wordEmbedding returns 64-dim for Hindi/English.
-    public static let dimension: Int = 64
+    /// Target vector dimension matching NarrationEmbedder v0.1 output.
+    public static let dimension: Int = 128
 
     private let embedding: NLEmbedding?
 

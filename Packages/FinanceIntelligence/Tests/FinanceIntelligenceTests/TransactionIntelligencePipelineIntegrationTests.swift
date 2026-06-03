@@ -1,9 +1,8 @@
 import CoreML
 import FinanceCore
+@testable import FinanceIntelligence
 import FinanceTesting
 import XCTest
-
-@testable import FinanceIntelligence
 
 /// Integration tests for the full transaction enrichment pipeline (FINOS-24).
 /// Validates all stages 3-7 (income detection, intent classification, subscription detection, recurring patterns).
@@ -23,7 +22,7 @@ final class IntelligencePipelineIntegrationTests: XCTestCase {
         let transaction = Transaction(
             postedAt: Date(),
             description: "NEFT CR ACME SALARY PAYMENT",
-            amountMinorUnits: 10000000,
+            amountMinorUnits: 10_000_000,
             currencyCode: "INR",
             transactionType: .credit,
             merchantName: "ACME"
@@ -69,7 +68,7 @@ final class IntelligencePipelineIntegrationTests: XCTestCase {
     // MARK: - Batch Processing Tests
 
     func test_analyzeBatch_100Transactions_completesSuccessfully() async throws {
-        let transactions = (0..<100).map { i -> Transaction in
+        let transactions = (0 ..< 100).map { i -> Transaction in
             let desc = "MERCHANT"
             let merchant = "MERCHANT"
             return Transaction(
@@ -94,7 +93,7 @@ final class IntelligencePipelineIntegrationTests: XCTestCase {
         let transaction = Transaction(
             postedAt: Date(),
             description: "TEST TRANSACTION",
-            amountMinorUnits: 100000,
+            amountMinorUnits: 100_000,
             currencyCode: "INR",
             transactionType: .debit,
             merchantName: "TEST"
@@ -103,7 +102,7 @@ final class IntelligencePipelineIntegrationTests: XCTestCase {
         var latencies: [Double] = []
         let iterations = 50
 
-        for _ in 0..<iterations {
+        for _ in 0 ..< iterations {
             let start = Date()
             _ = try await service.analyzeEnriched(transaction, context: .empty)
             let elapsed = Date().timeIntervalSince(start) * 1000
@@ -115,7 +114,7 @@ final class IntelligencePipelineIntegrationTests: XCTestCase {
         let p95Latency = latencies[p95Index]
 
         print("Latency: min=\(String(format: "%.2f", latencies.first ?? 0))ms, " +
-              "p95=\(String(format: "%.2f", p95Latency))ms, max=\(String(format: "%.2f", latencies.last ?? 0))ms")
+            "p95=\(String(format: "%.2f", p95Latency))ms, max=\(String(format: "%.2f", latencies.last ?? 0))ms")
 
         XCTAssertLessThan(p95Latency, 200, "P95 latency should be < 200ms")
     }
@@ -168,7 +167,7 @@ final class IntelligencePipelineIntegrationTests: XCTestCase {
         let transaction = Transaction(
             postedAt: Date(),
             description: "NETFLIX SUBSCRIPTION",
-            amountMinorUnits: 100000,
+            amountMinorUnits: 100_000,
             currencyCode: "INR",
             transactionType: .debit,
             merchantName: "NETFLIX"
@@ -214,7 +213,15 @@ private struct TestModelRegistry: ModelRegistry {
 
 private struct InMemoryFeedbackStore: FeedbackStore {
     func record(_ event: FeedbackEvent) async throws {}
-    func events(for transactionId: UUID) async throws -> [FeedbackEvent] { [] }
-    func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] { [] }
-    func allEvents() async throws -> [FeedbackEvent] { [] }
+    func events(for transactionId: UUID) async throws -> [FeedbackEvent] {
+        []
+    }
+
+    func events(ofType type: FeedbackEventType) async throws -> [FeedbackEvent] {
+        []
+    }
+
+    func allEvents() async throws -> [FeedbackEvent] {
+        []
+    }
 }
