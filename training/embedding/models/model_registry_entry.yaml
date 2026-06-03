@@ -1,0 +1,10 @@
+model_name: NarrationEmbedder
+model_version: v0.1
+artifact: NarrationEmbedder_v0.1.mlmodel
+export_date: '2026-06-03T20:10:34.023782+00:00'
+base_model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+input: Float32[1, 384] (sentence embedding from encoder)
+output: Float32[1, 128] (L2-normalized embedding)
+sha256: 0d1ba1218c2862f9425dccf4c6156f60ef781101c124babd08ff240e5dee05b2
+notes: 'Full model inference: encode text with SentenceTransformer, pass to this CoreML
+  model for 128-dim output.'
