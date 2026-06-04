@@ -17,8 +17,9 @@ let package = Package(
         .package(path: "../FinanceTesting"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
         .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
-        .package(url: "https://github.com/huggingface/swift-transformers", from: "0.1.14"),
-        .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0")
+        .package(url: "https://github.com/huggingface/swift-transformers", from: "1.3.0"),
+        .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0"),
+        .package(url: "https://github.com/ml-explore/mlx-swift", from: "0.21.0")
     ],
     targets: [
         .target(
