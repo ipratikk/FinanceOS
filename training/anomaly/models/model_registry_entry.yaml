@@ -1,0 +1,32 @@
+model_name: AnomalyDetector
+model_version: v0.1
+export_date: '2026-06-04T08:55:26.631048+00:00'
+algorithm: IsolationForest
+sha256: 0fc412f28c069096ca323646da7d4f5ab71a39dc61948348297c8b4a2cfe63e6
+metrics:
+  fpr: 0.0
+  precision: 1.0
+  recall: 1.0
+  tp: 50
+  fp: 0
+  tn: 1925
+  fn: 0
+  auc_roc: 1.0
+anomaly_types:
+- unusual_amount
+- new_merchant
+- spike
+- duplicate
+- out_of_hours
+- foreign_currency
+- velocity
+- refund_without_purchase
+- round_amount
+features:
+- amount_ratio
+- amount_zscore
+- new_merchant
+- out_of_hours
+- round_amount
+- log_amount
+- merchant_frequency
