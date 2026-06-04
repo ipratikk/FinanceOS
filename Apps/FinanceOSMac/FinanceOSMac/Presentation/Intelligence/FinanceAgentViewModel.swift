@@ -19,13 +19,16 @@ final class FinanceAgentViewModel {
     private let agent = FinanceAgent()
     private let transactionRepository: any TransactionRepository
     private var cachedTransactions: [Transaction] = []
+    private var isLoadingTransactions = false
 
     init(transactionRepository: any TransactionRepository) {
         self.transactionRepository = transactionRepository
     }
 
     func loadTransactions() async {
-        guard cachedTransactions.isEmpty else { return }
+        guard cachedTransactions.isEmpty, !isLoadingTransactions else { return }
+        isLoadingTransactions = true
+        defer { isLoadingTransactions = false }
         do {
             cachedTransactions = try await transactionRepository.fetchTransactions()
         } catch {
@@ -41,12 +44,17 @@ final class FinanceAgentViewModel {
     }
 
     func submitQuery(_ text: String) async {
+        guard !isLoading else { return }
         isLoading = true
         error = nil
         defer { isLoading = false }
         await loadTransactions()
         let query = AgentQuery(text: text)
-        let response = agent.answer(query: query, transactions: cachedTransactions)
+        let agentCapture = agent
+        let txCapture = cachedTransactions
+        let response = await Task.detached(priority: .userInitiated) {
+            agentCapture.answer(query: query, transactions: txCapture)
+        }.value
         let entry = QueryEntry(
             id: UUID(),
             query: text,

@@ -3,7 +3,11 @@ import FinanceUI
 import SwiftUI
 
 struct FinanceAgentView: View {
-    @State var viewModel: FinanceAgentViewModel
+    @State private var viewModel: FinanceAgentViewModel
+
+    init(viewModel: FinanceAgentViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
 
     private let suggestedQueries: [String] = [
         "How much did I spend this month?",
@@ -16,6 +20,10 @@ struct FinanceAgentView: View {
     var body: some View {
         VStack(spacing: 0) {
             historyOrEmptyState
+            if let error = viewModel.error {
+                FDSBanner(error, style: .error)
+                    .padding(.horizontal, AppSpacing.md)
+            }
             Divider()
             inputBar
         }
@@ -145,8 +153,8 @@ struct FinanceAgentView: View {
         FDSLabel(name)
             .font(AppTypography.captionSmMedium)
             .foregroundStyle(AppColors.accent)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
+            .padding(.horizontal, AppSpacing.compact)
+            .padding(.vertical, 4)
             .background(AppColors.accent.opacity(0.12))
             .clipShape(RoundedRectangle(cornerRadius: AppRadius.xs))
     }
