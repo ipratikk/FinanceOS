@@ -34,6 +34,12 @@ struct SidebarView: View {
                     FDSSidebarSectionHeader("Manage")
                 }
 
+                Section {
+                    sidebarItem(.financeAgent, shortcut: "⌘8")
+                } header: {
+                    FDSSidebarSectionHeader("Assistant")
+                }
+
                 if developerModeEnabled {
                     Section {
                         sidebarItem(.intelligence)

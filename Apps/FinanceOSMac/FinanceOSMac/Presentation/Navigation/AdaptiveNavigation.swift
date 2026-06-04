@@ -22,12 +22,17 @@ struct AdaptiveNavigation: View {
             get: { navigator.sidebarSelection },
             set: { navigator.navigate(to: $0) }
         )) {
-            DashboardView(viewModel: DashboardViewModel(
-                spendingService: appContainer.spendingService,
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository,
-                exportService: ExportService()
-            ))
+            DashboardView(
+                viewModel: DashboardViewModel(
+                    spendingService: appContainer.spendingService,
+                    transactionRepository: appContainer.transactionRepository,
+                    ledgerRepository: appContainer.ledgerRepository,
+                    exportService: ExportService()
+                ),
+                insightsViewModel: InsightNarrativeViewModel(
+                    transactionRepository: appContainer.transactionRepository
+                )
+            )
             .tabItem {
                 Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
             }
@@ -113,12 +118,17 @@ struct DetailRouter: View {
     var detailContent: some View {
         switch navigator.sidebarSelection {
         case .dashboard:
-            DashboardView(viewModel: DashboardViewModel(
-                spendingService: appContainer.spendingService,
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository,
-                exportService: ExportService()
-            ))
+            DashboardView(
+                viewModel: DashboardViewModel(
+                    spendingService: appContainer.spendingService,
+                    transactionRepository: appContainer.transactionRepository,
+                    ledgerRepository: appContainer.ledgerRepository,
+                    exportService: ExportService()
+                ),
+                insightsViewModel: InsightNarrativeViewModel(
+                    transactionRepository: appContainer.transactionRepository
+                )
+            )
         case .transactions:
             TransactionsView(
                 viewModel: TransactionsViewModel(
@@ -173,6 +183,10 @@ struct DetailRouter: View {
             SettingsView(viewModel: SettingsViewModel(bankRepository: appContainer.bankRepository))
         case .intelligence:
             IntelligenceHubView(container: IntelligenceContainer.shared)
+        case .financeAgent:
+            FinanceAgentView(viewModel: FinanceAgentViewModel(
+                transactionRepository: appContainer.transactionRepository
+            ))
         }
     }
 
