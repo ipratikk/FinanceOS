@@ -242,7 +242,16 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             merchantName: merchant.canonicalName, intent: intentPrediction.intent,
             isDebit: transaction.transactionType == .debit
         )
-        let humanDescription = await descriptionGenerator.generate(from: descContext)
+        let mlxInput = MLXDescriptionInput(
+            merchant: merchant.canonicalName,
+            categoryId: categoryPrediction.categoryId,
+            amountMinorUnits: Int(transaction.amountMinorUnits),
+            currencyCode: transaction.currencyCode,
+            date: transaction.postedAt,
+            narration: transaction.description,
+            isDebit: transaction.transactionType == .debit
+        )
+        let humanDescription = await descriptionGenerator.generate(mlxInput: mlxInput, context: descContext)
         return EnrichedTransaction(
             transaction: transaction, merchantCandidate: merchant, categoryPrediction: categoryPrediction,
             intentPrediction: intentPrediction, features: features, isUserCorrected: isUserCorrected,
