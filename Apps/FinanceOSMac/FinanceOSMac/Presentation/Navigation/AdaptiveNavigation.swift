@@ -22,12 +22,18 @@ struct AdaptiveNavigation: View {
             get: { navigator.sidebarSelection },
             set: { navigator.navigate(to: $0) }
         )) {
-            DashboardView(viewModel: DashboardViewModel(
-                spendingService: appContainer.spendingService,
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository,
-                exportService: ExportService()
-            ))
+            DashboardView(
+                viewModel: DashboardViewModel(
+                    spendingService: appContainer.spendingService,
+                    transactionRepository: appContainer.transactionRepository,
+                    ledgerRepository: appContainer.ledgerRepository,
+                    exportService: ExportService()
+                ),
+                insightsViewModel: InsightNarrativeViewModel(
+                    transactionRepository: appContainer.transactionRepository,
+                    spendingService: appContainer.spendingService
+                )
+            )
             .tabItem {
                 Label(NavigationItem.dashboard.label, systemImage: NavigationItem.dashboard.icon)
             }
@@ -113,12 +119,18 @@ struct DetailRouter: View {
     var detailContent: some View {
         switch navigator.sidebarSelection {
         case .dashboard:
-            DashboardView(viewModel: DashboardViewModel(
-                spendingService: appContainer.spendingService,
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository,
-                exportService: ExportService()
-            ))
+            DashboardView(
+                viewModel: DashboardViewModel(
+                    spendingService: appContainer.spendingService,
+                    transactionRepository: appContainer.transactionRepository,
+                    ledgerRepository: appContainer.ledgerRepository,
+                    exportService: ExportService()
+                ),
+                insightsViewModel: InsightNarrativeViewModel(
+                    transactionRepository: appContainer.transactionRepository,
+                    spendingService: appContainer.spendingService
+                )
+            )
         case .transactions:
             TransactionsView(
                 viewModel: TransactionsViewModel(
