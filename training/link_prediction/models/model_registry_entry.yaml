@@ -1,0 +1,12 @@
+model_name: LinkPredictor
+model_version: v0.1
+export_date: '2026-06-04T08:58:56.891988+00:00'
+algorithm: TransE
+embedding_dim: 64
+n_entities: 2179
+n_relations: 3
+sha256: 89cde8a932e9b0e0ca5333af164a9da3763c18c7deea01eac96e7fa6acc04e27
+metrics:
+  hits_at_1: 0.836
+  mrr: 0.8698
+  auc_roc: 0.9706
