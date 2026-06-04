@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var autoRefresh = true
     @State private var showConfirmClear = false
     @State private var viewModel: SettingsViewModel
+    @State private var feedbackViewModel = FeedbackExportViewModel()
     @AppStorage("developerModeEnabled") private var developerModeEnabled = false
     @State private var modelDownloadState: ModelDownloadState = .notDownloaded
     @State private var isEmbeddingReady: Bool?
@@ -73,6 +74,9 @@ struct SettingsView: View {
             guard let svc = intelligence else { return }
             isEmbeddingReady = await svc.isEmbeddingModelReady
         }
+        .task {
+            await feedbackViewModel.load()
+        }
     }
 
     private var sideTabs: some View {
@@ -119,6 +123,7 @@ struct SettingsView: View {
             }
 
             modelDownloadSection
+            FeedbackExportView(viewModel: feedbackViewModel)
             sectionTitle("Danger Zone")
 
             Button(action: { showConfirmClear = true }, label: {
