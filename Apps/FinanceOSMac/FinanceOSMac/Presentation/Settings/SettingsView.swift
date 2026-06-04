@@ -11,6 +11,8 @@ struct SettingsView: View {
     @State private var viewModel: SettingsViewModel
     @AppStorage("developerModeEnabled") private var developerModeEnabled = false
     @State private var modelDownloadState: ModelDownloadState = .notDownloaded
+    @State private var isEmbeddingReady: Bool?
+    @Environment(\.transactionIntelligence) private var intelligence
 
     init(viewModel: SettingsViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -64,7 +66,14 @@ struct SettingsView: View {
         .task {
             for await state in await ModelDownloadManager.shared.stateStream() {
                 modelDownloadState = state
+                if let svc = intelligence {
+                    isEmbeddingReady = await svc.isEmbeddingModelReady
+                }
             }
+        }
+        .task {
+            guard let svc = intelligence else { return }
+            isEmbeddingReady = await svc.isEmbeddingModelReady
         }
     }
 
@@ -112,7 +121,7 @@ struct SettingsView: View {
             }
 
             modelDownloadSection
-
+            personalizationStatusRow
             sectionTitle("Danger Zone")
 
             Button(action: { showConfirmClear = true }, label: {
@@ -289,6 +298,36 @@ private extension SettingsView {
 
     var modelStatusBadge: some View {
         statusBadgeView(for: modelDownloadState)
+    }
+
+    @ViewBuilder
+    var personalizationStatusRow: some View {
+        let (label, color, symbol): (String, Color, String) = {
+            guard intelligence != nil else {
+                return ("Personalization: Initializing...", AppColors.Text.tertiary, "ellipsis.circle")
+            }
+            switch isEmbeddingReady {
+            case .none:
+                return ("Personalization: Initializing...", AppColors.Text.tertiary, "ellipsis.circle")
+            case .some(true):
+                return ("Personalization: Active", AppColors.success, "checkmark.circle.fill")
+            case .some(false):
+                return (
+                    "Personalization: Download model to activate",
+                    AppColors.Text.secondary,
+                    "exclamationmark.circle"
+                )
+            }
+        }()
+        HStack(spacing: AppSpacing.compact) {
+            Image(systemName: symbol)
+                .font(AppTypography.captionLg)
+                .foregroundColor(color)
+            FDSLabel(label)
+                .font(AppTypography.captionLg)
+                .foregroundColor(color)
+        }
+        .padding(.horizontal, 4)
     }
 
     func statusBadgeView(for state: ModelDownloadState) -> some View {
