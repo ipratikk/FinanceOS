@@ -31,8 +31,9 @@ struct DashboardView: View {
         }
         .background(AppColors.base)
         .task {
-            await viewModel.load()
-            await insightsViewModel.refreshIfNeeded()
+            async let dashboard: Void = viewModel.load()
+            async let insights: Void = insightsViewModel.refreshIfNeeded()
+            _ = await (dashboard, insights)
         }
         .sheet(isPresented: $showOpeningBalanceSheet) {
             OpeningBalanceSheet(viewModel: viewModel)

@@ -30,8 +30,7 @@ struct AdaptiveNavigation: View {
                     exportService: ExportService()
                 ),
                 insightsViewModel: InsightNarrativeViewModel(
-                    transactionRepository: appContainer.transactionRepository,
-                    spendingService: appContainer.spendingService
+                    transactionRepository: appContainer.transactionRepository
                 )
             )
             .tabItem {
@@ -127,8 +126,7 @@ struct DetailRouter: View {
                     exportService: ExportService()
                 ),
                 insightsViewModel: InsightNarrativeViewModel(
-                    transactionRepository: appContainer.transactionRepository,
-                    spendingService: appContainer.spendingService
+                    transactionRepository: appContainer.transactionRepository
                 )
             )
         case .transactions:

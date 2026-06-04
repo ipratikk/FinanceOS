@@ -6,7 +6,10 @@ import Foundation
 @Observable @MainActor
 final class InsightNarrativeViewModel {
     struct InsightItem: Identifiable {
-        let id: UUID
+        var id: String {
+            text
+        }
+
         let text: String
         let severity: NarrativeSeverity
     }
@@ -16,15 +19,12 @@ final class InsightNarrativeViewModel {
     var lastRefreshDate: Date?
 
     private let transactionRepository: any TransactionRepository
-    private let spendingService: any SpendingServiceProtocol
     private let generator = MLXInsightGenerator()
+    private static let lastRefreshKey = "InsightNarrative.lastRefresh"
 
-    init(
-        transactionRepository: any TransactionRepository,
-        spendingService: any SpendingServiceProtocol
-    ) {
+    init(transactionRepository: any TransactionRepository) {
         self.transactionRepository = transactionRepository
-        self.spendingService = spendingService
+        lastRefreshDate = UserDefaults.standard.object(forKey: Self.lastRefreshKey) as? Date
     }
 
     func refreshIfNeeded() async {
@@ -48,11 +48,13 @@ final class InsightNarrativeViewModel {
                 insights = []
                 return
             }
-            let raw = generator.generate(from: context)
-            insights = raw.map { insight in
-                InsightItem(id: UUID(), text: insight.text, severity: mapSeverity(insight.severity))
-            }
+            let gen = generator
+            let raw = await Task.detached(priority: .userInitiated) {
+                gen.generate(from: context)
+            }.value
+            insights = raw.map { InsightItem(text: $0.text, severity: mapSeverity($0.severity)) }
             lastRefreshDate = Date()
+            UserDefaults.standard.set(lastRefreshDate, forKey: Self.lastRefreshKey)
         } catch {
             insights = []
         }
