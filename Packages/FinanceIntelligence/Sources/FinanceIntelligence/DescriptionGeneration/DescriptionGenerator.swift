@@ -24,7 +24,8 @@ public struct DescriptionGenerator: Sendable {
     /// Always returns a non-empty string. Factuality guard is built into MLXDescriptionGenerator.
     public func generate(mlxInput: MLXDescriptionInput, context: DescriptionContext) async -> String {
         let mlxResult = await mlxGenerator.generate(from: mlxInput)
-        if mlxResult.isFactuallyVerified {
+        // Only short-circuit on a verified LLM result; template results fall through to AppleIntelligence.
+        if mlxResult.isFactuallyVerified, mlxResult.source == .llm {
             return mlxResult.description
         }
         if let aiDescription = await aiAdapter.generate(from: context),
