@@ -33,7 +33,7 @@ public struct InsightNarrativeCard: View {
 
     private var severityIcon: some View {
         Image(systemName: severitySymbol)
-            .font(.system(size: 14, weight: .semibold))
+            .font(AppTypography.bodySmSemibold)
             .foregroundStyle(severityColor)
             .frame(width: 20, height: 20)
     }

@@ -45,6 +45,7 @@ struct FinanceAgentView: View {
         VStack(spacing: AppSpacing.xl) {
             Spacer()
             Image(systemName: "sparkle.magnifyingglass")
+                // swiftlint:disable:next hardcoded_font_system
                 .font(.system(size: 48, weight: .light))
                 .foregroundStyle(AppColors.accent)
 
@@ -185,6 +186,7 @@ struct FinanceAgentView: View {
                 Task { await viewModel.submit() }
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
+                    // swiftlint:disable:next hardcoded_font_system
                     .font(.system(size: 24))
                     .foregroundStyle(
                         viewModel.queryText.trimmingCharacters(in: .whitespaces).isEmpty

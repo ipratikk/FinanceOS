@@ -305,14 +305,15 @@ private extension SettingsView {
     }
 
     var personalizationStatusRow: some View {
-        let (label, color, symbol): (String, Color, String) = switch isEmbeddingReady {
-        case .some(true): ("Personalization: Active", AppColors.success, "checkmark.circle.fill")
-        case .some(false): (
-                "Personalization: Download model to activate",
-                AppColors.Text.secondary,
-                "exclamationmark.circle"
-            )
-        case .none: ("Personalization: Initializing...", AppColors.Text.tertiary, "ellipsis.circle")
+        let (label, color): (String, Color) = switch isEmbeddingReady {
+        case .some(true): ("Personalization: Active", AppColors.success)
+        case .some(false): ("Personalization: Download model to activate", AppColors.Text.secondary)
+        case .none: ("Personalization: Initializing...", AppColors.Text.tertiary)
+        }
+        let symbol: String = switch isEmbeddingReady {
+        case .some(true): "checkmark.circle.fill"
+        case .some(false): "exclamationmark.circle"
+        case .none: "ellipsis.circle"
         }
         return HStack(spacing: AppSpacing.compact) {
             Image(systemName: symbol)
