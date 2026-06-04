@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceIntelligence
+import Network
 import os
 import SwiftUI
 
@@ -37,11 +38,32 @@ struct FinanceOSMacApp: App {
                 .environment(\.transactionIntelligence, intelligenceService)
                 .environment(\.categorizationScheduler, categorizationScheduler)
                 .preferredColorScheme(.dark)
+                .task(priority: .background) {
+                    await attemptSilentModelDownload()
+                }
         }
 
         Settings {
             SettingsView(viewModel: SettingsViewModel(bankRepository: AppContainer.shared.bankRepository))
                 .preferredColorScheme(.dark)
         }
+    }
+
+    private func attemptSilentModelDownload() async {
+        let manager = ModelDownloadManager.shared
+        guard await !manager.isReady else { return }
+
+        let isOnWifi = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let monitor = NWPathMonitor(requiredInterfaceType: .wifi)
+            let queue = DispatchQueue(label: "finos.model.network.monitor", qos: .background)
+            monitor.pathUpdateHandler = { path in
+                monitor.cancel()
+                continuation.resume(returning: path.status == .satisfied)
+            }
+            monitor.start(queue: queue)
+        }
+
+        guard isOnWifi else { return }
+        await manager.download()
     }
 }

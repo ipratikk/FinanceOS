@@ -286,6 +286,10 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         return await classifier.validateOnHeldOut(examples: examples)
     }
 
+    public var isEmbeddingModelReady: Bool {
+        personalizedClassifier != nil
+    }
+
     public func learn(
         transaction: Transaction,
         correctedCategoryId: String,

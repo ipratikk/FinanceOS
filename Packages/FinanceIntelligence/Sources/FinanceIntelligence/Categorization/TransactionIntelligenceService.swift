@@ -65,4 +65,7 @@ public protocol TransactionIntelligenceService: Sendable {
     /// Evaluates the PersonalizedClassifier on a held-out validation split derived from `examples`.
     /// Training-set accuracy is never reported. Returns nil when PersonalizedClassifier is unavailable.
     func evaluateClassifier(examples: [(text: String, categoryId: String)]) async -> ClassificationEvaluationResult?
+
+    /// Whether NarrationEmbedder v0.1 is downloaded and personalization is active.
+    var isEmbeddingModelReady: Bool { get async }
 }

@@ -82,7 +82,21 @@ public actor EmbeddingGenerator {
         guard let folder = Bundle.module.resourceURL else {
             throw EmbeddingError.tokenizerNotFound
         }
+        // swift-transformers calls fatalError (not throw) when BPETokenizer is selected
+        // but merges are absent. Validate upfront so try? in callers can catch this safely.
+        try validateBPECompatibility(in: folder)
         return try await AutoTokenizer.from(modelFolder: folder)
+    }
+
+    private static func validateBPECompatibility(in folder: URL) throws {
+        let url = folder.appendingPathComponent("tokenizer.json")
+        guard let data = try? Data(contentsOf: url),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let model = json["model"] as? [String: Any],
+              (model["type"] as? String) == "BPE",
+              model["merges"] != nil else {
+            throw EmbeddingError.incompatibleTokenizer
+        }
     }
 
     private static func ensureModelDownloaded() async throws -> URL {
@@ -113,6 +127,7 @@ public actor EmbeddingGenerator {
 public enum EmbeddingError: Error, LocalizedError {
     case emptyInput
     case tokenizerNotFound
+    case incompatibleTokenizer
     case missingOutput
     case modelNotFoundAfterUnzip
 
@@ -120,6 +135,7 @@ public enum EmbeddingError: Error, LocalizedError {
         switch self {
         case .emptyInput: "Cannot embed empty text"
         case .tokenizerNotFound: "Bundled tokenizer files not found in app resources"
+        case .incompatibleTokenizer: "Bundled tokenizer is not BPE or is missing merges — replace tokenizer files"
         case .missingOutput: "CoreML model did not produce 'embedding' output"
         case .modelNotFoundAfterUnzip: "Model directory not found after unzip"
         }
