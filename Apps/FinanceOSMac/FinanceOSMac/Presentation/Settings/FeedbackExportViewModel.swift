@@ -13,6 +13,11 @@ final class FeedbackExportViewModel {
     private let exporter = FeedbackExporter()
     private let correctionStore: UserCorrectionStore
     private static let lastExportKey = "FeedbackExport.lastExportDate"
+    private static let filenameDateFormatter: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyyMMdd_HHmmss"
+        return fmt
+    }()
 
     init() {
         let storeURL = IntelligenceServiceConfiguration.default.correctionStoreURL
@@ -40,12 +45,13 @@ final class FeedbackExportViewModel {
     func exportFeedback() async {
         isExporting = true
         exportError = nil
+        exportedFileURL = nil
         defer { isExporting = false }
 
         let corrections = await correctionStore.exportTrainingEligible()
         let docsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let filename = "feedback_export_\(Date().ISO8601Format()).csv"
-        let csvURL = docsURL.appendingPathComponent(filename)
+        let timestamp = Self.filenameDateFormatter.string(from: Date())
+        let csvURL = docsURL.appendingPathComponent("feedback_export_\(timestamp).csv")
 
         do {
             let url = try exporter.writeCSV(from: corrections, to: csvURL)
