@@ -229,7 +229,7 @@ Only override with `--skipValidation` when:
 Proper PR workflow ensures:
 - No broken builds are pushed
 - Test failures are caught before review
-- Consistent PR template with JIRA/GitHub issue linking
+- Consistent PR template with JIRA issue linking
 - Automatic JIRA workflow transitions
 
 ---

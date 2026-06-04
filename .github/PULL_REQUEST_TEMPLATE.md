@@ -1,9 +1,8 @@
 ## Tracking
 
-<!-- REQUIRED: Fill in both fields below. PRs missing these will be blocked. -->
+<!-- REQUIRED: Fill in the JIRA field below. PRs missing this will be blocked. -->
 
 - **JIRA Issue:** [REPLACE-WITH-KEY](https://ipratikgoel.atlassian.net/browse/REPLACE-WITH-KEY) <!-- e.g. [FINOS-5](https://ipratikgoel.atlassian.net/browse/FINOS-5) — must match pattern [A-Z]+-[0-9]+ -->
-- **GitHub Issue:** #REPLACE-WITH-NUMBER <!-- e.g. #123 — must match pattern #[0-9]+ -->
 
 ## Summary
 
@@ -24,11 +23,6 @@ Please select the type of change:
 - [ ] **Documentation** — Docs added or updated
 - [ ] **Dependencies** — Package updates or dependency changes
 - [ ] **Test** — Test coverage added or improved
-
-## Related Issues
-
-<!-- Keep in sync with the GitHub Issue field above -->
-Closes #REPLACE-WITH-NUMBER
 
 ## Changes Made
 
