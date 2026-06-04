@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
@@ -9,6 +10,7 @@ struct SettingsView: View {
     @State private var showConfirmClear = false
     @State private var viewModel: SettingsViewModel
     @AppStorage("developerModeEnabled") private var developerModeEnabled = false
+    @State private var modelDownloadState: ModelDownloadState = .notDownloaded
 
     init(viewModel: SettingsViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -59,6 +61,11 @@ struct SettingsView: View {
         } message: {
             FDSLabel("This will permanently delete all data including banks, accounts, cards, and transactions.")
         }
+        .task {
+            for await state in await ModelDownloadManager.shared.stateStream() {
+                modelDownloadState = state
+            }
+        }
     }
 
     private var sideTabs: some View {
@@ -103,6 +110,8 @@ struct SettingsView: View {
                 }
                 .padding(AppSpacing.sm)
             }
+
+            modelDownloadSection
 
             sectionTitle("Danger Zone")
 
@@ -243,6 +252,111 @@ struct SettingsView: View {
             }
             .padding(AppSpacing.xs)
         })
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - AI Personalization
+
+private extension SettingsView {
+    var modelDownloadSection: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            sectionTitle("AI Personalization")
+            FDSCard(cornerRadius: 12, padded: false) {
+                VStack(spacing: 0) {
+                    HStack(spacing: AppSpacing.compact) {
+                        Image(systemName: "brain.head.profile")
+                            .font(AppTypography.bodySmMedium)
+                            .foregroundColor(AppColors.accentPurple)
+                            .frame(width: 22)
+                        VStack(alignment: .leading, spacing: 2) {
+                            FDSLabel("NarrationEmbedder v0.1")
+                                .font(AppTypography.bodySmSemibold)
+                                .foregroundColor(AppColors.Text.primary)
+                            FDSLabel("411 MB · Wi-Fi recommended")
+                                .font(AppTypography.captionLg)
+                                .foregroundColor(AppColors.Text.tertiary)
+                        }
+                        Spacer()
+                        modelStatusBadge
+                    }
+                    modelDownloadActionContent
+                }
+                .padding(AppSpacing.sm)
+            }
+        }
+    }
+
+    var modelStatusBadge: some View {
+        statusBadgeView(for: modelDownloadState)
+    }
+
+    func statusBadgeView(for state: ModelDownloadState) -> some View {
+        let (label, color): (String, Color) = {
+            switch state {
+            case .notDownloaded: return ("Not Downloaded", AppColors.Text.tertiary)
+            case .downloading: return ("Downloading", AppColors.info)
+            case .ready: return ("Ready", AppColors.success)
+            case .failed: return ("Failed", AppColors.danger)
+            }
+        }()
+        return FDSLabel(label)
+            .font(AppTypography.captionSmSemibold)
+            .foregroundColor(color)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(color.opacity(0.15))
+            .clipShape(Capsule())
+    }
+
+    @ViewBuilder
+    var modelDownloadActionContent: some View {
+        switch modelDownloadState {
+        case .notDownloaded:
+            Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
+            modelActionButton(label: "Download Model", symbol: "arrow.down.circle.fill", tint: AppColors.accent)
+        case let .downloading(progress):
+            Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    FDSLabel(progress < 0.9 ? "Downloading…" : "Installing…")
+                        .font(AppTypography.captionLg)
+                        .foregroundColor(AppColors.Text.secondary)
+                    Spacer()
+                    FDSLabel("\(Int(progress * 100))%")
+                        .font(AppTypography.captionLg)
+                        .foregroundColor(AppColors.Text.tertiary)
+                }
+                ProgressView(value: progress, total: 1.0)
+                    .tint(AppColors.accent)
+            }
+        case let .failed(message):
+            Divider().opacity(AppColors.Opacity.low).padding(.vertical, 8)
+            VStack(alignment: .leading, spacing: 8) {
+                FDSBanner(message, style: .error)
+                modelActionButton(label: "Retry Download", symbol: "arrow.clockwise", tint: AppColors.danger)
+            }
+        case .ready:
+            EmptyView()
+        }
+    }
+
+    func modelActionButton(label: String, symbol: String, tint: Color) -> some View {
+        Button(action: { Task { await ModelDownloadManager.shared.download() } }, label: {
+            HStack(spacing: 8) {
+                Image(systemName: symbol)
+                    .font(AppTypography.bodySmSemibold)
+                FDSLabel(label)
+                    .font(AppTypography.bodySmSemibold)
+                Spacer()
+            }
+        })
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(tint.opacity(0.18))
+        .foregroundColor(tint)
+        .cornerRadius(8)
         .buttonStyle(.plain)
     }
 }

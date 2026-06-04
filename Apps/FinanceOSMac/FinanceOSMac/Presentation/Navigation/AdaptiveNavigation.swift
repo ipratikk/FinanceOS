@@ -127,6 +127,7 @@ struct DetailRouter: View {
                     intelligenceService: intelligence
                 )
             )
+            .id(intelligence != nil)
         case .accounts:
             AccountsView(
                 viewModel: AccountsViewModel(

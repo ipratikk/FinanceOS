@@ -12,7 +12,7 @@ public struct FeedbackExporter: Sendable {
 
     /// Export corrections to a CSV string. Returns nil when below minimum count.
     public func exportCSV(from corrections: [UserCorrection]) -> String? {
-        let eligible = corrections.filter { $0.isTrainingEligible }
+        let eligible = corrections.filter(\.isTrainingEligible)
         guard eligible.count >= Self.minimumExportCount else { return nil }
         return buildCSV(from: eligible)
     }
