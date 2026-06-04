@@ -173,6 +173,10 @@ struct DetailRouter: View {
             SettingsView(viewModel: SettingsViewModel(bankRepository: appContainer.bankRepository))
         case .intelligence:
             IntelligenceHubView(container: IntelligenceContainer.shared)
+        case .financeAgent:
+            FinanceAgentView(viewModel: FinanceAgentViewModel(
+                transactionRepository: appContainer.transactionRepository
+            ))
         }
     }
 
