@@ -15,6 +15,9 @@ public enum AppColors {
         let r: CGFloat
         let g: CGFloat
         let b: CGFloat
+        init(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat) {
+            self.r = r; self.g = g; self.b = b
+        }
     }
 
     private static func adaptive(dark: RGB, light: RGB) -> Color {
@@ -38,8 +41,8 @@ public enum AppColors {
 
     /// App wallpaper canvas. Dark: #0f0f12 · Light: #F5F5F7
     public static let base = adaptive(
-        dark: RGB(r: \1, g: \2, b: \3),
-        light: RGB(r: \1, g: \2, b: \3)
+        dark: RGB(0.060, 0.060, 0.070),
+        light: RGB(0.961, 0.961, 0.969)
     )
 
     /// macOS system surfaces — adaptive via NSColor semantics.
@@ -55,15 +58,10 @@ public enum AppColors {
 
     // MARK: - Primary Accents
 
-    /// #30D158 — Emerald green; primary brand accent.
     public static let accentGreen = Color(red: 0.188, green: 0.827, blue: 0.345)
-    /// #FF9F0A — Gold orange; secondary accent.
     public static let accentOrange = Color(red: 1.0, green: 0.62, blue: 0.04)
-    /// #0A84FF — Cobalt blue; info states.
     public static let accentBlue = Color(red: 0.039, green: 0.518, blue: 1.0)
-    /// #BF5AF2 — Plum purple; investment/crypto.
     public static let accentPurple = Color(red: 0.749, green: 0.345, blue: 0.949)
-    /// #8E8E93 — Muted gray; disabled non-text.
     public static let accentMuted = Color(red: 0.557, green: 0.557, blue: 0.576)
 
     public static let accentGold = accentOrange
@@ -94,33 +92,33 @@ public enum AppColors {
     public enum Text {
         /// Dark: #F1F3F6 · Light: #1C1C1E
         public static let primary = adaptive(
-            dark: RGB(r: \1, g: \2, b: \3),
-            light: RGB(r: \1, g: \2, b: \3)
+            dark: RGB(0.945, 0.953, 0.965),
+            light: RGB(0.110, 0.110, 0.118)
         )
         /// Dark: #BDC2CC · Light: #3C3C43
         public static let secondary = adaptive(
-            dark: RGB(r: \1, g: \2, b: \3),
-            light: RGB(r: \1, g: \2, b: \3)
+            dark: RGB(0.741, 0.761, 0.800),
+            light: RGB(0.235, 0.235, 0.263)
         )
         /// Dark: #858A94 · Light: #636366
         public static let tertiary = adaptive(
-            dark: RGB(r: \1, g: \2, b: \3),
-            light: RGB(r: \1, g: \2, b: \3)
+            dark: RGB(0.518, 0.541, 0.580),
+            light: RGB(0.388, 0.388, 0.400)
         )
         /// Dark: #8F94A0 · Light: #6C6C70
         public static let tertiaryElevated = adaptive(
-            dark: RGB(r: \1, g: \2, b: \3),
-            light: RGB(r: \1, g: \2, b: \3)
+            dark: RGB(0.560, 0.580, 0.620),
+            light: RGB(0.424, 0.424, 0.439)
         )
         /// Dark: #636874 · Light: #8E8E93 — decorative only
         public static let quaternary = adaptive(
-            dark: RGB(r: \1, g: \2, b: \3),
-            light: RGB(r: \1, g: \2, b: \3)
+            dark: RGB(0.390, 0.410, 0.450),
+            light: RGB(0.557, 0.557, 0.576)
         )
         /// Dark: #52525B · Light: #AEAEB2
         public static let disabled = adaptive(
-            dark: RGB(r: \1, g: \2, b: \3),
-            light: RGB(r: \1, g: \2, b: \3)
+            dark: RGB(0.322, 0.322, 0.361),
+            light: RGB(0.682, 0.682, 0.698)
         )
     }
 
