@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceUI
 import Network
 import os
 import SwiftUI
@@ -12,6 +13,7 @@ struct FinanceOSMacApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .fdsAdaptive()
                 .task {
                     // Pass the shared database queue so post-processing pipeline
                     // (graph, recurring, relationships) has persistence backing.
