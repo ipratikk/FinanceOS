@@ -58,10 +58,15 @@ public enum AppColors {
 
     // MARK: - Primary Accents
 
+    /// #30D158 — Emerald green; primary brand accent.
     public static let accentGreen = Color(red: 0.188, green: 0.827, blue: 0.345)
+    /// #FF9F0A — Gold orange; secondary accent.
     public static let accentOrange = Color(red: 1.0, green: 0.62, blue: 0.04)
+    /// #0A84FF — Cobalt blue; info states.
     public static let accentBlue = Color(red: 0.039, green: 0.518, blue: 1.0)
+    /// #BF5AF2 — Plum purple; investment/crypto.
     public static let accentPurple = Color(red: 0.749, green: 0.345, blue: 0.949)
+    /// #8E8E93 — Muted gray; disabled non-text.
     public static let accentMuted = Color(red: 0.557, green: 0.557, blue: 0.576)
 
     public static let accentGold = accentOrange
