@@ -55,6 +55,7 @@ public struct TransactionFeatureExtractor: Sendable {
             hasTransferIndicator: hasTransferIndicator(raw: raw, normalized: normalized),
             hasPayrollIndicator: hasPayrollIndicator(normalized),
             hasRefundIndicator: hasRefundIndicator(normalized),
+            hasCreditCardPaymentIndicator: hasCreditCardPaymentIndicator(raw: raw, isDebit: isDebit),
             institutionHint: context.institution,
             ledgerKindHint: context.ledgerKind?.rawValue
         )
@@ -98,5 +99,15 @@ private extension TransactionFeatureExtractor {
     func hasRefundIndicator(_ normalized: String) -> Bool {
         let indicators = ["refund", "reversal", "cashback", "chargeback", "credit back"]
         return indicators.contains { normalized.contains($0) }
+    }
+
+    func hasCreditCardPaymentIndicator(raw: String, isDebit: Bool) -> Bool {
+        let lower = raw.lowercased()
+        if lower.contains("bbps") { return true }
+        if !isDebit && lower.contains("payment received") { return true }
+        if lower.contains("aebc") { return true }
+        if lower.contains("cred.club") || lower.contains("cred ccbp") { return true }
+        if lower.contains("upi-american express") || lower.contains("upi-amex") { return true }
+        return false
     }
 }

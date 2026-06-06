@@ -35,6 +35,8 @@ public struct TransactionFeatures: Sendable {
     public let hasPayrollIndicator: Bool
     /// True when the description contains refund or reversal keywords.
     public let hasRefundIndicator: Bool
+    /// True when the description indicates a credit card bill payment (BBPS, CRED, AEBC VPA, "payment received").
+    public let hasCreditCardPaymentIndicator: Bool
     /// Bank or institution name supplied by the ledger context (e.g. `"HDFC"`, `"ICICI"`).
     public let institutionHint: String?
     /// Raw value of `LedgerKind` for the source ledger (e.g. `"savings"`, `"credit"`).
