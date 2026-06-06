@@ -2,6 +2,7 @@ import ArgumentParser
 import FinanceParsers
 import Foundation
 
+@available(macOS 10.15, *)
 struct ParseCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "parse",

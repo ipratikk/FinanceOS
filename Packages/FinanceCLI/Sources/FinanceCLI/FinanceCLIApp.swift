@@ -1,5 +1,6 @@
 import ArgumentParser
 
+@main
 struct FinanceCLIApp: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "FinanceCLI",
@@ -12,5 +13,3 @@ struct FinanceCLIApp: AsyncParsableCommand {
         ]
     )
 }
-
-FinanceCLIApp.main()
