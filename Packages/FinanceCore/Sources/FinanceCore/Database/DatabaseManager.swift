@@ -11,9 +11,8 @@ import GRDB
 /// Owns the SQLite connection pool and drives schema migrations at startup.
 /// `@unchecked Sendable` is safe because `dbQueue` is itself thread-safe and `init` is private.
 public final class DatabaseManager: @unchecked Sendable {
-    /// Override URL set by headless CLI tools before `shared` is first accessed.
-    /// Must be set before any access to `DatabaseManager.shared`.
-    // nonisolated(unsafe): safe because configure(url:) must be called before shared is accessed
+    // Override URL for headless CLI tools. Must be set before first access to `shared`.
+    // nonisolated(unsafe): safe — configure(url:) is always called before shared is accessed.
     nonisolated(unsafe) private static var overrideURL: URL?
 
     /// Redirect the database to a custom path. Call before accessing `shared`.
