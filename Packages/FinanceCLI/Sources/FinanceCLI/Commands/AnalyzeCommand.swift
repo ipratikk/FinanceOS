@@ -3,6 +3,7 @@ import FinanceCore
 import FinanceIntelligence
 import Foundation
 
+@available(macOS 10.15, *)
 struct AnalyzeCommand: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "analyze",
