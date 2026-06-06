@@ -21,7 +21,24 @@ public struct IntelligenceContext: Sendable {
 
 /// Contract for the on-device transaction intelligence system.
 /// Conforming types orchestrate merchant normalization, categorization, and personalized learning.
+///
+/// **Preferred API:** use `process(_:)` or the typed convenience methods (`categorize(_:)`,
+/// `analyzeSpending(_:)`, etc.). The lower-level `analyze`/`analyzeBatch` methods remain for
+/// internal use and will be deprecated once all consumers are migrated.
 public protocol TransactionIntelligenceService: Sendable {
+    // MARK: - Typed request/response API (preferred for new call sites)
+
+    func process(_ request: IntelligenceRequest) async throws -> IntelligenceResponse
+    func categorize(_ request: CategorizeRequest) async throws -> CategorizeResponse
+    func analyzeSpending(_ request: SpendingAnalysisRequest) async throws -> SpendingAnalysisResponse
+    func detectRecurring(_ request: RecurringDetectionRequest) async throws -> RecurringDetectionResponse
+    func detectSalary(_ request: SalaryDetectionRequest) async throws -> SalaryDetectionResponse
+    func analyzeCashflow(_ request: CashflowRequest) async throws -> CashflowResponse
+    func resolveEntities(_ request: EntityResolutionRequest) async throws -> EntityResolutionResponse
+    func generateInsight(_ request: InsightRequest) async throws -> InsightResponse
+
+    // MARK: - Legacy API (kept for internal pipeline use)
+
     /// Analyzes a single transaction and returns a fully resolved `AnalyzedTransaction`.
     func analyze(_ transaction: Transaction, context: IntelligenceContext) async throws -> AnalyzedTransaction
     /// Analyzes a batch of transactions efficiently, minimizing actor hops over the batch.

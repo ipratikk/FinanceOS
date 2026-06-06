@@ -13,6 +13,10 @@ public struct IntelligenceServiceConfiguration: Sendable {
 
     /// When provided, person entities are persisted to SQLite via `GRDBIntelligencePersonRepository`.
     /// When nil, an in-memory `PersonEntityStore` is used (session-scoped, no persistence).
+    ///
+    /// **Architecture invariant:** never construct a `DatabaseQueue` here. Always pass
+    /// `DatabaseManager.shared.dbQueue` from the caller. This ensures a single SQLite file
+    /// is shared between FinanceCore and FinanceIntelligence layers.
     public let databaseQueue: DatabaseQueue?
 
     /// Structured logger for intelligence inference events. Defaults to `NullIntelligenceLogger`.
