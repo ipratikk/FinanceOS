@@ -29,6 +29,8 @@ excluded:
   - Packages/FinanceParsers/.build
   - Packages/FinanceUI/.build
   - Packages/FinanceTesting/.build
+  - Packages/FinanceCLI/.build
+  - Packages/FinanceCLI/.build/checkouts
   - Packages/**/Snapshots
   - Packages/**/Generated
   - Packages/**/Preview Content

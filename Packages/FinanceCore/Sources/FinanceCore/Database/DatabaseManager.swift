@@ -11,6 +11,16 @@ import GRDB
 /// Owns the SQLite connection pool and drives schema migrations at startup.
 /// `@unchecked Sendable` is safe because `dbQueue` is itself thread-safe and `init` is private.
 public final class DatabaseManager: @unchecked Sendable {
+    // Override URL for headless CLI tools. Must be set before first access to `shared`.
+    // nonisolated(unsafe): safe — configure(url:) is always called before shared is accessed.
+    nonisolated(unsafe) private static var overrideURL: URL?
+
+    /// Redirect the database to a custom path. Call before accessing `shared`.
+    /// Primary use: `FinanceCLI --db-path` option for headless pipeline runs.
+    public static func configure(url: URL) {
+        overrideURL = url
+    }
+
     /// Singleton. A `fatalError` is intentional — an unusable DB is unrecoverable at launch.
     public static let shared: DatabaseManager = {
         do {
@@ -24,7 +34,7 @@ public final class DatabaseManager: @unchecked Sendable {
     public let dbQueue: DatabaseQueue
 
     private init() throws {
-        let databaseURL = try Self.makeDatabaseURL()
+        let databaseURL = try Self.overrideURL ?? Self.makeDatabaseURL()
 
         FinanceLogger.database.info(
             "Database initialized at: \(databaseURL.path)"
