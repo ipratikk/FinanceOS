@@ -1,31 +1,32 @@
+import FinanceCore
 import FinanceParsers
 import Foundation
 
 /// Transient UI state accumulated during the "add ledger" flow before a ``Ledger`` record is written.
 /// Lives in a ViewModel; never persisted directly.
-public struct TargetCreationState: Identifiable, Equatable {
-    public let id = UUID()
-    public var customName: String = ""
-    public var nickname: String = ""
-    public var first4: String = ""
-    public var last4: String = ""
+struct TargetCreationState: Identifiable, Equatable {
+    let id = UUID()
+    var customName: String = ""
+    var nickname: String = ""
+    var first4: String = ""
+    var last4: String = ""
     /// Obfuscated card number captured from statement metadata (not stored in the DB).
-    public var encryptedCardNumber: String = ""
-    public var cardholderName: String = ""
-    public var selectedBank: Banks?
+    var encryptedCardNumber: String = ""
+    var cardholderName: String = ""
+    var selectedBank: Banks?
     /// Distinguishes card ledgers from account ledgers; drives which fields are shown in the form.
-    public var isCard: Bool = false
-    public var accountType: String = "savings"
-    public var cardType: CardNetwork = .other
-    public var cardProductId: String = ""
-    public var linkedLedgerId: UUID?
+    var isCard: Bool = false
+    var accountType: String = "savings"
+    var cardType: CardNetwork = .other
+    var cardProductId: String = ""
+    var linkedLedgerId: UUID?
 
-    public init() {}
+    init() {}
 
     /// Populates fields from a successfully parsed statement so the user sees pre-filled values.
     /// Only overwrites fields that the statement provides; manual overrides made earlier are preserved
     /// only if they come after this call.
-    public mutating func initializeFromStatement(_ statement: ParsedStatement) {
+    mutating func initializeFromStatement(_ statement: ParsedStatement) {
         last4 = isCard ? (statement.cardLast4 ?? "") : (statement.accountLast4 ?? "")
         encryptedCardNumber = isCard ? (statement.metadata?.fullAccountNumber ?? "") : ""
 

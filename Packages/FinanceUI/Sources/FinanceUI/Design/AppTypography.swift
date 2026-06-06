@@ -13,6 +13,83 @@ import SwiftUI
 /// Fixed-size tokens give consistent visual hierarchy; use `AppTypography.Dynamic` where the system text size setting
 /// must be respected (e.g. primary content, form labels).
 public enum AppTypography {
+    // MARK: - Style (use with .fdsFont() for screen-adaptive scaling)
+
+    public enum Style: CaseIterable {
+        case displayLarge, displayLargeLight, displaySmall
+        case headingXL, headingXLLight, headingLg, headingLgLight
+        case headingMd, headingMdRegular, headingSmall, headlineSmLight
+        case subheadline, screenTitle, titleSm
+        case bodyLg, bodyMd, bodyMdLight, bodyMdSemibold
+        case bodySm, bodySmMedium, bodySmSemibold
+        case labelSemibold, labelMedium, labelRegular, labelSmall
+        case captionLg, captionLgSemibold, captionLgMedium
+        case captionSm, captionSmSemibold, captionSmMedium
+        case amountLarge, amountMd, amountSm, amountXs
+        case iconMd, iconSm, iconXs
+        case netHeroAmount, maskedAccount
+
+        public var baseSize: CGFloat {
+            switch self {
+            case .displayLarge, .displayLargeLight: return 36
+            case .displaySmall: return 28
+            case .headingXL, .headingXLLight: return 28
+            case .headingLg, .headingLgLight: return 24
+            case .headingMd, .headingMdRegular: return 20
+            case .headingSmall, .headlineSmLight: return 17
+            case .subheadline: return 16
+            case .screenTitle: return 32
+            case .titleSm: return 20
+            case .bodyLg: return 16
+            case .bodyMd, .bodyMdLight, .bodyMdSemibold: return 15
+            case .bodySm, .bodySmMedium, .bodySmSemibold: return 14
+            case .labelSemibold, .labelMedium, .labelRegular: return 14
+            case .labelSmall: return 13
+            case .captionLg, .captionLgSemibold, .captionLgMedium: return 13
+            case .captionSm, .captionSmSemibold, .captionSmMedium: return 12
+            case .amountLarge: return 22
+            case .amountMd: return 18
+            case .amountSm: return 15
+            case .amountXs: return 13
+            case .iconMd: return 17
+            case .iconSm: return 15
+            case .iconXs: return 13
+            case .netHeroAmount: return 52
+            case .maskedAccount: return 12
+            }
+        }
+
+        public var weight: Font.Weight {
+            switch self {
+            case .displayLargeLight, .headingXLLight, .headingLgLight, .headlineSmLight, .bodyMdLight:
+                return .light
+            case .displayLarge, .displaySmall, .headingXL, .headingLg, .screenTitle, .netHeroAmount:
+                return .bold
+            case .headingMd, .headingSmall, .subheadline, .titleSm,
+                 .bodyMdSemibold, .bodySmSemibold, .labelSemibold,
+                 .captionLgSemibold, .captionSmSemibold, .amountLarge, .amountMd:
+                return .semibold
+            case .bodySmMedium, .labelMedium, .captionLgMedium, .captionSmMedium:
+                return .medium
+            default:
+                return .regular
+            }
+        }
+
+        public var design: Font.Design {
+            switch self {
+            case .amountLarge, .amountMd, .amountSm, .amountXs, .maskedAccount:
+                return .monospaced
+            default:
+                return .default
+            }
+        }
+
+        public func font(scale: CGFloat = 1.0) -> Font {
+            Font.system(size: baseSize * scale, weight: weight, design: design)
+        }
+    }
+
     // MARK: - Display (Hero / Marketing)
 
     /// 36pt bold — hero numbers on the dashboard (net worth, total spend).

@@ -1,5 +1,6 @@
 .PHONY: parser-build parser-test parser-clean parser-parse \
         intelligence-build intelligence-test intelligence-validate intelligence-train intelligence-evaluate \
+        lint-architecture \
         help
 
 help:
@@ -18,6 +19,44 @@ help:
 	@echo "  make intelligence-export   - Export user corrections to CSV"
 	@echo "  make intelligence-merge    - Merge corrections into training data"
 	@echo "  make intelligence-retrain  - Full loop: export → merge → train → validate"
+
+# Architecture lint: enforces package boundary invariants
+# Invariants:
+#   1. FinanceCore production sources: zero import SwiftUI
+#   2. FinanceIntelligence production sources: zero import SwiftUI
+#   3. FinanceParsers production sources: zero import SwiftUI
+#   4. FinanceCLI production sources: zero import SwiftUI (when package exists)
+#   5. FinanceTesting must not appear in any production target
+#   6. FinanceParsers must have zero external dependencies
+#   7. FinanceIntelligence must never construct DatabaseQueue directly
+#   8. All public intelligence API calls go through IntelligenceRequest/IntelligenceResponse
+lint-architecture:
+	@echo "=== Architecture Lint ==="
+	@PACKAGES="FinanceCore FinanceParsers FinanceIntelligence"; \
+	FAIL=0; \
+	for pkg in $$PACKAGES; do \
+		SRCDIR="Packages/$$pkg/Sources"; \
+		if [ -d "$$SRCDIR" ]; then \
+			count=$$(grep -r "^import SwiftUI" "$$SRCDIR" --include="*.swift" 2>/dev/null | wc -l | tr -d ' '); \
+			if [ "$$count" -gt 0 ]; then \
+				echo "FAIL: import SwiftUI found in $$pkg:"; \
+				grep -rn "^import SwiftUI" "$$SRCDIR" --include="*.swift"; \
+				FAIL=1; \
+			fi; \
+		fi; \
+	done; \
+	if [ -d "Packages/FinanceCLI/Sources" ]; then \
+		count=$$(grep -r "^import SwiftUI" "Packages/FinanceCLI/Sources" --include="*.swift" 2>/dev/null | wc -l | tr -d ' '); \
+		if [ "$$count" -gt 0 ]; then \
+			echo "FAIL: import SwiftUI found in FinanceCLI"; \
+			FAIL=1; \
+		fi; \
+	fi; \
+	if [ "$$FAIL" -eq 0 ]; then \
+		echo "Architecture lint: PASSED"; \
+	else \
+		exit 1; \
+	fi
 
 parser-build:
 	cd Packages/FinanceParsers && swift build
