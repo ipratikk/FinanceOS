@@ -44,6 +44,15 @@ public struct RuleBasedCategorizer: Sendable {
                 ruleId: RuleID.payrollIndicator
             )
         }
+        if features.hasCreditCardPaymentIndicator {
+            return makePrediction(
+                categoryId: "transfers",
+                subcategoryId: "transfers.creditCardPayment",
+                confidence: 0.92,
+                source: .structuralRule,
+                ruleId: RuleID.ccPaymentIndicator
+            )
+        }
         if features.hasRefundIndicator {
             return makePrediction(
                 categoryId: "income",
@@ -94,6 +103,7 @@ public struct RuleBasedCategorizer: Sendable {
         static let payrollIndicator = "rule.payroll_indicator"
         static let refundIndicator = "rule.refund_indicator"
         static let transferIndicator = "rule.transfer_indicator"
+        static let ccPaymentIndicator = "rule.cc_payment"
     }
 }
 
@@ -128,7 +138,7 @@ private extension RuleBasedCategorizer {
 private extension RuleBasedCategorizer {
     /// Assembles all rule groups into the ordered rule list evaluated at categorization time.
     static func buildRules() -> [CategoryRule] {
-        incomeRules + transferRules + housingUtilityRules +
+        incomeRules + indianBankingRules + transferRules + housingUtilityRules +
             groceryDiningRules + transportTravelRules +
             healthInsuranceRules + subscriptionRules +
             shoppingEntertainmentRules + miscRules
@@ -138,9 +148,38 @@ private extension RuleBasedCategorizer {
         [
             CategoryRule(["salary", "payroll", "paycheck", "wages"], "income", "income.salary", confidence: 0.9),
             CategoryRule(["dividend", "interest earned", "interest credit"], "income", "income.dividend"),
+            CategoryRule(
+                ["interest paid", "interest credited", "interest till"],
+                "income", "income.interest", confidence: 0.88
+            ),
             CategoryRule(["freelance", "consulting fee", "invoice"], "income", "income.freelance"),
             CategoryRule(["refund", "cashback", "reversal"], "income", "income.refund", confidence: 0.85),
             CategoryRule(["inw ", "swift inward", "forex credit", "usd@", "usd2"], "income")
+        ]
+    }
+
+    static var indianBankingRules: [CategoryRule] {
+        [
+            CategoryRule(
+                ["gst/igst", "igst", "cgst", "sgst", "igst-ci", "gst@"],
+                "fees", nil, confidence: 0.88
+            ),
+            CategoryRule(
+                ["finance charges", "finance charge"],
+                "fees", "fees.interest", confidence: 0.90
+            ),
+            CategoryRule(
+                ["installment principal", "installment amount", "emi principal"],
+                "fees", "fees.interest", confidence: 0.88
+            ),
+            CategoryRule(
+                ["ach d-", "nach d-", "indian clearing corp", "iccl"],
+                "investments", "investments.sip", confidence: 0.90
+            ),
+            CategoryRule(
+                ["membership fee", "annual membership"],
+                "fees", "fees.bank", confidence: 0.85
+            )
         ]
     }
 

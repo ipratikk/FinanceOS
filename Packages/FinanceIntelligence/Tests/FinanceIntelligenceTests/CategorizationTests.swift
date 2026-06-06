@@ -240,3 +240,50 @@ func correctionStore_exportTrainingEligible() async throws {
 
     try? FileManager.default.removeItem(at: url)
 }
+
+// MARK: - Indian banking rules
+
+@Test func rule_bbps_isTransfers() {
+    let f = makeFeatures(description: "BBPS Payment received", isDebit: false)
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "transfers")
+    #expect(pred.subcategoryId == "transfers.creditCardPayment")
+}
+
+@Test func rule_paymentReceived_credit_isTransfers() {
+    let f = makeFeatures(description: "PAYMENT RECEIVED. THANK YOU", isDebit: false)
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "transfers")
+}
+
+@Test func rule_gst_isFees() {
+    let f = makeFeatures(description: "GST/IGST@18%")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "fees")
+}
+
+@Test func rule_financeCharges_isFeesInterest() {
+    let f = makeFeatures(description: "FINANCE CHARGES")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "fees")
+    #expect(pred.subcategoryId == "fees.interest")
+}
+
+@Test func rule_interestPaid_isIncomeInterest() {
+    let f = makeFeatures(description: "INTEREST PAID TILL 31-MAR-2026", isDebit: false)
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "income")
+    #expect(pred.subcategoryId == "income.interest")
+}
+
+@Test func rule_installmentPrincipal_isFeesInterest() {
+    let f = makeFeatures(description: "INSTALLMENT PRINCIPAL AMOUNT")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "fees")
+}
+
+@Test func rule_iccl_isInvestments() {
+    let f = makeFeatures(description: "ACH D- INDIAN CLEARING CORP-00001I15H47A36-SIP")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "investments")
+}
