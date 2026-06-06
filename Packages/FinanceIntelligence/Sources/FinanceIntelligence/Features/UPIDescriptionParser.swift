@@ -35,15 +35,21 @@ enum UPIDescriptionParser {
         "flipkart", "netflix", "spotify", "apple", "google", "airtel", "jio",
         // Indian fintech/payments
         "bbnow", "bigbasket", "gpay", "paytm", "cred", "bhim", "npci",
-        "phonepe", "razorpay", "cashfree",
+        "phonepe", "razorpay", "cashfree", "pep technologies",
         // Financial institutions & credit
         "american express", "amex", "hdfc", "icici", "lombard",
-        "insurance", "bank", "credit card", "express",
+        "insurance", "bank", "credit card", "express", "groww", "iccl",
         // Retail/fashion/food
         "hennes", "h and m", "ikea", "family super market",
         "bawarchi", "mcdonald", "kfc", "subway", "pizza hut", "haldiram",
+        "truffles", "corner house", "zudio", "trent", "snitch", "lenskart",
+        // Travel & mobility
+        "revv", "irctc", "makemytrip", "yatra", "goibibo", "cleartrip",
+        "indigo", "spicejet", "air india", "easemytrip",
         // Utilities/telecom
-        "airtel", "jio", "livpure", "dominos", "domino", "magicpin"
+        "livpure", "dominos", "domino", "magicpin", "udemy", "leetcode",
+        // Salons/services
+        "salon", "parlour"
     ]
 
     /// Parses `rawDescription` and returns a structured result, or nil if the format is unrecognized.
@@ -80,13 +86,24 @@ enum UPIDescriptionParser {
 
 private extension UPIDescriptionParser {
     static func parseUPI(_ raw: String) -> ParsedUPI {
-        // Format: UPI-MERCHANT-vpa@bank-BANKCODE-REF
+        // Format A (HDFC/most banks): UPI-MERCHANT-vpa@bank-BANKCODE-REF
+        // Format B (ICICI card):       UPI-{12digit_phone}-{Merchant Name IN}
         let withoutPrefix = String(raw.dropFirst(4)) // drop "UPI-"
         let parts = withoutPrefix.components(separatedBy: "-")
 
-        let merchantSegment = parts.first ?? withoutPrefix
-        // VPA is the part containing "@"
+        let firstSegment = parts.first ?? withoutPrefix
         let vpa = parts.first(where: { $0.contains("@") })?.lowercased()
+
+        // ICICI card format: first segment is a numeric reference number (9–15 digits, no VPA present)
+        let isNumericRef = vpa == nil && firstSegment.count >= 9 && firstSegment.allSatisfy(\.isNumber)
+        let merchantSegment: String
+        if isNumericRef, parts.count > 1 {
+            // Merchant is in second segment; strip trailing " IN" country suffix ICICI appends
+            let raw2 = parts[1].trimmingCharacters(in: .whitespaces)
+            merchantSegment = raw2.hasSuffix(" IN") ? String(raw2.dropLast(3)) : raw2
+        } else {
+            merchantSegment = firstSegment
+        }
 
         let isBusiness = isMerchantPayment(name: merchantSegment, vpa: vpa)
 
@@ -164,8 +181,11 @@ private extension UPIDescriptionParser {
             return true
         }
 
-        // Business name keywords in the merchant name segment
-        return businessNameKeywords.contains(where: { lower.contains($0) })
+        // Business name keywords in the merchant name segment.
+        // Also check space-collapsed form to handle ICICI card mid-word truncation:
+        // e.g. "bigbaske t" → "bigbasket", "mc donal ds" → "mcdonalds"
+        let collapsed = lower.replacingOccurrences(of: " ", with: "")
+        return businessNameKeywords.contains(where: { lower.contains($0) || collapsed.contains($0) })
     }
 
     static func cleanMerchantSegment(_ segment: String) -> String {
