@@ -66,6 +66,11 @@ public protocol TransactionIntelligenceService: Sendable {
         context: IntelligenceContext
     ) async throws -> EnrichedTransaction
 
+    /// Enriches a batch: categorizes, generates descriptions via Foundation Models, persists to DB,
+    /// and runs cross-ledger CC payment reconciliation.
+    /// Skips description generation for transactions that already have `enrichedDescription` set.
+    func enrichBatch(_ transactions: [Transaction]) async throws -> [EnrichedTransaction]
+
     /// Run background post-processing on the FULL enriched corpus.
     /// Stages: .graph → .patterns → .relationships → .complete.
     /// onStageChange is called at each transition for progress UI and audit logging.

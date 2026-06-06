@@ -32,6 +32,8 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let modelMetadataRegistry: ModelMetadataRegistry
     private let intelligenceConfig: IntelligenceConfig
     private let feedbackStore: any FeedbackStore
+    /// Repository for persisting enriched descriptions and reconciliation links. Optional.
+    private let transactionRepository: (any TransactionRepository)?
     /// Stage 3: Income classification model (FINOS-20)
     private let incomeClassifier: IncomeClassifier
     /// Stage 4: Intent classification model (FINOS-19)
@@ -98,6 +100,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         intelligenceLogger = configuration.intelligenceLogger
         modelMetadataRegistry = configuration.modelMetadataRegistry
         feedbackStore = configuration.feedbackStore
+        transactionRepository = configuration.transactionRepository
     }
 
     private static func registerBundledModel(
@@ -213,6 +216,42 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
 
     public func generateInsights(for transactions: [Transaction]) async throws -> [TransactionInsight] {
         insightEngine.generate(for: transactions)
+    }
+
+    public func enrichBatch(_ transactions: [Transaction]) async throws -> [EnrichedTransaction] {
+        guard !transactions.isEmpty else { return [] }
+        let enriched: [EnrichedTransaction] = try await withThrowingTaskGroup(of: EnrichedTransaction.self) { group in
+            for txn in transactions {
+                group.addTask { try await self.analyzeEnriched(txn, context: .empty) }
+            }
+            var results: [EnrichedTransaction] = []
+            results.reserveCapacity(transactions.count)
+            for try await result in group { results.append(result) }
+            return results
+        }
+        if let repo = transactionRepository {
+            let needsDescription = enriched.filter { $0.transaction.enrichedDescription == nil }
+            for item in needsDescription {
+                if let desc = item.humanDescription {
+                    try await repo.updateEnrichedDescription(id: item.transaction.id, description: desc)
+                }
+            }
+            let bankDebits = transactions.filter { $0.transactionType == .debit }
+            let cardCredits = transactions.filter { $0.transactionType == .credit }
+            let pairs = CreditCardPaymentReconciler().reconcile(bankDebits: bankDebits, cardCredits: cardCredits)
+            for pair in pairs {
+                try await repo.updateLinkedTransaction(
+                    id: pair.bankDebitId, linkedTransactionId: pair.cardCreditId.uuidString
+                )
+                try await repo.updateLinkedTransaction(
+                    id: pair.cardCreditId, linkedTransactionId: pair.bankDebitId.uuidString
+                )
+            }
+            FinanceLogger.intelligence.info(
+                "enrichBatch: \(enriched.count) enriched, \(pairs.count) CC payment pairs reconciled"
+            )
+        }
+        return enriched
     }
 
     public func analyzeEnriched(
