@@ -138,32 +138,35 @@ private func printSampleRow(
 
 private func printReport(_ results: [AnalyzedTransaction], verbose: Bool) {
     let width = 40
-    print(String(repeating: "─", count: 115))
+    print(String(repeating: "─", count: 155))
     print(
         padRight("Description", width) +
             padRight("Merchant", 25) +
             padRight("Category", 22) +
             padRight("Conf", 6) +
-            "Source"
+            padRight("Source", 18) +
+            "Human Description"
     )
-    print(String(repeating: "─", count: 115))
+    print(String(repeating: "─", count: 155))
 
     for result in results {
         let pred = result.categoryPrediction
         let merch = result.merchantCandidate
         let correctedMark = result.isUserCorrected ? " ✓" : ""
+        let humanDesc = result.transaction.enrichedDescription ?? ""
         print(
             padRight(result.transaction.description, width) +
                 padRight(merch.canonicalName + correctedMark, 25) +
                 padRight(pred.categoryId, 22) +
                 padRight(String(format: "%.2f", pred.confidence), 6) +
-                pred.source.rawValue
+                padRight(pred.source.rawValue, 18) +
+                humanDesc
         )
         if verbose {
             print("  tokens: \(result.features.tokens.prefix(8).joined(separator: ", "))")
         }
     }
-    print(String(repeating: "─", count: 115))
+    print(String(repeating: "─", count: 155))
 
     let categoryGroups = Dictionary(grouping: results, by: { $0.categoryPrediction.categoryId })
     print("\nCategory breakdown:")
