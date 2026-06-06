@@ -47,7 +47,7 @@ public enum StatementSource: String, CaseIterable, Sendable, Hashable {
         case .iciciBank, .iciciCard:
             return "ICICI"
         case .amex:
-            return "Amex"
+            return "American Express"
         }
     }
 
