@@ -10,6 +10,21 @@ public enum IntelligenceResponse: Sendable {
     case analyzeCashflow(CashflowResponse)
     case resolveEntities(EntityResolutionResponse)
     case generateInsight(InsightResponse)
+    case enrichTransaction(EnrichTransactionResponse)
+}
+
+public struct EnrichTransactionResponse: Sendable {
+    public let enriched: Int
+    public let skipped: Int
+    public let reconciled: Int
+    public let descriptions: [UUID: String]
+
+    public init(enriched: Int, skipped: Int, reconciled: Int, descriptions: [UUID: String]) {
+        self.enriched = enriched
+        self.skipped = skipped
+        self.reconciled = reconciled
+        self.descriptions = descriptions
+    }
 }
 
 public struct CategorizeResponse: Sendable {

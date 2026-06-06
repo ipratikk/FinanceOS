@@ -33,7 +33,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let intelligenceConfig: IntelligenceConfig
     private let feedbackStore: any FeedbackStore
     /// Repository for persisting enriched descriptions and reconciliation links. Optional.
-    private let transactionRepository: (any TransactionRepository)?
+    let transactionRepository: (any TransactionRepository)?
     /// Stage 3: Income classification model (FINOS-20)
     private let incomeClassifier: IncomeClassifier
     /// Stage 4: Intent classification model (FINOS-19)

@@ -10,6 +10,19 @@ public enum IntelligenceRequest: Sendable {
     case analyzeCashflow(CashflowRequest)
     case resolveEntities(EntityResolutionRequest)
     case generateInsight(InsightRequest)
+    case enrichTransaction(EnrichTransactionRequest)
+}
+
+public struct EnrichTransactionRequest: Sendable {
+    /// Specific IDs to enrich. Nil = all transactions missing descriptions.
+    public let transactionIDs: [UUID]?
+    /// If true, regenerate even if description already set.
+    public let forceReprocess: Bool
+
+    public init(transactionIDs: [UUID]? = nil, forceReprocess: Bool = false) {
+        self.transactionIDs = transactionIDs
+        self.forceReprocess = forceReprocess
+    }
 }
 
 public struct CategorizeRequest: Sendable {
