@@ -57,6 +57,9 @@
     "Analyze all transactions: categorize, build knowledge graph, detect patterns" : {
 
     },
+    "Ask a financial question…" : {
+
+    },
     "Bank" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -338,6 +341,9 @@
     "Export Failed" : {
 
     },
+    "feedback_export.csv" : {
+
+    },
     "Filters" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -348,6 +354,9 @@
           }
         }
       }
+    },
+    "Finance Assistant" : {
+
     },
     "Financial Intelligence" : {
 
