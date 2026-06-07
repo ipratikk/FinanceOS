@@ -68,7 +68,7 @@ private func makeTxn(
         date: Date(timeIntervalSince1970: 1_000_000 + 86400 * 5)
     )
     let pairs = CreditCardPaymentReconciler().reconcile(bankDebits: [bankDebit], cardCredits: [cardCredit])
-    #expect(pairs.count == 0)
+    #expect(pairs.isEmpty)
 }
 
 @Test func reconciler_noMatch_amountTooFarOff() {
@@ -81,5 +81,5 @@ private func makeTxn(
         amount: 500_000, type: .credit
     )
     let pairs = CreditCardPaymentReconciler().reconcile(bankDebits: [bankDebit], cardCredits: [cardCredit])
-    #expect(pairs.count == 0)
+    #expect(pairs.isEmpty)
 }
