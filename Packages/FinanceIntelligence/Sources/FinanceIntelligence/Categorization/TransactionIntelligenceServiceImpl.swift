@@ -83,24 +83,28 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         subscriptionDetector = HybridSubscriptionDetector()
         trainedRecurringDetector = TrainedRecurringDetector()
 
-        if let queue = configuration.databaseQueue {
-            let graphRepo = GRDBGraphRepository(dbWriter: queue, graphConfig: intelligenceConfig.graph)
-            let graphStore = await GraphStore(repository: graphRepo)
-            let recurringRepo = GRDBRecurringPatternRepository(dbWriter: queue)
-            let relationshipRepo = GRDBRelationshipRepository(dbWriter: queue)
-            postProcessingPipeline = PostProcessingPipeline(
-                graphStore: graphStore,
-                recurringRepo: recurringRepo,
-                relationshipRepo: relationshipRepo,
-                intelligenceConfig: intelligenceConfig
-            )
-        } else {
-            postProcessingPipeline = nil
-        }
+        postProcessingPipeline = await Self.makePostProcessingPipeline(
+            queue: configuration.databaseQueue, config: intelligenceConfig
+        )
         intelligenceLogger = configuration.intelligenceLogger
         modelMetadataRegistry = configuration.modelMetadataRegistry
         feedbackStore = configuration.feedbackStore
         transactionRepository = configuration.transactionRepository
+    }
+
+    private static func makePostProcessingPipeline(
+        queue: DatabaseQueue?,
+        config: IntelligenceConfig
+    ) async -> PostProcessingPipeline? {
+        guard let queue else { return nil }
+        let graphRepo = GRDBGraphRepository(dbWriter: queue, graphConfig: config.graph)
+        let graphStore = await GraphStore(repository: graphRepo)
+        return PostProcessingPipeline(
+            graphStore: graphStore,
+            recurringRepo: GRDBRecurringPatternRepository(dbWriter: queue),
+            relationshipRepo: GRDBRelationshipRepository(dbWriter: queue),
+            intelligenceConfig: config
+        )
     }
 
     private static func registerBundledModel(
