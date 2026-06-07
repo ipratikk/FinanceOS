@@ -33,70 +33,45 @@ public struct RuleBasedCategorizer: Sendable {
     }
 
     /// Returns the best-matching category for the given feature vector.
-    /// Fast-path checks payroll, refund, and transfer indicators before keyword scanning.
+    /// Fast-path checks structural indicators before keyword scanning.
     public func categorize(_ features: TransactionFeatures) -> CategoryPrediction {
+        if let fast = structuralFastPath(features) { return fast }
+        return keywordMatch(features.normalizedDescription)
+    }
+
+    private func structuralFastPath(_ features: TransactionFeatures) -> CategoryPrediction? {
         if features.hasPayrollIndicator {
-            return makePrediction(
-                categoryId: "income",
-                subcategoryId: "income.salary",
-                confidence: 0.9,
-                source: .structuralRule,
-                ruleId: RuleID.payrollIndicator
-            )
+            return makePrediction(categoryId: "income", subcategoryId: "income.salary",
+                                  confidence: 0.9, source: .structuralRule, ruleId: RuleID.payrollIndicator)
         }
         if features.hasCreditCardPaymentIndicator {
-            return makePrediction(
-                categoryId: "transfers",
-                subcategoryId: "transfers.creditCardPayment",
-                confidence: 0.92,
-                source: .structuralRule,
-                ruleId: RuleID.ccPaymentIndicator
-            )
+            return makePrediction(categoryId: "transfers", subcategoryId: "transfers.creditCardPayment",
+                                  confidence: 0.92, source: .structuralRule, ruleId: RuleID.ccPaymentIndicator)
         }
         if features.hasRefundIndicator {
-            return makePrediction(
-                categoryId: "income",
-                subcategoryId: "income.refund",
-                confidence: 0.85,
-                source: .structuralRule,
-                ruleId: RuleID.refundIndicator
-            )
+            return makePrediction(categoryId: "income", subcategoryId: "income.refund",
+                                  confidence: 0.85, source: .structuralRule, ruleId: RuleID.refundIndicator)
         }
         if features.hasTransferIndicator {
-            return makePrediction(
-                categoryId: "transfers",
-                subcategoryId: nil,
-                confidence: 0.88,
-                source: .structuralRule,
-                ruleId: RuleID.transferIndicator
-            )
+            return makePrediction(categoryId: "transfers", subcategoryId: nil,
+                                  confidence: 0.88, source: .structuralRule, ruleId: RuleID.transferIndicator)
         }
+        return nil
+    }
 
-        let desc = features.normalizedDescription
+    private func keywordMatch(_ desc: String) -> CategoryPrediction {
         var topMatch: (rule: CategoryRule, score: Int)?
-
         for rule in rules {
             let score = rule.keywords.count(where: { desc.contains($0) })
             guard score > 0 else { continue }
-            if topMatch == nil || score > topMatch?.score ?? 0 {
-                topMatch = (rule, score)
-            }
+            if topMatch == nil || score > topMatch?.score ?? 0 { topMatch = (rule, score) }
         }
-
         if let match = topMatch {
-            return makePrediction(
-                categoryId: match.rule.categoryId,
-                subcategoryId: match.rule.subcategoryId,
-                confidence: match.rule.confidence,
-                source: .structuralRule,
-                ruleId: "rule.keyword.\(match.rule.categoryId)"
-            )
+            return makePrediction(categoryId: match.rule.categoryId, subcategoryId: match.rule.subcategoryId,
+                                  confidence: match.rule.confidence, source: .structuralRule,
+                                  ruleId: "rule.keyword.\(match.rule.categoryId)")
         }
-
-        return .uncategorized(
-            modelVersion: ModelMetadata.rulesBased.modelVersion,
-            taxonomyVersion: taxonomy.version
-        )
+        return .uncategorized(modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version)
     }
 
     private enum RuleID {
