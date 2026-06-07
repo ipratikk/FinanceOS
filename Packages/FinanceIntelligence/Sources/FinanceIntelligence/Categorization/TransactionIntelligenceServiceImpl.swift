@@ -230,7 +230,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             }
             var results: [EnrichedTransaction] = []
             results.reserveCapacity(transactions.count)
-            for try await result in group { results.append(result) }
+            for try await result in group {
+                results.append(result)
+            }
             return results
         }
         if let repo = transactionRepository {
@@ -256,6 +258,26 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             )
         }
         return enriched
+    }
+
+    /// Upgrades template descriptions to Foundation Models quality for a set of transactions.
+    /// Call from a background task after `enrichBatch` completes — never on the main thread.
+    /// - Parameter transactionIDs: IDs to upgrade. Nil = all transactions missing AI descriptions.
+    public func generateAIDescriptions(for transactionIDs: [UUID]? = nil) async throws {
+        guard let repo = transactionRepository else { return }
+        let all = try await repo.fetchTransactions()
+        let targets = transactionIDs.map { ids in all.filter { ids.contains($0.id) } } ?? all
+        for txn in targets {
+            let merchant = normalizer.normalize(txn.description)
+            let context = DescriptionContext(
+                merchantName: merchant.canonicalName,
+                intent: .unknown,
+                isDebit: txn.transactionType == .debit
+            )
+            let desc = await descriptionGenerator.generate(from: context)
+            try await repo.updateEnrichedDescription(id: txn.id, description: desc)
+        }
+        FinanceLogger.intelligence.info("generateAIDescriptions: upgraded \(targets.count) descriptions")
     }
 
     public func analyzeEnriched(
@@ -285,16 +307,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             merchantName: merchant.canonicalName, intent: intentPrediction.intent,
             isDebit: transaction.transactionType == .debit
         )
-        let mlxInput = MLXDescriptionInput(
-            merchant: merchant.canonicalName,
-            categoryId: categoryPrediction.categoryId,
-            amountMinorUnits: Int(transaction.amountMinorUnits),
-            currencyCode: transaction.currencyCode,
-            date: transaction.postedAt,
-            narration: transaction.description,
-            isDebit: transaction.transactionType == .debit
-        )
-        let humanDescription = await descriptionGenerator.generate(mlxInput: mlxInput, context: descContext)
+        // Use synchronous template-based generation for pipeline throughput.
+        // Foundation Models descriptions are generated on demand via generateAIDescriptions(_:).
+        let humanDescription = descriptionGenerator.generateSync(from: descContext)
         return EnrichedTransaction(
             transaction: transaction, merchantCandidate: merchant, categoryPrediction: categoryPrediction,
             intentPrediction: intentPrediction, features: features, isUserCorrected: isUserCorrected,
