@@ -1,3 +1,4 @@
+import FinanceCore
 import Foundation
 import GRDB
 
@@ -29,6 +30,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
     public let intelligenceConfig: IntelligenceConfig
     /// Persists user feedback signals for future model improvement. Nil when no database is configured.
     public let feedbackStore: any FeedbackStore
+    /// Used by `enrichBatch` to persist `enrichedDescription` and `linkedTransactionId`. Optional.
+    public let transactionRepository: (any TransactionRepository)?
 
     public init(
         correctionStoreURL: URL,
@@ -36,7 +39,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
         taxonomy: CategoryTaxonomy = .current,
         databaseQueue: DatabaseQueue? = nil,
         intelligenceLogger: (any IntelligenceLogger)? = nil,
-        intelligenceConfig: IntelligenceConfig = .defaultV1
+        intelligenceConfig: IntelligenceConfig = .defaultV1,
+        transactionRepository: (any TransactionRepository)? = nil
     ) throws {
         self.correctionStoreURL = correctionStoreURL
         self.personalizedKNNModelURL = personalizedKNNModelURL
@@ -47,6 +51,7 @@ public struct IntelligenceServiceConfiguration: Sendable {
         modelMetadataRegistry = ModelMetadataRegistry(dbQueue: databaseQueue)
         self.intelligenceConfig = intelligenceConfig
         feedbackStore = databaseQueue.map { GRDBFeedbackStore(dbQueue: $0) } ?? NullFeedbackStore()
+        self.transactionRepository = transactionRepository
     }
 
     /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.

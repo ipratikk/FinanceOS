@@ -33,67 +33,52 @@ public struct RuleBasedCategorizer: Sendable {
     }
 
     /// Returns the best-matching category for the given feature vector.
-    /// Fast-path checks payroll, refund, and transfer indicators before keyword scanning.
+    /// Fast-path checks structural indicators before keyword scanning.
     public func categorize(_ features: TransactionFeatures) -> CategoryPrediction {
+        if let fast = structuralFastPath(features) { return fast }
+        return keywordMatch(features.normalizedDescription)
+    }
+
+    private func structuralFastPath(_ features: TransactionFeatures) -> CategoryPrediction? {
         if features.hasPayrollIndicator {
-            return makePrediction(
-                categoryId: "income",
-                subcategoryId: "income.salary",
-                confidence: 0.9,
-                source: .structuralRule,
-                ruleId: RuleID.payrollIndicator
-            )
+            return makePrediction(categoryId: "income", subcategoryId: "income.salary",
+                                  confidence: 0.9, source: .structuralRule, ruleId: RuleID.payrollIndicator)
+        }
+        if features.hasCreditCardPaymentIndicator {
+            return makePrediction(categoryId: "transfers", subcategoryId: "transfers.creditCardPayment",
+                                  confidence: 0.92, source: .structuralRule, ruleId: RuleID.ccPaymentIndicator)
         }
         if features.hasRefundIndicator {
-            return makePrediction(
-                categoryId: "income",
-                subcategoryId: "income.refund",
-                confidence: 0.85,
-                source: .structuralRule,
-                ruleId: RuleID.refundIndicator
-            )
+            return makePrediction(categoryId: "income", subcategoryId: "income.refund",
+                                  confidence: 0.85, source: .structuralRule, ruleId: RuleID.refundIndicator)
         }
         if features.hasTransferIndicator {
-            return makePrediction(
-                categoryId: "transfers",
-                subcategoryId: nil,
-                confidence: 0.88,
-                source: .structuralRule,
-                ruleId: RuleID.transferIndicator
-            )
+            return makePrediction(categoryId: "transfers", subcategoryId: nil,
+                                  confidence: 0.88, source: .structuralRule, ruleId: RuleID.transferIndicator)
         }
+        return nil
+    }
 
-        let desc = features.normalizedDescription
+    private func keywordMatch(_ desc: String) -> CategoryPrediction {
         var topMatch: (rule: CategoryRule, score: Int)?
-
         for rule in rules {
             let score = rule.keywords.count(where: { desc.contains($0) })
             guard score > 0 else { continue }
-            if topMatch == nil || score > topMatch?.score ?? 0 {
-                topMatch = (rule, score)
-            }
+            if topMatch == nil || score > topMatch?.score ?? 0 { topMatch = (rule, score) }
         }
-
         if let match = topMatch {
-            return makePrediction(
-                categoryId: match.rule.categoryId,
-                subcategoryId: match.rule.subcategoryId,
-                confidence: match.rule.confidence,
-                source: .structuralRule,
-                ruleId: "rule.keyword.\(match.rule.categoryId)"
-            )
+            return makePrediction(categoryId: match.rule.categoryId, subcategoryId: match.rule.subcategoryId,
+                                  confidence: match.rule.confidence, source: .structuralRule,
+                                  ruleId: "rule.keyword.\(match.rule.categoryId)")
         }
-
-        return .uncategorized(
-            modelVersion: ModelMetadata.rulesBased.modelVersion,
-            taxonomyVersion: taxonomy.version
-        )
+        return .uncategorized(modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version)
     }
 
     private enum RuleID {
         static let payrollIndicator = "rule.payroll_indicator"
         static let refundIndicator = "rule.refund_indicator"
         static let transferIndicator = "rule.transfer_indicator"
+        static let ccPaymentIndicator = "rule.cc_payment"
     }
 }
 
@@ -128,7 +113,7 @@ private extension RuleBasedCategorizer {
 private extension RuleBasedCategorizer {
     /// Assembles all rule groups into the ordered rule list evaluated at categorization time.
     static func buildRules() -> [CategoryRule] {
-        incomeRules + transferRules + housingUtilityRules +
+        incomeRules + indianBankingRules + transferRules + housingUtilityRules +
             groceryDiningRules + transportTravelRules +
             healthInsuranceRules + subscriptionRules +
             shoppingEntertainmentRules + miscRules
@@ -138,9 +123,38 @@ private extension RuleBasedCategorizer {
         [
             CategoryRule(["salary", "payroll", "paycheck", "wages"], "income", "income.salary", confidence: 0.9),
             CategoryRule(["dividend", "interest earned", "interest credit"], "income", "income.dividend"),
+            CategoryRule(
+                ["interest paid", "interest credited", "interest till"],
+                "income", "income.interest", confidence: 0.88
+            ),
             CategoryRule(["freelance", "consulting fee", "invoice"], "income", "income.freelance"),
             CategoryRule(["refund", "cashback", "reversal"], "income", "income.refund", confidence: 0.85),
             CategoryRule(["inw ", "swift inward", "forex credit", "usd@", "usd2"], "income")
+        ]
+    }
+
+    static var indianBankingRules: [CategoryRule] {
+        [
+            CategoryRule(
+                ["gst/igst", "igst", "cgst", "sgst", "igst-ci", "gst@"],
+                "fees", nil, confidence: 0.88
+            ),
+            CategoryRule(
+                ["finance charges", "finance charge"],
+                "fees", "fees.interest", confidence: 0.90
+            ),
+            CategoryRule(
+                ["installment principal", "installment amount", "emi principal"],
+                "fees", "fees.interest", confidence: 0.88
+            ),
+            CategoryRule(
+                ["ach d-", "nach d-", "indian clearing corp", "iccl"],
+                "investments", "investments.sip", confidence: 0.90
+            ),
+            CategoryRule(
+                ["membership fee", "annual membership"],
+                "fees", "fees.bank", confidence: 0.85
+            )
         ]
     }
 

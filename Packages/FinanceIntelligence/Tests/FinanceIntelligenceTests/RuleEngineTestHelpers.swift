@@ -44,6 +44,7 @@ func makeFeatures(
         hasTransferIndicator: transfer,
         hasPayrollIndicator: payroll,
         hasRefundIndicator: refund,
+        hasCreditCardPaymentIndicator: false,
         institutionHint: nil,
         ledgerKindHint: nil
     )

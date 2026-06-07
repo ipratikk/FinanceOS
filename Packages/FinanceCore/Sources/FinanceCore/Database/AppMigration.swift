@@ -101,6 +101,13 @@ enum AppMigration {
             try AppMigration.createIntelligenceFeedbackEventsTable(in: db)
         }
 
+        migrator.registerMigration("v26_enrichment_fields") { db in
+            try db.alter(table: "transactions") { t in
+                t.add(column: "enrichedDescription", .text)
+                t.add(column: "linkedTransactionId", .text)
+            }
+        }
+
         migrator.registerMigration("v25_create_transaction_embeddings") { db in
             guard try !db.tableExists("transaction_embeddings") else { return }
             try db.create(table: "transaction_embeddings") { table in

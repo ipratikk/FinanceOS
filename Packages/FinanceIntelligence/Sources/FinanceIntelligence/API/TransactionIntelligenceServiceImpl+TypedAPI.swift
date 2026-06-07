@@ -20,6 +20,8 @@ public extension TransactionIntelligenceServiceImpl {
             return try await .resolveEntities(resolveEntities(req))
         case let .generateInsight(req):
             return try await .generateInsight(generateInsight(req))
+        case let .enrichTransaction(req):
+            return try await .enrichTransaction(handleEnrichTransaction(req))
         }
     }
 
@@ -99,5 +101,39 @@ public extension TransactionIntelligenceServiceImpl {
         ledgerIDs: [UUID]?
     ) async throws -> [Transaction] {
         []
+    }
+
+    func handleEnrichTransaction(_ req: EnrichTransactionRequest) async throws -> EnrichTransactionResponse {
+        guard let repo = transactionRepository else {
+            return EnrichTransactionResponse(enriched: 0, skipped: 0, reconciled: 0, descriptions: [:])
+        }
+        let all = try await repo.fetchTransactions()
+        let targets: [Transaction]
+        if let ids = req.transactionIDs {
+            let idSet = Set(ids)
+            targets = all.filter { idSet.contains($0.id) }
+        } else if req.forceReprocess {
+            targets = all
+        } else {
+            targets = all.filter { $0.enrichedDescription == nil }
+        }
+        let skipped = all.count - targets.count
+        let enrichedList = try await enrichBatch(targets)
+        let pairs = CreditCardPaymentReconciler().reconcile(
+            bankDebits: targets.filter { $0.transactionType == .debit },
+            cardCredits: targets.filter { $0.transactionType == .credit }
+        )
+        let descriptions = Dictionary(
+            uniqueKeysWithValues: enrichedList.compactMap { e -> (UUID, String)? in
+                guard let d = e.humanDescription else { return nil }
+                return (e.transaction.id, d)
+            }
+        )
+        return EnrichTransactionResponse(
+            enriched: enrichedList.count,
+            skipped: skipped,
+            reconciled: pairs.count,
+            descriptions: descriptions
+        )
     }
 }

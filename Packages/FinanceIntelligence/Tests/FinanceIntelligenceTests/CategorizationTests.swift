@@ -30,9 +30,44 @@ private func makeFeatures(
         hasTransferIndicator: normalized.contains("neft") || normalized.contains("upi"),
         hasPayrollIndicator: normalized.contains("salary") || normalized.contains("payroll"),
         hasRefundIndicator: normalized.contains("refund"),
+        hasCreditCardPaymentIndicator: {
+            let lower = description.lowercased()
+            return lower.contains("bbps") ||
+                (!isDebit && lower.contains("payment received")) ||
+                lower.contains("aebc") ||
+                lower.contains("cred.club") ||
+                lower.contains("upi-american express")
+        }(),
         institutionHint: nil,
         ledgerKindHint: nil
     )
+}
+
+// MARK: - hasCreditCardPaymentIndicator
+
+@Test func ccPayment_bbps_isDetected() {
+    let f = makeFeatures(description: "BBPS Payment received", isDebit: false)
+    #expect(f.hasCreditCardPaymentIndicator == true)
+}
+
+@Test func ccPayment_amexUPI_isDetected() {
+    let f = makeFeatures(description: "UPI-AMERICAN EXPRESS-AEBC373008620701005@SC-SCBL0036051")
+    #expect(f.hasCreditCardPaymentIndicator == true)
+}
+
+@Test func ccPayment_credClub_isDetected() {
+    let f = makeFeatures(description: "UPI-CRED CLUB-CRED.CLUB@AXISB-UTIB0000114-PAYMENT ON CRED")
+    #expect(f.hasCreditCardPaymentIndicator == true)
+}
+
+@Test func ccPayment_paymentReceived_credit_isDetected() {
+    let f = makeFeatures(description: "PAYMENT RECEIVED. THANK YOU", isDebit: false)
+    #expect(f.hasCreditCardPaymentIndicator == true)
+}
+
+@Test func ccPayment_salary_isNotDetected() {
+    let f = makeFeatures(description: "SALARY CREDIT JUNE 2026", isDebit: false)
+    #expect(f.hasCreditCardPaymentIndicator == false)
 }
 
 // MARK: - RuleBasedCategorizer
@@ -204,4 +239,51 @@ func correctionStore_exportTrainingEligible() async throws {
     }
 
     try? FileManager.default.removeItem(at: url)
+}
+
+// MARK: - Indian banking rules
+
+@Test func rule_bbps_isTransfers() {
+    let f = makeFeatures(description: "BBPS Payment received", isDebit: false)
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "transfers")
+    #expect(pred.subcategoryId == "transfers.creditCardPayment")
+}
+
+@Test func rule_paymentReceived_credit_isTransfers() {
+    let f = makeFeatures(description: "PAYMENT RECEIVED. THANK YOU", isDebit: false)
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "transfers")
+}
+
+@Test func rule_gst_isFees() {
+    let f = makeFeatures(description: "GST/IGST@18%")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "fees")
+}
+
+@Test func rule_financeCharges_isFeesInterest() {
+    let f = makeFeatures(description: "FINANCE CHARGES")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "fees")
+    #expect(pred.subcategoryId == "fees.interest")
+}
+
+@Test func rule_interestPaid_isIncomeInterest() {
+    let f = makeFeatures(description: "INTEREST PAID TILL 31-MAR-2026", isDebit: false)
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "income")
+    #expect(pred.subcategoryId == "income.interest")
+}
+
+@Test func rule_installmentPrincipal_isFeesInterest() {
+    let f = makeFeatures(description: "INSTALLMENT PRINCIPAL AMOUNT")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "fees")
+}
+
+@Test func rule_iccl_isInvestments() {
+    let f = makeFeatures(description: "ACH D- INDIAN CLEARING CORP-00001I15H47A36-SIP")
+    let pred = RuleBasedCategorizer().categorize(f)
+    #expect(pred.categoryId == "investments")
 }

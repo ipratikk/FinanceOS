@@ -262,4 +262,22 @@ public final class GRDBTransactionRepository:
             """, arguments: [id])
         }
     }
+
+    public func updateEnrichedDescription(id: UUID, description: String) async throws {
+        try await dbQueue.write { database in
+            try database.execute(
+                sql: #"UPDATE transactions SET "enrichedDescription" = ? WHERE "id" = ?"#,
+                arguments: [description, id]
+            )
+        }
+    }
+
+    public func updateLinkedTransaction(id: UUID, linkedTransactionId: String) async throws {
+        try await dbQueue.write { database in
+            try database.execute(
+                sql: #"UPDATE transactions SET "linkedTransactionId" = ? WHERE "id" = ?"#,
+                arguments: [linkedTransactionId, id]
+            )
+        }
+    }
 }
