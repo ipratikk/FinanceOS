@@ -272,6 +272,18 @@ public final class GRDBTransactionRepository:
         }
     }
 
+    public func updateEnrichedDescriptionBatch(_ updates: [(id: UUID, description: String)]) async throws {
+        guard !updates.isEmpty else { return }
+        try await dbQueue.write { database in
+            for (id, description) in updates {
+                try database.execute(
+                    sql: #"UPDATE transactions SET "enrichedDescription" = ? WHERE "id" = ?"#,
+                    arguments: [description, id]
+                )
+            }
+        }
+    }
+
     public func updateLinkedTransaction(id: UUID, linkedTransactionId: String) async throws {
         try await dbQueue.write { database in
             try database.execute(
