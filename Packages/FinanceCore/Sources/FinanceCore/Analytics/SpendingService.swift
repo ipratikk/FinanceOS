@@ -20,22 +20,23 @@ public enum TransactionCategory: String, Codable, Equatable, Sendable, CaseItera
     case food, transport, utilities, entertainment, shopping, healthcare, finance, income, transfer, other
 }
 
-/// A single point on the net-worth time-series chart; `netWorth` is in major currency units (rupees, not paise).
+/// A single point on the net-worth time-series chart; `netWorthMinorUnits` is in minor currency units (paise, not rupees).
+/// Display layer divides by 100 to show rupees.
 public struct NetWorthPoint: Identifiable, Sendable {
     public let id: UUID
     public let timestamp: Date
-    public let netWorth: Decimal
+    public let netWorthMinorUnits: Int64
 
-    public init(timestamp: Date, netWorth: Decimal) {
+    public init(timestamp: Date, netWorthMinorUnits: Int64) {
         id = UUID()
         self.timestamp = timestamp
-        self.netWorth = netWorth
+        self.netWorthMinorUnits = netWorthMinorUnits
     }
 }
 
 extension NetWorthPoint: Equatable {
     public static func == (lhs: NetWorthPoint, rhs: NetWorthPoint) -> Bool {
-        lhs.timestamp == rhs.timestamp && lhs.netWorth == rhs.netWorth
+        lhs.timestamp == rhs.timestamp && lhs.netWorthMinorUnits == rhs.netWorthMinorUnits
     }
 }
 
