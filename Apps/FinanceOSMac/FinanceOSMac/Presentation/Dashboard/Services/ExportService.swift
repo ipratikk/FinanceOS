@@ -9,7 +9,10 @@ protocol ExportServiceProtocol: Sendable {
 struct ExportService: ExportServiceProtocol {
     func netWorthCSV(series: [NetWorthPoint]) -> String {
         let header = "Date,NetWorth"
-        let rows = series.map { "\(FormatterCache.iso8601.string(from: $0.timestamp)),\($0.netWorth)" }
+        let rows = series.map {
+            let netWorthRupees = Decimal($0.netWorthMinorUnits) / 100
+            return "\(FormatterCache.iso8601.string(from: $0.timestamp)),\(netWorthRupees)"
+        }
         return ([header] + rows).joined(separator: "\n")
     }
 }

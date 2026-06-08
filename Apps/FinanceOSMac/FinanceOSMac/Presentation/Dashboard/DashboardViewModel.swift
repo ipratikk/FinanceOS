@@ -54,7 +54,8 @@ class DashboardViewModel: AsyncLoadable {
     }
 
     var currentNetWorth: Decimal {
-        netWorthTimeSeries.last?.netWorth ?? 0
+        guard let point = netWorthTimeSeries.last else { return 0 }
+        return Decimal(point.netWorthMinorUnits) / 100
     }
 
     var netWorthMoMDelta: Double? {
@@ -63,8 +64,10 @@ class DashboardViewModel: AsyncLoadable {
         guard let oneMonthAgo = calendar.date(byAdding: .month, value: -1, to: latest.timestamp) else { return nil }
         guard let prevPoint = netWorthTimeSeries.min(by: {
             abs($0.timestamp.timeIntervalSince(oneMonthAgo)) < abs($1.timestamp.timeIntervalSince(oneMonthAgo))
-        }), prevPoint.netWorth != 0 else { return nil }
-        let delta = (latest.netWorth - prevPoint.netWorth) / abs(prevPoint.netWorth)
+        }), prevPoint.netWorthMinorUnits != 0 else { return nil }
+        let latestNW = Decimal(latest.netWorthMinorUnits) / 100
+        let prevNW = Decimal(prevPoint.netWorthMinorUnits) / 100
+        let delta = (latestNW - prevNW) / abs(prevNW)
         return (delta as NSDecimalNumber).doubleValue
     }
 
