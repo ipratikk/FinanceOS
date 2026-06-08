@@ -1,21 +1,27 @@
 ---
 name: commit
-description: Create clean, architecture-grouped git commits from unstaged changes.
+description: Create clean, architecture-grouped git commits using caveman:caveman-commit for deterministic message generation. Layer: parsers, finance-core, finance-ui, app, claude-config, scripts, tests, misc.
 ---
 
 # /commit
 
+Groups unstaged changes by architecture layer. For each group, invokes `caveman:caveman-commit` for ultra-compressed Conventional Commits messages.
+
 **Default agent:** haiku (mechanical grouping) / sonnet (mixed-layer calls)
-**Script:** `.claude/scripts/session/commit.sh`
+
+## Workflow
+
+1. Collect modified files (unstaged + staged)
+2. Group by layer (see below)
+3. For each group:
+   - Stage files
+   - **Invoke caveman:caveman-commit** to generate message
+   - Create commit
 
 ## Usage
 
-- `/commit` → auto-group by layer, commit each group (uses `caveman-commit` for message generation if installed, otherwise falls back to generic messages)
+- `/commit` → auto-group by layer, commit each group (requires caveman:caveman-commit)
 - `/commit --dry-run` → show groups without committing
-
-## Dependencies
-
-`caveman-commit` is optional. If not installed, the script generates generic `chore(<layer>): update files` messages.
 
 ## Grouping layers (in order)
 

@@ -23,7 +23,7 @@ Default: existing architecture decisions are intentional unless evidence suggest
 bash bootstrap.sh   # install tools, global skills, seed log dirs (run once after cloning)
 ```
 
-Key skills: `/build` `/lint` `/parser-test` `/commit` `/review` `/refactor`
+Key skills: `/build` `/lint` `/parser-test` `/commit` `/review` `/refactor` `/card-scraper`
 
 Key make targets: `make parser-test`, `make parser-parse FILE=<path>`, `make parser-build`
 
@@ -57,8 +57,8 @@ All files checked via `swiftlint lint`. Fix violations before committing.
 
 **ALWAYS read first:**
 
-1. `AGENTS.md`
-2. `ARCHITECTURE.md`
+1. `./docs/AGENTS.md`
+2. `./docs/ARCHITECTURE.md`
 
 These are the canonical project context files. Do NOT recursively scan the repository initially.
 
@@ -166,6 +166,13 @@ Primary goal: Build intelligent transaction analysis, behavior detection, and sp
 ### Enabler: Parser / Ingestion
 
 Parser hardening (CSV/XLSX, Indian banks, dedup, format detection) supports intelligence ingestion.
+
+### Enabler: Card Catalog
+
+Card metadata scraping (`/card-scraper`) — 3-stage pipeline (scrape → normalize → enrich):
+- Supports: HDFC, ICICI, Amex, Axis, AU, IDFC, SBI, Scapia, Yes Bank (runners for HDFC/ICICI; stubs for others)
+- Use `/card-scraper all` to scrape + validate latest bank card data
+- See `.claude/skills/card-scraper/` for variants and bank-specific runners
 
 ---
 
