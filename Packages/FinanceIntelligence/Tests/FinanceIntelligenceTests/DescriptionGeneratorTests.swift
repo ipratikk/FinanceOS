@@ -2,132 +2,131 @@
 import Foundation
 import Testing
 
-@Suite("DescriptionGenerator — fallback templates and description generation")
+@Suite("DescriptionGenerator — deterministic, truthful, name-centric output")
 struct DescriptionGeneratorTests {
     private let generator = FallbackGenerator()
     private let descGenerator = DescriptionGenerator()
 
-    // MARK: - Every intent produces a non-empty string
+    // MARK: - Always non-empty
 
     @Test("All 21 intents produce non-empty descriptions")
     func allIntentsNonEmpty() {
         for intent in TransactionIntent.allCases {
-            let context = DescriptionContext(
-                merchantName: "Test Merchant",
-                intent: intent,
-                isDebit: true
-            )
+            let context = DescriptionContext(merchantName: "Test Merchant", intent: intent, isDebit: true)
             let desc = generator.generate(from: context)
             #expect(!desc.isEmpty, "Intent \(intent.rawValue) produced empty description")
         }
     }
 
-    // MARK: - Specific intent templates
+    // MARK: - Name is the description (no invented activity)
 
-    @Test("Salary intent includes merchant name and 'salary'")
-    func salaryDescription() {
-        let ctx = DescriptionContext(merchantName: "PayPal", intent: .salary, isDebit: false)
-        let desc = generator.generate(from: ctx)
-        #expect(desc.lowercased().contains("salary"))
-        #expect(desc.contains("PayPal"))
-    }
-
-    @Test("Monthly subscription includes cadence prefix")
-    func monthlySubscriptionDescription() {
-        let ctx = DescriptionContext(
-            merchantName: "Spotify", intent: .subscription,
-            recurringCadence: .monthly, isRecurring: true
-        )
-        let desc = generator.generate(from: ctx)
-        #expect(desc.lowercased().contains("monthly"))
-        #expect(desc.contains("Spotify"))
-    }
-
-    @Test("Rent with landlord relationship routes correctly")
-    func rentLandlordDescription() {
-        let ctx = DescriptionContext(
-            merchantName: "Ritik Gupta", intent: .transfer,
-            relationship: .landlord,
-            recurringCadence: .monthly, isRecurring: true, isDebit: true
-        )
-        let desc = generator.generate(from: ctx)
-        #expect(desc.lowercased().contains("rent"))
-        #expect(desc.contains("Ritik Gupta"))
-    }
-
-    @Test("Credit card payment includes merchant")
-    func creditCardPaymentDescription() {
-        let ctx = DescriptionContext(merchantName: "American Express", intent: .creditCardPayment)
-        let desc = generator.generate(from: ctx)
-        #expect(desc.lowercased().contains("credit card") || desc.lowercased().contains("payment"))
-        #expect(desc.contains("American Express"))
-    }
-
-    @Test("Refund credit uses 'Refund from' phrasing")
-    func refundDescription() {
-        let ctx = DescriptionContext(merchantName: "Apple", intent: .refund, isDebit: false)
-        let desc = generator.generate(from: ctx)
-        #expect(desc.lowercased().contains("refund"))
-    }
-
-    @Test("Unknown intent with merchant falls back to payment phrasing")
-    func unknownIntentWithMerchant() {
-        let ctx = DescriptionContext(merchantName: "Some Bank", intent: .unknown, isDebit: true)
-        let desc = generator.generate(from: ctx)
-        #expect(!desc.isEmpty)
-        #expect(desc.contains("Some Bank"))
-    }
-
-    @Test("Unknown intent without merchant produces generic string")
-    func unknownIntentNoMerchant() {
-        let ctx = DescriptionContext(merchantName: "", intent: .unknown, isDebit: true)
-        let desc = generator.generate(from: ctx)
-        #expect(!desc.isEmpty)
-    }
-
-    @Test("Cash withdrawal does not include merchant")
-    func cashWithdrawalDescription() {
-        let ctx = DescriptionContext(merchantName: "ATM", intent: .cashWithdrawal, isDebit: true)
-        let desc = generator.generate(from: ctx)
-        #expect(desc.lowercased().contains("atm") || desc.lowercased().contains("cash"))
-    }
-
-    // MARK: - DescriptionGenerator (async)
-
-    @Test("DescriptionGenerator returns non-empty string for all intents")
-    func asyncGeneratorNonEmpty() async {
-        for intent in TransactionIntent.allCases {
-            let ctx = DescriptionContext(merchantName: "Merchant", intent: intent)
-            let desc = await descGenerator.generate(from: ctx)
-            #expect(!desc.isEmpty, "Async generator produced empty string for \(intent.rawValue)")
+    @Test("Merchant name is the description regardless of intent")
+    func merchantNameIsDescription() {
+        for intent in [TransactionIntent.subscription, .groceries, .shopping, .food, .insurance] {
+            let ctx = DescriptionContext(merchantName: "Spotify", intent: intent)
+            #expect(generator.generate(from: ctx) == "Spotify")
         }
     }
 
-    @Test("Sync fallback matches direct FallbackGenerator output")
-    func syncFallbackMatchesDirect() {
-        let ctx = DescriptionContext(merchantName: "Max Life", intent: .insurance)
+    @Test("No invented activity nouns appended to a name")
+    func noInventedActivity() {
+        let ctx = DescriptionContext(merchantName: "Seema Goel", intent: .unknown, isDebit: true)
+        let desc = generator.generate(from: ctx)
+        #expect(desc == "Seema Goel")
+        #expect(!desc.lowercased().contains("grocery"))
+        #expect(!desc.lowercased().contains("shopping"))
+    }
+
+    @Test("Empty merchant falls back to direction-only label")
+    func emptyMerchantDebit() {
+        let ctx = DescriptionContext(merchantName: "", intent: .unknown, isDebit: true)
+        #expect(generator.generate(from: ctx) == "Debit transaction")
+    }
+
+    @Test("Empty merchant credit falls back to credit label")
+    func emptyMerchantCredit() {
+        let ctx = DescriptionContext(merchantName: "", intent: .unknown, isDebit: false)
+        #expect(generator.generate(from: ctx) == "Credit transaction")
+    }
+
+    // MARK: - ATM special case (no useful counterparty)
+
+    @Test("Cash withdrawal uses ATM label, not merchant")
+    func cashWithdrawalLabel() {
+        let ctx = DescriptionContext(merchantName: "ATM", intent: .cashWithdrawal, isDebit: true)
+        #expect(generator.generate(from: ctx) == "ATM Cash Withdrawal")
+    }
+
+    // MARK: - Transfers render as the bare counterparty name
+
+    @Test("Transfer renders as just the counterparty name")
+    func transferJustName() {
+        // Rent/salary labels come from RawPatternParser (raw keywords), not from relationship here.
+        for relationship in [RelationshipType?.none, .friend, .landlord, .employer] {
+            let ctx = DescriptionContext(
+                merchantName: "Ritik Gupta", intent: .transfer,
+                relationship: relationship, isDebit: true
+            )
+            #expect(generator.generate(from: ctx) == "Ritik Gupta")
+        }
+    }
+
+    // MARK: - DescriptionGenerator parity and async path
+
+    @Test("Async generate equals sync generate")
+    func asyncEqualsSync() async {
+        for intent in TransactionIntent.allCases {
+            let ctx = DescriptionContext(merchantName: "Merchant", intent: intent)
+            let asyncDesc = await descGenerator.generate(from: ctx)
+            #expect(asyncDesc == descGenerator.generateSync(from: ctx))
+        }
+    }
+
+    @Test("Sync generation matches direct FallbackGenerator for plain cases")
+    func syncMatchesFallback() {
+        let ctx = DescriptionContext(merchantName: "Max Life Insurance", intent: .insurance)
         #expect(descGenerator.generateSync(from: ctx) == generator.generate(from: ctx))
     }
 
-    // MARK: - Cadence prefix logic
+    // MARK: - RawPatternParser wired through DescriptionGenerator (Tier 1)
 
-    @Test("Annual cadence prefix applied correctly")
-    func annualCadencePrefix() {
+    @Test("INW raw description produces structured remittance label")
+    func inwThroughGenerator() {
         let ctx = DescriptionContext(
-            merchantName: "Max Life", intent: .insurance,
-            recurringCadence: .yearly, isRecurring: true
+            merchantName: "", intent: .unknown,
+            rawDescription: "INW 050526I049903643 USD2382.62@95.2648"
         )
-        let desc = generator.generate(from: ctx)
-        #expect(desc.lowercased().contains("annual"))
+        let desc = descGenerator.generateSync(from: ctx)
+        #expect(desc.hasPrefix("Inward Remittance"))
+        #expect(desc.contains("$2,382.62"))
     }
 
-    @Test("Non-recurring transaction has no cadence prefix")
-    func nonRecurringNoCadence() {
+    @Test("NEFT salary raw description produces salary label")
+    func neftSalaryThroughGenerator() {
+        let raw = "NEFT CR-BOFA0CN6215-PAYPAL INDIA PVT LTD-PRATIK GOEL-BOFAN52025052305477261 SALARY FOR MAY 2025"
         let ctx = DescriptionContext(
-            merchantName: "Blinkit", intent: .groceries,
-            recurringCadence: .monthly, isRecurring: false
+            merchantName: "PayPal India", intent: .unknown, rawDescription: raw
         )
-        let desc = generator.generate(from: ctx)
-        #expect(!desc.lowercased().contains("monthly"))
+        let desc = descGenerator.generateSync(from: ctx)
+        #expect(desc == "Salary from PayPal India · May 2025")
+    }
+
+    @Test("HOUSE RENT raw description produces rent label over bare name")
+    func rentRawThroughGenerator() {
+        let raw = "NEFT DR-ICIC0001283-SEEMA GOEL-NETBANK,MUM-HDFCN52025103063065156-HOUSE RENT"
+        let ctx = DescriptionContext(
+            merchantName: "Seema Goel", intent: .unknown, rawDescription: raw
+        )
+        #expect(descGenerator.generateSync(from: ctx) == "House Rent · Seema Goel")
+    }
+
+    @Test("Raw pattern takes priority over relationship and intent")
+    func rawPriorityOverFallback() {
+        let ctx = DescriptionContext(
+            merchantName: "Random Merchant", intent: .transfer,
+            relationship: .friend,
+            rawDescription: "050526I049903643 DPO2712595243131 IGST"
+        )
+        #expect(descGenerator.generateSync(from: ctx) == "IGST on Wire Transfer")
     }
 }

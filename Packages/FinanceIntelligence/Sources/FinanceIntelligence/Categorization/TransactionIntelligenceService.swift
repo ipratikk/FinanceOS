@@ -90,4 +90,14 @@ public protocol TransactionIntelligenceService: Sendable {
 
     /// Whether NarrationEmbedder v0.1 is downloaded and personalization is active.
     var isEmbeddingModelReady: Bool { get async }
+
+    /// Regenerates and persists deterministic, truthful descriptions. No generative AI.
+    /// Call from a background task — never on the main thread.
+    /// - Parameters:
+    ///   - transactionIDs: IDs to regenerate. Nil = all transactions.
+    ///   - onProgress: Called after each transaction with (completed, total).
+    func regenerateDescriptions(
+        for transactionIDs: [UUID]?,
+        onProgress: (@Sendable (Int, Int) -> Void)?
+    ) async throws
 }

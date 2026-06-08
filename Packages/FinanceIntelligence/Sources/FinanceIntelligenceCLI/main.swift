@@ -9,9 +9,72 @@ struct FinanceIntelligenceCLI: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "intelligence",
         abstract: "Run transaction intelligence pipeline against a FinanceOS SQLite database.",
-        subcommands: [EvalCommand.self, SampleCommand.self, ExportCommand.self, TrainCommand.self],
+        subcommands: [
+            EvalCommand.self, SampleCommand.self, ExportCommand.self,
+            TrainCommand.self, DescriptionsCommand.self
+        ],
         defaultSubcommand: EvalCommand.self
     )
+}
+
+// MARK: - descriptions
+
+/// Regenerates and persists deterministic, truthful enrichedDescription values
+/// for every transaction in a FinanceOS SQLite database. No generative AI.
+struct DescriptionsCommand: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "descriptions",
+        abstract: "Regenerate deterministic enrichedDescription for all transactions in a DB."
+    )
+
+    @Option(name: .long, help: "Path to FinanceOS SQLite database file.")
+    var db: String
+
+    @Flag(name: .long, help: "Print before/after for each changed description.")
+    var verbose: Bool = false
+
+    mutating func run() async throws {
+        let dbQueue = try openDB(path: db)
+        let repo = GRDBTransactionRepository(dbQueue: dbQueue)
+
+        let before: [String: String] = try await verbose
+            ? Dictionary(uniqueKeysWithValues: repo.fetchTransactions().map {
+                ($0.id.uuidString, $0.enrichedDescription ?? "")
+            })
+            : [:]
+
+        let appSupport = FileManager.default
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+        let dir = appSupport.appendingPathComponent("FinanceIntelligence", isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let config = try IntelligenceServiceConfiguration(
+            correctionStoreURL: dir.appendingPathComponent("corrections.json"),
+            personalizedKNNModelURL: dir.appendingPathComponent("knn.mlmodel"),
+            databaseQueue: dbQueue,
+            transactionRepository: repo
+        )
+        let service = await TransactionIntelligenceServiceImpl(configuration: config)
+        print("Regenerating descriptions in \(db) …")
+        try await service.regenerateDescriptions(for: nil) { done, total in
+            if done == total || done % 50 == 0 { print("  \(done)/\(total)") }
+        }
+
+        if verbose {
+            let after = try await repo.fetchTransactions()
+            var changed = 0
+            for txn in after {
+                let old = before[txn.id.uuidString] ?? ""
+                let new = txn.enrichedDescription ?? ""
+                if old != new {
+                    changed += 1
+                    print("  [\(txn.description.prefix(48))]\n    - \(old)\n    + \(new)")
+                }
+            }
+            print("Changed \(changed) of \(after.count) descriptions.")
+        }
+        print("Done.")
+    }
 }
 
 // MARK: - eval

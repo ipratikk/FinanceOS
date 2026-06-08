@@ -49,7 +49,9 @@ struct MLXInsightGeneratorTests {
     @Test("All insights are grounded (no hallucination)")
     func allInsightsGrounded() {
         let insights = gen.generate(from: makeContext())
-        #expect(insights.allSatisfy(\.isGrounded))
+        // Hoisted out of #expect: the macro mis-analyses a key-path arg as throwing.
+        let allGrounded = insights.allSatisfy(\.isGrounded)
+        #expect(allGrounded)
     }
 
     @Test("Insights are non-empty strings")
