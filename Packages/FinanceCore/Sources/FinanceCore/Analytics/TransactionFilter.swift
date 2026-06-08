@@ -94,6 +94,7 @@ public enum TransactionFilter {
     }
 
     /// Returns true if the raw field values describe real income.
+    /// Excludes known non-income categories (transfers, investments). Allows uncategorized credits.
     public static func isRealIncome(
         isCredit: Bool,
         categoryId: String?,
@@ -101,9 +102,12 @@ public enum TransactionFilter {
     ) -> Bool {
         guard isCredit else { return false }
 
-        guard let cat = categoryId,
-              incomeCategoryPrefixes.contains(where: { cat == $0 || cat.hasPrefix("\($0).") })
-        else { return false }
+        // Exclude known non-income categories
+        if let cat = categoryId {
+            for prefix in nonExpenseCategoryPrefixes where cat == prefix || cat.hasPrefix("\(prefix).") {
+                return false
+            }
+        }
 
         if let intent = intentId, nonIncomeIntents.contains(intent) { return false }
 

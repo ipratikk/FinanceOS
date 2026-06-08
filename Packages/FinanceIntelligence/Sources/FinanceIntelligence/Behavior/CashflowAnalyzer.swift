@@ -44,10 +44,22 @@ public struct CashflowAnalyzer: Sendable {
         }
         return grouped.map { key, records in
             let income = records
-                .filter { TransactionFilter.isRealIncome(isCredit: !$0.isDebit, categoryId: $0.categoryId, intentId: $0.intentId) }
+                .filter {
+                    TransactionFilter.isRealIncome(
+                        isCredit: !$0.isDebit,
+                        categoryId: $0.categoryId,
+                        intentId: $0.intentId
+                    )
+                }
                 .map(\.amount).reduce(0, +)
             let expense = records
-                .filter { TransactionFilter.isRealExpense(isDebit: $0.isDebit, categoryId: $0.categoryId, intentId: $0.intentId) }
+                .filter {
+                    TransactionFilter.isRealExpense(
+                        isDebit: $0.isDebit,
+                        categoryId: $0.categoryId,
+                        intentId: $0.intentId
+                    )
+                }
                 .map(\.amount).reduce(0, +)
             return MonthlySnapshot(monthKey: key, totalIncome: income, totalExpense: expense)
         }.sorted { $0.monthKey < $1.monthKey }
