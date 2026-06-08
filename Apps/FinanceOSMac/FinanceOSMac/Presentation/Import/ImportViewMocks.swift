@@ -40,6 +40,8 @@ struct MockTransactionRepository: TransactionRepository {
 
     func updateEnrichedDescription(id: UUID, description: String) async throws {}
 
+    func updateEnrichedDescriptionBatch(_ updates: [(id: UUID, description: String)]) async throws {}
+
     func updateLinkedTransaction(id: UUID, linkedTransactionId: String) async throws {}
 }
 

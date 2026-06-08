@@ -57,7 +57,9 @@ final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
                     transactionType: transaction.transactionType
                 ),
                 transactionType: transaction.transactionType,
-                postedAt: transaction.postedAt
+                postedAt: transaction.postedAt,
+                merchantName: transaction.merchantName,
+                enrichedDescription: transaction.enrichedDescription
             )
         }
     }

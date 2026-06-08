@@ -185,7 +185,8 @@ class DashboardViewModel: AsyncLoadable {
                 postedAt: txn.postedAt,
                 merchantName: txn.merchantName,
                 categoryId: txn.categoryId,
-                sourceTransaction: txn
+                sourceTransaction: txn,
+                enrichedDescription: txn.enrichedDescription
             )
         }
     }

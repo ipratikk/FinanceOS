@@ -17,6 +17,8 @@ struct TransactionRow: Identifiable {
     let isUserCorrected: Bool
     /// Source transaction, used for category corrections via intelligence service.
     let sourceTransaction: Transaction?
+    /// Deterministic human-readable description, persisted during pipeline analysis. Nil until analyzed.
+    let enrichedDescription: String?
 
     init(
         id: UUID,
@@ -30,7 +32,8 @@ struct TransactionRow: Identifiable {
         merchantName: String? = nil,
         categoryId: String? = nil,
         isUserCorrected: Bool = false,
-        sourceTransaction: Transaction? = nil
+        sourceTransaction: Transaction? = nil,
+        enrichedDescription: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -44,10 +47,11 @@ struct TransactionRow: Identifiable {
         self.categoryId = categoryId
         self.isUserCorrected = isUserCorrected
         self.sourceTransaction = sourceTransaction
+        self.enrichedDescription = enrichedDescription
     }
 
-    /// Display name: canonical merchant name if available, else raw description.
+    /// Display name: enriched description if available, else canonical merchant name, else raw description.
     var displayTitle: String {
-        merchantName ?? title
+        enrichedDescription ?? merchantName ?? title
     }
 }
