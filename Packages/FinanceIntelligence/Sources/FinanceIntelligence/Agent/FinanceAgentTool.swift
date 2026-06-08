@@ -56,7 +56,7 @@ public struct TopMerchantsTool: FinanceAgentTool {
 
     public func call(transactions: [Transaction], parameters: [String: String]) -> AgentToolResult {
         var totals: [String: Int64] = [:]
-        for txn in transactions where txn.transactionType == .debit {
+        for txn in transactions where TransactionFilter.isRealExpense(txn) {
             let merchant = txn.merchantName ?? "Unknown"
             totals[merchant, default: 0] += txn.amountMinorUnits
         }
@@ -80,7 +80,7 @@ public struct RecurringCommitmentsTool: FinanceAgentTool {
 
     public func call(transactions: [Transaction], parameters: [String: String]) -> AgentToolResult {
         var merchantCounts: [String: Int] = [:]
-        for txn in transactions where txn.transactionType == .debit {
+        for txn in transactions where TransactionFilter.isRealExpense(txn) {
             let merchant = txn.merchantName ?? "Unknown"
             merchantCounts[merchant, default: 0] += 1
         }
@@ -125,7 +125,7 @@ public struct AnomaliesDetectionTool: FinanceAgentTool {
     public init() {}
 
     public func call(transactions: [Transaction], parameters: [String: String]) -> AgentToolResult {
-        let amounts = transactions.filter { $0.transactionType == .debit }.map { Double($0.amountMinorUnits) }
+        let amounts = transactions.filter { TransactionFilter.isRealExpense($0) }.map { Double($0.amountMinorUnits) }
         guard amounts.count >= 5 else {
             return AgentToolResult(toolName: name, summary: "Insufficient data for anomaly detection")
         }
