@@ -119,7 +119,9 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
                 at: day, ledgerIds: closingBalanceLedgerIds, txnsByLedger: txnsByLedger,
                 ledgerById: ledgerById, assetKinds: assetKinds
             )
-            points.append(NetWorthPoint(timestamp: day, netWorth: running + cbTotal))
+            let majorUnits = running + cbTotal
+            let minorUnits = Int64(NSDecimalNumber(decimal: majorUnits * 100).int64Value)
+            points.append(NetWorthPoint(timestamp: day, netWorthMinorUnits: minorUnits))
             guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
             day = next
         }

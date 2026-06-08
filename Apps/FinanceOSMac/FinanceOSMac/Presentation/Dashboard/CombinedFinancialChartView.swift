@@ -122,7 +122,7 @@ struct CombinedFinancialChartView: View {
             .allowsHitTesting(false)
 
             if let pt = hoverState.nearestNetWorthPoint,
-               let plotY = proxy.position(forY: (pt.netWorth as NSDecimalNumber).doubleValue) {
+               let plotY = proxy.position(forY: Double(pt.netWorthMinorUnits) / 100) {
                 let yPos = plotY + plotFrame.origin.y
                 Circle().fill(AppColors.accentBlue).stroke(AppColors.base, lineWidth: 2)
                     .frame(width: 8, height: 8).position(x: xPos, y: yPos).allowsHitTesting(false)
@@ -163,7 +163,7 @@ private struct StaticNetWorthChart: View {
     var body: some View {
         Chart {
             ForEach(netWorth) { item in
-                let val = (item.netWorth as NSDecimalNumber).doubleValue
+                let val = Double(item.netWorthMinorUnits) / 100
                 AreaMark(x: .value("Date", item.timestamp), y: .value("Net Worth", val))
                     .foregroundStyle(
                         LinearGradient(
@@ -194,7 +194,8 @@ private struct ChartHoverTooltip: View {
                     .foregroundStyle(AppColors.Text.tertiary)
             }
             if let pt = state.nearestNetWorthPoint {
-                tooltipRow("Net Worth", value: fmt(pt.netWorth), color: AppColors.accentBlue)
+                let nwRupees = Decimal(pt.netWorthMinorUnits) / 100
+                tooltipRow("Net Worth", value: fmt(nwRupees), color: AppColors.accentBlue)
             }
         }
         .padding(.horizontal, 12)

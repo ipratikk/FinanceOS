@@ -29,8 +29,8 @@ public enum PreviewSpendingData {
         let now = SnapshotConfiguration.referenceDate
         return (0 ..< 6).reversed().map { offset in
             let date = calendar.date(byAdding: .month, value: -offset, to: now) ?? now
-            let netWorth = Decimal(100_000 + offset * 10000)
-            return NetWorthPoint(timestamp: date, netWorth: netWorth)
+            let netWorthMinorUnits = Int64((100_000 + offset * 10000) * 100)
+            return NetWorthPoint(timestamp: date, netWorthMinorUnits: netWorthMinorUnits)
         }
     }
 }
