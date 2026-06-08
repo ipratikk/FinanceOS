@@ -28,9 +28,9 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
                 from: calendar.dateComponents([.year, .month], from: txn.postedAt)
             ) else { continue }
             if summaryByMonth[monthStart] == nil { summaryByMonth[monthStart] = (debit: 0, credit: 0) }
-            if txn.transactionType == .debit {
+            if TransactionFilter.isRealExpense(txn) {
                 summaryByMonth[monthStart]?.debit += txn.amountMinorUnits
-            } else {
+            } else if TransactionFilter.isRealIncome(txn) {
                 summaryByMonth[monthStart]?.credit += txn.amountMinorUnits
             }
         }
@@ -56,10 +56,11 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
 
         for txn in allTransactions {
             guard txn.postedAt >= currentMonthStart, txn.postedAt < currentMonthEnd else { continue }
-            count += 1
-            if txn.transactionType == .debit {
+            if TransactionFilter.isRealExpense(txn) {
+                count += 1
                 totalDebit += txn.amountMinorUnits
-            } else {
+            } else if TransactionFilter.isRealIncome(txn) {
+                count += 1
                 totalCredit += txn.amountMinorUnits
             }
         }

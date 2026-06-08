@@ -457,7 +457,7 @@ extension BuiltInRules {
                 id: "catchall.credit",
                 priority: 40,
                 condition: .isCredit,
-                outcome: RuleOutcome(categoryId: "income", intent: .income, confidence: 0.55)
+                outcome: RuleOutcome(categoryId: "uncategorized", intent: .unknown, confidence: 0.30)
             ),
             Rule(
                 id: "catchall.unknown",

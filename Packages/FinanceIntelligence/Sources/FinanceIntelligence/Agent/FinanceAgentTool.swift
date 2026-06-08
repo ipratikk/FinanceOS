@@ -33,7 +33,7 @@ public struct SpendByCategoryTool: FinanceAgentTool {
 
     public func call(transactions: [Transaction], parameters: [String: String]) -> AgentToolResult {
         var totals: [String: Int64] = [:]
-        for txn in transactions where txn.transactionType == .debit {
+        for txn in transactions where TransactionFilter.isRealExpense(txn) {
             let cat = txn.categoryId ?? "uncategorized"
             totals[cat, default: 0] += txn.amountMinorUnits
         }
@@ -103,7 +103,7 @@ public struct IncomeSourcesTool: FinanceAgentTool {
 
     public func call(transactions: [Transaction], parameters: [String: String]) -> AgentToolResult {
         var totals: [String: Int64] = [:]
-        for txn in transactions where txn.transactionType == .credit {
+        for txn in transactions where TransactionFilter.isRealIncome(txn) {
             let source = txn.merchantName ?? txn.categoryId ?? "income"
             totals[source, default: 0] += txn.amountMinorUnits
         }
@@ -153,9 +153,9 @@ public struct CashflowSummaryTool: FinanceAgentTool {
     public init() {}
 
     public func call(transactions: [Transaction], parameters: [String: String]) -> AgentToolResult {
-        let income = transactions.filter { $0.transactionType == .credit }
+        let income = transactions.filter { TransactionFilter.isRealIncome($0) }
             .map(\.amountMinorUnits).reduce(0, +)
-        let expenses = transactions.filter { $0.transactionType == .debit }
+        let expenses = transactions.filter { TransactionFilter.isRealExpense($0) }
             .map(\.amountMinorUnits).reduce(0, +)
         let net = income - expenses
         let direction = net >= 0 ? "surplus" : "deficit"
@@ -176,7 +176,7 @@ public struct ForecastNextMonthTool: FinanceAgentTool {
     public init() {}
 
     public func call(transactions: [Transaction], parameters: [String: String]) -> AgentToolResult {
-        let debits = transactions.filter { $0.transactionType == .debit }
+        let debits = transactions.filter { TransactionFilter.isRealExpense($0) }
         guard !debits.isEmpty else {
             return AgentToolResult(toolName: name, summary: "Insufficient data for forecast")
         }
