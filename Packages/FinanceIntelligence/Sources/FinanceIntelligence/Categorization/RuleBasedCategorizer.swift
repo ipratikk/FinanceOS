@@ -41,20 +41,40 @@ public struct RuleBasedCategorizer: Sendable {
 
     private func structuralFastPath(_ features: TransactionFeatures) -> CategoryPrediction? {
         if features.hasPayrollIndicator {
-            return makePrediction(categoryId: "income", subcategoryId: "income.salary",
-                                  confidence: 0.9, source: .structuralRule, ruleId: RuleID.payrollIndicator)
+            return makePrediction(
+                categoryId: "income",
+                subcategoryId: "income.salary",
+                confidence: 0.9,
+                source: .structuralRule,
+                ruleId: RuleID.payrollIndicator
+            )
         }
         if features.hasCreditCardPaymentIndicator {
-            return makePrediction(categoryId: "transfers", subcategoryId: "transfers.creditCardPayment",
-                                  confidence: 0.92, source: .structuralRule, ruleId: RuleID.ccPaymentIndicator)
+            return makePrediction(
+                categoryId: "transfers",
+                subcategoryId: "transfers.creditCardPayment",
+                confidence: 0.92,
+                source: .structuralRule,
+                ruleId: RuleID.ccPaymentIndicator
+            )
         }
         if features.hasRefundIndicator {
-            return makePrediction(categoryId: "income", subcategoryId: "income.refund",
-                                  confidence: 0.85, source: .structuralRule, ruleId: RuleID.refundIndicator)
+            return makePrediction(
+                categoryId: "income",
+                subcategoryId: "income.refund",
+                confidence: 0.85,
+                source: .structuralRule,
+                ruleId: RuleID.refundIndicator
+            )
         }
         if features.hasTransferIndicator {
-            return makePrediction(categoryId: "transfers", subcategoryId: nil,
-                                  confidence: 0.88, source: .structuralRule, ruleId: RuleID.transferIndicator)
+            return makePrediction(
+                categoryId: "transfers",
+                subcategoryId: nil,
+                confidence: 0.88,
+                source: .structuralRule,
+                ruleId: RuleID.transferIndicator
+            )
         }
         return nil
     }
@@ -67,9 +87,13 @@ public struct RuleBasedCategorizer: Sendable {
             if topMatch == nil || score > topMatch?.score ?? 0 { topMatch = (rule, score) }
         }
         if let match = topMatch {
-            return makePrediction(categoryId: match.rule.categoryId, subcategoryId: match.rule.subcategoryId,
-                                  confidence: match.rule.confidence, source: .structuralRule,
-                                  ruleId: "rule.keyword.\(match.rule.categoryId)")
+            return makePrediction(
+                categoryId: match.rule.categoryId,
+                subcategoryId: match.rule.subcategoryId,
+                confidence: match.rule.confidence,
+                source: .structuralRule,
+                ruleId: "rule.keyword.\(match.rule.categoryId)"
+            )
         }
         return .uncategorized(modelVersion: ModelMetadata.rulesBased.modelVersion, taxonomyVersion: taxonomy.version)
     }

@@ -2,7 +2,6 @@ import Foundation
 
 /// Verifies accounting invariants for reconciliation correctness.
 public enum ReconciliationValidator {
-
     /// Result of reconciliation validation.
     public struct ValidationResult: Sendable {
         public let isValid: Bool
@@ -43,8 +42,8 @@ public enum ReconciliationValidator {
         var errors: [String] = []
         let txnMap = Dictionary(uniqueKeysWithValues: transactions.map { ($0.id.uuidString, $0) })
 
-        for txn in transactions where txn.linkedTransactionId != nil {
-            let linkedId = txn.linkedTransactionId!
+        for txn in transactions {
+            guard let linkedId = txn.linkedTransactionId else { continue }
 
             // Referenced transaction must exist
             guard let linkedTxn = txnMap[linkedId] else {
@@ -54,9 +53,8 @@ public enum ReconciliationValidator {
 
             // Reference must be symmetric
             if linkedTxn.linkedTransactionId != txn.id.uuidString {
-                errors.append(
-                    "Asymmetric link: \(txn.id) → \(linkedId) but \(linkedId) → \(linkedTxn.linkedTransactionId ?? "nil")"
-                )
+                let reverseId = linkedTxn.linkedTransactionId ?? "nil"
+                errors.append("Asymmetric link: \(txn.id) → \(linkedId) but \(linkedId) → \(reverseId)")
             }
         }
 

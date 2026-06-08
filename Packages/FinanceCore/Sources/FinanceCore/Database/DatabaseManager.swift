@@ -13,7 +13,7 @@ import GRDB
 public final class DatabaseManager: @unchecked Sendable {
     // Override URL for headless CLI tools. Must be set before first access to `shared`.
     // nonisolated(unsafe): safe — configure(url:) is always called before shared is accessed.
-    nonisolated(unsafe) private static var overrideURL: URL?
+    private nonisolated(unsafe) static var overrideURL: URL?
 
     /// Redirect the database to a custom path. Call before accessing `shared`.
     /// Primary use: `FinanceCLI --db-path` option for headless pipeline runs.
