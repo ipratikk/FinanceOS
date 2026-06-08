@@ -281,6 +281,12 @@ public final class MockTransactionRepository: TransactionRepository, @unchecked 
         }
     }
 
+    public func updateEnrichedDescriptionBatch(_ updates: [(id: UUID, description: String)]) async throws {
+        for (id, description) in updates {
+            try await updateEnrichedDescription(id: id, description: description)
+        }
+    }
+
     public func updateLinkedTransaction(id: UUID, linkedTransactionId: String) async throws {
         if let idx = transactions.firstIndex(where: { $0.id == id }) {
             let t = transactions[idx]
