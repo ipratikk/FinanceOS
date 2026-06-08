@@ -230,7 +230,9 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             }
             var results: [EnrichedTransaction] = []
             results.reserveCapacity(transactions.count)
-            for try await result in group { results.append(result) }
+            for try await result in group {
+                results.append(result)
+            }
             return results
         }
         if let repo = transactionRepository {
@@ -258,6 +260,35 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         return enriched
     }
 
+    /// Regenerates and persists deterministic, truthful descriptions for a set of transactions.
+    /// Uses RawPatternParser (structured bank formats) → FallbackGenerator (canonical name).
+    /// No generative AI — output never hallucinates. Safe to re-run idempotently.
+    /// - Parameter transactionIDs: IDs to regenerate. Nil = all transactions.
+    public func regenerateDescriptions(
+        for transactionIDs: [UUID]? = nil,
+        onProgress: (@Sendable (Int, Int) -> Void)? = nil
+    ) async throws {
+        guard let repo = transactionRepository else { return }
+        let all = try await repo.fetchTransactions()
+        let targets = transactionIDs.map { ids in all.filter { ids.contains($0.id) } } ?? all
+        let total = targets.count
+        var updates: [(id: UUID, description: String)] = []
+        updates.reserveCapacity(total)
+        for (idx, txn) in targets.enumerated() {
+            let merchant = normalizer.normalize(txn.description)
+            let context = DescriptionContext(
+                merchantName: merchant.canonicalName,
+                intent: .unknown,
+                isDebit: txn.transactionType == .debit,
+                rawDescription: txn.description
+            )
+            updates.append((id: txn.id, description: descriptionGenerator.generateSync(from: context)))
+            onProgress?(idx + 1, total)
+        }
+        try await repo.updateEnrichedDescriptionBatch(updates)
+        FinanceLogger.intelligence.info("regenerateDescriptions: regenerated \(total) descriptions")
+    }
+
     public func analyzeEnriched(
         _ transaction: Transaction,
         context: IntelligenceContext
@@ -283,18 +314,11 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         let resolvedEntities = await resolveEntities(description: transaction.description, date: transaction.postedAt)
         let descContext = DescriptionContext(
             merchantName: merchant.canonicalName, intent: intentPrediction.intent,
-            isDebit: transaction.transactionType == .debit
+            isDebit: transaction.transactionType == .debit,
+            rawDescription: transaction.description
         )
-        let mlxInput = MLXDescriptionInput(
-            merchant: merchant.canonicalName,
-            categoryId: categoryPrediction.categoryId,
-            amountMinorUnits: Int(transaction.amountMinorUnits),
-            currencyCode: transaction.currencyCode,
-            date: transaction.postedAt,
-            narration: transaction.description,
-            isDebit: transaction.transactionType == .debit
-        )
-        let humanDescription = await descriptionGenerator.generate(mlxInput: mlxInput, context: descContext)
+        // Deterministic generation: RawPatternParser → FallbackGenerator. No AI, never blocks.
+        let humanDescription = descriptionGenerator.generateSync(from: descContext)
         return EnrichedTransaction(
             transaction: transaction, merchantCandidate: merchant, categoryPrediction: categoryPrediction,
             intentPrediction: intentPrediction, features: features, isUserCorrected: isUserCorrected,

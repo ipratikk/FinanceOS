@@ -1,7 +1,7 @@
 import Foundation
 
 /// Structured context assembled by the intelligence pipeline for description generation.
-/// Both `FallbackGenerator` (deterministic) and `AppleIntelligenceAdapter` (AI) consume this.
+/// Consumed by `RawPatternParser` and `FallbackGenerator` — fully deterministic, no AI.
 public struct DescriptionContext: Sendable {
     /// Canonical merchant name (e.g. "Spotify", "Max Life Insurance").
     public let merchantName: String
@@ -19,6 +19,8 @@ public struct DescriptionContext: Sendable {
     public let isLargeAmount: Bool
     /// True when this is a debit (payment) vs credit (receipt).
     public let isDebit: Bool
+    /// Raw bank description string. Used by RawPatternParser for structured opaque formats.
+    public let rawDescription: String
 
     public init(
         merchantName: String,
@@ -28,7 +30,8 @@ public struct DescriptionContext: Sendable {
         isRecurring: Bool = false,
         categoryId: String? = nil,
         isLargeAmount: Bool = false,
-        isDebit: Bool = true
+        isDebit: Bool = true,
+        rawDescription: String = ""
     ) {
         self.merchantName = merchantName
         self.intent = intent
@@ -38,5 +41,6 @@ public struct DescriptionContext: Sendable {
         self.categoryId = categoryId
         self.isLargeAmount = isLargeAmount
         self.isDebit = isDebit
+        self.rawDescription = rawDescription
     }
 }

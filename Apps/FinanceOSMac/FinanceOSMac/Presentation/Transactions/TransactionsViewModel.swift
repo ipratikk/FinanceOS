@@ -69,35 +69,7 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 pipelineTotal = all.count
                 guard !Task.isCancelled else { return }
 
-                // Stage 1: Analyze all transactions — collect results, then batch-write provenance.
-                // Batching 614 individual writes into 1 transaction reduces stage 1 DB overhead ~600×.
-                var enriched: [EnrichedTransaction] = []
-                enriched.reserveCapacity(all.count)
-                var provenanceBatch: [(id: UUID, provenance: EnrichmentProvenance)] = []
-                provenanceBatch.reserveCapacity(all.count)
-                for txn in all {
-                    guard !Task.isCancelled else { return }
-                    do {
-                        let result = try await service.analyzeEnriched(txn, context: .empty)
-                        provenanceBatch.append((id: txn.id, provenance: EnrichmentProvenance(
-                            categoryId: result.categoryPrediction.categoryId,
-                            merchantName: result.merchantCandidate.canonicalName,
-                            intentId: result.intentPrediction.intent.rawValue,
-                            resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
-                            intelligenceSource: result.categoryPrediction.source.rawValue,
-                            intelligenceModelVersion: result.categoryPrediction.modelVersion,
-                            intelligenceConfigVersion: result.categoryPrediction.configVersion
-                        )))
-                        enriched.append(result)
-                    } catch {
-                        FinanceLogger.userInterface.logError(
-                            "Pipeline: skipped transaction", caughtError: error, [:]
-                        )
-                    }
-                    pipelineProcessed += 1
-                }
-                try? await transactionRepository.updateEnrichmentProvenanceBatch(provenanceBatch)
-
+                let enriched = await runAnalyzingStage(service: service, transactions: all)
                 guard !Task.isCancelled, !enriched.isEmpty else { return }
 
                 // Stages 2–4: post-process with typed stage reporting
@@ -111,6 +83,49 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 FinanceLogger.userInterface.logError("Intelligence pipeline failed", caughtError: error, [:])
             }
         }
+    }
+
+    /// Stage 1: analyze every transaction, then batch-write provenance + descriptions.
+    /// Batching the per-row writes into one transaction each reduces stage-1 DB overhead ~600×.
+    private func runAnalyzingStage(
+        service: any TransactionIntelligenceService,
+        transactions: [Transaction]
+    ) async -> [EnrichedTransaction] {
+        var enriched: [EnrichedTransaction] = []
+        enriched.reserveCapacity(transactions.count)
+        var provenanceBatch: [(id: UUID, provenance: EnrichmentProvenance)] = []
+        provenanceBatch.reserveCapacity(transactions.count)
+        var descriptionBatch: [(id: UUID, description: String)] = []
+        descriptionBatch.reserveCapacity(transactions.count)
+        for txn in transactions {
+            guard !Task.isCancelled else { return enriched }
+            do {
+                let result = try await service.analyzeEnriched(txn, context: .empty)
+                provenanceBatch.append((id: txn.id, provenance: makeProvenance(from: result)))
+                if let description = result.humanDescription, !description.isEmpty {
+                    descriptionBatch.append((id: txn.id, description: description))
+                }
+                enriched.append(result)
+            } catch {
+                FinanceLogger.userInterface.logError("Pipeline: skipped transaction", caughtError: error, [:])
+            }
+            pipelineProcessed += 1
+        }
+        try? await transactionRepository.updateEnrichmentProvenanceBatch(provenanceBatch)
+        try? await transactionRepository.updateEnrichedDescriptionBatch(descriptionBatch)
+        return enriched
+    }
+
+    private func makeProvenance(from result: EnrichedTransaction) -> EnrichmentProvenance {
+        EnrichmentProvenance(
+            categoryId: result.categoryPrediction.categoryId,
+            merchantName: result.merchantCandidate.canonicalName,
+            intentId: result.intentPrediction.intent.rawValue,
+            resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
+            intelligenceSource: result.categoryPrediction.source.rawValue,
+            intelligenceModelVersion: result.categoryPrediction.modelVersion,
+            intelligenceConfigVersion: result.categoryPrediction.configVersion
+        )
     }
 
     func cancelPipeline() {
