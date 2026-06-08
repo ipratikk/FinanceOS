@@ -4,7 +4,6 @@ import Foundation
 /// Matches bank account credit-card-payment debits to their corresponding card credit entries.
 /// Identifies pairs like: HDFC "UPI-AMERICAN EXPRESS" ↔ Amex "PAYMENT RECEIVED. THANK YOU".
 public struct CreditCardPaymentReconciler: Sendable {
-
     /// Tolerance window for amount matching in minor units (±₹50 = ±5000 paise).
     public static let amountTolerance: Int64 = 5000
     /// Tolerance window for date matching in seconds (±3 days).

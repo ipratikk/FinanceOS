@@ -130,7 +130,12 @@ extension BuiltInRules {
                     "credit card payment", "card payment", "cc payment",
                     "amex payment", "amex bill"
                 ]),
-                outcome: RuleOutcome(categoryId: "fees", intent: .creditCardPayment, confidence: 0.92)
+                outcome: RuleOutcome(
+                    categoryId: "transfers",
+                    subcategoryId: "transfers.creditCardPayment",
+                    intent: .creditCardPayment,
+                    confidence: 0.92
+                )
             )
         ]
     }

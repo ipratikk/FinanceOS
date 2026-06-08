@@ -7,15 +7,14 @@ import Foundation
 /// Without these filters, every CC payment inflates both outflows (bank debit)
 /// and inflows (card credit), producing double-counted financial reports.
 public enum TransactionFilter {
-
     // MARK: - Category prefix exclusions
 
     /// Category IDs (or prefixes) that must never appear in expense totals.
     /// These represent asset movements or liability settlements — not consumption.
     private static let nonExpenseCategoryPrefixes: [String] = [
-        "transfers",     // internal/external transfers, CC payments tagged as transfers
-        "investments",   // SIP, stocks, FD — asset conversion, not spending
-        "income"         // credits misclassified; should never be in debit path anyway
+        "transfers", // internal/external transfers, CC payments tagged as transfers
+        "investments", // SIP, stocks, FD — asset conversion, not spending
+        "income" // credits misclassified; should never be in debit path anyway
     ]
 
     /// Category IDs (or prefixes) that represent actual income.
@@ -25,18 +24,18 @@ public enum TransactionFilter {
 
     /// Intent raw values that disqualify a debit from being a real expense.
     private static let nonExpenseIntents: Set<String> = [
-        "credit_card_payment",  // CC bill payment — liability settlement
-        "loan_payment",         // EMI — liability reduction (principal portion)
-        "mutual_fund_sip",      // SIP debit — asset purchase
-        "investment",           // any investment purchase
-        "transfer",             // inter-account movement
-        "cash_withdrawal"       // ATM — just changes form of asset, excludable
+        "credit_card_payment", // CC bill payment — liability settlement
+        "loan_payment", // EMI — liability reduction (principal portion)
+        "mutual_fund_sip", // SIP debit — asset purchase
+        "investment", // any investment purchase
+        "transfer", // inter-account movement
+        "cash_withdrawal" // ATM — just changes form of asset, excludable
     ]
 
     /// Intent raw values that disqualify a credit from being real income.
     private static let nonIncomeIntents: Set<String> = [
-        "transfer",             // transfer receipt — not income
-        "credit_card_payment"   // card payment acknowledgment — not income
+        "transfer", // transfer receipt — not income
+        "credit_card_payment" // card payment acknowledgment — not income
     ]
 
     // MARK: - Public predicates

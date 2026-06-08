@@ -92,7 +92,11 @@ private extension TransactionFeatureExtractor {
     }
 
     func hasPayrollIndicator(_ normalized: String) -> Bool {
-        let indicators = ["salary", "payroll", "paycheck", "wages", "direct deposit", "stipend"]
+        let indicators = [
+            "salary", "payroll", "paycheck", "wages", "direct deposit", "stipend",
+            "sal", "payrl", "salary credit", "emolument", "remuneration",
+            "salary account", "salary transfer"
+        ]
         return indicators.contains { normalized.contains($0) }
     }
 

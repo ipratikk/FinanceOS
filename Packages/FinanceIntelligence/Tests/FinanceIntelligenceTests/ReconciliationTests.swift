@@ -22,7 +22,8 @@ private func makeTxn(
 
 // MARK: - CreditCardPaymentReconciler
 
-@Test func reconciler_matchesAmexPair() {
+@Test
+func reconciler_matchesAmexPair() {
     let bankDebit = makeTxn(
         description: "UPI-AMERICAN EXPRESS-AEBC373008620701005@SC",
         amount: 1_000_000, type: .debit
@@ -42,7 +43,8 @@ private func makeTxn(
     #expect(pairs[0].discrepancy == 0)
 }
 
-@Test func reconciler_matchesWithCREDCashbackDelta() {
+@Test
+func reconciler_matchesWithCREDCashbackDelta() {
     let bankDebit = makeTxn(
         description: "UPI-CRED CLUB-CRED.CLUB@AXISB",
         amount: 940_025, type: .debit
@@ -57,7 +59,8 @@ private func makeTxn(
     #expect(abs(pairs[0].discrepancy) <= 5000)
 }
 
-@Test func reconciler_noMatch_outsideDateWindow() {
+@Test
+func reconciler_noMatch_outsideDateWindow() {
     let bankDebit = makeTxn(
         description: "UPI-AMERICAN EXPRESS-AEBC373008620701005@SC",
         amount: 1_000_000, type: .debit
@@ -71,7 +74,8 @@ private func makeTxn(
     #expect(pairs.isEmpty)
 }
 
-@Test func reconciler_noMatch_amountTooFarOff() {
+@Test
+func reconciler_noMatch_amountTooFarOff() {
     let bankDebit = makeTxn(
         description: "UPI-CRED CLUB-CRED.CLUB@AXISB",
         amount: 1_000_000, type: .debit

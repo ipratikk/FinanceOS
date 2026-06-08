@@ -80,7 +80,8 @@ public extension CategoryTaxonomy {
             ]),
             TaxonomyCategory(id: "transfers", displayName: "Transfers", subcategories: [
                 TaxonomySubcategory(id: "transfers.internal", displayName: "Internal Transfer"),
-                TaxonomySubcategory(id: "transfers.external", displayName: "External Transfer")
+                TaxonomySubcategory(id: "transfers.external", displayName: "External Transfer"),
+                TaxonomySubcategory(id: "transfers.creditCardPayment", displayName: "Credit Card Payment")
             ]),
             TaxonomyCategory(id: "investments", displayName: "Investments", subcategories: [
                 TaxonomySubcategory(id: "investments.sip", displayName: "Mutual Fund SIP"),

@@ -125,7 +125,7 @@ struct PipelineCommand: AsyncParsableCommand {
         for (cat, txns) in groups.sorted(by: { $0.value.count > $1.value.count }) {
             CLIProgressReporter.report(categoryLine(cat: cat, txns: txns))
         }
-        let uncategorized = results.filter { $0.categoryPrediction.categoryId == "uncategorized" }.count
+        let uncategorized = results.count(where: { $0.categoryPrediction.categoryId == "uncategorized" })
         let pct = results.isEmpty ? 0.0 : Double(uncategorized) / Double(results.count) * 100
         let summary = String(format: "Uncategorized: %d / %d  (%.1f%%)", uncategorized, results.count, pct)
         CLIProgressReporter.report(summary)
@@ -139,7 +139,7 @@ struct PipelineCommand: AsyncParsableCommand {
         let spendD = (spend as NSDecimalNumber).doubleValue
         let incomeD = (income as NSDecimalNumber).doubleValue
         let catPad = cat.padding(toLength: 22, withPad: " ", startingAt: 0)
-        if incomeD > 0 && spendD > 0 {
+        if incomeD > 0, spendD > 0 {
             return String(format: "  %@ %3d txns  out %10.2f  in %10.2f", catPad, txns.count, spendD, incomeD)
         } else if incomeD > 0 {
             return String(format: "  %@ %3d txns  in  %10.2f", catPad, txns.count, incomeD)
