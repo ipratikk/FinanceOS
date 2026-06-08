@@ -11,11 +11,18 @@ public struct CashflowAnalyzer: Sendable {
         public let amount: Int64
         public let isDebit: Bool
         public let postedAt: Date
+        /// Category taxonomy ID (e.g. "income.salary", "transfers", "investments.sip").
+        /// Used to exclude non-real income/expense from cashflow calculations.
+        public let categoryId: String?
+        /// Intent raw value (e.g. "credit_card_payment", "transfer", "mutual_fund_sip").
+        public let intentId: String?
 
-        public init(amount: Int64, isDebit: Bool, postedAt: Date) {
+        public init(amount: Int64, isDebit: Bool, postedAt: Date, categoryId: String? = nil, intentId: String? = nil) {
             self.amount = amount
             self.isDebit = isDebit
             self.postedAt = postedAt
+            self.categoryId = categoryId
+            self.intentId = intentId
         }
     }
 
@@ -36,8 +43,12 @@ public struct CashflowAnalyzer: Sendable {
             return String(format: "%04d-%02d", comps.year ?? 0, comps.month ?? 0)
         }
         return grouped.map { key, records in
-            let income = records.filter { !$0.isDebit }.map(\.amount).reduce(0, +)
-            let expense = records.filter(\.isDebit).map(\.amount).reduce(0, +)
+            let income = records
+                .filter { TransactionFilter.isRealIncome(isCredit: !$0.isDebit, categoryId: $0.categoryId, intentId: $0.intentId) }
+                .map(\.amount).reduce(0, +)
+            let expense = records
+                .filter { TransactionFilter.isRealExpense(isDebit: $0.isDebit, categoryId: $0.categoryId, intentId: $0.intentId) }
+                .map(\.amount).reduce(0, +)
             return MonthlySnapshot(monthKey: key, totalIncome: income, totalExpense: expense)
         }.sorted { $0.monthKey < $1.monthKey }
     }

@@ -14,7 +14,8 @@ protocol AccountBalanceProtocol: Sendable {
 struct AccountBalanceService: AccountBalanceProtocol {
     func computeBalance(account: Ledger, transactions: [Transaction]) -> Int64 {
         if let closing = account.closingBalance { return closing }
-        return transactions.reduce(Int64(0)) { acc, txn in
+        let base = account.openingBalance ?? 0
+        return transactions.reduce(base) { acc, txn in
             acc + (txn.transactionType == .credit ? txn.amountMinorUnits : -txn.amountMinorUnits)
         }
     }
