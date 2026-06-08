@@ -20,8 +20,8 @@ public enum TransactionCategory: String, Codable, Equatable, Sendable, CaseItera
     case food, transport, utilities, entertainment, shopping, healthcare, finance, income, transfer, other
 }
 
-/// A single point on the net-worth time-series chart.
-/// `netWorthMinorUnits` is in minor currency units (paise, not rupees); display layer divides by 100.
+/// A single point on the net-worth time-series chart; `netWorthMinorUnits` is in minor currency units (paise, not rupees).
+/// Display layer divides by 100 to show rupees.
 public struct NetWorthPoint: Identifiable, Sendable {
     public let id: UUID
     public let timestamp: Date
