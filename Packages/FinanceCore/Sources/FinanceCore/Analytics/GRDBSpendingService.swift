@@ -70,14 +70,14 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
 
     public func recentTransactions(limit: Int) async throws -> [Transaction] {
         let allTransactions = try await transactionRepository.fetchTransactions()
-        return Array(allTransactions.prefix(limit))
+        return Array(allTransactions.sorted { $0.postedAt > $1.postedAt }.prefix(limit))
     }
 
     public func netWorthTimeSeries(months: Int?) async throws -> [NetWorthPoint] {
         let calendar = Calendar.current
         let now = Date()
         let assetKinds: Set<LedgerKind> = [.bankAccount, .wallet, .crypto, .investment]
-        let liabilityKinds: Set<LedgerKind> = [.creditCard, .loan]
+        let liabilityKinds: Set<LedgerKind> = [.loan]
 
         let allLedgers = try await ledgerRepository.fetchLedgers()
         let allTransactions = try await transactionRepository.fetchTransactions()
@@ -152,6 +152,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
             guard let ledgerId = txn.ledgerId,
                   !excludeLedgerIds.contains(ledgerId),
                   let kind = ledgerKindById[ledgerId],
+                  kind != .creditCard,
                   let dayStart = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt))
             else { continue }
             let d = Decimal(txn.amountMinorUnits) / 100
@@ -165,6 +166,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
 
     /// Sums the most-recent known closing balance for each closing-balance ledger as of `day`.
     /// Falls back to the ledger's `openingBalance` if no transaction on or before `day` carries one.
+    /// Excludes creditCard ledgers (transient spending flow, not part of net worth).
     private func closingBalanceTotal(
         at day: Date,
         ledgerIds: Set<UUID>,
@@ -176,6 +178,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         var total: Decimal = 0
         for ledgerId in ledgerIds {
             guard let ledger = ledgerById[ledgerId] else { continue }
+            if ledger.kind == .creditCard { continue }
             let isAsset = assetKinds.contains(ledger.kind)
             let txns = txnsByLedger[ledgerId] ?? []
             let candidate = txns
@@ -203,6 +206,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
     }
 
     /// Computes the net-worth baseline before the chart window by summing opening/derived balances of delta ledgers.
+    /// Excludes creditCard ledgers (transient spending flow, not part of net worth).
     private func openingNetWorth(
         assetKinds: Set<LedgerKind>,
         liabilityKinds: Set<LedgerKind>,
@@ -211,6 +215,7 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
     ) -> Decimal {
         var total: Decimal = 0
         for ledger in ledgers {
+            if ledger.kind == .creditCard { continue }
             let isAsset = assetKinds.contains(ledger.kind)
             let isLiability = liabilityKinds.contains(ledger.kind)
             guard isAsset || isLiability else { continue }
