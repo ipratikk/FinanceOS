@@ -316,10 +316,8 @@ private struct MultiSeriesChart: View {
                 ForEach(ser.points) { item in
                     LineMark(
                         x: .value("Date", item.timestamp),
-                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100),
-                        series: .value("Series", ser.label)
+                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100)
                     )
-                    .foregroundStyle(by: .value("Series", ser.label))
                     .foregroundStyle(ser.color)
                     .lineStyle(StrokeStyle(
                         lineWidth: ser.lineWidth,
@@ -396,12 +394,13 @@ private struct MultiSeriesHoverTooltip: View {
     }
 
     private func tooltipRow(_ label: String, value: String, color: Color) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 4) {
             Circle().fill(color).frame(width: 5, height: 5)
             FDSLabel(label)
                 .font(AppTypography.captionSm)
                 .foregroundStyle(AppColors.Text.secondary)
                 .lineLimit(1)
+            Spacer(minLength: 4)
             FDSLabel(value)
                 .font(AppTypography.captionSmSemibold)
                 .foregroundStyle(AppColors.Text.primary)
