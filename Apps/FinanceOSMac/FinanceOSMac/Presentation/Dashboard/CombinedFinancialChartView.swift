@@ -189,6 +189,7 @@ struct CombinedFinancialChartView: View {
         return MultiSeriesChart(series: series)
             .chartYAxis(.hidden)
             .chartXAxis { axisMarks }
+            .chartLegend(.hidden)
             .chartOverlay { proxy in
                 GeometryReader { geo in
                     let plotFrame = proxy.plotFrame.map { geo[$0] } ?? geo.frame(in: .local)
