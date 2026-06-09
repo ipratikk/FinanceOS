@@ -388,18 +388,17 @@ private struct MultiSeriesHoverTooltip: View {
     }
 
     private func tooltipRow(_ label: String, value: String, color: Color) -> some View {
-        HStack(spacing: 8) {
-            Circle().fill(color).frame(width: 6, height: 6)
+        HStack(spacing: 6) {
+            Circle().fill(color).frame(width: 5, height: 5)
             FDSLabel(label)
                 .font(AppTypography.captionSm)
                 .foregroundStyle(AppColors.Text.secondary)
-            Spacer(minLength: 8)
+                .lineLimit(1)
             FDSLabel(value)
                 .font(AppTypography.captionSmSemibold)
                 .foregroundStyle(AppColors.Text.primary)
                 .monospacedDigit()
         }
-        .frame(minWidth: 140)
     }
 
     private func fmt(_ value: Decimal) -> String {
