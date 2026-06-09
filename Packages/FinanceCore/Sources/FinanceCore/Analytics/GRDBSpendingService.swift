@@ -188,6 +188,11 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
                 let balance = cbMinorUnits ?? (running * 100)
                 let minorUnits = Int64(NSDecimalNumber(decimal: balance).int64Value)
                 points.append(NetWorthPoint(timestamp: day, netWorthMinorUnits: minorUnits))
+                // Re-anchor running balance to the known-true closing balance so subsequent
+                // days accumulate deltas from truth rather than from a drifted opening baseline.
+                if let cb = cbMinorUnits {
+                    running = cb / 100
+                }
                 guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
                 day = next
             }
@@ -277,10 +282,11 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         let txns = txnsByLedger[ledgerId] ?? []
         let candidate = txns
             .filter { txn in
-                txn.closingBalanceMinorUnits != nil &&
-                    calendar
-                    .date(from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt)) ??
-                    .distantFuture <= day
+                guard txn.closingBalanceMinorUnits != nil else { return false }
+                let txnDay = calendar.date(
+                    from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt)
+                ) ?? .distantFuture
+                return txnDay <= day
             }
             .max(by: { $0.postedAt < $1.postedAt })
         guard let balanceMinorUnits = candidate?.closingBalanceMinorUnits else { return nil }
