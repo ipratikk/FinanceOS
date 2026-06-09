@@ -110,6 +110,9 @@
     "Cadence" : {
 
     },
+    "Calculation Results" : {
+
+    },
     "Cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -359,6 +362,9 @@
 
     },
     "Financial Intelligence" : {
+
+    },
+    "Fix Calculations" : {
 
     },
     "From" : {
@@ -652,6 +658,12 @@
 
     },
     "Type" : {
+
+    },
+    "Validate accounting invariants and recalculate expense/income totals" : {
+
+    },
+    "Validating…" : {
 
     }
   },

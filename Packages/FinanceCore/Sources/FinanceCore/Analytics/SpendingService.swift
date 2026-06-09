@@ -11,6 +11,8 @@ public protocol SpendingServiceProtocol: Sendable {
     func recentTransactions(limit: Int) async throws -> [Transaction]
     /// Returns daily net-worth snapshots, optionally limited to the last `months` months.
     func netWorthTimeSeries(months: Int?) async throws -> [NetWorthPoint]
+    /// Returns per-ledger balance time series for bank accounts only, optionally limited to last `months` months.
+    func bankAccountBalances(months: Int?) async throws -> [LedgerBalanceTimeSeries]
 }
 
 // MARK: - Chart Models
@@ -37,6 +39,22 @@ public struct NetWorthPoint: Identifiable, Sendable {
 extension NetWorthPoint: Equatable {
     public static func == (lhs: NetWorthPoint, rhs: NetWorthPoint) -> Bool {
         lhs.timestamp == rhs.timestamp && lhs.netWorthMinorUnits == rhs.netWorthMinorUnits
+    }
+}
+
+/// Per-ledger balance time series for detailed net-worth breakdown chart.
+/// Maps ledger ID to its balance progression over time.
+public struct LedgerBalanceTimeSeries: Sendable {
+    public let ledgerId: UUID
+    public let ledgerName: String
+    public let ledgerKind: LedgerKind
+    public let points: [NetWorthPoint]
+
+    public init(ledgerId: UUID, ledgerName: String, ledgerKind: LedgerKind, points: [NetWorthPoint]) {
+        self.ledgerId = ledgerId
+        self.ledgerName = ledgerName
+        self.ledgerKind = ledgerKind
+        self.points = points
     }
 }
 

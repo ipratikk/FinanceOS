@@ -128,6 +128,74 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return points
     }
 
+    public func bankAccountBalances(months: Int?) async throws -> [LedgerBalanceTimeSeries] {
+        let calendar = Calendar.current
+        let now = Date()
+
+        let allLedgers = try await ledgerRepository.fetchLedgers()
+        let allTransactions = try await transactionRepository.fetchTransactions()
+        let txnsByLedger = Dictionary(grouping: allTransactions) { $0.ledgerId }
+
+        let closingBalanceLedgerIds = closingBalanceLedgerIds(from: allTransactions)
+        let ledgerKindById = Dictionary(uniqueKeysWithValues: allLedgers.map { ($0.id, $0.kind) })
+
+        let bankAccountLedgers = allLedgers.filter { $0.kind == .bankAccount }
+        let deltaByDayByLedger = buildDeltaByDayPerLedger(
+            transactions: allTransactions,
+            ledgers: bankAccountLedgers,
+            ledgerKindById: ledgerKindById,
+            calendar: calendar
+        )
+
+        let allDays = Set(deltaByDayByLedger.values.flatMap(\.keys)).sorted()
+        let windowStart = resolveWindowStart(
+            months: months,
+            sortedDays: allDays,
+            now: now,
+            calendar: calendar
+        )
+
+        var results: [LedgerBalanceTimeSeries] = []
+        for ledger in bankAccountLedgers {
+            let deltaByDay = deltaByDayByLedger[ledger.id] ?? [:]
+            let isClosingBalance = closingBalanceLedgerIds.contains(ledger.id)
+            let openingBalance = ledgerOpeningBalance(
+                ledger: ledger, isAsset: true, txnsByLedger: txnsByLedger
+            )
+
+            var running = openingBalance
+            for day in allDays where day < windowStart {
+                running += deltaByDay[day] ?? 0
+            }
+
+            var points: [NetWorthPoint] = []
+            var day = windowStart
+            while day <= now {
+                running += deltaByDay[day] ?? 0
+                let cbMinorUnits: Decimal? = isClosingBalance
+                    ? closingBalanceForLedger(
+                        at: day, ledgerId: ledger.id, txnsByLedger: txnsByLedger
+                    )
+                    : nil
+                let balance = cbMinorUnits ?? (running * 100)
+                let minorUnits = Int64(NSDecimalNumber(decimal: balance).int64Value)
+                points.append(NetWorthPoint(timestamp: day, netWorthMinorUnits: minorUnits))
+                guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
+                day = next
+            }
+
+            results.append(
+                LedgerBalanceTimeSeries(
+                    ledgerId: ledger.id,
+                    ledgerName: ledger.displayName,
+                    ledgerKind: ledger.kind,
+                    points: points
+                )
+            )
+        }
+        return results
+    }
+
     /// Returns the set of ledger IDs that carry a `closingBalance` on at least one transaction.
     /// These ledgers are treated as authoritative-balance sources rather than delta accumulators.
     private func closingBalanceLedgerIds(from transactions: [Transaction]) -> Set<UUID> {
@@ -162,6 +230,53 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
             byDay[dayStart, default: 0] += delta
         }
         return byDay
+    }
+
+    /// Accumulates signed daily deltas per ledger for bank account balance progression.
+    /// Only processes bank account ledgers; credits add, debits subtract.
+    private func buildDeltaByDayPerLedger(
+        transactions: [Transaction],
+        ledgers: [Ledger],
+        ledgerKindById: [UUID: LedgerKind],
+        calendar: Calendar
+    ) -> [UUID: [Date: Decimal]] {
+        var byLedger: [UUID: [Date: Decimal]] = [:]
+        for ledger in ledgers {
+            byLedger[ledger.id] = [:]
+        }
+        for txn in transactions {
+            guard let ledgerId = txn.ledgerId,
+                  byLedger[ledgerId] != nil,
+                  let dayStart = calendar.date(
+                      from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt)
+                  )
+            else { continue }
+            let d = Decimal(txn.amountMinorUnits) / 100
+            let delta = txn.transactionType == .credit ? d : -d
+            byLedger[ledgerId]?[dayStart, default: 0] += delta
+        }
+        return byLedger
+    }
+
+    /// Returns the most-recent known closing balance for a specific ledger as of `day`.
+    /// Falls back to nil if no closing balance exists for that ledger.
+    private func closingBalanceForLedger(
+        at day: Date,
+        ledgerId: UUID,
+        txnsByLedger: [UUID?: [Transaction]]
+    ) -> Decimal? {
+        let calendar = Calendar.current
+        let txns = txnsByLedger[ledgerId] ?? []
+        let candidate = txns
+            .filter { txn in
+                txn.closingBalanceMinorUnits != nil &&
+                    calendar
+                    .date(from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt)) ??
+                    .distantFuture <= day
+            }
+            .max(by: { $0.postedAt < $1.postedAt })
+        guard let balanceMinorUnits = candidate?.closingBalanceMinorUnits else { return nil }
+        return Decimal(balanceMinorUnits)
     }
 
     /// Sums the most-recent known closing balance for each closing-balance ledger as of `day`.

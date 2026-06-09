@@ -26,6 +26,7 @@ extension DashboardView {
                 Spacer()
                 CombinedFinancialChartView(
                     netWorth: viewModel.netWorthTimeSeries,
+                    bankAccountBalances: viewModel.bankAccountBalances,
                     visibleDays: viewModel.selectedTimeRange.visibleDays
                 )
                 .id(viewModel.selectedTimeRange)
