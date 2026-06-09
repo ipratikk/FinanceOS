@@ -288,7 +288,7 @@ private struct MultiSeriesChart: View {
                     ForEach(ser.points) { item in
                         AreaMark(
                             x: .value("Date", item.timestamp),
-                            y: .value(ser.label, Double(item.netWorthMinorUnits) / 100)
+                            y: .value("Balance", Double(item.netWorthMinorUnits) / 100)
                         )
                         .foregroundStyle(
                             LinearGradient(
@@ -302,7 +302,7 @@ private struct MultiSeriesChart: View {
                 ForEach(ser.points) { item in
                     LineMark(
                         x: .value("Date", item.timestamp),
-                        y: .value(ser.label, Double(item.netWorthMinorUnits) / 100)
+                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100)
                     )
                     .foregroundStyle(ser.color)
                     .lineStyle(StrokeStyle(
