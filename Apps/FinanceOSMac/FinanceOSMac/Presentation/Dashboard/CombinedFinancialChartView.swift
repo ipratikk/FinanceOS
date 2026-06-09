@@ -245,16 +245,22 @@ struct CombinedFinancialChartView: View {
                 }
             }
 
-            // Tooltip
+            // Tooltip with bounds checking
+            let tooltipWidth: CGFloat = 160
+            let tooltipHeight: CGFloat = 120
+            let rightOffset = xPos + 12 + tooltipWidth
+            let leftOffset = xPos - 12 - tooltipWidth
+            let useLeftSide = rightOffset > plotFrame.maxX && leftOffset >= plotFrame.minX
+            let finalX = useLeftSide ? (xPos - 12 - tooltipWidth) : (xPos + 12)
+            let clampedX = min(max(finalX, plotFrame.minX + 4), plotFrame.maxX - tooltipWidth - 4)
+            let clampedY = min(plotFrame.origin.y + 8, plotFrame.maxY - tooltipHeight - 8)
+
             MultiSeriesHoverTooltip(
                 date: hoveredDate,
                 series: series,
                 seriesValues: hoverState.seriesValues
             )
-            .offset(
-                x: plotX > plotFrame.width * 0.6 ? xPos - 180 : xPos + 12,
-                y: plotFrame.origin.y + 8
-            )
+            .offset(x: clampedX - xPos, y: clampedY - plotFrame.origin.y)
             .allowsHitTesting(false)
         }
     }
