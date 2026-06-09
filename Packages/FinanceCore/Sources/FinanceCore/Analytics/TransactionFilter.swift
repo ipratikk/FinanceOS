@@ -112,4 +112,24 @@ public enum TransactionFilter {
 
         return true
     }
+
+    // MARK: - Loan EMI helpers (FINOS-105)
+
+    /// Returns true if this transaction is a loan payment (EMI).
+    public static func isLoanPayment(_ txn: Transaction) -> Bool {
+        txn.transactionType == .debit && txn.intentId == "loan_payment"
+    }
+
+    /// Extracts the interest-only portion of a loan EMI payment.
+    /// Principal portion is a liability reduction (not an expense).
+    /// Only interest counts as expense per accounting standards.
+    ///
+    /// Returns the interest component in minor units. If amortization data unavailable,
+    /// returns 0 (conservative: payment assumed to be principal-only).
+    public static func loanInterestComponent(_ txn: Transaction) -> Int64 {
+        guard isLoanPayment(txn) else { return 0 }
+        // TODO: Integrate with LoanAccount model to look up remaining principal and rate
+        // For now, return 0 (principal-only assumption) until full loan tracking is available
+        return 0
+    }
 }
