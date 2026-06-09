@@ -245,17 +245,22 @@ struct CombinedFinancialChartView: View {
                 }
             }
 
-            // Tooltip positioned near cursor with bounds checking
+            // Tooltip smart positioning: try right, flip to left if out of bounds
             let tooltipWidth: CGFloat = 120
             let tooltipHeight: CGFloat = 80
-            let rightX = xPos + 12
-            let leftX = xPos - tooltipWidth - 12
-            let useLeftSide = rightX + tooltipWidth > plotFrame.maxX - 8 && leftX >= plotFrame.minX + 8
-            let offsetX = useLeftSide ? leftX : rightX
+            let padding: CGFloat = 12
+            let rightX = xPos + padding
+            let leftX = xPos - tooltipWidth - padding
+
+            // Check if right side fits, else use left
+            let rightFits = rightX + tooltipWidth <= plotFrame.maxX - 2
+            let leftFits = leftX >= plotFrame.minX + 2
+            let offsetX = rightFits ? rightX : (leftFits ? leftX : rightX)
             let offsetY = plotFrame.origin.y + 8
-            // Clamp to bounds with 2pt margin
-            let clampedX = min(max(offsetX, plotFrame.minX + 2), plotFrame.maxX - tooltipWidth - 2)
-            let clampedY = min(offsetY, plotFrame.maxY - tooltipHeight - 2)
+
+            // Final clamp as safety net
+            let clampedX = min(max(offsetX, plotFrame.minX), plotFrame.maxX - tooltipWidth)
+            let clampedY = min(offsetY, plotFrame.maxY - tooltipHeight)
 
             MultiSeriesHoverTooltip(
                 date: hoveredDate,
