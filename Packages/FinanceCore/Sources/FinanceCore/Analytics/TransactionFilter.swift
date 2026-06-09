@@ -127,10 +127,9 @@ public enum TransactionFilter {
     ///
     /// Returns the interest component in minor units. If amortization data unavailable,
     /// returns 0 (conservative: payment assumed to be principal-only).
+    /// Integrate with LoanAccount model (FINOS-105) to look up remaining principal and rate.
     public static func loanInterestComponent(_ txn: Transaction) -> Int64 {
         guard isLoanPayment(txn) else { return 0 }
-        // TODO: Integrate with LoanAccount model to look up remaining principal and rate
-        // For now, return 0 (principal-only assumption) until full loan tracking is available
         return 0
     }
 }
