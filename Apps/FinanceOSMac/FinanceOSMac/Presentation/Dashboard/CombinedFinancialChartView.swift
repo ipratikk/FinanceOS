@@ -245,22 +245,24 @@ struct CombinedFinancialChartView: View {
                 }
             }
 
-            // Tooltip with bounds checking
-            let tooltipWidth: CGFloat = 160
-            let tooltipHeight: CGFloat = 120
-            let rightOffset = xPos + 12 + tooltipWidth
-            let leftOffset = xPos - 12 - tooltipWidth
-            let useLeftSide = rightOffset > plotFrame.maxX && leftOffset >= plotFrame.minX
-            let finalX = useLeftSide ? (xPos - 12 - tooltipWidth) : (xPos + 12)
-            let clampedX = min(max(finalX, plotFrame.minX + 4), plotFrame.maxX - tooltipWidth - 4)
-            let clampedY = min(plotFrame.origin.y + 8, plotFrame.maxY - tooltipHeight - 8)
+            // Tooltip positioned near cursor with bounds checking
+            let tooltipWidth: CGFloat = 130
+            let tooltipHeight: CGFloat = 100
+            let rightX = xPos + 12
+            let leftX = xPos - tooltipWidth - 12
+            let useLeftSide = rightX + tooltipWidth > plotFrame.maxX && leftX >= plotFrame.minX
+            let offsetX = useLeftSide ? leftX : rightX
+            let offsetY = plotFrame.origin.y + 8
+            // Clamp to bounds
+            let clampedX = min(max(offsetX, plotFrame.minX + 4), plotFrame.maxX - tooltipWidth - 4)
+            let clampedY = min(offsetY, plotFrame.maxY - tooltipHeight - 4)
 
             MultiSeriesHoverTooltip(
                 date: hoveredDate,
                 series: series,
                 seriesValues: hoverState.seriesValues
             )
-            .offset(x: clampedX - xPos, y: clampedY - plotFrame.origin.y)
+            .offset(x: clampedX, y: clampedY)
             .allowsHitTesting(false)
         }
     }
