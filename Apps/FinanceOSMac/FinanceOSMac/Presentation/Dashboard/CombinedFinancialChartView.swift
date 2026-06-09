@@ -251,7 +251,7 @@ struct CombinedFinancialChartView: View {
             }
 
             // Tooltip smart positioning: try right, flip to left if out of bounds
-            let tooltipWidth: CGFloat = 160
+            let tooltipWidth: CGFloat = 250
             let padding: CGFloat = 10
             let rightX = xPos + padding
             let leftX = xPos - tooltipWidth - padding
@@ -403,6 +403,7 @@ private struct MultiSeriesHoverTooltip: View {
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .layoutPriority(0)
+            Spacer()
             FDSLabel(value)
                 .font(AppTypography.captionSmSemibold)
                 .foregroundStyle(AppColors.Text.primary)
