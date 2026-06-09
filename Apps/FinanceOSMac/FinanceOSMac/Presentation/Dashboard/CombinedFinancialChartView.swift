@@ -3,27 +3,105 @@ import FinanceCore
 import FinanceUI
 import SwiftUI
 
-private struct ChartHoverState: Equatable {
-    let hoveredDate: Date?
-    let nearestNetWorthPoint: NetWorthPoint?
+// MARK: - Palette
 
-    static let idle = ChartHoverState()
+private enum ChartPalette {
+    /// Fixed palette drawn from AppColors.System for per-account lines.
+    static let accountColors: [Color] = [
+        AppColors.System.green,
+        AppColors.System.orange,
+        AppColors.System.purple,
+        AppColors.System.pink,
+        AppColors.System.teal,
+        AppColors.System.yellow,
+        AppColors.System.mint,
+        AppColors.System.cyan,
+        AppColors.System.indigo,
+        AppColors.System.red
+    ]
 
-    init(hoveredDate: Date? = nil, nearestNetWorthPoint: NetWorthPoint? = nil) {
-        self.hoveredDate = hoveredDate
-        self.nearestNetWorthPoint = nearestNetWorthPoint
+    static func color(for index: Int) -> Color {
+        accountColors[index % accountColors.count]
     }
 }
 
+// MARK: - Series Model
+
+private struct ChartSeries: Identifiable {
+    let id: UUID
+    let label: String
+    let color: Color
+    let lineWidth: CGFloat
+    let isDashed: Bool
+    let points: [NetWorthPoint]
+
+    init(
+        id: UUID = UUID(),
+        label: String,
+        color: Color,
+        lineWidth: CGFloat = 2,
+        isDashed: Bool = false,
+        points: [NetWorthPoint]
+    ) {
+        self.id = id
+        self.label = label
+        self.color = color
+        self.lineWidth = lineWidth
+        self.isDashed = isDashed
+        self.points = points
+    }
+
+    func nearestPoint(to date: Date) -> NetWorthPoint? {
+        guard !points.isEmpty else { return nil }
+        var low = 0, high = points.count - 1
+        while low < high {
+            let mid = (low + high) / 2
+            if points[mid].timestamp < date { low = mid + 1 } else { high = mid }
+        }
+        guard low > 0 else { return points[low] }
+        let distPrev = abs(points[low - 1].timestamp.timeIntervalSince(date))
+        let distCurr = abs(points[low].timestamp.timeIntervalSince(date))
+        return distPrev <= distCurr ? points[low - 1] : points[low]
+    }
+}
+
+// MARK: - Hover State
+
+private struct ChartHoverState: Equatable {
+    /// The snapped date shown by the crosshair.
+    let hoveredDate: Date?
+    /// Nearest value per series, keyed by series ID.
+    let seriesValues: [UUID: NetWorthPoint]
+
+    static let idle = ChartHoverState()
+
+    init(hoveredDate: Date? = nil, seriesValues: [UUID: NetWorthPoint] = [:]) {
+        self.hoveredDate = hoveredDate
+        self.seriesValues = seriesValues
+    }
+
+    static func == (lhs: ChartHoverState, rhs: ChartHoverState) -> Bool {
+        lhs.hoveredDate == rhs.hoveredDate
+    }
+}
+
+// MARK: - Main View
+
 struct CombinedFinancialChartView: View {
     let netWorth: [NetWorthPoint]
+    let bankAccountBalances: [LedgerBalanceTimeSeries]
     let visibleDays: Int?
 
     @State private var hoverState: ChartHoverState = .idle
     @State private var scrollPosition: Date
 
-    init(netWorth: [NetWorthPoint], visibleDays: Int? = 90) {
+    init(
+        netWorth: [NetWorthPoint],
+        bankAccountBalances: [LedgerBalanceTimeSeries] = [],
+        visibleDays: Int? = 90
+    ) {
         self.netWorth = netWorth
+        self.bankAccountBalances = bankAccountBalances
         self.visibleDays = visibleDays
         let days = visibleDays ?? 90
         _scrollPosition = State(
@@ -31,18 +109,49 @@ struct CombinedFinancialChartView: View {
         )
     }
 
+    private var allSeries: [ChartSeries] {
+        var result: [ChartSeries] = []
+        // Per-ledger lines first so total renders on top.
+        for (idx, ledger) in bankAccountBalances.enumerated() {
+            result.append(ChartSeries(
+                id: ledger.ledgerId,
+                label: ledger.ledgerName,
+                color: ChartPalette.color(for: idx),
+                lineWidth: 1.5,
+                isDashed: false,
+                points: ledger.points
+            ))
+        }
+        // Total net worth: blue, thicker, dashed.
+        result.append(ChartSeries(
+            label: "Net Worth",
+            color: AppColors.accentBlue,
+            lineWidth: 2.5,
+            isDashed: true,
+            points: netWorth
+        ))
+        return result
+    }
+
     var body: some View {
-        Group {
-            if let days = visibleDays {
-                baseChart
-                    .chartScrollableAxes(.horizontal)
-                    .chartScrollPosition(x: $scrollPosition)
-                    .chartXVisibleDomain(length: days * 24 * 3600)
-            } else {
-                baseChart
+        VStack(alignment: .leading, spacing: 12) {
+            Group {
+                if let days = visibleDays {
+                    baseChart
+                        .chartScrollableAxes(.horizontal)
+                        .chartScrollPosition(x: $scrollPosition)
+                        .chartXVisibleDomain(length: days * 24 * 3600)
+                } else {
+                    baseChart
+                }
+            }
+            if allSeries.count > 1 {
+                ChartLegendView(series: allSeries)
             }
         }
     }
+
+    // MARK: - Axis Marks
 
     @AxisContentBuilder
     private var axisMarks: some AxisContent {
@@ -73,27 +182,32 @@ struct CombinedFinancialChartView: View {
         }
     }
 
+    // MARK: - Base Chart
+
     private var baseChart: some View {
-        StaticNetWorthChart(netWorth: netWorth)
+        let series = allSeries
+        let mapping = Dictionary(uniqueKeysWithValues: series.map { ($0.label, $0.color) })
+        return MultiSeriesChart(series: series)
             .chartYAxis(.hidden)
-            .chartXAxis {
-                axisMarks
+            .chartXAxis { axisMarks }
+            .chartLegend(.hidden)
+            .chartForegroundStyleScale { (label: String) in
+                mapping[label] ?? AppColors.Text.secondary
             }
             .chartOverlay { proxy in
                 GeometryReader { geo in
                     let plotFrame = proxy.plotFrame.map { geo[$0] } ?? geo.frame(in: .local)
                     ZStack(alignment: .topLeading) {
                         if hoverState.hoveredDate != nil {
-                            hoverOverlay(proxy: proxy, plotFrame: plotFrame)
+                            hoverOverlay(proxy: proxy, plotFrame: plotFrame, series: series)
                         }
                         Color.clear.contentShape(Rectangle())
                             .onContinuousHover { phase in
                                 switch phase {
                                 case let .active(loc):
-                                    // Convert GeometryReader coords → plot area coords before querying proxy.
                                     let plotX = loc.x - plotFrame.origin.x
                                     if let date = proxy.value(atX: plotX, as: Date.self) {
-                                        hoverState = buildHoverState(for: date)
+                                        hoverState = buildHoverState(for: date, series: series)
                                     }
                                 case .ended:
                                     hoverState = .idle
@@ -107,109 +221,195 @@ struct CombinedFinancialChartView: View {
     // MARK: - Hover Overlay
 
     @ViewBuilder
-    private func hoverOverlay(proxy: ChartProxy, plotFrame: CGRect) -> some View {
+    private func hoverOverlay(proxy: ChartProxy, plotFrame: CGRect, series: [ChartSeries]) -> some View {
         if let hoveredDate = hoverState.hoveredDate,
            let plotX = proxy.position(forX: hoveredDate) {
-            // proxy.position(forX/Y:) returns plot-area-relative coords.
-            // Add plotFrame.origin to get GeometryReader (overlay) coords.
             let xPos = plotX + plotFrame.origin.x
 
+            // Vertical crosshair
             Path { path in
                 path.move(to: CGPoint(x: xPos, y: plotFrame.origin.y))
                 path.addLine(to: CGPoint(x: xPos, y: plotFrame.maxY))
             }
-            .stroke(AppColors.Text.quaternary.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+            .stroke(
+                AppColors.Text.quaternary.opacity(0.5),
+                style: StrokeStyle(lineWidth: 1, dash: [3, 3])
+            )
             .allowsHitTesting(false)
 
-            if let pt = hoverState.nearestNetWorthPoint,
-               let plotY = proxy.position(forY: Double(pt.netWorthMinorUnits) / 100) {
-                let yPos = plotY + plotFrame.origin.y
-                Circle().fill(AppColors.accentBlue).stroke(AppColors.base, lineWidth: 2)
-                    .frame(width: 8, height: 8).position(x: xPos, y: yPos).allowsHitTesting(false)
+            // Dots on each series at the hovered date
+            ForEach(series) { ser in
+                if let point = hoverState.seriesValues[ser.id],
+                   let plotY = proxy.position(forY: Double(point.netWorthMinorUnits) / 100) {
+                    Circle()
+                        .fill(ser.color)
+                        .stroke(AppColors.base, lineWidth: 1.5)
+                        .frame(width: 7, height: 7)
+                        .position(x: xPos, y: plotY + plotFrame.origin.y)
+                        .allowsHitTesting(false)
+                }
             }
 
-            ChartHoverTooltip(state: hoverState)
-                .offset(x: plotX > plotFrame.width * 0.6 ? xPos - 168 : xPos + 12, y: plotFrame.origin.y + 8)
-                .allowsHitTesting(false)
+            // Tooltip smart positioning: try right, flip to left if out of bounds
+            let tooltipWidth: CGFloat = 250
+            let padding: CGFloat = 10
+            let rightX = xPos + padding
+            let leftX = xPos - tooltipWidth - padding
+            let rightFits = rightX + tooltipWidth <= plotFrame.maxX
+            let offsetX = rightFits ? rightX : leftX
+            let clampedX = min(max(offsetX, plotFrame.minX), plotFrame.maxX - tooltipWidth)
+            let clampedY = plotFrame.origin.y + 8
+
+            MultiSeriesHoverTooltip(
+                date: hoveredDate,
+                series: series,
+                seriesValues: hoverState.seriesValues,
+                width: tooltipWidth
+            )
+            .offset(x: clampedX, y: clampedY)
+            .allowsHitTesting(false)
         }
     }
 
     // MARK: - Hover Logic
 
-    private func buildHoverState(for date: Date) -> ChartHoverState {
-        let nwPoint = nearestNetWorthPoint(to: date)
-        return ChartHoverState(hoveredDate: nwPoint?.timestamp ?? date, nearestNetWorthPoint: nwPoint)
-    }
-
-    private func nearestNetWorthPoint(to date: Date) -> NetWorthPoint? {
-        guard !netWorth.isEmpty else { return nil }
-        var lo = 0, hi = netWorth.count - 1
-        while lo < hi {
-            let mid = (lo + hi) / 2
-            if netWorth[mid].timestamp < date { lo = mid + 1 } else { hi = mid }
+    private func buildHoverState(for date: Date, series: [ChartSeries]) -> ChartHoverState {
+        var values: [UUID: NetWorthPoint] = [:]
+        var snappedDate: Date?
+        for ser in series {
+            if let nearest = ser.nearestPoint(to: date) {
+                values[ser.id] = nearest
+                // Snap date to the nearest point in the primary (net worth) series.
+                if ser.isDashed { snappedDate = nearest.timestamp }
+            }
         }
-        guard lo > 0 else { return netWorth[lo] }
-        let d0 = abs(netWorth[lo - 1].timestamp.timeIntervalSince(date))
-        let d1 = abs(netWorth[lo].timestamp.timeIntervalSince(date))
-        return d0 <= d1 ? netWorth[lo - 1] : netWorth[lo]
+        return ChartHoverState(hoveredDate: snappedDate ?? date, seriesValues: values)
     }
 }
 
-// MARK: - Chart
+// MARK: - MultiSeriesChart (private subview)
 
-private struct StaticNetWorthChart: View {
-    let netWorth: [NetWorthPoint]
+private struct MultiSeriesChart: View {
+    let series: [ChartSeries]
 
     var body: some View {
         Chart {
-            ForEach(netWorth) { item in
-                let val = Double(item.netWorthMinorUnits) / 100
-                AreaMark(x: .value("Date", item.timestamp), y: .value("Net Worth", val))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [AppColors.accentBlue.opacity(0.20), .clear],
-                            startPoint: .top, endPoint: .bottom
+            ForEach(series) { ser in
+                // Area fill only for net worth total line.
+                if ser.isDashed {
+                    ForEach(ser.points) { item in
+                        AreaMark(
+                            x: .value("Date", item.timestamp),
+                            y: .value("Balance", Double(item.netWorthMinorUnits) / 100)
                         )
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [AppColors.accentBlue.opacity(0.15), .clear],
+                                startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                        .interpolationMethod(.catmullRom)
+                    }
+                }
+                ForEach(ser.points) { item in
+                    LineMark(
+                        x: .value("Date", item.timestamp),
+                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100),
+                        series: .value("Series", ser.label)
                     )
+                    .foregroundStyle(by: .value("Series", ser.label))
+                    .lineStyle(StrokeStyle(
+                        lineWidth: ser.lineWidth,
+                        dash: ser.isDashed ? [6, 4] : []
+                    ))
                     .interpolationMethod(.catmullRom)
-                LineMark(x: .value("Date", item.timestamp), y: .value("Net Worth", val))
-                    .foregroundStyle(AppColors.accentBlue)
-                    .lineStyle(StrokeStyle(lineWidth: 2.0))
-                    .interpolationMethod(.catmullRom)
+                }
             }
         }
     }
 }
 
-// MARK: - Tooltip
+// MARK: - Legend
 
-private struct ChartHoverTooltip: View {
-    let state: ChartHoverState
+private struct ChartLegendView: View {
+    let series: [ChartSeries]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if let date = state.hoveredDate {
-                FDSLabel(FormatterCache.formatDate(date))
-                    .font(AppTypography.captionSmSemibold)
-                    .foregroundStyle(AppColors.Text.tertiary)
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ForEach(series) { ser in
+                    HStack(spacing: 6) {
+                        legendIndicator(for: ser)
+                        FDSLabel(ser.label)
+                            .font(AppTypography.captionSm)
+                            .foregroundStyle(AppColors.Text.secondary)
+                            .lineLimit(1)
+                    }
+                }
             }
-            if let pt = state.nearestNetWorthPoint {
-                let nwRupees = Decimal(pt.netWorthMinorUnits) / 100
-                tooltipRow("Net Worth", value: fmt(nwRupees), color: AppColors.accentBlue)
+            .padding(.horizontal, 4)
+        }
+    }
+
+    @ViewBuilder
+    private func legendIndicator(for series: ChartSeries) -> some View {
+        if series.isDashed {
+            // Dashed line indicator for total net worth
+            HStack(spacing: 2) {
+                ForEach(0 ..< 3, id: \.self) { _ in
+                    Capsule()
+                        .fill(series.color)
+                        .frame(width: 5, height: 2)
+                }
+            }
+        } else {
+            Circle().fill(series.color).frame(width: 8, height: 8)
+        }
+    }
+}
+
+// MARK: - Multi-series Tooltip
+
+private struct MultiSeriesHoverTooltip: View {
+    let date: Date
+    let series: [ChartSeries]
+    let seriesValues: [UUID: NetWorthPoint]
+    let width: CGFloat
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            FDSLabel(FormatterCache.formatDate(date))
+                .font(AppTypography.captionSmSemibold)
+                .foregroundStyle(AppColors.Text.tertiary)
+            ForEach(series) { ser in
+                if let serPoint = seriesValues[ser.id] {
+                    tooltipRow(ser.label, value: fmt(Decimal(serPoint.netWorthMinorUnits) / 100), color: ser.color)
+                }
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .frame(width: width, alignment: .leading)
         .background(AppColors.surface2, in: RoundedRectangle(cornerRadius: AppRadius.md))
         .overlay(RoundedRectangle(cornerRadius: AppRadius.md).stroke(AppColors.border, lineWidth: 0.5))
     }
 
     private func tooltipRow(_ label: String, value: String, color: Color) -> some View {
-        HStack(spacing: 8) {
-            Circle().fill(color).frame(width: 6, height: 6)
-            FDSLabel(label).font(AppTypography.captionSm).foregroundStyle(AppColors.Text.secondary)
-            FDSLabel(value).font(AppTypography.captionSmSemibold)
-                .foregroundStyle(AppColors.Text.primary).monospacedDigit()
+        HStack(spacing: 4) {
+            Circle().fill(color).frame(width: 5, height: 5)
+            FDSLabel(label)
+                .font(AppTypography.captionSm)
+                .foregroundStyle(AppColors.Text.secondary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .layoutPriority(0)
+            Spacer()
+            FDSLabel(value)
+                .font(AppTypography.captionSmSemibold)
+                .foregroundStyle(AppColors.Text.primary)
+                .monospacedDigit()
+                .lineLimit(1)
+                .layoutPriority(1)
         }
     }
 

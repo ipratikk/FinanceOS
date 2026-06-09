@@ -80,7 +80,7 @@ public enum TransactionFilter {
     ) -> Bool {
         guard isDebit else { return false }
 
-        if isReconciled, intentId == "credit_card_payment" { return false }
+        if intentId == "credit_card_payment" { return false }
 
         if let cat = categoryId {
             for prefix in nonExpenseCategoryPrefixes where cat == prefix || cat.hasPrefix("\(prefix).") {
@@ -94,7 +94,8 @@ public enum TransactionFilter {
     }
 
     /// Returns true if the raw field values describe real income.
-    /// Excludes known non-income categories (transfers, investments). Allows uncategorized credits.
+    /// Accepts: (1) explicit "income.*" category, (2) uncategorized credit without non-income intent.
+    /// Rejects: transfer/refund intents, expense-like categories.
     public static func isRealIncome(
         isCredit: Bool,
         categoryId: String?,
@@ -102,14 +103,16 @@ public enum TransactionFilter {
     ) -> Bool {
         guard isCredit else { return false }
 
-        // Exclude known non-income categories
+        if let intent = intentId, nonIncomeIntents.contains(intent) { return false }
+
         if let cat = categoryId {
-            for prefix in nonExpenseCategoryPrefixes where cat == prefix || cat.hasPrefix("\(prefix).") {
+            if nonExpenseCategoryPrefixes.contains(where: { cat == $0 || cat.hasPrefix("\($0).") }) {
                 return false
             }
+            if incomeCategoryPrefixes.contains(where: { cat == $0 || cat.hasPrefix("\($0).") }) {
+                return true
+            }
         }
-
-        if let intent = intentId, nonIncomeIntents.contains(intent) { return false }
 
         return true
     }

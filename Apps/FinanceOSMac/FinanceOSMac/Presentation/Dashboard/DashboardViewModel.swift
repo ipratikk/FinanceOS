@@ -36,6 +36,7 @@ class DashboardViewModel: AsyncLoadable {
     var currentTotals: SpendingTotals?
     var monthlySummaries: [MonthlySpendingSummary] = []
     var netWorthTimeSeries: [NetWorthPoint] = []
+    var bankAccountBalances: [LedgerBalanceTimeSeries] = []
     var recentTransactions: [TransactionRow] = []
     var isLoading = false
     var error: String?
@@ -143,11 +144,13 @@ class DashboardViewModel: AsyncLoadable {
             async let summaries = spendingService.monthlySummary(months: months)
             async let recent = spendingService.recentTransactions(limit: 6)
             async let nwSeries = spendingService.netWorthTimeSeries(months: months)
+            async let bankBalances = spendingService.bankAccountBalances(months: months)
             async let fetchedLedgers = ledgerRepository.fetchLedgers()
             currentTotals = try await totals
             monthlySummaries = try await summaries
             recentTransactions = try await makeRecentRows(recent)
             netWorthTimeSeries = try await nwSeries
+            bankAccountBalances = try await bankBalances
             ledgers = try await fetchedLedgers
         })
     }

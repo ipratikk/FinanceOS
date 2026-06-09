@@ -14,6 +14,7 @@ public struct ICICIMetadataExtractor: Sendable {
         let (customerName, address) = extractCustomerNameAndAddress(from: rows)
         let (customerId, statementDate) = extractCustomerIdAndDate(from: rows)
         let accountDetails = extractAccountDetails(from: rows)
+        let openingBalance = extractOpeningBalance(from: rows)
 
         return StatementMetadata(
             customerName: customerName,
@@ -23,6 +24,7 @@ public struct ICICIMetadataExtractor: Sendable {
             accountType: accountDetails.accountType,
             cardType: nil,
             address: address,
+            openingBalance: openingBalance,
             closingBalance: accountDetails.balance,
             generatedAt: statementDate
         )
@@ -185,6 +187,28 @@ public struct ICICIMetadataExtractor: Sendable {
         ])
     }
 
+    // MARK: - Opening balance
+
+    private func extractOpeningBalance(from rows: [[String]]) -> Int64? {
+        var inSavingsSection = false
+        for row in rows {
+            guard !row.isEmpty else { continue }
+            let joined = row.joined(separator: " ").lowercased()
+            if joined.contains("statement of transactions"), joined.contains("savings") {
+                inSavingsSection = true
+            }
+            if inSavingsSection {
+                guard row.count >= 6 else { continue }
+                let particulars = (row[safe: 2] ?? "").trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+                if particulars == "B/F" {
+                    let balanceCell = (row[safe: 5] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                    return parseAmountToMinorUnits(balanceCell)
+                }
+            }
+        }
+        return nil
+    }
+
     // MARK: - Amount parsing
 
     private func parseAmountToMinorUnits(_ amountString: String) -> Int64? {
@@ -192,5 +216,11 @@ public struct ICICIMetadataExtractor: Sendable {
             .trimmingCharacters(in: .whitespaces)
         guard let value = Double(cleaned) else { return nil }
         return Int64((value * 100).rounded())
+    }
+}
+
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        indices.contains(index) ? self[index] : nil
     }
 }

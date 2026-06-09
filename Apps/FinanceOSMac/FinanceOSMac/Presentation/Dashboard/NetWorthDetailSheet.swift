@@ -13,6 +13,7 @@ struct NetWorthDetailSheet: View {
             timeRangePicker
             CombinedFinancialChartView(
                 netWorth: viewModel.netWorthTimeSeries,
+                bankAccountBalances: viewModel.bankAccountBalances,
                 visibleDays: viewModel.selectedTimeRange.visibleDays
             )
             .id(viewModel.selectedTimeRange)

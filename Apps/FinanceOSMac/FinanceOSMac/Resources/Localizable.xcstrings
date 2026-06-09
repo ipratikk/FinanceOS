@@ -60,6 +60,9 @@
     "Ask a financial question…" : {
 
     },
+    "Balance" : {
+
+    },
     "Bank" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -108,6 +111,9 @@
 
     },
     "Cadence" : {
+
+    },
+    "Calculation Results" : {
 
     },
     "Cancel" : {
@@ -361,6 +367,9 @@
     "Financial Intelligence" : {
 
     },
+    "Fix Calculations" : {
+
+    },
     "From" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -415,9 +424,6 @@
 
     },
     "Month" : {
-
-    },
-    "Net Worth" : {
 
     },
     "Nickname" : {
@@ -564,6 +570,9 @@
         }
       }
     },
+    "Series" : {
+
+    },
     "Set Opening Balance" : {
 
     },
@@ -652,6 +661,12 @@
 
     },
     "Type" : {
+
+    },
+    "Validate accounting invariants and recalculate expense/income totals" : {
+
+    },
+    "Validating…" : {
 
     }
   },
