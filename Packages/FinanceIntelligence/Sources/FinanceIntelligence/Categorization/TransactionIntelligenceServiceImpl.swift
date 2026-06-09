@@ -268,6 +268,13 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
             FinanceLogger.intelligence.info(
                 "enrichBatch: \(enriched.count) enriched, \(pairs.count) CC payment pairs reconciled"
             )
+            // FINOS-104: Validate reconciliation invariants
+            let linkedValidation = ReconciliationValidator.validateLinkedTransactions(transactions: transactions)
+            if !linkedValidation.isValid {
+                FinanceLogger.intelligence.warning(
+                    "Reconciliation validation failed: \(linkedValidation.errors.joined(separator: "; "))"
+                )
+            }
         }
         return enriched
     }
