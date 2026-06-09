@@ -163,26 +163,39 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
                 ledger: ledger, isAsset: true, txnsByLedger: txnsByLedger
             )
 
+            // Collect all statement dates (days that carry a closing balance) for this ledger.
+            let statementDates: Set<Date> = Set((txnsByLedger[ledger.id] ?? [])
+                .compactMap { txn -> Date? in
+                    guard txn.closingBalanceMinorUnits != nil else { return nil }
+                    return calendar.date(from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt))
+                })
+
+            // Pure-CB path: ledger has a closing balance on every transaction day (or nearly every
+            // day). In this case delta accumulation is noisy — the CB is authoritative for every
+            // plotted point. We still go through the running-balance loop below so the re-anchor
+            // logic fires on every statement day; for pure-CB ledgers that re-anchor is a no-op
+            // because every day matches statementDates, so running is reset to CB immediately.
+            //
+            // Delta-heavy path (isClosingBalance == false): no CB exists, so we accumulate signed
+            // deltas from the opening balance. The two paths share the same loop structure; the
+            // only branch is whether cbMinorUnits resolves to a real value or nil.
+
             var running = openingBalance
             for day in allDays where day < windowStart {
                 running += deltaByDay[day] ?? 0
             }
-
-            // Collect all statement dates (days with closing balances) for this ledger.
-            let statementDates: Set<Date> = Set((txnsByLedger[ledger.id] ?? [])
-                .compactMap { txn in
-                    guard txn.closingBalanceMinorUnits != nil else { return nil }
-                    return calendar.date(from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt))
-                })
 
             var points: [NetWorthPoint] = []
             var day = windowStart
             while day <= now {
                 running += deltaByDay[day] ?? 0
                 // Only use closing balance if a statement exists FOR THIS EXACT DAY.
+                // endOfDayClosingBalance uses a deterministic (postedAt, id) tiebreaker
+                // to resolve intra-day ambiguity when multiple transactions share the
+                // same 18:30 postedAt timestamp.
                 let cbMinorUnits: Decimal? = isClosingBalance && statementDates.contains(day)
-                    ? closingBalanceForLedger(
-                        at: day, ledgerId: ledger.id, txnsByLedger: txnsByLedger
+                    ? endOfDayClosingBalance(
+                        for: day, ledgerId: ledger.id, txnsByLedger: txnsByLedger
                     )
                     : nil
                 let balance = cbMinorUnits ?? (running * 100)
@@ -190,6 +203,8 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
                 points.append(NetWorthPoint(timestamp: day, netWorthMinorUnits: minorUnits))
                 // Re-anchor running balance to the known-true closing balance so subsequent
                 // days accumulate deltas from truth rather than from a drifted opening baseline.
+                // For pure-CB ledgers this fires every day, making running a faithful CB / 100
+                // that never drifts. For delta-heavy ledgers it only fires on statement days.
                 if let cb = cbMinorUnits {
                     running = cb / 100
                 }
@@ -271,10 +286,23 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         return byLedger
     }
 
-    /// Returns the most-recent known closing balance for a specific ledger as of `day`.
-    /// Falls back to nil if no closing balance exists for that ledger.
-    private func closingBalanceForLedger(
-        at day: Date,
+    /// Picks the true end-of-day closing balance for `ledgerId` on `day`.
+    ///
+    /// Problem: Indian bank statement parsers normalise all transactions on a given day to 18:30 UTC,
+    /// so `postedAt` is identical for every transaction on that day. A plain `.max(by: postedAt)`
+    /// picks an arbitrary winner. We need the *last* transaction of the day — the one whose
+    /// `closingBalanceMinorUnits` reflects the final end-of-day account balance.
+    ///
+    /// Tiebreaker strategy: No explicit sequence/ordinal field exists on `Transaction` (UUID is v4
+    /// random, not monotonic). We therefore fall back to `id.uuidString` lexicographic order as a
+    /// stable, deterministic proxy. This is not perfect — UUID insertion order is not guaranteed —
+    /// but it is reproducible across runs and eliminates the non-determinism of Set/Dictionary
+    /// iteration order that caused the original bug. If a true ordinal field is added to
+    /// `Transaction` in a future migration, replace `id.uuidString` with that field here.
+    ///
+    /// Returns the closing balance in **minor units** (e.g. paise), or `nil` if no CB exists.
+    private func endOfDayClosingBalance(
+        for day: Date,
         ledgerId: UUID,
         txnsByLedger: [UUID?: [Transaction]]
     ) -> Decimal? {
@@ -288,12 +316,35 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
                 ) ?? .distantFuture
                 return txnDay <= day
             }
-            .max(by: { $0.postedAt < $1.postedAt })
+            .max { lhs, rhs in
+                // Primary: earlier calendar-day loses (we want the latest day).
+                let lhsDay = calendar.date(
+                    from: calendar.dateComponents([.year, .month, .day], from: lhs.postedAt)
+                ) ?? .distantPast
+                let rhsDay = calendar.date(
+                    from: calendar.dateComponents([.year, .month, .day], from: rhs.postedAt)
+                ) ?? .distantPast
+                if lhsDay != rhsDay { return lhsDay < rhsDay }
+                // Secondary (same day): lexicographic UUID — deterministic, eliminates arbitrary pick.
+                return lhs.id.uuidString < rhs.id.uuidString
+            }
         guard let balanceMinorUnits = candidate?.closingBalanceMinorUnits else { return nil }
         return Decimal(balanceMinorUnits)
     }
 
+    /// Returns the most-recent known closing balance for a specific ledger as of `day`.
+    /// Delegates to `endOfDayClosingBalance` for deterministic intra-day tiebreaking.
+    /// Falls back to nil if no closing balance exists for that ledger.
+    private func closingBalanceForLedger(
+        at day: Date,
+        ledgerId: UUID,
+        txnsByLedger: [UUID?: [Transaction]]
+    ) -> Decimal? {
+        endOfDayClosingBalance(for: day, ledgerId: ledgerId, txnsByLedger: txnsByLedger)
+    }
+
     /// Sums the most-recent known closing balance for each closing-balance ledger as of `day`.
+    /// Uses `endOfDayClosingBalance` for deterministic intra-day tiebreaking on each ledger.
     /// Falls back to the ledger's `openingBalance` if no transaction on or before `day` carries one.
     /// Excludes creditCard ledgers (transient spending flow, not part of net worth).
     private func closingBalanceTotal(
@@ -303,22 +354,16 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
         ledgerById: [UUID: Ledger],
         assetKinds: Set<LedgerKind>
     ) -> Decimal {
-        let calendar = Calendar.current
         var total: Decimal = 0
         for ledgerId in ledgerIds {
             guard let ledger = ledgerById[ledgerId] else { continue }
             if ledger.kind == .creditCard { continue }
             let isAsset = assetKinds.contains(ledger.kind)
-            let txns = txnsByLedger[ledgerId] ?? []
-            let candidate = txns
-                .filter { txn in
-                    txn.closingBalanceMinorUnits != nil &&
-                        calendar
-                        .date(from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt)) ??
-                        .distantFuture <= day
-                }
-                .max(by: { $0.postedAt < $1.postedAt })
-            let balanceMinorUnits = candidate?.closingBalanceMinorUnits ?? ledger.openingBalance ?? 0
+            // endOfDayClosingBalance returns minor units; fall back to stored openingBalance.
+            let cbMinorUnits = endOfDayClosingBalance(
+                for: day, ledgerId: ledgerId, txnsByLedger: txnsByLedger
+            ).map { Int64(NSDecimalNumber(decimal: $0).int64Value) }
+            let balanceMinorUnits = cbMinorUnits ?? ledger.openingBalance ?? 0
             let balance = Decimal(balanceMinorUnits) / 100
             total += isAsset ? balance : -balance
         }
