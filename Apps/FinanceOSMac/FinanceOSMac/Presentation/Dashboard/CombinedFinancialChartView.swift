@@ -246,16 +246,16 @@ struct CombinedFinancialChartView: View {
             }
 
             // Tooltip positioned near cursor with bounds checking
-            let tooltipWidth: CGFloat = 130
-            let tooltipHeight: CGFloat = 100
+            let tooltipWidth: CGFloat = 120
+            let tooltipHeight: CGFloat = 80
             let rightX = xPos + 12
             let leftX = xPos - tooltipWidth - 12
-            let useLeftSide = rightX + tooltipWidth > plotFrame.maxX && leftX >= plotFrame.minX
+            let useLeftSide = rightX + tooltipWidth > plotFrame.maxX - 8 && leftX >= plotFrame.minX + 8
             let offsetX = useLeftSide ? leftX : rightX
             let offsetY = plotFrame.origin.y + 8
-            // Clamp to bounds
-            let clampedX = min(max(offsetX, plotFrame.minX + 4), plotFrame.maxX - tooltipWidth - 4)
-            let clampedY = min(offsetY, plotFrame.maxY - tooltipHeight - 4)
+            // Clamp to bounds with 2pt margin
+            let clampedX = min(max(offsetX, plotFrame.minX + 2), plotFrame.maxX - tooltipWidth - 2)
+            let clampedY = min(offsetY, plotFrame.maxY - tooltipHeight - 2)
 
             MultiSeriesHoverTooltip(
                 date: hoveredDate,
