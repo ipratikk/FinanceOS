@@ -11,9 +11,10 @@ public enum TransactionFilter {
 
     /// Category IDs (or prefixes) that must never appear in expense totals.
     /// These represent asset movements or liability settlements — not consumption.
+    /// FINOS-106: Investment purchases (SIP, mutual funds, stocks) are asset conversions, not expenses.
     private static let nonExpenseCategoryPrefixes: [String] = [
         "transfers", // internal/external transfers, CC payments tagged as transfers
-        "investments", // SIP, stocks, FD — asset conversion, not spending
+        "investments", // SIP, stocks, FD — asset conversion, not spending (FINOS-106)
         "income" // credits misclassified; should never be in debit path anyway
     ]
 
