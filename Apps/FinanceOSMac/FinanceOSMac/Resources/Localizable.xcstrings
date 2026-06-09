@@ -60,6 +60,9 @@
     "Ask a financial question…" : {
 
     },
+    "Balance" : {
+
+    },
     "Bank" : {
       "extractionState" : "manual",
       "localizations" : {

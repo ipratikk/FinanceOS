@@ -168,11 +168,19 @@ public actor GRDBSpendingService: SpendingServiceProtocol {
                 running += deltaByDay[day] ?? 0
             }
 
+            // Collect all statement dates (days with closing balances) for this ledger.
+            let statementDates: Set<Date> = Set((txnsByLedger[ledger.id] ?? [])
+                .compactMap { txn in
+                    guard txn.closingBalanceMinorUnits != nil else { return nil }
+                    return calendar.date(from: calendar.dateComponents([.year, .month, .day], from: txn.postedAt))
+                })
+
             var points: [NetWorthPoint] = []
             var day = windowStart
             while day <= now {
                 running += deltaByDay[day] ?? 0
-                let cbMinorUnits: Decimal? = isClosingBalance
+                // Only use closing balance if a statement exists FOR THIS EXACT DAY.
+                let cbMinorUnits: Decimal? = isClosingBalance && statementDates.contains(day)
                     ? closingBalanceForLedger(
                         at: day, ledgerId: ledger.id, txnsByLedger: txnsByLedger
                     )
