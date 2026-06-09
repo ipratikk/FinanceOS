@@ -192,7 +192,7 @@ public struct ICICIMetadataExtractor: Sendable {
     private func extractOpeningBalance(from rows: [[String]]) -> Int64? {
         var inSavingsSection = false
         for row in rows {
-            guard row.count > 0 else { continue }
+            guard !row.isEmpty else { continue }
             let joined = row.joined(separator: " ").lowercased()
             if joined.contains("statement of transactions"), joined.contains("savings") {
                 inSavingsSection = true

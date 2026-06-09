@@ -192,7 +192,7 @@ struct CombinedFinancialChartView: View {
             .chartXAxis { axisMarks }
             .chartLegend(.hidden)
             .chartForegroundStyleScale { (label: String) in
-                mapping[label] ?? Color.gray
+                mapping[label] ?? AppColors.Text.secondary
             }
             .chartOverlay { proxy in
                 GeometryReader { geo in
