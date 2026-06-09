@@ -23,6 +23,10 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
     var pipelineStage: PipelineStage = .analyzing
     private var pipelineTask: Task<Void, Never>?
 
+    // Recalculation state
+    var isRecalculating = false
+    var recalculationResult: RecalculationResult?
+
     private var rawTransactions: [Transaction] = []
     private var cachedLedgers: [Ledger] = []
 
@@ -132,6 +136,28 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
         pipelineTask?.cancel()
         pipelineTask = nil
         isPipelineRunning = false
+    }
+
+    /// Validates accounting invariants on the in-memory transaction set and returns a summary.
+    /// Checks: orphaned linkedTransactionId references, balance equations per ledger,
+    /// and expense/income totals using TransactionFilter predicates.
+    func runRecalculation() {
+        guard !isRecalculating, !rawTransactions.isEmpty else { return }
+        isRecalculating = true
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { isRecalculating = false }
+
+            let transactions = rawTransactions
+            let ledgers = cachedLedgers
+
+            // Run validators off the main queue to avoid blocking UI
+            let result = await Task.detached(priority: .userInitiated) {
+                RecalculationResult.compute(transactions: transactions, ledgers: ledgers)
+            }.value
+
+            recalculationResult = result
+        }
     }
 
     private func applyPipelineStage(_ stage: PostProcessingStage) {

@@ -78,6 +78,30 @@ struct TransactionsView: View {
                 .disabled(viewModel.isPipelineRunning || viewModel.transactionRows.isEmpty)
                 .help("Analyze all transactions: categorize, build knowledge graph, detect patterns")
             }
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: { viewModel.runRecalculation() }, label: {
+                    if viewModel.isRecalculating {
+                        Label("Validating…", systemImage: "arrow.clockwise")
+                    } else {
+                        Label("Fix Calculations", systemImage: "checkmark.seal")
+                    }
+                })
+                .disabled(viewModel.isRecalculating || viewModel.transactionRows.isEmpty)
+                .help("Validate accounting invariants and recalculate expense/income totals")
+            }
+        }
+        .alert(
+            "Calculation Results",
+            isPresented: Binding(
+                get: { viewModel.recalculationResult != nil },
+                set: { if !$0 { viewModel.recalculationResult = nil } }
+            )
+        ) {
+            Button("OK") { viewModel.recalculationResult = nil }
+        } message: {
+            if let result = viewModel.recalculationResult {
+                Text(result.summaryMessage)
+            }
         }
         .overlay {
             if viewModel.isPipelineRunning {
