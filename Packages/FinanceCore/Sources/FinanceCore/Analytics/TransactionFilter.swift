@@ -11,9 +11,10 @@ public enum TransactionFilter {
 
     /// Category IDs (or prefixes) that must never appear in expense totals.
     /// These represent asset movements or liability settlements — not consumption.
+    /// FINOS-106: Investment purchases (SIP, mutual funds, stocks) are asset conversions, not expenses.
     private static let nonExpenseCategoryPrefixes: [String] = [
         "transfers", // internal/external transfers, CC payments tagged as transfers
-        "investments", // SIP, stocks, FD — asset conversion, not spending
+        "investments", // SIP, stocks, FD — asset conversion, not spending (FINOS-106)
         "income" // credits misclassified; should never be in debit path anyway
     ]
 
@@ -111,5 +112,24 @@ public enum TransactionFilter {
         if let intent = intentId, nonIncomeIntents.contains(intent) { return false }
 
         return true
+    }
+
+    // MARK: - Loan EMI helpers (FINOS-105)
+
+    /// Returns true if this transaction is a loan payment (EMI).
+    public static func isLoanPayment(_ txn: Transaction) -> Bool {
+        txn.transactionType == .debit && txn.intentId == "loan_payment"
+    }
+
+    /// Extracts the interest-only portion of a loan EMI payment.
+    /// Principal portion is a liability reduction (not an expense).
+    /// Only interest counts as expense per accounting standards.
+    ///
+    /// Returns the interest component in minor units. If amortization data unavailable,
+    /// returns 0 (conservative: payment assumed to be principal-only).
+    /// Integrate with LoanAccount model (FINOS-105) to look up remaining principal and rate.
+    public static func loanInterestComponent(_ txn: Transaction) -> Int64 {
+        guard isLoanPayment(txn) else { return 0 }
+        return 0
     }
 }

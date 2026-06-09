@@ -32,6 +32,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
     public let feedbackStore: any FeedbackStore
     /// Used by `enrichBatch` to persist `enrichedDescription` and `linkedTransactionId`. Optional.
     public let transactionRepository: (any TransactionRepository)?
+    /// Used for double-entry transfer event tracking (FINOS-103). Optional.
+    public let transferEventRepository: (any TransferEventRepository)?
 
     public init(
         correctionStoreURL: URL,
@@ -40,7 +42,8 @@ public struct IntelligenceServiceConfiguration: Sendable {
         databaseQueue: DatabaseQueue? = nil,
         intelligenceLogger: (any IntelligenceLogger)? = nil,
         intelligenceConfig: IntelligenceConfig = .defaultV1,
-        transactionRepository: (any TransactionRepository)? = nil
+        transactionRepository: (any TransactionRepository)? = nil,
+        transferEventRepository: (any TransferEventRepository)? = nil
     ) throws {
         self.correctionStoreURL = correctionStoreURL
         self.personalizedKNNModelURL = personalizedKNNModelURL
@@ -52,6 +55,7 @@ public struct IntelligenceServiceConfiguration: Sendable {
         self.intelligenceConfig = intelligenceConfig
         feedbackStore = databaseQueue.map { GRDBFeedbackStore(dbQueue: $0) } ?? NullFeedbackStore()
         self.transactionRepository = transactionRepository
+        self.transferEventRepository = transferEventRepository
     }
 
     /// Default configuration writing files to `~/Application Support/FinanceIntelligence/`.

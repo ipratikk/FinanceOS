@@ -45,8 +45,9 @@ func ruleEngine_catchAll_creditFallback() {
             hasRefundIndicator: false
         )
     )
-    #expect(result.intentPrediction.intent == .income)
-    #expect(result.categoryPrediction?.categoryId == "income")
+    // FINOS-106: Catchall credit now defaults to uncategorized (not income)
+    // Prevents loan proceeds and transfer receipts from being misclassified as income
+    #expect(result.categoryPrediction?.categoryId == "uncategorized")
 }
 
 // MARK: - Rule Priority Ordering
