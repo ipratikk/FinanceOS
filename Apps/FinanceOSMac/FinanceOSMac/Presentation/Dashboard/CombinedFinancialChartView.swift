@@ -302,8 +302,10 @@ private struct MultiSeriesChart: View {
                 ForEach(ser.points) { item in
                     LineMark(
                         x: .value("Date", item.timestamp),
-                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100)
+                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100),
+                        series: .value("Series", ser.label)
                     )
+                    .foregroundStyle(by: .value("Series", ser.label))
                     .foregroundStyle(ser.color)
                     .lineStyle(StrokeStyle(
                         lineWidth: ser.lineWidth,
