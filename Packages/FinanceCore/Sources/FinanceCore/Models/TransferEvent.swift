@@ -10,7 +10,6 @@ public struct TransferEvent:
     FetchableRecord,
     PersistableRecord,
     Equatable {
-
     public let id: UUID
     /// First transaction UUID (typically debit/source side).
     public let transactionId1: UUID

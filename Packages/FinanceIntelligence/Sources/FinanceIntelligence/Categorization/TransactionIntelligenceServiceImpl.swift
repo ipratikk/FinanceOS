@@ -34,6 +34,8 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
     private let feedbackStore: any FeedbackStore
     /// Repository for persisting enriched descriptions and reconciliation links. Optional.
     let transactionRepository: (any TransactionRepository)?
+    /// Repository for persisting transfer events (double-entry journal). Optional (FINOS-103).
+    let transferEventRepository: (any TransferEventRepository)?
     /// Stage 3: Income classification model (FINOS-20)
     private let incomeClassifier: IncomeClassifier
     /// Stage 4: Intent classification model (FINOS-19)
@@ -90,6 +92,7 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
         modelMetadataRegistry = configuration.modelMetadataRegistry
         feedbackStore = configuration.feedbackStore
         transactionRepository = configuration.transactionRepository
+        transferEventRepository = configuration.transferEventRepository
     }
 
     private static func makePostProcessingPipeline(
@@ -252,6 +255,15 @@ public actor TransactionIntelligenceServiceImpl: TransactionIntelligenceService 
                 try await repo.updateLinkedTransaction(
                     id: pair.cardCreditId, linkedTransactionId: pair.bankDebitId.uuidString
                 )
+                // FINOS-103: Create transfer event for double-entry journal
+                if let transferRepo = transferEventRepository {
+                    let event = TransferEvent(
+                        transactionId1: pair.bankDebitId,
+                        transactionId2: pair.cardCreditId,
+                        eventType: "credit_card_payment"
+                    )
+                    try await transferRepo.createTransferEvent(event)
+                }
             }
             FinanceLogger.intelligence.info(
                 "enrichBatch: \(enriched.count) enriched, \(pairs.count) CC payment pairs reconciled"
