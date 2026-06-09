@@ -186,10 +186,14 @@ struct CombinedFinancialChartView: View {
 
     private var baseChart: some View {
         let series = allSeries
+        let mapping = Dictionary(uniqueKeysWithValues: series.map { ($0.label, $0.color) })
         return MultiSeriesChart(series: series)
             .chartYAxis(.hidden)
             .chartXAxis { axisMarks }
             .chartLegend(.hidden)
+            .chartForegroundStyleScale { (label: String) in
+                mapping[label] ?? Color.gray
+            }
             .chartOverlay { proxy in
                 GeometryReader { geo in
                     let plotFrame = proxy.plotFrame.map { geo[$0] } ?? geo.frame(in: .local)
@@ -247,26 +251,20 @@ struct CombinedFinancialChartView: View {
             }
 
             // Tooltip smart positioning: try right, flip to left if out of bounds
-            let tooltipWidth: CGFloat = 120
-            let tooltipHeight: CGFloat = 80
-            let padding: CGFloat = 12
+            let tooltipWidth: CGFloat = 160
+            let padding: CGFloat = 10
             let rightX = xPos + padding
             let leftX = xPos - tooltipWidth - padding
-
-            // Check if right side fits, else use left
-            let rightFits = rightX + tooltipWidth <= plotFrame.maxX - 2
-            let leftFits = leftX >= plotFrame.minX + 2
-            let offsetX = rightFits ? rightX : (leftFits ? leftX : rightX)
-            let offsetY = plotFrame.origin.y + 8
-
-            // Final clamp as safety net
+            let rightFits = rightX + tooltipWidth <= plotFrame.maxX
+            let offsetX = rightFits ? rightX : leftX
             let clampedX = min(max(offsetX, plotFrame.minX), plotFrame.maxX - tooltipWidth)
-            let clampedY = min(offsetY, plotFrame.maxY - tooltipHeight)
+            let clampedY = plotFrame.origin.y + 8
 
             MultiSeriesHoverTooltip(
                 date: hoveredDate,
                 series: series,
-                seriesValues: hoverState.seriesValues
+                seriesValues: hoverState.seriesValues,
+                width: tooltipWidth
             )
             .offset(x: clampedX, y: clampedY)
             .allowsHitTesting(false)
@@ -316,9 +314,10 @@ private struct MultiSeriesChart: View {
                 ForEach(ser.points) { item in
                     LineMark(
                         x: .value("Date", item.timestamp),
-                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100)
+                        y: .value("Balance", Double(item.netWorthMinorUnits) / 100),
+                        series: .value("Series", ser.label)
                     )
-                    .foregroundStyle(ser.color)
+                    .foregroundStyle(by: .value("Series", ser.label))
                     .lineStyle(StrokeStyle(
                         lineWidth: ser.lineWidth,
                         dash: ser.isDashed ? [6, 4] : []
@@ -375,9 +374,10 @@ private struct MultiSeriesHoverTooltip: View {
     let date: Date
     let series: [ChartSeries]
     let seriesValues: [UUID: NetWorthPoint]
+    let width: CGFloat
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 4) {
             FDSLabel(FormatterCache.formatDate(date))
                 .font(AppTypography.captionSmSemibold)
                 .foregroundStyle(AppColors.Text.tertiary)
@@ -387,8 +387,9 @@ private struct MultiSeriesHoverTooltip: View {
                 }
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .frame(width: width, alignment: .leading)
         .background(AppColors.surface2, in: RoundedRectangle(cornerRadius: AppRadius.md))
         .overlay(RoundedRectangle(cornerRadius: AppRadius.md).stroke(AppColors.border, lineWidth: 0.5))
     }
@@ -400,11 +401,14 @@ private struct MultiSeriesHoverTooltip: View {
                 .font(AppTypography.captionSm)
                 .foregroundStyle(AppColors.Text.secondary)
                 .lineLimit(1)
-            Spacer(minLength: 4)
+                .truncationMode(.tail)
+                .layoutPriority(0)
             FDSLabel(value)
                 .font(AppTypography.captionSmSemibold)
                 .foregroundStyle(AppColors.Text.primary)
                 .monospacedDigit()
+                .lineLimit(1)
+                .layoutPriority(1)
         }
     }
 
