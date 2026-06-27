@@ -16,6 +16,8 @@
 		0494F6482FC8300800800859 /* FinanceIntelligence in Frameworks */ = {isa = PBXBuildFile; productRef = 0494F6472FC8300800800859 /* FinanceIntelligence */; };
 		049E34262FB3B303002A3820 /* FinanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34252FB3B303002A3820 /* FinanceCore */; };
 		049E34292FB3B303002A3820 /* FinanceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34282FB3B303002A3820 /* FinanceUI */; };
+		AA0001002FA000000AA00004 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = AA0001002FA000000AA00002 /* Apollo */; };
+		AA0001002FA000000AA00005 /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AA0001002FA000000AA00003 /* ApolloAPI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 				049E34292FB3B303002A3820 /* FinanceUI in Frameworks */,
 				0494F6482FC8300800800859 /* FinanceIntelligence in Frameworks */,
 				041306312FBA470000133C99 /* FinanceParsers in Frameworks */,
+				AA0001002FA000000AA00004 /* Apollo in Frameworks */,
+				AA0001002FA000000AA00005 /* ApolloAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,6 +197,7 @@
 				99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */,
 				0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				0494F6462FC8300800800859 /* XCLocalSwiftPackageReference "../../Packages/FinanceIntelligence" */,
+				AA0001002FA000000AA00001 /* XCRemoteSwiftPackageReference "apollo-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 049E34112FB3B1D2002A3820 /* Products */;
@@ -611,6 +616,14 @@
 				minimumVersion = 1.19.2;
 			};
 		};
+		AA0001002FA000000AA00001 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.15.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -657,6 +670,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */;
 			productName = FinanceUI;
+		};
+		AA0001002FA000000AA00002 /* Apollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA0001002FA000000AA00001 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = Apollo;
+		};
+		AA0001002FA000000AA00003 /* ApolloAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA0001002FA000000AA00001 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = ApolloAPI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
