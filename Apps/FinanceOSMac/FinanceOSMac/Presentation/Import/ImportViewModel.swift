@@ -1,4 +1,7 @@
+@preconcurrency import Apollo
+@preconcurrency import ApolloAPI
 import FinanceCore
+import FinanceOSAPI
 import FinanceParsers
 import Foundation
 import Observation
@@ -19,18 +22,17 @@ final class ImportViewModel {
     var isDraggedOver: Bool = false
 
     let importSession: ImportSession
-    let transactionImportPipeline: TransactionImportPipeline
+    let graphQLClient: ApolloGraphQLClient
     let bankRepository: any BankRepository
     let ledgerRepository: any LedgerRepository
-    let transactionRepository: any TransactionRepository
     let categorizationScheduler: CategorizationScheduler?
     let fileParser: any StatementParsingProtocol
     let duplicateDetector: any DuplicateDetectingProtocol
 
     var ledgers: [Ledger] = []
     var banks: [Bank] = []
-    var duplicateTransactionIndices: Set<Int> = [] // full skip set: within-batch dups + already-in-DB
-    var alreadyInDBIndices: Set<Int> = [] // subset: only transactions already in DB
+    var duplicateTransactionIndices: Set<Int> = []
+    var alreadyInDBIndices: Set<Int> = []
     var lastImportResult: ImportResult?
     var currentFileIndex: Int = 0
     var totalFilesToParse: Int = 0
@@ -45,7 +47,6 @@ final class ImportViewModel {
         StatementSourceRegistry.supportedSources
     }
 
-    /// For backward compatibility with views
     var fileURLs: [URL] {
         get { importSession.fileURLs }
         set { importSession.fileURLs = newValue }
@@ -82,27 +83,22 @@ final class ImportViewModel {
     }
 
     init(
-        transactionImportPipeline: TransactionImportPipeline,
+        graphQLClient: ApolloGraphQLClient,
         bankRepository: any BankRepository,
         ledgerRepository: any LedgerRepository,
-        transactionRepository: any TransactionRepository,
         initialTarget: TransactionImportTarget? = nil,
         categorizationScheduler: CategorizationScheduler? = nil,
         fileParser: (any StatementParsingProtocol)? = nil,
         duplicateDetector: (any DuplicateDetectingProtocol)? = nil
     ) {
         importSession = ImportSession()
-        self.transactionImportPipeline = transactionImportPipeline
+        self.graphQLClient = graphQLClient
         self.bankRepository = bankRepository
         self.ledgerRepository = ledgerRepository
-        self.transactionRepository = transactionRepository
         self.categorizationScheduler = categorizationScheduler
         self.fileParser = fileParser ?? ImportFileParser()
         self.duplicateDetector = duplicateDetector ?? ImportDuplicateDetector()
-        accountMatcher = AccountMatcher(
-            ledgerRepository: ledgerRepository,
-            bankRepository: bankRepository
-        )
+        accountMatcher = AccountMatcher(ledgerRepository: ledgerRepository, bankRepository: bankRepository)
         if let initialTarget {
             importSession.selectedTarget = initialTarget
         }
@@ -182,14 +178,10 @@ final class ImportViewModel {
     func importTransactions() {
         Task {
             guard !importSession.fileURLs.isEmpty,
-                  !importSession.parsedStatements.isEmpty,
-                  let target = importSession.selectedTarget
+                  let target = importSession.selectedTarget,
+                  case let .ledger(ledgerId) = target
             else {
-                importSession.errorMessage = "Invalid import state"
-                let filesOk = !importSession.fileURLs.isEmpty
-                let stmtsOk = !importSession.parsedStatements.isEmpty
-                let state = "files=\(filesOk), stmts=\(stmtsOk), target=\(importSession.selectedTarget != nil)"
-                logger.error("Invalid state: \(state)")
+                importSession.errorMessage = "Select a ledger before importing"
                 return
             }
 
@@ -197,14 +189,30 @@ final class ImportViewModel {
             importSession.errorMessage = nil
             importSession.importResult = nil
 
-            let fileCount = importSession.fileURLs.count
-            let targetDesc = String(describing: target)
-            logger.info(
-                "Starting: \(fileCount, privacy: .public) files, target: \(targetDesc, privacy: .public)"
-            )
-
             do {
-                let result = try await performImport(target: target, fileCount: fileCount)
+                var totalInserted = 0
+                var totalSkipped = 0
+
+                for fileURL in importSession.fileURLs {
+                    let fileData = try Data(contentsOf: fileURL)
+                    let file = GraphQLFile(
+                        fieldName: "file",
+                        originalName: fileURL.lastPathComponent,
+                        mimeType: "text/csv",
+                        data: fileData
+                    )
+                    let mutation = UploadStatementMutation(ledgerId: ledgerId.uuidString, file: "")
+                    let response = try await graphQLClient.upload(mutation: mutation, files: [file])
+                    let result = response.uploadStatement
+                    totalInserted += result.imported
+                    totalSkipped += result.duplicates
+                    logger.logInfo("File uploaded: {imported} imported, {dups} duplicates", [
+                        "imported": result.imported,
+                        "dups": result.duplicates
+                    ])
+                }
+
+                let result = ImportResult(inserted: totalInserted, skipped: totalSkipped)
                 importSession.importResult = result
                 lastImportResult = result
                 resetToSource()

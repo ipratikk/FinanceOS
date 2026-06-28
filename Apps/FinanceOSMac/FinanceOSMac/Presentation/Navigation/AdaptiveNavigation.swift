@@ -163,10 +163,9 @@ struct DetailRouter: View {
         case .importStatement:
             ImportView(
                 viewModel: ImportViewModel(
-                    transactionImportPipeline: appContainer.transactionImportPipeline,
+                    graphQLClient: appContainer.graphQLClient,
                     bankRepository: appContainer.bankRepository,
                     ledgerRepository: appContainer.ledgerRepository,
-                    transactionRepository: appContainer.transactionRepository,
                     initialTarget: navigator.pendingImportTarget,
                     categorizationScheduler: categorizationScheduler
                 )

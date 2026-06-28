@@ -35,6 +35,29 @@ public final class ApolloGraphQLClient: @unchecked Sendable {
         }
     }
 
+    public func upload<Mutation: GraphQLMutation>(
+        mutation: Mutation,
+        files: [GraphQLFile]
+    ) async throws -> Mutation.Data {
+        try await withCheckedThrowingContinuation { continuation in
+            client.upload(operation: mutation, files: files) { result in
+                switch result {
+                case let .success(response):
+                    if let data = response.data {
+                        continuation.resume(returning: data)
+                    } else if let errors = response.errors {
+                        let messages = errors.compactMap(\.message)
+                        continuation.resume(throwing: GraphQLClientError.graphqlErrors(messages))
+                    } else {
+                        continuation.resume(throwing: GraphQLClientError.noData)
+                    }
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     public func perform<Mutation: GraphQLMutation>(mutation: Mutation) async throws -> Mutation.Data {
         try await withCheckedThrowingContinuation { continuation in
             client.perform(mutation: mutation) { result in
