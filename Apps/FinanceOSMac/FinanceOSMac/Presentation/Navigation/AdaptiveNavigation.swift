@@ -188,7 +188,10 @@ struct DetailRouter: View {
                 graphQLClient: appContainer.graphQLClient
             )
         case let .ledgerDetail(ledgerId):
-            LedgerDetailDestinationView(ledgerId: ledgerId)
+            LedgerDetailDestinationView(
+                ledgerId: ledgerId,
+                graphQLClient: appContainer.graphQLClient
+            )
         }
     }
 }

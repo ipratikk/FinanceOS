@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceOSAPI
 import FinanceUI
 import Foundation
 import Observation
@@ -7,26 +8,26 @@ import Observation
 @MainActor
 final class LedgerDetailViewModel: AsyncLoadable {
     private let ledgerId: UUID
-    private let ledgerRepository: any LedgerRepository
-    private let bankRepository: any BankRepository
+    private let graphQLClient: ApolloGraphQLClient
 
     private(set) var ledger: Ledger?
     private(set) var bank: Bank?
     var isLoading = false
 
-    init(ledgerId: UUID, ledgerRepository: any LedgerRepository, bankRepository: any BankRepository) {
+    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
         self.ledgerId = ledgerId
-        self.ledgerRepository = ledgerRepository
-        self.bankRepository = bankRepository
+        self.graphQLClient = graphQLClient
     }
 
     func load() async {
         await withLoading {
-            ledger = try await ledgerRepository.fetchLedger(id: ledgerId)
-            if let fetched = ledger {
-                let banks = try await bankRepository.fetchBanks()
-                bank = banks.first { $0.id == fetched.bankId }
-            }
+            async let ledgersFetch = graphQLClient.fetch(query: GetLedgersQuery())
+            async let banksFetch = graphQLClient.fetch(query: GetBanksQuery())
+            let (ledgerData, bankData) = try await (ledgersFetch, banksFetch)
+            let ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
+            let banks = bankData.banks.map(GraphQLMappings.mapBank)
+            ledger = ledgers.first(where: { $0.id == ledgerId })
+            bank = banks.first { $0.id == ledger?.bankId }
         }
     }
 
