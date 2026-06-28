@@ -17,7 +17,9 @@ struct DashboardView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: AppSpacing.xxl) {
-                netWorthHero(viewModel)
+                if !viewModel.netWorthTimeSeries.isEmpty {
+                    netWorthHero(viewModel)
+                }
 
                 if viewModel.effectiveTotals != nil {
                     metricsRow(viewModel)

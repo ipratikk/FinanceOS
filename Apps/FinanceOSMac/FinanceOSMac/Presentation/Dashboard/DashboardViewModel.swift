@@ -36,6 +36,7 @@ enum TimeRange: String, CaseIterable, Identifiable {
 class DashboardViewModel: AsyncLoadable {
     var currentTotals: SpendingTotals?
     var monthlySummaries: [MonthlySpendingSummary] = []
+    // Net worth series not available from GraphQL backend — chart hidden when empty
     var netWorthTimeSeries: [NetWorthPoint] = []
     var recentTransactions: [TransactionRow] = []
     var isLoading = false
@@ -156,7 +157,7 @@ class DashboardViewModel: AsyncLoadable {
             currentTotals = SpendingTotals(
                 totalDebit: Int64(analytics.totalSpend * 100),
                 totalCredit: Int64(analytics.totalIncome * 100),
-                transactionCount: recentData.transactions.count
+                transactionCount: 0
             )
             recentTransactions = makeRecentRows(recentData.transactions.map(GraphQLMappings.mapTransaction))
             ledgers = ledgersData.ledgers.map(GraphQLMappings.mapLedger)

@@ -99,11 +99,14 @@ struct OpeningBalanceSheet: View {
                 Button("Cancel") { editingLedger = nil }
                     .buttonStyle(.plain)
                     .foregroundStyle(AppColors.Text.secondary)
-                Button("Save") {
-                    // Opening balance mutations are not yet supported via GraphQL
-                    editingLedger = nil
+                VStack(spacing: 4) {
+                    Button("Save") {}
+                        .buttonStyle(.borderedProminent)
+                        .disabled(true)
+                    FDSLabel("Balance editing not yet available")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                .buttonStyle(.borderedProminent)
             }
         }
         .padding(AppSpacing.xxxl)
