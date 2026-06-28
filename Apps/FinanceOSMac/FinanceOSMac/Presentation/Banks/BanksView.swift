@@ -5,8 +5,6 @@ import SwiftUI
 struct BanksView: View {
     @State private var viewModel: BanksViewModel
     @Environment(AppNavigator.self) private var navigator
-    @State private var bankToDelete: Bank?
-    @State private var showDeleteConfirm = false
 
     init(viewModel: BanksViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -24,16 +22,6 @@ struct BanksView: View {
         }
         .background(AppColors.base)
         .task { await viewModel.loadBanks() }
-        .alert("Delete Bank?", isPresented: $showDeleteConfirm) {
-            Button("Cancel", role: .cancel) {}
-            Button("Delete", role: .destructive) {
-                if let bank = bankToDelete {
-                    Task { await viewModel.deleteBank(id: bank.id) }
-                }
-            }
-        } message: {
-            FDSLabel("This will delete this bank and all associated cards, accounts, and transactions.")
-        }
     }
 
     private var banksList: some View {
@@ -82,14 +70,8 @@ struct BanksView: View {
 
                     Spacer()
 
-                    HStack(spacing: 8) {
-                        iconButton("pencil", color: AppColors.Text.tertiary) {
-                            navigator.present(.bankEdit(bank))
-                        }
-                        iconButton("trash", color: AppColors.System.red) {
-                            bankToDelete = bank
-                            showDeleteConfirm = true
-                        }
+                    iconButton("pencil", color: AppColors.Text.tertiary) {
+                        navigator.present(.bankEdit(bank))
                     }
                 }
                 .padding(AppSpacing.xs)

@@ -6,53 +6,33 @@
 //
 
 import FinanceCore
+import FinanceOSAPI
 import Foundation
 import Observation
 
 @MainActor
 @Observable
-final class BanksViewModel: AsyncLoadable, DeletableViewModel {
-    private let repository: BankRepository
-    private let ledgerRepository: LedgerRepository
+final class BanksViewModel: AsyncLoadable {
+    private let graphQLClient: ApolloGraphQLClient
 
     var banks: [Bank] = []
     var ledgersByBank: [UUID: [Ledger]] = [:]
     var isLoading = false
-    var deleteError: String?
 
-    init(
-        repository: BankRepository,
-        ledgerRepository: LedgerRepository
-    ) {
-        self.repository = repository
-        self.ledgerRepository = ledgerRepository
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
     }
 
     func loadBanks() async {
         await withLoading(onError: { error in
             FinanceLogger.userInterface.logError("Failed to load banks", caughtError: error, [:])
         }, {
-            banks = try await repository.fetchBanks()
-            var ledgerMap: [UUID: [Ledger]] = [:]
-            for bank in banks {
-                ledgerMap[bank.id] = try await ledgerRepository.fetchLedgers(bankId: bank.id)
-            }
-            ledgersByBank = ledgerMap
+            async let banksFetch = graphQLClient.fetch(query: GetBanksQuery())
+            async let ledgersFetch = graphQLClient.fetch(query: GetLedgersQuery())
+            let (bankData, ledgerData) = try await (banksFetch, ledgersFetch)
+            banks = bankData.banks.map(GraphQLMappings.mapBank)
+            let ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
+            ledgersByBank = Dictionary(grouping: ledgers, by: { $0.bankId })
         })
-    }
-
-    func updateBank(_ bank: Bank) async {
-        do {
-            try await repository.update(bank)
-            await loadBanks()
-        } catch {
-            FinanceLogger.userInterface.logError("Failed to load banks", caughtError: error, [:])
-        }
-    }
-
-    func deleteBank(id: UUID) async {
-        await performDelete({
-            try await repository.delete(id: id)
-        }, onSuccess: loadBanks)
     }
 }
