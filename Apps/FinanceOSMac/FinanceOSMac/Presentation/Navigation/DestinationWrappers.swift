@@ -37,20 +37,14 @@ struct AccountTransactionsDestinationView: View {
 }
 
 struct CardTransactionsDestinationView: View {
-    let transactionRepository: any TransactionRepository
-    let ledgerRepository: any LedgerRepository
+    let graphQLClient: ApolloGraphQLClient
     @State private var viewModel: CardTransactionsDestinationViewModel
 
-    init(
-        ledgerId: UUID,
-        transactionRepository: any TransactionRepository,
-        ledgerRepository: any LedgerRepository
-    ) {
-        self.transactionRepository = transactionRepository
-        self.ledgerRepository = ledgerRepository
+    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
         _viewModel = State(initialValue: CardTransactionsDestinationViewModel(
             ledgerId: ledgerId,
-            ledgerRepository: ledgerRepository
+            graphQLClient: graphQLClient
         ))
     }
 
@@ -60,7 +54,7 @@ struct CardTransactionsDestinationView: View {
                 CardTransactionsView(
                     ledger: ledger,
                     viewModel: CardTransactionsViewModel(
-                        transactionRepository: transactionRepository
+                        graphQLClient: graphQLClient
                     )
                 )
                 .navigationTitle(ledger.displayName)

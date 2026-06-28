@@ -6,13 +6,14 @@
 //
 
 import FinanceCore
+import FinanceOSAPI
 import Foundation
 import Observation
 
 @MainActor
 @Observable
 final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
-    private let transactionRepository: TransactionRepository
+    private let graphQLClient: ApolloGraphQLClient
 
     var transactionRows: [TransactionRow] = []
     var listState = TransactionListState()
@@ -24,10 +25,8 @@ final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
         listState.sections(from: transactionRows)
     }
 
-    init(
-        transactionRepository: TransactionRepository
-    ) {
-        self.transactionRepository = transactionRepository
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
     }
 
     func loadTransactions(for cardID: UUID) async {
@@ -38,7 +37,14 @@ final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 ["cardID": cardID.uuidString]
             )
         }, {
-            let transactions = try await transactionRepository.fetchTransactionsForCard(cardID)
+            let data = try await graphQLClient.fetch(
+                query: GetTransactionsQuery(
+                    ledgerId: .some(cardID.uuidString),
+                    filter: .none,
+                    limit: .none
+                )
+            )
+            let transactions = data.transactions.map(GraphQLMappings.mapTransaction)
             transactionRows = makeTransactionRows(transactions: transactions)
             listState.updateAvailableYears(from: transactionRows)
         })
@@ -66,7 +72,7 @@ final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
 
     func deleteTransaction(id: UUID, cardID: UUID) async {
         await performDelete {
-            try await transactionRepository.delete(id: id)
+            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id.uuidString))
         } onSuccess: { [self] in
             await loadTransactions(for: cardID)
         }
