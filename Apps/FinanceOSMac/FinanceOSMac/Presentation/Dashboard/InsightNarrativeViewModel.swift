@@ -43,6 +43,7 @@ final class InsightNarrativeViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
+            // Fetch full history — insight quality depends on complete transaction data, not a paged view
             let txnsData = try await graphQLClient.fetch(
                 query: GetTransactionsQuery(ledgerId: .none, filter: .none, limit: .none)
             )
