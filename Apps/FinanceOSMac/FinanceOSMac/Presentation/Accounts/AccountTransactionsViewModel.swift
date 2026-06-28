@@ -6,6 +6,7 @@
 //
 
 import FinanceCore
+import FinanceOSAPI
 import FinanceUI
 import Foundation
 import Observation
@@ -13,9 +14,7 @@ import Observation
 @MainActor
 @Observable
 final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
-    private let transactionRepository: TransactionRepository
-    private let ledgerRepository: LedgerRepository
-    private let bankRepository: any BankRepository
+    private let graphQLClient: ApolloGraphQLClient
     private let balanceService: any AccountBalanceProtocol
 
     var transactionRows: [TransactionRow] = []
@@ -40,14 +39,10 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
     }
 
     init(
-        transactionRepository: TransactionRepository,
-        ledgerRepository: LedgerRepository,
-        bankRepository: any BankRepository,
+        graphQLClient: ApolloGraphQLClient,
         balanceService: (any AccountBalanceProtocol)? = nil
     ) {
-        self.transactionRepository = transactionRepository
-        self.ledgerRepository = ledgerRepository
-        self.bankRepository = bankRepository
+        self.graphQLClient = graphQLClient
         self.balanceService = balanceService ?? AccountBalanceService()
     }
 
@@ -59,10 +54,19 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
                 ["accountID": accountID.uuidString]
             )
         }, {
-            async let txnsFetch = transactionRepository.fetchTransactionsForAccount(accountID)
-            async let ledgersFetch = ledgerRepository.fetchLedgers()
-            async let banksFetch = bankRepository.fetchBanks()
-            let (transactions, ledgers, banks) = try await (txnsFetch, ledgersFetch, banksFetch)
+            async let txnsFetch = graphQLClient.fetch(
+                query: GetTransactionsQuery(
+                    ledgerId: .some(accountID.uuidString),
+                    filter: .none,
+                    limit: .none
+                )
+            )
+            async let ledgersFetch = graphQLClient.fetch(query: GetLedgersQuery())
+            async let banksFetch = graphQLClient.fetch(query: GetBanksQuery())
+            let (txnData, ledgerData, bankData) = try await (txnsFetch, ledgersFetch, banksFetch)
+            let transactions = txnData.transactions.map(GraphQLMappings.mapTransaction)
+            let ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
+            let banks = bankData.banks.map(GraphQLMappings.mapBank)
             bank = banks.first { $0.id == bankId }
             transactionRows = makeTransactionRows(
                 transactions: transactions,
@@ -115,7 +119,7 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
 
     func deleteTransaction(id: UUID, accountID: UUID, bankId: UUID, closingBalance: Int64?) async {
         await performDelete {
-            try await transactionRepository.delete(id: id)
+            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id.uuidString))
         } onSuccess: { [self] in
             await loadTransactions(for: accountID, bankId: bankId, closingBalance: closingBalance)
         }

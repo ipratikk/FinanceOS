@@ -3,23 +3,14 @@ import FinanceUI
 import SwiftUI
 
 struct AccountTransactionsDestinationView: View {
-    let transactionRepository: any TransactionRepository
-    let ledgerRepository: any LedgerRepository
-    let bankRepository: any BankRepository
+    let graphQLClient: ApolloGraphQLClient
     @State private var viewModel: AccountTransactionsDestinationViewModel
 
-    init(
-        ledgerId: UUID,
-        transactionRepository: any TransactionRepository,
-        ledgerRepository: any LedgerRepository,
-        bankRepository: any BankRepository
-    ) {
-        self.transactionRepository = transactionRepository
-        self.ledgerRepository = ledgerRepository
-        self.bankRepository = bankRepository
+    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
         _viewModel = State(initialValue: AccountTransactionsDestinationViewModel(
             ledgerId: ledgerId,
-            ledgerRepository: ledgerRepository
+            graphQLClient: graphQLClient
         ))
     }
 
@@ -29,9 +20,7 @@ struct AccountTransactionsDestinationView: View {
                 AccountTransactionsView(
                     ledger: ledger,
                     viewModel: AccountTransactionsViewModel(
-                        transactionRepository: transactionRepository,
-                        ledgerRepository: ledgerRepository,
-                        bankRepository: bankRepository
+                        graphQLClient: graphQLClient
                     )
                 )
                 .navigationTitle(ledger.displayName)
