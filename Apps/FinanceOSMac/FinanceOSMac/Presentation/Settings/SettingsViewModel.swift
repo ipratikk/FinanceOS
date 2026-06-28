@@ -1,21 +1,22 @@
 import FinanceCore
+import FinanceOSAPI
 import Foundation
 import Observation
 
 @Observable
 @MainActor
 final class SettingsViewModel {
-    private let bankRepository: any BankRepository
+    private let graphQLClient: ApolloGraphQLClient
 
     var errorMessage: String?
 
-    init(bankRepository: any BankRepository) {
-        self.bankRepository = bankRepository
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
     }
 
     func clearAllData() async {
         do {
-            try await bankRepository.deleteAll()
+            _ = try await graphQLClient.perform(mutation: ClearAllDataMutation())
             try DatabaseManager.shared.clearIntelligenceData()
         } catch {
             errorMessage = error.localizedDescription
