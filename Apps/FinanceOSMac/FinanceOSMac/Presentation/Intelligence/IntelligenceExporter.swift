@@ -1,6 +1,7 @@
 import AppKit
 import FinanceCore
 import FinanceIntelligence
+import FinanceOSAPI
 import Foundation
 
 /// Exports all intelligence entities to a timestamped directory as CSV files.
@@ -36,7 +37,7 @@ struct IntelligenceExporter {
         let patterns = try await container.recurringPatternRepository.fetchAll()
         let nodes = try await container.graphRepository.allNodes(limit: 5000)
         let edges = try await container.graphRepository.allEdges(limit: 10000)
-        let transactions = try await AppContainer.shared.transactionRepository.fetchTransactions()
+        let transactions = try await fetchAllTransactions()
 
         try writePersons(persons, to: dir)
         try writeRelationships(relationships, to: dir)
@@ -289,6 +290,14 @@ struct IntelligenceExporter {
     private static func write(_ rows: [String], filename: String, to dir: URL) throws {
         try rows.joined(separator: "\n").write(to: dir.appending(path: filename), atomically: true, encoding: .utf8)
     }
+}
+
+@MainActor
+private func fetchAllTransactions() async throws -> [Transaction] {
+    let data = try await AppContainer.shared.graphQLClient.fetch(
+        query: GetTransactionsQuery(ledgerId: .none, filter: .none, limit: .none)
+    )
+    return data.transactions.map(GraphQLMappings.mapTransaction)
 }
 
 private extension String {

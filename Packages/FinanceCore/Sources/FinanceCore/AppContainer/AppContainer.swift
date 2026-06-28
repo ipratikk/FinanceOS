@@ -8,7 +8,7 @@
 import Foundation
 
 /// Composition root for the application's object graph.
-/// Owns all repository instances, the import pipeline, and the spending service.
+/// Owns the GraphQL client and the transaction repository (used by CategorizationScheduler).
 /// Access via `AppContainer.shared` from ViewModels; never inject individual GRDB types directly.
 @MainActor
 public final class AppContainer {
@@ -23,30 +23,11 @@ public final class AppContainer {
         return ApolloGraphQLClient(url: URL(string: urlString)!)
     }()
 
+    /// Used only by CategorizationScheduler in FinanceIntelligence (via FinanceOSMacApp)
     public let transactionRepository: any TransactionRepository
-    public let bankRepository: any BankRepository
-    public let ledgerRepository: any LedgerRepository
-    public let spendingService: any SpendingServiceProtocol
 
     private init() {
         let databaseManager = DatabaseManager.shared
-
-        transactionRepository = GRDBTransactionRepository(
-            dbQueue: databaseManager.dbQueue
-        )
-
-        bankRepository = GRDBBankRepository(
-            dbQueue: databaseManager.dbQueue
-        )
-
-        ledgerRepository = GRDBLedgerRepository(
-            dbQueue: databaseManager.dbQueue
-        )
-
-        spendingService = GRDBSpendingService(
-            dbQueue: databaseManager.dbQueue,
-            transactionRepository: transactionRepository,
-            ledgerRepository: ledgerRepository
-        )
+        transactionRepository = GRDBTransactionRepository(dbQueue: databaseManager.dbQueue)
     }
 }
