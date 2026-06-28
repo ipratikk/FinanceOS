@@ -57,7 +57,7 @@ class AnalyticsViewModel: AsyncLoadable {
             FinanceLogger.userInterface.logError("Analytics load failed", caughtError: error, [:])
         }, {
             let from = Calendar.current.date(byAdding: .month, value: -6, to: Date())
-            let fromStr: GraphQLNullable<String> = from.map { .some(ISO8601DateFormatter().string(from: $0)) } ?? .none
+            let fromStr: GraphQLNullable<String> = from.map { .some(FormatterCache.iso8601.string(from: $0)) } ?? .none
 
             async let analyticsResult = graphQLClient.fetch(query: GetAnalyticsQuery(
                 ledgerId: .none, from: fromStr, to: .none
