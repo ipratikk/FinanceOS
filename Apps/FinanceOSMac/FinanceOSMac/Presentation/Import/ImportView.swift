@@ -77,9 +77,7 @@ struct ImportView: View {
 #Preview {
     ImportView(
         viewModel: ImportViewModel(
-            graphQLClient: ApolloGraphQLClient(),
-            bankRepository: MockBankRepository(),
-            ledgerRepository: MockLedgerRepository()
+            graphQLClient: ApolloGraphQLClient()
         )
     )
 }
