@@ -136,7 +136,7 @@ class DashboardViewModel: AsyncLoadable {
         }, {
             let fromStr: GraphQLNullable<String> = selectedTimeRange.months.flatMap {
                 Calendar.current.date(byAdding: .month, value: -$0, to: Date())
-            }.map { .some(ISO8601DateFormatter().string(from: $0)) } ?? .none
+            }.map { .some(FormatterCache.iso8601.string(from: $0)) } ?? .none
 
             async let analyticsResult = graphQLClient.fetch(query: GetAnalyticsQuery(
                 ledgerId: .none,
