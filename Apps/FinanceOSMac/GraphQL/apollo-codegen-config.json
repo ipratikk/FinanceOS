@@ -1,0 +1,19 @@
+{
+  "schemaNamespace": "FinanceOSAPI",
+  "input": {
+    "operationSearchPaths": ["Operations/**/*.graphql"],
+    "schemaSearchPaths": ["../../../../FinanceOS-Backend/docs/schema.graphql"]
+  },
+  "output": {
+    "schemaTypes": {
+      "path": "Generated/SchemaTypes",
+      "moduleType": { "swiftPackageManager": {} }
+    },
+    "operations": {
+      "inSchemaModule": {}
+    },
+    "testMocks": {
+      "none": {}
+    }
+  }
+}
