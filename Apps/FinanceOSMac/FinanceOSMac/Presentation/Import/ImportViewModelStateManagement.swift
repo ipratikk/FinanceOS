@@ -10,8 +10,8 @@ extension ImportViewModel {
             logger.debug("Loading ledgers and banks via GraphQL")
             let ledgerData = try await graphQLClient.fetch(query: GetLedgersQuery())
             let bankData = try await graphQLClient.fetch(query: GetBanksQuery())
-            ledgers = ledgerData.ledgers.map(Self.mapLedger)
-            banks = bankData.banks.map(Self.mapBank)
+            ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
+            banks = bankData.banks.map(GraphQLMappings.mapBank)
             logger.logDebug("Loaded {ledgers} ledgers and {banks} banks", [
                 "ledgers": ledgers.count,
                 "banks": banks.count
@@ -103,26 +103,5 @@ extension ImportViewModel {
         duplicateTransactionIndices = []
         alreadyInDBIndices = []
         currentStep = .upload
-    }
-
-    // MARK: - Mapping
-
-    static func mapLedger(_ item: GetLedgersQuery.Data.Ledger) -> Ledger {
-        let kind: FinanceCore.LedgerKind = item.kind.value == .creditCard ? .creditCard : .bankAccount
-        return Ledger(
-            id: UUID(uuidString: item.id) ?? UUID(),
-            bankId: UUID(uuidString: item.bank.id) ?? UUID(),
-            kind: kind,
-            displayName: item.displayName,
-            last4: item.last4 ?? "",
-            closingBalance: Int64(item.balance * 100)
-        )
-    }
-
-    static func mapBank(_ item: GetBanksQuery.Data.Bank) -> Bank {
-        Bank(
-            id: UUID(uuidString: item.id) ?? UUID(),
-            bank: Banks(rawValue: item.code.lowercased()) ?? .hdfc
-        )
     }
 }
