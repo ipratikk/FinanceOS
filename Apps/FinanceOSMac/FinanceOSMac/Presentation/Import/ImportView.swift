@@ -75,17 +75,11 @@ struct ImportView: View {
 }
 
 #Preview {
-    let mockRepository = MockTransactionRepository()
-    let mockPipeline = TransactionImportPipeline(
-        repository: mockRepository
-    )
-
     ImportView(
         viewModel: ImportViewModel(
-            transactionImportPipeline: mockPipeline,
+            graphQLClient: ApolloGraphQLClient(),
             bankRepository: MockBankRepository(),
-            ledgerRepository: MockLedgerRepository(),
-            transactionRepository: mockRepository
+            ledgerRepository: MockLedgerRepository()
         )
     )
 }

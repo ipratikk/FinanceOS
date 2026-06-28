@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceOSAPI
 import FinanceParsers
 import Foundation
 import OSLog
@@ -6,9 +7,11 @@ import OSLog
 extension ImportViewModel {
     func loadTargetsOnAppear() async {
         do {
-            logger.debug("Loading ledgers and banks")
-            ledgers = try await ledgerRepository.fetchLedgers()
-            banks = try await bankRepository.fetchBanks()
+            logger.debug("Loading ledgers and banks via GraphQL")
+            let ledgerData = try await graphQLClient.fetch(query: GetLedgersQuery())
+            let bankData = try await graphQLClient.fetch(query: GetBanksQuery())
+            ledgers = ledgerData.ledgers.map(Self.mapLedger)
+            banks = bankData.banks.map(Self.mapBank)
             logger.logDebug("Loaded {ledgers} ledgers and {banks} banks", [
                 "ledgers": ledgers.count,
                 "banks": banks.count
@@ -17,76 +20,6 @@ extension ImportViewModel {
             let errorMsg = error.localizedDescription
             logger.error("Failed to load targets: \(errorMsg, privacy: .public)")
             importSession.errorMessage = errorMsg
-        }
-    }
-
-    func performImport(
-        target: TransactionImportTarget,
-        fileCount: Int
-    ) async throws -> ImportResult {
-        let context = OperationContext.importSession()
-        var totalInserted = 0
-        var totalSkipped = 0
-
-        for (index, fileURL) in importSession.fileURLs.enumerated() {
-            let fileName = fileURL.lastPathComponent
-            let fileNumber = index + 1
-
-            logger.debug("Importing file \(fileNumber)/\(fileCount): \(fileName, privacy: .public)")
-
-            guard index < importSession.parsedStatements.count else {
-                throw FinanceCore.TransactionImportError.malformedFile("Parsed statement not available")
-            }
-
-            let ledgerKind: LedgerKind
-            if case let .ledger(ledgerId) = target {
-                guard let found = ledgers.first(where: { $0.id == ledgerId }) else {
-                    throw ImportError.targetNotFound(ledgerId)
-                }
-                ledgerKind = found.kind
-            } else {
-                ledgerKind = .bankAccount
-            }
-
-            let statement = importSession.parsedStatements[index]
-            let result = try await transactionImportPipeline.execute(
-                statement: statement,
-                target: target,
-                ledgerKind: ledgerKind,
-                context: context
-            )
-
-            try await applyStatementMetadata(statement.metadata, to: target)
-
-            totalInserted += result.inserted
-            totalSkipped += result.skipped
-            logger.logInfo("File {file}: {inserted} inserted, {skipped} skipped", [
-                "file": fileName,
-                "inserted": result.inserted,
-                "skipped": result.skipped
-            ])
-        }
-
-        logger.logInfo("Import complete: {inserted} inserted, {skipped} skipped", [
-            "inserted": totalInserted,
-            "skipped": totalSkipped
-        ])
-        return ImportResult(inserted: totalInserted, skipped: totalSkipped)
-    }
-
-    private func applyStatementMetadata(
-        _ metadata: FinanceParsers.StatementMetadata?,
-        to target: TransactionImportTarget
-    ) async throws {
-        guard case let .ledger(ledgerId) = target else { return }
-        if let openingBalance = metadata?.openingBalance,
-           let ledger = try await ledgerRepository.fetchLedger(id: ledgerId),
-           ledger.openingBalance == nil {
-            try await ledgerRepository.updateOpeningBalance(id: ledgerId, balance: openingBalance)
-        }
-        if let closingBalance = metadata?.closingBalance,
-           let statementDate = metadata?.generatedAt {
-            try await ledgerRepository.updateClosingBalance(id: ledgerId, balance: closingBalance, asOf: statementDate)
         }
     }
 
@@ -121,20 +54,10 @@ extension ImportViewModel {
     }
 
     func detectDuplicates(for target: TransactionImportTarget?) async {
-        var existingTransactions: [Transaction] = []
-        if case let .ledger(ledgerId) = target {
-            do {
-                let all = try await transactionRepository.fetchTransactions()
-                existingTransactions = all.filter { $0.ledgerId == ledgerId }
-            } catch {
-                logger.logError("Failed to fetch transactions: {error}", ["error": error.localizedDescription])
-            }
-        }
-
         let detector = duplicateDetector
         let (skipAll, inDB) = detector.detect(
             statements: importSession.parsedStatements,
-            existingTransactions: existingTransactions
+            existingTransactions: []
         )
 
         logger.logInfo(
@@ -180,5 +103,26 @@ extension ImportViewModel {
         duplicateTransactionIndices = []
         alreadyInDBIndices = []
         currentStep = .upload
+    }
+
+    // MARK: - Mapping
+
+    static func mapLedger(_ item: GetLedgersQuery.Data.Ledger) -> Ledger {
+        let kind: FinanceCore.LedgerKind = item.kind.value == .creditCard ? .creditCard : .bankAccount
+        return Ledger(
+            id: UUID(uuidString: item.id) ?? UUID(),
+            bankId: UUID(uuidString: item.bank.id) ?? UUID(),
+            kind: kind,
+            displayName: item.displayName,
+            last4: item.last4 ?? "",
+            closingBalance: Int64(item.balance * 100)
+        )
+    }
+
+    static func mapBank(_ item: GetBanksQuery.Data.Bank) -> Bank {
+        Bank(
+            id: UUID(uuidString: item.id) ?? UUID(),
+            bank: Banks(rawValue: item.code.lowercased()) ?? .hdfc
+        )
     }
 }

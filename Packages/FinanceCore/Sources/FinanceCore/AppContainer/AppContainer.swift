@@ -24,10 +24,6 @@ public final class AppContainer {
     public let transactionRepository: any TransactionRepository
     public let bankRepository: any BankRepository
     public let ledgerRepository: any LedgerRepository
-
-    /// Orchestrates file parsing, deduplication, and batch insert for statement imports.
-    public let transactionImportPipeline: TransactionImportPipeline
-
     public let spendingService: any SpendingServiceProtocol
 
     private init() {
@@ -43,10 +39,6 @@ public final class AppContainer {
 
         ledgerRepository = GRDBLedgerRepository(
             dbQueue: databaseManager.dbQueue
-        )
-
-        transactionImportPipeline = TransactionImportPipeline(
-            repository: transactionRepository
         )
 
         spendingService = GRDBSpendingService(

@@ -12,15 +12,10 @@ final class ImportFlowSnapshotTests: SnapshotTestable {
     }
 
     func test_import_view() {
-        let transactionRepo = MockTransactionRepository()
-        let bankRepo = MockBankRepository()
-        let ledgerRepo = MockLedgerRepository()
-        let pipeline = TransactionImportPipeline(repository: transactionRepo)
         let viewModel = ImportViewModel(
-            transactionImportPipeline: pipeline,
-            bankRepository: bankRepo,
-            ledgerRepository: ledgerRepo,
-            transactionRepository: transactionRepo
+            graphQLClient: ApolloGraphQLClient(),
+            bankRepository: MockBankRepository(),
+            ledgerRepository: MockLedgerRepository()
         )
         let view = ImportView(viewModel: viewModel)
         verifySnapshots(view)
