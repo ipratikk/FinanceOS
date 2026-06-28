@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceOSAPI
 import Foundation
 
 @Observable @MainActor
@@ -17,12 +18,12 @@ final class FinanceAgentViewModel {
     var error: String?
 
     private let agent = FinanceAgent()
-    private let transactionRepository: any TransactionRepository
+    private let graphQLClient: ApolloGraphQLClient
     private var cachedTransactions: [Transaction] = []
     private var isLoadingTransactions = false
 
-    init(transactionRepository: any TransactionRepository) {
-        self.transactionRepository = transactionRepository
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
     }
 
     func loadTransactions() async {
@@ -30,7 +31,10 @@ final class FinanceAgentViewModel {
         isLoadingTransactions = true
         defer { isLoadingTransactions = false }
         do {
-            cachedTransactions = try await transactionRepository.fetchTransactions()
+            let data = try await graphQLClient.fetch(
+                query: GetTransactionsQuery(ledgerId: .none, filter: .none, limit: .none)
+            )
+            cachedTransactions = data.transactions.map(GraphQLMappings.mapTransaction)
         } catch {
             self.error = error.localizedDescription
         }

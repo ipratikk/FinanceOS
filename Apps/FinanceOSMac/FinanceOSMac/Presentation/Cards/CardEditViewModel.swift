@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceOSAPI
 import FinanceUI
 import SwiftUI
 
@@ -7,7 +8,7 @@ import SwiftUI
 final class CardEditViewModel {
     // MARK: - Dependencies
 
-    private let ledgerRepository: (any LedgerRepository)?
+    private let graphQLClient: ApolloGraphQLClient?
     private let onUpdate: (() async -> Void)?
 
     // MARK: - Mode + Data
@@ -29,13 +30,13 @@ final class CardEditViewModel {
 
     init(
         mode: CardEditMode,
-        ledgerRepository: (any LedgerRepository)? = nil,
+        graphQLClient: ApolloGraphQLClient? = nil,
         banks: [Bank] = [],
         accounts: [Ledger] = [],
         onUpdate: (() async -> Void)? = nil
     ) {
         self.mode = mode
-        self.ledgerRepository = ledgerRepository
+        self.graphQLClient = graphQLClient
         self.banks = banks
         self.accounts = accounts
         self.onUpdate = onUpdate
@@ -92,28 +93,15 @@ final class CardEditViewModel {
     // MARK: - Actions
 
     func commitEdit() async {
-        guard case let .edit(card) = mode, let repo = ledgerRepository else { return }
-        let newBankId = banks.first { $0.bank == form.selectedBank }?.id ?? card.bankId
-        let updated = Ledger(
-            id: card.id,
-            bankId: newBankId,
-            kind: card.kind,
-            displayName: form.customName.isEmpty ? card.displayName : form.customName,
-            last4: form.last4,
-            nickname: form.nickname,
-            ownerName: form.cardholderName,
-            createdAt: card.createdAt,
-            accountType: !isCard ? form.accountType : nil,
-            cardType: isCard ? form.cardType : nil,
-            cardProductId: form.cardProductId.isEmpty ? nil : form.cardProductId,
-            bin: card.bin,
-            linkedLedgerId: form.linkedLedgerId,
-            isArchived: card.isArchived,
-            closingBalance: card.closingBalance,
-            closingBalanceAsOf: card.closingBalanceAsOf
+        guard case let .edit(card) = mode, let client = graphQLClient else { return }
+        let displayName = form.customName.isEmpty ? card.displayName : form.customName
+        let input = UpdateLedgerInput(
+            displayName: .some(displayName),
+            kind: .none,
+            last4: .some(form.last4)
         )
         do {
-            try await repo.update(updated)
+            _ = try await client.perform(mutation: UpdateLedgerMutation(id: card.id.uuidString, input: input))
             operationError = nil
             await onUpdate?()
             didCommit = true
@@ -123,9 +111,9 @@ final class CardEditViewModel {
     }
 
     func deleteCard() async {
-        guard case let .edit(card) = mode, let repo = ledgerRepository else { return }
+        guard case let .edit(card) = mode, let client = graphQLClient else { return }
         do {
-            try await repo.delete(id: card.id)
+            _ = try await client.perform(mutation: DeleteLedgerMutation(id: card.id.uuidString))
             operationError = nil
             didCommit = true
         } catch {

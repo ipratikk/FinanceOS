@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceOSAPI
 import FinanceUI
 import SwiftUI
 
@@ -158,7 +159,10 @@ struct IntelligenceHubView: View {
         isTraining = true
         Task {
             do {
-                let transactions = try await AppContainer.shared.transactionRepository.fetchTransactions()
+                let txnData = try await AppContainer.shared.graphQLClient.fetch(
+                    query: GetTransactionsQuery(ledgerId: .none, filter: .none, limit: .none)
+                )
+                let transactions = txnData.transactions.map(GraphQLMappings.mapTransaction)
                 let examples = transactions.compactMap { txn -> (text: String, categoryId: String)? in
                     guard let cat = txn.categoryId, !cat.isEmpty, cat != "uncategorized" else { return nil }
                     return (text: txn.description, categoryId: cat)
