@@ -1,13 +1,13 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceOSAPI
 import Foundation
 import Observation
 
 @MainActor
 @Observable
 final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
-    private let transactionRepository: TransactionRepository
-    private let ledgerRepository: LedgerRepository
+    private let graphQLClient: ApolloGraphQLClient
     private let intelligenceService: (any TransactionIntelligenceService)?
 
     var transactionRows: [TransactionRow] = []
@@ -35,12 +35,10 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
     }
 
     init(
-        transactionRepository: TransactionRepository,
-        ledgerRepository: LedgerRepository,
+        graphQLClient: ApolloGraphQLClient,
         intelligenceService: (any TransactionIntelligenceService)? = nil
     ) {
-        self.transactionRepository = transactionRepository
-        self.ledgerRepository = ledgerRepository
+        self.graphQLClient = graphQLClient
         self.intelligenceService = intelligenceService
     }
 
@@ -48,8 +46,15 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
         await withLoading(onError: { error in
             FinanceLogger.userInterface.logError("Failed to load transactions", caughtError: error, [:])
         }, {
-            rawTransactions = try await transactionRepository.fetchTransactions()
-            cachedLedgers = try await ledgerRepository.fetchLedgers()
+            async let txnsQuery = graphQLClient.fetch(query: GetTransactionsQuery(
+                ledgerId: .none,
+                filter: .none,
+                limit: .none
+            ))
+            async let ledgersQuery = graphQLClient.fetch(query: GetLedgersQuery())
+            let (txnsData, ledgersData) = try await (txnsQuery, ledgersQuery)
+            rawTransactions = txnsData.transactions.map(GraphQLMappings.mapTransaction)
+            cachedLedgers = ledgersData.ledgers.map(GraphQLMappings.mapLedger)
             transactionRows = makeRows(transactions: rawTransactions, results: [:])
             listState.updateAvailableYears(from: transactionRows)
         })
@@ -68,68 +73,41 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
             pipelineStage = .analyzing
             defer { isPipelineRunning = false }
 
-            do {
-                let all = try await transactionRepository.fetchTransactions()
-                pipelineTotal = all.count
-                guard !Task.isCancelled else { return }
+            let all = await MainActor.run { rawTransactions }
+            pipelineTotal = all.count
+            guard !Task.isCancelled else { return }
 
-                let enriched = await runAnalyzingStage(service: service, transactions: all)
-                guard !Task.isCancelled, !enriched.isEmpty else { return }
+            let enriched = await runAnalyzingStage(service: service, transactions: all)
+            guard !Task.isCancelled, !enriched.isEmpty else { return }
 
-                // Stages 2–4: post-process with typed stage reporting
-                await service.postProcessBatch(enriched: enriched) { stage in
-                    Task { @MainActor [weak self] in self?.applyPipelineStage(stage) }
-                }
-
-                // Reload rows with fresh data
-                await loadTransactions()
-            } catch {
-                FinanceLogger.userInterface.logError("Intelligence pipeline failed", caughtError: error, [:])
+            // Stages 2–4: post-process with typed stage reporting
+            await service.postProcessBatch(enriched: enriched) { stage in
+                Task { @MainActor [weak self] in self?.applyPipelineStage(stage) }
             }
+
+            // Reload rows with fresh data
+            await loadTransactions()
         }
     }
 
-    /// Stage 1: analyze every transaction, then batch-write provenance + descriptions.
-    /// Batching the per-row writes into one transaction each reduces stage-1 DB overhead ~600×.
+    /// Stage 1: analyze every transaction (in-memory only; backend owns persistence).
     private func runAnalyzingStage(
         service: any TransactionIntelligenceService,
         transactions: [Transaction]
     ) async -> [EnrichedTransaction] {
         var enriched: [EnrichedTransaction] = []
         enriched.reserveCapacity(transactions.count)
-        var provenanceBatch: [(id: UUID, provenance: EnrichmentProvenance)] = []
-        provenanceBatch.reserveCapacity(transactions.count)
-        var descriptionBatch: [(id: UUID, description: String)] = []
-        descriptionBatch.reserveCapacity(transactions.count)
         for txn in transactions {
             guard !Task.isCancelled else { return enriched }
             do {
                 let result = try await service.analyzeEnriched(txn, context: .empty)
-                provenanceBatch.append((id: txn.id, provenance: makeProvenance(from: result)))
-                if let description = result.humanDescription, !description.isEmpty {
-                    descriptionBatch.append((id: txn.id, description: description))
-                }
                 enriched.append(result)
             } catch {
                 FinanceLogger.userInterface.logError("Pipeline: skipped transaction", caughtError: error, [:])
             }
             pipelineProcessed += 1
         }
-        try? await transactionRepository.updateEnrichmentProvenanceBatch(provenanceBatch)
-        try? await transactionRepository.updateEnrichedDescriptionBatch(descriptionBatch)
         return enriched
-    }
-
-    private func makeProvenance(from result: EnrichedTransaction) -> EnrichmentProvenance {
-        EnrichmentProvenance(
-            categoryId: result.categoryPrediction.categoryId,
-            merchantName: result.merchantCandidate.canonicalName,
-            intentId: result.intentPrediction.intent.rawValue,
-            resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
-            intelligenceSource: result.categoryPrediction.source.rawValue,
-            intelligenceModelVersion: result.categoryPrediction.modelVersion,
-            intelligenceConfigVersion: result.categoryPrediction.configVersion
-        )
     }
 
     func cancelPipeline() {
@@ -171,11 +149,11 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
 
     func deleteTransaction(id: UUID) async {
         await performDelete({
-            try await transactionRepository.delete(id: id)
+            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id.uuidString))
         }, onSuccess: loadTransactions)
     }
 
-    /// Called when the user corrects a category. Updates memory, persists to DB, trains kNN,
+    /// Called when the user corrects a category. Updates memory, persists via GraphQL, trains kNN,
     /// then re-analyzes auto-categorized transactions so similar ones update immediately.
     func applyCorrection(transactionId: UUID, correctedCategoryId: String) async {
         guard let idx = transactionRows.firstIndex(where: { $0.id == transactionId }) else { return }
@@ -190,10 +168,10 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
             sourceTransaction: old.sourceTransaction
         )
 
-        // Persist to DB — preserve merchantName so displayTitle stays stable (Bug 1 fix)
+        // Persist via GraphQL — preserve merchantName so displayTitle stays stable (Bug 1 fix)
         do {
-            try await transactionRepository.updateIntelligence(
-                id: transactionId, categoryId: correctedCategoryId, merchantName: old.merchantName
+            _ = try await graphQLClient.perform(
+                mutation: RecategorizeMutation(transactionId: transactionId.uuidString, category: correctedCategoryId)
             )
         } catch {
             FinanceLogger.userInterface.logError("Failed to persist correction", caughtError: error, [:])
@@ -247,22 +225,6 @@ private extension TransactionsViewModel {
         do {
             let results = try await service.analyzeBatch(transactions, context: .empty)
             let byId = Dictionary(uniqueKeysWithValues: results.map { ($0.transaction.id, $0) })
-
-            // Persist results with full provenance. isUserCorrectedMerchant protection
-            // is enforced inside updateEnrichmentProvenance.
-            let repo = await MainActor.run { transactionRepository }
-            for result in results {
-                try? await repo.updateEnrichmentProvenance(
-                    id: result.transaction.id,
-                    EnrichmentProvenance(
-                        categoryId: result.categoryPrediction.categoryId,
-                        merchantName: result.merchantCandidate.canonicalName,
-                        intelligenceSource: result.categoryPrediction.source.rawValue,
-                        intelligenceModelVersion: result.categoryPrediction.modelVersion,
-                        intelligenceConfigVersion: result.categoryPrediction.configVersion
-                    )
-                )
-            }
 
             let ledgers = await MainActor.run { cachedLedgers }
             let updated = makeRows(transactions: allTransactions, results: byId, ledgers: ledgers)
