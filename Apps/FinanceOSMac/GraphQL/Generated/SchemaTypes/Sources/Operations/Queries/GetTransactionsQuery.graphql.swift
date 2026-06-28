@@ -7,25 +7,29 @@ public class GetTransactionsQuery: GraphQLQuery {
     public static let operationName: String = "GetTransactions"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
-            #"query GetTransactions($ledgerId: ID, $filter: TransactionFilter) { transactions(ledgerId: $ledgerId, filter: $filter) { __typename id date narration amount category merchant sourceFingerprint ledger { __typename id displayName } } }"#
+            #"query GetTransactions($ledgerId: ID, $filter: TransactionFilter, $limit: Int) { transactions(ledgerId: $ledgerId, filter: $filter, limit: $limit) { __typename id date narration amount category merchant sourceFingerprint ledger { __typename id displayName } } }"#
         )
     )
 
     public var ledgerId: GraphQLNullable<ID>
     public var filter: GraphQLNullable<TransactionFilter>
+    public var limit: GraphQLNullable<Int>
 
     public init(
         ledgerId: GraphQLNullable<ID>,
-        filter: GraphQLNullable<TransactionFilter>
+        filter: GraphQLNullable<TransactionFilter>,
+        limit: GraphQLNullable<Int>
     ) {
         self.ledgerId = ledgerId
         self.filter = filter
+        self.limit = limit
     }
 
     public var __variables: Variables? {
         [
             "ledgerId": ledgerId,
-            "filter": filter
+            "filter": filter,
+            "limit": limit
         ]
     }
 
@@ -43,7 +47,8 @@ public class GetTransactionsQuery: GraphQLQuery {
             [
                 .field("transactions", [Transaction].self, arguments: [
                     "ledgerId": .variable("ledgerId"),
-                    "filter": .variable("filter")
+                    "filter": .variable("filter"),
+                    "limit": .variable("limit")
                 ])
             ]
         }
