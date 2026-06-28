@@ -16,6 +16,11 @@ public final class AppContainer {
     /// repositories independently.
     public static let shared = AppContainer()
 
+    /// GraphQL client wired to the local backend at localhost:4000.
+    public let graphQLClient = ApolloGraphQLClient(
+        url: URL(string: ProcessInfo.processInfo.environment["GRAPHQL_URL"] ?? "http://localhost:4000/graphql")!
+    )
+
     public let transactionRepository: any TransactionRepository
     public let bankRepository: any BankRepository
     public let ledgerRepository: any LedgerRepository

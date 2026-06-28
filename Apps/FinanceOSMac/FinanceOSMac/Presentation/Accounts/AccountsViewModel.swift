@@ -1,13 +1,6 @@
-//
-//  AccountsViewModel.swift
-//  FinanceOSMac
-//
-//  Created by Pratik Goel on 13/05/26.
-//
-
 import FinanceCore
+import FinanceOSAPI
 import FinanceParsers
-import FinanceUI
 import Foundation
 import Observation
 import OSLog
@@ -15,11 +8,7 @@ import OSLog
 @MainActor
 @Observable
 final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
-    private let ledgerRepository: LedgerRepository
-    private let bankRepository: BankRepository
-    private let transactionRepository: TransactionRepository
-    private let balanceService: any AccountBalanceProtocol
-    private let migrationService: any LedgerMigrationProtocol
+    private let graphQLClient: ApolloGraphQLClient
     private let logger = FinanceLogger.userInterface
 
     var accounts: [Ledger] = []
@@ -28,57 +17,42 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
     var isLoading = false
     var deleteError: String?
 
-    init(
-        ledgerRepository: LedgerRepository,
-        bankRepository: BankRepository,
-        transactionRepository: TransactionRepository,
-        balanceService: (any AccountBalanceProtocol)? = nil,
-        migrationService: (any LedgerMigrationProtocol)? = nil
-    ) {
-        self.ledgerRepository = ledgerRepository
-        self.bankRepository = bankRepository
-        self.transactionRepository = transactionRepository
-        self.balanceService = balanceService ?? AccountBalanceService()
-        self.migrationService = migrationService ?? LedgerMigrationService(
-            ledgerRepository: ledgerRepository,
-            transactionRepository: transactionRepository
-        )
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
     }
 
     func loadAccounts() async {
         await withLoading(onError: { [self] error in
             logger.logError("Failed to load accounts: {error}", ["error": error.localizedDescription])
         }, {
-            async let accounts = ledgerRepository.fetchLedgers(kind: .bankAccount)
-            async let banks = bankRepository.fetchBanks()
-            self.accounts = try await accounts
-            self.banks = try await banks
-            await loadBalances(for: self.accounts)
+            let data = try await graphQLClient.fetch(query: GetLedgersQuery())
+            let bankData = try await graphQLClient.fetch(query: GetBanksQuery())
+            let allLedgers = data.ledgers.map(Self.mapLedger)
+            self.banks = bankData.banks.map(Self.mapBank)
+            self.accounts = allLedgers.filter { $0.kind == .bankAccount }
+            self.balancesByAccount = Dictionary(
+                uniqueKeysWithValues: data.ledgers
+                    .filter { $0.kind.value == .bankAccount }
+                    .map { item in
+                        let id = UUID(uuidString: item.id) ?? UUID()
+                        let balance = AccountLedgerBalance(
+                            netMinorUnits: Int64(item.balance * 100),
+                            latestPostedAt: nil
+                        )
+                        return (id, balance)
+                    }
+            )
         })
-    }
-
-    private func loadBalances(for accounts: [Ledger]) async {
-        var result: [UUID: AccountLedgerBalance] = [:]
-        for account in accounts {
-            do {
-                let txns = try await transactionRepository.fetchTransactionsForLedger(account.id)
-                guard !txns.isEmpty else { continue }
-                let balanceDate = account.closingBalanceAsOf ?? txns.map(\.postedAt).max()
-                let balanceMinorUnits = balanceService.computeBalance(account: account, transactions: txns)
-                result[account.id] = AccountLedgerBalance(netMinorUnits: balanceMinorUnits, latestPostedAt: balanceDate)
-            } catch {
-                logger.logError(
-                    "Failed to load transactions for account: {error}",
-                    ["accountId": account.id.uuidString, "error": error.localizedDescription]
-                )
-            }
-        }
-        balancesByAccount = result
     }
 
     func updateAccount(_ account: Ledger) async {
         do {
-            try await ledgerRepository.update(account)
+            let input = UpdateLedgerInput(
+                displayName: .some(account.displayName),
+                kind: .some(.init(account.kind == .creditCard ? FinanceOSAPI.LedgerKind.creditCard : .bankAccount)),
+                last4: account.last4.isEmpty ? .null : .some(account.last4)
+            )
+            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: account.id.uuidString, input: input))
             await loadAccounts()
         } catch {
             logger.logError(
@@ -91,7 +65,7 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
     func deleteAccount(id: UUID) async {
         await performDelete({
             logger.logDebug("Deleting account", ["accountId": id.uuidString])
-            try await ledgerRepository.delete(id: id)
+            _ = try await graphQLClient.perform(mutation: DeleteLedgerMutation(id: id.uuidString))
             logger.logInfo("Account deleted successfully", ["accountId": id.uuidString])
         }, onError: { [self] error in
             logger.logError(
@@ -124,7 +98,12 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
 
     func convertToCard(_ account: Ledger) async {
         do {
-            try await migrationService.convertToCard(account)
+            let input = UpdateLedgerInput(
+                displayName: .some(account.displayName),
+                kind: .some(.init(FinanceOSAPI.LedgerKind.creditCard)),
+                last4: account.last4.isEmpty ? .null : .some(account.last4)
+            )
+            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: account.id.uuidString, input: input))
             await loadAccounts()
         } catch {
             logger.logError(
@@ -132,5 +111,24 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
                 ["accountId": account.id.uuidString, "error": error.localizedDescription]
             )
         }
+    }
+
+    private static func mapLedger(_ item: GetLedgersQuery.Data.Ledger) -> Ledger {
+        let kind: FinanceCore.LedgerKind = item.kind.value == .creditCard ? .creditCard : .bankAccount
+        return Ledger(
+            id: UUID(uuidString: item.id) ?? UUID(),
+            bankId: UUID(uuidString: item.bank.id) ?? UUID(),
+            kind: kind,
+            displayName: item.displayName,
+            last4: item.last4 ?? "",
+            closingBalance: Int64(item.balance * 100)
+        )
+    }
+
+    private static func mapBank(_ item: GetBanksQuery.Data.Bank) -> Bank {
+        Bank(
+            id: UUID(uuidString: item.id) ?? UUID(),
+            bank: Banks(rawValue: item.code.lowercased()) ?? .hdfc
+        )
     }
 }
