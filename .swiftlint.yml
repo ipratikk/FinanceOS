@@ -35,6 +35,7 @@ excluded:
   - Packages/**/Generated
   - Packages/**/Preview Content
   - Packages/**/Resources
+  - Apps/FinanceOSMac/GraphQL/Generated
   - fastlane
   - Scripts
   - vendor
@@ -60,6 +61,7 @@ identifier_name:
   min_length:
     warning: 1
     error: 1
+  allowed_symbols: ["_"]
   excluded:
     - id
     - db
@@ -73,6 +75,13 @@ identifier_name:
     - p2
     - v1
     - cv
+    - __data
+    - __fulfilledFragments
+    - __parentType
+    - __selections
+    - __variables
+    - __typename
+    - _dataDict
 
 custom_rules:
   # Enforce token-driven design: no hardcoded Color.white in components

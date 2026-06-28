@@ -18,6 +18,7 @@
 		049E34292FB3B303002A3820 /* FinanceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34282FB3B303002A3820 /* FinanceUI */; };
 		AA0001002FA000000AA00004 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = AA0001002FA000000AA00002 /* Apollo */; };
 		AA0001002FA000000AA00005 /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AA0001002FA000000AA00003 /* ApolloAPI */; };
+		AA0001002FA000000AA00006 /* FinanceOSAPI in Frameworks */ = {isa = PBXBuildFile; productRef = AA0001002FA000000AA00007 /* FinanceOSAPI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 				041306312FBA470000133C99 /* FinanceParsers in Frameworks */,
 				AA0001002FA000000AA00004 /* Apollo in Frameworks */,
 				AA0001002FA000000AA00005 /* ApolloAPI in Frameworks */,
+				AA0001002FA000000AA00006 /* FinanceOSAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +200,7 @@
 				0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				0494F6462FC8300800800859 /* XCLocalSwiftPackageReference "../../Packages/FinanceIntelligence" */,
 				AA0001002FA000000AA00001 /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				AA0001002FA000000AA00008 /* XCLocalSwiftPackageReference "GraphQL/Generated/SchemaTypes" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 049E34112FB3B1D2002A3820 /* Products */;
@@ -245,7 +248,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$PATH\"\n\nif command -v swiftlint >/dev/null; then\n    echo \"Running SwiftLint...\"\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed\"\nfi\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$PATH\"\n\nif command -v swiftlint >/dev/null; then\n    echo \"Running SwiftLint...\"\n    cd \"${PROJECT_DIR}/../../\"\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed\"\nfi\n";
 		};
 		049E34282FB3B440002A3820 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -605,6 +608,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../Packages/FinanceTesting;
 		};
+		AA0001002FA000000AA00008 /* XCLocalSwiftPackageReference "GraphQL/Generated/SchemaTypes" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = GraphQL/Generated/SchemaTypes;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -680,6 +687,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AA0001002FA000000AA00001 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = ApolloAPI;
+		};
+		AA0001002FA000000AA00007 /* FinanceOSAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA0001002FA000000AA00008 /* XCLocalSwiftPackageReference "GraphQL/Generated/SchemaTypes" */;
+			productName = FinanceOSAPI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

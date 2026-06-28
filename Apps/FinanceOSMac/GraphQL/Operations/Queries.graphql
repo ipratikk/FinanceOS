@@ -1,0 +1,56 @@
+query GetBanks {
+  banks {
+    id
+    name
+    code
+  }
+}
+
+query GetLedgers {
+  ledgers {
+    id
+    displayName
+    kind
+    last4
+    bank {
+      id
+      name
+      code
+    }
+    balance
+  }
+}
+
+query GetTransactions($ledgerId: ID, $filter: TransactionFilter) {
+  transactions(ledgerId: $ledgerId, filter: $filter) {
+    id
+    date
+    narration
+    amount
+    category
+    merchant
+    sourceFingerprint
+    ledger {
+      id
+      displayName
+    }
+  }
+}
+
+query GetAnalytics($ledgerId: ID, $from: String, $to: String) {
+  analytics(ledgerId: $ledgerId, from: $from, to: $to) {
+    totalSpend
+    totalIncome
+    netFlow
+    byCategory {
+      category
+      amount
+      count
+    }
+    byMonth {
+      month
+      spend
+      income
+    }
+  }
+}
