@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceOSAPI
 import Foundation
 import Observation
 
@@ -6,20 +7,22 @@ import Observation
 @MainActor
 final class AccountTransactionsDestinationViewModel: AsyncLoadable {
     private let ledgerId: UUID
-    private let ledgerRepository: any LedgerRepository
+    private let graphQLClient: ApolloGraphQLClient
 
     private(set) var ledger: Ledger?
     var isLoading = false
 
-    init(ledgerId: UUID, ledgerRepository: any LedgerRepository) {
+    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
         self.ledgerId = ledgerId
-        self.ledgerRepository = ledgerRepository
+        self.graphQLClient = graphQLClient
     }
 
     func load() async {
         await withLoading {
-            let ledgers = try await ledgerRepository.fetchLedgers()
-            ledger = ledgers.first(where: { $0.id == ledgerId })
+            let data = try await graphQLClient.fetch(query: GetLedgersQuery())
+            ledger = data.ledgers
+                .map(GraphQLMappings.mapLedger)
+                .first(where: { $0.id == ledgerId })
         }
     }
 }
