@@ -155,8 +155,6 @@ struct DetailRouter: View {
             ImportView(
                 viewModel: ImportViewModel(
                     graphQLClient: appContainer.graphQLClient,
-                    bankRepository: appContainer.bankRepository,
-                    ledgerRepository: appContainer.ledgerRepository,
                     initialTarget: navigator.pendingImportTarget,
                     categorizationScheduler: categorizationScheduler
                 )

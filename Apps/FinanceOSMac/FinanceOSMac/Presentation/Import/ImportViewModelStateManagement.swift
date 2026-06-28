@@ -25,31 +25,13 @@ extension ImportViewModel {
 
     func autoSelectMatchingTarget() async {
         guard let statement = importSession.parsedStatements.first else { return }
-
-        do {
-            let matchResult = try await accountMatcher.findMatches(for: statement)
-            switch matchResult {
-            case let .exactMatch(ledger):
-                importSession.selectedTarget = .ledger(ledger.id)
-                logger.info("Auto-matched exact account")
-                await detectDuplicates(for: .ledger(ledger.id))
-            case let .fuzzyMatch(ledger):
-                importSession.selectedTarget = .ledger(ledger.id)
-                logger.info("Auto-matched fuzzy account")
-                await detectDuplicates(for: .ledger(ledger.id))
-            case .noMatch:
-                logger.info("No matching account found, user will create new")
-            }
-        } catch {
-            logger.error("Account matching failed: \(error.localizedDescription)")
-            if let target = FinanceCore.ImportTargetMatcher.bestTarget(
-                for: statement,
-                ledgers: ledgers,
-                banks: banks
-            ) {
-                importSession.selectedTarget = target
-                await detectDuplicates(for: target)
-            }
+        if let target = FinanceCore.ImportTargetMatcher.bestTarget(
+            for: statement,
+            ledgers: ledgers,
+            banks: banks
+        ) {
+            importSession.selectedTarget = target
+            await detectDuplicates(for: target)
         }
     }
 

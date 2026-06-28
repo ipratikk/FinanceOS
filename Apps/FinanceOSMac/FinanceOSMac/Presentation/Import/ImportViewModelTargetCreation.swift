@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceOSAPI
 import FinanceParsers
 import Foundation
 import OSLog
@@ -29,12 +30,8 @@ extension ImportViewModel {
             importSession.errorMessage = ImportError.importFailed(reason: "No parsed statements available").userMessage
             return
         }
-
         do {
-            let bank = try await resolveOrCreateBank(
-                for: statement,
-                selectedBank: selectedBank
-            )
+            let bank = try await resolveOrCreateBank(for: statement, selectedBank: selectedBank)
             let params = TargetParams(
                 bank: bank,
                 statement: statement,
@@ -66,17 +63,15 @@ extension ImportViewModel {
         for statement: ParsedStatement,
         selectedBank: Banks?
     ) async throws -> Bank {
+        let bankData = try await graphQLClient.fetch(query: GetBanksQuery())
+        let existingBanks = bankData.banks.map(GraphQLMappings.mapBank)
         if let bankCase = selectedBank {
-            let existingBanks = try await bankRepository.fetchBanks()
             if let existing = existingBanks.first(where: { $0.bank == bankCase }) {
                 return existing
             }
-            let newBank = Bank(bank: bankCase)
-            try await bankRepository.insert(newBank)
-            return newBank
+            return try await makeBank(bankCase)
         }
         let detectedBankName = statement.bankName
-        let existingBanks = try await bankRepository.fetchBanks()
         if let existingBank = existingBanks.first(where: { $0.name == detectedBankName }) {
             return existingBank
         }
@@ -84,11 +79,22 @@ extension ImportViewModel {
             ImportHelpers.fuzzyMatch(bankCase.displayName, detectedBankName)
         }
         if let bankCase = matchingBankCase {
-            let newBank = Bank(bank: bankCase)
-            try await bankRepository.insert(newBank)
-            return newBank
+            return try await makeBank(bankCase)
         }
         throw BankResolutionError(detected: detectedBankName)
+    }
+
+    private func makeBank(_ bankCase: Banks) async throws -> Bank {
+        let data = try await graphQLClient.perform(
+            mutation: CreateBankMutation(input: CreateBankInput(
+                name: bankCase.displayName,
+                code: bankCase.rawValue
+            ))
+        )
+        return Bank(
+            id: UUID(uuidString: data.createBank.id) ?? UUID(),
+            bank: bankCase
+        )
     }
 
     private func createCard(
@@ -101,24 +107,18 @@ extension ImportViewModel {
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
         let displayName = customNameTrimmed ?? params.statement.bankName
-        let cardDisplayName = !params.last4.isEmpty ?
-            "\(displayName) •••• \(params.last4)" :
-            displayName
-
-        let ledger = Ledger(
-            bankId: params.bank.id,
-            kind: .creditCard,
+        let cardDisplayName = !params.last4
+            .isEmpty ? "\(displayName) \u{2022}\u{2022}\u{2022}\u{2022} \(params.last4)" : displayName
+        let input = CreateLedgerInput(
             displayName: cardDisplayName,
-            last4: params.last4,
-            nickname: params.nickname,
-            ownerName: ownerName,
-            cardType: cardType,
-            cardProductId: cardProductId.isEmpty ? nil : cardProductId,
-            linkedLedgerId: linkedLedgerId
+            kind: .init(.creditCard),
+            last4: params.last4.isEmpty ? .none : .some(params.last4),
+            bankId: params.bank.id.uuidString
         )
-        try await ledgerRepository.insert(ledger)
-        ledgers = try await ledgerRepository.fetchLedgers()
-        importSession.selectedTarget = .ledger(ledger.id)
+        let result = try await graphQLClient.perform(mutation: CreateLedgerMutation(input: input))
+        importSession.selectedTarget = .ledger(UUID(uuidString: result.createLedger.id) ?? UUID())
+        let ledgerData = try await graphQLClient.fetch(query: GetLedgersQuery())
+        ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
         let encryptedStatus = encryptedCardNumber.isEmpty ? "not provided" : "provided"
         logger.info("Created credit card: \(cardDisplayName) [encrypted: \(encryptedStatus)]")
     }
@@ -130,22 +130,19 @@ extension ImportViewModel {
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
         let displayName = customNameTrimmed ?? params.statement.bankName
-        let accountDisplayName = !params.last4.isEmpty ?
-            "\(displayName) •••• \(params.last4)" :
-            displayName
-
-        let ledger = Ledger(
-            bankId: params.bank.id,
-            kind: .bankAccount,
+        let accountDisplayName = !params.last4.isEmpty
+            ? "\(displayName) \u{2022}\u{2022}\u{2022}\u{2022} \(params.last4)"
+            : displayName
+        let input = CreateLedgerInput(
             displayName: accountDisplayName,
-            last4: params.last4,
-            nickname: params.nickname,
-            ownerName: ownerName,
-            accountType: accountType
+            kind: .init(.bankAccount),
+            last4: params.last4.isEmpty ? .none : .some(params.last4),
+            bankId: params.bank.id.uuidString
         )
-        try await ledgerRepository.insert(ledger)
-        ledgers = try await ledgerRepository.fetchLedgers()
-        importSession.selectedTarget = .ledger(ledger.id)
+        let result = try await graphQLClient.perform(mutation: CreateLedgerMutation(input: input))
+        importSession.selectedTarget = .ledger(UUID(uuidString: result.createLedger.id) ?? UUID())
+        let ledgerData = try await graphQLClient.fetch(query: GetLedgersQuery())
+        ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
         logger.info("Created bank account: \(accountDisplayName)")
     }
 }
