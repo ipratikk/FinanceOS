@@ -162,7 +162,7 @@ struct DetailRouter: View {
                 )
             )
         case .settings:
-            SettingsView(viewModel: SettingsViewModel(bankRepository: appContainer.bankRepository))
+            SettingsView(viewModel: SettingsViewModel(graphQLClient: appContainer.graphQLClient))
         case .intelligence:
             IntelligenceHubView(container: IntelligenceContainer.shared)
         case .financeAgent:
