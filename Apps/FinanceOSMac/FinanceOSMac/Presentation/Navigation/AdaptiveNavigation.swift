@@ -38,8 +38,7 @@ struct AdaptiveNavigation: View {
 
             TransactionsView(
                 viewModel: TransactionsViewModel(
-                    transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository,
+                    graphQLClient: appContainer.graphQLClient,
                     intelligenceService: intelligence
                 )
             )
@@ -124,8 +123,7 @@ struct DetailRouter: View {
         case .transactions:
             TransactionsView(
                 viewModel: TransactionsViewModel(
-                    transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository,
+                    graphQLClient: appContainer.graphQLClient,
                     intelligenceService: intelligence
                 )
             )
