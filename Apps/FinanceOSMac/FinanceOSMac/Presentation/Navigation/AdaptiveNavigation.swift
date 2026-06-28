@@ -24,13 +24,11 @@ struct AdaptiveNavigation: View {
         )) {
             DashboardView(
                 viewModel: DashboardViewModel(
-                    spendingService: appContainer.spendingService,
-                    transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository,
+                    graphQLClient: appContainer.graphQLClient,
                     exportService: ExportService()
                 ),
                 insightsViewModel: InsightNarrativeViewModel(
-                    transactionRepository: appContainer.transactionRepository
+                    graphQLClient: appContainer.graphQLClient
                 )
             )
             .tabItem {
@@ -116,13 +114,11 @@ struct DetailRouter: View {
         case .dashboard:
             DashboardView(
                 viewModel: DashboardViewModel(
-                    spendingService: appContainer.spendingService,
-                    transactionRepository: appContainer.transactionRepository,
-                    ledgerRepository: appContainer.ledgerRepository,
+                    graphQLClient: appContainer.graphQLClient,
                     exportService: ExportService()
                 ),
                 insightsViewModel: InsightNarrativeViewModel(
-                    transactionRepository: appContainer.transactionRepository
+                    graphQLClient: appContainer.graphQLClient
                 )
             )
         case .transactions:

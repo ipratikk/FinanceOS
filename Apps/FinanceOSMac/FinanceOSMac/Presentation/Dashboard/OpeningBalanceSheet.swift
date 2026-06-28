@@ -100,12 +100,8 @@ struct OpeningBalanceSheet: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(AppColors.Text.secondary)
                 Button("Save") {
-                    let amount = Decimal(string: balanceInput) ?? 0
-                    let minorUnits = Int64((amount * 100 as NSDecimalNumber).int64Value)
-                    Task {
-                        await viewModel.updateOpeningBalance(ledgerId: ledger.id, balanceMinorUnits: minorUnits)
-                        editingLedger = nil
-                    }
+                    // Opening balance mutations are not yet supported via GraphQL
+                    editingLedger = nil
                 }
                 .buttonStyle(.borderedProminent)
             }
