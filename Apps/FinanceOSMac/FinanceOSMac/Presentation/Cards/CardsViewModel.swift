@@ -42,8 +42,8 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
         }, {
             let data = try await graphQLClient.fetch(query: GetLedgersQuery())
             let bankData = try await graphQLClient.fetch(query: GetBanksQuery())
-            let allLedgers = data.ledgers.map(Self.mapLedger)
-            self.banks = bankData.banks.map(Self.mapBank)
+            let allLedgers = data.ledgers.map(GraphQLMappings.mapLedger)
+            self.banks = bankData.banks.map(GraphQLMappings.mapBank)
             let cards = allLedgers.filter { $0.kind == .creditCard }
             self.accounts = allLedgers.filter { $0.kind == .bankAccount }
             cardRows = makeCardRows(cards: cards, accounts: self.accounts, banks: self.banks)
@@ -132,24 +132,5 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
         case (.amex, _): return .amex
         default: return nil
         }
-    }
-
-    private static func mapLedger(_ item: GetLedgersQuery.Data.Ledger) -> Ledger {
-        let kind: FinanceCore.LedgerKind = item.kind.value == .creditCard ? .creditCard : .bankAccount
-        return Ledger(
-            id: UUID(uuidString: item.id) ?? UUID(),
-            bankId: UUID(uuidString: item.bank.id) ?? UUID(),
-            kind: kind,
-            displayName: item.displayName,
-            last4: item.last4 ?? "",
-            closingBalance: Int64(item.balance * 100)
-        )
-    }
-
-    private static func mapBank(_ item: GetBanksQuery.Data.Bank) -> Bank {
-        Bank(
-            id: UUID(uuidString: item.id) ?? UUID(),
-            bank: Banks(rawValue: item.code.lowercased()) ?? .hdfc
-        )
     }
 }
