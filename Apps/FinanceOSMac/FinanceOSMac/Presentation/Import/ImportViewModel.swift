@@ -184,43 +184,18 @@ final class ImportViewModel {
                 importSession.errorMessage = "Select a ledger before importing"
                 return
             }
-
             importSession.isLoading = true
             importSession.errorMessage = nil
             importSession.importResult = nil
-
             do {
-                var totalInserted = 0
-                var totalSkipped = 0
-
-                for fileURL in importSession.fileURLs {
-                    let fileData = try Data(contentsOf: fileURL)
-                    let file = GraphQLFile(
-                        fieldName: "file",
-                        originalName: fileURL.lastPathComponent,
-                        mimeType: "text/csv",
-                        data: fileData
-                    )
-                    let mutation = UploadStatementMutation(ledgerId: ledgerId.uuidString, file: "")
-                    let response = try await graphQLClient.upload(mutation: mutation, files: [file])
-                    let result = response.uploadStatement
-                    totalInserted += result.imported
-                    totalSkipped += result.duplicates
-                    logger.logInfo("File uploaded: {imported} imported, {dups} duplicates", [
-                        "imported": result.imported,
-                        "dups": result.duplicates
-                    ])
-                }
-
-                let result = ImportResult(inserted: totalInserted, skipped: totalSkipped)
+                let (inserted, skipped) = try await uploadFiles(ledgerId: ledgerId)
+                let result = ImportResult(inserted: inserted, skipped: skipped)
                 importSession.importResult = result
                 lastImportResult = result
                 resetToSource()
                 importSession.isLoading = false
                 if let scheduler = categorizationScheduler {
-                    Task.detached(priority: .background) {
-                        await scheduler.run()
-                    }
+                    Task.detached(priority: .background) { await scheduler.run() }
                 }
                 Task {
                     try? await Task.sleep(for: .seconds(4))
@@ -233,5 +208,29 @@ final class ImportViewModel {
                 importSession.isLoading = false
             }
         }
+    }
+
+    private func uploadFiles(ledgerId: UUID) async throws -> (inserted: Int, skipped: Int) {
+        var totalInserted = 0
+        var totalSkipped = 0
+        for fileURL in importSession.fileURLs {
+            let fileData = try Data(contentsOf: fileURL)
+            let file = GraphQLFile(
+                fieldName: "file",
+                originalName: fileURL.lastPathComponent,
+                mimeType: "text/csv",
+                data: fileData
+            )
+            let mutation = UploadStatementMutation(ledgerId: ledgerId.uuidString, file: "")
+            let response = try await graphQLClient.upload(mutation: mutation, files: [file])
+            let result = response.uploadStatement
+            totalInserted += result.imported
+            totalSkipped += result.duplicates
+            logger.logInfo("File uploaded: {imported} imported, {dups} duplicates", [
+                "imported": result.imported,
+                "dups": result.duplicates
+            ])
+        }
+        return (totalInserted, totalSkipped)
     }
 }
