@@ -73,7 +73,7 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
             pipelineStage = .analyzing
             defer { isPipelineRunning = false }
 
-            let all = await MainActor.run { rawTransactions }
+            let all = rawTransactions
             pipelineTotal = all.count
             guard !Task.isCancelled else { return }
 
