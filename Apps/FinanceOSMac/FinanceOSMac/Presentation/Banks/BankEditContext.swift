@@ -1,43 +1,36 @@
 import FinanceCore
+import FinanceOSAPI
+import Foundation
 import SwiftUI
 
 @Observable
 @MainActor
 final class BankEditContext {
-    let repository: any BankRepository
-    let ledgerRepository: any LedgerRepository
+    private let graphQLClient: ApolloGraphQLClient
     var linkedLedgers: [Ledger] = []
     var error: String?
 
-    init(repository: any BankRepository, ledgerRepository: any LedgerRepository) {
-        self.repository = repository
-        self.ledgerRepository = ledgerRepository
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
     }
 
     func loadLedgers(bankId: UUID) async {
         do {
-            linkedLedgers = try await ledgerRepository.fetchLedgers(bankId: bankId)
+            let data = try await graphQLClient.fetch(query: GetLedgersQuery())
+            linkedLedgers = data.ledgers
+                .map(GraphQLMappings.mapLedger)
+                .filter { $0.bankId == bankId }
         } catch {
             self.error = error.localizedDescription
         }
     }
 
     func updateBank(_ bank: Bank) async {
-        do {
-            try await repository.update(bank)
-            error = nil
-        } catch {
-            self.error = error.localizedDescription
-        }
+        error = "Bank editing is not available in thin-client mode."
     }
 
     func deleteBank(id: UUID) async {
-        do {
-            try await repository.delete(id: id)
-            error = nil
-        } catch {
-            self.error = error.localizedDescription
-        }
+        error = "Bank deletion is not available in thin-client mode."
     }
 
     func clearError() {

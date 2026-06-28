@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceOSAPI
 import FinanceUI
 import SwiftUI
 
@@ -67,7 +68,7 @@ struct CardEditView: View {
 
     init(
         mode: CardEditMode,
-        ledgerRepository: (any LedgerRepository)? = nil,
+        graphQLClient: ApolloGraphQLClient? = nil,
         banks: [Bank] = [],
         accounts: [Ledger] = [],
         onUpdate: (() async -> Void)? = nil
@@ -75,7 +76,7 @@ struct CardEditView: View {
         self.banks = banks
         _viewModel = State(initialValue: CardEditViewModel(
             mode: mode,
-            ledgerRepository: ledgerRepository,
+            graphQLClient: graphQLClient,
             banks: banks,
             accounts: accounts,
             onUpdate: onUpdate

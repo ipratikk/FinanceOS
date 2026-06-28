@@ -165,7 +165,7 @@ struct DetailRouter: View {
             IntelligenceHubView(container: IntelligenceContainer.shared)
         case .financeAgent:
             FinanceAgentView(viewModel: FinanceAgentViewModel(
-                transactionRepository: appContainer.transactionRepository
+                graphQLClient: appContainer.graphQLClient
             ))
         }
     }
