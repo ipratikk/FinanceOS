@@ -11,17 +11,17 @@ final class DashboardViewSnapshotTests: SnapshotTestable {
     }
 
     func test_dashboard_initial() {
-        let spending = MockSpendingService()
-        let transactionRepo = MockTransactionRepository()
+        let graphQLClient = ApolloGraphQLClient()
         let viewModel = DashboardViewModel(
-            spendingService: spending,
-            transactionRepository: transactionRepo
+            graphQLClient: graphQLClient,
+            exportService: ExportService()
         )
         viewModel.currentTotals = PreviewSpendingData.currentTotals
         viewModel.monthlySummaries = PreviewSpendingData.monthlySummaries
         viewModel.recentTransactions = PreviewTransactions.samples
 
-        let view = DashboardView(viewModel: viewModel)
+        let insightsViewModel = InsightNarrativeViewModel(graphQLClient: graphQLClient)
+        let view = DashboardView(viewModel: viewModel, insightsViewModel: insightsViewModel)
         verifySnapshots(view)
     }
 }

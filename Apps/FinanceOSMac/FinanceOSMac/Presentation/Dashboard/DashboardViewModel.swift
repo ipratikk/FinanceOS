@@ -1,4 +1,5 @@
 import FinanceCore
+import FinanceOSAPI
 import FinanceUI
 import Foundation
 
@@ -116,20 +117,14 @@ class DashboardViewModel: AsyncLoadable {
 
     // MARK: - Dependencies
 
-    private let spendingService: any SpendingServiceProtocol
-    private let transactionRepository: any TransactionRepository
-    private let ledgerRepository: any LedgerRepository
+    private let graphQLClient: ApolloGraphQLClient
     private let exportService: any ExportServiceProtocol
 
     init(
-        spendingService: any SpendingServiceProtocol,
-        transactionRepository: any TransactionRepository,
-        ledgerRepository: any LedgerRepository,
+        graphQLClient: ApolloGraphQLClient,
         exportService: any ExportServiceProtocol
     ) {
-        self.spendingService = spendingService
-        self.transactionRepository = transactionRepository
-        self.ledgerRepository = ledgerRepository
+        self.graphQLClient = graphQLClient
         self.exportService = exportService
     }
 
@@ -138,17 +133,33 @@ class DashboardViewModel: AsyncLoadable {
             self.error = error.localizedDescription
             FinanceLogger.userInterface.logError("Dashboard load failed", caughtError: error, [:])
         }, {
-            let months = selectedTimeRange.months
-            async let totals = spendingService.currentMonthTotals()
-            async let summaries = spendingService.monthlySummary(months: months)
-            async let recent = spendingService.recentTransactions(limit: 6)
-            async let nwSeries = spendingService.netWorthTimeSeries(months: months)
-            async let fetchedLedgers = ledgerRepository.fetchLedgers()
-            currentTotals = try await totals
-            monthlySummaries = try await summaries
-            recentTransactions = try await makeRecentRows(recent)
-            netWorthTimeSeries = try await nwSeries
-            ledgers = try await fetchedLedgers
+            let fromStr: GraphQLNullable<String> = selectedTimeRange.months.flatMap {
+                Calendar.current.date(byAdding: .month, value: -$0, to: Date())
+            }.map { .some(ISO8601DateFormatter().string(from: $0)) } ?? .none
+
+            async let analyticsResult = graphQLClient.fetch(query: GetAnalyticsQuery(
+                ledgerId: .none,
+                from: fromStr,
+                to: .none
+            ))
+            async let recentResult = graphQLClient.fetch(query: GetTransactionsQuery(
+                ledgerId: .none,
+                filter: .none,
+                limit: .some(6)
+            ))
+            async let ledgersResult = graphQLClient.fetch(query: GetLedgersQuery())
+
+            let (analyticsData, recentData, ledgersData) = try await (analyticsResult, recentResult, ledgersResult)
+            let analytics = analyticsData.analytics
+
+            monthlySummaries = analytics.byMonth.map(GraphQLMappings.mapMonthly)
+            currentTotals = SpendingTotals(
+                totalDebit: Int64(analytics.totalSpend * 100),
+                totalCredit: Int64(analytics.totalIncome * 100),
+                transactionCount: recentData.transactions.count
+            )
+            recentTransactions = makeRecentRows(recentData.transactions.map(GraphQLMappings.mapTransaction))
+            ledgers = ledgersData.ledgers.map(GraphQLMappings.mapLedger)
         })
     }
 
@@ -157,18 +168,8 @@ class DashboardViewModel: AsyncLoadable {
         await load()
     }
 
-    func updateOpeningBalance(ledgerId: UUID, balanceMinorUnits: Int64) async {
-        do {
-            try await ledgerRepository.updateOpeningBalance(id: ledgerId, balance: balanceMinorUnits)
-            ledgers = try await ledgerRepository.fetchLedgers()
-            await load()
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
     func exportNetWorthCSV() -> String {
-        exportService.netWorthCSV(series: netWorthTimeSeries)
+        exportService.netWorthCSV(series: [])
     }
 
     // MARK: - Private Mapping

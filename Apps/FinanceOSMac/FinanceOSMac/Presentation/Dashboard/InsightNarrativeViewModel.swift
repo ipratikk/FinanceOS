@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceOSAPI
 import FinanceUI
 import Foundation
 
@@ -18,12 +19,12 @@ final class InsightNarrativeViewModel {
     var isLoading = false
     var lastRefreshDate: Date?
 
-    private let transactionRepository: any TransactionRepository
+    private let graphQLClient: ApolloGraphQLClient
     private let generator = MLXInsightGenerator()
     private static let lastRefreshKey = "InsightNarrative.lastRefresh"
 
-    init(transactionRepository: any TransactionRepository) {
-        self.transactionRepository = transactionRepository
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
         lastRefreshDate = UserDefaults.standard.object(forKey: Self.lastRefreshKey) as? Date
     }
 
@@ -42,7 +43,10 @@ final class InsightNarrativeViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            let allTransactions = try await transactionRepository.fetchTransactions()
+            let txnsData = try await graphQLClient.fetch(
+                query: GetTransactionsQuery(ledgerId: .none, filter: .none, limit: .none)
+            )
+            let allTransactions = txnsData.transactions.map(GraphQLMappings.mapTransaction)
             let currentMonthTxns = currentMonthTransactions(allTransactions)
             guard let context = buildContext(from: currentMonthTxns, allTransactions: allTransactions) else {
                 insights = []
