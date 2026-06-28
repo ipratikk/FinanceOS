@@ -43,3 +43,19 @@ mutation Recategorize($transactionId: ID!, $category: String!) {
     category
   }
 }
+
+mutation DeleteTransaction($id: ID!) {
+  deleteTransaction(id: $id)
+}
+
+mutation CreateBank($input: CreateBankInput!) {
+  createBank(input: $input) {
+    id
+    name
+    code
+  }
+}
+
+mutation ClearAllData {
+  clearAllData
+}
