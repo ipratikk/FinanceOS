@@ -151,8 +151,7 @@ struct DetailRouter: View {
             )
         case .analytics:
             AnalyticsView(viewModel: AnalyticsViewModel(
-                spendingService: appContainer.spendingService,
-                transactionRepository: appContainer.transactionRepository,
+                graphQLClient: appContainer.graphQLClient,
                 intelligenceService: intelligence,
                 aggregator: AnalyticsAggregatorService()
             ))

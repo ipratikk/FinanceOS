@@ -1,5 +1,6 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceOSAPI
 import FinanceUI
 import Foundation
 
@@ -15,19 +16,16 @@ class AnalyticsViewModel: AsyncLoadable {
     var isLoading = false
     var error: String?
 
-    private let spendingService: any SpendingServiceProtocol
-    private let transactionRepository: any TransactionReader
+    private let graphQLClient: ApolloGraphQLClient
     private let intelligenceService: (any TransactionIntelligenceService)?
     private let aggregator: any AnalyticsAggregatorProtocol
 
     init(
-        spendingService: any SpendingServiceProtocol,
-        transactionRepository: any TransactionReader,
+        graphQLClient: ApolloGraphQLClient,
         intelligenceService: (any TransactionIntelligenceService)? = nil,
         aggregator: any AnalyticsAggregatorProtocol
     ) {
-        self.spendingService = spendingService
-        self.transactionRepository = transactionRepository
+        self.graphQLClient = graphQLClient
         self.intelligenceService = intelligenceService
         self.aggregator = aggregator
     }
@@ -58,31 +56,50 @@ class AnalyticsViewModel: AsyncLoadable {
             self.error = error.localizedDescription
             FinanceLogger.userInterface.logError("Analytics load failed", caughtError: error, [:])
         }, {
-            monthlySummaries = try await spendingService.monthlySummary(months: 6)
-            let allTransactions = try await transactionRepository.fetchTransactions()
+            let from = Calendar.current.date(byAdding: .month, value: -6, to: Date())
+            let fromStr: GraphQLNullable<String> = from.map { .some(ISO8601DateFormatter().string(from: $0)) } ?? .none
+
+            async let analyticsResult = graphQLClient.fetch(query: GetAnalyticsQuery(
+                ledgerId: .none, from: fromStr, to: .none
+            ))
+            async let txnsResult = graphQLClient.fetch(query: GetTransactionsQuery(
+                ledgerId: .none, filter: .none, limit: .none
+            ))
+            let (analyticsData, txnsData) = try await (analyticsResult, txnsResult)
+
+            monthlySummaries = analyticsData.analytics.byMonth.map(GraphQLMappings.mapMonthly)
             totalOutflow = monthlySummaries.reduce(0) { $0 + $1.totalDebit }
             outflowChange = computeOutflowChange()
+
+            let allTransactions = txnsData.transactions.map(GraphQLMappings.mapTransaction)
             merchantSummaries = aggregator.aggregateMerchants(allTransactions)
             categorySpend = aggregator.aggregateCategorySpend(allTransactions)
+
             if let service = intelligenceService {
                 insights = await (try? service.generateInsights(for: allTransactions)) ?? []
                 let fluctTxns = aggregator.fluctuationTransactions(from: insights, all: allTransactions)
-                recentFluctuations = fluctTxns.map { txn in
-                    FluctuationRow(
-                        id: txn.id,
-                        merchantName: txn.merchantName ?? txn.description,
-                        dateText: FormatterCache.dayMonthCommaYear.string(from: txn.postedAt),
-                        currencyCode: txn.currencyCode,
-                        amountText: MoneyFormatting.formatWithSign(
-                            minorUnits: txn.amountMinorUnits,
-                            isDebit: txn.transactionType == .debit
-                        ),
-                        isDebit: txn.transactionType == .debit,
-                        sourceTransaction: txn
-                    )
-                }
+                recentFluctuations = mapFluctuations(fluctTxns)
             }
         })
+    }
+
+    // MARK: - Private Helpers
+
+    private func mapFluctuations(_ transactions: [Transaction]) -> [FluctuationRow] {
+        transactions.map { txn in
+            FluctuationRow(
+                id: txn.id,
+                merchantName: txn.merchantName ?? txn.description,
+                dateText: FormatterCache.dayMonthCommaYear.string(from: txn.postedAt),
+                currencyCode: txn.currencyCode,
+                amountText: MoneyFormatting.formatWithSign(
+                    minorUnits: txn.amountMinorUnits,
+                    isDebit: txn.transactionType == .debit
+                ),
+                isDebit: txn.transactionType == .debit,
+                sourceTransaction: txn
+            )
+        }
     }
 
     private func computeOutflowChange() -> Double? {
