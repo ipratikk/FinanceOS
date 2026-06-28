@@ -73,12 +73,10 @@ struct CardTransactionsDestinationView: View {
 struct LedgerDetailDestinationView: View {
     @State private var viewModel: LedgerDetailViewModel
 
-    init(ledgerId: UUID) {
-        let container = AppContainer.shared
+    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
         _viewModel = State(initialValue: LedgerDetailViewModel(
             ledgerId: ledgerId,
-            ledgerRepository: container.ledgerRepository,
-            bankRepository: container.bankRepository
+            graphQLClient: graphQLClient
         ))
     }
 
