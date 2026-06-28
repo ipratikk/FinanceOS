@@ -46,7 +46,7 @@ struct FinanceOSMacApp: App {
         }
 
         Settings {
-            SettingsView(viewModel: SettingsViewModel(bankRepository: AppContainer.shared.bankRepository))
+            SettingsView(viewModel: SettingsViewModel(graphQLClient: AppContainer.shared.graphQLClient))
                 .preferredColorScheme(.dark)
         }
     }
