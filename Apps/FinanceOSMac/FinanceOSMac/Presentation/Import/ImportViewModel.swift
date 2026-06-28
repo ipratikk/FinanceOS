@@ -23,8 +23,6 @@ final class ImportViewModel {
 
     let importSession: ImportSession
     let graphQLClient: ApolloGraphQLClient
-    let bankRepository: any BankRepository
-    let ledgerRepository: any LedgerRepository
     let categorizationScheduler: CategorizationScheduler?
     let fileParser: any StatementParsingProtocol
     let duplicateDetector: any DuplicateDetectingProtocol
@@ -36,8 +34,6 @@ final class ImportViewModel {
     var lastImportResult: ImportResult?
     var currentFileIndex: Int = 0
     var totalFilesToParse: Int = 0
-
-    var accountMatcher: AccountMatcher
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(importSession.fileURLs, importSession.parsedStatements).map { ($0, $1) }
@@ -84,8 +80,6 @@ final class ImportViewModel {
 
     init(
         graphQLClient: ApolloGraphQLClient,
-        bankRepository: any BankRepository,
-        ledgerRepository: any LedgerRepository,
         initialTarget: TransactionImportTarget? = nil,
         categorizationScheduler: CategorizationScheduler? = nil,
         fileParser: (any StatementParsingProtocol)? = nil,
@@ -93,12 +87,9 @@ final class ImportViewModel {
     ) {
         importSession = ImportSession()
         self.graphQLClient = graphQLClient
-        self.bankRepository = bankRepository
-        self.ledgerRepository = ledgerRepository
         self.categorizationScheduler = categorizationScheduler
         self.fileParser = fileParser ?? ImportFileParser()
         self.duplicateDetector = duplicateDetector ?? ImportDuplicateDetector()
-        accountMatcher = AccountMatcher(ledgerRepository: ledgerRepository, bankRepository: bankRepository)
         if let initialTarget {
             importSession.selectedTarget = initialTarget
         }
