@@ -21,8 +21,23 @@ query GetLedgers {
   }
 }
 
-query GetTransactions($ledgerId: ID, $filter: TransactionFilter) {
-  transactions(ledgerId: $ledgerId, filter: $filter) {
+query GetLedger($id: ID!) {
+  ledger(id: $id) {
+    id
+    displayName
+    kind
+    last4
+    bank {
+      id
+      name
+      code
+    }
+    balance
+  }
+}
+
+query GetTransactions($ledgerId: ID, $filter: TransactionFilter, $limit: Int) {
+  transactions(ledgerId: $ledgerId, filter: $filter, limit: $limit) {
     id
     date
     narration
