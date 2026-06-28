@@ -185,8 +185,7 @@ struct DetailRouter: View {
         case let .cardTransactions(ledgerId):
             CardTransactionsDestinationView(
                 ledgerId: ledgerId,
-                transactionRepository: appContainer.transactionRepository,
-                ledgerRepository: appContainer.ledgerRepository
+                graphQLClient: appContainer.graphQLClient
             )
         case let .ledgerDetail(ledgerId):
             LedgerDetailDestinationView(ledgerId: ledgerId)
