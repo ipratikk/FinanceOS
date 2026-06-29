@@ -5,8 +5,7 @@ import Foundation
 public final class ApolloGraphQLClient: @unchecked Sendable {
     private let client: ApolloClient
 
-    // swiftlint:disable:next force_unwrapping
-    public init(url: URL = URL(string: "http://localhost:4000/graphql")!) {
+    public init(url: URL = URL(string: "http://localhost:4000/graphql") ?? URL(fileURLWithPath: "/")) {
         let store = ApolloStore()
         let provider = DefaultInterceptorProvider(store: store)
         let transport = RequestChainNetworkTransport(

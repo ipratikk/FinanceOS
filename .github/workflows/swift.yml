@@ -287,6 +287,7 @@ jobs:
           echo "📦 Resolving package dependencies..."
 
           for package in Packages/*/; do
+            [[ -f "${package}Package.swift" ]] || continue
             package_name=$(basename "$package")
             echo "  Resolving $package_name..."
             swift package resolve --package-path "$package"
