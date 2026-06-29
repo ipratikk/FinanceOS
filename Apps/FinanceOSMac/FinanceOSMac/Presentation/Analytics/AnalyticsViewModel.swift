@@ -1,5 +1,4 @@
 import FinanceCore
-import FinanceIntelligence
 import FinanceOSAPI
 import FinanceUI
 import Foundation
@@ -9,24 +8,20 @@ class AnalyticsViewModel: AsyncLoadable {
     var monthlySummaries: [MonthlySpendingSummary] = []
     var merchantSummaries: [MerchantSummary] = []
     var categorySpend: [CategorySpendSummary] = []
-    var insights: [TransactionInsight] = []
-    var recentFluctuations: [FluctuationRow] = []
+    var insights: [Insight] = []
     var totalOutflow: Int64 = 0
     var outflowChange: Double?
     var isLoading = false
     var error: String?
 
     private let graphQLClient: ApolloGraphQLClient
-    private let intelligenceService: (any TransactionIntelligenceService)?
     private let aggregator: any AnalyticsAggregatorProtocol
 
     init(
         graphQLClient: ApolloGraphQLClient,
-        intelligenceService: (any TransactionIntelligenceService)? = nil,
         aggregator: any AnalyticsAggregatorProtocol
     ) {
         self.graphQLClient = graphQLClient
-        self.intelligenceService = intelligenceService
         self.aggregator = aggregator
     }
 
@@ -74,33 +69,10 @@ class AnalyticsViewModel: AsyncLoadable {
             let allTransactions = txnsData.transactions.map(GraphQLMappings.mapTransaction)
             merchantSummaries = aggregator.aggregateMerchants(allTransactions)
             categorySpend = aggregator.aggregateCategorySpend(allTransactions)
-
-            if let service = intelligenceService {
-                insights = await (try? service.generateInsights(for: allTransactions)) ?? []
-                let fluctTxns = aggregator.fluctuationTransactions(from: insights, all: allTransactions)
-                recentFluctuations = mapFluctuations(fluctTxns)
-            }
         })
     }
 
     // MARK: - Private Helpers
-
-    private func mapFluctuations(_ transactions: [Transaction]) -> [FluctuationRow] {
-        transactions.map { txn in
-            FluctuationRow(
-                id: txn.id,
-                merchantName: txn.merchantName ?? txn.description,
-                dateText: FormatterCache.dayMonthCommaYear.string(from: txn.postedAt),
-                currencyCode: txn.currencyCode,
-                amountText: MoneyFormatting.formatWithSign(
-                    minorUnits: txn.amountMinorUnits,
-                    isDebit: txn.transactionType == .debit
-                ),
-                isDebit: txn.transactionType == .debit,
-                sourceTransaction: txn
-            )
-        }
-    }
 
     private func computeOutflowChange() -> Double? {
         guard monthlySummaries.count >= 2 else { return nil }

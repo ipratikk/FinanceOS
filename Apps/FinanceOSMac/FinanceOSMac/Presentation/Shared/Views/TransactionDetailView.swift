@@ -1,18 +1,18 @@
 import FinanceCore
-import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
 struct TransactionDetailView: View {
     let row: TransactionRow
+    let graphQLClient: ApolloGraphQLClient?
     var onCorrected: ((UUID, String) -> Void)?
     @Environment(\.dismiss) var dismiss
-    @Environment(\.transactionIntelligence) private var intelligence
     @State private var showCategoryPicker = false
     @State private var viewModel: TransactionDetailViewModel
 
-    init(row: TransactionRow, onCorrected: ((UUID, String) -> Void)? = nil) {
+    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient? = nil, onCorrected: ((UUID, String) -> Void)? = nil) {
         self.row = row
+        self.graphQLClient = graphQLClient
         self.onCorrected = onCorrected
         _viewModel = State(initialValue: TransactionDetailViewModel(row: row))
     }
@@ -28,7 +28,6 @@ struct TransactionDetailView: View {
                 .padding(.bottom, AppSpacing.xl)
             }
             .background(AppColors.surface2)
-            .task { await viewModel.loadIntelligence() }
             .navigationTitle(row.displayTitle)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -110,9 +109,6 @@ private extension TransactionDetailView {
             dateTimeSection
             sourceSection
             categorySection
-            if viewModel.recurringPattern != nil || viewModel.person != nil {
-                intelligenceSection
-            }
             if viewModel.showNarration {
                 narrationSection
             }
@@ -161,7 +157,7 @@ private extension TransactionDetailView {
                     }
                 }
                 Spacer()
-                if intelligence != nil, row.sourceTransaction != nil {
+                if row.sourceTransaction != nil, graphQLClient != nil {
                     Button(action: { showCategoryPicker = true }, label: {
                         HStack(spacing: 4) {
                             FDSLabel("Change")
@@ -193,115 +189,17 @@ private extension TransactionDetailView {
     }
 
     /// Category picker as NavigationStack destination — no FDSSheet wrapper
-    var categoryPickerDestination: some View {
-        CategoryPickerDestination(
-            row: row,
-            onCorrected: { id, catId in
-                viewModel.applyCorrection(transactionId: id, newCategoryId: catId)
-                onCorrected?(id, catId)
-                showCategoryPicker = false
-            }
-        )
-    }
-}
-
-// MARK: - Intelligence Section
-
-private extension TransactionDetailView {
-    var intelligenceSection: some View {
-        sectionCard(header: "Intelligence") {
-            VStack(spacing: 0) {
-                if let pattern = viewModel.recurringPattern {
-                    recurringRow(pattern)
+    @ViewBuilder var categoryPickerDestination: some View {
+        if let client = graphQLClient {
+            CategoryPickerDestination(
+                row: row,
+                graphQLClient: client,
+                onCorrected: { id, catId in
+                    viewModel.applyCorrection(transactionId: id, newCategoryId: catId)
+                    onCorrected?(id, catId)
+                    showCategoryPicker = false
                 }
-                if viewModel.recurringPattern != nil, viewModel.person != nil {
-                    Divider().opacity(0.1)
-                }
-                if let person = viewModel.person {
-                    personRow(person)
-                }
-            }
-        }
-    }
-
-    func recurringRow(_ pattern: RecurringPattern) -> some View {
-        HStack(spacing: AppSpacing.md) {
-            Image(systemName: "arrow.trianglehead.2.clockwise")
-                .font(AppTypography.captionLgSemibold)
-                .foregroundStyle(AppColors.accent)
-                .frame(width: 20)
-            VStack(alignment: .leading, spacing: 3) {
-                HStack(spacing: AppSpacing.compact) {
-                    FDSLabel(pattern.cadence.rawValue.replacingOccurrences(of: "_", with: "-").capitalized)
-                        .font(AppTypography.bodySmSemibold)
-                        .foregroundStyle(AppColors.textPrimary)
-                    FDSLabel("·")
-                        .foregroundStyle(.tertiary)
-                    FDSLabel(FormatterCache.formatCurrency(minorUnits: pattern.averageAmountMinorUnits))
-                        .font(AppTypography.bodySmMedium)
-                        .foregroundStyle(AppColors.textSecondary)
-                    FDSLabel("·")
-                        .foregroundStyle(.tertiary)
-                    FDSLabel("\(pattern.occurrenceCount) occurrences")
-                        .font(AppTypography.captionLg)
-                        .foregroundStyle(.tertiary)
-                }
-                if let next = viewModel.nextExpectedDate {
-                    FDSLabel("Next expected: \(FormatterCache.fullDayDate.string(from: next))")
-                        .font(AppTypography.captionLg)
-                        .foregroundStyle(AppColors.textSecondary)
-                }
-            }
-            Spacer()
-            confidencePill(pattern.confidence)
-        }
-        .padding(AppSpacing.md)
-    }
-
-    func personRow(_ person: Person) -> some View {
-        HStack(spacing: AppSpacing.md) {
-            Image(systemName: viewModel.relationshipIcon)
-                .font(AppTypography.captionLgSemibold)
-                .foregroundStyle(.tertiary)
-                .frame(width: 20)
-            VStack(alignment: .leading, spacing: 3) {
-                FDSLabel(person.canonicalName)
-                    .font(AppTypography.bodySmSemibold)
-                    .foregroundStyle(AppColors.textPrimary)
-                HStack(spacing: AppSpacing.compact) {
-                    if let rel = viewModel.relationship {
-                        FDSLabel(rel.type.rawValue.replacingOccurrences(of: "_", with: " ").capitalized)
-                            .font(AppTypography.captionLgSemibold)
-                            .foregroundStyle(AppColors.accent)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(AppColors.accent.opacity(0.12))
-                            .clipShape(Capsule())
-                    }
-                    FDSLabel("\(person.transactionCount) transactions")
-                        .font(AppTypography.captionLg)
-                        .foregroundStyle(.tertiary)
-                }
-            }
-            Spacer()
-            if let rel = viewModel.relationship {
-                confidencePill(rel.confidence)
-            }
-        }
-        .padding(AppSpacing.md)
-    }
-
-    @ViewBuilder
-    func confidencePill(_ confidence: Double) -> some View {
-        let policy = ConfidenceDisplayPolicy()
-        if case let .label(text) = policy.displayLabel(rawScore: confidence) {
-            FDSLabel(text)
-                .font(AppTypography.captionSmSemibold)
-                .foregroundStyle(.tertiary)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(AppColors.surface.opacity(0.6))
-                .clipShape(Capsule())
+            )
         }
     }
 }

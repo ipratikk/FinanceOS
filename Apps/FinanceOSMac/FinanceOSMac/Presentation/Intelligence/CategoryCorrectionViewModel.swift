@@ -1,5 +1,5 @@
 import FinanceCore
-import FinanceIntelligence
+import FinanceOSAPI
 import Foundation
 import Observation
 
@@ -7,9 +7,9 @@ import Observation
 @MainActor
 final class CategoryCorrectionViewModel {
     private let transaction: FinanceCore.Transaction?
-    private let previousPrediction: CategoryPrediction?
     private let originalCategoryId: String?
     private let onCorrected: ((UUID, String) -> Void)?
+    private let graphQLClient: ApolloGraphQLClient
 
     var selectedCategoryId: String
     var isSaving = false
@@ -17,19 +17,19 @@ final class CategoryCorrectionViewModel {
     init(
         transaction: FinanceCore.Transaction,
         currentCategoryId: String?,
-        previousPrediction: CategoryPrediction?,
+        graphQLClient: ApolloGraphQLClient,
         onCorrected: ((UUID, String) -> Void)?
     ) {
         self.transaction = transaction
-        self.previousPrediction = previousPrediction
+        self.graphQLClient = graphQLClient
         originalCategoryId = currentCategoryId
         self.onCorrected = onCorrected
         selectedCategoryId = currentCategoryId ?? "uncategorized"
     }
 
-    init(row: TransactionRow, onCorrected: ((UUID, String) -> Void)?) {
+    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient, onCorrected: ((UUID, String) -> Void)?) {
         transaction = row.sourceTransaction
-        previousPrediction = nil
+        self.graphQLClient = graphQLClient
         originalCategoryId = row.categoryId
         self.onCorrected = onCorrected
         selectedCategoryId = row.categoryId ?? "uncategorized"
@@ -39,21 +39,20 @@ final class CategoryCorrectionViewModel {
         isSaving || selectedCategoryId == originalCategoryId
     }
 
-    func save(
-        intelligence: (any TransactionIntelligenceService)?,
-        onDismiss: @escaping () -> Void
-    ) async {
+    func save(onDismiss: @escaping () -> Void) async {
         guard let txn = transaction else { return }
         isSaving = true
-        if let service = intelligence {
-            try? await service.learn(
-                transaction: txn,
-                correctedCategoryId: selectedCategoryId,
-                correctedMerchant: nil,
-                previousPrediction: previousPrediction
+        do {
+            _ = try await graphQLClient.perform(
+                mutation: RecategorizeMutation(
+                    transactionId: txn.id.uuidString,
+                    category: selectedCategoryId
+                )
             )
+            onCorrected?(txn.id, selectedCategoryId)
+        } catch {
+            FinanceLogger.userInterface.logError("Failed to save category correction", caughtError: error, [:])
         }
-        onCorrected?(txn.id, selectedCategoryId)
         isSaving = false
         onDismiss()
     }

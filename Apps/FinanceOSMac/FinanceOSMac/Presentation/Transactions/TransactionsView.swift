@@ -1,17 +1,18 @@
 import FinanceCore
-import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
 struct TransactionsView: View {
     @State private var viewModel: TransactionsViewModel
+    let graphQLClient: ApolloGraphQLClient
     @State private var showDatePopover = false
     @State private var showCategoryPopover = false
     @State private var selectedTransaction: TransactionRow?
     @State private var transactionPendingDelete: TransactionRow?
 
-    init(viewModel: TransactionsViewModel) {
+    init(viewModel: TransactionsViewModel, graphQLClient: ApolloGraphQLClient) {
         _viewModel = State(initialValue: viewModel)
+        self.graphQLClient = graphQLClient
     }
 
     var body: some View {
@@ -42,7 +43,7 @@ struct TransactionsView: View {
         )
         .task { await viewModel.loadTransactions() }
         .sheet(item: $selectedTransaction) { row in
-            TransactionDetailView(row: row, onCorrected: { id, catId in
+            TransactionDetailView(row: row, graphQLClient: graphQLClient, onCorrected: { id, catId in
                 Task { await viewModel.applyCorrection(transactionId: id, correctedCategoryId: catId) }
             })
         }
@@ -72,13 +73,6 @@ struct TransactionsView: View {
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button(action: { viewModel.runIntelligencePipeline() }, label: {
-                    Label("Run Intelligence", systemImage: "sparkles")
-                })
-                .disabled(viewModel.isPipelineRunning || viewModel.transactionRows.isEmpty)
-                .help("Analyze all transactions: categorize, build knowledge graph, detect patterns")
-            }
-            ToolbarItem(placement: .primaryAction) {
                 Button(action: { viewModel.runRecalculation() }, label: {
                     if viewModel.isRecalculating {
                         Label("Validating…", systemImage: "arrow.clockwise")
@@ -101,17 +95,6 @@ struct TransactionsView: View {
         } message: {
             if let result = viewModel.recalculationResult {
                 Text(result.summaryMessage)
-            }
-        }
-        .overlay {
-            if viewModel.isPipelineRunning {
-                IntelligencePipelineOverlay(
-                    processed: viewModel.pipelineProcessed,
-                    total: viewModel.pipelineTotal,
-                    currentStage: viewModel.pipelineStage,
-                    onCancel: { viewModel.cancelPipeline() }
-                )
-                .zIndex(100)
             }
         }
     }

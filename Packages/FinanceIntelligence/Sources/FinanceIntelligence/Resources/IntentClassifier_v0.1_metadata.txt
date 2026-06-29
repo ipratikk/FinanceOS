@@ -1,6 +1,0 @@
-Classes: cash_withdrawal,cashback,credit_card_payment,education,emi_payment,entertainment,food,fuel,grocery,healthcare,income,insurance,investment,loan_payment,peer_transfer,refund,rent,salary,self_transfer,shopping,subscription,travel,utilities
-Vectorizer type: TfidfVectorizer
-Max features: 5000
-Ngram range: (1, 2)
-Min df: 2
-Max df: 0.95

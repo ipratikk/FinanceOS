@@ -1,5 +1,4 @@
 import FinanceCore
-import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
@@ -7,16 +6,18 @@ import SwiftUI
 /// Used inside TransactionDetailView's NavigationStack — no FDSSheet wrapper.
 struct CategoryPickerDestination: View {
     let row: TransactionRow
+    let graphQLClient: ApolloGraphQLClient
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.transactionIntelligence) private var intelligence
     @State private var viewModel: CategoryCorrectionViewModel
 
     private let taxonomy = CategoryTaxonomy.current
 
-    init(row: TransactionRow, onCorrected: ((UUID, String) -> Void)? = nil) {
+    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient, onCorrected: ((UUID, String) -> Void)? = nil) {
         self.row = row
+        self.graphQLClient = graphQLClient
         _viewModel = State(initialValue: CategoryCorrectionViewModel(
             row: row,
+            graphQLClient: graphQLClient,
             onCorrected: onCorrected
         ))
     }
@@ -36,7 +37,7 @@ struct CategoryPickerDestination: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
-                    Task { await viewModel.save(intelligence: intelligence, onDismiss: { dismiss() }) }
+                    Task { await viewModel.save(onDismiss: { dismiss() }) }
                 }, label: {
                     if viewModel.isSaving {
                         ProgressView().controlSize(.small)
