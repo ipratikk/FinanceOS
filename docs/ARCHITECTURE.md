@@ -27,11 +27,11 @@ Packages/
 
 ---
 
-# Current Repositories
+# Current Data Access
 
-* BankRepository / GRDBBankRepository
-* LedgerRepository / GRDBLedgerRepository
-* TransactionRepository / GRDBTransactionRepository
+* `ApolloGraphQLClient` — all app data (banks, ledgers, transactions)
+* `TransactionRepository` / `GRDBTransactionRepository` — local only, used by `FinanceIntelligenceCLI`
+* Intelligence repos (GRDB): persons, relationships, recurring patterns, graph, feedback
 
 ---
 
@@ -62,26 +62,25 @@ Unified Account/Card models into single Ledger model:
 
 SwiftUI View
 → ViewModel
-→ Repository
-→ GRDB
-→ SQLite
+→ ApolloGraphQLClient
+→ financeos-backend GraphQL API
+
+Intelligence pipeline (local):
+→ TransactionIntelligenceService
+→ GRDB SQLite (persons, relationships, recurring patterns, graph, feedback)
 
 ---
 
 # Current Completed Features
 
-* Database initialization & migrations (v7_ledger_unification)
-* Bank repository with seeding
-* Ledger model with 6 LedgerKind variants
-* Transaction model with ledgerId foreign key
-* Deterministic deduplication via UNIQUE INDEX on (ledgerId, sourceFingerprint) — ledger-scoped
-* Import pipeline: ParsedStatement → Transaction with proper sign convention
-* Target matching by last4 digits (accountLast4/cardLast4)
-* Full UI layer: accounts, cards, transactions views all using Ledger
-* AppContainer dependency composition with LedgerRepository
-* Comprehensive E2E import tests (5 tests, full pipeline coverage)
-* Repository tests (7 tests, CRUD + filtering + constraints)
-* Migration tests (4 tests, backfill correctness)
+* GraphQL thin client (Apollo iOS) — all CRUD via backend
+* Bank, Ledger, Transaction data owned by financeos-backend
+* Statement upload via `uploadStatement` GraphQL mutation
+* Target matching by last4 digits (UI-side, pre-upload)
+* Full UI layer: accounts, cards, transactions views via GraphQL
+* AppContainer vends `graphQLClient` to all ViewModels
+* Local intelligence pipeline: categorization, merchant, person, recurring pattern detection
+* CategorizationScheduler: fetches from GraphQL, posts category back via `RecategorizeMutation`
 
 ---
 

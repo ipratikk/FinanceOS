@@ -26,7 +26,7 @@ struct FinanceOSMacApp: App {
                         let service = await TransactionIntelligenceServiceImpl(configuration: config)
                         intelligenceService = service
                         let scheduler = CategorizationScheduler(
-                            transactionRepository: AppContainer.shared.transactionRepository,
+                            graphQLClient: AppContainer.shared.graphQLClient,
                             intelligenceService: service
                         )
                         categorizationScheduler = scheduler

@@ -11,8 +11,7 @@ final class CardTransactionsViewSnapshotTests: SnapshotTestable {
     }
 
     func test_card_transactions_view() {
-        let transactionRepo = MockTransactionRepository()
-        let viewModel = CardTransactionsViewModel(transactionRepository: transactionRepo)
+        let viewModel = CardTransactionsViewModel(graphQLClient: ApolloGraphQLClient())
         viewModel.transactionRows = PreviewTransactions.samples.map { txn in
             TransactionRow(
                 id: txn.id,

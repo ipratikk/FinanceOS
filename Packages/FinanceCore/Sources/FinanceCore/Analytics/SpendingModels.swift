@@ -1,18 +1,5 @@
 import Foundation
 
-/// Async read-only contract for analytics data consumed by the dashboard and analytics ViewModels.
-/// Implementations (e.g. `GRDBSpendingService`) may aggregate on-the-fly from raw transactions.
-public protocol SpendingServiceProtocol: Sendable {
-    /// Returns per-month debit/credit totals, optionally capped to the last `months` months.
-    func monthlySummary(months: Int?) async throws -> [MonthlySpendingSummary]
-    /// Returns debit/credit totals and transaction count for the current calendar month.
-    func currentMonthTotals() async throws -> SpendingTotals
-    /// Returns the most recent `limit` transactions ordered by posting date descending.
-    func recentTransactions(limit: Int) async throws -> [Transaction]
-    /// Returns daily net-worth snapshots, optionally limited to the last `months` months.
-    func netWorthTimeSeries(months: Int?) async throws -> [NetWorthPoint]
-}
-
 // MARK: - Chart Models
 
 /// High-level spending categories used for classification and analytics charts.

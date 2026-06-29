@@ -8,7 +8,7 @@
 import Foundation
 
 /// Composition root for the application's object graph.
-/// Owns the GraphQL client and the transaction repository (used by CategorizationScheduler).
+/// Owns the GraphQL client; all data access goes through the backend via GraphQL.
 /// Access via `AppContainer.shared` from ViewModels; never inject individual GRDB types directly.
 @MainActor
 public final class AppContainer {
@@ -23,11 +23,5 @@ public final class AppContainer {
         return ApolloGraphQLClient(url: URL(string: urlString)!)
     }()
 
-    /// Used only by CategorizationScheduler in FinanceIntelligence (via FinanceOSMacApp)
-    public let transactionRepository: any TransactionRepository
-
-    private init() {
-        let databaseManager = DatabaseManager.shared
-        transactionRepository = GRDBTransactionRepository(dbQueue: databaseManager.dbQueue)
-    }
+    private init() {}
 }

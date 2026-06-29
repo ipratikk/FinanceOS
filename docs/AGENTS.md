@@ -3,8 +3,8 @@
 ## Stack
 
 * SwiftUI
-* GRDB
-* SQLite
+* Apollo GraphQL (thin client)
+* GRDB / SQLite (intelligence layer only)
 * Swift Packages
 * Observation framework
 
@@ -14,46 +14,40 @@
 
 SwiftUI View
 → ViewModel
-→ Repository Protocol
-→ GRDB Repository
-→ SQLite
+→ ApolloGraphQLClient
+→ financeos-backend (GraphQL API)
+
+Local intelligence pipeline:
+→ TransactionIntelligenceService
+→ GRDB (persons, relationships, patterns, graph, feedback)
 
 ---
 
 # Core Rules
 
-* Views never access GRDB directly
-* ViewModels never contain SQL
-* Repositories encapsulate persistence
-* DatabaseManager owns database lifecycle
-* AppContainer owns dependency composition
-* Prefer protocol abstractions for repositories/services
-* Keep UI layer free from database dependencies
-* Parser layer must remain isolated from persistence/UI
+* Views never access repositories or GraphQL client directly
+* ViewModels call GraphQL via `ApolloGraphQLClient`
+* `AppContainer` owns `graphQLClient`; all ViewModels receive it via init injection
+* `DatabaseManager` owns local SQLite lifecycle (intelligence data only)
+* Parser layer remains isolated from persistence/UI
+* Intelligence pipeline (FinanceIntelligence) remains local-GRDB-backed
 
 ---
 
 # Naming Conventions
 
-## Protocols
+## GraphQL Client
 
-* BankRepository
-* LedgerRepository
-* TransactionRepository
+* ApolloGraphQLClient
 
-## Concrete Implementations
+## Local Repositories (intelligence only)
 
-* GRDBBankRepository
-* GRDBLedgerRepository
+* TransactionRepository (protocol, used by FinanceIntelligenceCLI)
 * GRDBTransactionRepository
-
-## Database Handle
-
-* dbQueue
 
 ## Composition Root
 
-* AppContainer
+* AppContainer (vends `graphQLClient`)
 
 ---
 

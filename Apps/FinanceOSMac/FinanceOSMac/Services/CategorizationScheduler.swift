@@ -1,19 +1,20 @@
 import FinanceCore
 import FinanceIntelligence
+import FinanceOSAPI
 import SwiftUI
 
 /// Runs background ML categorization on all uncategorized transactions.
 /// Safe to call concurrently — an `isRunning` guard prevents overlapping passes.
 actor CategorizationScheduler {
-    private let transactionRepository: any TransactionRepository
+    private let graphQLClient: ApolloGraphQLClient
     private let intelligenceService: any TransactionIntelligenceService
     private var isRunning = false
 
     init(
-        transactionRepository: any TransactionRepository,
+        graphQLClient: ApolloGraphQLClient,
         intelligenceService: any TransactionIntelligenceService
     ) {
-        self.transactionRepository = transactionRepository
+        self.graphQLClient = graphQLClient
         self.intelligenceService = intelligenceService
     }
 
@@ -24,10 +25,13 @@ actor CategorizationScheduler {
         isRunning = true
         defer { isRunning = false }
         do {
-            let all = try await transactionRepository.fetchTransactions()
+            let data = try await graphQLClient.fetch(
+                query: GetTransactionsQuery(ledgerId: .none, filter: .none, limit: .none)
+            )
+            let all = data.transactions.map { mapTransaction($0) }
             guard !all.isEmpty else { return }
 
-            // Enrich ALL in one pass: uncategorized get categoryId persisted;
+            // Enrich ALL in one pass: uncategorized get categoryId persisted via GraphQL mutation;
             // all are collected for postProcessBatch (needs full history for recurring detection).
             // Per-transaction error isolation — one failure does not abort the batch.
             var enriched: [EnrichedTransaction] = []
@@ -35,18 +39,14 @@ actor CategorizationScheduler {
             for txn in all {
                 do {
                     let result = try await intelligenceService.analyzeEnriched(txn, context: .empty)
-                    try? await transactionRepository.updateEnrichmentProvenance(
-                        id: txn.id,
-                        EnrichmentProvenance(
-                            categoryId: result.categoryPrediction.categoryId,
-                            merchantName: result.merchantCandidate.canonicalName,
-                            intentId: result.intentPrediction.intent.rawValue,
-                            resolvedPersonId: result.resolvedEntities?.personId?.uuidString,
-                            intelligenceSource: result.categoryPrediction.source.rawValue,
-                            intelligenceModelVersion: result.categoryPrediction.modelVersion,
-                            intelligenceConfigVersion: result.categoryPrediction.configVersion
+                    if let categoryId = result.categoryPrediction.categoryId, !categoryId.isEmpty {
+                        try? await graphQLClient.perform(
+                            mutation: RecategorizeMutation(
+                                transactionId: txn.id.uuidString,
+                                category: categoryId
+                            )
                         )
-                    )
+                    }
                     enriched.append(result)
                 } catch {
                     FinanceLogger.transactions.logError(
@@ -60,6 +60,33 @@ actor CategorizationScheduler {
         } catch {
             FinanceLogger.transactions.logError("Background categorization failed", caughtError: error, [:])
         }
+    }
+
+    private nonisolated func mapTransaction(_ item: GetTransactionsQuery.Data.Transaction) -> Transaction {
+        let rawAmount = Int64(item.amount * 100)
+        let amountMinorUnits = abs(rawAmount)
+        let transactionType: TransactionType = item.amount < 0 ? .debit : .credit
+        return Transaction(
+            id: UUID(uuidString: item.id) ?? UUID(),
+            ledgerId: UUID(uuidString: item.ledger.id),
+            postedAt: parseDate(item.date),
+            description: item.narration,
+            amountMinorUnits: amountMinorUnits,
+            currencyCode: "INR",
+            transactionType: transactionType,
+            sourceFingerprint: item.sourceFingerprint,
+            categoryId: item.category,
+            merchantName: item.merchant
+        )
+    }
+
+    private nonisolated func parseDate(_ string: String) -> Date {
+        let iso8601Full = ISO8601DateFormatter()
+        iso8601Full.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = iso8601Full.date(from: string) { return date }
+        let iso8601Short = ISO8601DateFormatter()
+        iso8601Short.formatOptions = [.withInternetDateTime]
+        return iso8601Short.date(from: string) ?? Date()
     }
 }
 
