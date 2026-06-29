@@ -230,6 +230,14 @@ jobs:
 
               [[ -z "$file" ]] && continue
 
+              # Skip files in .swiftlint.yml excluded paths — direct path bypasses config exclusions
+              if [[ "$file" == Apps/FinanceOSMac/GraphQL/Generated/* ]] || \
+                 [[ "$file" == Packages/*/Generated/* ]] || \
+                 [[ "$file" == Packages/**/.build/* ]]; then
+                echo "⏭️ Skipping excluded file: $file"
+                continue
+              fi
+
               swiftlint lint \
                 --strict \
                 --quiet \
