@@ -39,9 +39,8 @@ actor CategorizationScheduler {
             for txn in all {
                 do {
                     let result = try await intelligenceService.analyzeEnriched(txn, context: .empty)
-                    let categoryId = result.categoryPrediction.categoryId
-                    if !categoryId.isEmpty {
-                        _ = try? await graphQLClient.perform(
+                    if let categoryId = result.categoryPrediction.categoryId, !categoryId.isEmpty {
+                        try? await graphQLClient.perform(
                             mutation: RecategorizeMutation(
                                 transactionId: txn.id.uuidString,
                                 category: categoryId
@@ -63,7 +62,7 @@ actor CategorizationScheduler {
         }
     }
 
-    private nonisolated func mapTransaction(_ item: GetTransactionsQuery.Data.Transaction) -> FinanceCore.Transaction {
+    private nonisolated func mapTransaction(_ item: GetTransactionsQuery.Data.Transaction) -> Transaction {
         let rawAmount = Int64(item.amount * 100)
         let amountMinorUnits = abs(rawAmount)
         let transactionType: TransactionType = item.amount < 0 ? .debit : .credit
