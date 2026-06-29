@@ -11,22 +11,11 @@ final class AccountsViewSnapshotTests: SnapshotTestable {
     }
 
     func test_accounts_view() {
-        let ledgerRepo = MockLedgerRepository()
-        let bankRepo = MockBankRepository()
-        let transactionRepo = MockTransactionRepository()
-        let viewModel = AccountsViewModel(
-            ledgerRepository: ledgerRepo,
-            bankRepository: bankRepo,
-            transactionRepository: transactionRepo
-        )
+        let viewModel = AccountsViewModel(graphQLClient: ApolloGraphQLClient())
         viewModel.accounts = PreviewLedgers.all.filter { $0.kind == .bankAccount }
         viewModel.banks = PreviewBanks.all
 
-        let view = AccountsView(
-            viewModel: viewModel,
-            transactionRepository: transactionRepo,
-            ledgerRepository: ledgerRepo
-        )
+        let view = AccountsView(viewModel: viewModel)
         verifySnapshots(view)
     }
 }

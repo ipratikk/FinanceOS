@@ -11,9 +11,7 @@ final class BankEditViewSnapshotTests: SnapshotTestable {
     }
 
     func test_bank_edit_view() {
-        let bankRepo = MockBankRepository()
-        let ledgerRepo = MockLedgerRepository()
-        let context = BankEditContext(repository: bankRepo, ledgerRepository: ledgerRepo)
+        let context = BankEditContext(graphQLClient: ApolloGraphQLClient())
         let view = BankEditView(bank: PreviewBanks.hdfc(), context: context)
         verifySnapshots(view)
     }

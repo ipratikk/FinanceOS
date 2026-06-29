@@ -11,14 +11,7 @@ final class CardsViewSnapshotTests: SnapshotTestable {
     }
 
     func test_cards_view() {
-        let ledgerRepo = MockLedgerRepository()
-        let bankRepo = MockBankRepository()
-        let transactionRepo = MockTransactionRepository()
-        let viewModel = CardsViewModel(
-            ledgerRepository: ledgerRepo,
-            bankRepository: bankRepo,
-            transactionRepository: transactionRepo
-        )
+        let viewModel = CardsViewModel(graphQLClient: ApolloGraphQLClient())
         viewModel.banks = PreviewBanks.all
         viewModel.accounts = PreviewLedgers.all.filter { $0.kind == .bankAccount }
         let cards = PreviewLedgers.all.filter { $0.kind == .creditCard }
@@ -32,11 +25,7 @@ final class CardsViewSnapshotTests: SnapshotTestable {
             )
         }
 
-        let view = CardsView(
-            viewModel: viewModel,
-            transactionRepository: transactionRepo,
-            ledgerRepository: ledgerRepo
-        )
+        let view = CardsView(viewModel: viewModel)
         verifySnapshots(view)
     }
 }
