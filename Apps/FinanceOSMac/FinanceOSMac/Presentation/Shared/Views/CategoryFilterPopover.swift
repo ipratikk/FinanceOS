@@ -1,5 +1,4 @@
 import FinanceCore
-import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 

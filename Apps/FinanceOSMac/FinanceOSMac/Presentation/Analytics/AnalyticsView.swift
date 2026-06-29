@@ -1,6 +1,5 @@
 import Charts
 import FinanceCore
-import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
@@ -17,7 +16,6 @@ struct AnalyticsView: View {
                 pageHeader
                 topRow
                 middleRow
-                RecentFluctuationsCard(transactions: viewModel.recentFluctuations)
             }
             .padding(.horizontal, AppSpacing.xl)
             .padding(.vertical, AppSpacing.xl)

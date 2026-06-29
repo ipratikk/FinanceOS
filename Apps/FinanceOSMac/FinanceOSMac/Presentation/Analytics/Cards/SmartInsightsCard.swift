@@ -1,17 +1,27 @@
 import FinanceCore
-import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
-struct SmartInsightsCard: View {
-    let insights: [TransactionInsight]
+struct Insight: Identifiable {
+    let id: String
+    let title: String
+    let explanation: String
+    let kind: InsightKind
 
-    private var topInsight: TransactionInsight? {
+    enum InsightKind {
+        case spendingSpike, categoryTrend, subscriptionDetected, unusuallyLargeTransaction
+    }
+}
+
+struct SmartInsightsCard: View {
+    let insights: [Insight]
+
+    private var topInsight: Insight? {
         insights.first { $0.kind == .spendingSpike || $0.kind == .categoryTrend }
             ?? insights.first
     }
 
-    private var subscriptions: [TransactionInsight] {
+    private var subscriptions: [Insight] {
         insights.filter { $0.kind == .subscriptionDetected }.prefix(2).map(\.self)
     }
 
@@ -45,7 +55,7 @@ struct SmartInsightsCard: View {
         }
     }
 
-    private func insightText(_ insight: TransactionInsight) -> some View {
+    private func insightText(_ insight: Insight) -> some View {
         FDSLabel(insight.explanation)
             .font(AppTypography.bodySm)
             .foregroundStyle(AppColors.Text.secondary)

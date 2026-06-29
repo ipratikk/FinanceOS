@@ -1,12 +1,9 @@
 import FinanceCore
-import FinanceIntelligence
 import SwiftUI
 
 struct AdaptiveNavigation: View {
     @Environment(AppNavigator.self) private var navigator
     @Environment(\.horizontalSizeClass) var sizeClass
-    @Environment(\.transactionIntelligence) private var intelligence
-    @Environment(\.categorizationScheduler) private var categorizationScheduler
     private let appContainer = AppContainer.shared
 
     var body: some View {
@@ -38,9 +35,9 @@ struct AdaptiveNavigation: View {
 
             TransactionsView(
                 viewModel: TransactionsViewModel(
-                    graphQLClient: appContainer.graphQLClient,
-                    intelligenceService: intelligence
-                )
+                    graphQLClient: appContainer.graphQLClient
+                ),
+                graphQLClient: appContainer.graphQLClient
             )
             .tabItem {
                 Label(NavigationItem.transactions.label, systemImage: NavigationItem.transactions.icon)
@@ -90,8 +87,6 @@ struct AdaptiveNavigation: View {
 
 struct DetailRouter: View {
     @Environment(AppNavigator.self) private var navigator
-    @Environment(\.transactionIntelligence) private var intelligence
-    @Environment(\.categorizationScheduler) private var categorizationScheduler
     let appContainer: AppContainer
 
     var body: some View {
@@ -122,11 +117,10 @@ struct DetailRouter: View {
         case .transactions:
             TransactionsView(
                 viewModel: TransactionsViewModel(
-                    graphQLClient: appContainer.graphQLClient,
-                    intelligenceService: intelligence
-                )
+                    graphQLClient: appContainer.graphQLClient
+                ),
+                graphQLClient: appContainer.graphQLClient
             )
-            .id(intelligence != nil)
         case .accounts:
             AccountsView(
                 viewModel: AccountsViewModel(
@@ -148,25 +142,17 @@ struct DetailRouter: View {
         case .analytics:
             AnalyticsView(viewModel: AnalyticsViewModel(
                 graphQLClient: appContainer.graphQLClient,
-                intelligenceService: intelligence,
                 aggregator: AnalyticsAggregatorService()
             ))
         case .importStatement:
             ImportView(
                 viewModel: ImportViewModel(
                     graphQLClient: appContainer.graphQLClient,
-                    initialTarget: navigator.pendingImportTarget,
-                    categorizationScheduler: categorizationScheduler
+                    initialTarget: navigator.pendingImportTarget
                 )
             )
         case .settings:
             SettingsView(viewModel: SettingsViewModel(graphQLClient: appContainer.graphQLClient))
-        case .intelligence:
-            IntelligenceHubView(container: IntelligenceContainer.shared)
-        case .financeAgent:
-            FinanceAgentView(viewModel: FinanceAgentViewModel(
-                graphQLClient: appContainer.graphQLClient
-            ))
         }
     }
 

@@ -23,7 +23,6 @@ final class ImportViewModel {
 
     let importSession: ImportSession
     let graphQLClient: ApolloGraphQLClient
-    let categorizationScheduler: CategorizationScheduler?
     let fileParser: any StatementParsingProtocol
     let duplicateDetector: any DuplicateDetectingProtocol
 
@@ -81,13 +80,11 @@ final class ImportViewModel {
     init(
         graphQLClient: ApolloGraphQLClient,
         initialTarget: TransactionImportTarget? = nil,
-        categorizationScheduler: CategorizationScheduler? = nil,
         fileParser: (any StatementParsingProtocol)? = nil,
         duplicateDetector: (any DuplicateDetectingProtocol)? = nil
     ) {
         importSession = ImportSession()
         self.graphQLClient = graphQLClient
-        self.categorizationScheduler = categorizationScheduler
         self.fileParser = fileParser ?? ImportFileParser()
         self.duplicateDetector = duplicateDetector ?? ImportDuplicateDetector()
         if let initialTarget {
@@ -185,9 +182,6 @@ final class ImportViewModel {
                 lastImportResult = result
                 resetToSource()
                 importSession.isLoading = false
-                if let scheduler = categorizationScheduler {
-                    Task.detached(priority: .background) { await scheduler.run() }
-                }
                 Task {
                     try? await Task.sleep(for: .seconds(4))
                     lastImportResult = nil

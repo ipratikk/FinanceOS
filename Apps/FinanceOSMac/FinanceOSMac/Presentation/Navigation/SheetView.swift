@@ -37,7 +37,7 @@ struct SheetView: View {
                 let context = BankEditContext(graphQLClient: appContainer.graphQLClient)
                 BankEditView(bank: bank, context: context)
             case let .transactionDetail(row):
-                TransactionDetailView(row: row)
+                TransactionDetailView(row: row, graphQLClient: appContainer.graphQLClient)
             default:
                 EmptyView()
             }

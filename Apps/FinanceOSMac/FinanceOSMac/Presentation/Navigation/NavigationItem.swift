@@ -9,8 +9,6 @@ enum NavigationItem: Hashable, CaseIterable {
     case analytics
     case importStatement
     case settings
-    case intelligence
-    case financeAgent
 
     var label: String {
         switch self {
@@ -22,8 +20,6 @@ enum NavigationItem: Hashable, CaseIterable {
         case .analytics: return "Analytics"
         case .importStatement: return "Import"
         case .settings: return "Settings"
-        case .intelligence: return "Intelligence"
-        case .financeAgent: return "Finance Assistant"
         }
     }
 
@@ -37,8 +33,6 @@ enum NavigationItem: Hashable, CaseIterable {
         case .analytics: return "chart.bar"
         case .importStatement: return "arrow.down.doc"
         case .settings: return "gear"
-        case .intelligence: return "point.3.connected.trianglepath.dotted"
-        case .financeAgent: return "sparkle.magnifyingglass"
         }
     }
 }

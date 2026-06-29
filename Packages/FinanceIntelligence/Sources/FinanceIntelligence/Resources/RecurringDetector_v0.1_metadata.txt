@@ -1,4 +1,0 @@
-Classes: 0,1
-Features: narration (TF-IDF) + amount + merchant_frequency (standardized)
-Vectorizer type: TfidfVectorizer
-Max features: 1000

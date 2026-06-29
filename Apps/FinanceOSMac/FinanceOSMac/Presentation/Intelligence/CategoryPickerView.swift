@@ -1,12 +1,11 @@
 import FinanceCore
-import FinanceIntelligence
 import FinanceUI
 import SwiftUI
 
 struct CategoryPickerView: View {
     let source: FinanceCore.Transaction
     let currentMerchant: String?
-    @Environment(\.transactionIntelligence) private var intelligence
+    let graphQLClient: ApolloGraphQLClient
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CategoryCorrectionViewModel
 
@@ -16,15 +15,16 @@ struct CategoryPickerView: View {
         source: FinanceCore.Transaction,
         currentCategoryId: String?,
         currentMerchant: String?,
-        previousPrediction: CategoryPrediction?,
+        graphQLClient: ApolloGraphQLClient,
         onCorrected: ((UUID, String) -> Void)? = nil
     ) {
         self.source = source
         self.currentMerchant = currentMerchant
+        self.graphQLClient = graphQLClient
         _viewModel = State(initialValue: CategoryCorrectionViewModel(
             transaction: source,
             currentCategoryId: currentCategoryId,
-            previousPrediction: previousPrediction,
+            graphQLClient: graphQLClient,
             onCorrected: onCorrected
         ))
     }
@@ -83,7 +83,7 @@ struct CategoryPickerView: View {
 
     private var saveButton: some View {
         Button(
-            action: { Task { await viewModel.save(intelligence: intelligence, onDismiss: { dismiss() }) } },
+            action: { Task { await viewModel.save(onDismiss: { dismiss() }) } },
             label: {
                 HStack {
                     if viewModel.isSaving {

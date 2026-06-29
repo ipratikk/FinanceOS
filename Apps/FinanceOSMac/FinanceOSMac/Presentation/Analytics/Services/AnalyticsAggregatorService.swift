@@ -1,11 +1,9 @@
 import FinanceCore
-import FinanceIntelligence
 import Foundation
 
 protocol AnalyticsAggregatorProtocol: Sendable {
     func aggregateMerchants(_ transactions: [Transaction]) -> [MerchantSummary]
     func aggregateCategorySpend(_ transactions: [Transaction]) -> [CategorySpendSummary]
-    func fluctuationTransactions(from insights: [TransactionInsight], all: [Transaction]) -> [Transaction]
 }
 
 struct AnalyticsAggregatorService: AnalyticsAggregatorProtocol {
@@ -43,14 +41,5 @@ struct AnalyticsAggregatorService: AnalyticsAggregatorProtocol {
                 )
             }
             .sorted { $0.totalDebit > $1.totalDebit }
-    }
-
-    func fluctuationTransactions(from insights: [TransactionInsight], all: [Transaction]) -> [Transaction] {
-        let flucIds = Set(
-            insights
-                .filter { $0.kind == .unusuallyLargeTransaction }
-                .flatMap(\.affectedTransactionIDs)
-        )
-        return all.filter { flucIds.contains($0.id.uuidString) }.prefix(5).map(\.self)
     }
 }
