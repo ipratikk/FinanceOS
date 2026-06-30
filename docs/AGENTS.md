@@ -3,8 +3,8 @@
 ## Stack
 
 * SwiftUI
-* Apollo GraphQL (thin client)
-* GRDB / SQLite (intelligence layer only)
+* Apollo GraphQL (thin client) — all app data
+* GRDB / SQLite (TransferEvent persistence only)
 * Swift Packages
 * Observation framework
 
@@ -28,9 +28,9 @@ Local intelligence pipeline:
 * Views never access repositories or GraphQL client directly
 * ViewModels call GraphQL via `ApolloGraphQLClient`
 * `AppContainer` owns `graphQLClient`; all ViewModels receive it via init injection
-* `DatabaseManager` owns local SQLite lifecycle (intelligence data only)
+* `DatabaseManager` owns local SQLite lifecycle (TransferEvent data only)
 * Parser layer remains isolated from persistence/UI
-* Intelligence pipeline (FinanceIntelligence) remains local-GRDB-backed
+* Intelligence logic owned by Python backend; `FinanceIntelligence` Swift package removed
 
 ---
 
@@ -40,9 +40,9 @@ Local intelligence pipeline:
 
 * ApolloGraphQLClient
 
-## Local Repositories (intelligence only)
+## Local Repositories (TransferEvent only)
 
-* TransactionRepository (protocol, used by FinanceIntelligenceCLI)
+* TransactionRepository (protocol, used by parser CLI)
 * GRDBTransactionRepository
 
 ## Composition Root
@@ -80,9 +80,9 @@ Avoid:
 
 * Custom line parser (HDFC Bank)
 
-## XLSX (not yet implemented)
+## XLSX (partial — CoreXLSX, Darwin only)
 
-## PDF (experimental — HDFCPDFParser skeleton only)
+## PDF (experimental — HDFCPDFParser + VisionPDFTextExtractor)
 
 Architecture:
 
@@ -136,9 +136,7 @@ Single Ledger model replaces Account/Card split:
 # Near-Term Targets
 
 1. CSV/TXT parser hardening (additional Indian banks — Axis, SBI planned)
-2. Statement format auto-detection
-3. Bank-specific parsing rules
-4. OCR for scanned statements (fallback only)
-5. Duplicate transaction detection at scale
-6. Analytics & spending insights
-7. Budget management system
+2. Bank-specific parsing rules
+3. OCR for scanned statements (fallback only)
+4. GraphQL-backed insights endpoint (replaces local intelligence)
+5. Budget management system

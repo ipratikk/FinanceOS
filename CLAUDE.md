@@ -99,32 +99,29 @@ When implementing localized changes: inspect only directly related files first; 
 # Architecture Rules
 
 ```
-SwiftUI View → ViewModel → Repository Protocol → GRDB Repository → SQLite
+SwiftUI View → ViewModel → ApolloGraphQLClient → financeos-backend (GraphQL API)
 ```
 
-* Views never access GRDB directly
-* ViewModels never contain SQL
-* Repositories encapsulate persistence
-* DatabaseManager owns DB lifecycle
-* AppContainer owns dependency composition
-* Keep UI decoupled from persistence
+* Views never access repositories or GraphQL client directly
+* ViewModels call data via `ApolloGraphQLClient`
+* `AppContainer` owns `graphQLClient`; all ViewModels receive it via init injection
+* `DatabaseManager` owns local SQLite lifecycle (TransferEvent persistence only)
 * Parser layer isolated from UI/persistence
 
 ## Packages
 
 | Package | Owns |
 |---------|------|
-| FinanceCore | Models, Repositories (GRDB), DatabaseManager, AppContainer, Logging |
+| FinanceCore | Models, GraphQL client, AppContainer, Logging, TransferEvent persistence (GRDB) |
 | FinanceParsers | Parser protocols, bank-specific parsers, import pipeline, deduplicator |
 | FinanceUI | SwiftUI components, design system (FDS) |
 | FinanceTesting | Shared test helpers, fixtures, golden JSON |
-| FinanceIntelligence | Transaction intelligence, behavior analysis (salary/routines/cashflow), categorization pipeline |
 
 ---
 
 # Parsing Strategy
 
-CSV → CodableCSV. XLSX → CoreXLSX.
+CSV → SwiftCSV. XLSX → CoreXLSX (Darwin only).
 
 ```
 File → Parser → NormalizedTransaction → Import Pipeline → Repository
@@ -155,13 +152,7 @@ Phases 1–10 complete (Ledger unification, import pipeline, dedup engine, UI mi
 
 Primary goal: Build intelligent transaction analysis, behavior detection, and spending insights.
 
-### Core Work (FinanceIntelligence)
-
-1. Transaction categorization & intelligence service
-2. Behavior analysis: salary detection, financial routine detection, cashflow analysis
-3. Post-processing pipeline (merchant deduplication, narration enrichment)
-4. Spending insights, patterns, and analytics
-5. CLI tools for batch intelligence processing
+Intelligence logic now owned by the Python backend (`financeos-backend`). The `FinanceIntelligence` Swift package has been removed. Category picker and filter UI wire to `RecategorizeMutation` GQL endpoint.
 
 ### Enabler: Parser / Ingestion
 
