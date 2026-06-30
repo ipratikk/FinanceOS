@@ -9,18 +9,17 @@ Packages/
 
 # FinanceCore Modules
 
-* Database
+* GraphQL (ApolloGraphQLClient)
 * Models
-* Repositories
+* Repositories (TransferEvent only — GRDB)
 * AppContainer
 * Logging
 
 ---
 
-# Database
+# Local Database (TransferEvent only)
 
-* SQLite
-* GRDB
+* SQLite / GRDB
 * DatabaseQueue
 * AppMigration
 * DatabaseSeeder
@@ -30,8 +29,8 @@ Packages/
 # Current Data Access
 
 * `ApolloGraphQLClient` — all app data (banks, ledgers, transactions)
-* `TransactionRepository` / `GRDBTransactionRepository` — local only, used by `FinanceIntelligenceCLI`
-* Intelligence repos (GRDB): persons, relationships, recurring patterns, graph, feedback
+* `TransactionRepository` / `GRDBTransactionRepository` — local only, used by parser CLI
+* `GRDBTransferEventRepository` — local TransferEvent persistence
 
 ---
 
@@ -52,9 +51,9 @@ Unified Account/Card models into single Ledger model:
 
 # Dependency Composition
 
-* AppContainer exists
-* DatabaseManager.shared owns DB lifecycle
-* Repositories receive dbQueue via dependency injection
+* AppContainer vends `graphQLClient` (only dependency vended to ViewModels)
+* DatabaseManager.shared owns local SQLite lifecycle (TransferEvent only)
+* GRDB repositories receive dbQueue via dependency injection (TransferEvent only)
 
 ---
 
@@ -65,9 +64,9 @@ SwiftUI View
 → ApolloGraphQLClient
 → financeos-backend GraphQL API
 
-Intelligence pipeline (local):
-→ TransactionIntelligenceService
-→ GRDB SQLite (persons, relationships, recurring patterns, graph, feedback)
+TransferEvent persistence (local):
+→ GRDBTransferEventRepository
+→ SQLite (TransferEvent only)
 
 ---
 
@@ -79,8 +78,8 @@ Intelligence pipeline (local):
 * Target matching by last4 digits (UI-side, pre-upload)
 * Full UI layer: accounts, cards, transactions views via GraphQL
 * AppContainer vends `graphQLClient` to all ViewModels
-* Local intelligence pipeline: categorization, merchant, person, recurring pattern detection
-* CategorizationScheduler: fetches from GraphQL, posts category back via `RecategorizeMutation`
+* Category correction via `RecategorizeMutation`
+* Intelligence logic owned by Python backend; FinanceIntelligence Swift package removed
 
 ---
 
@@ -98,24 +97,21 @@ Intelligence pipeline (local):
 # Completed Package Evolution
 
 Packages/
-├── FinanceCore ✅ (complete: models, DB, repositories, logging)
-├── FinanceParsers ✅ (CSV/TXT parsing with bank-specific rules — HDFC, ICICI, Amex)
+├── FinanceCore ✅ (models, GraphQL client, AppContainer, logging, TransferEvent persistence)
+├── FinanceParsers ✅ (CSV/TXT/XLSX parsing with bank-specific rules — HDFC, ICICI, Amex)
 ├── FinanceUI ✅ (design system, components, tokens)
 └── FinanceTesting ✅ (mocks, fixtures, test utilities)
 
-Future packages:
-- FinanceSync (CloudKit sync)
-- FinanceAnalytics (spending insights)
-- FinanceAI (categorization, forecasting)
+Note: FinanceIntelligence package removed — intelligence logic moved to Python backend.
 
 ---
 
 # Current Architectural Constraints
 
 * UI must remain persistence-agnostic
-* Repositories own GRDB interaction
+* All app data flows through GraphQL — no direct GRDB in ViewModels
+* GRDB used only for TransferEvent persistence (FinanceCore internal)
 * Parsing layer must remain isolated
-* Avoid exposing database concerns outside repositories
 * Keep import pipeline deterministic
 
 ---
@@ -139,10 +135,9 @@ See `docs/MVVM_REFACTORING_PLAN.md` for the active refactoring plan enforcing th
 SwiftUI View
   └─ binds to pre-formatted strings/bools from ViewModel
        └─ ViewModel (@Observable @MainActor)
-            ├─ calls Repository Protocols (read/write)
-            └─ calls Service Protocols (aggregation, export, migration)
-                 └─ Repository / Service concrete implementations
-                      └─ GRDB → SQLite
+            ├─ calls ApolloGraphQLClient (all app data)
+            └─ calls Service Protocols (aggregation, export)
+                 └─ Service concrete implementations
 ```
 
 ## ViewModel Requirements
@@ -154,8 +149,8 @@ Every screen with async data or mutable domain state has a ViewModel. No excepti
 @Observable
 @MainActor
 final class ExampleViewModel: AsyncLoadable, DeletableViewModel {
-    // Dependencies: private, protocol types only — never concrete GRDB types
-    private let exampleRepository: any ExampleRepository
+    // Dependencies: private — inject graphQLClient, never concrete GRDB types
+    private let graphQLClient: ApolloGraphQLClient
     private let exampleService: any ExampleServiceProtocol
 
     // State: pre-formatted strings and Bools — never raw domain types exposed
@@ -164,7 +159,7 @@ final class ExampleViewModel: AsyncLoadable, DeletableViewModel {
     private(set) var errorMessage: String?
 
     // Init: all deps injected — no AppContainer.shared inside ViewModel
-    init(exampleRepository: any ExampleRepository, exampleService: any ExampleServiceProtocol) { ... }
+    init(graphQLClient: ApolloGraphQLClient, exampleService: any ExampleServiceProtocol) { ... }
 
     // Lifecycle: called from View .task
     func load() async { await withLoading { ... } onError: { self.errorMessage = $0.localizedDescription } }
@@ -254,5 +249,6 @@ Extract to a Service when:
 ## AppContainer Rules
 
 - Only read at scene/window entry point or router level
-- Constructs and vends all ViewModels and Services
+- Vends `graphQLClient` to ViewModels via init injection
+- Does NOT construct ViewModels — routers do that
 - Views never access `AppContainer.shared` directly
