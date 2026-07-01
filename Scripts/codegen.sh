@@ -7,7 +7,7 @@ GRAPHQL_DIR="$PROJECT_ROOT/Apps/FinanceOSMac/GraphQL"
 CODEGEN_CONFIG="$GRAPHQL_DIR/apollo-codegen-config.json"
 SCHEMA_CONFIG="$GRAPHQL_DIR/apollo-schema-config.json"
 SCHEMA_FILE="$GRAPHQL_DIR/schema.graphql"
-TEMP_SCHEMA_CONFIG="$GRAPHQL_DIR/apollo-schema-config-tmp.json"
+TEMP_SCHEMA_CONFIG=""  # set after GRAPHQL_DIR exists check via mktemp
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -39,6 +39,13 @@ esac
 echo "Environment : $ENV"
 echo "Endpoint    : $ENDPOINT"
 
+# ── Validate paths ────────────────────────────────────────────────────────────
+
+[[ -d "$GRAPHQL_DIR" ]] || { red "GraphQL dir not found: $GRAPHQL_DIR"; exit 1; }
+[[ -f "$SCHEMA_CONFIG" ]] || { red "Schema config not found: $SCHEMA_CONFIG"; exit 1; }
+
+TEMP_SCHEMA_CONFIG="$(mktemp "$GRAPHQL_DIR/apollo-schema-config-tmp.XXXXXX.json")"
+
 # ── 2. Prereqs ────────────────────────────────────────────────────────────────
 
 header "Checking prerequisites"
@@ -59,15 +66,18 @@ green "apollo-ios-cli ${CLI_VERSION:-installed}"
 
 header "Preparing schema download config"
 
-python3 - <<PYEOF
-import json
+SCHEMA_CONFIG="$SCHEMA_CONFIG" \
+TEMP_SCHEMA_CONFIG="$TEMP_SCHEMA_CONFIG" \
+ENDPOINT="$ENDPOINT" \
+python3 - <<'PYEOF'
+import json, os
 
-with open("$SCHEMA_CONFIG") as f:
+with open(os.environ["SCHEMA_CONFIG"]) as f:
     config = json.load(f)
 
-config["schemaDownloadConfiguration"]["downloadMethod"]["introspection"]["endpointURL"] = "$ENDPOINT"
+config["schemaDownloadConfiguration"]["downloadMethod"]["introspection"]["endpointURL"] = os.environ["ENDPOINT"]
 
-with open("$TEMP_SCHEMA_CONFIG", "w") as f:
+with open(os.environ["TEMP_SCHEMA_CONFIG"], "w") as f:
     json.dump(config, f, indent=2)
 PYEOF
 
@@ -99,6 +109,8 @@ fi
 green "Apollo models generated"
 
 # ── 6. Build ──────────────────────────────────────────────────────────────────
+
+[[ -f "$SCRIPT_DIR/build-macos.sh" ]] || { red "build-macos.sh not found at $SCRIPT_DIR/build-macos.sh"; exit 1; }
 
 header "Building macOS target"
 
