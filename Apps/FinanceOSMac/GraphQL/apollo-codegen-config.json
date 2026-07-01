@@ -2,7 +2,7 @@
   "schemaNamespace": "FinanceOSAPI",
   "input": {
     "operationSearchPaths": ["Operations/**/*.graphql"],
-    "schemaSearchPaths": ["../../../../FinanceOS-Backend/docs/schema.graphql"]
+    "schemaSearchPaths": ["schema.graphql"]
   },
   "output": {
     "schemaTypes": {
