@@ -51,12 +51,18 @@ TEMP_SCHEMA_CONFIG="$(mktemp "$GRAPHQL_DIR/apollo-schema-config-tmp.XXXXXX.json"
 header "Checking prerequisites"
 
 if ! command -v apollo-ios-cli &>/dev/null; then
-  echo "apollo-ios-cli not found — installing via Homebrew..."
-  if ! command -v brew &>/dev/null; then
-    red "Homebrew not found. Install it: https://brew.sh"
+  echo "apollo-ios-cli not found — downloading from GitHub releases..."
+  APOLLO_VERSION="2.2.0"
+  APOLLO_URL="https://github.com/apollographql/apollo-ios/releases/download/${APOLLO_VERSION}/apollo-ios-cli.tar.gz"
+  APOLLO_INSTALL_DIR="$HOME/.local/bin"
+  mkdir -p "$APOLLO_INSTALL_DIR"
+  curl -sL "$APOLLO_URL" | tar -xz -C "$APOLLO_INSTALL_DIR"
+  chmod +x "$APOLLO_INSTALL_DIR/apollo-ios-cli"
+  export PATH="$APOLLO_INSTALL_DIR:$PATH"
+  if ! command -v apollo-ios-cli &>/dev/null; then
+    red "apollo-ios-cli install failed. Download manually: $APOLLO_URL"
     exit 1
   fi
-  brew install apollo-ios-cli
 fi
 
 CLI_VERSION="$(apollo-ios-cli --version 2>/dev/null || true)"
