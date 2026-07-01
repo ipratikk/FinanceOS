@@ -22,6 +22,7 @@ trap cleanup EXIT
 
 ENV="${1:-local}"
 
+[[ -f "$SCRIPT_DIR/codegen-config.sh" ]] || { red "Configuration not found: $SCRIPT_DIR/codegen-config.sh"; exit 1; }
 # shellcheck source=Scripts/codegen-config.sh
 source "$SCRIPT_DIR/codegen-config.sh"
 
@@ -39,6 +40,11 @@ esac
 echo "Environment : $ENV"
 echo "Endpoint    : $ENDPOINT"
 
+if [[ "$ENDPOINT" == *"PLACEHOLDER"* ]]; then
+  red "Endpoint contains PLACEHOLDER — update Scripts/codegen-config.sh before using $ENV"
+  exit 1
+fi
+
 # ── Validate paths ────────────────────────────────────────────────────────────
 
 [[ -d "$GRAPHQL_DIR" ]] || { red "GraphQL dir not found: $GRAPHQL_DIR"; exit 1; }
@@ -52,7 +58,7 @@ header "Checking prerequisites"
 
 if ! command -v apollo-ios-cli &>/dev/null; then
   echo "apollo-ios-cli not found — downloading from GitHub releases..."
-  APOLLO_VERSION="2.2.0"
+  readonly APOLLO_VERSION="2.2.0"
   APOLLO_URL="https://github.com/apollographql/apollo-ios/releases/download/${APOLLO_VERSION}/apollo-ios-cli.tar.gz"
   APOLLO_INSTALL_DIR="$HOME/.local/bin"
   mkdir -p "$APOLLO_INSTALL_DIR"
