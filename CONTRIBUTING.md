@@ -238,8 +238,7 @@ Understanding the architecture helps contribute effectively:
 
 ```
 Packages/
-├── FinanceCore/          # Models, DB, repositories
-├── FinanceParsers/       # Bank statement parsers
+├── FinanceCore/          # Models, DB, repositories, GraphQL client
 ├── FinanceUI/            # SwiftUI components, design system
 └── FinanceTesting/       # Shared test fixtures
 

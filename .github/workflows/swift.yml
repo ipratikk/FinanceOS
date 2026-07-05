@@ -90,9 +90,7 @@ jobs:
 
           # =========================================================
           # Package Dependency Graph (cascade testing):
-          #   FinanceParsers (no deps)
-          #     ↓
-          #   FinanceCore (depends on Parsers)
+          #   FinanceCore (no in-repo deps)
           #     ↓
           #   FinanceUI (depends on Core)
           #     ↓
@@ -102,34 +100,25 @@ jobs:
           # Only test if Packages/* changed (ignore Apps, .github, docs)
           if echo "$CHANGED_FILES" | grep -q "^Packages/"; then
 
-            # Check if FinanceParsers changed (base) → cascade to all
-            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceParsers/"; then
-              echo "📦 FinanceParsers changed → cascade: test all"
-              packages_to_test=(FinanceParsers FinanceCore FinanceUI FinanceTesting)
+            # FinanceCore changed (base) → cascade to Core, UI, Testing
+            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceCore/"; then
+              echo "📦 FinanceCore changed → cascade: Core, UI, Testing"
+              packages_to_test+=(FinanceCore FinanceUI FinanceTesting)
+            fi
 
-            else
-              # FinanceParsers NOT changed, check dependents
-
-              # FinanceCore changed → cascade to Core, UI, Testing
-              if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceCore/"; then
-                echo "📦 FinanceCore changed → cascade: Core, UI, Testing"
-                packages_to_test+=(FinanceCore FinanceUI FinanceTesting)
+            # FinanceUI changed → cascade to UI, Testing
+            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceUI/"; then
+              echo "📦 FinanceUI changed → cascade: UI, Testing"
+              if [[ ! " ${packages_to_test[@]} " =~ " FinanceUI " ]]; then
+                packages_to_test+=(FinanceUI FinanceTesting)
               fi
+            fi
 
-              # FinanceUI changed → cascade to UI, Testing
-              if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceUI/"; then
-                echo "📦 FinanceUI changed → cascade: UI, Testing"
-                if [[ ! " ${packages_to_test[@]} " =~ " FinanceUI " ]]; then
-                  packages_to_test+=(FinanceUI FinanceTesting)
-                fi
-              fi
-
-              # FinanceTesting changed → test Testing only
-              if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceTesting/"; then
-                echo "📦 FinanceTesting changed → test Testing"
-                if [[ ! " ${packages_to_test[@]} " =~ " FinanceTesting " ]]; then
-                  packages_to_test+=(FinanceTesting)
-                fi
+            # FinanceTesting changed → test Testing only
+            if echo "$CHANGED_FILES" | grep -q "^Packages/FinanceTesting/"; then
+              echo "📦 FinanceTesting changed → test Testing"
+              if [[ ! " ${packages_to_test[@]} " =~ " FinanceTesting " ]]; then
+                packages_to_test+=(FinanceTesting)
               fi
             fi
           else

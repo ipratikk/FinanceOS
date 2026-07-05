@@ -39,7 +39,6 @@ Use this list to determine:
 
 Known packages:
 - `Packages/FinanceCore`
-- `Packages/FinanceParsers`
 - `Packages/FinanceUI`
 - `Packages/FinanceTesting`
 

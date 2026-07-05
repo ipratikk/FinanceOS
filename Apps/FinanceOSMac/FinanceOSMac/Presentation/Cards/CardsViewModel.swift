@@ -1,6 +1,5 @@
 import FinanceCore
 import FinanceOSAPI
-import FinanceParsers
 import Foundation
 import Observation
 import OSLog

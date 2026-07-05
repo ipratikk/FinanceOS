@@ -1,6 +1,5 @@
 {
   "skillOverrides": {
-    "parser-debug": "user-invocable-only",
     "refactor": "user-invocable-only",
     "review": "user-invocable-only",
     "lint": "user-invocable-only",
@@ -20,10 +19,6 @@
           {
             "type": "command",
             "command": ".claude/hooks/post-edit-build.sh"
-          },
-          {
-            "type": "command",
-            "command": ".claude/hooks/post-parser-edit.sh"
           }
         ]
       },

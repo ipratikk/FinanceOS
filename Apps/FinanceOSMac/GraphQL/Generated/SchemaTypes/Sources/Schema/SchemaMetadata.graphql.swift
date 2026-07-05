@@ -28,6 +28,7 @@ public nonisolated enum SchemaMetadata: ApolloAPI.SchemaMetadata {
         "Mutation": FinanceOSAPI.Objects.Mutation,
         "Query": FinanceOSAPI.Objects.Query,
         "SpendingSummary": FinanceOSAPI.Objects.SpendingSummary,
+        "StatementPreview": FinanceOSAPI.Objects.StatementPreview,
         "Transaction": FinanceOSAPI.Objects.Transaction
     ]
 

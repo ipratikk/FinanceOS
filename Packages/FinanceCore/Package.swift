@@ -19,7 +19,6 @@ let package = Package(
             url: "https://github.com/groue/GRDB.swift",
             from: "7.0.0"
         ),
-        .package(path: "../FinanceParsers"),
         .package(
             url: "https://github.com/apollographql/apollo-ios",
             exact: "2.2.0"
@@ -33,7 +32,6 @@ let package = Package(
                     name: "GRDB",
                     package: "GRDB.swift"
                 ),
-                "FinanceParsers",
                 .product(name: "Apollo", package: "apollo-ios"),
                 .product(name: "ApolloAPI", package: "apollo-ios")
             ],

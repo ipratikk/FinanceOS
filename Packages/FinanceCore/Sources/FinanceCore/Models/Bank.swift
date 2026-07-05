@@ -19,8 +19,8 @@ public enum BankProviderType: String, Codable, Sendable, CaseIterable {
     case credit
 }
 
-/// Enumeration of institutions whose statements FinanceOS can parse and display.
-/// Adding a new bank requires a corresponding parser in FinanceParsers.
+/// Enumeration of institutions whose statements FinanceOS can display.
+/// Adding a new bank requires a corresponding parser in financeos-backend.
 public enum Banks: String, Codable, Sendable, CaseIterable {
     case hdfc, icici, amex, scapia
 

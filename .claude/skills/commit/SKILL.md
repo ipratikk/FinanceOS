@@ -25,14 +25,13 @@ Groups unstaged changes by architecture layer. For each group, invokes `caveman:
 
 ## Grouping layers (in order)
 
-1. `Packages/FinanceParsers` — parsers
-2. `Packages/FinanceCore` — finance-core
-3. `Packages/FinanceUI` — finance-ui
-4. `FinanceOS/` — app
-5. `.claude/` — claude-config
-6. `Scripts/` — scripts
-7. `Tests/` — tests
-8. catch-all — misc
+1. `Packages/FinanceCore` — finance-core
+2. `Packages/FinanceUI` — finance-ui
+3. `FinanceOS/` — app
+4. `.claude/` — claude-config
+5. `Scripts/` — scripts
+6. `Tests/` — tests
+7. catch-all — misc
 
 ## Safety rules
 

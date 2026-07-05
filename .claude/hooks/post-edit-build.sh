@@ -16,7 +16,6 @@ FILE=$(printf '%s' "$INPUT" | python3 -c "import json,sys; d=json.load(sys.stdin
 PKG=""
 case "$FILE" in
   */Packages/FinanceCore/*)    PKG="Packages/FinanceCore" ;;
-  */Packages/FinanceParsers/*) PKG="Packages/FinanceParsers" ;;
   *)                           exit 0 ;;  # skip non-package files (app builds are slower)
 esac
 

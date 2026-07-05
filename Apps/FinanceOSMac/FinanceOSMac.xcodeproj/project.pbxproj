@@ -11,8 +11,6 @@
 		041306282FBA461800133C99 /* FinanceTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 041306272FBA461800133C99 /* FinanceTesting */; };
 		0413062A2FBA461800133C99 /* FinanceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 041306292FBA461800133C99 /* FinanceUI */; };
 		0413062D2FBA467700133C99 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 0413062C2FBA467700133C99 /* SnapshotTesting */; };
-		0413062F2FBA470000133C99 /* FinanceParsers in Frameworks */ = {isa = PBXBuildFile; productRef = 0413062E2FBA470000133C99 /* FinanceParsers */; };
-		041306312FBA470000133C99 /* FinanceParsers in Frameworks */ = {isa = PBXBuildFile; productRef = 041306302FBA470000133C99 /* FinanceParsers */; };
 		049E34262FB3B303002A3820 /* FinanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34252FB3B303002A3820 /* FinanceCore */; };
 		049E34292FB3B303002A3820 /* FinanceUI in Frameworks */ = {isa = PBXBuildFile; productRef = 049E34282FB3B303002A3820 /* FinanceUI */; };
 		AA0001002FA000000AA00004 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = AA0001002FA000000AA00002 /* Apollo */; };
@@ -57,7 +55,6 @@
 				0413062D2FBA467700133C99 /* SnapshotTesting in Frameworks */,
 				0413062A2FBA461800133C99 /* FinanceUI in Frameworks */,
 				041306262FBA461800133C99 /* FinanceCore in Frameworks */,
-				0413062F2FBA470000133C99 /* FinanceParsers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +64,6 @@
 			files = (
 				049E34262FB3B303002A3820 /* FinanceCore in Frameworks */,
 				049E34292FB3B303002A3820 /* FinanceUI in Frameworks */,
-				041306312FBA470000133C99 /* FinanceParsers in Frameworks */,
 				AA0001002FA000000AA00004 /* Apollo in Frameworks */,
 				AA0001002FA000000AA00005 /* ApolloAPI in Frameworks */,
 				AA0001002FA000000AA00006 /* FinanceOSAPI in Frameworks */,
@@ -128,7 +124,6 @@
 				041306272FBA461800133C99 /* FinanceTesting */,
 				041306292FBA461800133C99 /* FinanceUI */,
 				0413062C2FBA467700133C99 /* SnapshotTesting */,
-				0413062E2FBA470000133C99 /* FinanceParsers */,
 			);
 			productName = FinanceOSMacSnapshotTests;
 			productReference = 041305FA2FBA459600133C99 /* FinanceOSMacSnapshotTests.xctest */;
@@ -155,7 +150,6 @@
 			packageProductDependencies = (
 				049E34252FB3B303002A3820 /* FinanceCore */,
 				049E34282FB3B303002A3820 /* FinanceUI */,
-				041306302FBA470000133C99 /* FinanceParsers */,
 			);
 			productName = FinanceOSMac;
 			productReference = 049E34102FB3B1D2002A3820 /* FinanceOSMac.app */;
@@ -192,7 +186,6 @@
 			packageReferences = (
 				99A00601FBA461800000001 /* XCLocalSwiftPackageReference "../../Packages/FinanceCore" */,
 				99A00602FBA461800000002 /* XCLocalSwiftPackageReference "../../Packages/FinanceUI" */,
-				99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */,
 				99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */,
 				0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				AA0001002FA000000AA00001 /* XCRemoteSwiftPackageReference "apollo-ios" */,
@@ -592,10 +585,6 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../Packages/FinanceUI;
 		};
-		99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Packages/FinanceParsers;
-		};
 		99A00604FBA461800000004 /* XCLocalSwiftPackageReference "../../Packages/FinanceTesting" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../Packages/FinanceTesting;
@@ -645,16 +634,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0413062B2FBA467600133C99 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
-		};
-		0413062E2FBA470000133C99 /* FinanceParsers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */;
-			productName = FinanceParsers;
-		};
-		041306302FBA470000133C99 /* FinanceParsers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 99A00603FBA461800000003 /* XCLocalSwiftPackageReference "../../Packages/FinanceParsers" */;
-			productName = FinanceParsers;
 		};
 		049E34252FB3B303002A3820 /* FinanceCore */ = {
 			isa = XCSwiftPackageProductDependency;

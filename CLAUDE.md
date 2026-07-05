@@ -23,9 +23,7 @@ Default: existing architecture decisions are intentional unless evidence suggest
 bash bootstrap.sh   # install tools, global skills, seed log dirs (run once after cloning)
 ```
 
-Key skills: `/build` `/lint` `/parser-test` `/commit` `/review` `/refactor`
-
-Key make targets: `make parser-test`, `make parser-parse FILE=<path>`, `make parser-build`
+Key skills: `/build` `/lint` `/commit` `/review` `/refactor`
 
 ---
 
@@ -113,7 +111,6 @@ SwiftUI View → ViewModel → ApolloGraphQLClient → financeos-backend (GraphQ
 | Package | Owns |
 |---------|------|
 | FinanceCore | Models, GraphQL client, AppContainer, Logging, TransferEvent persistence (GRDB) |
-| FinanceParsers | Parser protocols, bank-specific parsers, import pipeline, deduplicator |
 | FinanceUI | SwiftUI components, design system (FDS) |
 | FinanceTesting | Shared test helpers, fixtures, golden JSON |
 
@@ -121,11 +118,9 @@ SwiftUI View → ViewModel → ApolloGraphQLClient → financeos-backend (GraphQ
 
 # Parsing Strategy
 
-CSV → SwiftCSV. XLSX → CoreXLSX (Darwin only).
-
-```
-File → Parser → NormalizedTransaction → Import Pipeline → Repository
-```
+Statement parsing is owned entirely by `financeos-backend` (Python service). The client
+never parses file contents; it calls `previewStatement` (bank/last4/count, for client-side
+target-ledger matching) and `uploadStatement` (commits the import) via GraphQL.
 
 ---
 
@@ -154,9 +149,10 @@ Primary goal: Build intelligent transaction analysis, behavior detection, and sp
 
 Intelligence logic now owned by the Python backend (`financeos-backend`). The `FinanceIntelligence` Swift package has been removed. Category picker and filter UI wire to `RecategorizeMutation` GQL endpoint.
 
-### Enabler: Parser / Ingestion
+### Enabler: Ingestion
 
-Parser hardening (CSV/XLSX, Indian banks, dedup, format detection) supports intelligence ingestion.
+Statement parsing (CSV/XLSX/PDF, Indian banks, dedup, format detection) is owned entirely
+by `financeos-backend`; the client only calls `previewStatement`/`uploadStatement`.
 
 ### Enabler: Card Catalog
 
@@ -175,9 +171,7 @@ Use project skills — do not invoke build tools directly unless a skill isn't a
 
 | Task | Skill | Make target |
 |------|-------|-------------|
-| Build | `/build` | `make parser-build` |
-| Test parsers | `/parser-test` | `make parser-test` |
-| Parse a file | — | `make parser-parse FILE=<path>` |
+| Build | `/build` | — |
 | Lint | `/lint` | — |
 | Commit | `/commit` | — |
 

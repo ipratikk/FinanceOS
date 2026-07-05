@@ -39,7 +39,6 @@ fi
 declare -a GROUP_LABELS
 declare -a GROUP_PATTERNS
 
-GROUP_LABELS+=(  "parsers"        ); GROUP_PATTERNS+=(  "Packages/FinanceParsers"  )
 GROUP_LABELS+=(  "finance-core"   ); GROUP_PATTERNS+=(  "Packages/FinanceCore"     )
 GROUP_LABELS+=(  "finance-ui"     ); GROUP_PATTERNS+=(  "Packages/FinanceUI"       )
 GROUP_LABELS+=(  "app"            ); GROUP_PATTERNS+=(  "FinanceOS/"               )

@@ -1,5 +1,3 @@
-import Foundation
-
 /// Classifies the financial product type of a statement, used to route
 /// transactions to the correct ledger and apply appropriate sign conventions.
 public enum StatementSourceType: String, Sendable {

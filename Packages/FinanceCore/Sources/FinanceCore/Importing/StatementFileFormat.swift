@@ -1,4 +1,7 @@
-import FinanceParsers
-
-/// Re-exports the file format enum from FinanceParsers; extended by Detection and Extension files.
-public typealias StatementFileFormat = FinanceParsers.StatementFileFormat
+/// Supported file formats that the import pipeline accepts.
+public enum StatementFileFormat: String, CaseIterable, Sendable {
+    case csv
+    case txt
+    case xlsx
+    case pdf
+}

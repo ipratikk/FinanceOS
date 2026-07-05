@@ -1,5 +1,4 @@
 import FinanceCore
-import FinanceParsers
 import FinanceUI
 import Foundation
 

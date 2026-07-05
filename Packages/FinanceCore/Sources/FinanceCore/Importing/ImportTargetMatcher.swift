@@ -1,4 +1,3 @@
-import FinanceParsers
 import Foundation
 
 /// A candidate import destination paired with a confidence score (0.0–1.0).

@@ -46,8 +46,7 @@ Code reshape. NOT redesign.
 
 After every refactor:
 1. `/build` must pass
-2. `/parser-test` if parser code touched
-3. Git diff stat must be ≤ what was promised
+2. Git diff stat must be ≤ what was promised
 
 ## Token rules
 
