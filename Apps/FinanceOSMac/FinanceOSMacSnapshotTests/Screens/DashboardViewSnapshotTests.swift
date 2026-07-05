@@ -18,7 +18,16 @@ final class DashboardViewSnapshotTests: SnapshotTestable {
         )
         viewModel.currentTotals = PreviewSpendingData.currentTotals
         viewModel.monthlySummaries = PreviewSpendingData.monthlySummaries
-        viewModel.recentTransactions = PreviewTransactions.samples
+        viewModel.recentTransactions = PreviewTransactions.samples.map { txn in
+            TransactionRow(
+                id: txn.id,
+                title: txn.description,
+                subtitle: "",
+                amountText: String(format: "$%.2f", Double(txn.amountMinorUnits) / 100),
+                transactionType: txn.transactionType,
+                postedAt: txn.postedAt
+            )
+        }
 
         let insightsViewModel = InsightNarrativeViewModel(graphQLClient: graphQLClient)
         let view = DashboardView(viewModel: viewModel, insightsViewModel: insightsViewModel)
