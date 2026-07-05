@@ -214,7 +214,7 @@ insights. Intelligence logic is owned by [financeos-backend](https://github.com/
 
 Enablers:
 - **Parser / Ingestion** — CSV/XLSX hardening, Indian banks, dedup, format detection
-- **Card Catalog** — card metadata scraping (`/card-scraper`): HDFC, ICICI, Amex, Axis, AU, IDFC, SBI, Scapia, Yes Bank
+- **Card Catalog** — card metadata scraping moved to [financeos-backend](https://github.com/ipratikk/FinanceOS-Backend) (`card-scraper/`)
 
 **Not implemented:**
 - Sync across devices

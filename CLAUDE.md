@@ -23,7 +23,7 @@ Default: existing architecture decisions are intentional unless evidence suggest
 bash bootstrap.sh   # install tools, global skills, seed log dirs (run once after cloning)
 ```
 
-Key skills: `/build` `/lint` `/parser-test` `/commit` `/review` `/refactor` `/card-scraper`
+Key skills: `/build` `/lint` `/parser-test` `/commit` `/review` `/refactor`
 
 Key make targets: `make parser-test`, `make parser-parse FILE=<path>`, `make parser-build`
 
@@ -160,10 +160,8 @@ Parser hardening (CSV/XLSX, Indian banks, dedup, format detection) supports inte
 
 ### Enabler: Card Catalog
 
-Card metadata scraping (`/card-scraper`) — 3-stage pipeline (scrape → normalize → enrich):
-- Supports: HDFC, ICICI, Amex, Axis, AU, IDFC, SBI, Scapia, Yes Bank (runners for HDFC/ICICI; stubs for others)
-- Use `/card-scraper all` to scrape + validate latest bank card data
-- See `.claude/skills/card-scraper/` for variants and bank-specific runners
+Card metadata scraping moved to `financeos-backend` (`card-scraper/`) — scraped
+card catalog data is a backend/data-catalog concern. No longer part of this repo.
 
 ---
 
