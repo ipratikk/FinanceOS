@@ -13,41 +13,31 @@ struct ImportView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Stepper at top
-            ImportStepper(
-                step: viewModel.currentStep,
-                onStepSelect: { step in
-                    switch step {
-                    case .source:
-                        viewModel.resetToSource()
-                    case .upload:
-                        if viewModel.currentStep == .review {
-                            viewModel.backToUpload()
-                        }
-                    case .review:
-                        break
-                    }
-                }
-            )
+            HStack {
+                FDSLabel("Import Statement")
+                    .font(AppTypography.headingXL)
+                    .foregroundColor(AppColors.Text.primary)
+                Spacer()
+            }
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.vertical, AppSpacing.md)
 
-            // Step content
             Group {
-                switch viewModel.currentStep {
-                case .source:
-                    FDSCard(content: {
-                        sourceStep
-                            .padding(AppSpacing.xl)
-                    })
-                case .upload:
-                    uploadStep
-                case .review:
-                    reviewStep
+                switch viewModel.phase {
+                case .idle:
+                    idleContent
+                case .previewing:
+                    previewingContent
+                case .readyToImport:
+                    readyToImportContent
+                case .importing:
+                    importingContent
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(AppSpacing.x6l)
         }
-        .animation(.easeInOut(duration: 0.2), value: viewModel.currentStep)
+        .animation(.easeInOut(duration: 0.2), value: viewModel.phase)
         .onChange(of: viewModel.lastImportResult) { _, newValue in
             if let result = newValue {
                 navigator.toastPresenter.show(
@@ -61,11 +51,11 @@ struct ImportView: View {
             }
         }
         .onAppear {
-            if let source = navigator.pendingImportSource {
-                viewModel.selectSourceAndAdvance(source)
-                navigator.pendingImportSource = nil
+            if let target = navigator.pendingImportTarget {
+                viewModel.selectedTarget = target
+                navigator.pendingImportTarget = nil
             }
-            navigator.pendingImportTarget = nil
+            navigator.pendingImportSource = nil
             Task {
                 await viewModel.loadTargetsOnAppear()
             }
