@@ -2,12 +2,13 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class GetLedgerQuery: GraphQLQuery {
+public nonisolated struct GetLedgerQuery: GraphQLQuery {
     public static let operationName: String = "GetLedger"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
-            #"query GetLedger($id: ID!) { ledger(id: $id) { __typename id displayName kind last4 bank { __typename id name code } balance } }"#
+            #"query GetLedger($id: ID!) { ledger(id: $id) { __typename id displayName kind last4 bank { __typename id name code } balance { __typename value currencyCode } } }"#
         )
     )
 
@@ -17,27 +18,28 @@ public class GetLedgerQuery: GraphQLQuery {
         self.id = id
     }
 
-    public var __variables: Variables? {
+    @_spi(Unsafe) public var __variables: Variables? {
         ["id": id]
     }
 
-    public struct Data: FinanceOSAPI.SelectionSet {
-        public let __data: DataDict
+    public nonisolated struct Data: FinanceOSAPI.SelectionSet {
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe)
         public init(_dataDict: DataDict) {
             __data = _dataDict
         }
 
-        public static var __parentType: any ApolloAPI.ParentType {
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
             FinanceOSAPI.Objects.Query
         }
 
-        public static var __selections: [ApolloAPI.Selection] {
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
                 .field("ledger", Ledger?.self, arguments: ["id": .variable("id")])
             ]
         }
 
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
             [
                 GetLedgerQuery.Data.self
             ]
@@ -50,17 +52,18 @@ public class GetLedgerQuery: GraphQLQuery {
         /// Ledger
         ///
         /// Parent Type: `Ledger`
-        public struct Ledger: FinanceOSAPI.SelectionSet {
-            public let __data: DataDict
+        public nonisolated struct Ledger: FinanceOSAPI.SelectionSet {
+            @_spi(Unsafe) public let __data: DataDict
+            @_spi(Unsafe)
             public init(_dataDict: DataDict) {
                 __data = _dataDict
             }
 
-            public static var __parentType: any ApolloAPI.ParentType {
+            @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
                 FinanceOSAPI.Objects.Ledger
             }
 
-            public static var __selections: [ApolloAPI.Selection] {
+            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                 [
                     .field("__typename", String.self),
                     .field("id", FinanceOSAPI.ID.self),
@@ -68,11 +71,11 @@ public class GetLedgerQuery: GraphQLQuery {
                     .field("kind", GraphQLEnum<FinanceOSAPI.LedgerKind>.self),
                     .field("last4", String?.self),
                     .field("bank", Bank.self),
-                    .field("balance", Double.self)
+                    .field("balance", Balance.self)
                 ]
             }
 
-            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                 [
                     GetLedgerQuery.Data.Ledger.self
                 ]
@@ -98,24 +101,25 @@ public class GetLedgerQuery: GraphQLQuery {
                 __data["bank"]
             }
 
-            public var balance: Double {
+            public var balance: Balance {
                 __data["balance"]
             }
 
             /// Ledger.Bank
             ///
             /// Parent Type: `Bank`
-            public struct Bank: FinanceOSAPI.SelectionSet {
-                public let __data: DataDict
+            public nonisolated struct Bank: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
                 public init(_dataDict: DataDict) {
                     __data = _dataDict
                 }
 
-                public static var __parentType: any ApolloAPI.ParentType {
+                @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
                     FinanceOSAPI.Objects.Bank
                 }
 
-                public static var __selections: [ApolloAPI.Selection] {
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                     [
                         .field("__typename", String.self),
                         .field("id", FinanceOSAPI.ID.self),
@@ -124,7 +128,7 @@ public class GetLedgerQuery: GraphQLQuery {
                     ]
                 }
 
-                public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                     [
                         GetLedgerQuery.Data.Ledger.Bank.self
                     ]
@@ -140,6 +144,43 @@ public class GetLedgerQuery: GraphQLQuery {
 
                 public var code: String {
                     __data["code"]
+                }
+            }
+
+            /// Ledger.Balance
+            ///
+            /// Parent Type: `Money`
+            public nonisolated struct Balance: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
+                public init(_dataDict: DataDict) {
+                    __data = _dataDict
+                }
+
+                @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
+                    FinanceOSAPI.Objects.Money
+                }
+
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                    [
+                        .field("__typename", String.self),
+                        .field("value", Int.self),
+                        .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                    ]
+                }
+
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                    [
+                        GetLedgerQuery.Data.Ledger.Balance.self
+                    ]
+                }
+
+                public var value: Int {
+                    __data["value"]
+                }
+
+                public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                    __data["currencyCode"]
                 }
             }
         }

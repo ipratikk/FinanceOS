@@ -2,12 +2,13 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class UploadStatementMutation: GraphQLMutation {
+public nonisolated struct UploadStatementMutation: GraphQLMutation {
     public static let operationName: String = "UploadStatement"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
-            #"mutation UploadStatement($ledgerId: ID!, $file: Upload!) { uploadStatement(ledgerId: $ledgerId, file: $file) { __typename imported duplicates errors ledger { __typename id displayName balance } } }"#
+            #"mutation UploadStatement($ledgerId: ID!, $file: Upload!) { uploadStatement(ledgerId: $ledgerId, file: $file) { __typename imported duplicates errors ledger { __typename id displayName balance { __typename value currencyCode } } } }"#
         )
     )
 
@@ -22,24 +23,25 @@ public class UploadStatementMutation: GraphQLMutation {
         self.file = file
     }
 
-    public var __variables: Variables? {
+    @_spi(Unsafe) public var __variables: Variables? {
         [
             "ledgerId": ledgerId,
             "file": file
         ]
     }
 
-    public struct Data: FinanceOSAPI.SelectionSet {
-        public let __data: DataDict
+    public nonisolated struct Data: FinanceOSAPI.SelectionSet {
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe)
         public init(_dataDict: DataDict) {
             __data = _dataDict
         }
 
-        public static var __parentType: any ApolloAPI.ParentType {
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
             FinanceOSAPI.Objects.Mutation
         }
 
-        public static var __selections: [ApolloAPI.Selection] {
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
                 .field("uploadStatement", UploadStatement.self, arguments: [
                     "ledgerId": .variable("ledgerId"),
@@ -48,7 +50,7 @@ public class UploadStatementMutation: GraphQLMutation {
             ]
         }
 
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
             [
                 UploadStatementMutation.Data.self
             ]
@@ -61,17 +63,19 @@ public class UploadStatementMutation: GraphQLMutation {
         /// UploadStatement
         ///
         /// Parent Type: `ImportResult`
-        public struct UploadStatement: FinanceOSAPI.SelectionSet {
-            public let __data: DataDict
+        public nonisolated struct UploadStatement: FinanceOSAPI.SelectionSet {
+            @_spi(Unsafe) public let __data: DataDict
+            @_spi(Unsafe)
             public init(_dataDict: DataDict) {
                 __data = _dataDict
             }
 
-            public static var __parentType: any ApolloAPI.ParentType {
+            @_spi(Execution) public static var __parentType: any ApolloAPI
+                .ParentType {
                 FinanceOSAPI.Objects.ImportResult
             }
 
-            public static var __selections: [ApolloAPI.Selection] {
+            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                 [
                     .field("__typename", String.self),
                     .field("imported", Int.self),
@@ -81,7 +85,7 @@ public class UploadStatementMutation: GraphQLMutation {
                 ]
             }
 
-            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                 [
                     UploadStatementMutation.Data.UploadStatement.self
                 ]
@@ -106,26 +110,28 @@ public class UploadStatementMutation: GraphQLMutation {
             /// UploadStatement.Ledger
             ///
             /// Parent Type: `Ledger`
-            public struct Ledger: FinanceOSAPI.SelectionSet {
-                public let __data: DataDict
+            public nonisolated struct Ledger: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
                 public init(_dataDict: DataDict) {
                     __data = _dataDict
                 }
 
-                public static var __parentType: any ApolloAPI.ParentType {
+                @_spi(Execution) public static var __parentType: any ApolloAPI
+                    .ParentType {
                     FinanceOSAPI.Objects.Ledger
                 }
 
-                public static var __selections: [ApolloAPI.Selection] {
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                     [
                         .field("__typename", String.self),
                         .field("id", FinanceOSAPI.ID.self),
                         .field("displayName", String.self),
-                        .field("balance", Double.self)
+                        .field("balance", Balance.self)
                     ]
                 }
 
-                public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                     [
                         UploadStatementMutation.Data.UploadStatement.Ledger.self
                     ]
@@ -139,8 +145,46 @@ public class UploadStatementMutation: GraphQLMutation {
                     __data["displayName"]
                 }
 
-                public var balance: Double {
+                public var balance: Balance {
                     __data["balance"]
+                }
+
+                /// UploadStatement.Ledger.Balance
+                ///
+                /// Parent Type: `Money`
+                public nonisolated struct Balance: FinanceOSAPI.SelectionSet {
+                    @_spi(Unsafe) public let __data: DataDict
+                    @_spi(Unsafe)
+                    public init(_dataDict: DataDict) {
+                        __data = _dataDict
+                    }
+
+                    @_spi(Execution) public static var __parentType: any ApolloAPI
+                        .ParentType {
+                        FinanceOSAPI.Objects.Money
+                    }
+
+                    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                        [
+                            .field("__typename", String.self),
+                            .field("value", Int.self),
+                            .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                        ]
+                    }
+
+                    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                        [
+                            UploadStatementMutation.Data.UploadStatement.Ledger.Balance.self
+                        ]
+                    }
+
+                    public var value: Int {
+                        __data["value"]
+                    }
+
+                    public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                        __data["currencyCode"]
+                    }
                 }
             }
         }

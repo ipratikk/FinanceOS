@@ -12,7 +12,7 @@ enum GraphQLMappings {
             kind: kind,
             displayName: item.displayName,
             last4: item.last4 ?? "",
-            closingBalance: Int64(item.balance * 100)
+            closingBalance: Int64(item.balance.value)
         )
     }
 
@@ -24,9 +24,9 @@ enum GraphQLMappings {
     }
 
     static func mapTransaction(_ item: GetTransactionsQuery.Data.Transaction) -> Transaction {
-        let rawAmount = Int64(item.amount * 100)
+        let rawAmount = Int64(item.amount.value)
         let amountMinorUnits = abs(rawAmount)
-        let transactionType: TransactionType = item.amount < 0 ? .debit : .credit
+        let transactionType: TransactionType = item.amount.value < 0 ? .debit : .credit
         return Transaction(
             id: UUID(uuidString: item.id) ?? UUID(),
             ledgerId: UUID(uuidString: item.ledger.id),
@@ -50,8 +50,8 @@ enum GraphQLMappings {
         let date = Calendar.current.date(from: dc) ?? Date()
         return MonthlySpendingSummary(
             month: date,
-            totalDebit: Int64(item.spend * 100),
-            totalCredit: Int64(item.income * 100)
+            totalDebit: Int64(item.spend.value),
+            totalCredit: Int64(item.income.value)
         )
     }
 

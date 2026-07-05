@@ -1,9 +1,9 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) import ApolloAPI
 
-public enum LedgerKind: String, EnumType {
+public nonisolated enum LedgerKind: String, EnumType {
     case bankAccount = "BANK_ACCOUNT"
     case creditCard = "CREDIT_CARD"
     case loan = "LOAN"

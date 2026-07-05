@@ -2,8 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class DeleteLedgerMutation: GraphQLMutation {
+public nonisolated struct DeleteLedgerMutation: GraphQLMutation {
     public static let operationName: String = "DeleteLedger"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
@@ -17,27 +18,28 @@ public class DeleteLedgerMutation: GraphQLMutation {
         self.id = id
     }
 
-    public var __variables: Variables? {
+    @_spi(Unsafe) public var __variables: Variables? {
         ["id": id]
     }
 
-    public struct Data: FinanceOSAPI.SelectionSet {
-        public let __data: DataDict
+    public nonisolated struct Data: FinanceOSAPI.SelectionSet {
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe)
         public init(_dataDict: DataDict) {
             __data = _dataDict
         }
 
-        public static var __parentType: any ApolloAPI.ParentType {
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
             FinanceOSAPI.Objects.Mutation
         }
 
-        public static var __selections: [ApolloAPI.Selection] {
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
                 .field("deleteLedger", Bool.self, arguments: ["id": .variable("id")])
             ]
         }
 
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
             [
                 DeleteLedgerMutation.Data.self
             ]

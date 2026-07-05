@@ -155,8 +155,8 @@ class DashboardViewModel: AsyncLoadable {
 
             monthlySummaries = analytics.byMonth.map(GraphQLMappings.mapMonthly)
             currentTotals = SpendingTotals(
-                totalDebit: Int64(analytics.totalSpend * 100),
-                totalCredit: Int64(analytics.totalIncome * 100),
+                totalDebit: Int64(analytics.totalSpend.value),
+                totalCredit: Int64(analytics.totalIncome.value),
                 transactionCount: 0
             )
             recentTransactions = makeRecentRows(recentData.transactions.map(GraphQLMappings.mapTransaction))

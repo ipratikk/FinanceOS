@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-    static let Ledger = ApolloAPI.Object(
+    nonisolated static let Ledger = ApolloAPI.Object(
         typename: "Ledger",
         implementedInterfaces: [],
         keyFields: nil

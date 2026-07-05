@@ -1,4 +1,21 @@
 {
+  "schemaNamespace": "FinanceOSAPI",
+  "input": {
+    "operationSearchPaths": ["Operations/**/*.graphql"],
+    "schemaSearchPaths": ["schema.graphql"]
+  },
+  "output": {
+    "schemaTypes": {
+      "path": "Generated/SchemaTypes",
+      "moduleType": { "swiftPackage": {} }
+    },
+    "operations": {
+      "inSchemaModule": {}
+    },
+    "testMocks": {
+      "none": {}
+    }
+  },
   "schemaDownloadConfiguration": {
     "downloadMethod": {
       "introspection": {

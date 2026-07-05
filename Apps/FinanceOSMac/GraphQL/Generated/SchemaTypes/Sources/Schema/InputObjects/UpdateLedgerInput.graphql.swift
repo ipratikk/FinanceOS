@@ -1,11 +1,12 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) @_spi(Unsafe) import ApolloAPI
 
-public struct UpdateLedgerInput: InputObject {
-    public private(set) var __data: InputDict
+public nonisolated struct UpdateLedgerInput: InputObject {
+    @_spi(Unsafe) public private(set) var __data: InputDict
 
+    @_spi(Unsafe)
     public init(_ data: InputDict) {
         __data = data
     }

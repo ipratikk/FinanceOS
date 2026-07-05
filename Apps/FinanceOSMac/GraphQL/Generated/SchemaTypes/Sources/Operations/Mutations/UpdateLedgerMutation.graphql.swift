@@ -2,8 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class UpdateLedgerMutation: GraphQLMutation {
+public nonisolated struct UpdateLedgerMutation: GraphQLMutation {
     public static let operationName: String = "UpdateLedger"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
@@ -22,24 +23,25 @@ public class UpdateLedgerMutation: GraphQLMutation {
         self.input = input
     }
 
-    public var __variables: Variables? {
+    @_spi(Unsafe) public var __variables: Variables? {
         [
             "id": id,
             "input": input
         ]
     }
 
-    public struct Data: FinanceOSAPI.SelectionSet {
-        public let __data: DataDict
+    public nonisolated struct Data: FinanceOSAPI.SelectionSet {
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe)
         public init(_dataDict: DataDict) {
             __data = _dataDict
         }
 
-        public static var __parentType: any ApolloAPI.ParentType {
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
             FinanceOSAPI.Objects.Mutation
         }
 
-        public static var __selections: [ApolloAPI.Selection] {
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
                 .field("updateLedger", UpdateLedger.self, arguments: [
                     "id": .variable("id"),
@@ -48,7 +50,7 @@ public class UpdateLedgerMutation: GraphQLMutation {
             ]
         }
 
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
             [
                 UpdateLedgerMutation.Data.self
             ]
@@ -61,17 +63,18 @@ public class UpdateLedgerMutation: GraphQLMutation {
         /// UpdateLedger
         ///
         /// Parent Type: `Ledger`
-        public struct UpdateLedger: FinanceOSAPI.SelectionSet {
-            public let __data: DataDict
+        public nonisolated struct UpdateLedger: FinanceOSAPI.SelectionSet {
+            @_spi(Unsafe) public let __data: DataDict
+            @_spi(Unsafe)
             public init(_dataDict: DataDict) {
                 __data = _dataDict
             }
 
-            public static var __parentType: any ApolloAPI.ParentType {
+            @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
                 FinanceOSAPI.Objects.Ledger
             }
 
-            public static var __selections: [ApolloAPI.Selection] {
+            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                 [
                     .field("__typename", String.self),
                     .field("id", FinanceOSAPI.ID.self),
@@ -81,7 +84,7 @@ public class UpdateLedgerMutation: GraphQLMutation {
                 ]
             }
 
-            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                 [
                     UpdateLedgerMutation.Data.UpdateLedger.self
                 ]

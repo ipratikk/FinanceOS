@@ -17,7 +17,10 @@ query GetLedgers {
       name
       code
     }
-    balance
+    balance {
+      value
+      currencyCode
+    }
   }
 }
 
@@ -32,7 +35,10 @@ query GetLedger($id: ID!) {
       name
       code
     }
-    balance
+    balance {
+      value
+      currencyCode
+    }
   }
 }
 
@@ -41,7 +47,10 @@ query GetTransactions($ledgerId: ID, $filter: TransactionFilter, $limit: Int) {
     id
     date
     narration
-    amount
+    amount {
+      value
+      currencyCode
+    }
     category
     merchant
     sourceFingerprint
@@ -54,18 +63,36 @@ query GetTransactions($ledgerId: ID, $filter: TransactionFilter, $limit: Int) {
 
 query GetAnalytics($ledgerId: ID, $from: String, $to: String) {
   analytics(ledgerId: $ledgerId, from: $from, to: $to) {
-    totalSpend
-    totalIncome
-    netFlow
+    totalSpend {
+      value
+      currencyCode
+    }
+    totalIncome {
+      value
+      currencyCode
+    }
+    netFlow {
+      value
+      currencyCode
+    }
     byCategory {
       category
-      amount
+      amount {
+        value
+        currencyCode
+      }
       count
     }
     byMonth {
       month
-      spend
-      income
+      spend {
+        value
+        currencyCode
+      }
+      income {
+        value
+        currencyCode
+      }
     }
   }
 }

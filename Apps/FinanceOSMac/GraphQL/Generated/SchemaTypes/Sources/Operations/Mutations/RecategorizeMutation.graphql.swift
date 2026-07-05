@@ -2,8 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class RecategorizeMutation: GraphQLMutation {
+public nonisolated struct RecategorizeMutation: GraphQLMutation {
     public static let operationName: String = "Recategorize"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
@@ -22,24 +23,25 @@ public class RecategorizeMutation: GraphQLMutation {
         self.category = category
     }
 
-    public var __variables: Variables? {
+    @_spi(Unsafe) public var __variables: Variables? {
         [
             "transactionId": transactionId,
             "category": category
         ]
     }
 
-    public struct Data: FinanceOSAPI.SelectionSet {
-        public let __data: DataDict
+    public nonisolated struct Data: FinanceOSAPI.SelectionSet {
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe)
         public init(_dataDict: DataDict) {
             __data = _dataDict
         }
 
-        public static var __parentType: any ApolloAPI.ParentType {
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
             FinanceOSAPI.Objects.Mutation
         }
 
-        public static var __selections: [ApolloAPI.Selection] {
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
                 .field("recategorize", Recategorize.self, arguments: [
                     "transactionId": .variable("transactionId"),
@@ -48,7 +50,7 @@ public class RecategorizeMutation: GraphQLMutation {
             ]
         }
 
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
             [
                 RecategorizeMutation.Data.self
             ]
@@ -61,17 +63,19 @@ public class RecategorizeMutation: GraphQLMutation {
         /// Recategorize
         ///
         /// Parent Type: `Transaction`
-        public struct Recategorize: FinanceOSAPI.SelectionSet {
-            public let __data: DataDict
+        public nonisolated struct Recategorize: FinanceOSAPI.SelectionSet {
+            @_spi(Unsafe) public let __data: DataDict
+            @_spi(Unsafe)
             public init(_dataDict: DataDict) {
                 __data = _dataDict
             }
 
-            public static var __parentType: any ApolloAPI.ParentType {
+            @_spi(Execution) public static var __parentType: any ApolloAPI
+                .ParentType {
                 FinanceOSAPI.Objects.Transaction
             }
 
-            public static var __selections: [ApolloAPI.Selection] {
+            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                 [
                     .field("__typename", String.self),
                     .field("id", FinanceOSAPI.ID.self),
@@ -79,7 +83,7 @@ public class RecategorizeMutation: GraphQLMutation {
                 ]
             }
 
-            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                 [
                     RecategorizeMutation.Data.Recategorize.self
                 ]

@@ -6,7 +6,10 @@ mutation UploadStatement($ledgerId: ID!, $file: Upload!) {
     ledger {
       id
       displayName
-      balance
+      balance {
+        value
+        currencyCode
+      }
     }
   }
 }

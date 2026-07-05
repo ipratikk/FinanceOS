@@ -22,7 +22,7 @@ let package = Package(
         .package(path: "../FinanceParsers"),
         .package(
             url: "https://github.com/apollographql/apollo-ios",
-            from: "1.25.0"
+            exact: "2.2.0"
         )
     ],
     targets: [
