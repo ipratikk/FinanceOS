@@ -23,6 +23,7 @@ extension ImportViewModel {
     }
 
     func autoSelectMatchingTarget() async {
+        guard importSession.selectedTarget == nil else { return }
         guard let statement = importSession.parsedStatements.first else { return }
         if let target = FinanceCore.ImportTargetMatcher.bestTarget(
             for: statement,
