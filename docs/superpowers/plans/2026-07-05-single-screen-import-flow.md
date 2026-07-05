@@ -1070,7 +1070,7 @@ git commit -m "refactor(import): collapse 3-step wizard into single phase-driven
 - No change needed: `Apps/FinanceOSMac/FinanceOSMacSnapshotTests/Flows/ImportFlowSnapshotTests.swift` (constructs a default `ImportViewModel` and snapshots `ImportView` — this now captures the new `.idle` drop-zone screen instead of the old source-grid screen; the test code itself doesn't reference any deleted symbol, so it needs no edits, just re-recording — see Step 4)
 
 **Interfaces:**
-- Consumes: `ImportTargetSection` (from Task 2), `SnapshotTestable.verifyComponentSnapshots(_:size:)` (unchanged, `Helpers/SnapshotTestable.swift`), `PreviewAccounts.checking()`/`.creditCard()` (unchanged, `FinanceTesting`), `PreviewBanks.hdfc()` (unchanged, `FinanceTesting`)
+- Consumes: `ImportTargetSection` (from Task 2), `SnapshotTestable.verifyComponentSnapshots(_:size:)` (unchanged, `Helpers/SnapshotTestable.swift`), `PreviewLedgers.checking()`/`.creditCard()` (unchanged, `FinanceTesting`), `PreviewBanks.hdfc()` (unchanged, `FinanceTesting`)
 
 - [ ] **Step 1: Delete the three obsolete snapshot test files**
 
@@ -1098,7 +1098,7 @@ final class ImportTargetSectionSnapshotTests: SnapshotTestable {
 
     func test_import_target_section_no_selection() {
         let viewModel = ImportViewModel(graphQLClient: ApolloGraphQLClient())
-        viewModel.ledgers = [PreviewAccounts.checking(), PreviewAccounts.creditCard()]
+        viewModel.ledgers = [PreviewLedgers.checking(), PreviewLedgers.creditCard()]
         viewModel.banks = [PreviewBanks.hdfc()]
         let view = ImportTargetSection(viewModel: viewModel)
         verifyComponentSnapshots(view, size: CGSize(width: 320, height: 60))
@@ -1106,8 +1106,8 @@ final class ImportTargetSectionSnapshotTests: SnapshotTestable {
 
     func test_import_target_section_selected() {
         let viewModel = ImportViewModel(graphQLClient: ApolloGraphQLClient())
-        let checking = PreviewAccounts.checking()
-        viewModel.ledgers = [checking, PreviewAccounts.creditCard()]
+        let checking = PreviewLedgers.checking()
+        viewModel.ledgers = [checking, PreviewLedgers.creditCard()]
         viewModel.banks = [PreviewBanks.hdfc()]
         viewModel.selectedTarget = .ledger(checking.id)
         let view = ImportTargetSection(viewModel: viewModel)
