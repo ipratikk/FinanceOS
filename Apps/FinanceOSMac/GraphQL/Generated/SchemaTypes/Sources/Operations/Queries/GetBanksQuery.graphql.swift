@@ -2,8 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class GetBanksQuery: GraphQLQuery {
+public nonisolated struct GetBanksQuery: GraphQLQuery {
     public static let operationName: String = "GetBanks"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
@@ -13,23 +14,24 @@ public class GetBanksQuery: GraphQLQuery {
 
     public init() {}
 
-    public struct Data: FinanceOSAPI.SelectionSet {
-        public let __data: DataDict
+    public nonisolated struct Data: FinanceOSAPI.SelectionSet {
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe)
         public init(_dataDict: DataDict) {
             __data = _dataDict
         }
 
-        public static var __parentType: any ApolloAPI.ParentType {
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
             FinanceOSAPI.Objects.Query
         }
 
-        public static var __selections: [ApolloAPI.Selection] {
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
                 .field("banks", [Bank].self)
             ]
         }
 
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
             [
                 GetBanksQuery.Data.self
             ]
@@ -42,17 +44,18 @@ public class GetBanksQuery: GraphQLQuery {
         /// Bank
         ///
         /// Parent Type: `Bank`
-        public struct Bank: FinanceOSAPI.SelectionSet {
-            public let __data: DataDict
+        public nonisolated struct Bank: FinanceOSAPI.SelectionSet {
+            @_spi(Unsafe) public let __data: DataDict
+            @_spi(Unsafe)
             public init(_dataDict: DataDict) {
                 __data = _dataDict
             }
 
-            public static var __parentType: any ApolloAPI.ParentType {
+            @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
                 FinanceOSAPI.Objects.Bank
             }
 
-            public static var __selections: [ApolloAPI.Selection] {
+            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                 [
                     .field("__typename", String.self),
                     .field("id", FinanceOSAPI.ID.self),
@@ -61,7 +64,7 @@ public class GetBanksQuery: GraphQLQuery {
                 ]
             }
 
-            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                 [
                     GetBanksQuery.Data.Bank.self
                 ]

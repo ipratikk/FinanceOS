@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-    static let CategoryBreakdown = ApolloAPI.Object(
+    nonisolated static let CategoryBreakdown = ApolloAPI.Object(
         typename: "CategoryBreakdown",
         implementedInterfaces: [],
         keyFields: nil

@@ -7,7 +7,7 @@
   "output": {
     "schemaTypes": {
       "path": "Generated/SchemaTypes",
-      "moduleType": { "swiftPackageManager": {} }
+      "moduleType": { "swiftPackage": {} }
     },
     "operations": {
       "inSchemaModule": {}

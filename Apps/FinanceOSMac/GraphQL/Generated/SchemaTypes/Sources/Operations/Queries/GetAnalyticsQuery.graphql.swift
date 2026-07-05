@@ -2,12 +2,13 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class GetAnalyticsQuery: GraphQLQuery {
+public nonisolated struct GetAnalyticsQuery: GraphQLQuery {
     public static let operationName: String = "GetAnalytics"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
-            #"query GetAnalytics($ledgerId: ID, $from: String, $to: String) { analytics(ledgerId: $ledgerId, from: $from, to: $to) { __typename totalSpend totalIncome netFlow byCategory { __typename category amount count } byMonth { __typename month spend income } } }"#
+            #"query GetAnalytics($ledgerId: ID, $from: String, $to: String) { analytics(ledgerId: $ledgerId, from: $from, to: $to) { __typename totalSpend { __typename value currencyCode } totalIncome { __typename value currencyCode } netFlow { __typename value currencyCode } byCategory { __typename category amount { __typename value currencyCode } count } byMonth { __typename month spend { __typename value currencyCode } income { __typename value currencyCode } } } }"#
         )
     )
 
@@ -25,7 +26,7 @@ public class GetAnalyticsQuery: GraphQLQuery {
         self.to = to
     }
 
-    public var __variables: Variables? {
+    @_spi(Unsafe) public var __variables: Variables? {
         [
             "ledgerId": ledgerId,
             "from": from,
@@ -33,17 +34,18 @@ public class GetAnalyticsQuery: GraphQLQuery {
         ]
     }
 
-    public struct Data: FinanceOSAPI.SelectionSet {
-        public let __data: DataDict
+    public nonisolated struct Data: FinanceOSAPI.SelectionSet {
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe)
         public init(_dataDict: DataDict) {
             __data = _dataDict
         }
 
-        public static var __parentType: any ApolloAPI.ParentType {
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
             FinanceOSAPI.Objects.Query
         }
 
-        public static var __selections: [ApolloAPI.Selection] {
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
                 .field("analytics", Analytics.self, arguments: [
                     "ledgerId": .variable("ledgerId"),
@@ -53,7 +55,7 @@ public class GetAnalyticsQuery: GraphQLQuery {
             ]
         }
 
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
             [
                 GetAnalyticsQuery.Data.self
             ]
@@ -66,42 +68,44 @@ public class GetAnalyticsQuery: GraphQLQuery {
         /// Analytics
         ///
         /// Parent Type: `SpendingSummary`
-        public struct Analytics: FinanceOSAPI.SelectionSet {
-            public let __data: DataDict
+        public nonisolated struct Analytics: FinanceOSAPI.SelectionSet {
+            @_spi(Unsafe) public let __data: DataDict
+            @_spi(Unsafe)
             public init(_dataDict: DataDict) {
                 __data = _dataDict
             }
 
-            public static var __parentType: any ApolloAPI.ParentType {
+            @_spi(Execution) public static var __parentType: any ApolloAPI
+                .ParentType {
                 FinanceOSAPI.Objects.SpendingSummary
             }
 
-            public static var __selections: [ApolloAPI.Selection] {
+            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                 [
                     .field("__typename", String.self),
-                    .field("totalSpend", Double.self),
-                    .field("totalIncome", Double.self),
-                    .field("netFlow", Double.self),
+                    .field("totalSpend", TotalSpend.self),
+                    .field("totalIncome", TotalIncome.self),
+                    .field("netFlow", NetFlow.self),
                     .field("byCategory", [ByCategory].self),
                     .field("byMonth", [ByMonth].self)
                 ]
             }
 
-            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                 [
                     GetAnalyticsQuery.Data.Analytics.self
                 ]
             }
 
-            public var totalSpend: Double {
+            public var totalSpend: TotalSpend {
                 __data["totalSpend"]
             }
 
-            public var totalIncome: Double {
+            public var totalIncome: TotalIncome {
                 __data["totalIncome"]
             }
 
-            public var netFlow: Double {
+            public var netFlow: NetFlow {
                 __data["netFlow"]
             }
 
@@ -113,29 +117,142 @@ public class GetAnalyticsQuery: GraphQLQuery {
                 __data["byMonth"]
             }
 
-            /// Analytics.ByCategory
+            /// Analytics.TotalSpend
             ///
-            /// Parent Type: `CategoryBreakdown`
-            public struct ByCategory: FinanceOSAPI.SelectionSet {
-                public let __data: DataDict
+            /// Parent Type: `Money`
+            public nonisolated struct TotalSpend: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
                 public init(_dataDict: DataDict) {
                     __data = _dataDict
                 }
 
-                public static var __parentType: any ApolloAPI.ParentType {
+                @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
+                    FinanceOSAPI.Objects.Money
+                }
+
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                    [
+                        .field("__typename", String.self),
+                        .field("value", Int.self),
+                        .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                    ]
+                }
+
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                    [
+                        GetAnalyticsQuery.Data.Analytics.TotalSpend.self
+                    ]
+                }
+
+                public var value: Int {
+                    __data["value"]
+                }
+
+                public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                    __data["currencyCode"]
+                }
+            }
+
+            /// Analytics.TotalIncome
+            ///
+            /// Parent Type: `Money`
+            public nonisolated struct TotalIncome: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
+                public init(_dataDict: DataDict) {
+                    __data = _dataDict
+                }
+
+                @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
+                    FinanceOSAPI.Objects.Money
+                }
+
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                    [
+                        .field("__typename", String.self),
+                        .field("value", Int.self),
+                        .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                    ]
+                }
+
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                    [
+                        GetAnalyticsQuery.Data.Analytics.TotalIncome.self
+                    ]
+                }
+
+                public var value: Int {
+                    __data["value"]
+                }
+
+                public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                    __data["currencyCode"]
+                }
+            }
+
+            /// Analytics.NetFlow
+            ///
+            /// Parent Type: `Money`
+            public nonisolated struct NetFlow: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
+                public init(_dataDict: DataDict) {
+                    __data = _dataDict
+                }
+
+                @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType {
+                    FinanceOSAPI.Objects.Money
+                }
+
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                    [
+                        .field("__typename", String.self),
+                        .field("value", Int.self),
+                        .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                    ]
+                }
+
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                    [
+                        GetAnalyticsQuery.Data.Analytics.NetFlow.self
+                    ]
+                }
+
+                public var value: Int {
+                    __data["value"]
+                }
+
+                public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                    __data["currencyCode"]
+                }
+            }
+
+            /// Analytics.ByCategory
+            ///
+            /// Parent Type: `CategoryBreakdown`
+            public nonisolated struct ByCategory: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
+                public init(_dataDict: DataDict) {
+                    __data = _dataDict
+                }
+
+                @_spi(Execution) public static var __parentType: any ApolloAPI
+                    .ParentType {
                     FinanceOSAPI.Objects.CategoryBreakdown
                 }
 
-                public static var __selections: [ApolloAPI.Selection] {
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                     [
                         .field("__typename", String.self),
                         .field("category", String.self),
-                        .field("amount", Double.self),
+                        .field("amount", Amount.self),
                         .field("count", Int.self)
                     ]
                 }
 
-                public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                     [
                         GetAnalyticsQuery.Data.Analytics.ByCategory.self
                     ]
@@ -145,38 +262,78 @@ public class GetAnalyticsQuery: GraphQLQuery {
                     __data["category"]
                 }
 
-                public var amount: Double {
+                public var amount: Amount {
                     __data["amount"]
                 }
 
                 public var count: Int {
                     __data["count"]
                 }
+
+                /// Analytics.ByCategory.Amount
+                ///
+                /// Parent Type: `Money`
+                public nonisolated struct Amount: FinanceOSAPI.SelectionSet {
+                    @_spi(Unsafe) public let __data: DataDict
+                    @_spi(Unsafe)
+                    public init(_dataDict: DataDict) {
+                        __data = _dataDict
+                    }
+
+                    @_spi(Execution) public static var __parentType: any ApolloAPI
+                        .ParentType {
+                        FinanceOSAPI.Objects.Money
+                    }
+
+                    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                        [
+                            .field("__typename", String.self),
+                            .field("value", Int.self),
+                            .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                        ]
+                    }
+
+                    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                        [
+                            GetAnalyticsQuery.Data.Analytics.ByCategory.Amount.self
+                        ]
+                    }
+
+                    public var value: Int {
+                        __data["value"]
+                    }
+
+                    public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                        __data["currencyCode"]
+                    }
+                }
             }
 
             /// Analytics.ByMonth
             ///
             /// Parent Type: `MonthlyBreakdown`
-            public struct ByMonth: FinanceOSAPI.SelectionSet {
-                public let __data: DataDict
+            public nonisolated struct ByMonth: FinanceOSAPI.SelectionSet {
+                @_spi(Unsafe) public let __data: DataDict
+                @_spi(Unsafe)
                 public init(_dataDict: DataDict) {
                     __data = _dataDict
                 }
 
-                public static var __parentType: any ApolloAPI.ParentType {
+                @_spi(Execution) public static var __parentType: any ApolloAPI
+                    .ParentType {
                     FinanceOSAPI.Objects.MonthlyBreakdown
                 }
 
-                public static var __selections: [ApolloAPI.Selection] {
+                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
                     [
                         .field("__typename", String.self),
                         .field("month", String.self),
-                        .field("spend", Double.self),
-                        .field("income", Double.self)
+                        .field("spend", Spend.self),
+                        .field("income", Income.self)
                     ]
                 }
 
-                public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
                     [
                         GetAnalyticsQuery.Data.Analytics.ByMonth.self
                     ]
@@ -186,12 +343,88 @@ public class GetAnalyticsQuery: GraphQLQuery {
                     __data["month"]
                 }
 
-                public var spend: Double {
+                public var spend: Spend {
                     __data["spend"]
                 }
 
-                public var income: Double {
+                public var income: Income {
                     __data["income"]
+                }
+
+                /// Analytics.ByMonth.Spend
+                ///
+                /// Parent Type: `Money`
+                public nonisolated struct Spend: FinanceOSAPI.SelectionSet {
+                    @_spi(Unsafe) public let __data: DataDict
+                    @_spi(Unsafe)
+                    public init(_dataDict: DataDict) {
+                        __data = _dataDict
+                    }
+
+                    @_spi(Execution) public static var __parentType: any ApolloAPI
+                        .ParentType {
+                        FinanceOSAPI.Objects.Money
+                    }
+
+                    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                        [
+                            .field("__typename", String.self),
+                            .field("value", Int.self),
+                            .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                        ]
+                    }
+
+                    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                        [
+                            GetAnalyticsQuery.Data.Analytics.ByMonth.Spend.self
+                        ]
+                    }
+
+                    public var value: Int {
+                        __data["value"]
+                    }
+
+                    public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                        __data["currencyCode"]
+                    }
+                }
+
+                /// Analytics.ByMonth.Income
+                ///
+                /// Parent Type: `Money`
+                public nonisolated struct Income: FinanceOSAPI.SelectionSet {
+                    @_spi(Unsafe) public let __data: DataDict
+                    @_spi(Unsafe)
+                    public init(_dataDict: DataDict) {
+                        __data = _dataDict
+                    }
+
+                    @_spi(Execution) public static var __parentType: any ApolloAPI
+                        .ParentType {
+                        FinanceOSAPI.Objects.Money
+                    }
+
+                    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
+                        [
+                            .field("__typename", String.self),
+                            .field("value", Int.self),
+                            .field("currencyCode", GraphQLEnum<FinanceOSAPI.CurrencyCode>.self)
+                        ]
+                    }
+
+                    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] {
+                        [
+                            GetAnalyticsQuery.Data.Analytics.ByMonth.Income.self
+                        ]
+                    }
+
+                    public var value: Int {
+                        __data["value"]
+                    }
+
+                    public var currencyCode: GraphQLEnum<FinanceOSAPI.CurrencyCode> {
+                        __data["currencyCode"]
+                    }
                 }
             }
         }

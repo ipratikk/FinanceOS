@@ -36,7 +36,7 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
                     .map { item in
                         let id = UUID(uuidString: item.id) ?? UUID()
                         let balance = AccountLedgerBalance(
-                            netMinorUnits: Int64(item.balance * 100),
+                            netMinorUnits: Int64(item.balance.value),
                             latestPostedAt: nil
                         )
                         return (id, balance)

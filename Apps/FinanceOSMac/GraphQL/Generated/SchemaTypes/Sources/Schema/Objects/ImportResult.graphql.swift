@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-    static let ImportResult = ApolloAPI.Object(
+    nonisolated static let ImportResult = ApolloAPI.Object(
         typename: "ImportResult",
         implementedInterfaces: [],
         keyFields: nil

@@ -60,28 +60,60 @@ xcodebuild -scheme FinanceOSMac -configuration Debug
 FinanceOS/
 ├── Apps/
 │   └── FinanceOSMac/           # Native macOS app
+│       └── GraphQL/            # Apollo codegen config, schema, generated types, Operations/*.graphql
 ├── Packages/
-│   ├── FinanceCore/            # Models, repositories, persistence (GRDB)
-│   ├── FinanceParsers/         # Bank statement parsers
-│   ├── FinanceUI/              # SwiftUI components & design system
-│   └── FinanceTesting/         # Shared test helpers & fixtures
+│   ├── FinanceCore/            # Models, GraphQL client, AppContainer, Logging, TransferEvent persistence (GRDB)
+│   ├── FinanceParsers/         # Bank statement parsers, import pipeline, deduplicator
+│   ├── FinanceUI/              # SwiftUI components & design system (FDS)
+│   └── FinanceTesting/         # Shared test helpers, fixtures, golden JSON
 ├── Scripts/
+│   ├── codegen.sh              # GraphQL schema fetch + Apollo codegen + build
+│   ├── codegen-config.sh       # Per-environment GraphQL endpoint config
 │   ├── fixtures/               # Golden JSON for parser validation
 │   └── validate/               # pre-PR CI validation
-├── docs/                       # Project documentation
+├── docs/                       # Project documentation (see docs/ARCHITECTURE.md)
 ├── CLAUDE.md                   # Claude Code instructions
 └── CODING_STANDARDS.md         # Code style & linting rules
 ```
 
 ## Architecture
 
-**View Layer** → **ViewModel** → **Repository Protocol** → **GRDB Repository** → **SQLite**
+**SwiftUI View** → **ViewModel** → **ApolloGraphQLClient** → **financeos-backend (GraphQL API)**
+
+FinanceOS is a GraphQL thin client. All bank/ledger/transaction data is owned by the
+[financeos-backend](https://github.com/ipratikk/FinanceOS-Backend) service; the only local
+persistence is `TransferEvent` (GRDB/SQLite), owned by `DatabaseManager`.
 
 Key principles:
-- Views never access database directly
-- ViewModels don't contain SQL
-- Repositories encapsulate persistence
+- Views never access the GraphQL client or repositories directly
+- ViewModels call data via `ApolloGraphQLClient`, injected through `AppContainer`
+- `DatabaseManager` owns local SQLite lifecycle (TransferEvent only)
 - Parser layer isolated from UI/persistence
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full current-state breakdown.
+
+## GraphQL Backend & Codegen
+
+FinanceOS talks to [financeos-backend](https://github.com/ipratikk/FinanceOS-Backend) over GraphQL (`http://localhost:4000/graphql` locally, via Docker Compose).
+
+Run the backend locally:
+```bash
+git clone https://github.com/ipratikk/FinanceOS-Backend.git
+cd FinanceOS-Backend
+./bootstrap.sh          # starts postgres, redis, node-api, python-parser via Docker Compose
+```
+
+Regenerate Swift GraphQL types after a backend schema change:
+```bash
+Scripts/codegen.sh [local|stage|prod]   # default: local
+```
+
+This fetches the schema via introspection, runs `apollo-ios-cli generate`, and builds the macOS target.
+Config:
+- Endpoints: [Scripts/codegen-config.sh](Scripts/codegen-config.sh)
+- Apollo schema download config: [Apps/FinanceOSMac/GraphQL/apollo-schema-config.json](Apps/FinanceOSMac/GraphQL/apollo-schema-config.json)
+- Apollo codegen config: [Apps/FinanceOSMac/GraphQL/apollo-codegen-config.json](Apps/FinanceOSMac/GraphQL/apollo-codegen-config.json)
+- GraphQL operations: [Apps/FinanceOSMac/GraphQL/Operations/](Apps/FinanceOSMac/GraphQL/Operations/)
 
 ## Engineering Priorities
 
@@ -171,17 +203,21 @@ make parser-parse FILE=path/to/statement.csv  # Parse single file
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — Contribution guide
 - **[docs/](docs/)** — Project documentation
 
-## Current Focus (Phase 10+)
+## Current Focus
 
-1. CSV/TXT parser hardening (additional Indian banks)
-2. Statement format auto-detection
-3. Bank-specific parsing rules
-4. Duplicate detection at scale
-5. Analytics and spending insights
+Phases 1–10 complete (Ledger unification, import pipeline, dedup engine, UI migration, MVVM/GraphQL refactor).
+
+**Active: Financial Intelligence Platform** — transaction analysis, behavior detection, spending
+insights. Intelligence logic is owned by [financeos-backend](https://github.com/ipratikk/FinanceOS-Backend)
+(Python service); the category picker and filter UI wire to the `RecategorizeMutation` GraphQL endpoint.
+
+Enablers:
+- **Parser / Ingestion** — CSV/XLSX hardening, Indian banks, dedup, format detection
+- **Card Catalog** — card metadata scraping (`/card-scraper`): HDFC, ICICI, Amex, Axis, AU, IDFC, SBI, Scapia, Yes Bank
 
 **Not implemented:**
 - Sync across devices
-- ML-based categorization
+- Pure ML training
 - Cloud infrastructure
 - AI chat features
 
@@ -209,4 +245,4 @@ For security vulnerabilities, see [SECURITY.md](SECURITY.md) for responsible dis
 ---
 
 **Status:** Active development  
-**Last Updated:** 2026-05-22
+**Last Updated:** 2026-07-05

@@ -1,6 +1,6 @@
 #!/bin/bash
 # macOS build script with xcbeautify fallback
-set -e
+set -eo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_ROOT"

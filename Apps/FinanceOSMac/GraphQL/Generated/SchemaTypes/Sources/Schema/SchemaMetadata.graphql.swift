@@ -3,19 +3,19 @@
 
 import ApolloAPI
 
-public protocol SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
+public nonisolated protocol SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
     where Schema == FinanceOSAPI.SchemaMetadata {}
 
-public protocol InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
+public nonisolated protocol InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
     where Schema == FinanceOSAPI.SchemaMetadata {}
 
-public protocol MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
+public nonisolated protocol MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
     where Schema == FinanceOSAPI.SchemaMetadata {}
 
-public protocol MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
+public nonisolated protocol MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
     where Schema == FinanceOSAPI.SchemaMetadata {}
 
-public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
+public nonisolated enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     public static let configuration: any ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
 
     private static let objectTypeMap: [String: ApolloAPI.Object] = [
@@ -23,6 +23,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
         "CategoryBreakdown": FinanceOSAPI.Objects.CategoryBreakdown,
         "ImportResult": FinanceOSAPI.Objects.ImportResult,
         "Ledger": FinanceOSAPI.Objects.Ledger,
+        "Money": FinanceOSAPI.Objects.Money,
         "MonthlyBreakdown": FinanceOSAPI.Objects.MonthlyBreakdown,
         "Mutation": FinanceOSAPI.Objects.Mutation,
         "Query": FinanceOSAPI.Objects.Query,
@@ -30,11 +31,12 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
         "Transaction": FinanceOSAPI.Objects.Transaction
     ]
 
+    @_spi(Execution)
     public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
         objectTypeMap[typename]
     }
 }
 
-public enum Objects {}
-public enum Interfaces {}
-public enum Unions {}
+public nonisolated enum Objects {}
+public nonisolated enum Interfaces {}
+public nonisolated enum Unions {}

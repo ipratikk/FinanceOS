@@ -1,11 +1,12 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) @_spi(Unsafe) import ApolloAPI
 
-public struct TransactionFilter: InputObject {
-    public private(set) var __data: InputDict
+public nonisolated struct TransactionFilter: InputObject {
+    @_spi(Unsafe) public private(set) var __data: InputDict
 
+    @_spi(Unsafe)
     public init(_ data: InputDict) {
         __data = data
     }
@@ -14,8 +15,8 @@ public struct TransactionFilter: InputObject {
         from: GraphQLNullable<String> = nil,
         to: GraphQLNullable<String> = nil,
         category: GraphQLNullable<String> = nil,
-        minAmount: GraphQLNullable<Double> = nil,
-        maxAmount: GraphQLNullable<Double> = nil
+        minAmount: GraphQLNullable<Int32> = nil,
+        maxAmount: GraphQLNullable<Int32> = nil
     ) {
         __data = InputDict([
             "from": from,
@@ -41,12 +42,12 @@ public struct TransactionFilter: InputObject {
         set { __data["category"] = newValue }
     }
 
-    public var minAmount: GraphQLNullable<Double> {
+    public var minAmount: GraphQLNullable<Int32> {
         get { __data["minAmount"] }
         set { __data["minAmount"] = newValue }
     }
 
-    public var maxAmount: GraphQLNullable<Double> {
+    public var maxAmount: GraphQLNullable<Int32> {
         get { __data["maxAmount"] }
         set { __data["maxAmount"] = newValue }
     }

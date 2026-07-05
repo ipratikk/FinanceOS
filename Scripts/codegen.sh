@@ -99,6 +99,9 @@ green "Schema config ready (endpoint injected)"
 
 header "Fetching schema from $ENDPOINT"
 
+# apollo-ios-cli resolves config-relative paths (outputPath, schemaSearchPaths) against CWD.
+cd "$GRAPHQL_DIR"
+
 if ! apollo-ios-cli fetch-schema --path "$TEMP_SCHEMA_CONFIG"; then
   red "Schema fetch failed from $ENDPOINT"
   echo "  → Is the server running?"

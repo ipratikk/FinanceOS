@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-    static let Bank = ApolloAPI.Object(
+    nonisolated static let Bank = ApolloAPI.Object(
         typename: "Bank",
         implementedInterfaces: [],
         keyFields: nil
