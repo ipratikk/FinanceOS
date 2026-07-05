@@ -26,7 +26,6 @@ excluded:
   - Packages/**/.build
   - Packages/FinanceIntelligence/.build
   - Packages/FinanceCore/.build
-  - Packages/FinanceParsers/.build
   - Packages/FinanceUI/.build
   - Packages/FinanceTesting/.build
   - Packages/FinanceCLI/.build

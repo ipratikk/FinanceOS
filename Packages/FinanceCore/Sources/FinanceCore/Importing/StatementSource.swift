@@ -1,4 +1,4 @@
-/// Identifies a specific bank-product combination that the parser pipeline supports.
+/// Identifies a specific bank-product combination that the import pipeline supports.
 /// Each case maps to exactly one `bankName`, `sourceType`, and set of `allowedFormats`.
 public enum StatementSource: String, CaseIterable, Sendable, Hashable {
     case hdfcBank

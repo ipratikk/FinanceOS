@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Errors thrown by FinanceParsers when a statement file cannot be read or normalised.
+/// Errors thrown when a statement file cannot be read or normalised.
 /// All cases are non-retryable — the user must supply a corrected file.
 public enum ParsingError: FinanceError {
     /// File extension or internal structure does not match any registered parser.

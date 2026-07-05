@@ -1,4 +1,3 @@
-import FinanceParsers
 import Foundation
 
 public extension StatementFileFormat {

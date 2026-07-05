@@ -10,7 +10,6 @@ A native macOS financial management application for importing, analyzing, and tr
 - **Transaction Ledger** — Unified ledger view with accounts, tags, and filtering
 - **Dashboard Analytics** — Net worth tracking, spending insights, and wealth intelligence
 - **Design System** — Finance Design System (FDS) with consistent UI components and spacing
-- **Parser Extensibility** — Bank-specific parsing rules with auto-format detection
 
 ## Getting Started
 
@@ -44,9 +43,6 @@ Build using Claude Code skills or Make:
 
 ```bash
 /build                    # SwiftUI app build
-make parser-build         # Parser packages only
-make parser-test          # Run parser tests
-make parser-parse FILE=<path>  # Parse a single file
 ```
 
 Or use Xcode directly:
@@ -63,7 +59,6 @@ FinanceOS/
 │       └── GraphQL/            # Apollo codegen config, schema, generated types, Operations/*.graphql
 ├── Packages/
 │   ├── FinanceCore/            # Models, GraphQL client, AppContainer, Logging, TransferEvent persistence (GRDB)
-│   ├── FinanceParsers/         # Bank statement parsers, import pipeline, deduplicator
 │   ├── FinanceUI/              # SwiftUI components & design system (FDS)
 │   └── FinanceTesting/         # Shared test helpers, fixtures, golden JSON
 ├── Scripts/
@@ -184,16 +179,7 @@ Run tests for individual packages:
 
 ```bash
 cd Packages/FinanceCore && swift test --parallel
-cd Packages/FinanceParsers && swift test --parallel
 cd Packages/FinanceUI && swift test --parallel
-```
-
-Parser validation:
-
-```bash
-make parser-test               # Run all parser tests
-make parser-parse FILE=path/to/statement.csv  # Parse single file
-/parser-test                   # Claude Code skill
 ```
 
 ## Documentation

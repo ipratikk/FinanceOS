@@ -2,7 +2,6 @@
 @preconcurrency import ApolloAPI
 import FinanceCore
 import FinanceOSAPI
-import FinanceParsers
 import Foundation
 import Observation
 import OSLog
@@ -85,7 +84,7 @@ final class ImportViewModel {
     ) {
         importSession = ImportSession()
         self.graphQLClient = graphQLClient
-        self.fileParser = fileParser ?? ImportFileParser()
+        self.fileParser = fileParser ?? ImportFileParser(graphQLClient: graphQLClient)
         self.duplicateDetector = duplicateDetector ?? ImportDuplicateDetector()
         if let initialTarget {
             importSession.selectedTarget = initialTarget

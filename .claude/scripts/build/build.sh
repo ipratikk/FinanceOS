@@ -3,12 +3,11 @@
 #
 # Targets:
 #   core     — swift build FinanceCore
-#   parsers  — swift build FinanceParsers
 #   mac      — xcodebuild FinanceOSMac (default)
 #   ios      — xcodebuild FinanceOSiOS
-#   test     — swift test both packages
+#   test     — swift test FinanceCore
 #   clean    — clean DerivedData + rebuild mac
-#   all      — core + parsers + mac
+#   all      — core + mac
 #
 # Exit codes:
 #   0 = clean
@@ -19,7 +18,6 @@ set -euo pipefail
 
 REPO_ROOT="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
 CORE_PKG="$REPO_ROOT/Packages/FinanceCore"
-PARSERS_PKG="$REPO_ROOT/Packages/FinanceParsers"
 WORKSPACE="$REPO_ROOT/FinanceOS.xcworkspace"
 
 TARGET="${1:-mac}"
@@ -35,13 +33,6 @@ build_core() {
   swift build -c release --package-path "$CORE_PKG" 2>&1 \
     | grep -E "error:|warning:|Build complete" | head -40 \
     || die "FinanceCore" 1
-}
-
-build_parsers() {
-  echo "Building FinanceParsers..."
-  swift build -c release --package-path "$PARSERS_PKG" 2>&1 \
-    | grep -E "error:|warning:|Build complete" | head -40 \
-    || die "FinanceParsers" 1
 }
 
 build_mac() {
@@ -72,8 +63,6 @@ build_ios() {
 build_test() {
   echo "Testing FinanceCore..."
   swift test --package-path "$CORE_PKG" 2>&1 | tail -20 || die "FinanceCore tests" 1
-  echo "Testing FinanceParsers..."
-  swift test --package-path "$PARSERS_PKG" 2>&1 | tail -20 || die "FinanceParsers tests" 1
 }
 
 build_clean() {
@@ -84,13 +73,12 @@ build_clean() {
 
 case "$TARGET" in
   core)    build_core ;;
-  parsers) build_parsers ;;
   mac)     build_mac ;;
   ios)     build_ios ;;
   test)    build_test ;;
   clean)   build_clean ;;
-  all)     build_core && build_parsers && build_mac ;;
-  *)       die "Unknown target: $TARGET. Use: core|parsers|mac|ios|test|clean|all" 1 ;;
+  all)     build_core && build_mac ;;
+  *)       die "Unknown target: $TARGET. Use: core|mac|ios|test|clean|all" 1 ;;
 esac
 
 END=$(date +%s)

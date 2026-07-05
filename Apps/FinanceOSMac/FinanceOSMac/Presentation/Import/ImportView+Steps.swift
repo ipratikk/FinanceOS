@@ -1,6 +1,5 @@
 import AppKit
 import FinanceCore
-import FinanceParsers
 import FinanceUI
 import SwiftUI
 import UniformTypeIdentifiers

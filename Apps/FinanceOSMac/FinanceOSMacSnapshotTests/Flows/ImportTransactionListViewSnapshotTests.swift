@@ -1,5 +1,5 @@
+import FinanceCore
 @testable import FinanceOSMac
-import FinanceParsers
 import FinanceTesting
 import FinanceUI
 import SnapshotTesting

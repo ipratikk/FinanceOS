@@ -1,5 +1,4 @@
 import FinanceCore
-import FinanceParsers
 import Foundation
 
 /// Preview/test data for parsed statements + transactions.

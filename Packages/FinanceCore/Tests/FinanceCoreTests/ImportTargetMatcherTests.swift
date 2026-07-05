@@ -1,5 +1,4 @@
 @testable import FinanceCore
-import FinanceParsers
 import Foundation
 import Testing
 

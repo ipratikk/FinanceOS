@@ -98,9 +98,10 @@ TransferEvent persistence (local):
 
 Packages/
 ├── FinanceCore ✅ (models, GraphQL client, AppContainer, logging, TransferEvent persistence)
-├── FinanceParsers ✅ (CSV/TXT/XLSX parsing with bank-specific rules — HDFC, ICICI, Amex)
 ├── FinanceUI ✅ (design system, components, tokens)
 └── FinanceTesting ✅ (mocks, fixtures, test utilities)
+
+Note: FinanceParsers package removed — statement parsing owned entirely by financeos-backend.
 
 Note: FinanceIntelligence package removed — intelligence logic moved to Python backend.
 

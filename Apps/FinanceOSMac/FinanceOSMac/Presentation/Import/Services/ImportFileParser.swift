@@ -1,5 +1,6 @@
+@preconcurrency import Apollo
 import FinanceCore
-import FinanceParsers
+import FinanceOSAPI
 import Foundation
 import OSLog
 
@@ -7,81 +8,59 @@ protocol StatementParsingProtocol: Sendable {
     func parse(fileURL: URL) async throws -> ParsedStatement
 }
 
-/// Stateless file-parsing service. Wraps statement detection, parsing, and filename
-/// metadata enrichment. Extracted from ImportViewModel to allow independent unit testing.
+/// Detects bank/last4/transaction-count for a statement by previewing it against
+/// financeos-backend, which owns statement parsing end to end. Falls back to
+/// filename-based last4 extraction for banks the backend can't yet extract from
+/// statement content.
 struct ImportFileParser: StatementParsingProtocol {
     private let logger = FinanceLogger.importPipeline
+    private let graphQLClient: ApolloGraphQLClient
+
+    init(graphQLClient: ApolloGraphQLClient) {
+        self.graphQLClient = graphQLClient
+    }
 
     func parse(fileURL: URL) async throws -> ParsedStatement {
         let fileName = fileURL.lastPathComponent
+        let fileData = try Data(contentsOf: fileURL)
+        let file = GraphQLFile(
+            fieldName: "file",
+            originalName: fileName,
+            mimeType: "text/csv",
+            data: fileData
+        )
+        let response = try await graphQLClient.upload(mutation: PreviewStatementMutation(file: ""), files: [file])
+        let preview = response.previewStatement
 
-        do {
-            let detectedSource = try StatementDetector.detect(fileURL: fileURL)
-            let result = try UnifiedStatementParser().parse(fileURL: fileURL, detectedSource: detectedSource)
+        let filenameMetadata = FilenameMetadataExtractor().extractMetadata(from: fileName)
+        let last4 = preview.last4 ?? filenameMetadata.accountLast4
+        let isCard = preview.bankCode.contains("card")
+        let bankName = Self.bankName(fromBankCode: preview.bankCode)
 
-            let filenameMetadata = FilenameMetadataExtractor().extractMetadata(from: fileName)
+        logger.logInfo(
+            "Previewed {file}: {count} txns from {bank}",
+            ["file": fileName, "count": preview.transactionCount, "bank": bankName]
+        )
 
-            var statement = result.statement
-            let enhancedMetadata: FinanceParsers.StatementMetadata? = if let existingMetadata = statement.metadata {
-                mergeMetadata(parsed: existingMetadata, filename: filenameMetadata)
-            } else {
-                FinanceParsers.StatementMetadata(
-                    accountNumber: filenameMetadata.accountLast4,
-                    fullAccountNumber: filenameMetadata.accountNumber,
-                    generatedAt: filenameMetadata.statementDate
-                )
-            }
-
-            let finalAccountLast4 = enhancedMetadata?.accountNumber ?? statement.accountLast4
-            let finalCardLast4 = statement.cardLast4
-
-            statement = ParsedStatement(
-                bankName: statement.bankName,
-                accountName: statement.accountName,
-                accountLast4: finalAccountLast4,
-                cardLast4: finalCardLast4,
-                statementPeriodStart: statement.statementPeriodStart,
-                statementPeriodEnd: statement.statementPeriodEnd,
-                currency: statement.currency,
-                totalDebit: statement.totalDebit,
-                totalCredit: statement.totalCredit,
-                transactions: statement.transactions,
-                metadata: enhancedMetadata
-            )
-
-            logger.logInfo(
-                "Parsed {file}: {count} txns from {bank}",
-                ["file": fileName, "count": statement.transactions.count, "bank": detectedSource.bankName]
-            )
-            return statement
-        } catch let error as DetectionError {
-            throw TransactionImportError.unsupportedFormat(error.description)
-        }
+        return ParsedStatement(
+            bankName: bankName,
+            accountName: bankName,
+            accountLast4: isCard ? nil : last4,
+            cardLast4: isCard ? last4 : nil,
+            transactions: []
+        )
     }
 
-    private func mergeMetadata(
-        parsed: FinanceParsers.StatementMetadata,
-        filename: FilenameMetadata
-    ) -> FinanceParsers.StatementMetadata {
-        FinanceParsers.StatementMetadata(
-            customerName: parsed.customerName ?? filename.accountNumber,
-            customerId: parsed.customerId,
-            accountNumber: parsed.accountNumber ?? filename.accountLast4,
-            fullAccountNumber: parsed.fullAccountNumber ?? filename.accountNumber,
-            accountType: parsed.accountType,
-            cardType: parsed.cardType,
-            branch: parsed.branch,
-            branchCode: parsed.branchCode,
-            address: parsed.address,
-            email: parsed.email,
-            phone: parsed.phone,
-            ifsc: parsed.ifsc,
-            micr: parsed.micr,
-            openingBalance: parsed.openingBalance,
-            closingBalance: parsed.closingBalance,
-            debitCount: parsed.debitCount,
-            creditCount: parsed.creditCount,
-            generatedAt: parsed.generatedAt ?? filename.statementDate
-        )
+    private static func bankName(fromBankCode bankCode: String) -> String {
+        let prefix = bankCode.split(separator: "_").first.map(String.init) ?? bankCode
+        switch prefix.lowercased() {
+        case "hdfc": return "HDFC"
+        case "icici": return "ICICI"
+        case "amex": return "American Express"
+        case "axis": return "Axis"
+        case "sbi": return "SBI"
+        case "scapia": return "Scapia"
+        default: return prefix.uppercased()
+        }
     }
 }

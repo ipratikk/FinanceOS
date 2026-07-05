@@ -1,5 +1,4 @@
 import FinanceCore
-import FinanceParsers
 import SwiftUI
 
 /// Centralized navigation coordinator for the entire FinanceOS app.

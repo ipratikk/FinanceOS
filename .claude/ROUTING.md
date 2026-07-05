@@ -58,25 +58,10 @@ sonnet (refines integration if needed, optional)
 - invent new architectural layers
 - handle cross-module refactor without an opus plan
 
-## Recursive parser refinement flow
-
-```
-1. user runs /parser-refine <pdf>
-2. haiku runs CLI + compare → records baseline
-3. opus reads MAX 2 sample diffs → proposes ONE heuristic change (< 30-line diff)
-4. haiku applies diff + rebuilds + reruns
-5. accuracy improved? → repeat (max 5 cycles)
-                else? → revert + STOP
-6. final report written to parser_refine_log.md
-```
-
-Opus is capped at 5 invocations per refinement loop. Hard limit.
-
 ## Cost guards
 
 - `escalation-detector.sh` hook annotates each user prompt with a routing hint
 - `summarize-failure.sh` hook collapses verbose build/test output into one line
-- `post-parser-edit.sh` hook auto-detects parser regressions cheaply (haiku-level)
 - All hooks are read-only ANNOTATIONS — they don't block actions, just inform the agent
 
 ## When in doubt

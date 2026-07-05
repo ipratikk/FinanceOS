@@ -1,15 +1,8 @@
-.PHONY: parser-build parser-test parser-clean parser-parse \
-        intelligence-build intelligence-test intelligence-validate intelligence-train intelligence-evaluate \
+.PHONY: intelligence-build intelligence-test intelligence-validate intelligence-train intelligence-evaluate \
         lint-architecture \
         help
 
 help:
-	@echo "Parser development targets:"
-	@echo "  make parser-build    - Build FinanceParsers package"
-	@echo "  make parser-test     - Run parser tests with fixtures"
-	@echo "  make parser-parse    - Parse a file (usage: make parser-parse FILE=path/to/file.pdf)"
-	@echo "  make parser-clean    - Clean parser build artifacts"
-	@echo ""
 	@echo "Transaction Intelligence targets:"
 	@echo "  make intelligence-build    - Build FinanceIntelligence package"
 	@echo "  make intelligence-test     - Run FinanceIntelligence tests"
@@ -24,15 +17,13 @@ help:
 # Invariants:
 #   1. FinanceCore production sources: zero import SwiftUI
 #   2. FinanceIntelligence production sources: zero import SwiftUI
-#   3. FinanceParsers production sources: zero import SwiftUI
-#   4. FinanceCLI production sources: zero import SwiftUI (when package exists)
-#   5. FinanceTesting must not appear in any production target
-#   6. FinanceParsers must have zero external dependencies
-#   7. FinanceIntelligence must never construct DatabaseQueue directly
-#   8. All public intelligence API calls go through IntelligenceRequest/IntelligenceResponse
+#   3. FinanceCLI production sources: zero import SwiftUI (when package exists)
+#   4. FinanceTesting must not appear in any production target
+#   5. FinanceIntelligence must never construct DatabaseQueue directly
+#   6. All public intelligence API calls go through IntelligenceRequest/IntelligenceResponse
 lint-architecture:
 	@echo "=== Architecture Lint ==="
-	@PACKAGES="FinanceCore FinanceParsers FinanceIntelligence"; \
+	@PACKAGES="FinanceCore FinanceIntelligence"; \
 	FAIL=0; \
 	for pkg in $$PACKAGES; do \
 		SRCDIR="Packages/$$pkg/Sources"; \
@@ -57,29 +48,6 @@ lint-architecture:
 	else \
 		exit 1; \
 	fi
-
-parser-build:
-	cd Packages/FinanceParsers && swift build
-
-parser-test:
-	cd Packages/FinanceParsers && swift test -v
-
-parser-clean:
-	cd Packages/FinanceParsers && swift package clean
-
-parser-parse:
-	@if [ -z "$(FILE)" ]; then \
-		echo "Usage: make parser-parse FILE=path/to/file.pdf"; \
-		exit 1; \
-	fi
-	cd Packages/FinanceParsers && swift run FinanceParserCLI parse "$(FILE)"
-
-parser-parse-debug:
-	@if [ -z "$(FILE)" ]; then \
-		echo "Usage: make parser-parse-debug FILE=path/to/file.pdf"; \
-		exit 1; \
-	fi
-	cd Packages/FinanceParsers && swift run FinanceParserCLI parse "$(FILE)" --debug
 
 # Intelligence targets
 intelligence-build:
