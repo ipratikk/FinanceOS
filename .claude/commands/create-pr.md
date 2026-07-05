@@ -42,7 +42,6 @@ Known packages:
 - `Packages/FinanceParsers`
 - `Packages/FinanceUI`
 - `Packages/FinanceTesting`
-- `Packages/FinanceIntelligence`
 
 ---
 

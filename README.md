@@ -71,9 +71,8 @@ FinanceOS/
 │   ├── codegen-config.sh       # Per-environment GraphQL endpoint config
 │   ├── fixtures/               # Golden JSON for parser validation
 │   └── validate/               # pre-PR CI validation
-├── docs/                       # Project documentation (see docs/ARCHITECTURE.md)
-├── CLAUDE.md                   # Claude Code instructions
-└── CODING_STANDARDS.md         # Code style & linting rules
+├── docs/                       # Project documentation (see docs/ARCHITECTURE.md, docs/CODING_STANDARDS.md)
+└── CLAUDE.md                   # Claude Code instructions
 ```
 
 ## Architecture
@@ -125,7 +124,7 @@ Config:
 
 ## Coding Standards
 
-See [CODING_STANDARDS.md](CODING_STANDARDS.md) for detailed rules:
+See [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md) for detailed rules:
 
 - **Line length:** 120 characters max
 - **Functions:** 50 lines max
@@ -199,9 +198,11 @@ make parser-parse FILE=path/to/statement.csv  # Parse single file
 ## Documentation
 
 - **[CLAUDE.md](CLAUDE.md)** — Claude Code workflow and context
-- **[CODING_STANDARDS.md](CODING_STANDARDS.md)** — Code style rules
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — Current architecture, module ownership, data flow
+- **[docs/AGENTS.md](docs/AGENTS.md)** — Agent routing and context-loading rules
+- **[docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md)** — Code style rules
+- **[docs/DESIGN_STANDARDS.md](docs/DESIGN_STANDARDS.md)** — UI/design system rules
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — Contribution guide
-- **[docs/](docs/)** — Project documentation
 
 ## Current Focus
 
