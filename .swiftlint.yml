@@ -24,7 +24,6 @@ excluded:
   - .derivedData
   - .swiftpm
   - Packages/**/.build
-  - Packages/FinanceIntelligence/.build
   - Packages/FinanceCore/.build
   - Packages/FinanceUI/.build
   - Packages/FinanceTesting/.build

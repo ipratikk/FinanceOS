@@ -41,7 +41,6 @@ Known packages:
 - `Packages/FinanceCore`
 - `Packages/FinanceUI`
 - `Packages/FinanceTesting`
-- `Packages/FinanceIntelligence`
 
 ---
 
