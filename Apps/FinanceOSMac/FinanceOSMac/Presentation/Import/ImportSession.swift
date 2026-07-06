@@ -18,6 +18,14 @@ final class ImportSession {
     /// Target creation phase — holds transient form state while the user creates a new ledger mid-import.
     var targetBeingCreated: TargetCreationState?
 
+    /// Password resolved (via Keychain or the prompt sheet) for each locked file this session,
+    /// reused so `uploadStatement` doesn't re-prompt after `previewStatement` already succeeded.
+    var filePasswords: [URL: String] = [:]
+
+    /// Passwords the user asked to save to Keychain, recorded before a target ledger was
+    /// resolved. Flushed by `ImportViewModel.flushPendingKeychainSaves()` once one is.
+    var pendingKeychainSaves: [URL: String] = [:]
+
     // MARK: - Final import
 
     var selectedTarget: TransactionImportTarget?
@@ -35,6 +43,8 @@ final class ImportSession {
         parsedStatements = []
         matchedLedgers = [:]
         targetBeingCreated = nil
+        filePasswords = [:]
+        pendingKeychainSaves = [:]
         selectedTarget = nil
         importResult = nil
         errorMessage = nil

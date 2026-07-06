@@ -60,6 +60,18 @@ struct ImportView: View {
                 await viewModel.loadTargetsOnAppear()
             }
         }
+        .sheet(
+            item: $viewModel.pendingPasswordRequest,
+            onDismiss: { viewModel.cancelPendingPasswordRequest() },
+            content: { request in
+                PasswordPromptSheet(
+                    filename: request.filename,
+                    isPasswordInvalid: request.isRetry,
+                    onCancel: request.onCancel,
+                    onSubmit: request.onSubmit
+                )
+            }
+        )
     }
 }
 

@@ -8,18 +8,26 @@ public nonisolated struct PreviewStatementMutation: GraphQLMutation {
     public static let operationName: String = "PreviewStatement"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
-            #"mutation PreviewStatement($file: Upload!) { previewStatement(file: $file) { __typename bankCode last4 transactionCount } }"#
+            #"mutation PreviewStatement($file: Upload!, $password: EncryptedPassword) { previewStatement(file: $file, password: $password) { __typename bankCode last4 transactionCount passwordRequired } }"#
         )
     )
 
     public var file: Upload
+    public var password: GraphQLNullable<EncryptedPassword>
 
-    public init(file: Upload) {
+    public init(
+        file: Upload,
+        password: GraphQLNullable<EncryptedPassword>
+    ) {
         self.file = file
+        self.password = password
     }
 
     @_spi(Unsafe) public var __variables: Variables? {
-        ["file": file]
+        [
+            "file": file,
+            "password": password
+        ]
     }
 
     public nonisolated struct Data: FinanceOSAPI.SelectionSet {
@@ -35,7 +43,10 @@ public nonisolated struct PreviewStatementMutation: GraphQLMutation {
 
         @_spi(Execution) public static var __selections: [ApolloAPI.Selection] {
             [
-                .field("previewStatement", PreviewStatement.self, arguments: ["file": .variable("file")])
+                .field("previewStatement", PreviewStatement.self, arguments: [
+                    "file": .variable("file"),
+                    "password": .variable("password")
+                ])
             ]
         }
 
@@ -69,7 +80,8 @@ public nonisolated struct PreviewStatementMutation: GraphQLMutation {
                     .field("__typename", String.self),
                     .field("bankCode", String.self),
                     .field("last4", String?.self),
-                    .field("transactionCount", Int.self)
+                    .field("transactionCount", Int.self),
+                    .field("passwordRequired", Bool.self)
                 ]
             }
 
@@ -89,6 +101,10 @@ public nonisolated struct PreviewStatementMutation: GraphQLMutation {
 
             public var transactionCount: Int {
                 __data["transactionCount"]
+            }
+
+            public var passwordRequired: Bool {
+                __data["passwordRequired"]
             }
         }
     }

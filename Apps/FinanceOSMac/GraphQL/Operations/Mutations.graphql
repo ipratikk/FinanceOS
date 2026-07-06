@@ -1,5 +1,5 @@
-mutation UploadStatement($ledgerId: ID!, $file: Upload!) {
-  uploadStatement(ledgerId: $ledgerId, file: $file) {
+mutation UploadStatement($ledgerId: ID!, $file: Upload!, $password: EncryptedPassword) {
+  uploadStatement(ledgerId: $ledgerId, file: $file, password: $password) {
     imported
     duplicates
     errors
@@ -14,11 +14,12 @@ mutation UploadStatement($ledgerId: ID!, $file: Upload!) {
   }
 }
 
-mutation PreviewStatement($file: Upload!) {
-  previewStatement(file: $file) {
+mutation PreviewStatement($file: Upload!, $password: EncryptedPassword) {
+  previewStatement(file: $file, password: $password) {
     bankCode
     last4
     transactionCount
+    passwordRequired
   }
 }
 

@@ -5,7 +5,7 @@ import Foundation
 import OSLog
 
 protocol StatementParsingProtocol: Sendable {
-    func parse(fileURL: URL) async throws -> ParsedStatement
+    func parse(fileURL: URL, password: String?) async throws -> ParsedStatement
 }
 
 /// Detects bank/last4/transaction-count for a statement by previewing it against
@@ -20,7 +20,7 @@ struct ImportFileParser: StatementParsingProtocol {
         self.graphQLClient = graphQLClient
     }
 
-    func parse(fileURL: URL) async throws -> ParsedStatement {
+    func parse(fileURL: URL, password: String? = nil) async throws -> ParsedStatement {
         let fileName = fileURL.lastPathComponent
         let fileData = try Data(contentsOf: fileURL)
         let file = GraphQLFile(
@@ -29,8 +29,19 @@ struct ImportFileParser: StatementParsingProtocol {
             mimeType: "text/csv",
             data: fileData
         )
-        let response = try await graphQLClient.upload(mutation: PreviewStatementMutation(file: ""), files: [file])
+        let sealedPassword = try password.map { try ImportPasswordCrypto.seal($0) }
+        let mutation = PreviewStatementMutation(
+            file: "",
+            password: sealedPassword.map {
+                .some(EncryptedPassword(ephemeralPublicKey: $0.ephemeralPublicKey, ciphertext: $0.ciphertext))
+            } ?? .null
+        )
+        let response = try await graphQLClient.upload(mutation: mutation, files: [file])
         let preview = response.previewStatement
+
+        if preview.passwordRequired {
+            throw FinanceCore.TransactionImportError.passwordProtected(fileName)
+        }
 
         let filenameMetadata = FilenameMetadataExtractor().extractMetadata(from: fileName)
         let last4 = preview.last4 ?? filenameMetadata.accountLast4
