@@ -2,8 +2,30 @@ import FinanceCore
 import FinanceUI
 import SwiftUI
 
-extension ImportPreviewView {
-    var targetSelectionMenu: some View {
+/// Self-contained "pick or create target ledger" control: a button that opens a
+/// popover listing accounts/cards, with "New Account.../New Card..." actions that
+/// open the create-ledger sheet. Used inline on the ready-to-import screen.
+struct ImportTargetSection: View {
+    let viewModel: ImportViewModel
+
+    @State private var sheetCreationItem: TargetCreationState?
+    @State private var isTargetMenuOpen = false
+
+    var body: some View {
+        targetSelectionMenu
+            .sheet(item: $sheetCreationItem) { item in
+                if item.isCard {
+                    CardEditView(mode: .createCard(prefill: item, onCommit: handleCreationCommit))
+                } else {
+                    CardEditView(mode: .createAccount(prefill: item, onCommit: handleCreationCommit))
+                }
+            }
+            .onChange(of: viewModel.importSession.targetBeingCreated) { _, newValue in
+                sheetCreationItem = newValue
+            }
+    }
+
+    private var targetSelectionMenu: some View {
         let selected: (name: String, icon: String)? = {
             guard let target = viewModel.selectedTarget,
                   case let .ledger(id) = target,
@@ -147,7 +169,7 @@ extension ImportPreviewView {
         .buttonStyle(.plain)
     }
 
-    func initializeCreateSheet(isCard: Bool) {
+    private func initializeCreateSheet(isCard: Bool) {
         guard let statement = viewModel.importSession.parsedStatements.first else {
             var state = TargetCreationState()
             state.isCard = isCard
@@ -168,57 +190,23 @@ extension ImportPreviewView {
         viewModel.importSession.targetBeingCreated = state
     }
 
-    @ViewBuilder var confirmBar: some View {
-        let allTransactions = viewModel.parsedStatements.flatMap(\.transactions)
-        let newCount = allTransactions.count - viewModel.duplicateTransactionIndices.count
-        let dupCount = viewModel.alreadyInDBIndices.count
-
-        if newCount == 0, dupCount > 0 {
-            allCaughtUpBar(dupCount: dupCount)
-        } else {
-            normalConfirmBar(newCount: newCount, dupCount: dupCount)
-        }
-    }
-
-    private func allCaughtUpBar(dupCount: Int) -> some View {
-        FDSCard(padded: false) {
-            HStack(spacing: AppSpacing.md) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(AppColors.success)
-
-                FDSLabel("All \(dupCount) transaction\(dupCount == 1 ? "" : "s") already imported")
-                    .font(AppTypography.labelSmall)
-                    .foregroundColor(AppColors.Text.secondary)
-
-                Spacer()
-
-                FDSLiquidButton("Import Another", variant: .primary, action: viewModel.backToUpload)
-            }
-            .padding(.horizontal, AppSpacing.lg)
-            .padding(.vertical, AppSpacing.md)
-        }
-    }
-
-    private func normalConfirmBar(newCount: Int, dupCount: Int) -> some View {
-        FDSCard(padded: false) {
-            HStack(spacing: AppSpacing.md) {
-                FDSLabel("\(newCount) new · \(dupCount) duplicate\(dupCount == 1 ? "" : "s")")
-                    .font(AppTypography.labelSmall)
-                    .foregroundColor(AppColors.Text.secondary)
-
-                Spacer()
-
-                FDSLiquidButton("Cancel", variant: .ghost, action: viewModel.backToUpload)
-
-                FDSLiquidButton(
-                    "Import \(newCount) transaction\(newCount == 1 ? "" : "s")",
-                    variant: .primary,
-                    isEnabled: newCount > 0 && viewModel.selectedTarget != nil,
-                    action: viewModel.importTransactions
-                )
-            }
-            .padding(.horizontal, AppSpacing.lg)
-            .padding(.vertical, AppSpacing.md)
+    private func handleCreationCommit(_ state: TargetCreationState) {
+        sheetCreationItem = nil
+        viewModel.importSession.targetBeingCreated = nil
+        Task {
+            await viewModel.createTargetFromDetected(
+                customName: state.customName,
+                nickname: state.nickname,
+                last4: state.last4,
+                selectedBank: state.selectedBank,
+                ownerName: state.cardholderName,
+                accountType: state.accountType,
+                cardType: state.cardType,
+                cardProductId: state.cardProductId,
+                encryptedCardNumber: state.encryptedCardNumber,
+                linkedLedgerId: state.linkedLedgerId,
+                isCard: state.isCard
+            )
         }
     }
 }

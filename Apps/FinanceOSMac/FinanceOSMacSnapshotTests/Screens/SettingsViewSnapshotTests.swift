@@ -1,3 +1,4 @@
+import FinanceCore
 @testable import FinanceOSMac
 import FinanceTesting
 import SnapshotTesting
@@ -10,6 +11,7 @@ final class SettingsViewSnapshotTests: SnapshotTestable {
     }
 
     func test_settings_view() {
-        verifySnapshots(SettingsView())
+        let viewModel = SettingsViewModel(graphQLClient: ApolloGraphQLClient())
+        verifySnapshots(SettingsView(viewModel: viewModel))
     }
 }

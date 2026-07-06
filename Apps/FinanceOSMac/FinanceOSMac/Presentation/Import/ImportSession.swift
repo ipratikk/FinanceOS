@@ -9,7 +9,6 @@ import Observation
 final class ImportSession {
     // MARK: - Parse phase
 
-    var selectedSource: StatementSource?
     var fileURLs: [URL] = []
     var parsedStatements: [ParsedStatement] = []
 
@@ -32,7 +31,6 @@ final class ImportSession {
     init() {}
 
     func reset() {
-        selectedSource = nil
         fileURLs = []
         parsedStatements = []
         matchedLedgers = [:]

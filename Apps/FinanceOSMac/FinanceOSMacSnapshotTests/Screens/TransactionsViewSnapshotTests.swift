@@ -23,7 +23,7 @@ final class TransactionsViewSnapshotTests: SnapshotTestable {
             )
         }
 
-        let view = TransactionsView(viewModel: viewModel)
+        let view = TransactionsView(viewModel: viewModel, graphQLClient: ApolloGraphQLClient())
         verifySnapshots(view)
     }
 }

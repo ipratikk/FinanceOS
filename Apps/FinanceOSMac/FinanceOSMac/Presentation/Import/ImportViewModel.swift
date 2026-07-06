@@ -11,34 +11,28 @@ let logger = FinanceLogger.importPipeline
 @MainActor
 @Observable
 final class ImportViewModel {
-    enum Step: Int, Equatable {
-        case source = 0
-        case upload = 1
-        case review = 2
+    enum ImportPhase: Equatable {
+        case idle
+        case previewing
+        case readyToImport
+        case importing
     }
 
-    var currentStep: Step = .source
+    var phase: ImportPhase = .idle
     var isDraggedOver: Bool = false
 
     let importSession: ImportSession
     let graphQLClient: ApolloGraphQLClient
     let fileParser: any StatementParsingProtocol
-    let duplicateDetector: any DuplicateDetectingProtocol
 
     var ledgers: [Ledger] = []
     var banks: [Bank] = []
-    var duplicateTransactionIndices: Set<Int> = []
-    var alreadyInDBIndices: Set<Int> = []
     var lastImportResult: ImportResult?
     var currentFileIndex: Int = 0
     var totalFilesToParse: Int = 0
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(importSession.fileURLs, importSession.parsedStatements).map { ($0, $1) }
-    }
-
-    var supportedSources: [(bankName: String, sourceType: StatementSourceType)] {
-        StatementSourceRegistry.supportedSources
     }
 
     var fileURLs: [URL] {
@@ -54,11 +48,6 @@ final class ImportViewModel {
     var selectedTarget: TransactionImportTarget? {
         get { importSession.selectedTarget }
         set { importSession.selectedTarget = newValue }
-    }
-
-    var selectedSource: StatementSource? {
-        get { importSession.selectedSource }
-        set { importSession.selectedSource = newValue }
     }
 
     var isLoading: Bool {
@@ -79,13 +68,11 @@ final class ImportViewModel {
     init(
         graphQLClient: ApolloGraphQLClient,
         initialTarget: TransactionImportTarget? = nil,
-        fileParser: (any StatementParsingProtocol)? = nil,
-        duplicateDetector: (any DuplicateDetectingProtocol)? = nil
+        fileParser: (any StatementParsingProtocol)? = nil
     ) {
         importSession = ImportSession()
         self.graphQLClient = graphQLClient
         self.fileParser = fileParser ?? ImportFileParser(graphQLClient: graphQLClient)
-        self.duplicateDetector = duplicateDetector ?? ImportDuplicateDetector()
         if let initialTarget {
             importSession.selectedTarget = initialTarget
         }
@@ -96,15 +83,6 @@ final class ImportViewModel {
         importSession.fileURLs = urls
         importSession.errorMessage = nil
         logger.debug("fileURLs updated, errorMessage cleared")
-    }
-
-    func setSource(_ source: StatementSource?) {
-        importSession.selectedSource = source
-        importSession.fileURLs = []
-        importSession.parsedStatements = []
-        importSession.errorMessage = nil
-        logger
-            .info("Source changed to \(source?.displayName ?? "none", privacy: .public), cleared files and statements")
     }
 
     func parseFiles(_ urls: [URL]) {
@@ -120,6 +98,7 @@ final class ImportViewModel {
                 return
             }
 
+            phase = .previewing
             importSession.isLoading = true
             importSession.errorMessage = nil
             totalFilesToParse = importSession.fileURLs.count
@@ -138,6 +117,7 @@ final class ImportViewModel {
                     importSession.isLoading = false
                     currentFileIndex = 0
                     totalFilesToParse = 0
+                    phase = .idle
                     return
                 } catch {
                     let fileName = fileURL.lastPathComponent
@@ -147,15 +127,15 @@ final class ImportViewModel {
                     importSession.isLoading = false
                     currentFileIndex = 0
                     totalFilesToParse = 0
+                    phase = .idle
                     return
                 }
             }
 
             importSession.parsedStatements = statements
             await loadTargetsOnAppear()
-            await detectDuplicates(for: nil)
             await autoSelectMatchingTarget()
-            currentStep = .review
+            phase = .readyToImport
             importSession.isLoading = false
             currentFileIndex = 0
             totalFilesToParse = 0
@@ -171,6 +151,7 @@ final class ImportViewModel {
                 importSession.errorMessage = "Select a ledger before importing"
                 return
             }
+            phase = .importing
             importSession.isLoading = true
             importSession.errorMessage = nil
             importSession.importResult = nil
@@ -179,7 +160,7 @@ final class ImportViewModel {
                 let result = ImportResult(inserted: inserted, skipped: skipped)
                 importSession.importResult = result
                 lastImportResult = result
-                resetToSource()
+                resetToIdle()
                 importSession.isLoading = false
                 Task {
                     try? await Task.sleep(for: .seconds(4))
@@ -190,6 +171,7 @@ final class ImportViewModel {
                 logger.error("Import failed: \(desc, privacy: .public)")
                 importSession.errorMessage = "Import failed: \(desc)"
                 importSession.isLoading = false
+                phase = .readyToImport
             }
         }
     }

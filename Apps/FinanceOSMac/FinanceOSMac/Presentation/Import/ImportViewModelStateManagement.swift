@@ -23,6 +23,7 @@ extension ImportViewModel {
     }
 
     func autoSelectMatchingTarget() async {
+        guard importSession.selectedTarget == nil else { return }
         guard let statement = importSession.parsedStatements.first else { return }
         if let target = FinanceCore.ImportTargetMatcher.bestTarget(
             for: statement,
@@ -30,59 +31,19 @@ extension ImportViewModel {
             banks: banks
         ) {
             importSession.selectedTarget = target
-            await detectDuplicates(for: target)
         }
-    }
-
-    func detectDuplicates(for target: TransactionImportTarget?) async {
-        let detector = duplicateDetector
-        let (skipAll, inDB) = detector.detect(
-            statements: importSession.parsedStatements,
-            existingTransactions: []
-        )
-
-        logger.logInfo(
-            "Dedup: {indb} in DB, {batch} batch-only, {new} new",
-            [
-                "indb": String(inDB.count),
-                "batch": String(skipAll.count - inDB.count),
-                "new": String(importSession.parsedStatements.flatMap(\.transactions).count - skipAll.count)
-            ]
-        )
-
-        duplicateTransactionIndices = skipAll
-        alreadyInDBIndices = inDB
     }
 
     func reset() {
         importSession.reset()
         ledgers = []
         banks = []
-        duplicateTransactionIndices = []
-        alreadyInDBIndices = []
     }
 
-    // MARK: - Step Navigation
+    // MARK: - Phase Navigation
 
-    func selectSourceAndAdvance(_ source: StatementSource) {
-        setSource(source)
-        currentStep = .upload
-    }
-
-    func advanceToReview() {
-        currentStep = .review
-    }
-
-    func resetToSource() {
+    func resetToIdle() {
         reset()
-        currentStep = .source
-    }
-
-    func backToUpload() {
-        parsedStatements = []
-        selectedTarget = nil
-        duplicateTransactionIndices = []
-        alreadyInDBIndices = []
-        currentStep = .upload
+        phase = .idle
     }
 }
