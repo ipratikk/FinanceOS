@@ -125,6 +125,15 @@ extension ImportViewModel {
         }
         importSession.pendingKeychainSaves = [:]
     }
+
+    /// Called when the password sheet is dismissed by any means other than the
+    /// sheet's own Cancel/Continue buttons (e.g. Escape, click-away). Resumes the
+    /// suspended continuation as a cancel so `parseWithPasswordRetry` doesn't hang.
+    func cancelPendingPasswordRequest() {
+        guard let request = pendingPasswordRequest else { return }
+        pendingPasswordRequest = nil
+        request.onCancel()
+    }
 }
 
 struct PasswordPromptRequest: Identifiable {

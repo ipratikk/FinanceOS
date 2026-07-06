@@ -9,7 +9,6 @@ enum SheetRoute: Identifiable {
     case transactionDetail(TransactionRow)
     case transactionFilter(TransactionListState)
     case importCreateTarget
-    case passwordPrompt
 
     var id: String {
         switch self {
@@ -25,8 +24,6 @@ enum SheetRoute: Identifiable {
             "filter"
         case .importCreateTarget:
             "importCreate"
-        case .passwordPrompt:
-            "password"
         }
     }
 }
