@@ -30,6 +30,8 @@ final class ImportViewModel {
     var lastImportResult: ImportResult?
     var currentFileIndex: Int = 0
     var totalFilesToParse: Int = 0
+    var pendingPasswordRequest: PasswordPromptRequest?
+    let passwordStore: any ImportPasswordStoring
 
     var fileStatementPairs: [(url: URL, statement: ParsedStatement)] {
         zip(importSession.fileURLs, importSession.parsedStatements).map { ($0, $1) }
@@ -68,11 +70,13 @@ final class ImportViewModel {
     init(
         graphQLClient: ApolloGraphQLClient,
         initialTarget: TransactionImportTarget? = nil,
-        fileParser: (any StatementParsingProtocol)? = nil
+        fileParser: (any StatementParsingProtocol)? = nil,
+        passwordStore: (any ImportPasswordStoring)? = nil
     ) {
         importSession = ImportSession()
         self.graphQLClient = graphQLClient
         self.fileParser = fileParser ?? ImportFileParser(graphQLClient: graphQLClient)
+        self.passwordStore = passwordStore ?? ImportPasswordStore()
         if let initialTarget {
             importSession.selectedTarget = initialTarget
         }
@@ -108,7 +112,7 @@ final class ImportViewModel {
 
             for fileURL in importSession.fileURLs {
                 do {
-                    let statement = try await parser.parse(fileURL: fileURL)
+                    let statement = try await parseWithPasswordRetry(fileURL: fileURL, parser: parser)
                     statements.append(statement)
                     currentFileIndex += 1
                 } catch let error as FinanceCore.TransactionImportError {
@@ -135,6 +139,7 @@ final class ImportViewModel {
             importSession.parsedStatements = statements
             await loadTargetsOnAppear()
             await autoSelectMatchingTarget()
+            flushPendingKeychainSaves()
             phase = .readyToImport
             importSession.isLoading = false
             currentFileIndex = 0
@@ -151,6 +156,7 @@ final class ImportViewModel {
                 importSession.errorMessage = "Select a ledger before importing"
                 return
             }
+            flushPendingKeychainSaves()
             phase = .importing
             importSession.isLoading = true
             importSession.errorMessage = nil
@@ -187,7 +193,15 @@ final class ImportViewModel {
                 mimeType: "text/csv",
                 data: fileData
             )
-            let mutation = UploadStatementMutation(ledgerId: ledgerId.uuidString, file: "")
+            let password = importSession.filePasswords[fileURL]
+            let sealedPassword = try password.map { try ImportPasswordCrypto.seal($0) }
+            let mutation = UploadStatementMutation(
+                ledgerId: ledgerId.uuidString,
+                file: "",
+                password: sealedPassword.map {
+                    .some(EncryptedPassword(ephemeralPublicKey: $0.ephemeralPublicKey, ciphertext: $0.ciphertext))
+                } ?? .null
+            )
             let response = try await graphQLClient.upload(mutation: mutation, files: [file])
             let result = response.uploadStatement
             totalInserted += result.imported

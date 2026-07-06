@@ -8,25 +8,29 @@ public nonisolated struct UploadStatementMutation: GraphQLMutation {
     public static let operationName: String = "UploadStatement"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
-            #"mutation UploadStatement($ledgerId: ID!, $file: Upload!) { uploadStatement(ledgerId: $ledgerId, file: $file) { __typename imported duplicates errors ledger { __typename id displayName balance { __typename value currencyCode } } } }"#
+            #"mutation UploadStatement($ledgerId: ID!, $file: Upload!, $password: EncryptedPassword) { uploadStatement(ledgerId: $ledgerId, file: $file, password: $password) { __typename imported duplicates errors ledger { __typename id displayName balance { __typename value currencyCode } } } }"#
         )
     )
 
     public var ledgerId: ID
     public var file: Upload
+    public var password: GraphQLNullable<EncryptedPassword>
 
     public init(
         ledgerId: ID,
-        file: Upload
+        file: Upload,
+        password: GraphQLNullable<EncryptedPassword>
     ) {
         self.ledgerId = ledgerId
         self.file = file
+        self.password = password
     }
 
     @_spi(Unsafe) public var __variables: Variables? {
         [
             "ledgerId": ledgerId,
-            "file": file
+            "file": file,
+            "password": password
         ]
     }
 
@@ -45,7 +49,8 @@ public nonisolated struct UploadStatementMutation: GraphQLMutation {
             [
                 .field("uploadStatement", UploadStatement.self, arguments: [
                     "ledgerId": .variable("ledgerId"),
-                    "file": .variable("file")
+                    "file": .variable("file"),
+                    "password": .variable("password")
                 ])
             ]
         }

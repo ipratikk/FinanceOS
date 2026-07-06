@@ -21,7 +21,7 @@ public enum TransactionImportError: Error, CustomStringConvertible {
     case malformedFile(String)
     /// A required platform capability (e.g. CoreXLSX on non-Darwin) is unavailable.
     case platformUnavailable(String)
-    /// The file is encrypted and a password must be supplied via `ParseOptions`.
+    /// The file is encrypted and a password must be supplied.
     case passwordProtected(String)
 
     public var description: String {
