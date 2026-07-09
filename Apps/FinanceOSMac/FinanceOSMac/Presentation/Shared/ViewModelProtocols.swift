@@ -35,7 +35,8 @@ extension DeletableViewModel {
     /// - Parameters:
     ///   - operation: The async throwing delete work (repository call, pre/post logging, etc.)
     ///   - onError: Optional extra handling (e.g., logging) called before setting `deleteError`.
-    ///   - onSuccess: Async reload or follow-up action called only when the operation succeeds.
+    ///   - onSuccess: Async reload or follow-up action, always called after the operation settles
+    ///     (success or failure) so local state resyncs even when the server-side row was already gone.
     func performDelete(
         _ operation: () async throws -> Void,
         onError: ((Error) -> Void)? = nil,
@@ -44,10 +45,10 @@ extension DeletableViewModel {
         deleteError = nil
         do {
             try await operation()
-            await onSuccess?()
         } catch {
             onError?(error)
             deleteError = error.localizedDescription
         }
+        await onSuccess?()
     }
 }

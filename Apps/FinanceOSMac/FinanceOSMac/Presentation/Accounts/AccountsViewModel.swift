@@ -24,8 +24,8 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
         await withLoading(onError: { [self] error in
             logger.logError("Failed to load accounts: {error}", ["error": error.localizedDescription])
         }, {
-            let data = try await graphQLClient.fetch(query: GetLedgersQuery())
-            let bankData = try await graphQLClient.fetch(query: GetBanksQuery())
+            let data = try await graphQLClient.fetch(query: GetLedgersQuery(), cachePolicy: .networkOnly)
+            let bankData = try await graphQLClient.fetch(query: GetBanksQuery(), cachePolicy: .networkOnly)
             let allLedgers = data.ledgers.map(GraphQLMappings.mapLedger)
             self.banks = bankData.banks.map(GraphQLMappings.mapBank)
             self.accounts = allLedgers.filter { $0.kind == .bankAccount }

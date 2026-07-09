@@ -2,6 +2,22 @@ import Apollo
 import ApolloAPI
 import Foundation
 
+/// Cache policy for `ApolloGraphQLClient.fetch`, decoupled from Apollo's own `CachePolicy` type
+/// so callers outside this package never need to import Apollo directly.
+public enum GraphQLFetchCachePolicy: Sendable {
+    /// Return data from the cache if available, else fetch results from the server.
+    case cacheFirst
+    /// Fetch results from the server, do not attempt to read data from the cache.
+    case networkOnly
+
+    fileprivate var apolloPolicy: CachePolicy.Query.SingleResponse {
+        switch self {
+        case .cacheFirst: return .cacheFirst
+        case .networkOnly: return .networkOnly
+        }
+    }
+}
+
 public final class ApolloGraphQLClient: @unchecked Sendable {
     private let client: ApolloClient
 
@@ -10,9 +26,10 @@ public final class ApolloGraphQLClient: @unchecked Sendable {
     }
 
     public func fetch<Query: GraphQLQuery>(
-        query: Query
+        query: Query,
+        cachePolicy: GraphQLFetchCachePolicy = .cacheFirst
     ) async throws -> Query.Data where Query.ResponseFormat == SingleResponseFormat {
-        let response = try await client.fetch(query: query)
+        let response = try await client.fetch(query: query, cachePolicy: cachePolicy.apolloPolicy)
         return try Self.unwrap(response)
     }
 
