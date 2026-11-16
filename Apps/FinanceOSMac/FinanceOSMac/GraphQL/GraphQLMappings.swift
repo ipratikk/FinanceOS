@@ -16,6 +16,37 @@ enum GraphQLMappings {
         )
     }
 
+    /// Full-fidelity ledger input for statement freshness. Keeps every LedgerKind (mapLedger collapses them).
+    /// Returns nil for a kind this client build does not know, rather than guessing a kind.
+    static func mapStatementInput(_ item: GetLedgersQuery.Data.Ledger) -> StatementLedgerInput? {
+        guard let kind = item.kind.value.map(statementKind) else { return nil }
+        return StatementLedgerInput(
+            ledgerId: item.id,
+            displayName: item.displayName,
+            kind: kind,
+            last4: item.last4 ?? "",
+            bankName: item.bank.name,
+            balanceMinor: Int64(item.balance.value),
+            currencyCode: item.balance.currencyCode.rawValue,
+            lastStatementDate: item.lastStatementAt.flatMap(parseTimestamp)
+        )
+    }
+
+    private static func statementKind(_ kind: FinanceOSAPI.LedgerKind) -> FinanceCore.LedgerKind {
+        switch kind {
+        case .bankAccount: .bankAccount
+        case .creditCard: .creditCard
+        case .loan: .loan
+        case .wallet: .wallet
+        case .crypto: .crypto
+        case .investment: .investment
+        }
+    }
+
+    private static func parseTimestamp(_ string: String) -> Date? {
+        iso8601Full.date(from: string) ?? iso8601Short.date(from: string)
+    }
+
     static func mapBank(_ item: GetBanksQuery.Data.Bank) -> Bank {
         Bank(
             id: UUID(uuidString: item.id) ?? UUID(),

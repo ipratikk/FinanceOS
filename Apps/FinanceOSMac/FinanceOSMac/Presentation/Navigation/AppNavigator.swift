@@ -23,6 +23,12 @@ final class AppNavigator {
         detailPath = NavigationPath()
     }
 
+    /// Opens the normal import screen preset to `target`. Used by statement reminder deep links.
+    func openImport(for target: TransactionImportTarget) {
+        pendingImportTarget = target
+        navigate(to: .importStatement)
+    }
+
     func push(_ destination: DetailDestination) {
         detailPath.append(destination)
     }

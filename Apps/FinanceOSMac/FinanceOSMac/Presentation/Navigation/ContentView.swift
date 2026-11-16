@@ -47,6 +47,11 @@ struct ContentView: View {
             ToastPresenterView(presenter: navigator.toastPresenter)
         }
         .environment(navigator)
+        .onOpenURL { url in
+            if let target = StatementReminderLink.importTarget(from: url) {
+                navigator.openImport(for: target)
+            }
+        }
         .sheet(item: $navigator.sheet) { route in
             SheetView(route: route, appContainer: appContainer, navigator: navigator)
                 .glassEffect()
