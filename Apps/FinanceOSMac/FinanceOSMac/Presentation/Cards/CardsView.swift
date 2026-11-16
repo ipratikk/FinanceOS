@@ -5,7 +5,7 @@ import SwiftUI
 struct CardsView: View {
     @State private var viewModel: CardsViewModel
     @State private var cardPendingDelete: Ledger?
-    @State private var hoveredCardId: UUID?
+    @State private var hoveredCardId: String?
     @Environment(AppNavigator.self) private var navigator
 
     init(viewModel: CardsViewModel) {

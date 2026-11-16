@@ -11,9 +11,9 @@ public struct Ledger:
     FetchableRecord,
     PersistableRecord,
     Equatable {
-    public let id: UUID
+    public let id: String
     /// References the parent ``Bank`` row; cascade-deleted with the bank.
-    public let bankId: UUID
+    public let bankId: String
     public let kind: LedgerKind
 
     public let displayName: String
@@ -30,7 +30,7 @@ public struct Ledger:
     /// Bank Identification Number for card network auto-detection
     public let bin: String?
     /// Points to a companion ledger (e.g. a savings account linked to a credit card).
-    public let linkedLedgerId: UUID?
+    public let linkedLedgerId: String?
 
     public let isArchived: Bool
     /// Opening balance in minor units at the time of ledger creation; nil if unknown.
@@ -61,8 +61,8 @@ public struct Ledger:
     }
 
     public init(
-        id: UUID = UUID(),
-        bankId: UUID,
+        id: String = UUID().uuidString,
+        bankId: String,
         kind: LedgerKind,
         displayName: String,
         last4: String = "",
@@ -73,7 +73,7 @@ public struct Ledger:
         cardType: CardNetwork? = nil,
         cardProductId: String? = nil,
         bin: String? = nil,
-        linkedLedgerId: UUID? = nil,
+        linkedLedgerId: String? = nil,
         isArchived: Bool = false,
         openingBalance: Int64? = nil,
         closingBalance: Int64? = nil,

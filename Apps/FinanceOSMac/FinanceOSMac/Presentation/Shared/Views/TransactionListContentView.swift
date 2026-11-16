@@ -5,7 +5,7 @@ import SwiftUI
 struct TransactionListContentView: View {
     let sections: [TransactionSection]
     @Bindable var listState: TransactionListState
-    var onDelete: ((UUID) -> Void)?
+    var onDelete: ((String) -> Void)?
 
     @State private var transactionPendingDelete: TransactionRow?
     @State private var selectedTransaction: TransactionRow?

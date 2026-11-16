@@ -7,7 +7,7 @@ let testBank2 = Bank(bank: .icici)
 let testBank3 = Bank(bank: .amex)
 
 let testLedger1 = Ledger(
-    id: UUID(),
+    id: UUID().uuidString,
     bankId: testBank.id,
     kind: .bankAccount,
     displayName: "HDFC Account 1",
@@ -15,7 +15,7 @@ let testLedger1 = Ledger(
 )
 
 let testLedger2 = Ledger(
-    id: UUID(),
+    id: UUID().uuidString,
     bankId: testBank.id,
     kind: .bankAccount,
     displayName: "HDFC Account 2",
@@ -23,7 +23,7 @@ let testLedger2 = Ledger(
 )
 
 let testLedger3 = Ledger(
-    id: UUID(),
+    id: UUID().uuidString,
     bankId: testBank.id,
     kind: .creditCard,
     displayName: "HDFC Regalia",
@@ -31,7 +31,7 @@ let testLedger3 = Ledger(
 )
 
 let testLedger4 = Ledger(
-    id: UUID(),
+    id: UUID().uuidString,
     bankId: testBank.id,
     kind: .creditCard,
     displayName: "HDFC MoneyBack",
@@ -125,7 +125,7 @@ func bestTargetCardMultipleCardsNoMatchReturnsNil() {
     )
 
     let mismatchedLedger = Ledger(
-        id: UUID(),
+        id: UUID().uuidString,
         bankId: testBank.id,
         kind: .creditCard,
         displayName: "HDFC Card",

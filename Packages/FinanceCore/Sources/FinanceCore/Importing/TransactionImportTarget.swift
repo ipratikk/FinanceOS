@@ -14,5 +14,5 @@ public enum TransactionImportTarget:
     Equatable,
     Hashable {
     /// Import transactions into the ledger with the given ID.
-    case ledger(UUID)
+    case ledger(String)
 }

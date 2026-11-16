@@ -5,12 +5,16 @@ import SwiftUI
 struct TransactionDetailView: View {
     let row: TransactionRow
     let graphQLClient: ApolloGraphQLClient?
-    var onCorrected: ((UUID, String) -> Void)?
+    var onCorrected: ((String, String) -> Void)?
     @Environment(\.dismiss) var dismiss
     @State private var showCategoryPicker = false
     @State private var viewModel: TransactionDetailViewModel
 
-    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient? = nil, onCorrected: ((UUID, String) -> Void)? = nil) {
+    init(
+        row: TransactionRow,
+        graphQLClient: ApolloGraphQLClient? = nil,
+        onCorrected: ((String, String) -> Void)? = nil
+    ) {
         self.row = row
         self.graphQLClient = graphQLClient
         self.onCorrected = onCorrected

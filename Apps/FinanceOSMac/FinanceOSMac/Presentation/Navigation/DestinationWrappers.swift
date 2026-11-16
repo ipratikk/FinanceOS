@@ -6,7 +6,7 @@ struct AccountTransactionsDestinationView: View {
     let graphQLClient: ApolloGraphQLClient
     @State private var viewModel: AccountTransactionsDestinationViewModel
 
-    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
+    init(ledgerId: String, graphQLClient: ApolloGraphQLClient) {
         self.graphQLClient = graphQLClient
         _viewModel = State(initialValue: AccountTransactionsDestinationViewModel(
             ledgerId: ledgerId,
@@ -40,7 +40,7 @@ struct CardTransactionsDestinationView: View {
     let graphQLClient: ApolloGraphQLClient
     @State private var viewModel: CardTransactionsDestinationViewModel
 
-    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
+    init(ledgerId: String, graphQLClient: ApolloGraphQLClient) {
         self.graphQLClient = graphQLClient
         _viewModel = State(initialValue: CardTransactionsDestinationViewModel(
             ledgerId: ledgerId,
@@ -73,7 +73,7 @@ struct CardTransactionsDestinationView: View {
 struct LedgerDetailDestinationView: View {
     @State private var viewModel: LedgerDetailViewModel
 
-    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
+    init(ledgerId: String, graphQLClient: ApolloGraphQLClient) {
         _viewModel = State(initialValue: LedgerDetailViewModel(
             ledgerId: ledgerId,
             graphQLClient: graphQLClient

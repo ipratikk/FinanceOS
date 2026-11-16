@@ -12,7 +12,7 @@ final class TransactionDetailViewSnapshotTests: SnapshotTestable {
 
     func test_transaction_detail_debit() {
         let row = TransactionRow(
-            id: UUID(),
+            id: UUID().uuidString,
             title: "Whole Foods Market",
             subtitle: "Chase Checking · USD",
             amountText: "$65.43",
@@ -25,7 +25,7 @@ final class TransactionDetailViewSnapshotTests: SnapshotTestable {
 
     func test_transaction_detail_credit() {
         let row = TransactionRow(
-            id: UUID(),
+            id: UUID().uuidString,
             title: "Salary Deposit",
             subtitle: "Chase Checking · USD",
             amountText: "$5,000.00",

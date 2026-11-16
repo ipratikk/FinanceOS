@@ -16,7 +16,7 @@ final class BanksViewModel: AsyncLoadable {
     private let graphQLClient: ApolloGraphQLClient
 
     var banks: [Bank] = []
-    var ledgersByBank: [UUID: [Ledger]] = [:]
+    var ledgersByBank: [String: [Ledger]] = [:]
     var isLoading = false
 
     init(graphQLClient: ApolloGraphQLClient) {

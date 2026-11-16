@@ -8,7 +8,7 @@ public nonisolated struct GetLedgersQuery: GraphQLQuery {
     public static let operationName: String = "GetLedgers"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
         definition: .init(
-            #"query GetLedgers { ledgers { __typename id displayName kind last4 bank { __typename id name code } balance { __typename value currencyCode } } }"#
+            #"query GetLedgers { ledgers { __typename id displayName kind last4 bank { __typename id name code } balance { __typename value currencyCode } lastStatementAt } }"#
         )
     )
 
@@ -63,7 +63,8 @@ public nonisolated struct GetLedgersQuery: GraphQLQuery {
                     .field("kind", GraphQLEnum<FinanceOSAPI.LedgerKind>.self),
                     .field("last4", String?.self),
                     .field("bank", Bank.self),
-                    .field("balance", Balance.self)
+                    .field("balance", Balance.self),
+                    .field("lastStatementAt", String?.self)
                 ]
             }
 
@@ -95,6 +96,11 @@ public nonisolated struct GetLedgersQuery: GraphQLQuery {
 
             public var balance: Balance {
                 __data["balance"]
+            }
+
+            /// ISO timestamp of the most recent successful statement upload, or null if none.
+            public var lastStatementAt: String? {
+                __data["lastStatementAt"]
             }
 
             /// Ledger.Bank

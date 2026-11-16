@@ -75,12 +75,12 @@ public struct Bank:
     Sendable,
     FetchableRecord,
     PersistableRecord {
-    public let id: UUID
+    public let id: String
     /// References the corresponding ``Banks`` enum case; determines display and parser routing.
     public let bank: Banks
 
     public init(
-        id: UUID = UUID(),
+        id: String = UUID().uuidString,
         bank: Banks
     ) {
         self.id = id

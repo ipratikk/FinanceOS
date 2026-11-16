@@ -8,7 +8,7 @@ protocol AccountBalanceProtocol: Sendable {
         sortedTransactions: [Transaction],
         closingBalance: Int64,
         currencyCode: String
-    ) -> [UUID: String]
+    ) -> [String: String]
 }
 
 struct AccountBalanceService: AccountBalanceProtocol {
@@ -24,9 +24,9 @@ struct AccountBalanceService: AccountBalanceProtocol {
         sortedTransactions: [Transaction],
         closingBalance: Int64,
         currencyCode: String
-    ) -> [UUID: String] {
+    ) -> [String: String] {
         var balance = closingBalance
-        var result: [UUID: String] = [:]
+        var result: [String: String] = [:]
         for txn in sortedTransactions {
             result[txn.id] = MoneyFormatting.formatRunningBalance(minorUnits: balance, currencyCode: currencyCode)
             balance += txn.transactionType == .debit ? txn.amountMinorUnits : -txn.amountMinorUnits

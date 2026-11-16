@@ -4,6 +4,7 @@ import SwiftUI
 
 struct SidebarView: View {
     @Environment(AppNavigator.self) private var navigator
+    @State private var status = SidebarStatusViewModel(graphQLClient: AppContainer.shared.graphQLClient)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -128,11 +129,11 @@ struct SidebarView: View {
 
             HStack(spacing: 6) {
                 Circle()
-                    .fill(AppColors.System.green)
+                    .fill(statusColor)
                     .frame(width: 6, height: 6)
-                    .shadow(color: AppColors.System.green.opacity(AppColors.Opacity.high), radius: 3)
+                    .shadow(color: statusColor.opacity(AppColors.Opacity.high), radius: 3)
 
-                FDSLabel("Database healthy · 2,148 txns")
+                FDSLabel(statusText)
                     .font(AppTypography.captionSm)
                     .foregroundColor(AppColors.Text.tertiary)
 
@@ -140,6 +141,23 @@ struct SidebarView: View {
             }
             .padding(.horizontal, 12)
             .padding(.bottom, 8)
+            .task { await status.refresh() }
+        }
+    }
+
+    private var statusText: String {
+        switch status.state {
+        case .checking: "Checking backend…"
+        case let .healthy(count): "Database healthy · \(count.formatted()) txns"
+        case .unreachable: "Backend unreachable"
+        }
+    }
+
+    private var statusColor: Color {
+        switch status.state {
+        case .checking: AppColors.System.gray
+        case .healthy: AppColors.System.green
+        case .unreachable: AppColors.System.red
         }
     }
 

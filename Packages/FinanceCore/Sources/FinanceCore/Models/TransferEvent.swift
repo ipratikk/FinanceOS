@@ -11,10 +11,10 @@ public struct TransferEvent:
     PersistableRecord,
     Equatable {
     public let id: UUID
-    /// First transaction UUID (typically debit/source side).
-    public let transactionId1: UUID
-    /// Second transaction UUID (typically credit/destination side).
-    public let transactionId2: UUID
+    /// First transaction id (typically debit/source side).
+    public let transactionId1: String
+    /// Second transaction id (typically credit/destination side).
+    public let transactionId2: String
     /// Transfer event type (e.g., "internal_transfer", "credit_card_payment", "loan_transfer").
     public let eventType: String
     /// Optional notes describing the transfer.
@@ -23,8 +23,8 @@ public struct TransferEvent:
 
     public init(
         id: UUID = UUID(),
-        transactionId1: UUID,
-        transactionId2: UUID,
+        transactionId1: String,
+        transactionId2: String,
         eventType: String,
         notes: String? = nil,
         createdAt: Date = Date()

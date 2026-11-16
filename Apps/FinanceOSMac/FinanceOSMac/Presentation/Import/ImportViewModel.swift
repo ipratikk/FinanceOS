@@ -182,7 +182,7 @@ final class ImportViewModel {
         }
     }
 
-    private func uploadFiles(ledgerId: UUID) async throws -> (inserted: Int, skipped: Int) {
+    private func uploadFiles(ledgerId: String) async throws -> (inserted: Int, skipped: Int) {
         var totalInserted = 0
         var totalSkipped = 0
         for fileURL in importSession.fileURLs {
@@ -196,7 +196,7 @@ final class ImportViewModel {
             let password = importSession.filePasswords[fileURL]
             let sealedPassword = try password.map { try ImportPasswordCrypto.seal($0) }
             let mutation = UploadStatementMutation(
-                ledgerId: ledgerId.uuidString,
+                ledgerId: ledgerId,
                 file: "",
                 password: sealedPassword.map {
                     .some(EncryptedPassword(ephemeralPublicKey: $0.ephemeralPublicKey, ciphertext: $0.ciphertext))

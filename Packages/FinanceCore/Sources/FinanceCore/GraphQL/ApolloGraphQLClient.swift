@@ -22,7 +22,17 @@ public final class ApolloGraphQLClient: @unchecked Sendable {
     private let client: ApolloClient
 
     public init(url: URL = URL(string: "http://localhost:4000/graphql") ?? URL(fileURLWithPath: "/")) {
-        client = ApolloClient(url: url)
+        // Mirrors ApolloClient(url:) but adds a preflight header: the backend's CSRF guard rejects
+        // multipart uploads (uploadStatement/previewStatement) without one, returning HTTP 400.
+        let store = ApolloStore(cache: InMemoryNormalizedCache())
+        let transport = RequestChainNetworkTransport(
+            urlSession: URLSession(configuration: .default),
+            interceptorProvider: DefaultInterceptorProvider.shared,
+            store: store,
+            endpointURL: url,
+            additionalHeaders: ["apollo-require-preflight": "true"]
+        )
+        client = ApolloClient(networkTransport: transport, store: store)
     }
 
     public func fetch<Query: GraphQLQuery>(

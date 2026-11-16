@@ -40,7 +40,7 @@ public enum ReconciliationValidator {
     /// Validates that linkedTransactionId references are symmetric and point to real transactions.
     public static func validateLinkedTransactions(transactions: [Transaction]) -> ValidationResult {
         var errors: [String] = []
-        let txnMap = Dictionary(uniqueKeysWithValues: transactions.map { ($0.id.uuidString, $0) })
+        let txnMap = Dictionary(uniqueKeysWithValues: transactions.map { ($0.id, $0) })
 
         for txn in transactions {
             guard let linkedId = txn.linkedTransactionId else { continue }
@@ -52,7 +52,7 @@ public enum ReconciliationValidator {
             }
 
             // Reference must be symmetric
-            if linkedTxn.linkedTransactionId != txn.id.uuidString {
+            if linkedTxn.linkedTransactionId != txn.id {
                 let reverseId = linkedTxn.linkedTransactionId ?? "nil"
                 errors.append("Asymmetric link: \(txn.id) → \(linkedId) but \(linkedId) → \(reverseId)")
             }

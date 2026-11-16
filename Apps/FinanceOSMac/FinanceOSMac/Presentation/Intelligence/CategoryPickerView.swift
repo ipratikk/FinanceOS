@@ -16,7 +16,7 @@ struct CategoryPickerView: View {
         currentCategoryId: String?,
         currentMerchant: String?,
         graphQLClient: ApolloGraphQLClient,
-        onCorrected: ((UUID, String) -> Void)? = nil
+        onCorrected: ((String, String) -> Void)? = nil
     ) {
         self.source = source
         self.currentMerchant = currentMerchant

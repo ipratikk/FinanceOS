@@ -101,7 +101,7 @@ final class CardEditViewModel {
             last4: .some(form.last4)
         )
         do {
-            _ = try await client.perform(mutation: UpdateLedgerMutation(id: card.id.uuidString, input: input))
+            _ = try await client.perform(mutation: UpdateLedgerMutation(id: card.id, input: input))
             operationError = nil
             await onUpdate?()
             didCommit = true
@@ -113,7 +113,7 @@ final class CardEditViewModel {
     func deleteCard() async {
         guard case let .edit(card) = mode, let client = graphQLClient else { return }
         do {
-            _ = try await client.perform(mutation: DeleteLedgerMutation(id: card.id.uuidString))
+            _ = try await client.perform(mutation: DeleteLedgerMutation(id: card.id))
             operationError = nil
             didCommit = true
         } catch {

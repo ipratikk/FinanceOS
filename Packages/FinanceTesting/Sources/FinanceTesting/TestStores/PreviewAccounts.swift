@@ -4,12 +4,12 @@ import Foundation
 /// Preview/test data for ledgers (accounts and cards).
 public enum PreviewLedgers {
     /// Standard bank UUID for all preview ledgers.
-    private static let bankId = uuid("00000000-0000-0000-0000-000000000099")
+    private static let bankId = "00000000-0000-0000-0000-000000000099"
 
     /// Create a preview checking account.
     public static func checking() -> Ledger {
         Ledger(
-            id: uuid("00000000-0000-0000-0000-000000000001"),
+            id: "00000000-0000-0000-0000-000000000001",
             bankId: bankId,
             kind: .bankAccount,
             displayName: "Chase Checking",
@@ -24,7 +24,7 @@ public enum PreviewLedgers {
     /// Create a preview savings account.
     public static func savings() -> Ledger {
         Ledger(
-            id: uuid("00000000-0000-0000-0000-000000000002"),
+            id: "00000000-0000-0000-0000-000000000002",
             bankId: bankId,
             kind: .bankAccount,
             displayName: "Chase Savings",
@@ -39,7 +39,7 @@ public enum PreviewLedgers {
     /// Create a preview credit card.
     public static func creditCard() -> Ledger {
         Ledger(
-            id: uuid("00000000-0000-0000-0000-000000000003"),
+            id: "00000000-0000-0000-0000-000000000003",
             bankId: bankId,
             kind: .creditCard,
             displayName: "Amex Premium",
@@ -56,12 +56,5 @@ public enum PreviewLedgers {
     /// Collection of ledgers for preview.
     public static var all: [Ledger] {
         [checking(), savings(), creditCard()]
-    }
-
-    private static func uuid(_ value: String) -> UUID {
-        guard let uuid = UUID(uuidString: value) else {
-            fatalError("Invalid preview ledger UUID: \(value)")
-        }
-        return uuid
     }
 }

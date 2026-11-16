@@ -17,10 +17,10 @@ final class ImportViewModelStateManagementTests: XCTestCase {
     /// not match `PreviewBanks.hdfc()`'s id `...0001`), so the matcher would always
     /// return nil regardless of the guard under test.
     private func makeMatchableBankAndLedger() -> (bank: Bank, ledger: Ledger) {
-        let bankId = UUID()
+        let bankId = UUID().uuidString
         let bank = Bank(id: bankId, bank: .hdfc)
         let ledger = Ledger(
-            id: UUID(),
+            id: UUID().uuidString,
             bankId: bankId,
             kind: .bankAccount,
             displayName: "HDFC Checking",
@@ -35,7 +35,7 @@ final class ImportViewModelStateManagementTests: XCTestCase {
 
     func test_autoSelectMatchingTarget_doesNotOverwritePreSelectedTarget() async {
         let (bank, ledger) = makeMatchableBankAndLedger()
-        let preSelected = TransactionImportTarget.ledger(UUID())
+        let preSelected = TransactionImportTarget.ledger(UUID().uuidString)
 
         let viewModel = ImportViewModel(graphQLClient: ApolloGraphQLClient(), initialTarget: preSelected)
         viewModel.banks = [bank]

@@ -5,8 +5,8 @@ import Security
 /// user isn't re-prompted every time they import from an account they've already
 /// unlocked once. Injected as a protocol so `ImportViewModel` tests can fake it.
 protocol ImportPasswordStoring {
-    func password(for ledgerId: UUID) -> String?
-    func save(_ password: String, for ledgerId: UUID)
+    func password(for ledgerId: String) -> String?
+    func save(_ password: String, for ledgerId: String)
 }
 
 struct ImportPasswordStore: ImportPasswordStoring {
@@ -16,7 +16,7 @@ struct ImportPasswordStore: ImportPasswordStoring {
         self.serviceIdentifier = serviceIdentifier
     }
 
-    func password(for ledgerId: UUID) -> String? {
+    func password(for ledgerId: String) -> String? {
         var query = baseQuery(for: ledgerId)
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
@@ -29,7 +29,7 @@ struct ImportPasswordStore: ImportPasswordStoring {
         return String(data: data, encoding: .utf8)
     }
 
-    func save(_ password: String, for ledgerId: UUID) {
+    func save(_ password: String, for ledgerId: String) {
         let data = Data(password.utf8)
         let query = baseQuery(for: ledgerId)
 
@@ -44,15 +44,15 @@ struct ImportPasswordStore: ImportPasswordStoring {
         }
     }
 
-    func delete(for ledgerId: UUID) {
+    func delete(for ledgerId: String) {
         SecItemDelete(baseQuery(for: ledgerId) as CFDictionary)
     }
 
-    private func baseQuery(for ledgerId: UUID) -> [String: Any] {
+    private func baseQuery(for ledgerId: String) -> [String: Any] {
         [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: serviceIdentifier,
-            kSecAttrAccount as String: ledgerId.uuidString
+            kSecAttrAccount as String: ledgerId
         ]
     }
 }

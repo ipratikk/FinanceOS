@@ -22,7 +22,7 @@ extension ImportViewModel {
         cardType: CardNetwork = .other,
         cardProductId: String = "",
         encryptedCardNumber: String = "",
-        linkedLedgerId: UUID? = nil,
+        linkedLedgerId: String? = nil,
         isCard: Bool? = nil
     ) async {
         guard let statement = importSession.parsedStatements.first else {
@@ -91,7 +91,7 @@ extension ImportViewModel {
             ))
         )
         return Bank(
-            id: UUID(uuidString: data.createBank.id) ?? UUID(),
+            id: data.createBank.id,
             bank: bankCase
         )
     }
@@ -102,7 +102,7 @@ extension ImportViewModel {
         cardType: CardNetwork,
         cardProductId: String = "",
         encryptedCardNumber: String = "",
-        linkedLedgerId: UUID? = nil
+        linkedLedgerId: String? = nil
     ) async throws {
         let customNameTrimmed = params.customName?.trimmingCharacters(in: .whitespaces)
         let displayName = customNameTrimmed ?? params.statement.bankName
@@ -112,10 +112,10 @@ extension ImportViewModel {
             displayName: cardDisplayName,
             kind: .init(.creditCard),
             last4: params.last4.isEmpty ? .none : .some(params.last4),
-            bankId: params.bank.id.uuidString
+            bankId: params.bank.id
         )
         let result = try await graphQLClient.perform(mutation: CreateLedgerMutation(input: input))
-        importSession.selectedTarget = .ledger(UUID(uuidString: result.createLedger.id) ?? UUID())
+        importSession.selectedTarget = .ledger(result.createLedger.id)
         let ledgerData = try await graphQLClient.fetch(query: GetLedgersQuery())
         ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
         let encryptedStatus = encryptedCardNumber.isEmpty ? "not provided" : "provided"
@@ -136,10 +136,10 @@ extension ImportViewModel {
             displayName: accountDisplayName,
             kind: .init(.bankAccount),
             last4: params.last4.isEmpty ? .none : .some(params.last4),
-            bankId: params.bank.id.uuidString
+            bankId: params.bank.id
         )
         let result = try await graphQLClient.perform(mutation: CreateLedgerMutation(input: input))
-        importSession.selectedTarget = .ledger(UUID(uuidString: result.createLedger.id) ?? UUID())
+        importSession.selectedTarget = .ledger(result.createLedger.id)
         let ledgerData = try await graphQLClient.fetch(query: GetLedgersQuery())
         ledgers = ledgerData.ledgers.map(GraphQLMappings.mapLedger)
         logger.info("Created bank account: \(accountDisplayName)")

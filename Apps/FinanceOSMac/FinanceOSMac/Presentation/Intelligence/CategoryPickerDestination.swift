@@ -12,7 +12,7 @@ struct CategoryPickerDestination: View {
 
     private let taxonomy = CategoryTaxonomy.current
 
-    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient, onCorrected: ((UUID, String) -> Void)? = nil) {
+    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient, onCorrected: ((String, String) -> Void)? = nil) {
         self.row = row
         self.graphQLClient = graphQLClient
         _viewModel = State(initialValue: CategoryCorrectionViewModel(
