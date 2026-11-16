@@ -46,7 +46,7 @@ final class TransactionDetailViewModel {
 
     // MARK: - Load
 
-    func applyCorrection(transactionId: UUID, newCategoryId: String) {
+    func applyCorrection(transactionId: String, newCategoryId: String) {
         categoryId = newCategoryId
         isUserCorrected = true
     }

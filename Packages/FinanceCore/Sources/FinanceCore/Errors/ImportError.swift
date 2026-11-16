@@ -12,7 +12,7 @@ public enum ImportError: FinanceError {
     case noFilesSelected
     case noTargetSelected
     /// The ledger UUID chosen by the user no longer exists in the database.
-    case targetNotFound(UUID)
+    case targetNotFound(String)
     /// Raised as an informational signal; deduplication already skipped these rows.
     case duplicateDetected(count: Int)
     case importFailed(reason: String)
@@ -41,7 +41,7 @@ public enum ImportError: FinanceError {
         case .noTargetSelected:
             return "No target ledger selected for import"
         case let .targetNotFound(id):
-            return "Target ledger not found: \(id.uuidString)"
+            return "Target ledger not found: \(id)"
         case let .duplicateDetected(count):
             return "\(count) duplicate transactions detected via sourceFingerprint"
         case let .importFailed(reason):
@@ -58,7 +58,7 @@ public enum ImportError: FinanceError {
         case .noTargetSelected:
             return "Please select which account to import into."
         case let .targetNotFound(id):
-            return "The selected account (\(id.uuidString)) no longer exists."
+            return "The selected account (\(id)) no longer exists."
         case let .duplicateDetected(count):
             return "\(count) transaction(s) were already imported and skipped."
         case let .importFailed(reason):

@@ -14,7 +14,7 @@ private func makeDB() throws -> DatabaseQueue {
     return db
 }
 
-private func makeTransaction(ledgerId: UUID) -> Transaction {
+private func makeTransaction(ledgerId: String) -> Transaction {
     Transaction(
         ledgerId: ledgerId,
         postedAt: Date(),
@@ -24,7 +24,7 @@ private func makeTransaction(ledgerId: UUID) -> Transaction {
     )
 }
 
-private func insertLedgerAndTransaction(in db: DatabaseQueue) async throws -> (ledgerId: UUID, txnId: UUID) {
+private func insertLedgerAndTransaction(in db: DatabaseQueue) async throws -> (ledgerId: String, txnId: String) {
     let bank = try await db.read { db in try #require(Bank.fetchAll(db).first) }
     let ledger = Ledger(bankId: bank.id, kind: .bankAccount, displayName: "Test")
     try await db.write { try ledger.insert($0) }

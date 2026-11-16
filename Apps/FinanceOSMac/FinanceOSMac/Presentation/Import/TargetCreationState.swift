@@ -18,7 +18,7 @@ struct TargetCreationState: Identifiable, Equatable {
     var accountType: String = "savings"
     var cardType: CardNetwork = .other
     var cardProductId: String = ""
-    var linkedLedgerId: UUID?
+    var linkedLedgerId: String?
 
     init() {}
 

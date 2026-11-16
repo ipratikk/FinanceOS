@@ -68,15 +68,15 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
         }
     }
 
-    func deleteTransaction(id: UUID) async {
+    func deleteTransaction(id: String) async {
         await performDelete({
-            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id.uuidString))
+            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id))
         }, onSuccess: loadTransactions)
     }
 
     /// Called when the user corrects a category. Updates memory, persists via GraphQL, trains kNN,
     /// then re-analyzes auto-categorized transactions so similar ones update immediately.
-    func applyCorrection(transactionId: UUID, correctedCategoryId: String) async {
+    func applyCorrection(transactionId: String, correctedCategoryId: String) async {
         guard let idx = transactionRows.firstIndex(where: { $0.id == transactionId }) else { return }
         let old = transactionRows[idx]
 
@@ -92,7 +92,7 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
         // Persist via GraphQL — preserve merchantName so displayTitle stays stable (Bug 1 fix)
         do {
             _ = try await graphQLClient.perform(
-                mutation: RecategorizeMutation(transactionId: transactionId.uuidString, category: correctedCategoryId)
+                mutation: RecategorizeMutation(transactionId: transactionId, category: correctedCategoryId)
             )
         } catch {
             FinanceLogger.userInterface.logError("Failed to persist correction", caughtError: error, [:])
@@ -105,7 +105,7 @@ final class TransactionsViewModel: AsyncLoadable, DeletableViewModel {
 private extension TransactionsViewModel {
     func makeRows(
         transactions: [Transaction],
-        results: [UUID: Never] = [:],
+        results: [String: Never] = [:],
         ledgers: [Ledger]? = nil
     ) -> [TransactionRow] {
         let ledgersByID = Dictionary(uniqueKeysWithValues: (ledgers ?? cachedLedgers).map { ($0.id, $0) })

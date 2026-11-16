@@ -8,7 +8,7 @@ import Observation
 final class CategoryCorrectionViewModel {
     private let transaction: FinanceCore.Transaction?
     private let originalCategoryId: String?
-    private let onCorrected: ((UUID, String) -> Void)?
+    private let onCorrected: ((String, String) -> Void)?
     private let graphQLClient: ApolloGraphQLClient
 
     var selectedCategoryId: String
@@ -18,7 +18,7 @@ final class CategoryCorrectionViewModel {
         transaction: FinanceCore.Transaction,
         currentCategoryId: String?,
         graphQLClient: ApolloGraphQLClient,
-        onCorrected: ((UUID, String) -> Void)?
+        onCorrected: ((String, String) -> Void)?
     ) {
         self.transaction = transaction
         self.graphQLClient = graphQLClient
@@ -27,7 +27,7 @@ final class CategoryCorrectionViewModel {
         selectedCategoryId = currentCategoryId ?? "uncategorized"
     }
 
-    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient, onCorrected: ((UUID, String) -> Void)?) {
+    init(row: TransactionRow, graphQLClient: ApolloGraphQLClient, onCorrected: ((String, String) -> Void)?) {
         transaction = row.sourceTransaction
         self.graphQLClient = graphQLClient
         originalCategoryId = row.categoryId
@@ -45,7 +45,7 @@ final class CategoryCorrectionViewModel {
         do {
             _ = try await graphQLClient.perform(
                 mutation: RecategorizeMutation(
-                    transactionId: txn.id.uuidString,
+                    transactionId: txn.id,
                     category: selectedCategoryId
                 )
             )

@@ -3,7 +3,8 @@ import FinanceCore
 import Foundation
 import XCTest
 
-private actor FakeParser: StatementParsingProtocol {
+@MainActor
+private final class FakeParser: StatementParsingProtocol {
     private var callCount = 0
     private let requiresPassword: Bool
     private let correctPassword: String
@@ -23,13 +24,13 @@ private actor FakeParser: StatementParsingProtocol {
 }
 
 private final class FakePasswordStore: ImportPasswordStoring {
-    var savedPasswords: [UUID: String] = [:]
+    var savedPasswords: [String: String] = [:]
 
-    func password(for ledgerId: UUID) -> String? {
+    func password(for ledgerId: String) -> String? {
         savedPasswords[ledgerId]
     }
 
-    func save(_ password: String, for ledgerId: UUID) {
+    func save(_ password: String, for ledgerId: String) {
         savedPasswords[ledgerId] = password
     }
 }
@@ -128,7 +129,7 @@ final class ImportViewModelPasswordTests: XCTestCase {
     }
 
     func test_known_ledger_checks_keychain_before_prompting() async throws {
-        let ledgerId = UUID()
+        let ledgerId = UUID().uuidString
         let passwordStore = FakePasswordStore()
         passwordStore.save("secret123", for: ledgerId)
 
@@ -153,7 +154,7 @@ final class ImportViewModelPasswordTests: XCTestCase {
         // point — the write must happen later, once it is (flushPendingKeychainSaves).
         // Without the fix this asserts, the write never happens at all.
         let passwordStore = FakePasswordStore()
-        let ledgerId = UUID()
+        let ledgerId = UUID().uuidString
         let viewModel = ImportViewModel(
             graphQLClient: ApolloGraphQLClient(),
             fileParser: FakeParser(requiresPassword: true),

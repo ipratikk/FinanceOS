@@ -40,7 +40,7 @@ public final class GRDBTransactionRepository:
     }
 
     public func fetchTransactionsForLedger(
-        _ ledgerID: UUID
+        _ ledgerID: String
     ) async throws -> [Transaction] {
         try await dbQueue.read { database in
             let txns = try Transaction
@@ -50,7 +50,7 @@ public final class GRDBTransactionRepository:
 
             self.logger.logDebug(
                 "Fetched {count} txns for ledger",
-                ["count": txns.count, "ledgerId": ledgerID.uuidString]
+                ["count": txns.count, "ledgerId": ledgerID]
             )
 
             return txns
@@ -58,7 +58,7 @@ public final class GRDBTransactionRepository:
     }
 
     public func fetchTransactionsForAccount(
-        _ accountID: UUID
+        _ accountID: String
     ) async throws -> [Transaction] {
         try await dbQueue.read { database in
             let txns = try Transaction
@@ -68,7 +68,7 @@ public final class GRDBTransactionRepository:
 
             self.logger.logDebug(
                 "Fetched {count} txns for account",
-                ["count": txns.count, "accountId": accountID.uuidString]
+                ["count": txns.count, "accountId": accountID]
             )
 
             return txns
@@ -76,7 +76,7 @@ public final class GRDBTransactionRepository:
     }
 
     public func fetchTransactionsForCard(
-        _ cardID: UUID
+        _ cardID: String
     ) async throws -> [Transaction] {
         try await dbQueue.read { database in
             let txns = try Transaction
@@ -86,7 +86,7 @@ public final class GRDBTransactionRepository:
 
             self.logger.logDebug(
                 "Fetched {count} txns for card",
-                ["count": txns.count, "cardId": cardID.uuidString]
+                ["count": txns.count, "cardId": cardID]
             )
 
             return txns
@@ -106,7 +106,7 @@ public final class GRDBTransactionRepository:
 
             for (idx, transaction) in transactions.enumerated() {
                 if let fingerprint = transaction.sourceFingerprint {
-                    let key = "\(transaction.ledgerId?.uuidString ?? "")|\(fingerprint)"
+                    let key = "\(transaction.ledgerId ?? "")|\(fingerprint)"
                     guard batchKeys.insert(key).inserted else {
                         skipped += 1
                         continue
@@ -120,7 +120,7 @@ public final class GRDBTransactionRepository:
                     skipped += 1
                     self.logger.logNotice(
                         "Duplicate transaction skipped: {ledgerId}",
-                        ["ledgerId": transaction.ledgerId?.uuidString ?? "unknown", "index": String(idx)]
+                        ["ledgerId": transaction.ledgerId ?? "unknown", "index": String(idx)]
                     )
                 }
             }
@@ -134,7 +134,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
-    public func delete(id: UUID) async throws {
+    public func delete(id: String) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
                 DELETE FROM transactions WHERE "id" = ?
@@ -142,13 +142,13 @@ public final class GRDBTransactionRepository:
 
             self.logger.logInfo(
                 "Transaction deleted",
-                ["transactionId": id.uuidString]
+                ["transactionId": id]
             )
         }
     }
 
     /// Reassigns card transactions to an account ledger; used when user converts a card to an account.
-    public func migrateTransactions(fromCard cardID: UUID, toAccount accountID: UUID) async throws {
+    public func migrateTransactions(fromCard cardID: String, toAccount accountID: String) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
                 UPDATE transactions
@@ -158,13 +158,13 @@ public final class GRDBTransactionRepository:
 
             self.logger.logInfo(
                 "Migrated txns from card to account",
-                ["fromCard": cardID.uuidString, "toAccount": accountID.uuidString]
+                ["fromCard": cardID, "toAccount": accountID]
             )
         }
     }
 
     /// Reassigns account transactions to a card ledger; used when user converts an account to a card.
-    public func migrateTransactions(fromAccount accountID: UUID, toCard cardID: UUID) async throws {
+    public func migrateTransactions(fromAccount accountID: String, toCard cardID: String) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
                 UPDATE transactions
@@ -174,12 +174,12 @@ public final class GRDBTransactionRepository:
 
             self.logger.logInfo(
                 "Migrated txns from account to card",
-                ["fromAccount": accountID.uuidString, "toCard": cardID.uuidString]
+                ["fromAccount": accountID, "toCard": cardID]
             )
         }
     }
 
-    public func updateIntelligence(id: UUID, categoryId: String?, merchantName: String?) async throws {
+    public func updateIntelligence(id: String, categoryId: String?, merchantName: String?) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
                 UPDATE transactions
@@ -189,7 +189,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
-    public func updateEnrichmentProvenance(id: UUID, _ provenance: EnrichmentProvenance) async throws {
+    public func updateEnrichmentProvenance(id: String, _ provenance: EnrichmentProvenance) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
                 UPDATE transactions
@@ -216,7 +216,7 @@ public final class GRDBTransactionRepository:
     }
 
     public func updateEnrichmentProvenanceBatch(_ updates: [(
-        id: UUID,
+        id: String,
         provenance: EnrichmentProvenance
     )]) async throws {
         guard !updates.isEmpty else { return }
@@ -247,7 +247,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
-    public func markUserCorrectedMerchant(id: UUID) async throws {
+    public func markUserCorrectedMerchant(id: String) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
                 UPDATE transactions SET "isUserCorrectedMerchant" = 1 WHERE "id" = ?
@@ -255,7 +255,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
-    public func clearUserCorrectedMerchant(id: UUID) async throws {
+    public func clearUserCorrectedMerchant(id: String) async throws {
         try await dbQueue.write { database in
             try database.execute(sql: """
                 UPDATE transactions SET "isUserCorrectedMerchant" = 0 WHERE "id" = ?
@@ -263,7 +263,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
-    public func updateEnrichedDescription(id: UUID, description: String) async throws {
+    public func updateEnrichedDescription(id: String, description: String) async throws {
         try await dbQueue.write { database in
             try database.execute(
                 sql: #"UPDATE transactions SET "enrichedDescription" = ? WHERE "id" = ?"#,
@@ -272,7 +272,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
-    public func updateEnrichedDescriptionBatch(_ updates: [(id: UUID, description: String)]) async throws {
+    public func updateEnrichedDescriptionBatch(_ updates: [(id: String, description: String)]) async throws {
         guard !updates.isEmpty else { return }
         try await dbQueue.write { database in
             for (id, description) in updates {
@@ -284,7 +284,7 @@ public final class GRDBTransactionRepository:
         }
     }
 
-    public func updateLinkedTransaction(id: UUID, linkedTransactionId: String) async throws {
+    public func updateLinkedTransaction(id: String, linkedTransactionId: String) async throws {
         try await dbQueue.write { database in
             try database.execute(
                 sql: #"UPDATE transactions SET "linkedTransactionId" = ? WHERE "id" = ?"#,

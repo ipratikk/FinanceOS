@@ -7,14 +7,14 @@ import Observation
 @Observable
 @MainActor
 final class LedgerDetailViewModel: AsyncLoadable {
-    private let ledgerId: UUID
+    private let ledgerId: String
     private let graphQLClient: ApolloGraphQLClient
 
     private(set) var ledger: Ledger?
     private(set) var bank: Bank?
     var isLoading = false
 
-    init(ledgerId: UUID, graphQLClient: ApolloGraphQLClient) {
+    init(ledgerId: String, graphQLClient: ApolloGraphQLClient) {
         self.ledgerId = ledgerId
         self.graphQLClient = graphQLClient
     }

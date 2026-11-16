@@ -4,7 +4,7 @@ import XCTest
 final class ImportPasswordStoreTests: XCTestCase {
     // Isolated service identifier — never touches the real app's Keychain entries.
     private let store = ImportPasswordStore(serviceIdentifier: "com.financeos.import.pdfpassword.test")
-    private let ledgerId = UUID()
+    private let ledgerId = UUID().uuidString
 
     override func tearDown() {
         // Best-effort cleanup so repeated test runs don't accumulate stale items.

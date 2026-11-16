@@ -9,9 +9,9 @@ actor GRDBTransferEventRepository: TransferEventRepository {
         self.dbQueue = dbQueue
     }
 
-    func fetchTransferEventsFor(transactionId: UUID) async throws -> [TransferEvent] {
+    func fetchTransferEventsFor(transactionId: String) async throws -> [TransferEvent] {
         try await dbQueue.read { db in
-            let txnId = transactionId.uuidString
+            let txnId = transactionId
             return try TransferEvent
                 .filter(sql: "transactionId1 = ? OR transactionId2 = ?", arguments: [txnId, txnId])
                 .fetchAll(db)

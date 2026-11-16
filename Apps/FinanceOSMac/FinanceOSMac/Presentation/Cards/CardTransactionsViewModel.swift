@@ -29,17 +29,17 @@ final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
         self.graphQLClient = graphQLClient
     }
 
-    func loadTransactions(for cardID: UUID) async {
+    func loadTransactions(for cardID: String) async {
         await withLoading(onError: { error in
             FinanceLogger.userInterface.logError(
                 "Failed to load transactions for {cardID}",
                 caughtError: error,
-                ["cardID": cardID.uuidString]
+                ["cardID": cardID]
             )
         }, {
             let data = try await graphQLClient.fetch(
                 query: GetTransactionsQuery(
-                    ledgerId: .some(cardID.uuidString),
+                    ledgerId: .some(cardID),
                     filter: .none,
                     limit: .none
                 )
@@ -70,9 +70,9 @@ final class CardTransactionsViewModel: AsyncLoadable, DeletableViewModel {
         }
     }
 
-    func deleteTransaction(id: UUID, cardID: UUID) async {
+    func deleteTransaction(id: String, cardID: String) async {
         await performDelete {
-            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id.uuidString))
+            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id))
         } onSuccess: { [self] in
             await loadTransactions(for: cardID)
         }

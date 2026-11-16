@@ -8,7 +8,7 @@ import OSLog
 @Observable
 final class CardsViewModel: AsyncLoadable, DeletableViewModel {
     struct CardRow: Identifiable {
-        let id: UUID
+        let id: String
         let card: Ledger
         let title: String
         let institutionName: String
@@ -56,25 +56,25 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
                 kind: .some(.init(FinanceOSAPI.LedgerKind.creditCard)),
                 last4: card.last4.isEmpty ? .null : .some(card.last4)
             )
-            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: card.id.uuidString, input: input))
+            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: card.id, input: input))
             await loadCards()
         } catch {
             logger.logError(
                 "Failed to update card: {error}",
-                ["cardId": card.id.uuidString, "error": error.localizedDescription]
+                ["cardId": card.id, "error": error.localizedDescription]
             )
         }
     }
 
-    func deleteCard(id: UUID) async {
+    func deleteCard(id: String) async {
         await performDelete({
-            logger.logDebug("Deleting card", ["cardId": id.uuidString])
-            _ = try await graphQLClient.perform(mutation: DeleteLedgerMutation(id: id.uuidString))
-            logger.logInfo("Card deleted successfully", ["cardId": id.uuidString])
+            logger.logDebug("Deleting card", ["cardId": id])
+            _ = try await graphQLClient.perform(mutation: DeleteLedgerMutation(id: id))
+            logger.logInfo("Card deleted successfully", ["cardId": id])
         }, onError: { [self] error in
             logger.logError(
                 "Delete card failed: {error}",
-                ["cardId": id.uuidString, "error": error.localizedDescription]
+                ["cardId": id, "error": error.localizedDescription]
             )
         }, onSuccess: loadCards)
     }
@@ -86,12 +86,12 @@ final class CardsViewModel: AsyncLoadable, DeletableViewModel {
                 kind: .some(.init(FinanceOSAPI.LedgerKind.bankAccount)),
                 last4: card.last4.isEmpty ? .null : .some(card.last4)
             )
-            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: card.id.uuidString, input: input))
+            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: card.id, input: input))
             await loadCards()
         } catch {
             logger.logError(
                 "Failed to convert card to account: {error}",
-                ["cardId": card.id.uuidString, "error": error.localizedDescription]
+                ["cardId": card.id, "error": error.localizedDescription]
             )
         }
     }

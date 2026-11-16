@@ -2,7 +2,7 @@ import FinanceCore
 import Foundation
 
 struct TransactionRow: Identifiable {
-    let id: UUID
+    let id: String
     let title: String
     let subtitle: String
     let amountText: String
@@ -21,7 +21,7 @@ struct TransactionRow: Identifiable {
     let enrichedDescription: String?
 
     init(
-        id: UUID,
+        id: String,
         title: String,
         subtitle: String,
         amountText: String,

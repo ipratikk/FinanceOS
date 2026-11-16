@@ -18,7 +18,7 @@ struct CardEditFormState: Equatable {
     var cardholderName = ""
     var accountType = "savings"
     var selectedBank: Banks?
-    var linkedLedgerId: UUID?
+    var linkedLedgerId: String?
     var cardProductId = ""
 
     static func initial(for mode: CardEditMode) -> CardEditFormState {

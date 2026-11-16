@@ -140,9 +140,9 @@ func jsonIsDeterministicAndVersioned() throws {
 
 @Test
 func reminderLinkRoundTripsLedgerTarget() throws {
-    let ledgerId = try #require(UUID(uuidString: "11111111-2222-3333-4444-555555555555"))
+    let ledgerId = "CC-1A2B3C4D"
     let url = try #require(StatementReminderLink.importURL(for: ledgerId))
-    #expect(url.absoluteString == "financeos://import/11111111-2222-3333-4444-555555555555")
+    #expect(url.absoluteString == "financeos://import/CC-1A2B3C4D")
     #expect(StatementReminderLink.importTarget(from: url) == .ledger(ledgerId))
 }
 

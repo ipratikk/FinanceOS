@@ -14,7 +14,7 @@ final class BankEditContext {
         self.graphQLClient = graphQLClient
     }
 
-    func loadLedgers(bankId: UUID) async {
+    func loadLedgers(bankId: String) async {
         do {
             let data = try await graphQLClient.fetch(query: GetLedgersQuery())
             linkedLedgers = data.ledgers
@@ -29,7 +29,7 @@ final class BankEditContext {
         error = "Bank editing is not available in thin-client mode."
     }
 
-    func deleteBank(id: UUID) async {
+    func deleteBank(id: String) async {
         error = "Bank deletion is not available in thin-client mode."
     }
 

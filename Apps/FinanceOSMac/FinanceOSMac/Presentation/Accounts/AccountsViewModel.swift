@@ -12,7 +12,7 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
 
     var accounts: [Ledger] = []
     var banks: [Bank] = []
-    var balancesByAccount: [UUID: AccountLedgerBalance] = [:]
+    var balancesByAccount: [String: AccountLedgerBalance] = [:]
     var isLoading = false
     var deleteError: String?
 
@@ -33,7 +33,7 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
                 uniqueKeysWithValues: data.ledgers
                     .filter { $0.kind.value == .bankAccount }
                     .map { item in
-                        let id = UUID(uuidString: item.id) ?? UUID()
+                        let id = item.id
                         let balance = AccountLedgerBalance(
                             netMinorUnits: Int64(item.balance.value),
                             latestPostedAt: nil
@@ -51,25 +51,25 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
                 kind: .some(.init(account.kind == .creditCard ? FinanceOSAPI.LedgerKind.creditCard : .bankAccount)),
                 last4: account.last4.isEmpty ? .null : .some(account.last4)
             )
-            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: account.id.uuidString, input: input))
+            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: account.id, input: input))
             await loadAccounts()
         } catch {
             logger.logError(
                 "Failed to update account: {error}",
-                ["accountId": account.id.uuidString, "error": error.localizedDescription]
+                ["accountId": account.id, "error": error.localizedDescription]
             )
         }
     }
 
-    func deleteAccount(id: UUID) async {
+    func deleteAccount(id: String) async {
         await performDelete({
-            logger.logDebug("Deleting account", ["accountId": id.uuidString])
-            _ = try await graphQLClient.perform(mutation: DeleteLedgerMutation(id: id.uuidString))
-            logger.logInfo("Account deleted successfully", ["accountId": id.uuidString])
+            logger.logDebug("Deleting account", ["accountId": id])
+            _ = try await graphQLClient.perform(mutation: DeleteLedgerMutation(id: id))
+            logger.logInfo("Account deleted successfully", ["accountId": id])
         }, onError: { [self] error in
             logger.logError(
                 "Delete account failed: {error}",
-                ["accountId": id.uuidString, "error": error.localizedDescription]
+                ["accountId": id, "error": error.localizedDescription]
             )
         }, onSuccess: loadAccounts)
     }
@@ -102,12 +102,12 @@ final class AccountsViewModel: AsyncLoadable, DeletableViewModel {
                 kind: .some(.init(FinanceOSAPI.LedgerKind.creditCard)),
                 last4: account.last4.isEmpty ? .null : .some(account.last4)
             )
-            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: account.id.uuidString, input: input))
+            _ = try await graphQLClient.perform(mutation: UpdateLedgerMutation(id: account.id, input: input))
             await loadAccounts()
         } catch {
             logger.logError(
                 "Failed to convert account to card: {error}",
-                ["accountId": account.id.uuidString, "error": error.localizedDescription]
+                ["accountId": account.id, "error": error.localizedDescription]
             )
         }
     }

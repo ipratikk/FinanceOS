@@ -46,17 +46,17 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
         self.balanceService = balanceService ?? AccountBalanceService()
     }
 
-    func loadTransactions(for accountID: UUID, bankId: UUID, closingBalance: Int64?) async {
+    func loadTransactions(for accountID: String, bankId: String, closingBalance: Int64?) async {
         await withLoading(onError: { error in
             FinanceLogger.userInterface.logError(
                 "Failed to load account transactions for {accountID}",
                 caughtError: error,
-                ["accountID": accountID.uuidString]
+                ["accountID": accountID]
             )
         }, {
             async let txnsFetch = graphQLClient.fetch(
                 query: GetTransactionsQuery(
-                    ledgerId: .some(accountID.uuidString),
+                    ledgerId: .some(accountID),
                     filter: .none,
                     limit: .none
                 )
@@ -87,7 +87,7 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
         )
 
         let sorted = transactions.sorted { $0.postedAt > $1.postedAt }
-        var runningBalances: [UUID: String] = [:]
+        var runningBalances: [String: String] = [:]
 
         if let closingBalance {
             let currencyCode = sorted.first?.currencyCode ?? "INR"
@@ -117,9 +117,9 @@ final class AccountTransactionsViewModel: AsyncLoadable, DeletableViewModel {
         }
     }
 
-    func deleteTransaction(id: UUID, accountID: UUID, bankId: UUID, closingBalance: Int64?) async {
+    func deleteTransaction(id: String, accountID: String, bankId: String, closingBalance: Int64?) async {
         await performDelete {
-            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id.uuidString))
+            _ = try await graphQLClient.perform(mutation: DeleteTransactionMutation(id: id))
         } onSuccess: { [self] in
             await loadTransactions(for: accountID, bankId: bankId, closingBalance: closingBalance)
         }
